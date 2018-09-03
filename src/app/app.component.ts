@@ -4,51 +4,29 @@ import View from 'ol/View';
 import { Tile, Image } from 'ol/layer';
 import { ImageWMS, OSM } from 'ol/source';
 
+import {ProductViewService} from './product-views/product-view.service';
+import {ProductView} from './product-views/product-view.model';
+import {Product} from './products/product.model';
+import {geoserverUrl} from './constants';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  static PRODUCT_VIEWS = [{
-    id: 'opady',
-    layers: [{
-      id: 1,
-      timestamp: '20180824T100000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }, {
-      id: 2,
-      timestamp: '20180824T110000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }, {
-      id: 3,
-      timestamp: '20180824T120000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }]
-  }, {
-    id: 'zachmurzenie',
-    layers: [{
-      id: 4,
-      timestamp: '20180824T200000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }, {
-      id: 5,
-      timestamp: '20180824T210000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }, {
-      id: 6,
-      timestamp: '20180824T220000',
-      layerName: 'test:201807051330_PL_HRV_gtif_mercator'
-    }]
-  }];
+  productViews: Array<ProductView>;
+  selectedProductView: ProductView;
+  selectedLayer: Product;
 
+  private productViewService: ProductViewService;
   private map: Map;
-  productViews = AppComponent.PRODUCT_VIEWS;
-  selectedProductView = this.productViews[0];
-  selectedLayer: { timestamp: string; layerName: string };
 
-  ngOnInit() {
+  constructor(productViewService: ProductViewService) {
+    this.productViewService = productViewService;
+  }
 
+  ngOnInit(): void {
     this.map = new Map({
       target: 'map',
       layers: [
@@ -61,14 +39,16 @@ export class AppComponent implements OnInit {
         zoom: 6
       })
     });
+    this.productViews = this.productViewService.getViews();
+    this.selectProductView(this.productViews[0]);
   }
 
-  selectProductView(id: string) {
-    this.selectedProductView = this.productViews.find(productView => productView.id === id);
+  selectProductView(productView: ProductView): void {
+    this.selectedProductView = productView;
     this.showLayer(this.selectedProductView.layers[0]);
   }
 
-  private showLayer(layer: { timestamp: string; layerName: string }) {
+  private showLayer(layer: Product): void {
     this.selectedLayer = layer;
     const layers = this.map.getLayers();
     layers.clear();
@@ -77,7 +57,7 @@ export class AppComponent implements OnInit {
     }));
     layers.push(new Image({
       source: new ImageWMS({
-        url: 'http://geoserver-3434.cloud.plgrid.pl/geoserver/wms',
+        url: geoserverUrl,
         params: { 'LAYERS': layer.layerName }
       })
     }));

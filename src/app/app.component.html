@@ -1,18 +1,23 @@
 <div class="head-nav">
-  <h4>Product views</h4>
-  <ul>
-    <li *ngFor="let productView of productViews" (click)="selectProductView(productView.id)">
-      {{productView.id}}
-      <span *ngIf="productView.id === selectedProductView.id"> (active)</span>
-    </li>
-  </ul>
-  <h4>Layers</h4>
-  <ul>
-    <li *ngFor="let layer of selectedProductView.layers" (click)="showLayer(layer)">
-      {{layer.timestamp}}
-      <span *ngIf="layer.id === selectedLayer.id"> (active)</span>
-    </li>
-  </ul>
+  <div ngbDropdown style="display:inline-block">
+    <button class="btn btn-primary" ngbDropdownToggle>Product views</button>
+    <div ngbDropdownMenu>
+      <button class= "dropdown-item" *ngFor="let productView of productViews"
+              (click)="selectProductView(productView)"
+              [class.active]="productView === selectedProductView">{{productView.id}}</button>
+    </div>
+  </div>
+  <div ngbDropdown style="display:inline-block">
+    <button class="btn btn-primary" ngbDropdownToggle>Timestamps</button>
+    <div ngbDropdownMenu>
+      <button class="dropdown-item" *ngFor="let layer of selectedProductView.layers"
+              (click)="showLayer(layer)"
+              [class.active]="layer === selectedLayer">{{layer.timestamp}}</button>
+    </div>
+  </div>
+  <div style="display: inline-block">
+    {{selectedProductView.id}} - {{selectedLayer.timestamp}}
+  </div>
 </div>
 <div id="map"></div>
 
