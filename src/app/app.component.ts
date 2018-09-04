@@ -10,7 +10,7 @@ import {Product} from './products/product.model';
 import {geoserverUrl} from './constants';
 
 @Component({
-  selector: 'app-root',
+  selector: 's4e-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
     layers.push(new Image({
       source: new ImageWMS({
         url: geoserverUrl,
-        params: { 'LAYERS': layer.layerName }
+        params: { 'LAYERS': `${layer.layerName},test:wojewodztwa` }
       })
     }));
   }
