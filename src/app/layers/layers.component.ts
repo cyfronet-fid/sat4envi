@@ -1,22 +1,44 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Tile, Image, Layer as olLayer } from 'ol/layer';
 
 import {Product} from '../products/product.model';
+import {Layer} from './layer.model';
+import {LayersService} from './layers.service';
+import {Subscription} from 'rxjs';
 
-interface Layer {
-  product: Product;
-  olLayer: olLayer;
-}
 
 @Component({
   selector: 's4e-layers',
   templateUrl: './layers.component.html',
   styleUrls: ['./layers.component.scss']
 })
-export class LayersComponent {
+export class LayersComponent implements OnInit, OnDestroy {
   layers: Layer[];
 
-  constructor() {
-    this.layers = [];
+  private layersService: LayersService;
+  private layersSub: Subscription;
+
+  constructor(layersService: LayersService) {
+    this.layersService = layersService;
+  }
+
+  ngOnInit(): void {
+    this.layersSub = this.layersService.getLayers().subscribe(layers => this.layers = layers.slice().reverse());
+  }
+
+  ngOnDestroy(): void {
+    this.layersSub.unsubscribe();
+  }
+
+  moveDown(layer: Layer): void {
+    this.layersService.moveLayerDown(layer);
+  }
+
+  moveUp(layer: Layer): void {
+    this.layersService.moveLayerUp(layer);
+  }
+
+  remove(layer: Layer): void {
+    this.layersService.removeLayer(layer);
   }
 }

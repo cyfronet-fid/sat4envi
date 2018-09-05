@@ -1,4 +1,9 @@
 <div>Layers</div>
-<div class="layer" *ngFor="let layer of layers">
-  {{layer.product.id}}
+<div class="layer clearfix" *ngFor="let layer of layers">
+  {{layer.product.type}} - {{layer.product.timestamp}}
+  <div style="float:right;">
+    &nbsp;<span (click)="moveDown(layer)">v</span>
+    &nbsp;<span (click)="moveUp(layer)">^</span>
+    &nbsp;<span (click)="remove(layer)">x</span>
+  </div>
 </div>

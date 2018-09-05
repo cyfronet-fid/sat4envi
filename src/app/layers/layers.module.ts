@@ -1,13 +1,15 @@
 import {NgModule} from '@angular/core';
-import {LayersComponent} from './layers.component';
 import {BrowserModule} from '@angular/platform-browser';
+
+import {LayersComponent} from './layers.component';
+import {LayersService} from './layers.service';
 
 @NgModule({
   declarations: [
-    LayersComponent
+    LayersComponent,
   ],
   exports: [
-    LayersComponent
+    LayersComponent,
   ],
   imports: [
     BrowserModule,
