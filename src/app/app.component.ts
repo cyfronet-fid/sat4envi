@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile, Image } from 'ol/layer';
@@ -8,58 +8,64 @@ import {ProductViewService} from './product-views/product-view.service';
 import {ProductView} from './product-views/product-view.model';
 import {Product} from './products/product.model';
 import {geoserverUrl} from './constants';
+import {LayersService} from './layers/layers.service';
+import {Layer} from './layers/layer.model';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 's4e-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  productViews: Array<ProductView>;
+export class AppComponent implements OnInit, OnDestroy {
+  productViews: ProductView[];
   selectedProductView: ProductView;
-  selectedLayer: Product;
 
   private productViewService: ProductViewService;
   private map: Map;
+  private layersService: LayersService;
+  private layers$: Subscription;
 
-  constructor(productViewService: ProductViewService) {
+  constructor(productViewService: ProductViewService, layersService: LayersService) {
     this.productViewService = productViewService;
+    this.layersService = layersService;
   }
 
   ngOnInit(): void {
     this.map = new Map({
       target: 'map',
-      layers: [
-        new Tile({
-          source: new OSM()
-        })
-      ],
+      layers: [],
       view: new View({
         center: [2158581, 6841419],
         zoom: 6
       })
     });
     this.productViews = this.productViewService.getViews();
-    this.selectProductView(this.productViews[0]);
+    this.selectedProductView = this.productViews[0];
+    this.layers$ = this.layersService.getLayers().subscribe(layers => this.updateLayers(layers));
   }
 
-  selectProductView(productView: ProductView): void {
-    this.selectedProductView = productView;
-    this.showLayer(this.selectedProductView.layers[0]);
+  ngOnDestroy(): void {
+    this.layers$.unsubscribe();
   }
 
-  private showLayer(layer: Product): void {
-    this.selectedLayer = layer;
-    const layers = this.map.getLayers();
-    layers.clear();
-    layers.push(new Tile({
-      source: new OSM()
-    }));
-    layers.push(new Image({
-      source: new ImageWMS({
-        url: geoserverUrl,
-        params: { 'LAYERS': `${layer.layerName},test:wojewodztwa` }
+  private addLayer(layer: Product): void {
+    this.layersService.addLayer({
+      product: layer,
+      olLayer: new Image({
+        source: new ImageWMS({
+          url: geoserverUrl,
+          params: { 'LAYERS': layer.layerName }
+        })
       })
-    }));
+    });
+  }
+
+  private updateLayers(layers: Layer[]) {
+    const mapLayers = this.map.getLayers();
+    mapLayers.clear();
+    for (const layer of layers) {
+      mapLayers.push(layer.olLayer);
+    }
   }
 }

@@ -3,7 +3,7 @@
     <button class="btn btn-primary" ngbDropdownToggle>Product views</button>
     <div ngbDropdownMenu>
       <button class= "dropdown-item" *ngFor="let productView of productViews"
-              (click)="selectProductView(productView)"
+              (click)="selectedProductView = productView"
               [class.active]="productView === selectedProductView">{{productView.id}}</button>
     </div>
   </div>
@@ -11,12 +11,8 @@
     <button class="btn btn-primary" ngbDropdownToggle>Timestamps</button>
     <div ngbDropdownMenu>
       <button class="dropdown-item" *ngFor="let layer of selectedProductView.layers"
-              (click)="showLayer(layer)"
-              [class.active]="layer === selectedLayer">{{layer.timestamp}}</button>
+              (click)="addLayer(layer)">{{layer.timestamp}}</button>
     </div>
-  </div>
-  <div style="display: inline-block">
-    {{selectedProductView.id}} - {{selectedLayer.timestamp}}
   </div>
 </div>
 <div class="map-container clearfix">
