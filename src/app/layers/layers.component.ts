@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { Tile, Image, Layer as olLayer } from 'ol/layer';
+import { Tile, Image } from 'ol/layer';
 
-import {Product} from '../products/product.model';
 import {Layer} from './layer.model';
 import {LayersService} from './layers.service';
 import {Subscription} from 'rxjs';
@@ -10,7 +9,7 @@ import {Subscription} from 'rxjs';
 @Component({
   selector: 's4e-layers',
   templateUrl: './layers.component.html',
-  styleUrls: ['./layers.component.scss']
+  styleUrls: ['./layers.component.scss'],
 })
 export class LayersComponent implements OnInit, OnDestroy {
   layers: Layer[];
@@ -40,5 +39,9 @@ export class LayersComponent implements OnInit, OnDestroy {
 
   remove(layer: Layer): void {
     this.layersService.removeLayer(layer);
+  }
+
+  setOpacity(opacity: number, layer: Layer): void {
+    layer.olLayer.setOpacity(opacity);
   }
 }
