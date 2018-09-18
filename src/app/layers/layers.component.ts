@@ -1,9 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Tile, Image } from 'ol/layer';
+import {Subscription} from 'rxjs';
 
 import {Layer} from './layer.model';
 import {LayersService} from './layers.service';
-import {Subscription} from 'rxjs';
 
 
 @Component({

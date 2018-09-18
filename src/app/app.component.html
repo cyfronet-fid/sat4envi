@@ -7,12 +7,10 @@
               [class.active]="productView === selectedProductView">{{productView.id}}</button>
     </div>
   </div>
-  <div ngbDropdown style="display:inline-block">
-    <button class="btn btn-primary" ngbDropdownToggle>Timestamps</button>
-    <div ngbDropdownMenu>
-      <button class="dropdown-item" *ngFor="let layer of selectedProductView.layers"
-              (click)="addLayer(layer)">{{layer.timestamp}}</button>
-    </div>
+  <div style="display:inline-block">
+    <a href="#"
+       *ngFor="let layer of selectedProductView.layers"
+       (click)="addLayer(layer)">{{layer.timestamp}}&nbsp;</a>
   </div>
 </div>
 <div class="map-container clearfix">
