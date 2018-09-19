@@ -11,6 +11,7 @@ import {geoserverUrl} from './constants';
 import {LayersService} from './layers/layers.service';
 import {Layer} from './layers/layer.model';
 import {Subscription} from 'rxjs';
+import {TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 's4e-root',
@@ -21,14 +22,14 @@ export class AppComponent implements OnInit, OnDestroy {
   productViews: ProductView[];
   selectedProductView: ProductView;
 
-  private productViewService: ProductViewService;
   private map: Map;
-  private layersService: LayersService;
   private layers$: Subscription;
 
-  constructor(productViewService: ProductViewService, layersService: LayersService) {
-    this.productViewService = productViewService;
-    this.layersService = layersService;
+  constructor(private productViewService: ProductViewService,
+              private layersService: LayersService,
+              private translate: TranslateService) {
+    this.translate.setDefaultLang('pl');
+    this.translate.use('pl');
   }
 
   ngOnInit(): void {

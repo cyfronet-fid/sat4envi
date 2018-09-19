@@ -1,6 +1,6 @@
 <div class="head-nav">
   <div ngbDropdown style="display:inline-block">
-    <button class="btn btn-primary" ngbDropdownToggle>Product views</button>
+    <button class="btn btn-primary" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
     <div ngbDropdownMenu>
       <button class= "dropdown-item" *ngFor="let productView of productViews"
               (click)="selectedProductView = productView"
