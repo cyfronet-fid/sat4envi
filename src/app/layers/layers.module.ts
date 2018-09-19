@@ -1,9 +1,9 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {TranslateModule} from '@ngx-translate/core';
 
 import {LayersComponent} from './layers.component';
-import {LayersService} from './layers.service';
 import {LayerComponent} from './layer.component';
 
 @NgModule({
@@ -18,6 +18,7 @@ import {LayerComponent} from './layer.component';
   imports: [
     BrowserModule,
     NgbModule,
+    TranslateModule.forChild(),
   ],
   providers: [],
 })
