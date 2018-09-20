@@ -5,9 +5,9 @@ import {TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import {HttpClient, HttpClientModule} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 
-import { AppRoutingModule } from './app-routing.module';
+import {MapModule} from './map/map.module';
+
 import { AppComponent } from './app.component';
-import {LayersModule} from './layers/layers.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -19,7 +19,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     NgbModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -30,9 +29,9 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
 
-    LayersModule,
+    MapModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

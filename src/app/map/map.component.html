@@ -1,0 +1,19 @@
+<div class="head-nav">
+  <div ngbDropdown style="display:inline-block">
+    <button class="btn btn-primary" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
+    <div ngbDropdownMenu>
+      <button class= "dropdown-item" *ngFor="let productView of productViews"
+              (click)="selectedProductView = productView"
+              [class.active]="productView === selectedProductView">{{productView.id}}</button>
+    </div>
+  </div>
+  <div style="display:inline-block">
+    <a href="#"
+       *ngFor="let layer of selectedProductView.layers"
+       (click)="addLayer(layer)">{{layer.timestamp}}&nbsp;</a>
+  </div>
+</div>
+<div class="map-container clearfix">
+  <s4e-layers></s4e-layers>
+  <div id="map"></div>
+</div>

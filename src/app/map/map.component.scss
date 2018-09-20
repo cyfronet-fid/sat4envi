@@ -1,0 +1,22 @@
+.map-container {
+  $height: 600px;
+  s4e-layers {
+    display: block;
+    width: 300px;
+    height: $height;
+    float: left;
+  }
+
+  #map {
+    display: block;
+    width: 600px;
+    height: $height;
+    float: left;
+  }
+}
+
+.product-views {
+  li {
+    cursor: hand;
+  }
+}

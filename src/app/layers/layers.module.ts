@@ -6,6 +6,10 @@ import {TranslateModule} from '@ngx-translate/core';
 import {LayersComponent} from './layers.component';
 import {LayerComponent} from './layer.component';
 
+export { LayersComponent, LayerComponent };
+export {LayersService} from './layers.service';
+export {Layer} from './layer.model';
+
 @NgModule({
   declarations: [
     LayersComponent,
