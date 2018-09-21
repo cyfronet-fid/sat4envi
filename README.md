@@ -14,6 +14,9 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
+Running `ng build --prod` may fail due to a bug in either angular-cli or openlayers: https://github.com/openlayers/openlayers/issues/8357.
+Makeshift fix is to remove `sideEffects` property from `node_modules/ol/package.json` as described in the github issue. 
+
 ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
