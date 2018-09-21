@@ -1,7 +1,0 @@
-<div>{{ 's4e-layers.Layers' | translate }}</div>
-<s4e-layer *ngFor="let layer of layers"
-           [layer]="layer"
-           (moveDown)="moveDown(layer)"
-           (moveUp)="moveUp(layer)"
-           (remove)="remove(layer)"
-           (opacity)="setOpacity($event, layer)"></s4e-layer>

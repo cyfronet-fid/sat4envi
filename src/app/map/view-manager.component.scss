@@ -1,0 +1,16 @@
+h2 {
+  font-size: 14px;
+}
+.overlay, .product-view {
+  margin: 2px;
+  padding: 2px;
+}
+.overlay {
+  border: solid 1px #ccc;
+  font-size: 13px;
+}
+.product-view {
+  .card-header {
+    cursor: pointer;
+  }
+}

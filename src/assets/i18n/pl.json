@@ -4,5 +4,10 @@
   },
   "s4e-layers": {
     "Layers": "Warstwy"
+  },
+  "s4e-view-manager": {
+    "OVERLAYS": "Nakładki",
+    "PRODUCTS": "Produkty",
+    "REMOVE_PRODUCT_VIEW": "Usuń"
   }
 }
