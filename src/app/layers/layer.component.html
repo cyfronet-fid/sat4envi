@@ -1,9 +1,0 @@
-<div (click)="detailsVisible = !detailsVisible">
-  {{layer.product.type}} - {{layer.product.timestamp}}
-</div>
-<div [ngClass]="{'hide': !detailsVisible}">
-  <input type="range" #opacitySlider min="0" max="100" value="100" (change)="opacity.emit(opacitySlider.value/100)"/>
-  <button type="button" class="btn btn-secondary" (click)="moveDown.emit()">˅</button>
-  <button type="button" class="btn btn-secondary" (click)="moveUp.emit()">˄</button>
-  <button type="button" class="btn btn-secondary" (click)="remove.emit()">✕</button>
-</div>
