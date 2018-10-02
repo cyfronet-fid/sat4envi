@@ -28,7 +28,8 @@
             ],
             "styles": [
               "node_modules/ol/ol.css",
-              "src/scss/styles.scss"
+              "src/scss/styles.scss",
+              "css/all.css"
             ],
             "scripts": []
           },

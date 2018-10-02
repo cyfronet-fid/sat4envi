@@ -1,0 +1,94 @@
+.btn-primary, .dropdown-menu {
+  min-width: 140px;
+  border-color: $gray-900;
+  font-size: 13px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+
+.dropdown-menu {
+  padding: 0;
+  margin: 0.5rem 0 0;
+
+  .dropdown-item {
+    padding: 0.6rem 0.7rem;
+
+    &:hover, &:focus, &.active {
+      outline: none !important;
+      box-shadow: none !important;
+      background-color: $white !important;
+      cursor: pointer;
+      color: $gray-900;
+    }
+  }
+
+  button+button {
+    border-top: 1px solid #333333;
+  }
+}
+
+.dropdown-toggle {
+
+  &:after{
+    margin-left: 2.4rem;
+  }
+}
+.show > .btn-primary.dropdown-toggle, .btn-primary:hover {
+  background-color: #ffffff !important;
+  border-color: $gray-900 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.head-nav {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+h2{
+  background-color: $gray-200;
+  font-size: 12px;
+}
+
+.overlay {
+  border: none !important;
+}
+
+.timeline {
+  a {
+    color: $gray-900;
+  }
+  bottom: 20px;
+  left: 400px;
+  z-index: 100;
+}
+
+.product-view {
+  font-size: 13px;
+}
+.ol-zoom {
+  right: 9px !important;
+  left: auto;
+}
+
+.card {
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 130%;
+}
+
+.border-left {
+  border-left: 1px solid $gray-800!important;
+}
+
+a {
+  color: $gray-900!important;
+}
+
+.w-40 {
+  width: 40%;
+}

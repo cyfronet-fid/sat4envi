@@ -1,18 +1,18 @@
 .map-container {
-  $height: 600px;
-  s4e-view-manager {
-    display: block;
-    width: 300px;
-    height: $height;
-    float: left;
-  }
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  width: 289px;
+  border: 1px solid #333333;
+  background-color: #ffffff;
+}
 
-  #map {
-    display: block;
-    width: 600px;
-    height: $height;
-    float: left;
-  }
+#map {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  float: left;
 }
 
 .product-views {
@@ -20,3 +20,4 @@
     cursor: hand;
   }
 }
+

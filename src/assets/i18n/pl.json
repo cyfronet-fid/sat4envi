@@ -8,6 +8,6 @@
   "s4e-view-manager": {
     "OVERLAYS": "Nakładki",
     "PRODUCTS": "Produkty",
-    "REMOVE_PRODUCT_VIEW": "Usuń"
+    "REMOVE_PRODUCT_VIEW": ""
   }
 }

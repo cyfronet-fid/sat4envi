@@ -1,16 +1,34 @@
 <div class="head-nav">
   <div ngbDropdown style="display:inline-block">
-    <button class="btn btn-primary" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
+    <button class="btn btn-primary text-uppercase text-left" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
     <div ngbDropdownMenu>
-      <button class= "dropdown-item" *ngFor="let product of products | async"
+      <button class= "dropdown-item text-left text-capitalize" *ngFor="let product of products | async"
               (click)="selectProduct(product)"
               [class.active]="product === selectedProduct">{{product.type}}</button>
     </div>
   </div>
-  <div style="display:inline-block">
-    <a href="#"
-       *ngFor="let granule of granules | async"
-       (click)="addGranule(granule)">{{granule.timestamp}}&nbsp;</a>
+</div>
+<div style="display:inline-block" class="timeline">
+  <a href="#"
+     *ngFor="let granule of granules | async"
+     (click)="addGranule(granule)">{{granule.timestamp}}&nbsp;</a>
+</div>
+<div class="timeline position-absolute card d-flex flex-row">
+  <div class="p-2">
+    <small class="ml-2">12.12.2019</small>
+    <ul class="list-inline ml-2 mr-2 mb-0">
+      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">10:00</li>
+      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">12:00</li>
+      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">14:00</li>
+      <li class="list-inline-item font-weight-bold ml-2 mr-2 ">20:00</li>
+    </ul>
+  </div>
+  <div class="p-2 border-left">
+    <small class="ml-2">13.12.2019</small>
+    <ul class="list-inline ml-2 mr-2 mb-0">
+      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">10:00</li>
+      <li class="list-inline-item font-weight-bold ml-2 mr-2 ">12:00</li>
+    </ul>
   </div>
 </div>
 <div class="map-container clearfix">
@@ -21,5 +39,5 @@
     [granuleViews]="granuleViews"
     (activeGranuleViewChangeRequest)="selectGranuleView($event)"
     (granuleViewRemoveRequest)="removeGranuleView($event.granule.type)"></s4e-view-manager>
-  <div id="map"></div>
 </div>
+<div id="map"></div>
