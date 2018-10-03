@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "ng": "node node_modules/@angular/cli/bin/ng",
-    "start": "node node_modules/@angular/cli/bin/ng serve",
+    "start": "node node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json",
     "build": "node node_modules/@angular/cli/bin/ng build",
     "test": "node node_modules/@angular/cli/bin/ng test",
     "lint": "node node_modules/@angular/cli/bin/ng lint",
