@@ -8,7 +8,7 @@
     <artifactId>s4e</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>s4e-app</module>
+        <module>s4e-backend</module>
         <module>s4e-web</module>
     </modules>
     <packaging>pom</packaging>
