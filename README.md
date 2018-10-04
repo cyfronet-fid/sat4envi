@@ -7,7 +7,9 @@
 To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -cp <path to jar> pl.cyfronet.s4e.Application`.
 
-It will expose the server under `http://localhost:4201`.
+Alternatively, the app can be built and run by issuing `mvn spring-boot:run` in directory `s4e-backend`. 
+
+Both methods will expose the server under `http://localhost:4201`.
 
 
 ## s4e-web

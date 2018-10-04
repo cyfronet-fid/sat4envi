@@ -7,6 +7,7 @@ import {HttpClientModule} from '@angular/common/http';
 @NgModule({
   exports: [
     BrowserModule,
+    HttpClientModule,
     NgbModule,
     TranslateModule,
     HttpClientModule,

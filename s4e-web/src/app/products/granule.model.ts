@@ -1,5 +1,6 @@
 export interface Granule {
-  type: string;
+  id: number;
+  productId: number;
   timestamp: string;
   layerName: string;
 }
