@@ -7,7 +7,7 @@
      *ngFor="let granuleView of granuleViews"
      [ngClass]="{'bg-primary text-light': granuleView === activeGranuleView}">
   <div class="card-header" (click)="activeGranuleViewChangeRequest.emit(granuleView)">
-    {{ granuleView.granule.type }}
+    {{ granuleView.product.name }}
   </div>
   <div class="card-body">
     <p class="card-text">

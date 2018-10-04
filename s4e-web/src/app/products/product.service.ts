@@ -1,33 +1,22 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
+
 import {Granule} from './granule.model';
 import {Product} from './product.model';
+import {apiPrefix} from '../constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getProducts(): Observable<Product[]> {
-    return of([{
-      type: 'rainfall',
-    },{
-      type: 'clouds',
-    }]);
+    return this.http.get<Product[]>(`${apiPrefix}/products`);
   }
 
-  getGranules(type: string): Observable<Granule[]> {
-    const granules: Granule[] = [];
-    const layerName = 'test:201807051330_PL_HRV_gtif_mercator';
-    for (let i = 0; i < 3; i++) {
-      const h = i + 10;
-      granules.push({
-        type: type,
-        timestamp: `20180921T${h}0000`,
-        layerName: layerName,
-      });
-    }
-    return of(granules);
+  getGranules(productId: number): Observable<Granule[]> {
+    return this.http.get<Granule[]>(`${apiPrefix}/granules/productId/${productId}`);
   }
 }

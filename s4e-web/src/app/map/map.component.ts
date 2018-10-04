@@ -56,15 +56,16 @@ export class MapComponent implements OnInit {
 
   selectProduct(product: Product): void {
     this.selectedProduct = product;
-    this.granules = this.productViewService.getGranules(product.type);
+    this.granules = this.productViewService.getGranules(product.id);
   }
 
-  addGranule(granule: Granule): void {
-    const existingGranuleView = this.granuleViews.find(gv => gv.granule.type === granule.type);
+  addGranuleView(granule: Granule, product: Product): void {
+    const existingGranuleView = this.granuleViews.find(gv => gv.granule.productId === granule.productId);
     if (existingGranuleView !== undefined) {
       existingGranuleView.granule = granule;
     } else {
       const granuleView = {
+        product: product,
         granule: granule
       };
       this.granuleViews.push(granuleView);
@@ -77,12 +78,12 @@ export class MapComponent implements OnInit {
     this.updateLayers();
   }
 
-  removeGranuleView(type: string): void {
-    const index = this.granuleViews.findIndex(gv => gv.granule.type === type);
+  removeGranuleView(productId: number): void {
+    const index = this.granuleViews.findIndex(gv => gv.granule.productId === productId);
     if (index !== -1) {
       this.granuleViews.splice(index, 1);
     }
-    if (this.activeGranuleView.granule.type === type) {
+    if (this.activeGranuleView.granule.productId === productId) {
       if (this.granuleViews.length > 0) {
         this.selectGranuleView(this.granuleViews[0]);
       } else {
