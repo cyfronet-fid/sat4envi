@@ -15,9 +15,9 @@
     padding: 0.6rem 0.7rem;
 
     &:hover, &:focus, &.active {
-      outline: none !important;
-      box-shadow: none !important;
-      background-color: $white !important;
+      outline: none;
+      box-shadow: none;
+      background-color: $white;
       cursor: pointer;
       color: $gray-900;
     }
@@ -34,12 +34,6 @@
     margin-left: 2.4rem;
   }
 }
-.show > .btn-primary.dropdown-toggle, .btn-primary:hover {
-  background-color: #ffffff !important;
-  border-color: $gray-900 !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
 
 .head-nav {
   position: absolute;
@@ -53,27 +47,6 @@ h2{
   font-size: 12px;
 }
 
-.overlay {
-  border: none !important;
-}
-
-.timeline {
-  a {
-    color: $gray-900;
-  }
-  bottom: 20px;
-  left: 400px;
-  z-index: 100;
-}
-
-.product-view {
-  font-size: 13px;
-}
-.ol-zoom {
-  right: 9px !important;
-  left: auto;
-}
-
 .card {
   border: none;
   border-radius: 2px;
@@ -81,12 +54,12 @@ h2{
   line-height: 130%;
 }
 
-.border-left {
-  border-left: 1px solid $gray-800!important;
-}
-
 a {
-  color: $gray-900!important;
+  color: $gray-900;
+
+  &:hover {
+    color: $gray-900;
+  }
 }
 
 .w-40 {

@@ -1,3 +1,5 @@
+@import "../../scss/common";
+
 .map-container {
   position: absolute;
   bottom: 20px;
@@ -6,6 +8,7 @@
   width: 289px;
   border: 1px solid #333333;
   background-color: #ffffff;
+  color: $gray-900;
 }
 
 #map {
@@ -19,5 +22,27 @@
   li {
     cursor: hand;
   }
+}
+
+.timeline {
+  bottom: 20px;
+  left: 400px;
+  z-index: 100;
+}
+
+.ol-zoom {
+  right: 9px !important;
+  left: auto;
+}
+
+.border-left {
+  border-left: 1px solid $gray-800 !important;
+}
+
+.show > .btn-primary.dropdown-toggle, .btn-primary:hover {
+  background-color: #ffffff !important;
+  border-color: $gray-900 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
