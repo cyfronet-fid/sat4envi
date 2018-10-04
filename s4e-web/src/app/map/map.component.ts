@@ -36,8 +36,8 @@ export class MapComponent implements OnInit {
       layers: [],
       view: new View({
         center: [2158581, 6841419],
-        zoom: 6
-      })
+        zoom: 6,
+      }),
     });
     this.products = this.productViewService.getProducts();
 
@@ -63,6 +63,7 @@ export class MapComponent implements OnInit {
     const existingGranuleView = this.granuleViews.find(gv => gv.granule.productId === granule.productId);
     if (existingGranuleView !== undefined) {
       existingGranuleView.granule = granule;
+      this.updateLayers();
     } else {
       const granuleView = {
         product: product,
