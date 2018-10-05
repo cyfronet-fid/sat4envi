@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX;
 
@@ -18,7 +19,9 @@ public class GranuleController {
     private final GranuleService granuleService;
 
     @GetMapping("/granules/productId/{productId}")
-    public List<Granule> getGranules(@PathVariable Long productId) throws NotFoundException {
-        return granuleService.getGranules(productId);
+    public List<GranuleResponse> getGranules(@PathVariable Long productId) throws NotFoundException {
+        return granuleService.getGranules(productId).stream()
+                .map(GranuleResponse::of)
+                .collect(Collectors.toList());
     }
 }

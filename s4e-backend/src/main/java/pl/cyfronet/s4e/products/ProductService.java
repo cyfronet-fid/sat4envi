@@ -1,23 +1,21 @@
 package pl.cyfronet.s4e.products;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
+    private final ProductRepository productRepository;
+
     public List<Product> getProducts() {
-        return Arrays.asList(new Product[] {
-                Product.builder()
-                        .id(1L)
-                        .name("rainfall")
-                        .build(),
-                Product.builder()
-                        .id(2L)
-                        .name("clouds")
-                        .build(),
-        });
+        val out = new ArrayList<Product>();
+        productRepository.findAll().forEach(out::add);
+        return out;
     }
 }

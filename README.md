@@ -2,6 +2,14 @@
 
 ## s4e-backend
 
+### Prerequisites
+
+The application uses postgres database at `localhost:5433`.
+The database can be run in a docker container by issuing `docker-compose up --rm` in root directory.
+
+In case of changes in `docker-compose.yml` to remove the database volume it is necessary to issue `docker volume rm <volume name>`.
+`docker volume ls` lists volumes.
+
 ### Building and running
 
 To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
