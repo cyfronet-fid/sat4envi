@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile, Image, Layer } from 'ol/layer';
@@ -26,7 +26,6 @@ interface Day {
 })
 export class MapComponent implements OnInit {
   products: Observable<Product[]>;
-  selectedProduct: Product | undefined;
   days: Observable<Day[]>;
 
   overlays: Overlay[];
@@ -62,43 +61,42 @@ export class MapComponent implements OnInit {
   }
 
   selectProduct(product: Product): void {
-    this.selectedProduct = product;
-    this.days = this.productViewService.getGranules(product.id).pipe(map(granules => {
-      const days: Day[] = [];
-      let currDay: Day;
-      for (const granule of granules) {
-        const day = format(granule.timestampDate, 'yyyy-MM-dd');
-        if (currDay === undefined || currDay.label !== day) {
-          currDay = {
-            label: day,
-            granules: []
-          };
-          days.push(currDay);
-        }
-        currDay.granules.push(granule);
-      }
-      return days;
-    }));
-  }
-
-  addGranuleView(granule: Granule, product: Product): void {
-    const existingGranuleView = this.granuleViews.find(gv => gv.granule.productId === granule.productId);
-    if (existingGranuleView !== undefined) {
-      existingGranuleView.granule = granule;
-      this.updateLayers();
-    } else {
+    const existingGranuleView = this.granuleViews.find(gv => gv.product === product);
+    if (existingGranuleView === undefined) {
       const granuleView = {
         product: product,
-        granule: granule
+        granule: undefined
       };
       this.granuleViews.push(granuleView);
-      this.selectGranuleView(granuleView);
+      this.setActiveGranuleView(granuleView);
+    } else {
+      this.setActiveGranuleView(existingGranuleView);
     }
   }
 
-  selectGranuleView(granuleView: GranuleView): void {
-    this.activeGranuleView = granuleView;
+  updateViewedGranule(granule: Granule): void {
+    this.activeGranuleView.granule = granule;
     this.updateLayers();
+  }
+
+  setActiveGranuleView(granuleView: GranuleView | undefined): void {
+    if (granuleView === undefined) {
+      this.days = of([]);
+      this.activeGranuleView = undefined;
+      this.updateLayers();
+    } else if (this.activeGranuleView !== granuleView) {
+      this.days = this.productViewService.getGranules(granuleView.product.id).pipe(
+        map(granules => {
+          if (granuleView.granule === undefined) {
+            granuleView.granule = granules[granules.length - 1];
+            this.updateLayers();
+          }
+          return granules;
+        }),
+        map(this.granulesToDays));
+      this.activeGranuleView = granuleView;
+      this.updateLayers();
+    }
   }
 
   removeGranuleView(productId: number): void {
@@ -108,9 +106,9 @@ export class MapComponent implements OnInit {
     }
     if (this.activeGranuleView.granule.productId === productId) {
       if (this.granuleViews.length > 0) {
-        this.selectGranuleView(this.granuleViews[0]);
+        this.setActiveGranuleView(this.granuleViews[0]);
       } else {
-        this.selectGranuleView(undefined);
+        this.setActiveGranuleView(undefined);
       }
     }
   }
@@ -121,7 +119,7 @@ export class MapComponent implements OnInit {
     mapLayers.push(new Tile({
       source: new OSM(),
     }));
-    if (this.activeGranuleView !== undefined) {
+    if (this.activeGranuleView !== undefined && this.activeGranuleView.granule !== undefined) {
       mapLayers.push(new Image({
         source: new ImageWMS({
           url: geoserverUrl,
@@ -132,5 +130,22 @@ export class MapComponent implements OnInit {
     for (const overlay of this.overlays) {
       mapLayers.push(overlay.olLayer);
     }
+  }
+
+  private granulesToDays(granules: Granule[]): Day[] {
+    const days: Day[] = [];
+    let currDay: Day;
+    for (const granule of granules) {
+      const day = format(granule.timestampDate, 'yyyy-MM-dd');
+      if (currDay === undefined || currDay.label !== day) {
+        currDay = {
+          label: day,
+          granules: []
+        };
+        days.push(currDay);
+      }
+      currDay.granules.push(granule);
+    }
+    return days;
   }
 }

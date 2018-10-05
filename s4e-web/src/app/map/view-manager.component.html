@@ -14,9 +14,9 @@
   <ul class="list-group list-group-flush">
     <li class="list-group-item p-2">
       <div class="" (click)="activeGranuleViewChangeRequest.emit(granuleView)">
-        <span class="text-capitalize d-inline-block w-40">{{ granuleView.product.name }}</span>
+        <span class="text-capitalize d-inline-block w-40">{{ granuleView?.product.name }}</span>
 
-        <span class="font-size"><small>{{ granuleView.granule.timestamp }}</small>
+        <span class="font-size"><small>{{ granuleView?.granule?.timestamp }}</small>
           <a href="#" class="float-right"
            (click)="granuleViewRemoveRequest.emit(granuleView)">
           <i class="far fa-trash-alt"></i>

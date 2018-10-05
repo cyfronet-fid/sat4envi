@@ -14,7 +14,7 @@ import {Overlay} from './overlay.model';
 export class ViewManagerComponent {
   @Input() overlays: Overlay[];
   @Input() granuleViews: GranuleView[];
-  @Input() activeGranuleView: Granule;
+  @Input() activeGranuleView: GranuleView | undefined;
   @Output() activeGranuleViewChangeRequest: EventEmitter<GranuleView>;
   @Output() granuleViewRemoveRequest: EventEmitter<GranuleView>;
 

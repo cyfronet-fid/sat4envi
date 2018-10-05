@@ -3,5 +3,5 @@ import {Product} from '../products/product.model';
 
 export interface GranuleView {
   product: Product;
-  granule: Granule;
+  granule: Granule | undefined;
 }

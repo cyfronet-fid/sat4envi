@@ -3,8 +3,7 @@
     <button class="btn btn-primary text-uppercase text-left" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
     <div ngbDropdownMenu>
       <button class= "dropdown-item text-left text-capitalize" *ngFor="let product of products | async"
-              (click)="selectProduct(product)"
-              [class.active]="product === selectedProduct">{{product.name}}</button>
+              (click)="selectProduct(product)">{{product.name}}</button>
     </div>
   </div>
 </div>
@@ -17,7 +16,7 @@
       <li class="list-inline-item font-weight-bold ml-2"
           *ngFor="let granule of day.granules"
           [ngClass]="{'mr-5': !last, 'mr-2': last}"
-          (click)="addGranuleView(granule, selectedProduct)">
+          (click)="updateViewedGranule(granule)">
         {{ granule.timestamp | date:'HH:mm' }}
       </li>
     </ul>
@@ -28,7 +27,7 @@
     [activeGranuleView]="activeGranuleView"
     [overlays]="overlays"
     [granuleViews]="granuleViews"
-    (activeGranuleViewChangeRequest)="selectGranuleView($event)"
+    (activeGranuleViewChangeRequest)="setActiveGranuleView($event)"
     (granuleViewRemoveRequest)="removeGranuleView($event.granule.productId)"></s4e-view-manager>
 </div>
 <div id="map"></div>
