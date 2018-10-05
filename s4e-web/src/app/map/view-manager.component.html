@@ -10,7 +10,7 @@
 <h2 class="text-uppercase p-2 mb-0 font-weight-bold">{{ 's4e-view-manager.PRODUCTS' | translate }}</h2>
 <div class="product-view p-0 m-0"
      *ngFor="let granuleView of granuleViews"
-     [ngClass]="{'bg-primary': granuleView === activeGranuleView}">
+     [ngClass]="{'bg-primary active': granuleView === activeGranuleView}">
   <ul class="list-group list-group-flush">
     <li class="list-group-item p-2">
       <div class="" (click)="activeGranuleViewChangeRequest.emit(granuleView)">

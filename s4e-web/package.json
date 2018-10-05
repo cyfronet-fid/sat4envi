@@ -25,6 +25,7 @@
     "@ngx-translate/http-loader": "^3.0.1",
     "bootstrap": "^4.1.3",
     "core-js": "^2.5.4",
+    "date-fns": "^2.0.0-alpha.21",
     "ol": "^5.1.3",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"

@@ -8,26 +8,18 @@
     </div>
   </div>
 </div>
-<div style="display:inline-block" class="timeline">
-  <a href="#"
-     *ngFor="let granule of granules | async"
-     (click)="addGranuleView(granule, selectedProduct)">{{granule.timestamp}}&nbsp;</a>
-</div>
 <div class="timeline position-absolute card d-flex flex-row">
-  <div class="p-2">
-    <small class="ml-2">12.12.2019</small>
+  <div class="p-2"
+       *ngFor="let day of days | async"
+       [ngClass]="{'border-left': !first}">
+    <small class="ml-2">{{ day.label }}</small>
     <ul class="list-inline ml-2 mr-2 mb-0">
-      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">10:00</li>
-      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">12:00</li>
-      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">14:00</li>
-      <li class="list-inline-item font-weight-bold ml-2 mr-2 ">20:00</li>
-    </ul>
-  </div>
-  <div class="p-2 border-left">
-    <small class="ml-2">13.12.2019</small>
-    <ul class="list-inline ml-2 mr-2 mb-0">
-      <li class="list-inline-item font-weight-bold ml-2 mr-5 ">10:00</li>
-      <li class="list-inline-item font-weight-bold ml-2 mr-2 ">12:00</li>
+      <li class="list-inline-item font-weight-bold ml-2"
+          *ngFor="let granule of day.granules"
+          [ngClass]="{'mr-5': !last, 'mr-2': last}"
+          (click)="addGranuleView(granule, selectedProduct)">
+        {{ granule.timestamp | date:'HH:mm' }}
+      </li>
     </ul>
   </div>
 </div>

@@ -18,16 +18,13 @@
   float: left;
 }
 
-.product-views {
-  li {
-    cursor: hand;
-  }
-}
-
 .timeline {
   bottom: 20px;
   left: 400px;
   z-index: 100;
+  li {
+    cursor: pointer;
+  }
 }
 
 .border-left {

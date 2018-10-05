@@ -4,6 +4,8 @@ import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile, Image, Layer } from 'ol/layer';
 import { ImageWMS, OSM } from 'ol/source';
+import {map} from 'rxjs/operators';
+import {format} from 'date-fns';
 
 import {geoserverUrl} from '../constants';
 import {Granule} from '../products/granule.model';
@@ -11,6 +13,11 @@ import {ProductService} from '../products/product.service';
 import {Product} from '../products/product.model';
 import {GranuleView} from './granule-view.model';
 import {Overlay} from './overlay.model';
+
+interface Day {
+  label: string;
+  granules: Granule[];
+}
 
 @Component({
   selector: 's4e-map',
@@ -20,7 +27,7 @@ import {Overlay} from './overlay.model';
 export class MapComponent implements OnInit {
   products: Observable<Product[]>;
   selectedProduct: Product | undefined;
-  granules: Observable<Granule[]>;
+  days: Observable<Day[]>;
 
   overlays: Overlay[];
   granuleViews: GranuleView[];
@@ -56,7 +63,22 @@ export class MapComponent implements OnInit {
 
   selectProduct(product: Product): void {
     this.selectedProduct = product;
-    this.granules = this.productViewService.getGranules(product.id);
+    this.days = this.productViewService.getGranules(product.id).pipe(map(granules => {
+      const days: Day[] = [];
+      let currDay: Day;
+      for (const granule of granules) {
+        const day = format(granule.timestampDate, 'yyyy-MM-dd');
+        if (currDay === undefined || currDay.label !== day) {
+          currDay = {
+            label: day,
+            granules: []
+          };
+          days.push(currDay);
+        }
+        currDay.granules.push(granule);
+      }
+      return days;
+    }));
   }
 
   addGranuleView(granule: Granule, product: Product): void {
