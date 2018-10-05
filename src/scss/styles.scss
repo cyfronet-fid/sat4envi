@@ -2,3 +2,9 @@
 @import "_bootstrap-variables";
 @import "~bootstrap/scss/bootstrap";
 @import "bootstrap-view";
+
+
+.ol-zoom {
+  right: 9px !important;
+  left: auto;
+}
