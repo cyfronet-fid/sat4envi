@@ -1,16 +1,26 @@
 <div class="head-nav">
   <div ngbDropdown style="display:inline-block">
-    <button class="btn btn-primary" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
+    <button class="btn btn-primary text-uppercase text-left" ngbDropdownToggle>{{ 's4e-root.Products' | translate }}</button>
     <div ngbDropdownMenu>
-      <button class= "dropdown-item" *ngFor="let product of products | async"
+      <button class= "dropdown-item text-left text-capitalize" *ngFor="let product of products | async"
               (click)="selectProduct(product)"
               [class.active]="product === selectedProduct">{{product.name}}</button>
     </div>
   </div>
-  <div style="display:inline-block">
-    <a href="#"
-       *ngFor="let granule of granules | async"
-       (click)="addGranuleView(granule, selectedProduct)">{{granule.timestamp}}&nbsp;</a>
+</div>
+<div class="timeline position-absolute card d-flex flex-row">
+  <div class="p-2"
+       *ngFor="let day of days | async"
+       [ngClass]="{'border-left': !first}">
+    <small class="ml-2">{{ day.label }}</small>
+    <ul class="list-inline ml-2 mr-2 mb-0">
+      <li class="list-inline-item font-weight-bold ml-2"
+          *ngFor="let granule of day.granules"
+          [ngClass]="{'mr-5': !last, 'mr-2': last}"
+          (click)="addGranuleView(granule, selectedProduct)">
+        {{ granule.timestamp | date:'HH:mm' }}
+      </li>
+    </ul>
   </div>
 </div>
 <div class="map-container clearfix">
@@ -20,5 +30,5 @@
     [granuleViews]="granuleViews"
     (activeGranuleViewChangeRequest)="selectGranuleView($event)"
     (granuleViewRemoveRequest)="removeGranuleView($event.granule.productId)"></s4e-view-manager>
-  <div id="map"></div>
 </div>
+<div id="map"></div>

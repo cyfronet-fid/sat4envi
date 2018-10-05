@@ -1,0 +1,69 @@
+.btn-primary, .dropdown-menu {
+  min-width: 140px;
+  border-color: $gray-900;
+  font-size: 13px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  border-radius: 1px;
+}
+
+.dropdown-menu {
+  padding: 0;
+  margin: 0.5rem 0 0;
+
+  .dropdown-item {
+    padding: 0.6rem 0.7rem;
+
+    &:hover, &:focus, &.active {
+      outline: none;
+      box-shadow: none;
+      background-color: $white;
+      cursor: pointer;
+      color: $gray-900;
+    }
+  }
+
+  button+button {
+    border-top: 1px solid #333333;
+  }
+}
+
+.dropdown-toggle {
+
+  &:after{
+    margin-left: 2.4rem;
+  }
+}
+
+.head-nav {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+h2{
+  background-color: $gray-200;
+  font-size: 12px;
+}
+
+.card {
+  border: none;
+  border-radius: 2px;
+  font-size: 14px;
+  line-height: 130%;
+}
+
+a {
+  color: $gray-900;
+
+  &:hover {
+    color: $gray-900;
+  }
+}
+
+.w-40 {
+  width: 40%;
+}
+
+

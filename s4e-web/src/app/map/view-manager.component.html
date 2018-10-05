@@ -1,21 +1,28 @@
-<h2>{{ 's4e-view-manager.OVERLAYS' | translate }}</h2>
-<div class="overlay"
-     *ngFor="let overlay of overlays">{{ overlay.type }}</div>
+<h2 class="text-uppercase p-2 mb-0 font-weight-bold">{{ 's4e-view-manager.OVERLAYS' | translate }}</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item p-2">
+    <div class="overlay m-0 p-0 text-capitalize"
+         *ngFor="let overlay of overlays">{{ overlay.type }}</div>
+  </li>
+</ul>
 
-<h2>{{ 's4e-view-manager.PRODUCTS' | translate }}</h2>
-<div class="product-view card"
+
+<h2 class="text-uppercase p-2 mb-0 font-weight-bold">{{ 's4e-view-manager.PRODUCTS' | translate }}</h2>
+<div class="product-view p-0 m-0"
      *ngFor="let granuleView of granuleViews"
-     [ngClass]="{'bg-primary text-light': granuleView === activeGranuleView}">
-  <div class="card-header" (click)="activeGranuleViewChangeRequest.emit(granuleView)">
-    {{ granuleView.product.name }}
-  </div>
-  <div class="card-body">
-    <p class="card-text">
-      {{ granuleView.granule.timestamp }}
-    </p>
-    <a href="#" class="btn btn-sm btn-dark"
-       (click)="granuleViewRemoveRequest.emit(granuleView)">
-      {{ 's4e-view-manager.REMOVE_PRODUCT_VIEW' | translate }}
-    </a>
-  </div>
+     [ngClass]="{'bg-primary active': granuleView === activeGranuleView}">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item p-2">
+      <div class="" (click)="activeGranuleViewChangeRequest.emit(granuleView)">
+        <span class="text-capitalize d-inline-block w-40">{{ granuleView.product.name }}</span>
+
+        <span class="font-size"><small>{{ granuleView.granule.timestamp }}</small>
+          <a href="#" class="float-right"
+           (click)="granuleViewRemoveRequest.emit(granuleView)">
+          <i class="far fa-trash-alt"></i>
+          </a>
+        </span>
+       </div>
+    </li>
+  </ul>
 </div>

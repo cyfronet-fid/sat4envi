@@ -1,3 +1,5 @@
+@import "../../scss/common";
+
 h2 {
   font-size: 14px;
 }
@@ -9,8 +11,23 @@ h2 {
   border: solid 1px #ccc;
   font-size: 13px;
 }
+
 .product-view {
-  .card-header {
+  font-size: 13px;
+  &.active {
+    font-weight: bold;
+  }
+
+  a {
+    font-size: 12px;
+  }
+
+  li {
     cursor: pointer;
   }
 }
+
+.overlay {
+  border: none !important;
+}
+
