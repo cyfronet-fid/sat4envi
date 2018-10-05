@@ -4,14 +4,14 @@
     <div ngbDropdownMenu>
       <button class= "dropdown-item text-left text-capitalize" *ngFor="let product of products | async"
               (click)="selectProduct(product)"
-              [class.active]="product === selectedProduct">{{product.type}}</button>
+              [class.active]="product === selectedProduct">{{product.name}}</button>
     </div>
   </div>
 </div>
 <div style="display:inline-block" class="timeline">
   <a href="#"
      *ngFor="let granule of granules | async"
-     (click)="addGranule(granule)">{{granule.timestamp}}&nbsp;</a>
+     (click)="addGranuleView(granule, selectedProduct)">{{granule.timestamp}}&nbsp;</a>
 </div>
 <div class="timeline position-absolute card d-flex flex-row">
   <div class="p-2">
@@ -32,12 +32,11 @@
   </div>
 </div>
 <div class="map-container clearfix">
-  <!--<s4e-layers></s4e-layers>-->
   <s4e-view-manager
     [activeGranuleView]="activeGranuleView"
     [overlays]="overlays"
     [granuleViews]="granuleViews"
     (activeGranuleViewChangeRequest)="selectGranuleView($event)"
-    (granuleViewRemoveRequest)="removeGranuleView($event.granule.type)"></s4e-view-manager>
+    (granuleViewRemoveRequest)="removeGranuleView($event.granule.productId)"></s4e-view-manager>
 </div>
 <div id="map"></div>
