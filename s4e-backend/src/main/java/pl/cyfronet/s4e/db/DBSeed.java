@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DBSeed {
-    private static final LocalDateTime BASE_TIME = LocalDateTime.of(2018, 10, 4, 8, 0);
+    private static final LocalDateTime BASE_TIME = LocalDateTime.of(2018, 10, 4, 0, 0);
 
     private final ProductRepository productRepository;
     private final GranuleRepository granuleRepository;
@@ -30,26 +30,35 @@ public class DBSeed {
         }
         List<Product> products = Arrays.asList(new Product[]{
                 Product.builder()
-                        .name("rainfall")
+                        .name("108m")
                         .build(),
                 Product.builder()
-                        .name("clouds")
+                        .name("Setvak")
+                        .build(),
+                Product.builder()
+                        .name("WV-IR")
                         .build(),
         });
         productRepository.saveAll(products);
 
         val granules = new ArrayList<Granule>();
-        for (Product product: products) {
-            val count = 4;
-            for (int i = 0; i < count; i++) {
-                LocalDateTime timestamp = BASE_TIME.plusMinutes(15*i);
-                granules.add(Granule.builder()
-                        .product(product)
-                        .timestamp(timestamp)
-                        .layerName("test:"+ DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) +"_Merkator_Europa_ir_108m")
-                        .build());
-            }
-        }
+        granules.addAll(generateGranules(products.get(0), "test:", "_Merkator_Europa_ir_108m"));
+        granules.addAll(generateGranules(products.get(1), "test:", "_Merkator_Europa_ir_108_setvak"));
+        granules.addAll(generateGranules(products.get(2), "test:", "_Merkator_WV-IR"));
         granuleRepository.saveAll(granules);
+    }
+
+    private List<Granule> generateGranules(Product product, String prefix, String suffix) {
+        val count = 24;
+        val granules = new ArrayList<Granule>();
+        for (int i = 0; i < count; i++) {
+            LocalDateTime timestamp = BASE_TIME.plusHours(i);
+            granules.add(Granule.builder()
+                    .product(product)
+                    .timestamp(timestamp)
+                    .layerName(prefix + DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) + suffix)
+                    .build());
+        }
+        return granules;
     }
 }
