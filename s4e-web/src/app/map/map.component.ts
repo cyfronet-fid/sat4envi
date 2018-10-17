@@ -3,7 +3,7 @@ import {Observable, of} from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile, Image, Layer } from 'ol/layer';
-import { ImageWMS, OSM } from 'ol/source';
+import { TileWMS, ImageWMS, } from 'ol/source';
 import {map} from 'rxjs/operators';
 import {format} from 'date-fns';
 
@@ -29,6 +29,7 @@ export class MapComponent implements OnInit {
   days: Observable<Day[]>;
 
   overlays: Overlay[];
+  baseLayer: Layer;
   granuleViews: GranuleView[];
   activeGranuleView: GranuleView | undefined;
 
@@ -41,7 +42,9 @@ export class MapComponent implements OnInit {
       target: 'map',
       layers: [],
       view: new View({
-        center: [2158581, 6841419],
+        projection: 'EPSG:3413',
+        center: [3819084.467759, -1869424.891713],
+        rotation: Math.PI / 180 * 65,
         zoom: 6,
       }),
     });
@@ -49,13 +52,22 @@ export class MapComponent implements OnInit {
 
     this.overlays = [{
       type: 'regions',
-      olLayer: new Image({
-        source: new ImageWMS({
+      olLayer: new Tile({
+        source: new TileWMS({
           url: geoserverUrl,
           params: { 'LAYERS': 'test:wojewodztwa' },
         }),
       }),
     }];
+    this.baseLayer = new Image({
+      source: new ImageWMS({
+        url: 'http://ows.terrestris.de/osm/service?',
+        params: {
+          LAYERS: 'OSM-WMS',
+        },
+        projection: 'EPSG:3857'
+      }),
+    });
     this.granuleViews = [];
     this.updateLayers();
   }
@@ -116,15 +128,13 @@ export class MapComponent implements OnInit {
   private updateLayers() {
     const mapLayers = this.map.getLayers();
     mapLayers.clear();
-    mapLayers.push(new Tile({
-      source: new OSM(),
-    }));
+    mapLayers.push(this.baseLayer);
     if (this.activeGranuleView !== undefined && this.activeGranuleView.granule !== undefined) {
-      mapLayers.push(new Image({
-        source: new ImageWMS({
+      mapLayers.push(new Tile({
+        source: new TileWMS({
           url: geoserverUrl,
-          params: {'LAYERS': this.activeGranuleView.granule.layerName}
-        })
+          params: {'LAYERS': this.activeGranuleView.granule.layerName},
+        }),
       }));
     }
     for (const overlay of this.overlays) {
