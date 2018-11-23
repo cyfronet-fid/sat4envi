@@ -1,5 +1,28 @@
 version: '3'
 services:
+  s4e-backend:
+    build: ./s4e-backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sat4envi
+    volumes:
+      - ./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar:/app/app.jar
+    ports:
+      - "4201:4201"
+    networks:
+      - net
+    depends_on:
+      - db
+  s4e-web:
+    image: nginx:alpine
+    ports:
+      - "4200:80"
+    volumes:
+      - ./s4e-web/target/webapp:/usr/share/nginx/html
+      - ./s4e-web/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - net
+    depends_on:
+      - s4e-backend
   db:
     image: postgres:10-alpine
     volumes:

@@ -5,7 +5,7 @@
 ### Prerequisites
 
 The application uses postgres database at `localhost:5433`.
-The database can be run in a docker container by issuing `docker-compose up --rm` in root directory.
+The database can be run in a docker container by issuing `docker-compose up db` in root directory.
 
 In case of changes in `docker-compose.yml` to remove the database volume it is necessary to issue `docker volume rm <volume name>`.
 `docker volume ls` lists volumes.
@@ -54,3 +54,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## Docker
+
+In order to run the docker containers of the backend and web modules (plus database) it is first required to build
+the project by issuing `mvn package`.
+Once this build is finished, the application can be run by `docker-compose up`.
+The web interface will be available under `http://localhost:4200`.
+ 
+Note, however, that live reload doesn't work in this configuration.
+If you require it, go for a non-dockerized version.
