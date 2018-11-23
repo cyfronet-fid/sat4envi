@@ -41,7 +41,7 @@
         <version>1.6</version>
         <configuration>
           <installDirectory>target</installDirectory>
-          <nodeVersion>v10.6.0</nodeVersion>
+          <nodeVersion>v10.13.0</nodeVersion>
         </configuration>
         <executions>
           <execution>
