@@ -1,0 +1,9 @@
+<form (ngSubmit)="handleLogin()" *ngIf="loginService.currentUserValue === null">
+  <input type="email" [(ngModel)]="email" name="email" placeholder="Email"/>
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Password"/>
+  <button type="submit" class="btn btn-primary">Log in</button>
+</form>
+<p *ngIf="loginService.currentUserValue !== null">
+  Email: {{loginService.currentUserValue.email}}
+  <button (click)="handleLogout()" class="btn btn-primary">Log out</button>
+</p>

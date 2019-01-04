@@ -3,6 +3,7 @@ import {CommonModule} from '../common.module';
 
 import {MapComponent} from './map.component';
 import {ViewManagerComponent} from './view-manager.component';
+import {LoginModule} from '../login/login.module';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import {ViewManagerComponent} from './view-manager.component';
   ],
   imports: [
     CommonModule,
+    LoginModule,
   ],
   providers: [],
 })
