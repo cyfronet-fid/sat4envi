@@ -1,0 +1,8 @@
+<h1>Profile</h1>
+<p *ngIf="loginService.currentUserValue === null">
+  Log in to see your profile details
+</p>
+<p *ngIf="loginService.currentUserValue !== null">
+  Email: {{loginService.currentUserValue.email}}
+</p>
+<a routerLink="/">Go back</a>

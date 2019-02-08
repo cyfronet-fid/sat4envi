@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 
 import {LoginService} from '../auth/login.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 's4e-login',
@@ -14,14 +15,12 @@ export class LoginComponent {
   constructor(private loginService: LoginService) { }
 
   handleLogin() {
-    console.log('handleLogin');
     this.loginService.login(this.email, this.password).subscribe(() => {
       location.reload();
     });
   }
 
   handleLogout() {
-    console.log('handleLogout');
     this.loginService.logout();
   }
 

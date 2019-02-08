@@ -4,6 +4,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {TranslateModule} from '@ngx-translate/core';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
+import {RouterModule} from '@angular/router';
 
 @NgModule({
   exports: [
@@ -13,6 +14,7 @@ import {FormsModule} from '@angular/forms';
     TranslateModule,
     HttpClientModule,
     FormsModule,
+    RouterModule,
   ]
 })
 export class CommonModule { }

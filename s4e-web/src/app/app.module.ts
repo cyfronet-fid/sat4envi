@@ -4,9 +4,10 @@ import {HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import { RouterModule } from '@angular/router';
 
-import {MapModule} from './map/map.module';
-import { AppComponent } from './app.component';
 import {CommonModule} from './common.module';
+import {MapModule} from './map/map.module';
+import {ProfileModule} from './profile/profile.module';
+import {AppComponent} from './app.component';
 import {ContentTypeInterceptor} from './utils/content-type.interceptor';
 import {AuthInterceptor} from './utils/auth.interceptor';
 import {ErrorInterceptor} from './utils/error.interceptor';
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
 
     MapModule,
+    ProfileModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true },
