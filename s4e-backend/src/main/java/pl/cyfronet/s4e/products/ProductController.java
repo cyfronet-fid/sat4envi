@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pl.cyfronet.s4e.Constants.API_PREFIX;
+import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(API_PREFIX)
+@RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
 public class ProductController {
 

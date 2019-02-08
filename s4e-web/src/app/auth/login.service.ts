@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 
 import {User} from './user.model';
-import {apiPrefix, userLocalStorageKey} from '../constants';
+import {apiPrefixV1, userLocalStorageKey} from '../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class LoginService {
   }
 
   public login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${apiPrefix}/login`, { email: email, password: password })
+    return this.http.post<User>(`${apiPrefixV1}/login`, { email: email, password: password })
       .pipe(map(user => {
         if (user && user.token) {
           localStorage.setItem(userLocalStorageKey, JSON.stringify(user));
