@@ -3,9 +3,10 @@ import {Observable, of} from 'rxjs';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { Tile, Image, Layer } from 'ol/layer';
-import { TileWMS, ImageWMS, } from 'ol/source';
+import { TileWMS, ImageWMS, OSM } from 'ol/source';
 import {map} from 'rxjs/operators';
 import {format} from 'date-fns';
+import proj4 from 'proj4';
 
 import {geoserverUrl} from '../constants';
 import {Granule} from '../products/granule.model';
@@ -38,13 +39,12 @@ export class MapComponent implements OnInit {
   constructor(private productViewService: ProductService) { }
 
   ngOnInit(): void {
+    const centerOfPolandWebMercator = proj4('EPSG:3857', [19, 52]);
     this.map = new Map({
       target: 'map',
       layers: [],
       view: new View({
-        projection: 'EPSG:3413',
-        center: [3819084.467759, -1869424.891713],
-        rotation: Math.PI / 180 * 65,
+        center: centerOfPolandWebMercator,
         zoom: 6,
       }),
     });
@@ -52,21 +52,15 @@ export class MapComponent implements OnInit {
 
     this.overlays = [{
       type: 'regions',
-      olLayer: new Tile({
-        source: new TileWMS({
+      olLayer: new Image({
+        source: new ImageWMS({
           url: geoserverUrl,
           params: { 'LAYERS': 'test:wojewodztwa' },
         }),
       }),
     }];
-    this.baseLayer = new Image({
-      source: new ImageWMS({
-        url: 'http://ows.terrestris.de/osm/service?',
-        params: {
-          LAYERS: 'OSM-WMS',
-        },
-        projection: 'EPSG:3857'
-      }),
+    this.baseLayer = new Tile({
+      source: new OSM(),
     });
     this.granuleViews = [];
     this.updateLayers();
@@ -130,8 +124,8 @@ export class MapComponent implements OnInit {
     mapLayers.clear();
     mapLayers.push(this.baseLayer);
     if (this.activeGranuleView !== undefined && this.activeGranuleView.granule !== undefined) {
-      mapLayers.push(new Tile({
-        source: new TileWMS({
+      mapLayers.push(new Image({
+        source: new ImageWMS({
           url: geoserverUrl,
           params: {'LAYERS': this.activeGranuleView.granule.layerName},
         }),
