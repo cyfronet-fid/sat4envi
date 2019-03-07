@@ -1,5 +1,12 @@
 # sat4envi
 
+## Requirements
+
+- java ^8
+- mvn ^3.3.9
+- docker ^18.09.3
+- docker-compose ^1.18.0
+
 ## s4e-backend
 
 ### Prerequisites
@@ -64,3 +71,8 @@ The web interface will be available under `http://localhost:4200`.
  
 Note, however, that live reload doesn't work in this configuration.
 If you require it, go for a non-dockerized version.
+
+If the data directories under `tmp` don't exist create them before running the corresponding images.
+
+Docker won't be able to fetch `cyfronet-fid/geoserver:<version>` image from the repository.
+Build the image according to instructions in repo `cyfronet-fid/geoserver`. 

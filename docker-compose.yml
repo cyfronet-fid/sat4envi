@@ -7,15 +7,17 @@ services:
     volumes:
       - ./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar:/app/app.jar
     ports:
-      - "4201:4201"
+      - 4201:4201
     networks:
       - net
     depends_on:
       - db
+      - geoserver
+      - minio
   s4e-web:
     image: nginx:alpine
     ports:
-      - "4200:80"
+      - 4200:80
     volumes:
       - ./s4e-web/target/webapp:/usr/share/nginx/html
       - ./s4e-web/nginx.conf:/etc/nginx/nginx.conf
@@ -23,12 +25,34 @@ services:
       - net
     depends_on:
       - s4e-backend
+  minio:
+    image: minio/minio
+    volumes:
+      - ./tmp/minio-data:/data
+    ports:
+      - 9001:9000
+    networks:
+      - net
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: server /data
+  geoserver:
+    image: cyfronet-fid/geoserver:2.15.0
+    volumes:
+      - ./s3.properties:/opt/geoserver/s3.properties
+    ports:
+      - 8080:8080
+    networks:
+      - net
+    environment:
+      GEOSERVER_ADMIN_PASSWORD: admin123
   db:
     image: postgres:10-alpine
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./tmp/postgres-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - 5433:5432
     networks:
       - net
     environment:
@@ -37,6 +61,3 @@ services:
 
 networks:
   net:
-
-volumes:
-  db-data:
