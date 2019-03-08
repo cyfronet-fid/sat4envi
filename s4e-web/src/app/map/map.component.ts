@@ -55,7 +55,7 @@ export class MapComponent implements OnInit {
       olLayer: new Image({
         source: new ImageWMS({
           url: geoserverUrl,
-          params: { 'LAYERS': 'test:wojewodztwa' },
+          params: { 'LAYERS': 'test:wojew%C3%B3dztwa' },
         }),
       }),
     }];

@@ -73,6 +73,11 @@ Note, however, that live reload doesn't work in this configuration.
 If you require it, go for a non-dockerized version.
 
 If the data directories under `tmp` don't exist create them before running the corresponding images.
+The folders are `postgres-data` and `minio-data`.
+The data packs used are stored in ceph bucket named data-packs.
+Use the data pack `minio-data-v1.tar.xz` to provision `tmp/minio-data` directory.
 
 Docker won't be able to fetch `cyfronet-fid/geoserver:<version>` image from the repository.
-Build the image according to instructions in repo `cyfronet-fid/geoserver`. 
+Build the image according to instructions in repo `cyfronet-fid/geoserver`.
+
+When the docker containers are up, run `resources/geoserver/provision/provision.sh` to set up GeoServer state.

@@ -40,7 +40,7 @@ services:
   geoserver:
     image: cyfronet-fid/geoserver:2.15.0
     volumes:
-      - ./s3.properties:/opt/geoserver/s3.properties
+      - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
     ports:
       - 8080:8080
     networks:

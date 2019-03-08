@@ -1,0 +1,9 @@
+{
+  "coverageStore":{
+    "name":"STORE_NAME",
+    "type":"S3GeoTiff",
+    "enabled":true,
+    "workspace":"WORKSPACE_NAME",
+    "url":"S3_URL"
+  }
+}
