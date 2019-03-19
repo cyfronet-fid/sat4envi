@@ -12,3 +12,5 @@
 /coverage
 /libpeerconnection.log
 /typings
+/idea
+/.idea
