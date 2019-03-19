@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 #s3cmd put $TIFF_PATHS s3://s4e-test-1
 
 for GRANULE_NAME_SUFFIX in {"_Merkator_Europa_ir_108m","_Merkator_Europa_ir_108_setvak","_Merkator_WV-IR"}; do
-    for T in {201810040000..201810042300..100}; do
+    for (( T=201810040000; T<=201810042300; T+=100 )); do
         GRANULE_NAME=$T$GRANULE_NAME_SUFFIX
         echo "Creating store and layer for $GRANULE_NAME"
         GRANULE_NAME=$GRANULE_NAME $DIR/../1-create-store/create-store-and-layer.sh

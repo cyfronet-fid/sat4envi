@@ -2,14 +2,22 @@
 
 ## Requirements
 
-- java ^8
-- mvn ^3.3.9
-- docker ^18.09.3
-- docker-compose ^1.18.0
+- java `^8`
+- mvn `^3.3.9`
+- docker `^18.09.3`
+- docker-compose `^1.18.0`
+- node `^8`,  npm `^5`
 
-## s4e-backend
+## System Components
 
-### Prerequisites
+System consists of two applications:
+
+* frontend (directory `s4e-web` - angular application)
+* backend (directory `s4e-backend` - JAVA Spring Boot application)
+
+### s4e-backend
+
+#### Prerequisites
 
 The application uses postgres database at `localhost:5433`.
 The database can be run in a docker container by issuing `docker-compose up db` in root directory.
@@ -17,7 +25,7 @@ The database can be run in a docker container by issuing `docker-compose up db` 
 In case of changes in `docker-compose.yml` to remove the database volume it is necessary to issue `docker volume rm <volume name>`.
 `docker volume ls` lists volumes.
 
-### Building and running
+#### Building and running
 
 To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -cp <path to jar> pl.cyfronet.s4e.Application`.
@@ -27,57 +35,142 @@ Alternatively, the app can be built and run by issuing `mvn spring-boot:run` in 
 Both methods will expose the server under `http://localhost:4201`.
 
 
-## s4e-web
+### s4e-web
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
 
 The snippets presented here should be run in directory `s4e-web`.
 
-### Development server
+#### Development server
 
 Run `npm start` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
 The server will start with `/api` route proxied to `http://localhost:4201`, where backend should be present.
 
-### Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-### Build
+#### Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `target/` directory. Use the `--prod` flag for a production build.
 
 Running `ng build --prod` may fail due to a bug in either angular-cli or openlayers: https://github.com/openlayers/openlayers/issues/8357.
 Makeshift fix is to remove `sideEffects` property from `node_modules/ol/package.json` as described in the github issue. 
 
-### Running unit tests
+#### Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-### Running end-to-end tests
+#### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-### Further help
+## Development & Docker
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+In the root project directory `docker-compose.yml` is provide for developer's ease of use. 
 
-## Docker
+**NOTE**: As for now application components run via docker-compose have fixed ports, so make sure that there is no application (especially **postgres**) conflicting with them.
 
-In order to run the docker containers of the backend and web modules (plus database) it is first required to build
-the project by issuing `mvn package`.
-Once this build is finished, the application can be run by `docker-compose up`.
-The web interface will be available under `http://localhost:4200`.
- 
-Note, however, that live reload doesn't work in this configuration.
-If you require it, go for a non-dockerized version.
+This docker-compose recipe can be used to either run whole application for demo purposes, or to run specific parts of the application which can be usefull if for example we would like to develop only frontend part of the application.
 
-If the data directories under `tmp` don't exist create them before running the corresponding images.
-The folders are `postgres-data` and `minio-data`.
-The data packs used are stored in ceph bucket named data-packs.
-Use the data pack `minio-data-v1.tar.xz` to provision `tmp/minio-data` directory.
+In order do run docker-compose following steps must be done (**unless stated otherwise working directory should be project root**):
 
-Docker won't be able to fetch `cyfronet-fid/geoserver:<version>` image from the repository.
-Build the image according to instructions in repo `cyfronet-fid/geoserver`.
+1. Build docker image from https://github.com/cyfronet-fid/docker-geoserver, you can just run following script
 
-When the docker containers are up, run `resources/geoserver/provision/provision.sh` to set up GeoServer state.
+   ```bash
+   #!/bin/bash
+   git clone https://github.com/cyfronet-fid/docker-geoserver
+   cd docker-geoserver
+   ./build.sh # will ask for sudo
+   cd ..
+   ```
+
+   You can remove `docker-geoserver` directory afterwards
+
+2. Run `mvn package` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`
+
+3. Run `docker-compose up`
+
+4. After all services are up in the browser navigate to http://localhost:4200 - web interface should be there
+
+5. No it's time to get S3 data to the application. First make sure that you have `s3cmd` installed:
+   **OSX**: `brew install s3cmd`
+   **Debian**: `apt-get install s3cmd`
+
+6. Configure `s3cmd` - you can run configuration wizard by running:
+
+   ```bash
+   s3cmd --configure
+   ```
+
+   You'll need access data which is available [here](https://docs.cyfronet.pl/display/FID/Projekty) (section **sat4envi/CEPH**)
+
+   During configuration there are 4 important params which you must define (you can leave all others to their defaults):
+
+   * **Access Key**
+   * **Secret Key**
+   * **S3 Endpoint**
+   * **DNS-style bucket+hostname:port template** - you should set it to `%(bucket)s.<ceph_url>`
+
+   After configuration you should see summary similar to the one below:
+
+   ```bash
+   New settings:
+     Access Key: <access_key>
+     Secret Key: <secret_key>
+     Default Region: US
+     S3 Endpoint: <url>
+     DNS-style bucket+hostname:port template for accessing a bucket: %(bucket)s.<url>
+     Encryption password:
+     Path to GPG program: None
+     Use HTTPS protocol: True
+     HTTP Proxy server name:
+     HTTP Proxy server port: 0
+   ```
+
+   If running `s3cmd ls` prints output similar to the one below it means it's all good to go
+
+   ```bash
+   $ s3cmd ls
+   2019-03-08 17:02  s3://data-packs
+   2018-06-24 13:44  s3://marta-test
+   2018-08-01 11:53  s3://s4e-test-1
+   2019-03-06 11:02  s3://s4e-test-2
+   ```
+
+8. Download s3 data for minio:
+
+   ```bash
+   s3cmd get s3://data-packs/minio-data-v1.tar.xz
+   tar -xJf minio-data-v1.tar.xz -C ./tmp
+   ```
+
+9. Provision data to GeoServer by running:
+
+   ```bash
+   ./resources/geoserver/provision/provision.sh
+   ```
+
+10. You're done - application should be available on http://localhost:4200 and have 3 available products
+
+**IMPORTANT** If you run `docker-compose up` you'll get application all set up, but it does not support any kind of live reload, etc. If you plan on developing any part of the project (frontend or backend) you should run docker compose without module you would like to develop - for example:
+
+**Frontend**
+
+```bash
+docker-compose up -d
+docker-compose stop s4e-web
+```
+
+And develop normally front end, while hosting it via `npm start / ng serve`
+
+**Backend**
+
+```bash
+docker-compose up -d
+docker-compose stop s4e-web
+docker-compose stop s4e-backend
+```
+
+You will need to locall run frontend via `npm start / ng serve` and develop backend normally.
+
+
+
+
