@@ -1,0 +1,9 @@
+<router-outlet></router-outlet>
+<button *ngIf="PRODUCTION === false"
+        class="dev-reset-btn btn btn-warning btn-sm"
+        i18n-tooltip
+        tooltip="Odśwież stan REDUXa (DEV MODE)"
+        placement="left"
+        (click)="devRefreshState()">
+  <span class="fas fa-xs fa-redo-alt"></span>
+</button>

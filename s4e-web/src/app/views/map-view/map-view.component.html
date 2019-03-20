@@ -1,0 +1,17 @@
+<s4e-login></s4e-login>
+<s4e-product-picker [loading]="productLoading$ | async" [products]="products$ | async" (selectProduct)="selectProduct($event?.id)"></s4e-product-picker>
+
+<s4e-timeline class="timeline position-absolute card d-flex flex-row"
+              [granules]="granules$ | async"
+              [loading]="granulesAreLoading$ | async"
+              (selectGranule)="selectGranule($event?.id)"></s4e-timeline>
+
+<div class="map-container clearfix">
+  <s4e-view-manager [overlays]="overlays$ | async"
+                    [loading]="viewManagerLoading$ | async"
+                    [activeRecentView]="activeRecentView$ | async"
+                    [recentViews]="recentViews$ | async"
+                    (activeViewChange)="setActiveView($event?.productId)"
+                    (removeView)="removeActiveView($event?.productId)"></s4e-view-manager>
+</div>
+<s4e-map [overlays]="overlays$ | async" [activeGranule]="activeGranule$ | async"></s4e-map>

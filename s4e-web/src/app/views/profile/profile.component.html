@@ -1,0 +1,8 @@
+<h1>Profile</h1>
+<p *ngIf="isLoggedIn$ | async; else userDetails" i18n>
+  Zaloguj się by zobaczyć swój profil
+</p>
+<ng-template #userDetails>
+  <p i18n>Email: {{(userEmail$ | async) //ex. email@domain.com}}</p>
+</ng-template>
+<a routerLink="/" i18n>Powrót</a>

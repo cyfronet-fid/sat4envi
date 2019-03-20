@@ -1,0 +1,12 @@
+<div class="p-2"
+     *ngFor="let day of days; let $first = first; let $last = last"
+     [ngClass]="{'border-left': !$first}">
+  <small class="ml-2">{{ day.label }}</small>
+  <ul class="list-inline ml-2 mr-2 mb-0">
+    <li class="list-inline-item font-weight-bold ml-2"
+        *ngFor="let granule of day.granules"
+        [ngClass]="{'mr-5': !$last, 'mr-2': $last}">
+      <a href="javascript:undefined" (click)="selectGranule.emit(granule)">{{ granule.timestamp | date : 'shortTime' }}</a>
+    </li>
+  </ul>
+</div>

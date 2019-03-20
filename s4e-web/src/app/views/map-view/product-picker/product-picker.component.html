@@ -1,0 +1,13 @@
+<div class="head-nav">
+  <div dropdown style="display:inline-block" class="btn-group">
+    <button class="btn btn-primary text-uppercase text-left" [ngClass]="{'dropdown-toggle': !loading}" dropdownToggle><ng-container i18n>Produkty</ng-container>
+      <i *ngIf="loading" class="fa fa-spinner fa-spin float-right mt-1"></i>
+    </button>
+    <ul class="dropdown-menu"  role="menu" *dropdownMenu>
+      <li role="menuitem" *ngFor="let product of products">
+        <button class= "dropdown-item text-left text-capitalize" (click)="selectProduct.emit(product)">{{product.name}}</button>
+      </li>
+    </ul>
+  </div>
+</div>
+

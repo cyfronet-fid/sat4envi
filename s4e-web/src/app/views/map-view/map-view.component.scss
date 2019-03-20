@@ -1,0 +1,33 @@
+@import "../../../scss/common";
+
+.map-container {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10;
+  width: 289px;
+  border: 1px solid #333333;
+  background-color: #ffffff;
+  color: $gray-900;
+}
+
+.timeline {
+  bottom: 20px;
+  left: 400px;
+  z-index: 100;
+  li {
+    cursor: pointer;
+  }
+}
+
+.border-left {
+  border-left: 1px solid $gray-800 !important;
+}
+
+.show > .btn-primary.dropdown-toggle, .btn-primary:hover {
+  background-color: #ffffff !important;
+  border-color: $gray-900 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
