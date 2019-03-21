@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.controller.response;
 
 import lombok.Builder;
 import lombok.Data;

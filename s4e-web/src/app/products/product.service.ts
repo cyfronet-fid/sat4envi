@@ -15,11 +15,11 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${apiPrefixV1}/products`);
+    return this.http.get<Product[]>(`${apiPrefixV1}/productTypes`);
   }
 
   getGranules(productId: number): Observable<Granule[]> {
-    return this.http.get<Granule[]>(`${apiPrefixV1}/granules/productId/${productId}`).pipe(map(granules => {
+    return this.http.get<Granule[]>(`${apiPrefixV1}/products/productTypeId/${productId}`).pipe(map(granules => {
       return granules.map(granule => {
         granule.timestampDate = parse(granule.timestamp, backendDateFormat, new Date());
         return granule;

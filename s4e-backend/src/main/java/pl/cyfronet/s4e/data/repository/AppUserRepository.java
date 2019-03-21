@@ -1,6 +1,7 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.data.repository;
 
 import org.springframework.data.repository.CrudRepository;
+import pl.cyfronet.s4e.bean.AppUser;
 
 import java.util.Optional;
 

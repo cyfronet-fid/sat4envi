@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.security.AppUserDetails;
 
 import java.util.NoSuchElementException;
 

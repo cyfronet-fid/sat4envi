@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.bean;
 
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

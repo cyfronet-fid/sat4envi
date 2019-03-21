@@ -1,9 +1,10 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.security;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.cyfronet.s4e.bean.AppUser;
 
 import java.util.Collection;
 import java.util.stream.Collectors;

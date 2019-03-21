@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.cyfronet.s4e.user.AppUserDetails;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -26,7 +25,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
 
-    private final ObjectMapper objectMapper;
     private final UserDetailsService userDetailsService;
     private final JWTTokenService jwtTokenService;
 

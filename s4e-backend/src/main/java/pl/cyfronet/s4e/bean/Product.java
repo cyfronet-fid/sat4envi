@@ -1,8 +1,8 @@
-package pl.cyfronet.s4e.granules;
+package pl.cyfronet.s4e.bean;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.cyfronet.s4e.products.Product;
+import pl.cyfronet.s4e.bean.ProductType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Builder
-public class Granule {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(optional = false)
-    private Product product;
+    private ProductType productType;
     private LocalDateTime timestamp;
     private String layerName;
 }
