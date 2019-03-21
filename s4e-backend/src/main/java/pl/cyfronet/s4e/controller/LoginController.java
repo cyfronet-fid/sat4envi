@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.user;
+package pl.cyfronet.s4e.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.security.JWTTokenService;
+import pl.cyfronet.s4e.controller.request.LoginRequest;
+import pl.cyfronet.s4e.controller.response.LoginResponse;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 

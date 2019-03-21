@@ -1,9 +1,11 @@
-package pl.cyfronet.s4e.products;
+package pl.cyfronet.s4e.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cyfronet.s4e.controller.response.ProductTypeResponse;
+import pl.cyfronet.s4e.service.ProductTypeService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,14 +15,14 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
-public class ProductController {
+public class ProductTypeController {
 
-    private final ProductService productService;
+    private final ProductTypeService productTypeService;
 
-    @GetMapping("/products")
-    public List<ProductResponse> getProducts() {
-        return productService.getProducts().stream()
-                .map(ProductResponse::of)
+    @GetMapping("/productTypes")
+    public List<ProductTypeResponse> getProductTypes() {
+        return productTypeService.getProductTypes().stream()
+                .map(ProductTypeResponse::of)
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,6 @@
 package pl.cyfronet.s4e.db;
 
-import pl.cyfronet.s4e.user.AppRole;
+import pl.cyfronet.s4e.bean.AppRole;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
