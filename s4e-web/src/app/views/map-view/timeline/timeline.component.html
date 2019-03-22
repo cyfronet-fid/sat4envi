@@ -4,9 +4,9 @@
   <small class="ml-2">{{ day.label }}</small>
   <ul class="list-inline ml-2 mr-2 mb-0">
     <li class="list-inline-item font-weight-bold ml-2"
-        *ngFor="let granule of day.granules"
+        *ngFor="let product of day.products"
         [ngClass]="{'mr-5': !$last, 'mr-2': $last}">
-      <a href="javascript:undefined" (click)="selectGranule.emit(granule)">{{ granule.timestamp | date : 'shortTime' }}</a>
+      <a href="javascript:undefined" (click)="selectProduct.emit(product)">{{ product.timestamp | date : 'shortTime' }}</a>
     </li>
   </ul>
 </div>

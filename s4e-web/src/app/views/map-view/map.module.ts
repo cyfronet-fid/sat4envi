@@ -7,12 +7,12 @@ import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {MapStore} from './state/map/map.store';
 import { ProductPickerComponent } from './product-picker/product-picker.component';
-import {ProductQuery} from './state/product/product.query';
+import {ProductTypeQuery} from './state/product-type/product-type-query.service';
+import {ProductTypeService} from './state/product-type/product-type.service';
+import {ProductTypeStore} from './state/product-type/product-type-store.service';
+import {ProductQuery} from './state/product/product-query.service';
 import {ProductService} from './state/product/product.service';
-import {ProductStore} from './state/product/product.store';
-import {GranuleQuery} from './state/granule/granule.query';
-import {GranuleService} from './state/granule/granule.service';
-import {GranuleStore} from './state/granule/granule.store';
+import {ProductStore} from './state/product/product-store.service';
 import {ConstantsProvider} from '../../app.constants';
 import { TimelineComponent } from './timeline/timeline.component';
 import { MapComponent } from './map/map.component';
@@ -41,12 +41,12 @@ import {BsDropdownModule} from 'ngx-bootstrap';
     MapQuery,
     MapService,
     MapStore,
+    ProductTypeQuery,
+    ProductTypeService,
+    ProductTypeStore,
     ProductQuery,
     ProductService,
     ProductStore,
-    GranuleQuery,
-    GranuleService,
-    GranuleStore,
     ConstantsProvider,
     OverlayQuery,
     OverlayService,
@@ -61,12 +61,12 @@ export class MapModule {
         MapQuery,
         MapService,
         MapStore,
+        ProductTypeQuery,
+        ProductTypeService,
+        ProductTypeStore,
         ProductQuery,
         ProductService,
         ProductStore,
-        GranuleQuery,
-        GranuleService,
-        GranuleStore,
         OverlayQuery,
         OverlayService,
         OverlayStore

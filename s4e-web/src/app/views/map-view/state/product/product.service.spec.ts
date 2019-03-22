@@ -1,12 +1,12 @@
-import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {ProductService} from './product.service';
-import {ProductStore} from './product.store';
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ProductService } from './product.service';
+import { ProductStore } from './product-store.service';
 import {TestingConstantsProvider} from '../../../../app.constants.spec';
-import {ProductQuery} from './product.query';
+import {ProductTypeQuery} from '../product-type/product-type-query.service';
+import {ProductTypeStore} from '../product-type/product-type-store.service';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
 import {RecentViewStore} from '../recent-view/recent-view.store';
-import {GranuleService} from '../granule/granule.service';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -17,22 +17,24 @@ describe('ProductService', () => {
       providers: [
         ProductService,
         ProductStore,
-        TestingConstantsProvider,
-        HttpClientTestingModule,
-        ProductQuery,
+        ProductTypeQuery,
+        ProductTypeStore,
         RecentViewQuery,
         RecentViewStore,
-        GranuleService
-      ],
-      imports: [HttpClientTestingModule]
+        TestingConstantsProvider],
+      imports: [ HttpClientTestingModule ]
     });
 
     productService = TestBed.get(ProductService);
     productStore = TestBed.get(ProductStore);
   });
 
-  it('should be created', () => {
-    expect(productService).toBeDefined();
+  it('get should work', () => {
+    // :TODO add test
+  });
+
+  it('setActive should work', () => {
+    // :TODO add test
   });
 
 });

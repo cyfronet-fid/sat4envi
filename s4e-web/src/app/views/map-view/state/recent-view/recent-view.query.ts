@@ -3,17 +3,17 @@ import {QueryEntity} from '@datorama/akita';
 import {RecentViewState, RecentViewStore} from './recent-view.store';
 import {ICompleteRecentView, RecentView} from './recent-view.model';
 import {Observable, of} from 'rxjs';
-import {ProductQuery} from '../product/product.query';
-import {GranuleQuery} from '../granule/granule.query';
+import {ProductTypeQuery} from '../product-type/product-type-query.service';
+import {ProductQuery} from '../product/product-query.service';
 import {distinctUntilChanged, filter, map, mergeMap, tap} from 'rxjs/operators';
-import {Granule} from '../granule/granule.model';
+import {Product} from '../product/product.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecentViewQuery extends QueryEntity<RecentViewState, RecentView> {
 
-  constructor(protected store: RecentViewStore, private productQuery: ProductQuery, private granuleQuery: GranuleQuery) {
+  constructor(protected store: RecentViewStore, private productTypeQuery: ProductTypeQuery, private productQuery: ProductQuery) {
     super(store);
   }
 
@@ -21,24 +21,24 @@ export class RecentViewQuery extends QueryEntity<RecentViewState, RecentView> {
     return this.selectAll().pipe(
       map(views => views.map(view => ({
         ...view,
-        activeGranule: this.granuleQuery.getEntity(view.granuleId),
-        activeProduct: this.productQuery.getEntity(view.productId)
+        activeProduct: this.productQuery.getEntity(view.productId),
+        activeProductType: this.productTypeQuery.getEntity(view.productTypeId)
       })))
     );
   }
 
-  selectActiveViewGranules(): Observable<Granule[]> {
+  selectActiveViewProducts(): Observable<Product[]> {
     return this.selectActive().pipe(
       filter(view => view != null),
-      mergeMap(view => this.productQuery.selectEntity(view.productId)),
-      mergeMap(product => product ? this.granuleQuery.selectMany(product.granuleIds) : of([])),
+      mergeMap(view => this.productTypeQuery.selectEntity(view.productTypeId)),
+      mergeMap(product => product ? this.productQuery.selectMany(product.productIds) : of([])),
     );
   }
 
-  selectActiveGranule(): Observable<Granule> {
+  selectActiveProduct(): Observable<Product> {
     return this.selectActive().pipe(
       filter(view => view != null),
-      mergeMap(view => view.granuleId ? this.granuleQuery.selectEntity(view.granuleId) : of(null)),
+      mergeMap(view => view.productId ? this.productQuery.selectEntity(view.productId) : of(null)),
       distinctUntilChanged()
     );
   }

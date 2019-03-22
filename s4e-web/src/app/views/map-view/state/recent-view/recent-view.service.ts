@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ID } from '@datorama/akita';
 import { HttpClient } from '@angular/common/http';
 import { RecentViewStore } from './recent-view.store';
-import {GranuleService} from '../granule/granule.service';
+import {ProductService} from '../product/product.service';
 import {RecentViewQuery} from './recent-view.query';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class RecentViewService {
   constructor(private recentViewStore: RecentViewStore,
               private recentViewQuery: RecentViewQuery,
               private http: HttpClient,
-              private granuleService: GranuleService) {
+              private productService: ProductService) {
   }
 
 
@@ -25,7 +25,7 @@ export class RecentViewService {
     this.recentViewStore.setActive(viewId);
   }
 
-  updateActiveViewGranule(granuleId: number) {
-    this.recentViewStore.updateActive(active => ({...active, granuleId}));
+  updateActiveViewProduct(productId: number) {
+    this.recentViewStore.updateActive(active => ({...active, productId}));
   }
 }

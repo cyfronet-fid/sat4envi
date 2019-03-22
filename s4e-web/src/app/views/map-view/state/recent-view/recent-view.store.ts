@@ -5,7 +5,7 @@ import { RecentView } from './recent-view.model';
 export interface RecentViewState extends EntityState<RecentView>, ActiveState {}
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'RecentView', idKey: 'productId' })
+@StoreConfig({ name: 'RecentView', idKey: 'productTypeId' })
 export class RecentViewStore extends EntityStore<RecentViewState, RecentView> {
 
   constructor() {

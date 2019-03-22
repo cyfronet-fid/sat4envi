@@ -12,13 +12,13 @@
 <ng-container *ngIf="!loading">
   <div class="product-view p-0 m-0"
        *ngFor="let recentView of recentViews"
-       [ngClass]="{'bg-primary active': recentView.productId === activeRecentView?.productId}">
+       [ngClass]="{'bg-primary active': recentView.productTypeId === activeRecentView?.productTypeId}">
     <ul class="list-group list-group-flush">
       <li class="list-group-item p-2">
         <div class="" (click)="activeViewChange.emit(recentView)">
-          <span class="text-capitalize d-inline-block w-40">{{ recentView.activeProduct.name }}</span>
+          <span class="text-capitalize d-inline-block w-40">{{ recentView.activeProductType.name }}</span>
 
-          <span class="font-size"><small>{{ recentView.activeGranule?.timestamp | date : 'short' }}</small>
+          <span class="font-size"><small>{{ recentView.activeProduct?.timestamp | date : 'short' }}</small>
           <a href="#" class="float-right"
              (click)="removeView.emit(recentView)">
           <i class="far fa-trash-alt"></i>

@@ -1,9 +1,9 @@
-import {Granule} from '../granule/granule.model';
 import {Product} from '../product/product.model';
+import {ProductType} from '../product-type/product-type.model';
 
 export interface RecentView {
-  granuleId: number|null;
-  productId: number;
+  productId: number|null;
+  productTypeId: number;
 }
 
 /**
@@ -11,7 +11,7 @@ export interface RecentView {
  */
 export function createRecentView(params: Partial<RecentView>) {
   return {
-    granuleId: null,
+    productId: null,
     ...params
   } as RecentView;
 }
@@ -20,6 +20,6 @@ export function createRecentView(params: Partial<RecentView>) {
  * Used as a product of the query, not serialized
  */
 export interface ICompleteRecentView extends RecentView {
-  activeGranule: Granule|null;
-  activeProduct: Product;
+  activeProduct: Product|null;
+  activeProductType: ProductType;
 }

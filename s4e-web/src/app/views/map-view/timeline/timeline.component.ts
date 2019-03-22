@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Inject, Input, LOCALE_ID, OnInit, Output} from '@angular/core';
-import {Granule} from '../state/granule/granule.model';
+import {Product} from '../state/product/product.model';
 import {formatDate} from '@angular/common';
 
 export interface Day {
   label: string;
-  granules: Granule[];
+  products: Product[];
 
 }
 
@@ -19,20 +19,20 @@ export class TimelineComponent {
 
   @Input() public loading: boolean = true;
 
-  @Input() set granules(granules: Granule[] | null) {
+  @Input() set products(products: Product[] | null) {
     this.days = [];
     let currDay: Day;
-    for (const granule of (granules || [])) {
-      const day = formatDate(granule.timestamp, 'shortDate', this.LOCALE_ID);
+    for (const product of (products || [])) {
+      const day = formatDate(product.timestamp, 'shortDate', this.LOCALE_ID);
       if (currDay === undefined || currDay.label !== day) {
-        currDay = {label: day, granules: []};
+        currDay = {label: day, products: []};
         this.days.push(currDay);
       }
-      currDay.granules.push(granule);
+      currDay.products.push(product);
     }
   }
 
-  @Output() public selectGranule = new EventEmitter<Granule>();
+  @Output() public selectProduct = new EventEmitter<Product>();
 
   // tslint:disable-next-line:no-shadowed-variable
   constructor(@Inject(LOCALE_ID) private LOCALE_ID: string) { }

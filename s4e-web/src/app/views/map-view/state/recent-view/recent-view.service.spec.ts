@@ -3,7 +3,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RecentViewService } from './recent-view.service';
 import { RecentViewStore } from './recent-view.store';
 import {RecentViewQuery} from './recent-view.query';
-import {GranuleService} from '../granule/granule.service';
+import {ProductService} from '../product/product.service';
 import {TestingConstantsProvider} from '../../../../app.constants.spec';
 
 describe('RecentViewService', () => {
@@ -17,7 +17,7 @@ describe('RecentViewService', () => {
         RecentViewStore,
         HttpClientTestingModule,
         RecentViewQuery,
-        GranuleService,
+        ProductService,
         TestingConstantsProvider
       ],
       imports: [ HttpClientTestingModule ]

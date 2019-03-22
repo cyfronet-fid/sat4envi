@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Product} from '../state/product/product.model';
+import {ProductType} from '../state/product-type/product-type.model';
 
 @Component({
   selector: 's4e-product-picker',
@@ -7,9 +7,9 @@ import {Product} from '../state/product/product.model';
   styleUrls: ['./product-picker.component.scss']
 })
 export class ProductPickerComponent implements OnInit {
-  @Input() products: Product[] = [];
+  @Input() products: ProductType[] = [];
   @Input() loading: boolean = true;
-  @Output() selectProduct = new EventEmitter<Product>();
+  @Output() selectProduct = new EventEmitter<ProductType>();
 
   constructor() { }
 
