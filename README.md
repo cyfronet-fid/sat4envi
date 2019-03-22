@@ -25,15 +25,21 @@ The database can be run in a docker container by issuing `docker-compose up db` 
 In case of changes in `docker-compose.yml` to remove the database volume it is necessary to issue `docker volume rm <volume name>`.
 `docker volume ls` lists volumes.
 
+#### <a id="backend-running-unit-tests"></a> Running unit tests
+
+You will need the test db up and running: `docker-compose up db-test`.
+It will be exposed at `localhost:5434`.
+
+Then, run `mvn test`.
+
 #### Building and running
 
 To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
-started by running `java -cp <path to jar> pl.cyfronet.s4e.Application`.
+started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
 
-Alternatively, the app can be built and run by issuing `mvn spring-boot:run` in directory `s4e-backend`. 
+Alternatively, the app can be built and run by issuing `mvn spring-boot:run -Dspring.profiles.active=development` in directory `s4e-backend`. 
 
 Both methods will expose the server under `http://localhost:4201`.
-
 
 ### s4e-web
 
@@ -84,7 +90,8 @@ In order do run docker-compose following steps must be done (**unless stated oth
 
    You can remove `docker-geoserver` directory afterwards
 
-2. Run `mvn package` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`
+2. Run `mvn package` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`.
+   For the tests to pass follow the instructions from [running tests](#backend-running-unit-tests).
 
 3. Run `docker-compose up`
 
@@ -169,7 +176,7 @@ docker-compose stop s4e-web
 docker-compose stop s4e-backend
 ```
 
-You will need to locall run frontend via `npm start / ng serve` and develop backend normally.
+You will need to locally run frontend via `npm start / ng serve` and develop backend normally.
 
 
 

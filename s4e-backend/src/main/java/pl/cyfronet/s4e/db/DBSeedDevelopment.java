@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.db;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.bean.Product;
@@ -20,8 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Profile("development")
 @RequiredArgsConstructor
-public class DBSeed {
+public class DBSeedDevelopment {
     private static final LocalDateTime BASE_TIME = LocalDateTime.of(2018, 10, 4, 0, 0);
 
     private final ProductTypeRepository productTypeRepository;
