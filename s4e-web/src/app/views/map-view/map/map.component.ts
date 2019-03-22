@@ -7,7 +7,7 @@ import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {IConstants, S4E_CONSTANTS} from '../../../app.constants';
 import {Product} from '../state/product/product.model';
-import {BehaviorSubject, Subject} from 'rxjs';
+import {ReplaySubject} from 'rxjs';
 
 @Component({
   selector: 's4e-map',
@@ -19,7 +19,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private baseLayer: Layer;
   private map: Map;
 
-  private activeProduct$ = new BehaviorSubject<Product>(null);
+  private activeProduct$ = new ReplaySubject<Product>(1);
 
   @Input() public set activeProduct(gr: Product|null) {
     if (gr === null) { return; }
