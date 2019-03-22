@@ -3,11 +3,12 @@ services:
   s4e-backend:
     build: ./s4e-backend
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/sat4envi
+      - SPRING_DATASOURCE_URL=${BACKEND_SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/sat4envi}
+      - SPRING_PROFILES_ACTIVE=${BACKEND_SPRING_PROFILES_ACTIVE:-development}
     volumes:
-      - ./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar:/app/app.jar
+      - ${BACKEND_JAR_PATH:-./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar}:/app/app.jar
     ports:
-      - 4201:4201
+      - ${BACKEND_PORT:-4201}:4201
     networks:
       - net
     depends_on:
@@ -17,7 +18,7 @@ services:
   s4e-web:
     image: nginx:alpine
     ports:
-      - 4200:80
+      - ${WEB_PORT:-4200}:80
     volumes:
       - ./s4e-web/target/webapp:/usr/share/nginx/html
       - ./s4e-web/nginx.conf:/etc/nginx/nginx.conf
@@ -30,34 +31,43 @@ services:
     volumes:
       - ./tmp/minio-data:/data
     ports:
-      - 9001:9000
+      - ${MINIO_PORT:-9001}:9000
     networks:
       - net
     environment:
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minio}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
     image: cyfronet-fid/geoserver:2.15.0
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
     ports:
-      - 8080:8080
+      - ${GEOSERVER_PORT:-8080}:8080
     networks:
       - net
     environment:
-      GEOSERVER_ADMIN_PASSWORD: admin123
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD:-admin123}
   db:
     image: postgres:10-alpine
-    volumes:
-      - ./tmp/postgres-data:/var/lib/postgresql/data
     ports:
-      - 5433:5432
+      - ${DB_PORT:-5433}:5432
     networks:
       - net
     environment:
-      POSTGRES_PASSWORD: sat4envi
-      POSTGRES_USER: sat4envi
+      POSTGRES_DB: ${DB_POSTGRES_DB:-sat4envi}
+      POSTGRES_USER: ${DB_POSTGRES_USER:-sat4envi}
+      POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-sat4envi}
+  db-test:
+    image: postgres:10-alpine
+    ports:
+      - ${DB_TEST_PORT:-5434}:5432
+    networks:
+      - net
+    environment:
+      POSTGRES_DB: ${DB_TEST_POSTGRES_DB:-sat4envi_test}
+      POSTGRES_USER: ${DB_TEST_POSTGRES_USER:-sat4envi_test}
+      POSTGRES_PASSWORD: ${DB_TEST_POSTGRES_PASSWORD:-sat4envi_test}
 
 networks:
   net:
