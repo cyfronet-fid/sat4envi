@@ -14,3 +14,6 @@
 /typings
 /idea
 /.idea
+/cypress/integration/examples/
+/cypress/screenshots
+/cypress/videos

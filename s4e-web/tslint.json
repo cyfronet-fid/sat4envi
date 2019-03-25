@@ -60,7 +60,7 @@
     "no-empty-interface": true,
     "no-eval": true,
     "no-inferrable-types": [
-      true,
+      false,
       "ignore-params"
     ],
     "no-misused-new": true,
@@ -106,7 +106,7 @@
         "variable-declaration": "nospace"
       }
     ],
-    "unified-signatures": true,
+    "unified-signatures": false,
     "variable-name": false,
     "whitespace": [
       true,

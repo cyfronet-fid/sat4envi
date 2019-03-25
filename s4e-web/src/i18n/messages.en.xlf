@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="pl" datatype="plaintext" original="ng2.template" target-language="en">
+    <body>
+      <trans-unit id="4c031bc262248bb3217b64a7f67883d8998cab56" datatype="html">
+        <source>Odśwież stan REDUXa (DEV MODE)</source><target state="new">Odśwież stan REDUXa (DEV MODE)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/root/root.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit><trans-unit id="994363f08f9fbfa3b3994ff7b35c6904fdff18d8" datatype="html">
+        <source>Profile</source><target state="new">Profile</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit><trans-unit id="cf6c87790a7f92efe990849398e0ddbff748fa06" datatype="html">
+        <source>Wyloguj</source><target state="new">Wyloguj</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <trans-unit id="33e2a741ffd176ba899c53af5bd92420a14891fa" datatype="html">
+        <source>Produkty</source><target state="new">Produkty</target>
+        
+        
+      <context-group purpose="location"><context context-type="sourcefile">app/views/map-view/view-manager/view-manager.component.html</context><context context-type="linenumber">11</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/views/map-view/product-picker/product-picker.component.html</context><context context-type="linenumber">3</context></context-group></trans-unit><trans-unit id="34c009eb15580e2d52b9598965d966a868ead8dd" datatype="html">
+        <source>
+  Zaloguj się by zobaczyć swój profil
+</source><target state="new">
+  Zaloguj się by zobaczyć swój profil
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/views/profile/profile.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit><trans-unit id="3cc2b46ff3882ae23649583bb9dcf218bf7ab0d6" datatype="html">
+        <source>Email: <x id="INTERPOLATION" equiv-text="{{(userEmail$ | async) //ex. email@domain.com}}"/></source><target state="new">Email: <x id="INTERPOLATION" equiv-text="{{(userEmail$ | async) //ex. email@domain.com}}"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/views/profile/profile.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit><trans-unit id="b91c3a981ad2462fb6d1c99f0551c7cfbf0907df" datatype="html">
+        <source>Powrót</source><target state="new">Powrót</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/views/profile/profile.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="244aae9346da82b0922506c2d2581373a15641cc" datatype="html">
+        <source>Email</source><target state="new">Email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit><trans-unit id="c32ef07f8803a223a83ed17024b38e8d82292407" datatype="html">
+        <source>Password</source><target state="new">Password</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit><trans-unit id="40e5695cd77fc4ad77f181f5a7797baae179fc21" datatype="html">
+        <source>Zaloguj</source><target state="new">Zaloguj</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/login/login.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="09f9199c31169da524a8a4ed14b0861f1a0bb4e3" datatype="html">
+        <source>Nakładki</source><target state="new">Nakładki</target>
+        
+      <context-group purpose="location"><context context-type="sourcefile">app/views/map-view/view-manager/view-manager.component.html</context><context context-type="linenumber">1</context></context-group></trans-unit>
+    </body>
+  </file>
+</xliff>

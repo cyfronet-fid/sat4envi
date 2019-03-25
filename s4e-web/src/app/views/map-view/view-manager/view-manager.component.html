@@ -1,0 +1,31 @@
+<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Nakładki</h2>
+<ul class="list-group list-group-flush">
+  <li class="list-group-item p-2">
+    <ng-container *ngIf="!loading">
+      <div class="overlay m-0 p-0 text-capitalize"
+           *ngFor="let overlay of overlays">{{ overlay.caption }}</div>
+    </ng-container>
+  </li>
+</ul>
+
+<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Produkty</h2>
+<ng-container *ngIf="!loading">
+  <div class="product-view p-0 m-0"
+       *ngFor="let recentView of recentViews"
+       [ngClass]="{'bg-primary active': recentView.productTypeId === activeRecentView?.productTypeId}">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item p-2">
+        <div class="" (click)="activeViewChange.emit(recentView)">
+          <span class="text-capitalize d-inline-block w-40">{{ recentView.activeProductType.name }}</span>
+
+          <span class="font-size"><small>{{ recentView.activeProduct?.timestamp | date : 'short' }}</small>
+          <a href="#" class="float-right"
+             (click)="removeView.emit(recentView)">
+          <i class="far fa-trash-alt"></i>
+          </a>
+        </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</ng-container>

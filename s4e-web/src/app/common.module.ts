@@ -1,20 +1,34 @@
-import {NgModule} from '@angular/core';
+import {ModuleWithProviders, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {TranslateModule} from '@ngx-translate/core';
 import {HttpClientModule} from '@angular/common/http';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
+import {InjectorModule} from './injector.module';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 @NgModule({
+  imports: [
+  ],
   exports: [
     BrowserModule,
     HttpClientModule,
-    NgbModule,
-    TranslateModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
+    InjectorModule,
   ]
 })
-export class CommonModule { }
+export class CommonModule {
+  static modulesForRoot(): ModuleWithProviders[] {
+    return [
+      {
+        ngModule: CommonModule,
+        providers: []
+      },
+      TooltipModule.forRoot(),
+      BsDropdownModule.forRoot()
+    ];
+  }
+}

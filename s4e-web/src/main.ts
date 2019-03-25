@@ -1,12 +1,31 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+import {enableProdMode} from '@angular/core';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
+import {AppModule} from './app/app.module';
+import {environment} from './environments/environment';
+import {enableAkitaProdMode, persistState} from '@datorama/akita';
+import {hmrBootstrap} from './hmr';
+import serialize from 'serialize-javascript';
 
 if (environment.production) {
   enableProdMode();
+  enableAkitaProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
+
+if (environment.hmr) {
+  persistState({
+    exclude: ['router'], key: 's4eStore',
+    // tslint:disable-next-line:no-eval
+    serialize: serialize, deserialize: (str) => eval(`(${str})`)
+  });
+
+  if ((module as any).hot) {
+    hmrBootstrap(module, bootstrap);
+  } else {
+    console.error('HMR is not enabled for webpack-dev-server!');
+    console.log('Are you using the --hmr flag for ng serve?');
+  }
+} else {
+  bootstrap().catch(err => console.log(err));
+}

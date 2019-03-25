@@ -1,0 +1,440 @@
+{
+  "1": [
+    {
+      "id": 1,
+      "productId": 1,
+      "timestamp": "2018-10-04T00:00:00",
+      "layerName": "test:201810040000_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 2,
+      "productId": 1,
+      "timestamp": "2018-10-04T01:00:00",
+      "layerName": "test:201810040100_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 3,
+      "productId": 1,
+      "timestamp": "2018-10-04T02:00:00",
+      "layerName": "test:201810040200_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 4,
+      "productId": 1,
+      "timestamp": "2018-10-04T03:00:00",
+      "layerName": "test:201810040300_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 5,
+      "productId": 1,
+      "timestamp": "2018-10-04T04:00:00",
+      "layerName": "test:201810040400_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 6,
+      "productId": 1,
+      "timestamp": "2018-10-04T05:00:00",
+      "layerName": "test:201810040500_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 7,
+      "productId": 1,
+      "timestamp": "2018-10-04T06:00:00",
+      "layerName": "test:201810040600_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 8,
+      "productId": 1,
+      "timestamp": "2018-10-04T07:00:00",
+      "layerName": "test:201810040700_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 9,
+      "productId": 1,
+      "timestamp": "2018-10-04T08:00:00",
+      "layerName": "test:201810040800_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 10,
+      "productId": 1,
+      "timestamp": "2018-10-04T09:00:00",
+      "layerName": "test:201810040900_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 11,
+      "productId": 1,
+      "timestamp": "2018-10-04T10:00:00",
+      "layerName": "test:201810041000_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 12,
+      "productId": 1,
+      "timestamp": "2018-10-04T11:00:00",
+      "layerName": "test:201810041100_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 13,
+      "productId": 1,
+      "timestamp": "2018-10-04T12:00:00",
+      "layerName": "test:201810041200_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 14,
+      "productId": 1,
+      "timestamp": "2018-10-04T13:00:00",
+      "layerName": "test:201810041300_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 15,
+      "productId": 1,
+      "timestamp": "2018-10-04T14:00:00",
+      "layerName": "test:201810041400_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 16,
+      "productId": 1,
+      "timestamp": "2018-10-04T15:00:00",
+      "layerName": "test:201810041500_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 17,
+      "productId": 1,
+      "timestamp": "2018-10-04T16:00:00",
+      "layerName": "test:201810041600_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 18,
+      "productId": 1,
+      "timestamp": "2018-10-04T17:00:00",
+      "layerName": "test:201810041700_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 19,
+      "productId": 1,
+      "timestamp": "2018-10-04T18:00:00",
+      "layerName": "test:201810041800_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 20,
+      "productId": 1,
+      "timestamp": "2018-10-04T19:00:00",
+      "layerName": "test:201810041900_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 21,
+      "productId": 1,
+      "timestamp": "2018-10-04T20:00:00",
+      "layerName": "test:201810042000_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 22,
+      "productId": 1,
+      "timestamp": "2018-10-04T21:00:00",
+      "layerName": "test:201810042100_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 23,
+      "productId": 1,
+      "timestamp": "2018-10-04T22:00:00",
+      "layerName": "test:201810042200_Merkator_Europa_ir_108m"
+    },
+    {
+      "id": 24,
+      "productId": 1,
+      "timestamp": "2018-10-04T23:00:00",
+      "layerName": "test:201810042300_Merkator_Europa_ir_108m"
+    }
+  ],
+  "2": [
+    {
+      "id": 25,
+      "productId": 2,
+      "timestamp": "2018-10-04T00:00:00",
+      "layerName": "test:201810040000_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 26,
+      "productId": 2,
+      "timestamp": "2018-10-04T01:00:00",
+      "layerName": "test:201810040100_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 27,
+      "productId": 2,
+      "timestamp": "2018-10-04T02:00:00",
+      "layerName": "test:201810040200_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 28,
+      "productId": 2,
+      "timestamp": "2018-10-04T03:00:00",
+      "layerName": "test:201810040300_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 29,
+      "productId": 2,
+      "timestamp": "2018-10-04T04:00:00",
+      "layerName": "test:201810040400_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 30,
+      "productId": 2,
+      "timestamp": "2018-10-04T05:00:00",
+      "layerName": "test:201810040500_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 31,
+      "productId": 2,
+      "timestamp": "2018-10-04T06:00:00",
+      "layerName": "test:201810040600_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 32,
+      "productId": 2,
+      "timestamp": "2018-10-04T07:00:00",
+      "layerName": "test:201810040700_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 33,
+      "productId": 2,
+      "timestamp": "2018-10-04T08:00:00",
+      "layerName": "test:201810040800_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 34,
+      "productId": 2,
+      "timestamp": "2018-10-04T09:00:00",
+      "layerName": "test:201810040900_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 35,
+      "productId": 2,
+      "timestamp": "2018-10-04T10:00:00",
+      "layerName": "test:201810041000_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 36,
+      "productId": 2,
+      "timestamp": "2018-10-04T11:00:00",
+      "layerName": "test:201810041100_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 37,
+      "productId": 2,
+      "timestamp": "2018-10-04T12:00:00",
+      "layerName": "test:201810041200_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 38,
+      "productId": 2,
+      "timestamp": "2018-10-04T13:00:00",
+      "layerName": "test:201810041300_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 39,
+      "productId": 2,
+      "timestamp": "2018-10-04T14:00:00",
+      "layerName": "test:201810041400_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 40,
+      "productId": 2,
+      "timestamp": "2018-10-04T15:00:00",
+      "layerName": "test:201810041500_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 41,
+      "productId": 2,
+      "timestamp": "2018-10-04T16:00:00",
+      "layerName": "test:201810041600_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 42,
+      "productId": 2,
+      "timestamp": "2018-10-04T17:00:00",
+      "layerName": "test:201810041700_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 43,
+      "productId": 2,
+      "timestamp": "2018-10-04T18:00:00",
+      "layerName": "test:201810041800_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 44,
+      "productId": 2,
+      "timestamp": "2018-10-04T19:00:00",
+      "layerName": "test:201810041900_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 45,
+      "productId": 2,
+      "timestamp": "2018-10-04T20:00:00",
+      "layerName": "test:201810042000_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 46,
+      "productId": 2,
+      "timestamp": "2018-10-04T21:00:00",
+      "layerName": "test:201810042100_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 47,
+      "productId": 2,
+      "timestamp": "2018-10-04T22:00:00",
+      "layerName": "test:201810042200_Merkator_Europa_ir_108_setvak"
+    },
+    {
+      "id": 48,
+      "productId": 2,
+      "timestamp": "2018-10-04T23:00:00",
+      "layerName": "test:201810042300_Merkator_Europa_ir_108_setvak"
+    }
+  ],
+  "3": [
+    {
+      "id": 49,
+      "productId": 3,
+      "timestamp": "2018-10-04T00:00:00",
+      "layerName": "test:201810040000_Merkator_WV-IR"
+    },
+    {
+      "id": 50,
+      "productId": 3,
+      "timestamp": "2018-10-04T01:00:00",
+      "layerName": "test:201810040100_Merkator_WV-IR"
+    },
+    {
+      "id": 51,
+      "productId": 3,
+      "timestamp": "2018-10-04T02:00:00",
+      "layerName": "test:201810040200_Merkator_WV-IR"
+    },
+    {
+      "id": 52,
+      "productId": 3,
+      "timestamp": "2018-10-04T03:00:00",
+      "layerName": "test:201810040300_Merkator_WV-IR"
+    },
+    {
+      "id": 53,
+      "productId": 3,
+      "timestamp": "2018-10-04T04:00:00",
+      "layerName": "test:201810040400_Merkator_WV-IR"
+    },
+    {
+      "id": 54,
+      "productId": 3,
+      "timestamp": "2018-10-04T05:00:00",
+      "layerName": "test:201810040500_Merkator_WV-IR"
+    },
+    {
+      "id": 55,
+      "productId": 3,
+      "timestamp": "2018-10-04T06:00:00",
+      "layerName": "test:201810040600_Merkator_WV-IR"
+    },
+    {
+      "id": 56,
+      "productId": 3,
+      "timestamp": "2018-10-04T07:00:00",
+      "layerName": "test:201810040700_Merkator_WV-IR"
+    },
+    {
+      "id": 57,
+      "productId": 3,
+      "timestamp": "2018-10-04T08:00:00",
+      "layerName": "test:201810040800_Merkator_WV-IR"
+    },
+    {
+      "id": 58,
+      "productId": 3,
+      "timestamp": "2018-10-04T09:00:00",
+      "layerName": "test:201810040900_Merkator_WV-IR"
+    },
+    {
+      "id": 59,
+      "productId": 3,
+      "timestamp": "2018-10-04T10:00:00",
+      "layerName": "test:201810041000_Merkator_WV-IR"
+    },
+    {
+      "id": 60,
+      "productId": 3,
+      "timestamp": "2018-10-04T11:00:00",
+      "layerName": "test:201810041100_Merkator_WV-IR"
+    },
+    {
+      "id": 61,
+      "productId": 3,
+      "timestamp": "2018-10-04T12:00:00",
+      "layerName": "test:201810041200_Merkator_WV-IR"
+    },
+    {
+      "id": 62,
+      "productId": 3,
+      "timestamp": "2018-10-04T13:00:00",
+      "layerName": "test:201810041300_Merkator_WV-IR"
+    },
+    {
+      "id": 63,
+      "productId": 3,
+      "timestamp": "2018-10-04T14:00:00",
+      "layerName": "test:201810041400_Merkator_WV-IR"
+    },
+    {
+      "id": 64,
+      "productId": 3,
+      "timestamp": "2018-10-04T15:00:00",
+      "layerName": "test:201810041500_Merkator_WV-IR"
+    },
+    {
+      "id": 65,
+      "productId": 3,
+      "timestamp": "2018-10-04T16:00:00",
+      "layerName": "test:201810041600_Merkator_WV-IR"
+    },
+    {
+      "id": 66,
+      "productId": 3,
+      "timestamp": "2018-10-04T17:00:00",
+      "layerName": "test:201810041700_Merkator_WV-IR"
+    },
+    {
+      "id": 67,
+      "productId": 3,
+      "timestamp": "2018-10-04T18:00:00",
+      "layerName": "test:201810041800_Merkator_WV-IR"
+    },
+    {
+      "id": 68,
+      "productId": 3,
+      "timestamp": "2018-10-04T19:00:00",
+      "layerName": "test:201810041900_Merkator_WV-IR"
+    },
+    {
+      "id": 69,
+      "productId": 3,
+      "timestamp": "2018-10-04T20:00:00",
+      "layerName": "test:201810042000_Merkator_WV-IR"
+    },
+    {
+      "id": 70,
+      "productId": 3,
+      "timestamp": "2018-10-04T21:00:00",
+      "layerName": "test:201810042100_Merkator_WV-IR"
+    },
+    {
+      "id": 71,
+      "productId": 3,
+      "timestamp": "2018-10-04T22:00:00",
+      "layerName": "test:201810042200_Merkator_WV-IR"
+    },
+    {
+      "id": 72,
+      "productId": 3,
+      "timestamp": "2018-10-04T23:00:00",
+      "layerName": "test:201810042300_Merkator_WV-IR"
+    }
+  ]
+}
