@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- java `^8`
+- java `^11`
 - mvn `^3.3.9`
 - docker `^18.09.3`
 - docker-compose `^1.18.0`
