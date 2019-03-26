@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jdk-slim
 
 RUN mkdir /app
 WORKDIR /app
