@@ -67,8 +67,8 @@ In order do run docker-compose following steps must be done (**unless stated oth
 
    You can remove `docker-geoserver` directory afterwards
 
-2. Run `mvn package` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`.
-   For the tests to pass follow the instructions from [running tests](#backend-running-unit-tests).
+2. Run `mvn package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
+   **NOTICE**: In some cases packaging may fail due to inability to compile some binary dependencies for frontend packages. In that case the easiest solution is to delete `s4e-web/node_moules` directory (`rm -rf s4e-web/node_modules`)
 
 3. Run `docker-compose up`
 
@@ -119,20 +119,20 @@ In order do run docker-compose following steps must be done (**unless stated oth
    2019-03-06 11:02  s3://s4e-test-2
    ```
 
-8. Download s3 data for minio:
+7. Download s3 data for minio:
 
    ```bash
    s3cmd get s3://data-packs/minio-data-v1.tar.xz
    tar -xJf minio-data-v1.tar.xz -C ./tmp
    ```
 
-9. Provision data to GeoServer by running:
+8. Provision data to GeoServer by running:
 
    ```bash
    ./resources/geoserver/provision/provision.sh
    ```
 
-10. You're done - application should be available on http://localhost:4200 and have 3 available products
+9. You're done - application should be available on http://localhost:4200 and have 3 available products
 
 **IMPORTANT** If you run `docker-compose up` you'll get application all set up, but it does not support any kind of live reload, etc. If you plan on developing any part of the project (frontend or backend) you should run docker compose without module you would like to develop - for example:
 
