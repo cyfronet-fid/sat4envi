@@ -15,6 +15,4 @@ curl -u $CREDS \
 
 rm $TMP_FILENAME
 
-$DIR/2-s3-put-and-create-layer/up.sh
-
-$DIR/3-prg-layers/up.sh
+$DIR/1-prg-layers/up.sh

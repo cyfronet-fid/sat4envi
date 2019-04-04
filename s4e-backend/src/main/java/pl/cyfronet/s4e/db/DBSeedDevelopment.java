@@ -12,6 +12,7 @@ import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.service.GeoServerService;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -30,6 +31,8 @@ public class DBSeedDevelopment {
     private final ProductRepository productRepository;
     private final AppUserRepository appUserRepository;
 
+    private final GeoServerService geoServerService;
+
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
@@ -37,7 +40,7 @@ public class DBSeedDevelopment {
         if (productTypeRepository.count() > 0 || productRepository.count() > 0 || appUserRepository.count() > 0) {
             return;
         }
-        List<ProductType> products = Arrays.asList(new ProductType[]{
+        List<ProductType> productTypes = Arrays.asList(new ProductType[]{
                 ProductType.builder()
                         .name("108m")
                         .build(),
@@ -48,13 +51,18 @@ public class DBSeedDevelopment {
                         .name("WV-IR")
                         .build(),
         });
-        productTypeRepository.saveAll(products);
+        productTypeRepository.saveAll(productTypes);
 
-        val granules = new ArrayList<Product>();
-        granules.addAll(generateProducts(products.get(0), "test:", "_Merkator_Europa_ir_108m"));
-        granules.addAll(generateProducts(products.get(1), "test:", "_Merkator_Europa_ir_108_setvak"));
-        granules.addAll(generateProducts(products.get(2), "test:", "_Merkator_WV-IR"));
-        productRepository.saveAll(granules);
+        val products = new ArrayList<Product>();
+        products.addAll(generateProducts(productTypes.get(0), "_Merkator_Europa_ir_108m"));
+        products.addAll(generateProducts(productTypes.get(1), "_Merkator_Europa_ir_108_setvak"));
+        products.addAll(generateProducts(productTypes.get(2), "_Merkator_WV-IR"));
+        productRepository.saveAll(products);
+
+        geoServerService.resetWorkspace();
+        for (val product: products) {
+            geoServerService.addLayer(product);
+        }
 
         List<AppUser> appUsers = Arrays.asList(new AppUser[]{
                 AppUser.builder()
@@ -87,15 +95,17 @@ public class DBSeedDevelopment {
         appUserRepository.saveAll(appUsers);
     }
 
-    private List<Product> generateProducts(ProductType productType, String prefix, String suffix) {
+    private List<Product> generateProducts(ProductType productType, String suffix) {
         val count = 24;
         val granules = new ArrayList<Product>();
         for (int i = 0; i < count; i++) {
             LocalDateTime timestamp = BASE_TIME.plusHours(i);
+            String layerName = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) + suffix;
             granules.add(Product.builder()
                     .productType(productType)
                     .timestamp(timestamp)
-                    .layerName(prefix + DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) + suffix)
+                    .layerName(layerName)
+                    .s3Path(layerName+".tif")
                     .build());
         }
         return granules;
