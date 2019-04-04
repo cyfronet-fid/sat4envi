@@ -63,7 +63,7 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.push(new Image({
       source: new ImageWMS({
         url: this.CONSTANTS.geoserverUrl,
-        params: {'LAYERS': product.layerName},
+        params: {'LAYERS': this.CONSTANTS.geoserverWorkspace + ':' + product.layerName},
       }),
     }));
 

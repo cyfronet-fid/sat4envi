@@ -1,10 +1,8 @@
 package pl.cyfronet.s4e.service;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.ProductType;
@@ -17,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(SpringRunner.class)
 @BasicTest
 public class ProductServiceTest {
 
@@ -27,7 +24,7 @@ public class ProductServiceTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         productRepository.deleteAll();
         productTypeRepository.deleteAll();

@@ -32,6 +32,15 @@ It will be exposed at `localhost:5434`.
 
 Then, run `mvn test`.
 
+#### Running integration tests
+
+You will need test db, minio and geoserver for the tests to pass.
+Run them by `docker-compose up db-test geoserver minio`.
+
+Minio must be provisioned with `data-packs/minio-data-v1.tar.xz`.
+
+Then, execute `mvn verify`.
+
 #### Building and running
 
 To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
