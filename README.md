@@ -41,6 +41,12 @@ Alternatively, the app can be built and run by issuing `mvn spring-boot:run -Dsp
 
 Both methods will expose the server under `http://localhost:4201`.
 
+#### API docs
+
+We use Swagger to create API documentation.
+When you run the backend Swagger-UI is exposed under `http://localhost:4201/swagger-ui.html`.
+
+
 ### s4e-web
 
 Detailed frontend description can be found [here](./s4e-web/README.md)
