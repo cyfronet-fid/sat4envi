@@ -43,6 +43,4 @@ public class CreateS3CoveragePayload {
                 .title(coverage)
                 .build();
     }
-
-
 }

@@ -38,6 +38,4 @@ public class CreateS3CoverageStorePayload {
                 .url(s3url)
                 .build();
     }
-
-
 }

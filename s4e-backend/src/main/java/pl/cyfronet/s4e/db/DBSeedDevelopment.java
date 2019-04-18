@@ -5,13 +5,11 @@ import lombok.val;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.bean.ProductType;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
-import pl.cyfronet.s4e.bean.AppRole;
-import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.service.GeoServerService;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +27,7 @@ public class DBSeedDevelopment {
 
     private final ProductTypeRepository productTypeRepository;
     private final ProductRepository productRepository;
+    private final SldStyleRepository sldStyleRepository;
     private final AppUserRepository appUserRepository;
 
     private final GeoServerService geoServerService;
@@ -59,9 +58,18 @@ public class DBSeedDevelopment {
         products.addAll(generateProducts(productTypes.get(2), "_Merkator_WV-IR"));
         productRepository.saveAll(products);
 
+        val sldStyles = new ArrayList<SldStyle>();
+        sldStyles.add(SldStyle.builder()
+                .name("wojewodztwa")
+                .build());
+        sldStyleRepository.saveAll(sldStyles);
+
         geoServerService.resetWorkspace();
         for (val product: products) {
             geoServerService.addLayer(product);
+        }
+        for (val sldStyle: sldStyles) {
+            geoServerService.addStyle(sldStyle);
         }
 
         List<AppUser> appUsers = Arrays.asList(new AppUser[]{

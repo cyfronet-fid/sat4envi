@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.util.S3AddressUtil;
 
 @Service
@@ -15,6 +16,7 @@ import pl.cyfronet.s4e.util.S3AddressUtil;
 public class GeoServerService {
     private final GeoServerOperations geoServerOperations;
     private final ProductService productService;
+    private final SldStyleService sldStyleService;
     private final S3AddressUtil s3AddressUtil;
 
     @Value("${geoserver.workspace}")
@@ -43,6 +45,26 @@ public class GeoServerService {
                 geoServerOperations.deleteCoverageStore(workspace, gsName, true);
             } catch (HttpClientErrorException.NotFound e1) {
                 log.warn("Probably coverage store wasn't created", e1);
+            } catch (RestClientResponseException e1) {
+                log.error("Couldn't clean up GeoServer state", e1);
+            }
+            throw e;
+        }
+    }
+
+    public void addStyle(SldStyle sldStyle) {
+        String sldName = sldStyle.getName();
+        try {
+            geoServerOperations.createStyle(workspace, sldName);
+            geoServerOperations.uploadSld(workspace, sldName, sldName);
+            sldStyleService.updateCreated(sldStyle.getId(), true);
+        } catch (RestClientResponseException e) {
+            // try to clean up GeoServer state
+            log.warn("Error when adding SLD Style", e);
+            try {
+                geoServerOperations.deleteStyle(workspace, sldName);
+            } catch (HttpClientErrorException.NotFound e1) {
+                log.warn("Probably SLD Style wasn't created", e1);
             } catch (RestClientResponseException e1) {
                 log.error("Couldn't clean up GeoServer state", e1);
             }
