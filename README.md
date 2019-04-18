@@ -56,6 +56,10 @@ We use Swagger to create API documentation.
 When you run the backend Swagger-UI is exposed under `http://localhost:4201/swagger-ui.html`.
 
 
+#### Miscellaneous
+
+To check for dependency updates run `mvn versions:display-dependency-updates` in directory `s4e-backend`.
+
 ### s4e-web
 
 Detailed frontend description can be found [here](./s4e-web/README.md)

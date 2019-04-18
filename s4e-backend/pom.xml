@@ -18,7 +18,7 @@
     <description>Sat4envi backend</description>
 
     <properties>
-        <jjwt.version>0.10.5</jjwt.version>
+        <jjwt.version>0.10.6</jjwt.version>
         <junit.version>5.4.1</junit.version>
     </properties>
 
@@ -150,6 +150,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <processDependencyManagement>false</processDependencyManagement>
+                </configuration>
             </plugin>
         </plugins>
     </build>
