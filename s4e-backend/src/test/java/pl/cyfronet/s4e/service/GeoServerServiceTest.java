@@ -11,8 +11,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.util.S3AddressUtil;
 
 import java.time.LocalDateTime;
@@ -33,7 +35,13 @@ class GeoServerServiceTest {
     private ProductRepository productRepository;
 
     @Autowired
+    private SldStyleRepository sldStyleRepository;
+
+    @Autowired
     private ProductService productService;
+
+    @Autowired
+    private SldStyleService sldStyleService;
 
     @Autowired
     private S3AddressUtil s3AddressUtil;
@@ -47,15 +55,17 @@ class GeoServerServiceTest {
     private GeoServerService geoServerService;
     private ProductType productType;
     private Product product;
+    private SldStyle sldStyle;
 
     @BeforeEach
-    private void beforeEach() {
+    public void beforeEach() {
         productRepository.deleteAll();
         productTypeRepository.deleteAll();
+        sldStyleRepository.deleteAll();
     }
 
     private void prepare() {
-        geoServerService = new GeoServerService(geoServerOperations, productService, s3AddressUtil);
+        geoServerService = new GeoServerService(geoServerOperations, productService, sldStyleService, s3AddressUtil);
         ReflectionTestUtils.setField(geoServerService, "workspace", workspace);
 
         productType = productTypeRepository.save(
@@ -69,6 +79,11 @@ class GeoServerServiceTest {
                         .layerName("testLayerName")
                         .s3Path("some/s3/path.tif")
                         .build());
+        sldStyle = sldStyleRepository.save(
+                SldStyle.builder()
+                        .name("styleOne")
+                        .build()
+        );
     }
 
     @Test
@@ -99,6 +114,21 @@ class GeoServerServiceTest {
         assertThat(updatedProduct.isLayerCreated(), is(equalTo(false)));
         verify(geoServerOperations, times(1)).createS3CoverageStore(workspace, product.getLayerName(), s3AddressUtil.getS3Address(product.getS3Path()));
         verify(geoServerOperations, times(1)).deleteCoverageStore(workspace, product.getLayerName(), true);
+        verifyNoMoreInteractions(geoServerOperations);
+    }
+
+    @Test
+    public void shouldAddStyleAndSetCreatedFlag() {
+        prepare();
+
+        assertThat(sldStyle.isCreated(), is(equalTo(false)));
+
+        geoServerService.addStyle(sldStyle);
+
+        SldStyle updatedSldStyle = sldStyleRepository.findById(sldStyle.getId()).get();
+        assertThat(updatedSldStyle.isCreated(), is(equalTo(true)));
+        verify(geoServerOperations, times(1)).createStyle(workspace, sldStyle.getName());
+        verify(geoServerOperations, times(1)).uploadSld(workspace, sldStyle.getName(), sldStyle.getName());
         verifyNoMoreInteractions(geoServerOperations);
     }
 }

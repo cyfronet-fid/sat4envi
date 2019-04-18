@@ -91,4 +91,40 @@ public class GeoServerOperationsIntegrationTest {
 
         assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), hasSize(0));
     }
+
+    @Test
+    public void shouldCreateStyle() {
+        geoServerOperations.createWorkspace("test");
+
+        assertThat(geoServerOperations.listStyles("test"), hasSize(0));
+
+        geoServerOperations.createStyle("test", "styleOne");
+
+        assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
+    }
+
+    @Test
+    public void shouldUploadStyleSld() {
+        geoServerOperations.createWorkspace("test");
+        geoServerOperations.createStyle("test", "styleOne");
+
+        assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
+
+        geoServerOperations.uploadSld("test", "styleOne", "styleOne");
+
+        assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
+    }
+
+    @Test
+    public void shouldDeleteStyleSld() {
+        geoServerOperations.createWorkspace("test");
+        geoServerOperations.createStyle("test", "styleOne");
+        geoServerOperations.uploadSld("test", "styleOne", "styleOne");
+
+        assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
+
+        geoServerOperations.deleteStyle("test", "styleOne");
+
+        assertThat(geoServerOperations.listStyles("test"), hasSize(0));
+    }
 }

@@ -11,14 +11,20 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.cyfronet.s4e.service.payload.CreateS3CoveragePayload;
 import pl.cyfronet.s4e.service.payload.CreateS3CoverageStorePayload;
+import pl.cyfronet.s4e.service.payload.CreateStylePayload;
 import pl.cyfronet.s4e.service.payload.CreateWorkspacePayload;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,8 +47,12 @@ public class GeoServerOperations {
     }
 
     private <T> HttpEntity<T> httpEntity(T payload) {
+        return httpEntity(payload, MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    private <T> HttpEntity<T> httpEntity(T payload, String contentType) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Content-Type", contentType);
         return new HttpEntity<>(payload, headers);
     }
 
@@ -127,5 +137,50 @@ public class GeoServerOperations {
                 .queryParam("recurse", true)
                 .buildAndExpand(workspace, coverageStore, coverage).toUri();
         restTemplate().delete(url);
+    }
+
+
+    public List<String> listStyles(String workspace) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles")
+                .buildAndExpand(workspace).toUri();
+        return list("style", url);
+    }
+
+    public void createStyle(String workspace, String style) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles")
+                .buildAndExpand(workspace).toUri();
+        val entity = httpEntity(new CreateStylePayload(workspace, style));
+        restTemplate().postForObject(url, entity, String.class);
+    }
+
+    public void uploadSld(String workspace, String style, String sld) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles/{style}")
+                .buildAndExpand(workspace, style).toUri();
+        String sldFileContents = loadSldFile("classpath:geoserver/"+sld+".sld");
+        val entity = httpEntity(sldFileContents, "application/vnd.ogc.sld+xml");
+        restTemplate().put(url, entity);
+    }
+
+    public void deleteStyle(String workspace, String style) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles/{style}")
+                // The purge parameter specifies whether the underlying SLD file for the style should be deleted on disk
+                .queryParam("purge", true)
+                // The recurse parameter removes references to the specified style in existing layers
+                .queryParam("recurse", true)
+                .buildAndExpand(workspace, style).toUri();
+        restTemplate().delete(url);
+    }
+
+
+    private String loadSldFile(String path) {
+        try {
+            File sldFile = ResourceUtils.getFile(path);
+            return Files.readString(sldFile.toPath(), StandardCharsets.UTF_8);
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException(e);
+        } catch (IOException e) {
+            log.warn("Couldn't read SLD file", e);
+            throw new RuntimeException(e);
+        }
     }
 }

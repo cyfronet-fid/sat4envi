@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Value;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.*;
 
 @BasicTest
 @Tag("integration")
@@ -27,6 +29,9 @@ public class GeoServerServiceIntegrationTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private SldStyleRepository sldStyleRepository;
 
     @Autowired
     private GeoServerOperations geoServerOperations;
@@ -52,5 +57,20 @@ public class GeoServerServiceIntegrationTest {
         geoServerService.addLayer(product);
 
         assertThat(geoServerOperations.listCoverages(workspace, "testLayerName"), contains("testLayerName"));
+    }
+
+    @Test
+    public void shouldCreateSldStyle() {
+        geoServerService.resetWorkspace();
+        SldStyle sldStyle = sldStyleRepository.save(SldStyle.builder()
+                .name("styleOne")
+                .build());
+
+        geoServerService.addStyle(sldStyle);
+
+        assertThat(geoServerOperations.listStyles(workspace), contains("styleOne"));
+
+        SldStyle updatedSldStyle = sldStyleRepository.findById(sldStyle.getId()).get();
+        assertThat(updatedSldStyle.isCreated(), is(true));
     }
 }
