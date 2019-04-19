@@ -2,13 +2,18 @@ package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
+import pl.cyfronet.s4e.Constants;
+import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.util.S3AddressUtil;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +22,7 @@ public class GeoServerService {
     private final GeoServerOperations geoServerOperations;
     private final ProductService productService;
     private final SldStyleService sldStyleService;
+    private final PRGOverlayService prgOverlayService;
     private final S3AddressUtil s3AddressUtil;
 
     @Value("${geoserver.workspace}")
@@ -69,6 +75,32 @@ public class GeoServerService {
                 log.error("Couldn't clean up GeoServer state", e1);
             }
             throw e;
+        }
+    }
+
+    public void createPrgOverlays() {
+        List<PRGOverlay> prgOverlays = prgOverlayService.getPRGOverlays();
+        if (prgOverlays.stream().anyMatch(PRGOverlay::isCreated)) {
+            // the initialization procedure must've been run already
+            return;
+        }
+
+        if (prgOverlays.stream().anyMatch(prgOverlay -> !prgOverlay.getSldStyle().isCreated())) {
+            // create a list of missing styles in this form "<style1name>, <style2name>, <style4name>"
+            String missingStyles = prgOverlays.stream()
+                    .filter(prgOverlay -> !prgOverlay.getSldStyle().isCreated())
+                    .map(prgOverlay -> prgOverlay.getSldStyle().getName())
+                    .reduce((n1, n2) -> n1 + ", " + n2).get();
+            throw new IllegalStateException("You are trying to configure PRGOverlays, but not all styles have been created yet. Create these styles first: "+missingStyles);
+        }
+
+        geoServerOperations.createExternalShpDataStore(workspace, Constants.GEOSERVER_PRG_DATA_STORE, "file://"+Constants.GEOSERVER_PRG_PATH);
+
+        for (val prgOverlay: prgOverlays) {
+            if (geoServerOperations.layerExists(workspace, prgOverlay.getFeatureType())) {
+                prgOverlayService.updateCreated(prgOverlay.getId(), true);
+                geoServerOperations.setLayerDefaultStyle(workspace, prgOverlay.getFeatureType(), prgOverlay.getSldStyle().getName());
+            }
         }
     }
 }

@@ -9,9 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.Constants;
+import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.ProductType;
 import pl.cyfronet.s4e.bean.SldStyle;
+import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
@@ -38,10 +41,16 @@ class GeoServerServiceTest {
     private SldStyleRepository sldStyleRepository;
 
     @Autowired
+    private PRGOverlayRepository prgOverlayRepository;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
     private SldStyleService sldStyleService;
+
+    @Autowired
+    private PRGOverlayService prgOverlayService;
 
     @Autowired
     private S3AddressUtil s3AddressUtil;
@@ -56,16 +65,18 @@ class GeoServerServiceTest {
     private ProductType productType;
     private Product product;
     private SldStyle sldStyle;
+    private PRGOverlay prgOverlay;
 
     @BeforeEach
     public void beforeEach() {
         productRepository.deleteAll();
         productTypeRepository.deleteAll();
+        prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
     }
 
     private void prepare() {
-        geoServerService = new GeoServerService(geoServerOperations, productService, sldStyleService, s3AddressUtil);
+        geoServerService = new GeoServerService(geoServerOperations, productService, sldStyleService, prgOverlayService, s3AddressUtil);
         ReflectionTestUtils.setField(geoServerService, "workspace", workspace);
 
         productType = productTypeRepository.save(
@@ -82,8 +93,13 @@ class GeoServerServiceTest {
         sldStyle = sldStyleRepository.save(
                 SldStyle.builder()
                         .name("styleOne")
-                        .build()
-        );
+                        .build());
+        prgOverlay = prgOverlayRepository.save(
+                PRGOverlay.builder()
+                        .name("wojewodztwa")
+                        .featureType("wojewodztwaFeatureType")
+                        .sldStyle(sldStyle)
+                        .build());
     }
 
     @Test
@@ -129,6 +145,43 @@ class GeoServerServiceTest {
         assertThat(updatedSldStyle.isCreated(), is(equalTo(true)));
         verify(geoServerOperations, times(1)).createStyle(workspace, sldStyle.getName());
         verify(geoServerOperations, times(1)).uploadSld(workspace, sldStyle.getName(), sldStyle.getName());
+        verifyNoMoreInteractions(geoServerOperations);
+    }
+
+    @Test
+    public void shouldCreatePrgLayers() {
+        prepare();
+        sldStyle.setCreated(true);
+        sldStyle = sldStyleRepository.save(sldStyle);
+        when(geoServerOperations.layerExists(workspace, prgOverlay.getFeatureType())).thenReturn(true);
+
+        geoServerService.createPrgOverlays();
+
+        PRGOverlay updatedPrgOverlay = prgOverlayRepository.findById(prgOverlay.getId()).get();
+        assertThat(updatedPrgOverlay.isCreated(), is(true));
+        verify(geoServerOperations, times(1)).createExternalShpDataStore(workspace, Constants.GEOSERVER_PRG_DATA_STORE, "file://"+Constants.GEOSERVER_PRG_PATH);
+        verify(geoServerOperations, times(1)).setLayerDefaultStyle(workspace, prgOverlay.getFeatureType(), sldStyle.getName());
+    }
+
+    @Test
+    public void shouldNotCreatePrgLayersIfAnyCreated() {
+        prepare();
+        prgOverlay.setCreated(true);
+        prgOverlay = prgOverlayRepository.save(prgOverlay);
+
+        geoServerService.createPrgOverlays();
+
+        verifyNoMoreInteractions(geoServerOperations);
+    }
+
+    @Test
+    public void shouldThrowIfSldStyleNotCreatedForPrgOverlay() {
+        prepare();
+
+        assertThrows(IllegalStateException.class, () -> geoServerService.createPrgOverlays());
+
+        PRGOverlay updatedPrgOverlay = prgOverlayRepository.findById(prgOverlay.getId()).get();
+        assertThat(updatedPrgOverlay.isCreated(), is(false));
         verifyNoMoreInteractions(geoServerOperations);
     }
 }

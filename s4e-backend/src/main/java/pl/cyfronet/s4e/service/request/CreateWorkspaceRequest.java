@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service.payload;
+package pl.cyfronet.s4e.service.request;
 
 import lombok.Builder;
 import lombok.Value;
@@ -14,7 +14,7 @@ import lombok.Value;
  * </pre>
  */
 @Value
-public class CreateWorkspacePayload {
+public class CreateWorkspaceRequest {
     @Value
     @Builder
     private static class Workspace {
@@ -23,7 +23,7 @@ public class CreateWorkspacePayload {
 
     Workspace workspace;
 
-    public CreateWorkspacePayload(String workspace) {
+    public CreateWorkspaceRequest(String workspace) {
         this.workspace = Workspace.builder()
                 .name(workspace)
                 .build();
