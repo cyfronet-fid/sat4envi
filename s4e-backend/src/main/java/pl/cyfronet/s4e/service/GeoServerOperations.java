@@ -10,14 +10,13 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.cyfronet.s4e.service.payload.CreateS3CoveragePayload;
-import pl.cyfronet.s4e.service.payload.CreateS3CoverageStorePayload;
-import pl.cyfronet.s4e.service.payload.CreateStylePayload;
-import pl.cyfronet.s4e.service.payload.CreateWorkspacePayload;
+import pl.cyfronet.s4e.service.request.*;
+import pl.cyfronet.s4e.service.response.LayerResponse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -84,7 +83,7 @@ public class GeoServerOperations {
     public void createWorkspace(String workspace) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces")
                 .build().toUri();
-        val entity = httpEntity(new CreateWorkspacePayload(workspace));
+        val entity = httpEntity(new CreateWorkspaceRequest(workspace));
 
         restTemplate().postForObject(url, entity, String.class);
     }
@@ -97,6 +96,27 @@ public class GeoServerOperations {
     }
 
 
+    public List<String> listDataStores(String workspace) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/datastores")
+                .buildAndExpand(workspace).toUri();
+        return list("dataStore", url);
+    }
+
+    /**
+     *
+     * @param workspace
+     * @param dataStoreName
+     * @param path the path to shapefiles, including the "file://" prefix
+     */
+    public void createExternalShpDataStore(String workspace, String dataStoreName, String path) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/datastores/{dataStoreName}/external.shp")
+                .queryParam("configure", "all")
+                .buildAndExpand(workspace, dataStoreName).toUri();
+        val entity = httpEntity(path, "text/plain");
+        restTemplate().put(url, entity);
+    }
+
+
     public List<String> listCoverageStores(String workspace) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/coveragestores")
                 .buildAndExpand(workspace).toUri();
@@ -106,7 +126,7 @@ public class GeoServerOperations {
     public void createS3CoverageStore(String workspace, String coverageStore, String s3url) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/coveragestores")
                 .buildAndExpand(workspace).toUri();
-        val entity = httpEntity(new CreateS3CoverageStorePayload(workspace, coverageStore, s3url));
+        val entity = httpEntity(new CreateS3CoverageStoreRequest(workspace, coverageStore, s3url));
         restTemplate().postForObject(url, entity, String.class);
     }
 
@@ -115,6 +135,13 @@ public class GeoServerOperations {
                 .queryParam("recurse", recurse)
                 .buildAndExpand(workspace, coverageStore).toUri();
         restTemplate().delete(url);
+    }
+
+
+    public List<String> listDataStoreFeatureTypes(String workspace, String dataStoreName) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/datastores/{dataStoreName}/featuretypes")
+                .buildAndExpand(workspace, dataStoreName).toUri();
+        return list("featureType", url);
     }
 
 
@@ -127,7 +154,7 @@ public class GeoServerOperations {
     public void createS3Coverage(String workspace, String coverageStore, String coverage) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/coveragestores/{coveragestore}/coverages")
                 .buildAndExpand(workspace, coverageStore).toUri();
-        val entity = httpEntity(new CreateS3CoveragePayload(workspace, coverageStore, coverage));
+        val entity = httpEntity(new CreateS3CoverageRequest(workspace, coverageStore, coverage));
         restTemplate().postForObject(url, entity, String.class);
     }
 
@@ -140,6 +167,27 @@ public class GeoServerOperations {
     }
 
 
+    public boolean layerExists(String workspace, String layerName) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/layers/{layerName}")
+                .buildAndExpand(workspace, layerName).toUri();
+        ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
+        return responseEntity.getStatusCode().is2xxSuccessful();
+    }
+
+    public LayerResponse getLayer(String workspace, String layerName) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/layers/{layerName}")
+                .buildAndExpand(workspace, layerName).toUri();
+        return restTemplate().getForObject(url, LayerResponse.class);
+    }
+
+    public void setLayerDefaultStyle(String workspace, String layerName, String defaultStyle) {
+        URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/layers/{layerName}")
+                .buildAndExpand(workspace, layerName).toUri();
+        val entity = httpEntity(new SetLayerDefaultStyleRequest(workspace, defaultStyle));
+        restTemplate().put(url, entity);
+    }
+
+
     public List<String> listStyles(String workspace) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles")
                 .buildAndExpand(workspace).toUri();
@@ -149,7 +197,7 @@ public class GeoServerOperations {
     public void createStyle(String workspace, String style) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/styles")
                 .buildAndExpand(workspace).toUri();
-        val entity = httpEntity(new CreateStylePayload(workspace, style));
+        val entity = httpEntity(new CreateStyleRequest(workspace, style));
         restTemplate().postForObject(url, entity, String.class);
     }
 

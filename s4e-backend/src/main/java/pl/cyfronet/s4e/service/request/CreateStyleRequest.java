@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service.payload;
+package pl.cyfronet.s4e.service.request;
 
 import lombok.Builder;
 import lombok.Value;
@@ -16,7 +16,7 @@ import lombok.Value;
  * </pre>
  */
 @Value
-public class CreateStylePayload {
+public class CreateStyleRequest {
     @Value
     @Builder
     private static class Style {
@@ -27,7 +27,7 @@ public class CreateStylePayload {
 
     Style style;
 
-    public CreateStylePayload(String workspace, String style) {
+    public CreateStyleRequest(String workspace, String style) {
         this.style = Style.builder()
                 .namespace(workspace)
                 .name(style)

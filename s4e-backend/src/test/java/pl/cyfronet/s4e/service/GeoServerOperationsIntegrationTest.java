@@ -5,10 +5,12 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.Constants;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 @BasicTest
 @Tag("integration")
@@ -42,6 +44,31 @@ public class GeoServerOperationsIntegrationTest {
         geoServerOperations.deleteWorkspace("test", false);
 
         assertThat(geoServerOperations.listWorkspaces(), hasSize(0));
+    }
+
+    @Test
+    public void shouldCreateExternalShpDataStore() {
+        geoServerOperations.createWorkspace("test");
+
+        assertThat(geoServerOperations.listDataStores("test"), hasSize(0));
+
+        geoServerOperations.createExternalShpDataStore("test", "dataStoreName", "file://"+ Constants.GEOSERVER_PRG_PATH);
+
+        assertThat(geoServerOperations.listDataStores("test"), contains("dataStoreName"));
+        List<String> featureTypes = geoServerOperations.listDataStoreFeatureTypes("test", "dataStoreName");
+        assertThat(
+                "In case this assertion fails the PRG store baked into GeoServer image has to be verified, and" +
+                        " all the PRG layer logic updated as required",
+                featureTypes,
+                containsInAnyOrder(
+                        "Pa%C5%84stwo",
+                        "gminy",
+                        "jednostki_ewidencyjne",
+                        "obreby_ewidencyjne",
+                        "powiaty",
+                        "wojew%C3%B3dztwa"
+                )
+        );
     }
 
     @Test
@@ -90,6 +117,22 @@ public class GeoServerOperationsIntegrationTest {
         geoServerOperations.deleteCoverage("test", "covDataStoreName", "covName");
 
         assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), hasSize(0));
+    }
+
+    @Test
+    public void shouldSetLayerDefaultStyle() {
+        geoServerOperations.createWorkspace("test");
+        geoServerOperations.createStyle("test", "styleOne");
+        geoServerOperations.uploadSld("test", "styleOne", "styleOne");
+        geoServerOperations.createExternalShpDataStore("test", "dataStoreName", "file://"+ Constants.GEOSERVER_PRG_PATH);
+
+        assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
+        assertThat(geoServerOperations.listDataStores("test"), contains("dataStoreName"));
+        assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), not(equalTo("test:styleOne")));
+
+        geoServerOperations.setLayerDefaultStyle("test", "wojew%C3%B3dztwa", "styleOne");
+
+        assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:styleOne")));
     }
 
     @Test

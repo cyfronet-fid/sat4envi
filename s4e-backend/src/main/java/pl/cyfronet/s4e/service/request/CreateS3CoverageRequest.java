@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service.payload;
+package pl.cyfronet.s4e.service.request;
 
 import lombok.Builder;
 import lombok.Value;
@@ -20,7 +20,7 @@ import lombok.Value;
  * </pre>
  */
 @Value
-public class CreateS3CoveragePayload {
+public class CreateS3CoverageRequest {
     @Value
     @Builder
     private static class Coverage {
@@ -28,14 +28,14 @@ public class CreateS3CoveragePayload {
         String store;
         String name;
         String title;
-        String srs = PayloadConstants.SRS;
-        String nativeFormat = PayloadConstants.S3_STORE_TYPE;
+        String srs = RequestConstants.SRS;
+        String nativeFormat = RequestConstants.S3_STORE_TYPE;
         boolean enabled = true;
     }
 
     Coverage coverage;
 
-    public CreateS3CoveragePayload(String workspace, String coverageStore, String coverage) {
+    public CreateS3CoverageRequest(String workspace, String coverageStore, String coverage) {
         this.coverage = Coverage.builder()
                 .namespace(workspace)
                 .store(workspace+":"+coverageStore)
