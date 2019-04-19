@@ -9,13 +9,13 @@ import pl.cyfronet.s4e.bean.PRGOverlay;
 public class PRGOverlayResponse {
     private Long id;
     private String name;
-    private String sldStyleName;
+    private String layerName;
 
     public static PRGOverlayResponse of(PRGOverlay overlay){
         return PRGOverlayResponse.builder()
                 .id(overlay.getId())
                 .name(overlay.getName())
-                .sldStyleName(overlay.getSldStyle().getName())
+                .layerName(overlay.getFeatureType())
                 .build();
     }
 }
