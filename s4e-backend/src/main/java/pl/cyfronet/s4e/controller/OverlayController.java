@@ -24,7 +24,7 @@ public class OverlayController {
 
     @GetMapping("/overlays/prg/")
     public List<PRGOverlayResponse> getPRGOverlays() {
-        return prgOverlayService.getPRGOverlays().stream()
+        return prgOverlayService.getCreatedPRGOverlays().stream()
                 .map(PRGOverlayResponse::of)
                 .collect(Collectors.toList());
     }

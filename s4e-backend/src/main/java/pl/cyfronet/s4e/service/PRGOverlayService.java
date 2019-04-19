@@ -21,6 +21,12 @@ public class PRGOverlayService {
         return out;
     }
 
+    public List<PRGOverlay> getCreatedPRGOverlays() {
+        val out = new ArrayList<PRGOverlay>();
+        prgOverlayRepository.findAllByCreatedTrue().forEach(out::add);
+        return out;
+    }
+
     @Transactional
     public PRGOverlay updateCreated(Long prgOverlayId, boolean created) {
         PRGOverlay prgOverlay = prgOverlayRepository.findById(prgOverlayId).get();
