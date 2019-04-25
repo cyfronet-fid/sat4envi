@@ -1,7 +1,7 @@
 import {JsonConverter, JsonCustomConvert} from 'json2typescript';
 import {format, parse} from 'date-fns';
 import {IConstants, S4E_CONSTANTS} from '../../app.constants';
-import {InjectorModule} from '../../injector.module';
+import {InjectorModule} from '../../common/injector.module';
 
 @JsonConverter
 export class DateConverter implements JsonCustomConvert<Date> {

@@ -1,8 +1,7 @@
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {MapViewComponent} from './map-view.component';
 import {ViewManagerComponent} from './view-manager/view-manager.component';
-import {CommonModule} from '../../common.module';
-import {LoginModule} from '../../components/login/login.module';
+import {ShareModule} from '../../common/share.module';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {MapStore} from './state/map/map.store';
@@ -33,8 +32,7 @@ import {BsDropdownModule} from 'ngx-bootstrap';
     MapViewComponent,
   ],
   imports: [
-    CommonModule,
-    LoginModule,
+    ShareModule,
     BsDropdownModule
   ],
   providers: [

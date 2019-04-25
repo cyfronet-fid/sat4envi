@@ -3,6 +3,9 @@
 @import "~bootstrap/scss/bootstrap";
 @import "bootstrap-view";
 
+.ng-touched.ng-invalid {
+  @extend .is-invalid;
+}
 
 .ol-zoom {
   right: 9px !important;

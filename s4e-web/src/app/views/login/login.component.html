@@ -1,0 +1,46 @@
+<h1 i18n>Logowanie</h1>
+<form (ngSubmit)="login()" [formGroup]="form" autocomplete="off">
+  <div class="alert alert-danger" *ngIf="error$ | async">
+    {{(error$ | async)?.message || 'Nieoczekiwany błąd'}}
+  </div>
+
+  <div class="alert alert-danger" *ngIf="form.errors">
+    <ul>
+      <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
+      </li>
+    </ul>
+  </div>
+
+
+  <div class="mb-3">
+    <label for="login-login" i18n>Login</label>
+    <input class="form-control" formControlName="login" id="login-login">
+    <ul class="invalid-feedback">
+      <li *ngFor="let error of (form.controls.login.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchCase="'email'" i18n>Login musi być emailem</ng-container>
+        <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <label for="login-password" i18n>Hasło</label>
+    <input class="form-control" formControlName="password" id="login-password" type="password">
+    <ul class="invalid-feedback">
+      <li *ngFor="let error of (form.controls.password.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mb-3 ml-4">
+    <input type="checkbox" class="form-check-input" id="login-remember-me">
+    <label class="form-check-label" for="login-remember-me" i18n>Zapamiętaj mnie</label>
+  </div>
+
+  <button class="btn btn-primary btn-block" type="submit">
+    <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <ng-container i18n>Zaloguj</ng-container>
+  </button>
+</form>

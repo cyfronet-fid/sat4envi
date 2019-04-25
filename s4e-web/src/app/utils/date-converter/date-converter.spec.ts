@@ -1,6 +1,6 @@
 import {DateConverter} from './date-converter';
 import {TestBed} from '@angular/core/testing';
-import {InjectorModule} from '../../injector.module';
+import {InjectorModule} from '../../common/injector.module';
 import {TestingConstantsProvider} from '../../app.constants.spec';
 import {Injector} from '@angular/core';
 
