@@ -6,6 +6,15 @@ import {RouterModule} from '@angular/router';
 import {InjectorModule} from './injector.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import localePl from '@angular/common/locales/pl';
+import {registerLocaleData} from '@angular/common';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {fas} from '@fortawesome/free-solid-svg-icons';
+import {UtilsModule} from '../utils/utils.module';
+
+registerLocaleData(localePl, 'pl');
+library.add(fas);
 
 @NgModule({
   imports: [
@@ -18,13 +27,15 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
     ReactiveFormsModule,
     RouterModule,
     InjectorModule,
+    FontAwesomeModule,
+    UtilsModule
   ]
 })
-export class CommonModule {
+export class ShareModule {
   static modulesForRoot(): ModuleWithProviders[] {
     return [
       {
-        ngModule: CommonModule,
+        ngModule: ShareModule,
         providers: []
       },
       TooltipModule.forRoot(),

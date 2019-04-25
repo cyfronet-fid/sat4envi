@@ -1,7 +1,7 @@
 import {LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import {CommonModule} from './common.module';
+import {ShareModule} from './common/share.module';
 import {MapModule} from './views/map-view/map.module';
 import {ProfileModule} from './views/profile/profile.module';
 import {RootComponent} from './components/root/root.component';
@@ -19,6 +19,12 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
 import localePl from '@angular/common/locales/pl';
+import { LoginComponent } from './views/login/login.component';
+import { RegisterComponent } from './views/register/register.component';
+import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
+import {LoginModule} from './views/login/login.module';
+import {RegisterModule} from './views/register/register.module';
+import {ResetPasswordModule} from './views/reset-password/reset-password.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -28,7 +34,10 @@ registerLocaleData(localePl, 'pl');
   ],
   imports: [
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot(), AkitaNgRouterStoreModule.forRoot()]),
-    ...CommonModule.modulesForRoot(),
+    ...ShareModule.modulesForRoot(),
+    LoginModule,
+    RegisterModule,
+    ResetPasswordModule,
     RouterModule.forRoot(appRoutes),
     CommonStateModule.forRoot(),
     MapModule,
@@ -42,6 +51,7 @@ registerLocaleData(localePl, 'pl');
     {provide: LOCALE_ID, useValue: 'pl-PL' }
   ],
   bootstrap: [RootComponent],
+  exports: [LoginComponent],
 })
 export class AppModule {
   constructor(private sessionService: SessionService, private sessionQuery: SessionQuery) {

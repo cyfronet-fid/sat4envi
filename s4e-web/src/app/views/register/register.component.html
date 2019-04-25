@@ -1,0 +1,53 @@
+<h1 i18n>Rejestracja</h1>
+
+<form (ngSubmit)="register()" [formGroup]="form">
+  <div class="alert alert-danger" *ngIf="error$ | async">
+    {{(error$ | async)?.message || 'Nieoczekiwany błąd'}}
+  </div>
+
+  <div class="alert alert-danger" *ngIf="form.errors">
+    <ul>
+      <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
+      </li>
+    </ul>
+  </div>
+
+
+  <div class="mb-3">
+    <label for="registration-login" i18n>Login</label>
+    <input class="form-control" formControlName="login" id="registration-login" autocomplete="new-password">
+    <ul class="invalid-feedback">
+      <li *ngFor="let error of (form.controls.login.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchCase="'email'" i18n>Login musi być emailem</ng-container>
+        <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <label for="registration-password" i18n>Hasło</label>
+    <input class="form-control" formControlName="password" id="registration-password" type="password" autocomplete="new-password">
+    <ul class="invalid-feedback">
+      <li *ngFor="let error of (form.controls.password.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <label for="registration-password-repeat" i18n>Powtórz hasło</label>
+    <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat" type="password">
+    <ul class="invalid-feedback">
+      <li *ngFor="let error of (form.controls.passwordRepeat.errors | errorKeys)" [ngSwitch]="error">
+        <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+        <ng-container *ngSwitchCase="'notSame'" i18n>Hasła muszą być takie same</ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <button class="btn btn-primary btn-block" type="submit">
+    <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <ng-container i18n>Utwórz konto</ng-container>
+  </button>
+</form>

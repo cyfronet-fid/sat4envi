@@ -135,7 +135,7 @@
           }
         }
       }
-    },
+    }
   },
   "defaultProject": "s4e-angular",
   "cli": {

@@ -1,6 +1,12 @@
 import { ID } from '@datorama/akita';
 import {JsonObject, JsonProperty} from 'json2typescript';
 
+export interface LoginFormState {
+  login: string;
+  password: string;
+  rememberMe: boolean;
+}
+
 export interface Session {
   initialized: boolean;
   token: string|null;

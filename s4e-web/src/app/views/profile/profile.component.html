@@ -1,5 +1,5 @@
 <h1>Profile</h1>
-<p *ngIf="isLoggedIn$ | async; else userDetails" i18n>
+<p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
   Zaloguj się by zobaczyć swój profil
 </p>
 <ng-template #userDetails>
