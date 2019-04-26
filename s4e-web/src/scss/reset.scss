@@ -43,6 +43,7 @@ button {
   background: transparent;
   font-size: 1rem;
   cursor: pointer;
+  font-family: inherit;
 }
 
 input, textarea {
@@ -55,7 +56,8 @@ a {
 
   &:visited,
   &:hover,
-  &:focus {
+  &:focus,
+  &:link {
     font-color: inherit;
   }
 }

@@ -1,88 +1,10 @@
 /* You can add global styles to this file, and also import other style files */
 @import "reset";
+@import "fonts";
 @import "variables";
 @import "common";
-//@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap/scss/bootstrap";
 
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-LightItalic.eot');
-  src: url('../assets/fonts/Ubuntu-LightItalic.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-LightItalic.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-LightItalic.ttf') format('truetype');
-  font-weight: 300;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-Regular.eot');
-  src: url('../assets/fonts/Ubuntu-Regular.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-Regular.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-BoldItalic.eot');
-  src: url('../assets/fonts/Ubuntu-BoldItalic.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-BoldItalic.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-BoldItalic.ttf') format('truetype');
-  font-weight: bold;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-MediumItalic.eot');
-  src: url('../assets/fonts/Ubuntu-MediumItalic.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-MediumItalic.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-MediumItalic.ttf') format('truetype');
-  font-weight: 500;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-Bold.eot');
-  src: url('../assets/fonts/Ubuntu-Bold.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-Bold.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-Bold.ttf') format('truetype');
-  font-weight: bold;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-Medium.eot');
-  src: url('../assets/fonts/Ubuntu-Medium.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-Medium.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-Light.eot');
-  src: url('../assets/fonts/Ubuntu-Light.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-Light.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-Light.ttf') format('truetype');
-  font-weight: 300;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Ubuntu';
-  src: url('../assets/fonts/Ubuntu-Italic.eot');
-  src: url('../assets/fonts/Ubuntu-Italic.eot?#iefix') format('embedded-opentype'),
-  url('../assets/fonts/Ubuntu-Italic.woff') format('woff'),
-  url('../assets/fonts/Ubuntu-Italic.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
 
 
 

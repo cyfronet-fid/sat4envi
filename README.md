@@ -25,6 +25,10 @@ The database can be run in a docker container by issuing `docker-compose up db` 
 In case of changes in `docker-compose.yml` to remove the database volume it is necessary to issue `docker volume rm <volume name>`.
 `docker volume ls` lists volumes.
 
+If a backend Dockerfile is updated, then you have to rebuild the image.
+You can do it by running `docker-compose build`, it will try to rebuild the linked Dockerfiles.
+The Dockerfile may be updated in cases such as updating java version.
+
 #### <a id="backend-running-unit-tests"></a> Running unit tests
 
 You will need the test db up and running: `docker-compose up db-test`.

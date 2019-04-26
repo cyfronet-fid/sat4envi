@@ -9,7 +9,7 @@ export interface Day {
 }
 
 @Component({
-  selector: 's4e-timeline',
+  selector: '[s4e-timeline]',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss']
 })
