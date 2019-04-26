@@ -32,21 +32,34 @@
       <ul class="list">
         <li class="list__item">
           <button class="list__name">Warstwa x</button>
-          <button class="icon__visibility">
+          <button class="icon_visibility">
             <img src="../../../../assets/images/ico_eye_open.svg" alt="Eye icon - product visibility" />
           </button>
         </li>
       </ul>
-
     </section>
   </section>
 
-  <section s4e-login class="login"></section>
+  <!--<section s4e-login class="login"></section>-->
+
+  <section class="login">
+    <ul>
+      <li>
+        <button class="button button--primary button--large">Zaloguj</button>
+      </li>
+      <li>
+        <a href="#">Zarejestruj</a>
+      </li>
+    </ul>
+  </section>
 
 </nav>
 
-<s4e-timeline class="timeline position-absolute card d-flex flex-row"
+<aside s4e-timeline class="timeline"
               [products]="products | async"
               [loading]="productsAreLoading$ | async"
-              (selectProduct)="selectProduct($event?.id)"></s4e-timeline>
+              (selectProduct)="selectProduct($event?.id)">
+
+</aside>
+
 <s4e-map [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>

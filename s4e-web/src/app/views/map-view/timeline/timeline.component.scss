@@ -1,3 +1,15 @@
-:host {
-  display: block;
+.timeline__currentday {
+
+}
+
+.list {
+  overflow: hidden;
+
+  &:after {
+    border: none;
+  }
+}
+
+.box__content {
+  display: flex;
 }
