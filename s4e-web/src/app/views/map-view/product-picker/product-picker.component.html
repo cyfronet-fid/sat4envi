@@ -1,13 +1,20 @@
-<div class="head-nav">
-  <div dropdown style="display:inline-block" class="btn-group">
-    <button class="btn btn-primary text-uppercase text-left" [ngClass]="{'dropdown-toggle': !loading}" dropdownToggle><ng-container i18n>Produkty</ng-container>
-      <i *ngIf="loading" class="fa fa-spinner fa-spin float-right mt-1"></i>
-    </button>
-    <ul class="dropdown-menu"  role="menu" *dropdownMenu>
-      <li role="menuitem" *ngFor="let product of products">
-        <button class= "dropdown-item text-left text-capitalize" (click)="selectProduct.emit(product)">{{product.name}}</button>
-      </li>
-    </ul>
-  </div>
-</div>
+<header class="box__header">
+  <span class="box__title" i18n>Produkty</span>
+  <span class="box__hint">
+    <a href="#">Jak tworzone są zdjęcia?</a>
+  </span>
+</header>
+<section class="box__content">
+  <ul class="list">
+    <li class="list__item" role="menuitem" *ngFor="let product of products">
+      <figure class="list__icon">
+        <img src="../../../../assets/images/ico_product_default.png" alt="Default product icon" />
+      </figure>
+      <button class="list__name" (click)="selectProduct.emit(product)">{{product.name}}</button>
+      <button class="icon__visibility">
+        <img src="../../../../assets/images/ico_eye_open.svg" alt="Eye icon - product visibility" />
+      </button>
+    </li>
+  </ul>
+</section>
 

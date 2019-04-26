@@ -1,3 +1,78 @@
-@import "bootstrap-variables";
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+@import "variables";
+//@import "~bootstrap/scss/functions";
+//@import "~bootstrap/scss/variables";
+
+
+.box {
+  .box__header {
+    overflow: auto;
+    margin-bottom: $space-small;
+  }
+
+  .box__title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    width: 50%;
+    float:left;
+    color: $color-black;
+  }
+
+  .box__hint {
+    width: 45%;
+    float: right;
+    font-size: 0.625rem;
+    text-align: right;
+
+    a {
+      color: $color-grey;
+    }
+  }
+
+  .box__content {
+    background: $color-white;
+    border-radius: $border-radius-default;
+  }
+
+}
+
+.list {
+  position: relative;
+  padding: $space-default;
+}
+
+.list:after {
+  border-right: 1px solid $color-grey-secondary;
+  content: "";
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 50px;
+
+}
+
+.list__item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: $space-small;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .lists__name {
+    font-size: 0.875rem;
+    color: $color-grey;
+  }
+
+  .list__icon {
+    overflow: hidden;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .icon__visibility {
+    margin-left: auto;
+  }
+}

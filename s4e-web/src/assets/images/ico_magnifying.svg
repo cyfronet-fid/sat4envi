@@ -1,0 +1,9 @@
+<svg width="14px" height="18px" viewBox="0 0 14 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Main-UI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Sat4envi" transform="translate(-279.000000, -29.000000)" stroke="#979797">
+            <g id="Szukajka" transform="translate(15.000000, 18.000000)">
+                <path d="M273.820668,21.8848022 L276.287681,24.8452171 L277.162355,26.0768701 L273.812726,21.8908154 C272.891329,22.5870717 271.743887,23 270.5,23 C267.462434,23 265,20.5375661 265,17.5 C265,14.4624339 267.462434,12 270.5,12 C273.537566,12 276,14.4624339 276,17.5 C276,19.2901027 275.144797,20.8804622 273.820668,21.8848022 Z" id="Lupa"></path>
+            </g>
+        </g>
+    </g>
+</svg>
