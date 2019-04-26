@@ -22,6 +22,7 @@
     float: right;
     font-size: 0.625rem;
     text-align: right;
+    color: $color-grey;
 
     a {
       color: $color-grey;
@@ -59,13 +60,14 @@
     margin-bottom: 0;
   }
 
-  .lists__name {
+  .list__name {
     font-size: 0.875rem;
     color: $color-grey;
   }
 
   .list__icon {
     overflow: hidden;
+    margin-right: $space-xsmall;
 
     img {
       border-radius: 50%;
