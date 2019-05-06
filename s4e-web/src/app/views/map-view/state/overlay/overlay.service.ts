@@ -1,10 +1,9 @@
-import { Injectable } from '@angular/core';
-import { ID } from '@datorama/akita';
-import { HttpClient } from '@angular/common/http';
+import {Inject, Injectable} from '@angular/core';
 import { OverlayStore } from './overlay.store';
-import {Overlay, OverlayType} from './overlay.model';
+import {OverlayType} from './overlay.model';
 import {of} from 'rxjs';
 import {finalize} from 'rxjs/operators';
+import {IConstants, S4E_CONSTANTS} from '../../../../app.constants';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -12,13 +11,13 @@ import {finalize} from 'rxjs/operators';
  */
 @Injectable({ providedIn: 'root' })
 export class OverlayService {
-  constructor(private overlayStore: OverlayStore, private http: HttpClient) {}
+  constructor(private overlayStore: OverlayStore, @Inject(S4E_CONSTANTS) private CONSTANTS: IConstants) {}
 
   get() {
     this.overlayStore.setLoading(true);
     // :TODO replace mock with HTTP request
     of([{
-      id: 'test:wojew%C3%B3dztwa',
+      id: this.CONSTANTS.geoserverWorkspace + ':wojew%C3%B3dztwa',
       caption: 'regions',
       type: 'wms' as OverlayType
     }]).pipe(finalize(() => this.overlayStore.setLoading(false))).subscribe(overlays => this.overlayStore.set(overlays));

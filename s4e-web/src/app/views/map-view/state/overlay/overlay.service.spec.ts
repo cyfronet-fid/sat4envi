@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { OverlayService } from './overlay.service';
 import { OverlayStore } from './overlay.store';
+import {TestingConstantsProvider} from '../../../../app.constants.spec';
 
 describe('OverlayService', () => {
   let overlayService: OverlayService;
@@ -9,7 +10,7 @@ describe('OverlayService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OverlayService, OverlayStore],
+      providers: [OverlayService, OverlayStore, TestingConstantsProvider],
       imports: [ HttpClientTestingModule ]
     });
 
