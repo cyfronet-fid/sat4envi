@@ -7,25 +7,23 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.cyfronet.s4e.service.request.*;
 import pl.cyfronet.s4e.service.response.LayerResponse;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +37,7 @@ public class GeoServerOperations {
     private String geoserverBaseUrl;
 
     private final RestTemplateBuilder restTemplateBuilder;
+    private final ResourceLoader resourceLoader;
     private final ObjectMapper objectMapper;
 
     private RestTemplate restTemplate() {
@@ -222,8 +221,9 @@ public class GeoServerOperations {
 
     private String loadSldFile(String path) {
         try {
-            File sldFile = ResourceUtils.getFile(path);
-            return Files.readString(sldFile.toPath(), StandardCharsets.UTF_8);
+            InputStream inputStream = resourceLoader.getResource(path).getInputStream();
+            return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+                    .lines().collect(Collectors.joining("\n"));
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
         } catch (IOException e) {
