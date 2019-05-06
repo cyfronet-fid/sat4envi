@@ -50,6 +50,13 @@ Alternatively, the app can be built and run by issuing `mvn spring-boot:run -Dsp
 
 Both methods will expose the server under `http://localhost:4201`.
 
+In the `development` mode the DB and GeoServer are seeded by `DBSeedDevelopment`.
+It is only executed if the DB tables are empty.
+The part which populates DB is executed prior to the GeoServer population, so if something goes wrong with the GeoServer
+part, the DB is already seeded and to re-execute, the DB tables have to be dropped manually.
+(It could be done in a transaction, but it [requires some extra plumbing in this phase](https://stackoverflow.com/a/18790494)
+ it hasn't been done properly so far.) 
+
 #### API docs
 
 We use Swagger to create API documentation.
