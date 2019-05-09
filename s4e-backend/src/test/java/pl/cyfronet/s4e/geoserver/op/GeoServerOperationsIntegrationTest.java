@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service;
+package pl.cyfronet.s4e.geoserver.op;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;

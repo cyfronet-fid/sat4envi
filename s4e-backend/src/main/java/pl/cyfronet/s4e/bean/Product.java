@@ -19,7 +19,7 @@ public class Product {
     /// How the layer will be identified in GeoServer, excluding workspace
     private String layerName;
     /// Has the layer, store and coverage been created for this product
-    private boolean layerCreated;
+    private boolean created;
     /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
     private String s3Path;
 }

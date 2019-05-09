@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service.request;
+package pl.cyfronet.s4e.geoserver.op.request;
 
 import lombok.Builder;
 import lombok.Value;

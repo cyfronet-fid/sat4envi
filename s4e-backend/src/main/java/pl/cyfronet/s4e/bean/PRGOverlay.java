@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.bean;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class PRGOverlay extends Overlay {
     @Builder
     public PRGOverlay(String name, String featureType, SldStyle sldStyle, boolean created) {

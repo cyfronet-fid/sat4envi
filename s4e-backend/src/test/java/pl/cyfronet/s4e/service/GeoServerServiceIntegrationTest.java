@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
@@ -14,8 +15,11 @@ import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
+import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -83,11 +87,9 @@ public class GeoServerServiceIntegrationTest {
         geoServerService.addStyle(sldStyle);
 
         assertThat(geoServerOperations.listStyles(workspace), contains("styleOne"));
-
-        SldStyle updatedSldStyle = sldStyleRepository.findById(sldStyle.getId()).get();
-        assertThat(updatedSldStyle.isCreated(), is(true));
     }
 
+    @Transactional
     @Test
     public void shouldCreatePrgLayers() {
         geoServerService.resetWorkspace();
@@ -95,20 +97,18 @@ public class GeoServerServiceIntegrationTest {
                 .name("wojewodztwa")
                 .build());
         geoServerService.addStyle(sldStyle);
-        sldStyle = sldStyleRepository.findById(sldStyle.getId()).get();
+        sldStyle.setCreated(true);
         PRGOverlay prgOverlay = prgOverlayRepository.save(PRGOverlay.builder()
                 .name("wojewodztwa")
                 .featureType("wojew%C3%B3dztwa")
                 .sldStyle(sldStyle)
                 .build());
 
-        assertThat(sldStyle.isCreated(), is(true));
-        assertThat(prgOverlay.isCreated(), is(false));
+        List<PRGOverlay> prgOverlays = new ArrayList<>();
+        prgOverlayRepository.findAll().forEach(prgOverlays::add);
 
-        geoServerService.createPrgOverlays();
+        geoServerService.createPrgOverlays(prgOverlays);
 
-        PRGOverlay updatedPrgOverlay = prgOverlayRepository.findById(prgOverlay.getId()).get();
-        assertThat(updatedPrgOverlay.isCreated(), is(true));
         assertThat(geoServerOperations.layerExists("test", "wojew%C3%B3dztwa"), is(true));
         assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:wojewodztwa")));
     }
