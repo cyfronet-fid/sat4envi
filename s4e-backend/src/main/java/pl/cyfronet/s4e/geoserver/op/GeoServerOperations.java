@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service;
+package pl.cyfronet.s4e.geoserver.op;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.cyfronet.s4e.service.request.*;
-import pl.cyfronet.s4e.service.response.LayerResponse;
+import pl.cyfronet.s4e.geoserver.op.request.*;
+import pl.cyfronet.s4e.geoserver.op.response.LayerResponse;
 
 import java.io.*;
 import java.net.URI;

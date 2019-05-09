@@ -11,6 +11,7 @@ import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
+import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.util.S3AddressUtil;
 
 import java.util.List;
@@ -20,9 +21,6 @@ import java.util.List;
 @Slf4j
 public class GeoServerService {
     private final GeoServerOperations geoServerOperations;
-    private final ProductService productService;
-    private final SldStyleService sldStyleService;
-    private final PRGOverlayService prgOverlayService;
     private final S3AddressUtil s3AddressUtil;
 
     @Value("${geoserver.workspace}")
@@ -43,7 +41,6 @@ public class GeoServerService {
         try {
             geoServerOperations.createS3CoverageStore(workspace, gsName, s3AddressUtil.getS3Address(product.getS3Path()));
             geoServerOperations.createS3Coverage(workspace, gsName, gsName);
-            productService.updateLayerCreated(product.getId(), true);
         } catch (RestClientResponseException e) {
             // try to clean up GeoServer state
             log.warn("Error when adding product", e);
@@ -63,7 +60,6 @@ public class GeoServerService {
         try {
             geoServerOperations.createStyle(workspace, sldName);
             geoServerOperations.uploadSld(workspace, sldName, sldName);
-            sldStyleService.updateCreated(sldStyle.getId(), true);
         } catch (RestClientResponseException e) {
             // try to clean up GeoServer state
             log.warn("Error when adding SLD Style", e);
@@ -78,8 +74,7 @@ public class GeoServerService {
         }
     }
 
-    public void createPrgOverlays() {
-        List<PRGOverlay> prgOverlays = prgOverlayService.getPRGOverlays();
+    public void createPrgOverlays(List<PRGOverlay> prgOverlays) {
         if (prgOverlays.stream().anyMatch(PRGOverlay::isCreated)) {
             // the initialization procedure must've been run already
             return;
@@ -97,10 +92,13 @@ public class GeoServerService {
         geoServerOperations.createExternalShpDataStore(workspace, Constants.GEOSERVER_PRG_DATA_STORE, "file://"+Constants.GEOSERVER_PRG_PATH);
 
         for (val prgOverlay: prgOverlays) {
-            if (geoServerOperations.layerExists(workspace, prgOverlay.getFeatureType())) {
-                prgOverlayService.updateCreated(prgOverlay.getId(), true);
+            if (layerExists(prgOverlay.getFeatureType())) {
                 geoServerOperations.setLayerDefaultStyle(workspace, prgOverlay.getFeatureType(), prgOverlay.getSldStyle().getName());
             }
         }
+    }
+
+    public boolean layerExists(String layerName) {
+        return geoServerOperations.layerExists(workspace, layerName);
     }
 }

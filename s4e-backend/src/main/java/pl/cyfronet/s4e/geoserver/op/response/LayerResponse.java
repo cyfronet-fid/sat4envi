@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.service.response;
+package pl.cyfronet.s4e.geoserver.op.response;
 
 import lombok.Data;
 
