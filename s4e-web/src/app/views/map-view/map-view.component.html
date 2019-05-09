@@ -7,10 +7,8 @@
   </section>
 <!--<s4e-product-picker [loading]="productTypeLoading$ | async" [products]="products$ | async" (selectProduct)="selectProductType($event?.id)"></s4e-product-picker>-->
 
-  <section
-    class="box products"
-    s4e-product-picker [loading]="productTypeLoading$ | async" [products]="products$ | async" (selectProduct)="selectProductType($event?.id)">
-  </section>
+  <s4e-product-picker class="section" [loading]="productTypeLoading$ | async" [products]="products$ | async" (selectProduct)="selectProductType($event?.id)">
+  </s4e-product-picker>
 
   <!--
   <s4e-view-manager [overlays]="overlays$ | async"
@@ -55,11 +53,11 @@
 
 </nav>
 
-<aside s4e-timeline class="timeline"
+<s4e-timeline class="timeline"
               [products]="products | async"
               [loading]="productsAreLoading$ | async"
               (selectProduct)="selectProduct($event?.id)">
 
-</aside>
+</s4e-timeline>
 
 <s4e-map [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>
