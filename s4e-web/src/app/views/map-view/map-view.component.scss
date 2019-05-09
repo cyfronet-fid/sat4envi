@@ -1,7 +1,7 @@
 @import "../../../scss/variables.scss";
 
 nav {
-  background: #F2F2F2;
+  background: $color-grey-primary;
   -webkit-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
@@ -14,7 +14,8 @@ nav {
   z-index: 2;
   padding: 15px;
 
-  section {
+  section,
+  .section {
     clear:both;
     border-radius: $border-radius-default;
     margin-bottom: $space-xlarge;
@@ -49,18 +50,6 @@ nav {
       }
     }
   }
-}
-
-.timeline {
-  position: absolute;
-  width: 65%;
-  margin-left: auto;
-  bottom : 20px;
-  right: 20px;
-  z-index: 2;
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
 }
 
 

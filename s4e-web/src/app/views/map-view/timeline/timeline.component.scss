@@ -1,15 +1,57 @@
-.timeline__currentday {
+@import "../../../../scss/variables.scss";
 
+:host /* .timline */ {
+  position: absolute;
+  width: 65%;
+  margin-left: auto;
+  bottom : 20px;
+  right: 20px;
+  z-index: 2;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  border-radius: $border-radius-default;
+}
+
+.timeline__currentday {
+  background: $color-white;
+  color: $color-black;
+  padding: 7px 10px;
+  font-weight: 500;
+  text-align: left;
+  font-size: 0.875rem;
 }
 
 .list {
   overflow: hidden;
+  display:flex;
+  flex-direction: row;
+  padding: 0;
+  background: $color-grey-secondary;
 
   &:after {
     border: none;
   }
 }
 
-.box__content {
-  display: flex;
+.list--inline {
+  display: inline-block;
+  margin-bottom: 0;
+  padding: 0;
 }
+
+.timeline__item {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  color: $color-grey;
+
+  a {color: inherit;}
+}
+
+.box_content {
+  background: $color-grey-primary;
+  color: $color-grey;
+  padding: 0;
+  border-radius: $border-radius-default;
+}
+

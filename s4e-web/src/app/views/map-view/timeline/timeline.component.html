@@ -1,10 +1,9 @@
 <div *ngFor="let day of days; let $first = first; let $last = last"
      class="box__content">
   <div class="timeline__currentday">{{ day.label }}</div>
-  <ul class="list list--inline">
-    <li class="list__item"
-        *ngFor="let product of day.products"
-        [ngClass]="{'mr-5': !$last, 'mr-2': $last}">
+  <ul class="list">
+    <li class="timeline__item"
+        *ngFor="let product of day.products">
       <a href="javascript:undefined" (click)="selectProduct.emit(product)">{{ product.timestamp | date : 'shortTime' }}</a>
     </li>
   </ul>
