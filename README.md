@@ -3,7 +3,6 @@
 ## Requirements
 
 - java `^11`
-- mvn `^3.3.9`
 - docker `^18.09.3`
 - docker-compose `^1.18.0`
 - node `^8`,  npm `^5`
@@ -30,7 +29,7 @@ In case of changes in `docker-compose.yml` to remove the database volume it is n
 You will need the test db up and running: `docker-compose up db-test`.
 It will be exposed at `localhost:5434`.
 
-Then, run `mvn test`.
+Then, run `./mvnw test`.
 
 #### Running integration tests
 
@@ -39,14 +38,14 @@ Run them by `docker-compose up db-test geoserver minio`.
 
 Minio must be provisioned with `data-packs/minio-data-v1.tar.xz`.
 
-Then, execute `mvn verify`.
+Then, execute `./mvnw verify`.
 
 #### Building and running
 
-To build run `mvn package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
+To build run `./mvnw package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
 
-Alternatively, the app can be built and run by issuing `mvn spring-boot:run -Dspring.profiles.active=development` in directory `s4e-backend`. 
+Alternatively, the app can be built and run by issuing `./mvnw spring-boot:run -Dspring.profiles.active=development` in directory `s4e-backend`. 
 
 Both methods will expose the server under `http://localhost:4201`.
 
@@ -61,7 +60,7 @@ When you run the backend Swagger-UI is exposed under `http://localhost:4201/swag
 
 #### Miscellaneous
 
-To check for dependency updates run `mvn versions:display-dependency-updates` in directory `s4e-backend`.
+To check for dependency updates run `./mvnw versions:display-dependency-updates` in directory `s4e-backend`.
 
 ### s4e-web
 
@@ -89,7 +88,7 @@ In order do run docker-compose following steps must be done (**unless stated oth
 
    You can remove `docker-geoserver` directory afterwards
 
-2. Run `mvn package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
+2. Run `./mvnw package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
    **NOTICE**: In some cases packaging may fail due to inability to compile some binary dependencies for frontend packages. In that case the easiest solution is to delete `s4e-web/node_moules` directory (`rm -rf s4e-web/node_modules`)
 
 3. Run `docker-compose up`
