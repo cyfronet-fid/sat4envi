@@ -40,7 +40,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: cyfronet-fid/geoserver:2.15.0
+    image: fiddev/geoserver:2.15.0
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
     ports:
