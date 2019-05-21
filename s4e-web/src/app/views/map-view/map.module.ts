@@ -5,10 +5,10 @@ import {ShareModule} from '../../common/share.module';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {MapStore} from './state/map/map.store';
-import { ProductPickerComponent } from './product-picker/product-picker.component';
-import {ProductTypeQuery} from './state/product-type/product-type-query.service';
+import { LayerPicker } from './view-manager/layer-picker/layer-picker.component';
+import {ProductTypeQuery} from './state/product-type/product-type.query';
 import {ProductTypeService} from './state/product-type/product-type.service';
-import {ProductTypeStore} from './state/product-type/product-type-store.service';
+import {ProductTypeStore} from './state/product-type/product-type.store';
 import {ProductQuery} from './state/product/product-query.service';
 import {ProductService} from './state/product/product.service';
 import {ProductStore} from './state/product/product-store.service';
@@ -24,7 +24,7 @@ import {BsDropdownModule} from 'ngx-bootstrap';
   declarations: [
     MapViewComponent,
     ViewManagerComponent,
-    ProductPickerComponent,
+    LayerPicker,
     TimelineComponent,
     MapComponent,
   ],

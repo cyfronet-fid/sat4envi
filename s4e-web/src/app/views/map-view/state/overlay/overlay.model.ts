@@ -1,5 +1,6 @@
 import {TileWMS, ImageWMS, OSM} from 'ol/source';
 import {Tile, Image, Layer} from 'ol/layer';
+import {IUILayer} from '../common.model';
 
 export type OverlayType = 'wms'; // later |'tile'|'etc' may be added
 
@@ -22,11 +23,11 @@ export function createOverlay(params: Partial<Overlay>) {
  * This is transient Overlay object which can be returned by some
  * queries
  */
-export interface UIOverlay extends Overlay {
+export interface UIOverlay extends Overlay, IUILayer {
   olLayer: Layer;
 }
 
-export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string): UIOverlay {
+export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, active: boolean = false): UIOverlay {
   return {
     ...overlay,
     olLayer: new Image({
@@ -34,6 +35,8 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string): UIOv
         url: geoServerUrl,
         params: {LAYERS: overlay.id}
       })
-    })
+    }),
+    cid: overlay.id,
+    active
   };
 }

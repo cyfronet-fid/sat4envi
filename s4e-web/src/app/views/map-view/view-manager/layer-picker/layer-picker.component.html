@@ -1,0 +1,20 @@
+<header class="box__header">
+  <span class="box__title">{{caption}}</span>
+  <span class="box__hint">
+    <a href="#">{{help}}</a>
+  </span>
+</header>
+<section class="box__content">
+  <ul class="list">
+    <li class="list__item" [ngClass]="{active: item.active}" role="menuitem" *ngFor="let item of items">
+      <figure class="list__icon">
+        <img src="../../../../../assets/images/ico_product_default.png" alt="Default product icon" i18n-alt />
+      </figure>
+      <button class="list__name" (click)="itemSelected.emit(item.cid)">{{item.caption}}</button>
+      <button class="icon_visibility" (click)="itemSelected.emit(item.cid)">
+        <img src="../../../../../assets/images/ico_eye_open.svg" alt="Eye icon - product visibility" i18n-alt />
+      </button>
+    </li>
+  </ul>
+</section>
+

@@ -4,12 +4,12 @@ import { ProductStore } from './product-store.service';
 import {Product, ProductResponse} from './product.model';
 import {finalize, map} from 'rxjs/operators';
 import {IConstants, S4E_CONSTANTS} from '../../../../app.constants';
-import {ProductTypeQuery} from '../product-type/product-type-query.service';
+import {ProductTypeQuery} from '../product-type/product-type.query';
 import {deserializeJsonResponse} from '../../../../utils/miscellaneous/miscellaneous';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
 import {ProductQuery} from './product-query.service';
 import {RecentViewStore} from '../recent-view/recent-view.store';
-import {ProductTypeStore} from '../product-type/product-type-store.service';
+import {ProductTypeStore} from '../product-type/product-type.store';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -38,7 +38,7 @@ export class ProductService {
         lastProductTypeId = activeView.productId;
       } else if (this.productQuery.getCount() > 0) {
         lastProductTypeId = this.productQuery.getAll()[this.productQuery.getCount() - 1].id;
-           }
+      }
 
       this.productStore.setActive(lastProductTypeId);
       this.recentViewStore.updateActive(active => ({...active, productId: lastProductTypeId}));

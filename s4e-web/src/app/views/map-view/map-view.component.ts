@@ -7,7 +7,7 @@ import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {ProductType} from './state/product-type/product-type.model';
 import {ProductTypeService} from './state/product-type/product-type.service';
-import {ProductTypeQuery} from './state/product-type/product-type-query.service';
+import {ProductTypeQuery} from './state/product-type/product-type.query';
 import {RecentViewQuery} from './state/recent-view/recent-view.query';
 import {ProductQuery} from './state/product/product-query.service';
 import {Product} from './state/product/product.model';
@@ -17,6 +17,7 @@ import {ProductService} from './state/product/product.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {map} from 'rxjs/operators';
 import {OverlayService} from './state/overlay/overlay.service';
+import {IUILayer} from './state/common.model';
 
 @Component({
   selector: 's4e-map-view',
@@ -24,7 +25,7 @@ import {OverlayService} from './state/overlay/overlay.service';
   styleUrls: ['./map-view.component.scss'],
 })
 export class MapViewComponent implements OnInit {
-  products$: Observable<ProductType[]>;
+  productsTypeList$: Observable<IUILayer[]>;
 
   overlays$: Observable<UIOverlay[]>;
 
@@ -33,7 +34,7 @@ export class MapViewComponent implements OnInit {
   public activeProductType$: Observable<ProductType>;
   public activeRecentView$: Observable<RecentView>;
   public recentViews$: Observable<RecentView[]>;
-  public products: Observable<Product[]>;
+  public products$: Observable<Product[]>;
   public productsAreLoading$: Observable<boolean>;
   public viewManagerLoading$: Observable<boolean>;
   public productTypeLoading$: Observable<boolean>;
@@ -58,9 +59,9 @@ export class MapViewComponent implements OnInit {
     this.viewManagerLoading$ = combineLatest(this.recentViewQuery.selectLoading(), this.overlayQuery.selectLoading())
       .pipe(map(values => values.reduce((prev, curr) => prev || curr)));
     this.loading$ = this.mapQuery.selectLoading();
-    this.products$ = this.productTypeQuery.selectAll();
+    this.productsTypeList$ = this.recentViewQuery.selectProductsAsIUILayers();
     this.activeProduct$ = this.recentViewQuery.selectActiveProduct();
-    this.products = this.recentViewQuery.selectActiveViewProducts();
+    this.products$ = this.recentViewQuery.selectActiveViewProducts();
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();
@@ -69,8 +70,8 @@ export class MapViewComponent implements OnInit {
     this.overlayService.get();
   }
 
-  selectProductType(productId: number|null) {
-    this.productTypeService.setActive(productId);
+  selectProductType(productTypeId: number|null) {
+    this.productTypeService.setActive(productTypeId);
   }
 
   removeActiveView(viewId: number) {
@@ -81,7 +82,11 @@ export class MapViewComponent implements OnInit {
     this.recentViewService.setActive(viewId);
   }
 
-  selectProduct(granuleId: number) {
-    this.recentViewService.updateActiveViewProduct(granuleId);
+  selectProduct(productId: number) {
+    this.recentViewService.updateActiveViewProduct(productId);
+  }
+
+  selectOverlay(overlayId: string) {
+
   }
 }

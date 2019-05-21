@@ -1,31 +1,91 @@
-<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Nakładki</h2>
-<ul class="list-group list-group-flush">
-  <li class="list-group-item p-2">
-    <ng-container *ngIf="!loading">
-      <div class="overlay m-0 p-0 text-capitalize"
-           *ngFor="let overlay of overlays">{{ overlay.caption }}</div>
-    </ng-container>
-  </li>
-</ul>
+<!--<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Nakładki</h2>-->
+<!--<ul class="list-group list-group-flush">-->
+  <!--<li class="list-group-item p-2">-->
+    <!--<ng-container *ngIf="!loading">-->
+      <!--<div class="overlay m-0 p-0 text-capitalize"-->
+           <!--*ngFor="let overlay of overlays">{{ overlay.caption }}</div>-->
+    <!--</ng-container>-->
+  <!--</li>-->
+<!--</ul>-->
 
-<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Produkty</h2>
-<ng-container *ngIf="!loading">
-  <div class="product-view p-0 m-0"
-       *ngFor="let recentView of recentViews"
-       [ngClass]="{'bg-primary active': recentView.productTypeId === activeRecentView?.productTypeId}">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item p-2">
-        <div class="" (click)="activeViewChange.emit(recentView)">
-          <span class="text-capitalize d-inline-block w-40">{{ recentView.activeProductType.name }}</span>
+<!--<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Produkty</h2>-->
+<!--<ng-container *ngIf="!loading">-->
+  <!--<div class="product-view p-0 m-0"-->
+       <!--*ngFor="let recentView of recentViews"-->
+       <!--[ngClass]="{'bg-primary active': recentView.productTypeId === activeRecentView?.productTypeId}">-->
+    <!--<ul class="list-group list-group-flush">-->
+      <!--<li class="list-group-item p-2">-->
+        <!--<div class="" (click)="activeViewChange.emit(recentView)">-->
+          <!--<span class="text-capitalize d-inline-block w-40">{{ recentView.activeProductType.name }}</span>-->
 
-          <span class="font-size"><small>{{ recentView.activeProduct?.timestamp | date : 'short' }}</small>
-          <a href="#" class="float-right"
-             (click)="removeView.emit(recentView)">
-          <i class="far fa-trash-alt"></i>
-          </a>
-        </span>
-        </div>
+          <!--<span class="font-size"><small>{{ recentView.activeProduct?.timestamp | date : 'short' }}</small>-->
+          <!--<a href="#" class="float-right"-->
+             <!--(click)="removeView.emit(recentView)">-->
+          <!--<i class="far fa-trash-alt"></i>-->
+          <!--</a>-->
+        <!--</span>-->
+        <!--</div>-->
+      <!--</li>-->
+    <!--</ul>-->
+  <!--</div>-->
+<!--</ng-container>-->
+
+
+<nav>
+  <section class="search">
+    <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder />
+    <button class="search__button">
+      <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt />
+    </button>
+  </section>
+
+  <s4e-product-picker class="section"
+                      caption="Produkty"
+                      i18n-caption
+                      help="Jak tworzone są zdjęcia?"
+                      i18n-help
+                      [loading]="productTypeLoading"
+                      [items]="products"
+                      (itemSelected)="selectProductType.emit($event)">
+  </s4e-product-picker>
+
+  <s4e-product-picker class="section"
+                      caption="Warstwy"
+                      i18n-caption
+                      help="Co to są nakładki?"
+                      i18n-help
+                      [loading]="overlaysLoading"
+                      [items]="overlays"
+                      (itemSelected)="selectOverlay.emit($event)">
+  </s4e-product-picker>
+
+  <!--<section class="box layers">-->
+    <!--<header class="box__header">-->
+      <!--<span class="box__title" i18n>Warstwy</span>-->
+      <!--<span class="box__hint">-->
+        <!--<a href="#" i18n>Co to są nakładki?</a>-->
+      <!--</span>-->
+    <!--</header>-->
+    <!--<section class="box__content">-->
+      <!--<ul class="list">-->
+        <!--<li class="list__item">-->
+          <!--<button class="list__name" i18n>Warstwa x</button>-->
+          <!--<button class="icon_visibility">-->
+            <!--<img src="../../../../../assets/images/ico_eye_open.svg" alt="Eye icon - Widoczność produktu" i18n-alt />-->
+          <!--</button>-->
+        <!--</li>-->
+      <!--</ul>-->
+    <!--</section>-->
+  <!--</section>-->
+
+  <section class="login">
+    <ul>
+      <li>
+        <button class="button button--primary button--large" routerLink="/login" i18n>Zaloguj</button>
+      </li>
+      <li>
+        <a routerLink="/register" i18n>Zarejestruj</a>
       </li>
     </ul>
-  </div>
-</ng-container>
+  </section>
+</nav>

@@ -1,16 +1,25 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import { ProductService } from './product.service';
 import { ProductStore } from './product-store.service';
 import {TestingConstantsProvider} from '../../../../app.constants.spec';
-import {ProductTypeQuery} from '../product-type/product-type-query.service';
-import {ProductTypeStore} from '../product-type/product-type-store.service';
+import {ProductTypeQuery} from '../product-type/product-type.query';
+import {ProductTypeStore} from '../product-type/product-type.store';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
 import {RecentViewStore} from '../recent-view/recent-view.store';
+import {cold, hot, time} from 'jest-marbles';
+import {ProductQuery} from './product-query.service';
+import {last, take, toArray} from 'rxjs/operators';
+import {ProductResponseFactory} from './product.factory.spec';
+import {deserializeJsonResponse} from '../../../../utils/miscellaneous/miscellaneous';
+import {ProductResponse} from './product.model';
+import {InjectorModule} from '../../../../common/injector.module';
 
 describe('ProductService', () => {
   let productService: ProductService;
   let productStore: ProductStore;
+  let productQuery: ProductQuery;
+  let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,19 +31,55 @@ describe('ProductService', () => {
         RecentViewQuery,
         RecentViewStore,
         TestingConstantsProvider],
-      imports: [ HttpClientTestingModule ]
+      imports: [ HttpClientTestingModule, InjectorModule ]
     });
 
+    http = TestBed.get(HttpTestingController);
     productService = TestBed.get(ProductService);
     productStore = TestBed.get(ProductStore);
+    productQuery = TestBed.get(ProductQuery);
   });
 
-  it('get should work', () => {
-    // :TODO add test
+  it('should create', () => {
+    expect(productService).toBeTruthy();
   });
 
-  it('setActive should work', () => {
-    // :TODO add test
-  });
+  describe('get', () => {
+    it('loading should be set', (done) => {
+      const productId = 1;
+      const stream = productQuery.selectLoading();
 
+      stream.pipe(take(2), toArray()).subscribe(data => {
+        expect(data).toEqual([true, false]);
+        done();
+      });
+
+      productService.get(productId);
+
+      const r = http.expectOne(`api/v1/products/productTypeId/${productId}`);
+      r.flush(null);
+    });
+
+    it('should call http endpoint', () => {
+      const productId = 1;
+      productService.get(productId);
+      http.expectOne(`api/v1/products/productTypeId/${productId}`);
+    });
+
+    it('should set state in store', (done) => {
+      const productId = 1;
+
+      productQuery.selectAll().pipe(take(2), toArray()).subscribe(data => {
+        expect(data).toEqual([[], [deserializeJsonResponse(productR, ProductResponse)]]);
+        done();
+      });
+
+      const productR = ProductResponseFactory.build();
+
+      productService.get(productId);
+
+      const r = http.expectOne(`api/v1/products/productTypeId/${productId}`);
+      r.flush(productR);
+    });
+  });
 });
