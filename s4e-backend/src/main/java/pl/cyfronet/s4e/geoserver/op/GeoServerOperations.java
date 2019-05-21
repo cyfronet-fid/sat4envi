@@ -220,8 +220,7 @@ public class GeoServerOperations {
 
 
     private String loadSldFile(String path) {
-        try {
-            InputStream inputStream = resourceLoader.getResource(path).getInputStream();
+        try (InputStream inputStream = resourceLoader.getResource(path).getInputStream()) {
             return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));
         } catch (FileNotFoundException e) {
