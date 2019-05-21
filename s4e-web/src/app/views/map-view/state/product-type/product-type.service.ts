@@ -1,13 +1,13 @@
 import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ProductTypeStore} from './product-type-store.service';
+import {ProductTypeStore} from './product-type.store';
 import {ProductType} from './product-type.model';
 import {finalize} from 'rxjs/operators';
 import {IConstants, S4E_CONSTANTS} from '../../../../app.constants';
 import {ProductService} from '../product/product.service';
 import {RecentViewStore} from '../recent-view/recent-view.store';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
-import {ProductTypeQuery} from './product-type-query.service';
+import {ProductTypeQuery} from './product-type.query';
 
 @Injectable({providedIn: 'root'})
 export class ProductTypeService {
@@ -29,7 +29,7 @@ export class ProductTypeService {
   }
 
   setActive(productId: number | null) {
-    if (productId != null) {
+    if (productId != null && this.recentViewQuery.getActiveId() !== productId) {
       const currentView = this.recentViewQuery.getEntity(productId);
 
       if (currentView == null) {
@@ -43,6 +43,9 @@ export class ProductTypeService {
       if (this.productTypeQuery.getEntity(productId).productIds === undefined) {
         this.productService.get(productId);
       }
+    }
+    else if (this.recentViewQuery.hasEntity(productId)){
+      this.recentViewStore.setActive(null);
     }
   }
 }

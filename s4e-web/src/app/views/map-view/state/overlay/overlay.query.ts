@@ -16,7 +16,7 @@ export class OverlayQuery extends QueryEntity<OverlayState, Overlay> {
 
   public selectAllAsUIOverlays(): Observable<UIOverlay[]> {
     return this.selectAll().pipe(
-      map(overlays => overlays.map(ol => convertToUIOverlay(ol, this.CONSTANTS.geoserverUrl)))
+      map(overlays => overlays.map(ol => convertToUIOverlay(ol, this.CONSTANTS.geoserverUrl, true)))
     );
   }
 }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProductPickerComponent } from './product-picker.component';
+import { LayerPicker } from './layer-picker.component';
 
-describe('ProductPickerComponent', () => {
-  let component: ProductPickerComponent;
-  let fixture: ComponentFixture<ProductPickerComponent>;
+describe('LayerPicker', () => {
+  let component: LayerPicker;
+  let fixture: ComponentFixture<LayerPicker>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProductPickerComponent ]
+      declarations: [ LayerPicker ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProductPickerComponent);
+    fixture = TestBed.createComponent(LayerPicker);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

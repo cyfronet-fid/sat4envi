@@ -1,63 +1,16 @@
-<nav>
-  <section class="search">
-    <input class="search__input" placeholder="Wpisz szukaną miejscowość..."/>
-    <button class="search__button">
-      <img src="../../../assets/images/ico_magnifying.svg" alt="Search icon" />
-    </button>
-  </section>
-<!--<s4e-product-picker [loading]="productTypeLoading$ | async" [products]="products$ | async" (selectProduct)="selectProductType($event?.id)"></s4e-product-picker>-->
-
-  <s4e-product-picker class="section" [loading]="productTypeLoading$ | async" [products]="products$ | async" (selectProduct)="selectProductType($event?.id)">
-  </s4e-product-picker>
-
-  <!--
-  <s4e-view-manager [overlays]="overlays$ | async"
-                    [loading]="viewManagerLoading$ | async"
-                    [activeRecentView]="activeRecentView$ | async"
-                    [recentViews]="recentViews$ | async"
-                    (activeViewChange)="setActiveView($event?.productTypeId)"
-                    (removeView)="removeActiveView($event?.productTypeId)"></s4e-view-manager>
-  -->
-
-  <section class="box layers">
-    <header class="box__header">
-      <span class="box__title" i18n>Warstwy</span>
-      <span class="box__hint">
-        <a href="#">Co to są nakładki?</a>
-      </span>
-    </header>
-    <section class="box__content">
-      <ul class="list">
-        <li class="list__item">
-          <button class="list__name">Warstwa x</button>
-          <button class="icon_visibility">
-            <img src="../../../../assets/images/ico_eye_open.svg" alt="Eye icon - product visibility" />
-          </button>
-        </li>
-      </ul>
-    </section>
-  </section>
-
-  <!--<section s4e-login class="login"></section>-->
-
-  <section class="login">
-    <ul>
-      <li>
-        <button class="button button--primary button--large">Zaloguj</button>
-      </li>
-      <li>
-        <a href="#">Zarejestruj</a>
-      </li>
-    </ul>
-  </section>
-
-</nav>
-
+<s4e-view-manager [overlays]="overlays$ | async"
+                  [loading]="viewManagerLoading$ | async"
+                  [overlaysLoading]="false"
+                  [products]="productsTypeList$ | async"
+                  [productTypeLoading]="productTypeLoading$ | async"
+                  (selectOverlay)="selectOverlay($event)"
+                  (selectProductType)="selectProductType($event)">
+</s4e-view-manager>
+`
 <s4e-timeline class="timeline"
-              [products]="products | async"
+              [products]="products$ | async"
               [loading]="productsAreLoading$ | async"
               (selectProduct)="selectProduct($event?.id)">
-
 </s4e-timeline>
 
 <s4e-map [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>

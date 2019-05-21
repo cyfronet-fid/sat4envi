@@ -1,5 +1,5 @@
-import { ProductTypeQuery } from './product-type-query.service';
-import { ProductTypeStore } from './product-type-store.service';
+import { ProductTypeQuery } from './product-type.query';
+import { ProductTypeStore } from './product-type.store';
 import {ProductQuery} from '../product/product-query.service';
 import {ProductStore} from '../product/product-store.service';
 

@@ -1,4 +1,4 @@
-import { ProductTypeStore } from './product-type-store.service';
+import { ProductTypeStore } from './product-type.store';
 
 describe('ProductTypeStore', () => {
   let store: ProductTypeStore;

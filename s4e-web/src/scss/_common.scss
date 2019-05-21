@@ -131,5 +131,16 @@ a {
 }
 
 
+.list > .list__item {
+  .icon_visibility {
+    opacity: 0.3;
+  }
+
+  &.active {
+    .icon_visibility {
+      opacity: 1.0;
+    }
+  }
+}
 
 

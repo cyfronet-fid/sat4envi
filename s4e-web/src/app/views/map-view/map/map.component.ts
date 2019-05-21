@@ -8,6 +8,7 @@ import proj4 from 'proj4';
 import {IConstants, S4E_CONSTANTS} from '../../../app.constants';
 import {Product} from '../state/product/product.model';
 import {ReplaySubject} from 'rxjs';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 's4e-map',
@@ -19,10 +20,9 @@ export class MapComponent implements OnInit, OnDestroy {
   private baseLayer: Layer;
   private map: Map;
 
-  private activeProduct$ = new ReplaySubject<Product>(1);
+  private activeProduct$ = new ReplaySubject<Product|null>(1);
 
   @Input() public set activeProduct(gr: Product|null) {
-    if (gr === null) { return; }
     this.activeProduct$.next(gr);
   }
 
@@ -49,24 +49,27 @@ export class MapComponent implements OnInit, OnDestroy {
       this.map.getLayers().push(overlay.olLayer);
     }
 
-    this.activeProduct$.subscribe(gr => this.updateLayers(gr));
+    this.activeProduct$.pipe(untilDestroyed(this)).subscribe(gr => this.updateLayers(gr));
   }
 
   ngOnDestroy(): void {
     this.activeProduct$.complete();
   }
 
-  private updateLayers(product: Product) {
+  private updateLayers(product: Product|null) {
+    console.log('updateLayers', product);
     const mapLayers = this.map.getLayers();
     mapLayers.clear();
     mapLayers.push(this.baseLayer);
 
-    mapLayers.push(new Image({
-      source: new ImageWMS({
-        url: this.CONSTANTS.geoserverUrl,
-        params: {'LAYERS': this.CONSTANTS.geoserverWorkspace + ':' + product.layerName},
-      }),
-    }));
+    if (product !== null) {
+      mapLayers.push(new Image({
+        source: new ImageWMS({
+          url: this.CONSTANTS.geoserverUrl,
+          params: {'LAYERS': this.CONSTANTS.geoserverWorkspace + ':' + product.layerName},
+        }),
+      }));
+    }
 
     for (const overlay of this.overlays) {
       mapLayers.push(overlay.olLayer);
