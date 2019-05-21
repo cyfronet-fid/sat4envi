@@ -56,6 +56,16 @@ In the `development` mode the DB and GeoServer are seeded by `SeedDevelopment`.
 It is executed on every startup.
 
 
+#### Places CSV generation
+
+In case it is required to regenerate `places.csv` use `PlacesXlsxToCsv` tool.
+
+First, obtain the current `miejscowosci.xlsx` file from [PRNG](http://www.gugik.gov.pl/pzgik/dane-bez-oplat/dane-z-panstwowego-rejestru-nazw-geograficznych-prng).
+I assume you have built the jar file, so, being in the root directory, run
+`java -cp s4e-backend/target/<jar> pl.cyfronet.s4e.tool.PlacesXlsxToCsv <path to miejscowosci.xlsx> s4e-backend/src/main/resources/db/places.csv`.
+The generated file should overwrite the pre-existing one, and you can commit the resulting csv into the repo.
+
+
 #### API docs
 
 We use Swagger to create API documentation.
