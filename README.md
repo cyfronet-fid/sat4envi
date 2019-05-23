@@ -7,6 +7,7 @@
 - docker-compose `^1.18.0`
 - node `^8`,  npm `^5`
 
+
 ## System Components
 
 System consists of two applications:
@@ -31,6 +32,7 @@ It will be exposed at `localhost:5434`.
 
 Then, run `./mvnw test`.
 
+
 #### Running integration tests
 
 You will need test db, minio and geoserver for the tests to pass.
@@ -39,6 +41,7 @@ Run them by `docker-compose up db-test geoserver minio`.
 Minio must be provisioned with `data-packs/minio-data-v1.tar.xz`.
 
 Then, execute `./mvnw verify`.
+
 
 #### Building and running
 
@@ -52,19 +55,45 @@ Both methods will expose the server under `http://localhost:4201`.
 In the `development` mode the DB and GeoServer are seeded by `SeedDevelopment`.
 It is executed on every startup.
 
+
 #### API docs
 
 We use Swagger to create API documentation.
 When you run the backend Swagger-UI is exposed under `http://localhost:4201/swagger-ui.html`.
 
 
+#### <a id="backend-static"></a> Static images S3 storage
+
+To easily set bucket policies, install [minio client](https://github.com/minio/mc).
+
+On Linux it is enough to run:
+```bash
+mkdir -p ~/bin
+cp ~/bin
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+```
+As ~/bin should be included in the PATH variable you can now use the tool system-wide.
+
+Configure access to your local docker minio instance: 
+```bash
+mc config host add local-docker http://localhost:9001 minio minio123
+```
+
+Copy the `s4e-backend/static` to `tmp/minio-data` creating bucket `static`.
+
+Set its policy to download: `mc policy download local-docker/static`.
+
+
 #### Miscellaneous
 
 To check for dependency updates run `./mvnw versions:display-dependency-updates` in directory `s4e-backend`.
 
+
 ### s4e-web
 
 Detailed frontend description can be found [here](./s4e-web/README.md)
+
 
 ## Development & Docker
 
@@ -76,76 +105,42 @@ This docker-compose recipe can be used to either run whole application for demo 
 
 In order do run docker-compose following steps must be done (**unless stated otherwise working directory should be project root**):
 
-1. Build docker image from https://github.com/cyfronet-fid/docker-geoserver, you can just run following script
-
-   ```bash
-   #!/bin/bash
-   git clone https://github.com/cyfronet-fid/docker-geoserver
-   cd docker-geoserver
-   ./build.sh # will ask for sudo
-   cd ..
-   ```
-
-   You can remove `docker-geoserver` directory afterwards
-
-2. Run `./mvnw package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
+1. Run `./mvnw package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
    **NOTICE**: In some cases packaging may fail due to inability to compile some binary dependencies for frontend packages. In that case the easiest solution is to delete `s4e-web/node_moules` directory (`rm -rf s4e-web/node_modules`)
 
-3. Run `docker-compose up`
+2. Run `docker-compose up`
 
-4. After all services are up in the browser navigate to http://localhost:4200 - web interface should be there
+3. After all services are up in the browser navigate to http://localhost:4200 - web interface should be there
 
-5. No it's time to get S3 data to the application. First make sure that you have `s3cmd` installed:
-   **OSX**: `brew install s3cmd`
-   **Debian**: `apt-get install s3cmd`
+4. No it's time to get S3 data to the application.
+   First make sure that you have [minio client](https://github.com/minio/mc) (`mc`) installed.
+   
+5. Configure `mc`.
 
-6. Configure `s3cmd` - you can run configuration wizard by running:
-
+   Add configuration for local-docker and cyfronet-ceph endpoints:
    ```bash
-   s3cmd --configure
+   mc config host add local-docker http://localhost:9001 minio minio123
+   mc config host add cyfronet-ceph <url> <access_key> <secret_key>
+   ```
+   You'll need access to data available [here](https://docs.cyfronet.pl/display/FID/Projekty) (section **sat4envi/CEPH**).
+
+   If running `mc ls cyfronet-ceph` prints output similar to the one below it means it's all good to go:
+   ```bash
+   $ mc ls cyfronet-ceph
+   [2019-03-08 18:02:34 CET]      0B data-packs/
+   [2018-06-24 15:44:38 CEST]      0B marta-test/
+   [2018-08-01 13:53:15 CEST]      0B s4e-test-1/
+   [2019-03-06 12:02:50 CET]      0B s4e-test-2/
    ```
 
-   You'll need access data which is available [here](https://docs.cyfronet.pl/display/FID/Projekty) (section **sat4envi/CEPH**)
-
-   During configuration there are 4 important params which you must define (you can leave all others to their defaults):
-
-   * **Access Key**
-   * **Secret Key**
-   * **S3 Endpoint**
-   * **DNS-style bucket+hostname:port template** - you should set it to `%(bucket)s.<ceph_url>`
-
-   After configuration you should see summary similar to the one below:
+6. Download s3 data for minio:
 
    ```bash
-   New settings:
-     Access Key: <access_key>
-     Secret Key: <secret_key>
-     Default Region: US
-     S3 Endpoint: <url>
-     DNS-style bucket+hostname:port template for accessing a bucket: %(bucket)s.<url>
-     Encryption password:
-     Path to GPG program: None
-     Use HTTPS protocol: True
-     HTTP Proxy server name:
-     HTTP Proxy server port: 0
-   ```
-
-   If running `s3cmd ls` prints output similar to the one below it means it's all good to go
-
-   ```bash
-   $ s3cmd ls
-   2019-03-08 17:02  s3://data-packs
-   2018-06-24 13:44  s3://marta-test
-   2018-08-01 11:53  s3://s4e-test-1
-   2019-03-06 11:02  s3://s4e-test-2
-   ```
-
-7. Download s3 data for minio:
-
-   ```bash
-   s3cmd get s3://data-packs/minio-data-v1.tar.xz
+   mc cp cyfronet-ceph/data-packs/minio-data-v1.tar.xz .
    tar -xJf minio-data-v1.tar.xz -C ./tmp
    ```
+   
+7. Create a bucket with static application content as well as shown [here](#backend-static).
 
 8. You're done - application should be available on http://localhost:4200 and have 3 available products
 
