@@ -38,9 +38,10 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: fiddev/geoserver:2.15.0
+    image: savi/geoserver:1.0.0-GS2.15.1
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
+      - ./tmp/geoserver-data:/opt/geoserver/data_dir
     ports:
       - ${GEOSERVER_PORT:-8080}:8080
     networks:

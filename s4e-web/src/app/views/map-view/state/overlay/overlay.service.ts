@@ -19,7 +19,7 @@ export class OverlayService {
     this.overlayStore.setLoading(true);
     // :TODO replace mock with HTTP request
     of([{
-      id: this.CONFIG.geoserverWorkspace + ':wojew%C3%B3dztwa',
+      id: this.CONFIG.geoserverWorkspace + ':wojewodztwa',
       caption: 'regions',
       type: 'wms' as OverlayType
     }]).pipe(finalize(() => this.overlayStore.setLoading(false))).subscribe(overlays => this.overlayStore.set(overlays));

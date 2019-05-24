@@ -115,7 +115,7 @@ public class SeedProducts implements ApplicationRunner {
         val prgOverlays = new ArrayList<PRGOverlay>();
         prgOverlays.add(PRGOverlay.builder()
                 .name("wojewodztwa")
-                .featureType("wojew%C3%B3dztwa")
+                .featureType("wojewodztwa")
                 .sldStyle(sldStyles.get(0))
                 .build());
         prgOverlayRepository.saveAll(prgOverlays);
