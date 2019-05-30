@@ -24,6 +24,7 @@
   width: 50%;
   float:left;
   color: $color-black;
+  font-weight: 500;
 }
 
 .box__hint {
@@ -41,8 +42,8 @@
 .box__content {
   background: $color-white;
   border-radius: $border-radius-default;
+  box-shadow: $shadow-primary;
 }
-
 
 
 /* 2. List */
@@ -66,6 +67,11 @@
   display: flex;
   flex-direction: row;
   margin-bottom: $space-small;
+  align-content: center;
+
+  > * {
+    align-self: baseline;
+  }
 
   &:last-child {
     margin-bottom: 0;
@@ -79,7 +85,8 @@
 
 .list__icon {
   overflow: hidden;
-  margin-right: $space-xsmall;
+  margin: 0 $space-small 0 0;
+
 
   img {
     border-radius: 50%;
@@ -121,26 +128,17 @@
 
 /* 4. Various */
 
+body {
+  overflow: hidden;
+}
+
 a {
   color: $color-primary;
   font-weight: normal;
 }
 
-.icon_visibility {
-  margin-left: auto;
-}
 
 
-.list > .list__item {
-  .icon_visibility {
-    opacity: 0.3;
-  }
 
-  &.active {
-    .icon_visibility {
-      opacity: 1.0;
-    }
-  }
-}
 
 

@@ -1,10 +1,17 @@
-<div *ngFor="let day of days; let $first = first; let $last = last"
-     class="box__content">
-  <div class="timeline__currentday">{{ day.label }}</div>
-  <ul class="list">
+<div *ngFor="let day of days; let $first = first; let $last = last">
+  <ul class="timeline__manage">
+    <li>
+      24</li>
+    <li class="timeline__currentday">
+      <span>{{ day.label }}</span>
+      <img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate" />
+    </li>
+    <li>26</li>
+  </ul>
+  <ul class="timeline__grid">
     <li class="timeline__item"
-        *ngFor="let product of day.products">
-      <a href="javascript:undefined" (click)="selectProduct.emit(product)">{{ product.timestamp | date : 'shortTime' }}</a>
+        *ngFor="let product of day.products" href="javascript:undefined" (click)="selectProduct.emit(product)">
+      {{ product.timestamp | date : 'shortTime' }}
     </li>
   </ul>
 </div>

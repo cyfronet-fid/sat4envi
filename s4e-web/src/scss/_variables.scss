@@ -1,4 +1,4 @@
-$border-radius-default: 2px;
+$border-radius-default: 5px;
 
 /*================
 ===== FONTS ======
@@ -14,9 +14,10 @@ $color-white: #fff;
 $color-black: #000;
 
 $color-grey: #767675;
-$color-grey-primary: #f2f2f2;
+$color-grey-primary: #F5F5F5;
 $color-grey-secondary: #EDECEC;
 $color-primary: #2B74BB;
+$color-primary-darker: #1F5B96;
 
 /*==================
 PADDINGS AND MARGINS
@@ -27,5 +28,8 @@ $space-large: 20px;
 $space-default: 15px;
 $space-small: 10px;
 $space-xsmall: 5px;
+
+
+$shadow-primary: 0 2px 4px rgba(0,0,0,0.1);
 
 

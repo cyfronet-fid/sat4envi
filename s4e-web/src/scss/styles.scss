@@ -13,6 +13,12 @@
   font-family: $font-base, sans-serif;
 }
 
+.main {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 
 .ng-touched.ng-invalid {
   @extend .is-invalid;
