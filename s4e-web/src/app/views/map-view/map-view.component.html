@@ -1,4 +1,5 @@
-<s4e-view-manager [overlays]="overlays$ | async"
+<s4e-view-manager class="section sidebar"
+                  [overlays]="overlays$ | async"
                   [loading]="viewManagerLoading$ | async"
                   [overlaysLoading]="false"
                   [products]="productsTypeList$ | async"
@@ -7,10 +8,11 @@
                   (selectProductType)="selectProductType($event)">
 </s4e-view-manager>
 `
-<s4e-timeline class="timeline"
+<s4e-timeline class="section timeline"
               [products]="products$ | async"
               [loading]="productsAreLoading$ | async"
               (selectProduct)="selectProduct($event?.id)">
 </s4e-timeline>
 
-<s4e-map [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>
+<s4e-map class="section map"
+  [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>
