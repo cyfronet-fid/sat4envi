@@ -63,12 +63,14 @@ public class SeedDevelopment implements ApplicationRunner {
                         .email("cat1user@mail.pl")
                         .password(passwordEncoder.encode("cat1user"))
                         .role(AppRole.CAT1)
+                        .enabled(true)
                         .build(),
                 AppUser.builder()
                         .email("cat2user@mail.pl")
                         .password(passwordEncoder.encode("cat2user"))
                         .role(AppRole.CAT1)
                         .role(AppRole.CAT2)
+                        .enabled(true)
                         .build(),
                 AppUser.builder()
                         .email("cat3user@mail.pl")
@@ -76,6 +78,7 @@ public class SeedDevelopment implements ApplicationRunner {
                         .role(AppRole.CAT1)
                         .role(AppRole.CAT2)
                         .role(AppRole.CAT3)
+                        .enabled(true)
                         .build(),
                 AppUser.builder()
                         .email("cat4user@mail.pl")
@@ -84,6 +87,7 @@ public class SeedDevelopment implements ApplicationRunner {
                         .role(AppRole.CAT2)
                         .role(AppRole.CAT3)
                         .role(AppRole.CAT4)
+                        .enabled(true)
                         .build(),
         });
         appUserRepository.saveAll(appUsers);

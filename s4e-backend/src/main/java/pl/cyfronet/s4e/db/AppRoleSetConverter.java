@@ -5,6 +5,7 @@ import pl.cyfronet.s4e.bean.AppRole;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,9 @@ public class AppRoleSetConverter implements AttributeConverter<Set<AppRole>, Str
 
     @Override
     public Set<AppRole> convertToEntityAttribute(String column) {
+        if (column == null || column.trim().isEmpty()) {
+            return Collections.emptySet();
+        }
         return Arrays.asList(column.split(SEP)).stream()
                 .map(segment -> AppRole.valueOf(segment))
                 .collect(Collectors.toSet());
