@@ -26,4 +26,6 @@ public class AppUser {
 
     @Singular
     private Set<AppRole> roles;
+
+    private boolean enabled;
 }

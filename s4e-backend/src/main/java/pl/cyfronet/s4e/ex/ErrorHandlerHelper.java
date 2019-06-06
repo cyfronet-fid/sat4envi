@@ -2,32 +2,64 @@ package pl.cyfronet.s4e.ex;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class ErrorHandlerHelper {
     private final Environment env;
+    private final ResourceBundleMessageSource resourceBundleMessageSource;
 
-    public Map<String, String> toResponse(Exception e) {
-        return toResponse(e.getMessage(), e.getClass().getName(), getStacktraceString(e));
+    public Map<String, Object> toResponseMap(Exception e) {
+        String message = e.getMessage();
+        val map = new LinkedHashMap<String, Object>();
+        map.put("__general__", message);
+        optionallyAddDevelopmentInformation(map, e);
+        return map;
     }
 
-    public Map<String, String> toResponse(String message, String exception, String stacktrace) {
-        val map = new LinkedHashMap<String, String>();
-        map.put("message", message);
-        if (Arrays.stream(env.getActiveProfiles()).anyMatch("development"::equals)) {
-            map.put("exception", exception);
-            map.put("stacktrace", stacktrace);
+    public Map<String, Object> toResponseMap(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        val map = new LinkedHashMap<String, Object>();
+
+        // populate general errors
+        if (bindingResult.hasGlobalErrors()) {
+            map.put("__general__", bindingResult.getGlobalErrors().stream()
+                    .map(objectError -> getMessage(objectError))
+                    .collect(Collectors.toUnmodifiableList()));
         }
+
+        // populate field errors
+        for (FieldError fieldError: bindingResult.getFieldErrors()) {
+            map.putIfAbsent(fieldError.getField(), new ArrayList<>());
+            ((List) map.get(fieldError.getField())).add(getMessage(fieldError));
+        }
+
+        optionallyAddDevelopmentInformation(map, e);
         return map;
+    }
+
+    public String getMessage(DefaultMessageSourceResolvable error) {
+        return resourceBundleMessageSource.getMessage(error, LocaleContextHolder.getLocale());
+    }
+
+    public void optionallyAddDevelopmentInformation(Map<String, Object> map, Exception e) {
+        if (Arrays.stream(env.getActiveProfiles()).anyMatch("development"::equals)) {
+            map.put("__exception__", e.getClass().getName());
+            map.put("__stacktrace__", getStacktraceString(e));
+        }
     }
 
     public static String getStacktraceString(Exception e) {

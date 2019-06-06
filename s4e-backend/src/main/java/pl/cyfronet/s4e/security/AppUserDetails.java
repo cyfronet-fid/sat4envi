@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
-
     @Getter
     private final AppUser appUser;
 
@@ -49,6 +48,6 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return appUser.isEnabled();
     }
 }
