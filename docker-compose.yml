@@ -5,7 +5,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=${BACKEND_SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/sat4envi}
       - SPRING_PROFILES_ACTIVE=${BACKEND_SPRING_PROFILES_ACTIVE:-development}
-      - GEOSERVER_BASEURL=${BACKEND_GEOSERVER_BASEURL:-http://geoserver:8080/geoserver/rest}
+      - GEOSERVER_BASEURL=${BACKEND_GEOSERVER_BASEURL:-http://geoserver:8081/geoserver/rest}
     volumes:
       - ${BACKEND_JAR_PATH:-./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar}:/app/app.jar
     ports:
@@ -44,7 +44,7 @@ services:
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
     ports:
-      - ${GEOSERVER_PORT:-8080}:8080
+      - ${GEOSERVER_PORT:-8081}:8080
     networks:
       - net
     environment:

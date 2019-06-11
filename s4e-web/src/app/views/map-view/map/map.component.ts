@@ -36,11 +36,12 @@ export class MapComponent implements OnInit, OnDestroy {
       view: new View({
         center: centerOfPolandWebMercator,
         zoom: 6,
+        maxZoom: 12
       }),
     });
 
     this.baseLayer = new Tile({
-      source: new OSM(),
+      source: new OSM({url: '/hot/{z}/{x}/{y}.png'}),
     });
 
     this.map.getLayers().push(this.baseLayer);
