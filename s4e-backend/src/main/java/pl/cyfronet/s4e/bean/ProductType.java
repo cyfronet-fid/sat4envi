@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -13,8 +14,8 @@ public class ProductType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @NotEmpty
     private String name;
-    @OneToMany
+    @OneToMany(mappedBy = "productType")
     private List<Product> products;
 }

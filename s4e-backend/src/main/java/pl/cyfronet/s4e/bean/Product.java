@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,11 +17,13 @@ public class Product {
     private Long id;
     @ManyToOne(optional = false)
     private ProductType productType;
+    @NotNull
     private LocalDateTime timestamp;
+    /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
+    @NotEmpty
+    private String s3Path;
     /// How the layer will be identified in GeoServer, excluding workspace
     private String layerName;
     /// Has the layer, store and coverage been created for this product
     private boolean created;
-    /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
-    private String s3Path;
 }
