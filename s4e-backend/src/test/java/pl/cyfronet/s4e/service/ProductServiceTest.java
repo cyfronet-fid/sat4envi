@@ -56,6 +56,7 @@ public class ProductServiceTest {
                 .productType(productType)
                 .layerName("testLayerName")
                 .timestamp(LocalDateTime.now())
+                .s3Path("some/path")
                 .build();
 
         assertThat(productRepository.count(), is(equalTo(0L)));
@@ -76,6 +77,7 @@ public class ProductServiceTest {
                 .productType(productType)
                 .layerName("testLayerName")
                 .timestamp(LocalDateTime.now())
+                .s3Path("some/path")
                 .build();
 
         assertThat(productRepository.count(), is(equalTo(0L)));

@@ -2,26 +2,20 @@ package pl.cyfronet.s4e.bean;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
+@Table(name = "prg_overlay")
 @Data
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class PRGOverlay extends Overlay {
-    @Builder
-    public PRGOverlay(String name, String featureType, SldStyle sldStyle, boolean created) {
-        super();
-        this.setName(name);
-        this.setFeatureType(featureType);
-        this.setSldStyle(sldStyle);
-        this.setCreated(created);
-    }
-
+@Builder
+public class PRGOverlay {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotEmpty
+    private String name;
     /**
      * Must be set to match with the featureTypes in the PRG zip. It will also be the layer name
      */
