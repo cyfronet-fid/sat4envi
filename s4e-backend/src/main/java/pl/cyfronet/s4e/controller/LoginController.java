@@ -2,7 +2,6 @@ package pl.cyfronet.s4e.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -26,16 +25,15 @@ public class LoginController {
     private final JWTTokenService jwtTokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) throws AuthenticationException {
+    public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws AuthenticationException {
         val token = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
-        val authToken = (UsernamePasswordAuthenticationToken) authenticationProvider.authenticate(token);
+        val authToken = authenticationProvider.authenticate(token);
 
-        String jws = jwtTokenService.generateClaimsJws(authToken.getName());
+        String jws = jwtTokenService.generateClaimsJws(authToken);
 
-        return ResponseEntity.ok(
-                LoginResponse.builder()
-                        .email(authToken.getName())
-                        .token(jws)
-                        .build());
+        return LoginResponse.builder()
+                .email(authToken.getName())
+                .token(jws)
+                .build();
     }
 }
