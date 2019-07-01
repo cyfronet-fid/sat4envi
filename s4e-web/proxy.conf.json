@@ -6,5 +6,9 @@
   "/static": {
     "target": "http://localhost:9001",
     "secure": false
+  },
+  "/osm": {
+    "target": "http://docker-fid.grid.cyf-kr.edu.pl:7576",
+    "secure": false
   }
 }
