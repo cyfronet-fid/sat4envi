@@ -1,5 +1,4 @@
 import {Routes} from '@angular/router';
-
 import {MapViewComponent} from './views/map-view/map-view.component';
 import {ProfileComponent} from './views/profile/profile.component';
 import {LoginComponent} from './views/login/login.component';

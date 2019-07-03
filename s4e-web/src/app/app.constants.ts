@@ -7,6 +7,7 @@ export interface IConstants {
   apiPrefixV1: string;
   backendDateFormat: string;
   userLocalStorageKey: string;
+  generalErrorKey: string;
 }
 
 export function s4eConstantsFactory(): IConstants {
@@ -16,7 +17,8 @@ export function s4eConstantsFactory(): IConstants {
     geoserverWorkspace: 'development',
     apiPrefixV1: 'api/v1',
     backendDateFormat: 'yyyy-MM-dd\'T\'HH:mm:ss',
-    userLocalStorageKey: 'user'
+    userLocalStorageKey: 'user',
+    generalErrorKey: '__general__'
   };
 }
 

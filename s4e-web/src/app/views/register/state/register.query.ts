@@ -5,9 +5,7 @@ import {RegisterState} from './register.model';
 
 @Injectable({ providedIn: 'root' })
 export class RegisterQuery extends Query<RegisterState> {
-
   constructor(protected store: RegisterStore) {
     super(store);
   }
-
 }

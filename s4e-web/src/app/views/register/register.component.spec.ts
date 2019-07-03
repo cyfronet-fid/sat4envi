@@ -4,6 +4,9 @@ import { RegisterComponent } from './register.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ShareModule} from '../../common/share.module';
 import {RegisterService} from './state/register.service';
+import {FormErrorModule} from '../../components/form-error/form-error.module';
+import {TestingConstantsProvider} from '../../app.constants.spec';
+import {By} from '@angular/platform-browser';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -12,8 +15,9 @@ describe('RegisterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ShareModule],
-      declarations: [ RegisterComponent ]
+      imports: [RouterTestingModule, ShareModule, FormErrorModule],
+      declarations: [ RegisterComponent ],
+      providers: [TestingConstantsProvider]
     })
     .compileComponents();
   }));
@@ -38,7 +42,7 @@ describe('RegisterComponent', () => {
 
   it('should send valid form', () => {
     const spy = spyOn(registerService, 'register');
-    component.form.setValue({login: 'user@domain', password: 'pass', passwordRepeat: 'pass'});
+    component.form.setValue({email: 'user@domain', password: 'pass', passwordRepeat: 'pass'});
     component.register();
     expect(spy).toHaveBeenCalled();
   });
@@ -59,11 +63,41 @@ describe('RegisterComponent', () => {
   });
 
   it('should validate login', () => {
-    component.form.controls.login.setValue('');
-    expect(component.form.controls.login.valid).toBeFalsy();
-    component.form.controls.login.setValue('user');
-    expect(component.form.controls.login.valid).toBeFalsy();
-    component.form.controls.login.setValue('user@domain');
-    expect(component.form.controls.login.valid).toBeTruthy();
+    component.form.controls.email.setValue('');
+    expect(component.form.controls.email.valid).toBeFalsy();
+    component.form.controls.email.setValue('user');
+    expect(component.form.controls.email.valid).toBeFalsy();
+    component.form.controls.email.setValue('user@domain');
+    expect(component.form.controls.email.valid).toBeTruthy();
+  });
+
+  it('clicking submit button should call register', () => {
+    const spy = spyOn(component, 'register');
+    fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
+    expect(spy).toBeCalledWith();
+  });
+
+  it('should call RegisterService.register on submit', () => {
+    component.form.controls.email.setValue('user@domain');
+    component.form.controls.password.setValue('password1234');
+    component.form.controls.passwordRepeat.setValue('password1234');
+
+    const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
+
+    component.register();
+
+    expect(spy).toBeCalledWith('user@domain', 'password1234');
+  });
+
+  it('should not call RegisterService.register on submit if form is not valid', () => {
+    component.form.controls.email.setValue('invalid');
+    component.form.controls.password.setValue('password1234');
+    component.form.controls.passwordRepeat.setValue('password1234');
+
+    const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
+
+    component.register();
+
+    expect(spy).not.toBeCalledWith('invalid', 'password1234');
   });
 });
