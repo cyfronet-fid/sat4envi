@@ -12,7 +12,6 @@
 /coverage
 /libpeerconnection.log
 /typings
-/idea
 /.idea
 /cypress/integration/examples/
 /cypress/screenshots

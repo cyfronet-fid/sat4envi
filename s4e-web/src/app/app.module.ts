@@ -20,8 +20,6 @@ import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
 import localePl from '@angular/common/locales/pl';
 import { LoginComponent } from './views/login/login.component';
-import { RegisterComponent } from './views/register/register.component';
-import { ResetPasswordComponent } from './views/reset-password/reset-password.component';
 import {LoginModule} from './views/login/login.module';
 import {RegisterModule} from './views/register/register.module';
 import {ResetPasswordModule} from './views/reset-password/reset-password.module';
@@ -30,7 +28,7 @@ registerLocaleData(localePl, 'pl');
 
 @NgModule({
   declarations: [
-    RootComponent,
+    RootComponent
   ],
   imports: [
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot(), AkitaNgRouterStoreModule.forRoot()]),

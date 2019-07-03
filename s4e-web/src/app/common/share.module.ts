@@ -12,11 +12,14 @@ import {registerLocaleData} from '@angular/common';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {fas} from '@fortawesome/free-solid-svg-icons';
 import {UtilsModule} from '../utils/utils.module';
+import {FormErrorComponent} from '../components/form-error/form-error.component';
 
 registerLocaleData(localePl, 'pl');
 library.add(fas);
 
 @NgModule({
+  declarations: [
+  ],
   imports: [
   ],
   exports: [

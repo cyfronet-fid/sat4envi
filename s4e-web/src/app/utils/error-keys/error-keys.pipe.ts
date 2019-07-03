@@ -6,7 +6,7 @@ import {HashMap} from '@datorama/akita';
 })
 export class ErrorKeysPipe implements PipeTransform {
   transform(value: HashMap<any>, args?: any): string[] {
-    return Object.keys(value || {});
+    return Object.keys(value || {}).filter(key => key !== '__highlight__');
   }
 
 }

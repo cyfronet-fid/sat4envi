@@ -1,0 +1,8 @@
+<li *ngFor="let error of (errors | errorKeys)" [ngSwitch]="error">
+  <ng-container *ngSwitchCase="'email'" i18n>To pole musi być emailem</ng-container>
+  <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+  <ng-container *ngSwitchCase="'mustMatch'" i18n>Hasła muszą być takie same</ng-container>
+  <ng-container *ngSwitchCase="'server'">
+    <ng-container *ngFor="let message of errors['server']">{{message}}<br></ng-container>
+  </ng-container>
+</li>

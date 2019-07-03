@@ -6,7 +6,29 @@ import {RegisterFormState} from './state/register.model';
 import {RegisterQuery} from './state/register.query';
 import {Observable} from 'rxjs';
 import {RegisterService} from './state/register.service';
-import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {connectErrorsToForm, devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {HashMap} from '@datorama/akita';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {debounceTime, delay} from 'rxjs/operators';
+
+export function MustMatch(controlName: string, matchingControlName: string) {
+  return (formGroup: FormGroup) => {
+    const control = formGroup.controls[controlName];
+    const matchingControl = formGroup.controls[matchingControlName];
+
+    if (matchingControl.errors && !matchingControl.errors['mustMatch']) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
+
+    // set error on matchingControl if validation fails
+    if (control.value !== matchingControl.value) {
+      matchingControl.setErrors({ mustMatch: true });
+    } else {
+      matchingControl.setErrors(null);
+    }
+  }
+}
 
 @Component({
   selector: 's4e-register',
@@ -15,7 +37,7 @@ import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellane
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   public form: FormGroup<RegisterFormState>;
-  public error$: Observable<any>;
+  public error: HashMap<string> = {};
   public loading$: Observable<boolean>;
 
 
@@ -25,26 +47,21 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = new FormGroup<RegisterFormState>({
-      login: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
-      passwordRepeat: new FormControl('', [Validators.required, () => {
-        if (this.form == null || this.form.controls.passwordRepeat == null || this.form.controls.password == null) {
-          return null;
-        }
+      passwordRepeat: new FormControl('', [Validators.required]),
+    }, {validators: MustMatch('password', 'passwordRepeat')});
 
-        if (this.form.controls.passwordRepeat.value !== this.form.controls.password.value) {
-          return {notSame: true};
-        }
-        return null;
-      }]),
-    });
-
-    this.error$ = this.registerQuery.selectError();
     this.loading$ = this.registerQuery.selectLoading();
 
     devRestoreFormState(this.fm.query.getValue().register, this.form);
-
     this.fm.upsert('register', this.form);
+
+    // In order for dev error setting to work debounceTime(100) must be set
+    this.registerQuery.selectError().pipe(debounceTime(100), untilDestroyed(this)).subscribe(errors => {
+      this.error = errors;
+      connectErrorsToForm(errors, this.form);
+    });
   }
 
   register() {
@@ -52,7 +69,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     if (!this.form.valid) { return; }
 
-    this.registerService.register(this.form.controls.login.value, this.form.controls.password.value);
+    this.registerService.register(this.form.controls.email.value, this.form.controls.password.value);
   }
 
   ngOnDestroy(): void {

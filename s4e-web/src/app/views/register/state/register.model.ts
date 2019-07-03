@@ -1,5 +1,5 @@
 export interface RegisterFormState {
-  login: string;
+  email: string;
   password: string;
   passwordRepeat: string;
 }
