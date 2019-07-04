@@ -24,7 +24,8 @@ public class SwaggerConfig {
                     .paths(PathSelectors.ant("/api/v1*/**"))
                     .build()
                 .groupName("v1")
-                .apiInfo(apiInfo());
+                .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false);
     }
 
     private ApiInfo apiInfo() {
