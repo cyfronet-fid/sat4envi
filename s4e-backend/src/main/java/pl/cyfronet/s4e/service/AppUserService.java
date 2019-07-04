@@ -9,6 +9,8 @@ import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,5 +25,9 @@ public class AppUserService {
             log.info("Cannot create AppUser with email '"+appUser.getEmail()+"'", e);
             throw new AppUserCreationException(e);
         }
+    }
+
+    public Optional<AppUser> findByEmail(String email) {
+        return appUserRepository.findByEmail(email);
     }
 }

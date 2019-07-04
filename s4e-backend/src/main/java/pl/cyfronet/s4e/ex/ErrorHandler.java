@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,9 +19,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ErrorHandler extends ResponseEntityExceptionHandler {
     private final ErrorHandlerHelper errorHandlerHelper;
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleCannotAuthenticateException(AuthenticationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorHandlerHelper.toResponseMap(e));
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<?> handleDisabledException(DisabledException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -28,10 +29,25 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorHandlerHelper.toResponseMap(e));
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<?> handleCannotAuthenticateException(AuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorHandlerHelper.toResponseMap(e));
+    }
+
     @ExceptionHandler(AppUserCreationException.class)
     public ResponseEntity<?> handleAppUserCreationException() {
         // don't return an error status in this case, as it would open the system to account enumeration attack
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ExceptionHandler(RegistrationTokenExpiredException.class)
+    public ResponseEntity<?> handleRegistrationTokenExpiredException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @Override

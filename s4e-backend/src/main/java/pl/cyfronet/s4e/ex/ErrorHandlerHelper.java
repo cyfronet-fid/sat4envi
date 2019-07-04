@@ -2,9 +2,9 @@ package pl.cyfronet.s4e.ex;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ErrorHandlerHelper {
     private final Environment env;
-    private final ResourceBundleMessageSource resourceBundleMessageSource;
+    private final MessageSource messageSource;
 
     public Map<String, Object> toResponseMap(Exception e) {
         String message = e.getMessage();
@@ -52,7 +52,7 @@ public class ErrorHandlerHelper {
     }
 
     public String getMessage(DefaultMessageSourceResolvable error) {
-        return resourceBundleMessageSource.getMessage(error, LocaleContextHolder.getLocale());
+        return messageSource.getMessage(error, LocaleContextHolder.getLocale());
     }
 
     public void optionallyAddDevelopmentInformation(Map<String, Object> map, Exception e) {
