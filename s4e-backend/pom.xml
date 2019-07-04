@@ -21,7 +21,7 @@
         <jjwt.version>0.10.6</jjwt.version>
         <junit.version>5.4.2</junit.version>
         <mockito.version>2.28.2</mockito.version>
-        <springfox.version>2.9.2</springfox.version>
+        <springfox.version>3.0.0-SNAPSHOT</springfox.version>
     </properties>
 
     <dependencies>
@@ -122,7 +122,21 @@
             <artifactId>springfox-bean-validators</artifactId>
             <version>${springfox.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-webmvc</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <!-- TODO: remove and depend on springfox 3.0.0-RELEASE once it is released -->
+        <repository>
+            <id>spring-libs-milestone</id>
+            <name>Spring Milestone Maven Repository</name>
+            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
