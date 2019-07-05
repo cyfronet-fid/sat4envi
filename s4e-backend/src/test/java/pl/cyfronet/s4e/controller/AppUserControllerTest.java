@@ -1,12 +1,16 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.mkopylec.recaptcha.RecaptchaProperties;
+import com.github.mkopylec.recaptcha.validation.ErrorCode;
+import com.github.mkopylec.recaptcha.validation.RecaptchaValidator;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.store.StoredMessage;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.awaitility.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,13 +33,17 @@ import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
+import static java.util.Collections.emptyList;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,6 +67,12 @@ public class AppUserControllerTest {
     @SpyBean
     private TestListener testListener;
 
+    @SpyBean
+    private RecaptchaValidator recaptchaValidator;
+
+    @Autowired
+    private RecaptchaProperties recaptchaProperties;
+
     private GreenMail greenMail;
 
     @Autowired
@@ -71,6 +85,9 @@ public class AppUserControllerTest {
 
         greenMail = new GreenMailSupplier().get();
         greenMail.start();
+
+        recaptchaProperties.getTesting().setSuccessResult(true);
+        recaptchaProperties.getTesting().setResultErrorCodes(emptyList());
     }
 
     @AfterEach
@@ -106,6 +123,10 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
                 .andExpect(status().isOk());
 
+        // RecaptchaValidator should be called.
+        verify(recaptchaValidator).validate(any(HttpServletRequest.class));
+        verifyNoMoreInteractions(recaptchaValidator);
+
         // AppUser should have been created and the OnRegistrationCompleteEvent fired.
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(true));
         verify(testListener).handle(any(OnRegistrationCompleteEvent.class));
@@ -118,6 +139,41 @@ public class AppUserControllerTest {
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
         assertThat(getBody(storedMessage.getMimeMessage()), containsString("?token="));
+    }
+
+    @Test
+    public void shouldntCreateUserIfRecaptchaFails() throws Exception {
+        recaptchaProperties.getTesting().setSuccessResult(false);
+        recaptchaProperties.getTesting().setResultErrorCodes(List.of(
+                ErrorCode.MISSING_USER_CAPTCHA_RESPONSE,
+                ErrorCode.INVALID_USER_CAPTCHA_RESPONSE));
+        val responseParameter = recaptchaProperties.getValidation().getResponseParameter();
+
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .email("some@email.pl")
+                .password("admin123")
+                .build();
+
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+
+        mockMvc.perform(post(API_PREFIX_V1+"/register")
+                .param(responseParameter, "testCaptchaResponse")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(registerRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.recaptcha", hasItems(
+                        ErrorCode.MISSING_USER_CAPTCHA_RESPONSE.getText(),
+                        ErrorCode.INVALID_USER_CAPTCHA_RESPONSE.getText())));
+
+        // Recaptcha validator should be called passing the response parameter.
+        verify(recaptchaValidator).validate(argThat(
+                (HttpServletRequest request) ->
+                        "testCaptchaResponse".equals(request.getParameter(responseParameter))));
+        verifyNoMoreInteractions(recaptchaValidator);
+
+        // No AppUser should have been created.
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        verifyNoMoreInteractions(testListener);
     }
 
     @Test

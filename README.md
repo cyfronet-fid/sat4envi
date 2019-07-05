@@ -68,6 +68,19 @@ I assume you have built the jar file, so, being in the root directory, run
 The generated file should overwrite the pre-existing one, and you can commit the resulting csv into the repo.
 
 
+#### reCAPTCHA
+
+It is configured with two properties:
+```
+recaptcha.validation.secretKey=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+recaptcha.validation.siteKey=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+```
+The values present in `application-development.properties` (and above) are taken from the reCAPTCHA FAQ and the service
+will always say that the response is ok when using them.
+To test the production experience generate the keys yourself under https://www.google.com/recaptcha/admin/create.
+(You can use the domain `localhost` to test locally.)
+
+
 #### API docs
 
 We use Swagger to create API documentation.

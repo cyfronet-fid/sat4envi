@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.ex;
 
+import com.github.mkopylec.recaptcha.validation.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.MessageSource;
@@ -46,6 +47,18 @@ public class ErrorHandlerHelper {
             map.putIfAbsent(fieldError.getField(), new ArrayList<>());
             ((List) map.get(fieldError.getField())).add(getMessage(fieldError));
         }
+
+        optionallyAddDevelopmentInformation(map, e);
+        return map;
+    }
+
+    public Map<String, Object> toResponseMap(RecaptchaException e) {
+        val errorCodes = e.getErrorCodes();
+        val map = new LinkedHashMap<String, Object>();
+
+        map.put("recaptcha", errorCodes.stream()
+                .map(ErrorCode::getText)
+                .collect(Collectors.toList()));
 
         optionallyAddDevelopmentInformation(map, e);
         return map;

@@ -1,5 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
+import com.github.mkopylec.recaptcha.validation.ErrorCode;
+import com.github.mkopylec.recaptcha.validation.RecaptchaValidationException;
+import com.github.mkopylec.recaptcha.validation.RecaptchaValidator;
+import com.github.mkopylec.recaptcha.validation.ValidationResult;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
@@ -16,14 +20,17 @@ import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.RecaptchaException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
@@ -35,18 +42,29 @@ public class AppUserController {
     private final EmailVerificationService emailVerificationService;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
+    private final RecaptchaValidator recaptchaValidator;
 
     @ApiOperation("Register a new user")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "g-recaptcha-response", dataType = "string", paramType = "query", required = true)
+    })
     @ApiResponses({
             @ApiResponse(code = 200, message = "If user was registered. But also, when the username was taken and the registration didn't succeed"),
-            @ApiResponse(code = 400, message = "The request was not valid", examples = @Example({
-                    @ExampleProperty(mediaType = "application/json", value = "{\"email\":[\"musi być adresem e-mail\"]}")
+            @ApiResponse(code = 400, message = "The request was not valid or recaptcha failed", examples = @Example({
+                    @ExampleProperty(mediaType = "application/json", value =
+                            "{\"email\":[\"musi być adresem e-mail\"]}\n"+
+                            "or\n"+
+                            "{\"recaptcha\":[\"invalid-input-response\"]}"
+                    )
             }))
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(
-            @RequestBody @Valid RegisterRequest registerRequest
-    ) throws AppUserCreationException {
+            @RequestBody @Valid RegisterRequest registerRequest,
+            HttpServletRequest request
+    ) throws AppUserCreationException, RecaptchaException {
+        validateRecaptcha(request);
+
         AppUser appUser = appUserService.save(AppUser.builder()
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
@@ -114,5 +132,16 @@ public class AppUserController {
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(verificationToken, LocaleContextHolder.getLocale()));
 
         return ResponseEntity.ok().build();
+    }
+
+    private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {
+        try {
+            ValidationResult validationResult = recaptchaValidator.validate(request);
+            if (validationResult.isFailure()) {
+                throw new RecaptchaException("Cannot validate request", validationResult.getErrorCodes());
+            }
+        } catch (RecaptchaValidationException e) {
+            throw new RecaptchaException("Connection exception", List.of(ErrorCode.VALIDATION_HTTP_ERROR), e);
+        }
     }
 }

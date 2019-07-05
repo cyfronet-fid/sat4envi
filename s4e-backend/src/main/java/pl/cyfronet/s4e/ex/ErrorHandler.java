@@ -40,6 +40,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ExceptionHandler(RecaptchaException.class)
+    public ResponseEntity<?> handleRecaptchaException(RecaptchaException e) {
+        return ResponseEntity.badRequest().body(errorHandlerHelper.toResponseMap(e));
+    }
+
     @ExceptionHandler(RegistrationTokenExpiredException.class)
     public ResponseEntity<?> handleRegistrationTokenExpiredException() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
