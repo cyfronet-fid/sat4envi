@@ -12,13 +12,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -29,7 +28,6 @@ import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
-import pl.cyfronet.s4e.ex.AsyncUncaughtExceptionHandlerImpl;
 
 import java.time.LocalDateTime;
 
@@ -38,12 +36,14 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
+@AutoConfigureMockMvc
 @BasicTest
 @Slf4j
 public class AppUserControllerTest {
@@ -56,22 +56,16 @@ public class AppUserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private WebApplicationContext wac;
-
     @SpyBean
     private TestListener testListener;
 
-    @SpyBean
-    private AsyncUncaughtExceptionHandlerImpl asyncUncaughtExceptionHandler;
-
     private GreenMail greenMail;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void beforeEach() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         emailVerificationRepository.deleteAll();
         appUserRepository.deleteAll();
 
