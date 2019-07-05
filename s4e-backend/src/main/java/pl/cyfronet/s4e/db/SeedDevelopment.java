@@ -31,6 +31,7 @@ public class SeedDevelopment implements ApplicationRunner {
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
     private final AppUserRepository appUserRepository;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -39,6 +40,7 @@ public class SeedDevelopment implements ApplicationRunner {
     @Async
     @Override
     public void run(ApplicationArguments args) {
+        emailVerificationRepository.deleteAll();
         appUserRepository.deleteAll();
         productRepository.deleteAll();
         productTypeRepository.deleteAll();

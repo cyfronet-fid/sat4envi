@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,27 @@ public class ConfigController {
     @Value("${geoserver.workspace}")
     private String geoserverWorkspace;
 
+    @Value("${recaptcha.validation.siteKey}")
+    private String recaptchaSiteKey;
+
+    @ApiOperation("Get the front-end app configuration")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK", examples = @Example({
+                    @ExampleProperty(mediaType = "application/json", value = "{\n" +
+                            "    \"geoserverUrl\": \"http://localhost:8080/geoserver/rest\",\n" +
+                            "    \"geoserverWorkspace\": \"development\",\n" +
+                            "    \"backendDateFormat\": \"yyyy-MM-dd'T'HH:mm:ss\",\n" +
+                            "    \"recaptchaSiteKey\": \"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\"\n" +
+                            "}")
+            }))
+    })
     @GetMapping("/config")
     public ConfigResponse config() {
         return ConfigResponse.builder()
                 .geoserverUrl(geoserverOutsideBaseUrl)
                 .geoserverWorkspace(geoserverWorkspace)
                 .backendDateFormat(Constants.JACKSON_DATE_FORMAT)
+                .recaptchaSiteKey(recaptchaSiteKey)
                 .build();
     }
 }
