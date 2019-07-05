@@ -3,9 +3,8 @@ package pl.cyfronet.s4e.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Place;
 import pl.cyfronet.s4e.data.repository.PlaceRepository;
@@ -17,19 +16,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
+@AutoConfigureMockMvc
 @BasicTest
 class PlaceControllerTest {
     @Autowired
     private PlaceRepository placeRepository;
 
     @Autowired
-    private WebApplicationContext wac;
-
     private MockMvc mockMvc;
 
     @BeforeEach
     public void beforeEach() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
         resetPlaces();
     }
 
