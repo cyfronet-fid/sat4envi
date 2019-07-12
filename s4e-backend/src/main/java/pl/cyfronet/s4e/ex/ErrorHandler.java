@@ -55,6 +55,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @ExceptionHandler(PasswordResetTokenExpiredException.class)
+    public ResponseEntity<?> handlePasswordResetTokenExpiredException() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<?> handlePBadRequestExpiredException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
         BindingResult bindingResult = e.getBindingResult();
