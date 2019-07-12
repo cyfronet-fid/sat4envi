@@ -27,6 +27,11 @@ public class AppUserService {
         }
     }
 
+    @Transactional
+    public AppUser update(AppUser appUser){
+        return appUserRepository.save(appUser);
+    }
+
     public Optional<AppUser> findByEmail(String email) {
         return appUserRepository.findByEmail(email);
     }
