@@ -60,10 +60,10 @@ public class PasswordController {
     })
     @GetMapping(value = "/token-validate")
     public ResponseEntity<?> validateToken(@RequestParam @NotEmpty @Valid String token) throws NotFoundException, PasswordResetTokenExpiredException {
-        val resetToken = passwordService.findByToken(token)
+        val resetPasswordToken = passwordService.findByToken(token)
                 .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
 
-        if (resetToken.getExpiryTimestamp().isBefore(LocalDateTime.now())) {
+        if (resetPasswordToken.getExpiryTimestamp().isBefore(LocalDateTime.now())) {
             throw new PasswordResetTokenExpiredException("Provided token '" + token + "' expired");
         }
 
@@ -73,22 +73,17 @@ public class PasswordController {
     @ApiOperation("Reset password")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Password reset was successful"),
-            @ApiResponse(code = 400, message = "Passwords were incorrect"),
             @ApiResponse(code = 404, message = "The token was not found")
     })
     @PostMapping(value = "/password-reset")
     @ResponseBody
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid PasswordResetRequest passwordReset, @RequestParam("token") String token) throws NotFoundException, BadRequestException {
-        val optionalResetPasswordToken = passwordService.findByToken(token)
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid PasswordResetRequest passwordReset, @RequestParam("token") String token) throws NotFoundException {
+        val resetPasswordToken = passwordService.findByToken(token)
                 .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
-        if (optionalResetPasswordToken.getAppUser().getPassword().equals(passwordEncoder.encode(passwordReset.getOldPassword()))) {
-            AppUser user = optionalResetPasswordToken.getAppUser();
-            user.setPassword(passwordEncoder.encode(passwordReset.getNewPassword()));
-            appUserService.update(user);
-            passwordService.delete(optionalResetPasswordToken.getId());
-        } else {
-            throw new BadRequestException("Provided passwords were incorrect");
-        }
+        AppUser appUser = resetPasswordToken.getAppUser();
+        appUser.setPassword(passwordEncoder.encode(passwordReset.getNewPassword()));
+        appUserService.update(appUser);
+        passwordService.delete(resetPasswordToken.getId());
 
         return ResponseEntity.ok().build();
     }
@@ -103,12 +98,12 @@ public class PasswordController {
     @ResponseBody
     @PreAuthorize("!isAnonymous()")
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordResetRequest passwordReset) throws NotFoundException, BadRequestException {
-        val optionalAppUser = appUserService.findByEmail(
+        val appUser = appUserService.findByEmail(
                 ((AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getAppUser().getEmail())
                 .orElseThrow(() -> new NotFoundException());
-        if (optionalAppUser.getPassword().equals(passwordEncoder.encode(passwordReset.getOldPassword()))) {
-            optionalAppUser.setPassword(passwordEncoder.encode(passwordReset.getNewPassword()));
-            appUserService.update(optionalAppUser);
+        if (appUser.getPassword().equals(passwordEncoder.encode(passwordReset.getOldPassword()))) {
+            appUser.setPassword(passwordEncoder.encode(passwordReset.getNewPassword()));
+            appUserService.update(appUser);
         } else {
             throw new BadRequestException("Provided passwords were incorrect");
         }
