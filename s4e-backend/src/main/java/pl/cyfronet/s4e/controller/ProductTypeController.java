@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class ProductTypeController {
 
     private final ProductTypeService productTypeService;
 
+    @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "View a list of product types")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved list")
