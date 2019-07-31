@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +24,7 @@ public class WebhooksController {
     private final ProductService productService;
     private final GeoServerService geoServerService;
 
+    @ApiOperation("Create product in db and add to GeoServer")
     @PostMapping("/webhook")
     public void addedFile(@RequestBody Webhook webhook) {
         if (webhook.getEventName().contains("Post") || webhook.getEventName().contains("Put")) {
