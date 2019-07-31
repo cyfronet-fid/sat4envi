@@ -1,5 +1,8 @@
 package pl.cyfronet.s4e.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,10 @@ public class ProductTypeController {
 
     private final ProductTypeService productTypeService;
 
+    @ApiOperation(value = "View a list of product types")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully retrieved list")
+    })
     @GetMapping("/productTypes")
     public List<ProductTypeResponse> getProductTypes() {
         return productTypeService.getProductTypes().stream()

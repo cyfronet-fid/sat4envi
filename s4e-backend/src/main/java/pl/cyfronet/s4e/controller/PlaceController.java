@@ -1,5 +1,8 @@
 package pl.cyfronet.s4e.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,6 +25,10 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class PlaceController {
     private final PlaceService placeService;
 
+    @ApiOperation(value = "View a list of places")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully retrieved page")
+    })
     @GetMapping("/places")
     public Page<PlaceResponse> find(@RequestParam String namePrefix, Pageable pageable) {
         Page<Place> page = placeService.findPlace(namePrefix, pageable);
