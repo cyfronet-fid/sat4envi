@@ -58,7 +58,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security.realm("S4E")
-                .tokenKeyAccess("hasAuthority('ROLE_TRUSTED_CLIENT')");
+                .tokenKeyAccess("permitAll()");
     }
 
     @Bean
