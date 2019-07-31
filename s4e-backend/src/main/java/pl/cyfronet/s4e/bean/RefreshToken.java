@@ -2,27 +2,23 @@ package pl.cyfronet.s4e.bean;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Singular;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
 @Builder
-public class AppUser {
+public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(optional = false)
+    private AppUser appUser;
     @NotEmpty
-    private String email;
-    /// password hash
-    @NotEmpty
-    private String password;
-
-    @Singular
-    private Set<AppRole> roles;
-
-    private boolean enabled;
+    private String jti;
+    @NotNull
+    private LocalDateTime expiryTimestamp;
 }
