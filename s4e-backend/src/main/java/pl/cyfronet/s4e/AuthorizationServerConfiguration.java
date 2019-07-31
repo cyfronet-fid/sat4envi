@@ -13,11 +13,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.approval.ApprovalStore;
-import org.springframework.security.oauth2.provider.approval.TokenApprovalStore;
-import org.springframework.security.oauth2.provider.approval.TokenStoreUserApprovalHandler;
-import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -38,9 +33,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private ClientDetailsService clientDetailsService;
-
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
@@ -57,9 +49,9 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
+                .approvalStoreDisabled()
                 .tokenStore(tokenStore())
                 .accessTokenConverter(jwtAccessTokenConverter())
-                .userApprovalHandler(userApprovalHandler())
                 .authenticationManager(authenticationManager);
     }
 
@@ -79,21 +71,5 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Bean
     public TokenStore tokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
-    }
-
-    @Bean
-    public TokenStoreUserApprovalHandler userApprovalHandler(){
-        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
-        handler.setTokenStore(tokenStore());
-        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
-        handler.setClientDetailsService(clientDetailsService);
-        return handler;
-    }
-
-    @Bean
-    public ApprovalStore approvalStore() {
-        TokenApprovalStore store = new TokenApprovalStore();
-        store.setTokenStore(tokenStore());
-        return store;
     }
 }
