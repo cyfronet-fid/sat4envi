@@ -11,6 +11,7 @@
 <s4e-timeline class="section timeline"
               [products]="products$ | async"
               [loading]="productsAreLoading$ | async"
+              [activeProduct]="activeProduct$ | async"
               (selectProduct)="selectProduct($event?.id)">
 </s4e-timeline>
 

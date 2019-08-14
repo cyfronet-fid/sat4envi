@@ -19,6 +19,7 @@ export class TimelineComponent {
 
   @Input() public loading: boolean = true;
 
+  @Input() activeProduct: Product|null = null;
   @Input() set products(products: Product[] | null) {
     this.days = [];
     let currDay: Day;
