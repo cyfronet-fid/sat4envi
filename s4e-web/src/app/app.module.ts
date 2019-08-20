@@ -23,6 +23,7 @@ import { LoginComponent } from './views/login/login.component';
 import {LoginModule} from './views/login/login.module';
 import {RegisterModule} from './views/register/register.module';
 import {ResetPasswordModule} from './views/reset-password/reset-password.module';
+import { ActivateModule } from './views/activate/activate.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -35,6 +36,7 @@ registerLocaleData(localePl, 'pl');
     ...ShareModule.modulesForRoot(),
     LoginModule,
     RegisterModule,
+    ActivateModule,
     ResetPasswordModule,
     RouterModule.forRoot(appRoutes),
     CommonStateModule.forRoot(),

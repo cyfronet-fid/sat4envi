@@ -5,8 +5,11 @@ import {LoginComponent} from './views/login/login.component';
 import {ResetPasswordComponent} from './views/reset-password/reset-password.component';
 import {RegisterComponent} from './views/register/register.component';
 import {IsLoggedIn, IsNotLoggedIn} from './utils/auth-guard/auth-guard.service';
+import {ActivateComponent} from './views/activate/activate.component';
+import {activateMatcher} from './utils';
 
 export const appRoutes: Routes = [
+
   {
     path: '',
     component: MapViewComponent,
@@ -25,6 +28,9 @@ export const appRoutes: Routes = [
   }, {
     path: 'reset-password',
     component: ResetPasswordComponent,
+  }, {
+    matcher: activateMatcher,
+    component: ActivateComponent
   }, {
     path: '**',
     redirectTo: '/',

@@ -27,7 +27,7 @@ export class RegisterService {
     .subscribe(data => {
       this.router.navigate(['/']);
     }, errorResponse => {
-      if(errorResponse.status === 400) {
+      if (errorResponse.status === 400) {
         this.registerStore.setError(errorResponse.error);
       } else {
         this.registerStore.setError({__general__: [errorResponse.error]});
