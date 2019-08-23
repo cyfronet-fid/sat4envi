@@ -82,12 +82,15 @@ public class SeedProducts implements ApplicationRunner {
         List<ProductType> productTypes = Arrays.asList(new ProductType[]{
                 ProductType.builder()
                         .name("108m")
+                        .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
                 ProductType.builder()
                         .name("Setvak")
+                        .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
                 ProductType.builder()
                         .name("WV-IR")
+                        .description("Opis produktu WV-IR.")
                         .build(),
         });
         productTypeRepository.saveAll(productTypes);
