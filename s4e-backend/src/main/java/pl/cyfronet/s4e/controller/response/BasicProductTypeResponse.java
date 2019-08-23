@@ -6,16 +6,14 @@ import pl.cyfronet.s4e.bean.ProductType;
 
 @Data
 @Builder
-public class ProductTypeResponse {
+public class BasicProductTypeResponse {
     private Long id;
     private String name;
-    private String description;
 
-    public static ProductTypeResponse of(ProductType productType) {
-        return ProductTypeResponse.builder()
+    public static BasicProductTypeResponse of(ProductType productType) {
+        return BasicProductTypeResponse.builder()
                 .id(productType.getId())
                 .name(productType.getName())
-                .description(productType.getDescription())
                 .build();
     }
 }
