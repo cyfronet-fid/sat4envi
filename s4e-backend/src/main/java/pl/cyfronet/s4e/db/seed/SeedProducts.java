@@ -25,12 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Profile({"development", "run-seed-products"})
+@Profile({"development & !skip-seed-products", "run-seed-products"})
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class SeedProducts implements ApplicationRunner {
     private static final LocalDateTime BASE_TIME = LocalDateTime.of(2018, 10, 4, 0, 0);
+    private static final DateTimeFormatter DATE_TIME_PATTERN = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
     @Value("${seed.products.seed-db:true}")
     private boolean seedDb;
@@ -119,20 +120,24 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private List<Product> generateProducts(ProductType productType, String suffix) {
-        val count = 24;
-        val granules = new ArrayList<Product>();
+        val count = 24 * 30; // 1 month worth of layers. One each hour.
+        val products = new ArrayList<Product>();
         for (int i = 0; i < count; i++) {
-            LocalDateTime timestamp = BASE_TIME.plusHours(i);
-            String layerName = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) + suffix;
-            granules.add(Product.builder()
+            val timestamp = BASE_TIME.plusHours(i);
+            val layerName = DATE_TIME_PATTERN.format(timestamp) + suffix;
+
+            val timestampModuloDay = BASE_TIME.plusHours(i % 24); // The timestamp we actually have data for.
+            val s3Path = DATE_TIME_PATTERN.format(timestampModuloDay) + suffix + ".tif";
+
+            products.add(Product.builder()
                     .productType(productType)
                     .timestamp(timestamp)
                     .layerName(layerName)
-                    .s3Path(layerName+".tif")
+                    .s3Path(s3Path)
                     // if we're not syncing GeoServer then assume it is populated
                     .created(!syncGeoserver)
                     .build());
         }
-        return granules;
+        return products;
     }
 }

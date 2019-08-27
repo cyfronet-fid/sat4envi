@@ -30,13 +30,22 @@ public class GeoServerSynchronizer {
 
     @Transactional
     public void synchronizeProducts() {
-        log.info("Creating products");
+        long total = productRepository.count();
+        log.info("Creating products, "+total+" total");
+        int i = 0;
+        int createdCount = 0;
         for (val product: productRepository.findAll()) {
             if (!product.isCreated()) {
                 geoServerService.addLayer(product);
                 product.setCreated(true);
+                createdCount++;
+            }
+            i++;
+            if ((i+1) % 100 == 0) {
+                log.info((i+1)+"/"+total+" products processed");
             }
         }
+        log.info("All products are created, "+total+" total, "+createdCount+" needed creation");
     }
 
     @Transactional

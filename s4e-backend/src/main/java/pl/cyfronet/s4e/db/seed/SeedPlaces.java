@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-@Profile({"development", "run-seed-places"})
+@Profile({"development & !skip-seed-places", "run-seed-places"})
 @Component
 @RequiredArgsConstructor
 @Slf4j
