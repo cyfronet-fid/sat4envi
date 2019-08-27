@@ -22,7 +22,6 @@ public class ProductTypeController {
 
     private final ProductTypeService productTypeService;
 
-    @PreAuthorize("isAuthenticated()")
     @ApiOperation(value = "View a list of product types")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved list")
