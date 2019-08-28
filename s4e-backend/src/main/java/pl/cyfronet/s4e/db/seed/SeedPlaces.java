@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.db;
+package pl.cyfronet.s4e.db.seed;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-@Profile("development")
+@Profile({"development", "run-seed-places"})
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SeedPlaceDevelopment implements ApplicationRunner {
+public class SeedPlaces implements ApplicationRunner {
     private final PlaceRepository placeRepository;
     private final ResourceLoader resourceLoader;
 

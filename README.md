@@ -58,8 +58,26 @@ Both methods will expose the server under `http://localhost:4201`.
 
 During bootstrap Flyway will migrate the schema based on migrations placed in `src/main/resources/db/migration`.
 
-In the `development` mode the DB and GeoServer are seeded by `SeedDevelopment`.
-It is executed on every startup.
+In the `development` mode the DB and GeoServer are seeded by components from `pl.cyfronet.s4e.db.seed`.
+They are executed on every startup, but they can also be run by setting appropriate profiles.
+
+
+#### Application profiles
+
+Spring application profile can be set with the var `spring.profiles.active`.
+Several profiles can be specified in a comma separated list, e.g. `production,run-seed-products`.
+
+`development`: The seeds are run on every startup and exception handler includes information about stacktraces.
+
+`production`: No seeds are run and information about stacktraces is not included in responses.
+
+`run-seed-users`: Runs `SeedUsers`.
+
+`run-seed-products`: Runs `SeedProducts`.
+The operation of seeding products first seeds the DB, then synchronizes GeoServer to it.
+To disable either phase set `seed.products.seed-db=false` or `seed.products.sync-geoserver=false`, respectively.
+
+`run-seed-places`: Runs `SeedPlaces`.
 
 
 #### Places CSV generation
