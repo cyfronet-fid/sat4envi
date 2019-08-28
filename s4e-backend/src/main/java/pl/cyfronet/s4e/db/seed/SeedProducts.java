@@ -1,16 +1,22 @@
-package pl.cyfronet.s4e.db;
+package pl.cyfronet.s4e.db.seed;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.cyfronet.s4e.bean.*;
-import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.bean.PRGOverlay;
+import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.SldStyle;
+import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
 
 import java.time.LocalDateTime;
@@ -19,80 +25,56 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Profile("development")
+@Profile({"development", "run-seed-products"})
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SeedDevelopment implements ApplicationRunner {
+public class SeedProducts implements ApplicationRunner {
     private static final LocalDateTime BASE_TIME = LocalDateTime.of(2018, 10, 4, 0, 0);
+
+    @Value("${seed.products.seed-db:true}")
+    private boolean seedDb;
+
+    @Value("${seed.products.sync-geoserver:true}")
+    private boolean syncGeoserver;
 
     private final ProductTypeRepository productTypeRepository;
     private final ProductRepository productRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
-    private final AppUserRepository appUserRepository;
-    private final EmailVerificationRepository emailVerificationRepository;
-
-    private final PasswordEncoder passwordEncoder;
 
     private final GeoServerSynchronizer geoServerSynchronizer;
 
     @Async
     @Override
     public void run(ApplicationArguments args) {
-        emailVerificationRepository.deleteAll();
-        appUserRepository.deleteAll();
-        productRepository.deleteAll();
-        productTypeRepository.deleteAll();
-        prgOverlayRepository.deleteAll();
-        sldStyleRepository.deleteAll();
+        if (seedDb) {
+            productRepository.deleteAll();
+            productTypeRepository.deleteAll();
+            prgOverlayRepository.deleteAll();
+            sldStyleRepository.deleteAll();
 
-        seedUsers();
-        seedProducts();
-        seedOverlays();
+            seedProducts();
+            seedOverlays();
+        }
 
-        geoServerSynchronizer.resetWorkspace();
-        geoServerSynchronizer.synchronizeOverlays();
-        geoServerSynchronizer.synchronizeProducts();
+        if (syncGeoserver) {
+            if (!seedDb) {
+                setAllProductsNotCreated();
+            }
+            geoServerSynchronizer.resetWorkspace();
+            geoServerSynchronizer.synchronizeOverlays();
+            geoServerSynchronizer.synchronizeProducts();
+        }
 
         log.info("Seeding complete");
     }
 
-    private void seedUsers() {
-        log.info("Seeding AppUsers");
-        List<AppUser> appUsers = Arrays.asList(new AppUser[]{
-                AppUser.builder()
-                        .email("cat1user@mail.pl")
-                        .password(passwordEncoder.encode("cat1user"))
-                        .role(AppRole.CAT1)
-                        .enabled(true)
-                        .build(),
-                AppUser.builder()
-                        .email("cat2user@mail.pl")
-                        .password(passwordEncoder.encode("cat2user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
-                        .enabled(true)
-                        .build(),
-                AppUser.builder()
-                        .email("cat3user@mail.pl")
-                        .password(passwordEncoder.encode("cat3user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
-                        .role(AppRole.CAT3)
-                        .enabled(true)
-                        .build(),
-                AppUser.builder()
-                        .email("cat4user@mail.pl")
-                        .password(passwordEncoder.encode("cat4user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
-                        .role(AppRole.CAT3)
-                        .role(AppRole.CAT4)
-                        .enabled(true)
-                        .build(),
-        });
-        appUserRepository.saveAll(appUsers);
+    private void setAllProductsNotCreated() {
+        for (val product: productRepository.findAll()) {
+            product.setCreated(false);
+            productRepository.save(product);
+        }
     }
 
     private void seedProducts() {
@@ -147,6 +129,8 @@ public class SeedDevelopment implements ApplicationRunner {
                     .timestamp(timestamp)
                     .layerName(layerName)
                     .s3Path(layerName+".tif")
+                    // if we're not syncing GeoServer then assume it is populated
+                    .created(!syncGeoserver)
                     .build());
         }
         return granules;
