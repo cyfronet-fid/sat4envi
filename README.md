@@ -152,17 +152,10 @@ This docker-compose recipe can be used to either run whole application for demo 
 
 In order do run docker-compose following steps must be done (**unless stated otherwise working directory should be project root**):
 
-1. Run `./mvnw package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
-   **NOTICE**: In some cases packaging may fail due to inability to compile some binary dependencies for frontend packages. In that case the easiest solution is to delete `s4e-web/node_moules` directory (`rm -rf s4e-web/node_modules`)
-
-2. Run `docker-compose up`
-
-3. After all services are up in the browser navigate to http://localhost:4200 - web interface should be there
-
-4. No it's time to get S3 data to the application.
+1. No it's time to get S3 data to the application.
    First make sure that you have [minio client](https://github.com/minio/mc) (`mc`) installed.
    
-5. Configure `mc`.
+2. Configure `mc`.
 
    Add configuration for local-docker and cyfronet-ceph endpoints:
    ```bash
@@ -180,16 +173,21 @@ In order do run docker-compose following steps must be done (**unless stated oth
    [2019-03-06 12:02:50 CET]      0B s4e-test-2/
    ```
 
-6. Download s3 data for minio:
+3. Download s3 data for minio:
 
    ```bash
    mc cp cyfronet-ceph/data-packs/minio-data-v1.tar.xz .
    tar -xJf minio-data-v1.tar.xz -C ./tmp
    ```
    
-7. Create a bucket with static application content as well as shown [here](#backend-static).
+4. Create a bucket with static application content as well as shown [here](#backend-static).
 
-8. You're done - application should be available on http://localhost:4200 and have 3 available products
+5. Run `./mvnw package -DskipTests` in the root of the project, this will build artifacts for `s4e-backend` and `s4e-web`. 
+   **NOTICE**: In some cases packaging may fail due to inability to compile some binary dependencies for frontend packages. In that case the easiest solution is to delete `s4e-web/node_modules` directory (`rm -rf s4e-web/node_modules`)
+
+6. Run `docker-compose up`.
+
+7. You're done - application should be available on http://localhost:4200 and have 3 available products.
 
 **IMPORTANT** If you run `docker-compose up` you'll get application all set up, but it does not support any kind of live reload, etc. If you plan on developing any part of the project (frontend or backend) you should run docker compose without module you would like to develop - for example:
 
@@ -211,6 +209,15 @@ docker-compose stop s4e-backend
 ```
 
 You will need to locally run frontend via `npm start / ng serve` and develop backend normally.
+
+
+## Production docker-compose
+
+When you are running in production set appropriate environment variables.
+Most can be found in `docker-compose.yml`, excluding the ones which backend is configured with.
+The template for backend vars is placed in `backend-production.env.template`, but you can override other variables too.
+Copy the file, modify the values as required and load it by setting `BACKEND_ENV_PATH=<path to file>` (e.g. in `.env` file).
+(The rule for env var matching to spring properties is roughly this: `SPRING_BASEPATH` matches `spring.basePath`.)
 
 
 ## FAQ

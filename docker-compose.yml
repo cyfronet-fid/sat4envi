@@ -2,10 +2,8 @@ version: '3'
 services:
   s4e-backend:
     build: ./s4e-backend
-    environment:
-      - SPRING_DATASOURCE_URL=${BACKEND_SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/sat4envi}
-      - SPRING_PROFILES_ACTIVE=${BACKEND_SPRING_PROFILES_ACTIVE:-development}
-      - GEOSERVER_BASEURL=${BACKEND_GEOSERVER_BASEURL:-http://geoserver:8080/geoserver/rest}
+    env_file:
+      - ${BACKEND_ENV_PATH:-backend-development.env}
     volumes:
       - ${BACKEND_JAR_PATH:-./s4e-backend/target/s4e-backend-0.0.1-SNAPSHOT.jar}:/app/app.jar
     ports:

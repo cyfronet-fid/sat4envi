@@ -27,6 +27,7 @@ yarn-error.log
 testem.log
 /typings
 /.env
+/backend-production.env
 
 # System Files
 .DS_Store
