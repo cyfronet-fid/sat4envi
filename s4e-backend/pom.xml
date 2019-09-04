@@ -163,6 +163,11 @@
             <artifactId>commonmark</artifactId>
             <version>0.13.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-52</artifactId>
+            <version>2.6.1</version>
+        </dependency>
 
     </dependencies>
 
