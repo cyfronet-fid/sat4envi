@@ -24,10 +24,11 @@ export const appRoutes: Routes = [
   }, {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [IsLoggedIn]
+    canActivate: [IsNotLoggedIn]
   }, {
     path: 'reset-password',
     component: ResetPasswordComponent,
+    canActivate: [IsNotLoggedIn]
   }, {
     matcher: activateMatcher,
     component: ActivateComponent

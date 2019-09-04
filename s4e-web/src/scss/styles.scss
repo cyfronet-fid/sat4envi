@@ -3,7 +3,7 @@
 @import "fonts";
 @import "variables";
 @import "common";
-@import "~bootstrap/scss/bootstrap";
+//@import "~bootstrap/scss/bootstrap";
 
 
 
@@ -19,10 +19,10 @@
   overflow: hidden;
 }
 
-
-.ng-touched.ng-invalid {
-  @extend .is-invalid;
-}
+//
+//.ng-touched.ng-invalid {
+//  @extend .is-invalid;
+//}
 
 .ol-zoom {
   right: 9px !important;

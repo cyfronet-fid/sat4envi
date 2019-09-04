@@ -21,39 +21,35 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <trans-unit id="33e2a741ffd176ba899c53af5bd92420a14891fa" datatype="html">
         <source>Produkty</source><target state="final">Produkty</target>
-        
-        
+
+
       <context-group purpose="location"><context context-type="sourcefile">app/views/map-view/view-manager/view-manager.component.html</context><context context-type="linenumber">11</context></context-group><context-group purpose="location"><context context-type="sourcefile">app/views/map-view/product-picker/product-picker.component.html</context><context context-type="linenumber">3</context></context-group></trans-unit><trans-unit id="34c009eb15580e2d52b9598965d966a868ead8dd" datatype="html">
         <source>
   Zaloguj się by zobaczyć swój profil
@@ -98,7 +94,7 @@
       </trans-unit>
       <trans-unit id="09f9199c31169da524a8a4ed14b0861f1a0bb4e3" datatype="html">
         <source>Nakładki</source><target state="final">Nakładki</target>
-        
+
       <context-group purpose="location"><context context-type="sourcefile">app/views/map-view/view-manager/view-manager.component.html</context><context context-type="linenumber">1</context></context-group></trans-unit>
     </body>
   </file>

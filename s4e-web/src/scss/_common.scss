@@ -12,7 +12,6 @@
 
 /* 1. Box */
 
-
 .box__header {
   overflow: auto;
   margin-bottom: $space-small;
@@ -100,14 +99,16 @@
 }
 
 
-
 /* 3. Buttons */
 
 @mixin button {
   border-radius: $border-radius-default;
   background: $color-grey-secondary;
   padding: $space-small $space-xlarge;
-  font-weight: 500;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: $font-secondary
+
 }
 
 .button--default {
@@ -120,11 +121,25 @@
   color: $color-white;
 }
 
+.button--secondary {
+  @include button;
+  background: $color-secondary;
+  color: $color-white;
+}
+
 .button--large {
   padding: $space-small $space-xlarge * 2;
 }
 
+.button--small {
+  padding: $space-xsmall;
+  font-size: 0.825rem;
+}
 
+
+.button--borderBlack {
+  border: 1px solid $color-black
+}
 
 /* 4. Various */
 
@@ -136,6 +151,22 @@ a {
   color: $color-primary;
   font-weight: normal;
 }
+
+.logo {
+  width: 188px;
+  height: 71px;
+  display: block;
+
+  &.logo--white {
+    background: url("/../assets/images/logo_s4e_white.png");
+  }
+
+  &.logo--color {
+    background: url("/../assets/images/logo_s4e_color.png");
+  }
+}
+
+
 
 
 

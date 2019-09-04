@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {Observable} from 'rxjs';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
@@ -11,7 +11,8 @@ import {LoginFormState} from '../../state/session/session.model';
 @Component({
   selector: 's4e-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent implements OnInit, OnDestroy {
   public form: FormGroup<LoginFormState>;
