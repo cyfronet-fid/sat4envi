@@ -11,7 +11,7 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.awaitility.Duration;
+import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -133,7 +133,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Duration.ONE_SECOND)
+        await().atMost(Durations.ONE_SECOND)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
@@ -256,7 +256,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Duration.ONE_SECOND)
+        await().atMost(Durations.ONE_SECOND)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // EmailVerification is only removed in the EmailConfirmationListener, so it is verified after
@@ -327,7 +327,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Duration.ONE_SECOND)
+        await().atMost(Durations.ONE_SECOND)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
@@ -381,7 +381,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Duration.ONE_SECOND)
+        await().atMost(Durations.ONE_SECOND)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.

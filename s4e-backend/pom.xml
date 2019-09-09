@@ -20,9 +20,13 @@
     <properties>
         <jjwt.version>0.10.7</jjwt.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
-        <junit.version>5.5.1</junit.version>
-        <mockito.version>3.0.0</mockito.version>
+        <junit.version>5.5.2</junit.version>
+        <mockito.version>3.1.0</mockito.version>
         <springfox.version>3.0.0-SNAPSHOT</springfox.version>
+        <awaitility.version>4.0.1</awaitility.version>
+        <spring-security-oauth2-autoconfigure.version>2.1.9.RELEASE</spring-security-oauth2-autoconfigure.version>
+        <commonmark.version>0.13.0</commonmark.version>
+        <hibernate-types.version>2.7.0</hibernate-types.version>
     </properties>
 
     <dependencies>
@@ -50,7 +54,7 @@
         <dependency>
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <version>2.1.7.RELEASE</version>
+            <version>${spring-security-oauth2-autoconfigure.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -102,7 +106,7 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>3.1.6</version>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -161,12 +165,12 @@
         <dependency>
             <groupId>com.atlassian.commonmark</groupId>
             <artifactId>commonmark</artifactId>
-            <version>0.13.0</version>
+            <version>${commonmark.version}</version>
         </dependency>
         <dependency>
             <groupId>com.vladmihalcea</groupId>
             <artifactId>hibernate-types-52</artifactId>
-            <version>2.6.1</version>
+            <version>${hibernate-types.version}</version>
         </dependency>
 
     </dependencies>
