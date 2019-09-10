@@ -1,8 +1,8 @@
 import {DateConverter} from './date-converter';
 import {TestBed} from '@angular/core/testing';
 import {InjectorModule} from '../../common/injector.module';
-import {TestingConstantsProvider} from '../../app.constants.spec';
 import {Injector} from '@angular/core';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('DateConverter', () => {
   let service: DateConverter;
@@ -10,7 +10,7 @@ describe('DateConverter', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [InjectorModule],
-      providers: [TestingConstantsProvider, Injector],
+      providers: [TestingConfigProvider, Injector],
     });
     TestBed.get(InjectorModule);
 

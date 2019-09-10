@@ -9,6 +9,9 @@ import {IConstants, S4E_CONSTANTS} from '../../../app.constants';
 import {Product} from '../state/product/product.model';
 import {ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {InitService} from '../../../utils/initializer/init.service';
+import {IConfiguration} from '../../../app.configuration';
+import {S4E_CONFIG} from '../../../utils/initializer/config.service';
 
 @Component({
   selector: 's4e-map',
@@ -26,7 +29,8 @@ export class MapComponent implements OnInit, OnDestroy {
     this.activeProduct$.next(gr);
   }
 
-  constructor(@Inject(S4E_CONSTANTS) private CONSTANTS: IConstants) {}
+  constructor(@Inject(S4E_CONSTANTS) private CONSTANTS: IConstants,
+              @Inject(S4E_CONFIG) private CONFIG: IConfiguration) {}
 
   ngOnInit(): void {
     const centerOfPolandWebMercator = proj4(this.CONSTANTS.projection.toProjection, this.CONSTANTS.projection.coordinates);
@@ -65,8 +69,8 @@ export class MapComponent implements OnInit, OnDestroy {
     if (product !== null) {
       mapLayers.push(new Image({
         source: new ImageWMS({
-          url: this.CONSTANTS.geoserverUrl,
-          params: {'LAYERS': this.CONSTANTS.geoserverWorkspace + ':' + product.layerName},
+          url: this.CONFIG.geoserverUrl,
+          params: {'LAYERS': this.CONFIG.geoserverWorkspace + ':' + product.layerName},
         }),
       }));
     }

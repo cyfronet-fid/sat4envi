@@ -1,9 +1,8 @@
-import { OverlayQuery } from './overlay.query';
-import { OverlayStore } from './overlay.store';
+import {OverlayQuery} from './overlay.query';
+import {OverlayStore} from './overlay.store';
 import {async, TestBed} from '@angular/core/testing';
+import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {TestingConstantsProvider} from '../../../../app.constants.spec';
-import {TileWMS, ImageWMS, OSM} from 'ol/source';
-import {Tile, Image, Layer} from 'ol/layer';
 
 describe('OverlayQuery', () => {
   let query: OverlayQuery;
@@ -11,7 +10,9 @@ describe('OverlayQuery', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [OverlayStore, TestingConstantsProvider]
+      providers: [OverlayStore,
+        TestingConstantsProvider,
+        TestingConfigProvider]
     });
 
     query = TestBed.get(OverlayQuery);

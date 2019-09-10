@@ -7,6 +7,7 @@ import {InjectorModule} from '../../common/injector.module';
 import {TestingConstantsProvider} from '../../app.constants.spec';
 import {format} from 'date-fns';
 import {Injector} from '@angular/core';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('disableEnableForm', () => {
   let form: FormGroup;
@@ -45,7 +46,7 @@ describe('deserializeJsonResponse', function () {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [InjectorModule],
-      providers: [TestingConstantsProvider, Injector],
+      providers: [TestingConfigProvider, Injector],
     });
     TestBed.get(InjectorModule);
   }));
