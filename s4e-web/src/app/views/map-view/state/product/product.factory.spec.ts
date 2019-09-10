@@ -1,4 +1,4 @@
-import * as Factory from "factory.ts";
+import * as Factory from 'factory.ts';
 
 export const ProductResponseFactory = Factory.makeFactory({
   id: Factory.each(i => i),

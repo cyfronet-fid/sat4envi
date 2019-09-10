@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapComponent } from './map.component';
-import {TestingConstantsProvider} from '../../../app.constants.spec';
 import {RecentViewQuery} from '../state/recent-view/recent-view.query';
+import {TestingConfigProvider} from '../../../app.configuration.spec';
+import {TestingConstantsProvider} from '../../../app.constants.spec';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -12,6 +13,7 @@ describe('MapComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         TestingConstantsProvider,
+        TestingConfigProvider,
         RecentViewQuery
       ],
       declarations: [ MapComponent ]

@@ -1,4 +1,4 @@
-import {TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {ProductService} from './product.service';
 import {ProductStore} from './product-store.service';
@@ -13,6 +13,7 @@ import {ProductResponseFactory} from './product.factory.spec';
 import {deserializeJsonResponse} from '../../../../utils/miscellaneous/miscellaneous';
 import {ProductResponse} from './product.model';
 import {InjectorModule} from '../../../../common/injector.module';
+import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -29,7 +30,8 @@ describe('ProductService', () => {
         ProductTypeStore,
         RecentViewQuery,
         RecentViewStore,
-        TestingConstantsProvider],
+        TestingConstantsProvider,
+        TestingConfigProvider],
       imports: [HttpClientTestingModule, InjectorModule]
     });
 
