@@ -6,6 +6,7 @@ import {ShareModule} from '../../common/share.module';
 import {RegisterService} from './state/register.service';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {By} from '@angular/platform-browser';
+import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
 import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('RegisterComponent', () => {
@@ -15,7 +16,7 @@ describe('RegisterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ShareModule, FormErrorModule],
+      imports: [RouterTestingModule, ShareModule, FormErrorModule, RecaptchaModule, RecaptchaFormsModule],
       declarations: [RegisterComponent],
       providers: [TestingConfigProvider]
     })
@@ -42,7 +43,7 @@ describe('RegisterComponent', () => {
 
   it('should send valid form', () => {
     const spy = spyOn(registerService, 'register');
-    component.form.setValue({email: 'user@domain', password: 'pass', passwordRepeat: 'pass'});
+    component.form.setValue({email: 'user@domain', password: 'pass', passwordRepeat: 'pass', recaptcha: 'captcha'});
     component.register();
     expect(spy).toHaveBeenCalled();
   });
@@ -81,23 +82,25 @@ describe('RegisterComponent', () => {
     component.form.controls.email.setValue('user@domain');
     component.form.controls.password.setValue('password1234');
     component.form.controls.passwordRepeat.setValue('password1234');
+    component.form.controls.recaptcha.setValue('test-recaptcha');
 
     const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
 
     component.register();
 
-    expect(spy).toBeCalledWith('user@domain', 'password1234');
+    expect(spy).toBeCalledWith('user@domain', 'password1234', 'test-recaptcha');
   });
 
   it('should not call RegisterService.register on submit if form is not valid', () => {
     component.form.controls.email.setValue('invalid');
     component.form.controls.password.setValue('password1234');
     component.form.controls.passwordRepeat.setValue('password1234');
+    component.form.controls.recaptcha.setValue('recaptcha');
 
     const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
 
     component.register();
 
-    expect(spy).not.toBeCalledWith('invalid', 'password1234');
+    expect(spy).not.toBeCalledWith('invalid', 'password1234', 'recaptcha');
   });
 });

@@ -10,7 +10,6 @@
     </ul>
   </div>
 
-
   <div class="mb-3">
     <label for="registration-login" i18n>Email</label>
     <input class="form-control" formControlName="email" id="registration-login" autocomplete="new-password">
@@ -29,8 +28,13 @@
     <ul s4e-form-error [errors]="form.controls.passwordRepeat.errors"></ul>
   </div>
 
+  <div class="mb-3">
+    <re-captcha formControlName="recaptcha" [siteKey]="CONFIG.recaptchaSiteKey"></re-captcha>
+  </div>
+
   <button class="btn btn-primary btn-block" type="submit">
     <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
     <ng-container i18n>Utwórz konto</ng-container>
   </button>
+
 </form>

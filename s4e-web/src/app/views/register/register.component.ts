@@ -9,8 +9,9 @@ import {RegisterService} from './state/register.service';
 import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {HashMap} from '@datorama/akita';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {debounceTime, delay} from 'rxjs/operators';
+import {debounceTime} from 'rxjs/operators';
 import {connectErrorsToForm} from '../../utils/miscellaneous/forms';
+import {S4eConfig} from '../../utils/initializer/config.service';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {
@@ -24,11 +25,11 @@ export function MustMatch(controlName: string, matchingControlName: string) {
 
     // set error on matchingControl if validation fails
     if (control.value !== matchingControl.value) {
-      matchingControl.setErrors({ mustMatch: true });
+      matchingControl.setErrors({mustMatch: true});
     } else {
       matchingControl.setErrors(null);
     }
-  }
+  };
 }
 
 @Component({
@@ -44,13 +45,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   constructor(private fm: AkitaNgFormsManager<FormState>,
               private registerService: RegisterService,
-              private registerQuery: RegisterQuery) { }
+              private registerQuery: RegisterQuery,
+              private CONFIG: S4eConfig) {
+  }
 
   ngOnInit() {
     this.form = new FormGroup<RegisterFormState>({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
       passwordRepeat: new FormControl('', [Validators.required]),
+      recaptcha: new FormControl('', [Validators.required])
     }, {validators: MustMatch('password', 'passwordRepeat')});
 
     this.loading$ = this.registerQuery.selectLoading();
@@ -68,9 +72,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
   register() {
     validateAllFormFields(this.form);
 
-    if (!this.form.valid) { return; }
+    if (!this.form.valid) {
+      return;
+    }
 
-    this.registerService.register(this.form.controls.email.value, this.form.controls.password.value);
+    this.registerService.register(this.form.controls.email.value, this.form.controls.password.value, this.form.controls.recaptcha.value);
   }
 
   ngOnDestroy(): void {
