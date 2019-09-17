@@ -5,6 +5,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {ShareModule} from '../../common/share.module';
 import {UtilsModule} from '../../utils/utils.module';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
+import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,8 @@ import {FormErrorModule} from '../../components/form-error/form-error.module';
     ReactiveFormsModule,
     FormErrorModule,
     UtilsModule,
+    RecaptchaFormsModule,
+    RecaptchaModule,
   ],
   exports: [
     RegisterComponent

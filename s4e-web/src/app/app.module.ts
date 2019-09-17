@@ -26,7 +26,6 @@ import {ActivateModule} from './views/activate/activate.module';
 import {InjectorModule} from './common/injector.module';
 import {S4eConfig} from './utils/initializer/config.service';
 
-
 registerLocaleData(localePl, 'pl');
 
 

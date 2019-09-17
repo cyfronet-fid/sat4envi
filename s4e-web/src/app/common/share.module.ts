@@ -25,7 +25,6 @@ library.add(fas);
   exports: [
     BrowserModule,
     HttpClientModule,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,

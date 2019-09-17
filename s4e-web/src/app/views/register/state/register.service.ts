@@ -10,17 +10,18 @@ export class RegisterService {
 
   constructor(private registerStore: RegisterStore,
               private router: Router,
-              private CONFIG: S4eConfig,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private CONFIG: S4eConfig) {
   }
 
   /**
    * @param email
    * @param password
+   * @param recaptcha
    */
-  register(email: string, password: string) {
+  register(email: string, password: string, recaptcha: string) {
     this.registerStore.setLoading(true);
-    this.http.post(`${this.CONFIG.apiPrefixV1}/register`, {email, password})
+    this.http.post(`${this.CONFIG.apiPrefixV1}/register`, {email, password}, {params: {'g-recaptcha-response': recaptcha}})
       .pipe(delay(1000), finalize(() => this.registerStore.setLoading(false)))
       .subscribe(data => {
         this.router.navigate(['/']);
