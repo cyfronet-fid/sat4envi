@@ -38,16 +38,21 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: savi/geoserver:1.0.0-GS2.15.1
+    image: savi/geoserver:1.1.0-GS2.16.0
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
-      - ./tmp/geoserver-data:/opt/geoserver/data_dir
     ports:
       - ${GEOSERVER_PORT:-8080}:8080
     networks:
       - net
     environment:
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD:-admin123}
+      JDBCCONFIG_ENABLED: "false"
+      JDBCCONFIG_INITDB: "true"
+      JDBCCONFIG_IMPORT: "true"
+      JDBCCONFIG_JDBC_URL: jdbc:postgresql:\/\/db-geoserver:5432\/gscatalog
+      JDBCCONFIG_USERNAME: gscatalog
+      JDBCCONFIG_PASSWORD: gscatalog
   db:
     image: postgres:10-alpine
     ports:
@@ -58,6 +63,16 @@ services:
       POSTGRES_DB: ${DB_POSTGRES_DB:-sat4envi}
       POSTGRES_USER: ${DB_POSTGRES_USER:-sat4envi}
       POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-sat4envi}
+  db-geoserver:
+    image: postgres:10-alpine
+    ports:
+      - ${DB_PORT:-5435}:5432
+    networks:
+      - net
+    environment:
+      POSTGRES_DB: ${DB_GEOSERVER_POSTGRES_DB:-gscatalog}
+      POSTGRES_USER: ${DB_GEOSERVER_POSTGRES_USER:-gscatalog}
+      POSTGRES_PASSWORD: ${DB_GEOSERVER_POSTGRES_PASSWORD:-gscatalog}
   db-test:
     image: postgres:10-alpine
     ports:
