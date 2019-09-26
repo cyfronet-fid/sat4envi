@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Layer, Image} from 'ol/layer';
-import {ImageWMS} from 'ol/source';
 import {IUILayer} from '../state/common.model';
 
 @Component({
@@ -19,5 +17,6 @@ export class ViewManagerComponent {
   @Input() overlaysLoading: boolean = true;
   @Output() selectOverlay = new EventEmitter<string>();
 
-  constructor() {}
+  constructor() {
+  }
 }

@@ -1,6 +1,3 @@
-import { ID } from '@datorama/akita';
-import {JsonObject, JsonProperty} from 'json2typescript';
-
 export interface LoginFormState {
   login: string;
   password: string;
@@ -9,14 +6,9 @@ export interface LoginFormState {
 
 export interface Session {
   initialized: boolean;
-  token: string|null;
-  email: string|null;
+  logged: boolean;
+  email: string | null;
   roles: string[];
-}
-
-export interface LoginRequestResponse {
-  email: string;
-  token?: string;
 }
 
 /**
@@ -25,7 +17,7 @@ export interface LoginRequestResponse {
 export function createSession(params: Partial<Session>) {
   return {
     initialized: false,
-    token: params.token || null,
+    logged: false,
     email: params.email || null,
     roles: params.roles || [],
   } as Session;

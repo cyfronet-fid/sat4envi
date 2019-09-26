@@ -60,7 +60,8 @@
     "proj4": "^2.5.0",
     "rxjs": "^6.4.0",
     "serialize-javascript": "^1.6.1",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.8.29",
+    "angular-oauth2-oidc": "^8.0.4"
   },
   "devDependencies": {
     "@angular-builders/jest": "^7.3.1",

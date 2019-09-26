@@ -14,15 +14,11 @@ export class SessionQuery extends Query<Session> {
   }
 
   isLoggedIn(): boolean {
-    return this.getValue().token != null;
+    return this.getValue().logged;
   }
 
   isLoggedIn$(): Observable<boolean> {
-    return this.select(state => state.token != null);
-  }
-
-  getToken(): string|null {
-    return this.getValue().token;
+    return this.select(state => state.logged);
   }
 
   isInitialized() {

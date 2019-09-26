@@ -21,7 +21,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private fm: AkitaNgFormsManager<FormState>,
               private sessionService: SessionService,
-              private sessionQuery: SessionQuery) { }
+              private sessionQuery: SessionQuery,
+  ) {
+  }
 
   ngOnInit() {
     this.form = new FormGroup<LoginFormState>({
@@ -41,7 +43,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   login() {
     validateAllFormFields(this.form);
 
-    if (!this.form.valid) { return; }
+    if (!this.form.valid) {
+      return;
+    }
 
     this.sessionService.login(this.form.controls.login.value, this.form.controls.password.value);
   }

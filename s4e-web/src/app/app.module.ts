@@ -27,6 +27,7 @@ import {ActivateModule} from './views/activate/activate.module';
 import {InitService} from './utils/initializer/init.service';
 import {InjectorModule} from './common/injector.module';
 import {ConfigProvider} from './utils/initializer/config.service';
+import {OAuthModule, OAuthService, UrlHelperService} from 'angular-oauth2-oidc';
 
 
 registerLocaleData(localePl, 'pl');
@@ -53,7 +54,8 @@ export function initializeApp(appInitService: InitService) {
     CommonStateModule.forRoot(),
     MapModule,
     ProfileModule,
-    InjectorModule
+    InjectorModule,
+    OAuthModule.forRoot()
   ],
   providers: [
     ConstantsProvider,
@@ -63,7 +65,8 @@ export function initializeApp(appInitService: InitService) {
     {provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: LOCALE_ID, useValue: 'pl-PL'}
+    {provide: LOCALE_ID, useValue: 'pl-PL'},
+    OAuthService
   ],
   bootstrap: [RootComponent],
   exports: [LoginComponent],
