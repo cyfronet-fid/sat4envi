@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {ProductService} from './product.service';
 import {ProductStore} from './product-store.service';
-import {TestingConstantsProvider} from '../../../../app.constants.spec';
 import {ProductTypeQuery} from '../product-type/product-type.query';
 import {ProductTypeStore} from '../product-type/product-type.store';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
@@ -30,7 +29,6 @@ describe('ProductService', () => {
         ProductTypeStore,
         RecentViewQuery,
         RecentViewStore,
-        TestingConstantsProvider,
         TestingConfigProvider],
       imports: [HttpClientTestingModule, InjectorModule]
     });

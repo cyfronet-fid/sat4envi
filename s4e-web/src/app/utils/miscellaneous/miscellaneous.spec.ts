@@ -4,7 +4,6 @@ import {JsonObject, JsonProperty} from 'json2typescript';
 import {DateConverter} from '../date-converter/date-converter';
 import {async, TestBed} from '@angular/core/testing';
 import {InjectorModule} from '../../common/injector.module';
-import {TestingConstantsProvider} from '../../app.constants.spec';
 import {format} from 'date-fns';
 import {Injector} from '@angular/core';
 import {TestingConfigProvider} from '../../app.configuration.spec';

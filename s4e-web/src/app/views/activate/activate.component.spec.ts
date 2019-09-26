@@ -1,10 +1,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {ActivateComponent} from './activate.component';
 import {ActivateService} from './state/activate.service';
-import {TestingConstantsProvider} from '../../app.constants.spec';
 import {ActivateModule} from './activate.module';
 import {RouterTestingModule} from '@angular/router/testing';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('ActivateComponent', () => {
   let component: ActivateComponent;
@@ -15,7 +14,7 @@ describe('ActivateComponent', () => {
     TestBed.configureTestingModule({
       imports: [ActivateModule, RouterTestingModule],
       declarations: [],
-      providers: [TestingConstantsProvider]
+      providers: [TestingConfigProvider]
     })
       .compileComponents();
   }));

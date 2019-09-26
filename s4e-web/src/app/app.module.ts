@@ -14,7 +14,6 @@ import {akitaConfig} from '@datorama/akita';
 import {SessionQuery} from './state/session/session.query';
 import {SessionService} from './state/session/session.service';
 import {CommonStateModule} from './state/common-state.module';
-import {ConstantsProvider} from './app.constants';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
@@ -24,18 +23,15 @@ import {LoginModule} from './views/login/login.module';
 import {RegisterModule} from './views/register/register.module';
 import {ResetPasswordModule} from './views/reset-password/reset-password.module';
 import {ActivateModule} from './views/activate/activate.module';
-import {InitService} from './utils/initializer/init.service';
 import {InjectorModule} from './common/injector.module';
-import {ConfigProvider} from './utils/initializer/config.service';
+import {S4eConfig} from './utils/initializer/config.service';
 
 
 registerLocaleData(localePl, 'pl');
 
 
-export function initializeApp(appInitService: InitService) {
-  return (): Promise<any> => {
-    return appInitService.loadConfiguration();
-  };
+export function initializeApp(configService: S4eConfig): () => Promise<any> {
+  return () => configService.loadConfiguration();
 }
 
 @NgModule({
@@ -56,10 +52,8 @@ export function initializeApp(appInitService: InitService) {
     InjectorModule
   ],
   providers: [
-    ConstantsProvider,
-    InitService,
-    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [InitService], multi: true},
-    ConfigProvider,
+    S4eConfig,
+    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [S4eConfig], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

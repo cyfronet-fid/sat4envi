@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SessionService } from './session.service';
-import { SessionStore } from './session.store';
+import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {SessionService} from './session.service';
+import {SessionStore} from './session.store';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConstantsProvider} from '../../app.constants.spec';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('SessionService', () => {
   let sessionService: SessionService;
@@ -15,7 +15,7 @@ describe('SessionService', () => {
         SessionService,
         SessionStore,
         HttpClientTestingModule,
-        TestingConstantsProvider
+        TestingConfigProvider
       ],
       imports: [
         HttpClientTestingModule,

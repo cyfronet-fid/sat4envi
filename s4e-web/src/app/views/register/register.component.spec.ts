@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { RegisterComponent } from './register.component';
+import {RegisterComponent} from './register.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ShareModule} from '../../common/share.module';
 import {RegisterService} from './state/register.service';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
-import {TestingConstantsProvider} from '../../app.constants.spec';
 import {By} from '@angular/platform-browser';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -16,10 +16,10 @@ describe('RegisterComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule, ShareModule, FormErrorModule],
-      declarations: [ RegisterComponent ],
-      providers: [TestingConstantsProvider]
+      declarations: [RegisterComponent],
+      providers: [TestingConfigProvider]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

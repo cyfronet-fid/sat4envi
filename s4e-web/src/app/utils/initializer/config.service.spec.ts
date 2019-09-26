@@ -1,43 +1,46 @@
 import {TestBed} from '@angular/core/testing';
-import {InitService} from './init.service';
 import {S4eConfig} from './config.service';
-import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {IConfiguration} from '../../app.configuration';
-
-class MockInitService {
-  getConfiguration(): IConfiguration {
-    return {
-      geoserverUrl: 'http://localhost:8080/test/wms',
-      geoserverWorkspace: 'testing',
-      backendDateFormat: 'yyyy-MM-dd',
-      recaptchaSiteKey: 'abc123'
-    };
-  }
-}
 
 describe('Configuration service', () => {
   let configService: S4eConfig;
+  let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        {provide: InitService, useClass: MockInitService},
-        S4eConfig],
+      providers: [S4eConfig],
       imports: [HttpClientTestingModule]
     });
 
     configService = TestBed.get(S4eConfig);
+    http = TestBed.get(HttpTestingController);
   });
 
   it('should be created', () => {
     expect(configService).toBeDefined();
   });
 
-  it('should call endpoint', () => {
-    expect(configService.geoserverUrl).toBe('http://localhost:8080/test/wms');
-    expect(configService.geoserverWorkspace).toBe('testing');
-    expect(configService.backendDateFormat).toBe('yyyy-MM-dd');
-    expect(configService.recaptchaSiteKey).toBe('abc123');
+  it('should call endpoint', (done) => {
+    configService.loadConfiguration().then(() => {
+      expect(configService.geoserverUrl).toBe('localhost:8080/test/wms');
+      expect(configService.geoserverWorkspace).toBe('testWorkspace');
+      expect(configService.backendDateFormat).toBe('yyyy-mm-dd');
+      expect(configService.recaptchaSiteKey).toBe('key');
+      done();
+    });
+
+    const req = http.expectOne('api/v1/config');
+
+    req.flush({
+      geoserverUrl: 'localhost:8080/test/wms',
+      geoserverWorkspace: 'testWorkspace',
+      backendDateFormat: 'yyyy-mm-dd',
+      recaptchaSiteKey: 'key'
+    });
+
+
+    http.verify();
   });
 
 });

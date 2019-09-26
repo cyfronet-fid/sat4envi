@@ -12,7 +12,6 @@ import {ProductTypeStore} from './state/product-type/product-type.store';
 import {ProductQuery} from './state/product/product-query.service';
 import {ProductService} from './state/product/product.service';
 import {ProductStore} from './state/product/product-store.service';
-import {ConstantsProvider} from '../../app.constants';
 import { TimelineComponent } from './timeline/timeline.component';
 import { MapComponent } from './map/map.component';
 import {OverlayQuery} from './state/overlay/overlay.query';
@@ -45,7 +44,6 @@ import {BsDropdownModule} from 'ngx-bootstrap';
     ProductQuery,
     ProductService,
     ProductStore,
-    ConstantsProvider,
     OverlayQuery,
     OverlayService,
     OverlayStore
