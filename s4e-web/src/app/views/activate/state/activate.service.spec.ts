@@ -1,12 +1,12 @@
 import {ActivateStore} from '../../activate/state/activate.store';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {TestingConstantsProvider} from '../../../app.constants.spec';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Router} from '@angular/router';
 import {ActivateQuery} from './activate.query';
 import {ActivateService} from './activate.service';
 import {take, toArray} from 'rxjs/operators';
+import {TestingConfigProvider} from '../../../app.configuration.spec';
 
 describe('ActivateService', () => {
   let activateService: ActivateService;
@@ -16,7 +16,7 @@ describe('ActivateService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ActivateService, ActivateStore, ActivateQuery, TestingConstantsProvider],
+      providers: [ActivateService, ActivateStore, ActivateQuery, TestingConfigProvider],
       imports: [HttpClientTestingModule, RouterTestingModule]
     });
 

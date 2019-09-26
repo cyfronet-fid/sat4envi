@@ -1,10 +1,10 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RecentViewService } from './recent-view.service';
-import { RecentViewStore } from './recent-view.store';
+import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RecentViewService} from './recent-view.service';
+import {RecentViewStore} from './recent-view.store';
 import {RecentViewQuery} from './recent-view.query';
 import {ProductService} from '../product/product.service';
-import {TestingConstantsProvider} from '../../../../app.constants.spec';
+import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('RecentViewService', () => {
   let recentViewService: RecentViewService;
@@ -18,9 +18,9 @@ describe('RecentViewService', () => {
         HttpClientTestingModule,
         RecentViewQuery,
         ProductService,
-        TestingConstantsProvider
+        TestingConfigProvider
       ],
-      imports: [ HttpClientTestingModule ]
+      imports: [HttpClientTestingModule]
     });
 
     recentViewService = TestBed.get(RecentViewService);

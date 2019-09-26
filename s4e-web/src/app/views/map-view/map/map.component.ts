@@ -1,17 +1,14 @@
-import {Component, Inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import {Tile, Image, Layer} from 'ol/layer';
-import {TileWMS, ImageWMS, OSM} from 'ol/source';
+import {Image, Layer, Tile} from 'ol/layer';
+import {ImageWMS, OSM} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
-import {IConstants, S4E_CONSTANTS} from '../../../app.constants';
 import {Product} from '../state/product/product.model';
 import {ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {InitService} from '../../../utils/initializer/init.service';
-import {IConfiguration} from '../../../app.configuration';
-import {S4E_CONFIG} from '../../../utils/initializer/config.service';
+import {S4eConfig} from '../../../utils/initializer/config.service';
 
 @Component({
   selector: 's4e-map',
@@ -23,17 +20,18 @@ export class MapComponent implements OnInit, OnDestroy {
   private baseLayer: Layer;
   private map: Map;
 
-  private activeProduct$ = new ReplaySubject<Product|null>(1);
+  private activeProduct$ = new ReplaySubject<Product | null>(1);
 
-  @Input() public set activeProduct(gr: Product|null) {
+  constructor(private CONFIG: S4eConfig) {
+  }
+
+  @Input()
+  public set activeProduct(gr: Product | null) {
     this.activeProduct$.next(gr);
   }
 
-  constructor(@Inject(S4E_CONSTANTS) private CONSTANTS: IConstants,
-              @Inject(S4E_CONFIG) private CONFIG: IConfiguration) {}
-
   ngOnInit(): void {
-    const centerOfPolandWebMercator = proj4(this.CONSTANTS.projection.toProjection, this.CONSTANTS.projection.coordinates);
+    const centerOfPolandWebMercator = proj4(this.CONFIG.projection.toProjection, this.CONFIG.projection.coordinates);
     this.map = new Map({
       target: 'map',
       layers: [],
@@ -60,7 +58,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.activeProduct$.complete();
   }
 
-  private updateLayers(product: Product|null) {
+  private updateLayers(product: Product | null) {
     console.log('updateLayers', product);
     const mapLayers = this.map.getLayers();
     mapLayers.clear();

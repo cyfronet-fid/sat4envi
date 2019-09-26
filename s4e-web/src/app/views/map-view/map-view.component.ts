@@ -1,8 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {combineLatest, Observable, of} from 'rxjs';
+import {Component, OnInit} from '@angular/core';
+import {combineLatest, Observable} from 'rxjs';
 
-import {Overlay, UIOverlay} from './state/overlay/overlay.model';
-import {IConstants, S4E_CONSTANTS} from '../../app.constants';
+import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {ProductType} from './state/product-type/product-type.model';
@@ -18,6 +17,7 @@ import {OverlayQuery} from './state/overlay/overlay.query';
 import {map} from 'rxjs/operators';
 import {OverlayService} from './state/overlay/overlay.service';
 import {IUILayer} from './state/common.model';
+import {S4eConfig} from '../../utils/initializer/config.service';
 
 @Component({
   selector: 's4e-map-view',
@@ -49,7 +49,8 @@ export class MapViewComponent implements OnInit {
               private productTypeQuery: ProductTypeQuery,
               private recentViewQuery: RecentViewQuery,
               private productQuery: ProductQuery,
-              @Inject(S4E_CONSTANTS) private CONSTANTS: IConstants) { }
+              private CONFIG: S4eConfig) {
+  }
 
   ngOnInit(): void {
     this.activeRecentView$ = this.recentViewQuery.selectActive();
@@ -70,7 +71,7 @@ export class MapViewComponent implements OnInit {
     this.overlayService.get();
   }
 
-  selectProductType(productTypeId: number|null) {
+  selectProductType(productTypeId: number | null) {
     this.productTypeService.setActive(productTypeId);
   }
 

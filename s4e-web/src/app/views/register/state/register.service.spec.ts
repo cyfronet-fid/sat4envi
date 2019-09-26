@@ -1,13 +1,11 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import { RegisterService } from './register.service';
-import { RegisterStore } from './register.store';
+import {RegisterService} from './register.service';
+import {RegisterStore} from './register.store';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConstantsProvider} from '../../../app.constants.spec';
-import {HttpErrorResponse} from '@angular/common/http';
 import {RegisterQuery} from './register.query';
-import {Location} from '@angular/common';
 import {Router} from '@angular/router';
+import {TestingConfigProvider} from '../../../app.configuration.spec';
 
 describe('RegisterService', () => {
   let registerService: RegisterService;
@@ -17,8 +15,8 @@ describe('RegisterService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RegisterService, RegisterStore, RegisterQuery, TestingConstantsProvider],
-      imports: [ HttpClientTestingModule, RouterTestingModule ]
+      providers: [RegisterService, RegisterStore, RegisterQuery, TestingConfigProvider],
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
@@ -62,7 +60,7 @@ describe('RegisterService', () => {
     it('should handle error 400', (done) => {
       registerService.register(data.email, data.password);
       const req = http.expectOne('api/v1/register');
-      req.flush( {email: ['Invalid email']}, {status: 400, statusText: 'Bad Request'});
+      req.flush({email: ['Invalid email']}, {status: 400, statusText: 'Bad Request'});
 
       registerQuery.selectError().subscribe(error => {
         expect(error).toEqual({email: ['Invalid email']});
@@ -75,7 +73,7 @@ describe('RegisterService', () => {
     it('should handle other errors', (done) => {
       registerService.register(data.email, data.password);
       const req = http.expectOne('api/v1/register');
-      req.flush( 'Server Failed', {status: 500, statusText: 'Server Error'});
+      req.flush('Server Failed', {status: 500, statusText: 'Server Error'});
 
       registerQuery.selectError().subscribe(error => {
         expect(error).toEqual({__general__: ['Server Failed']});

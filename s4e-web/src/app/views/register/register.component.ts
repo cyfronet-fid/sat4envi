@@ -6,10 +6,11 @@ import {RegisterFormState} from './state/register.model';
 import {RegisterQuery} from './state/register.query';
 import {Observable} from 'rxjs';
 import {RegisterService} from './state/register.service';
-import {connectErrorsToForm, devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {HashMap} from '@datorama/akita';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {debounceTime, delay} from 'rxjs/operators';
+import {connectErrorsToForm} from '../../utils/miscellaneous/forms';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {

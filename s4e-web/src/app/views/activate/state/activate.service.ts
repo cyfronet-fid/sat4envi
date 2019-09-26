@@ -2,16 +2,16 @@ import {Inject, Injectable} from '@angular/core';
 import {action} from '@datorama/akita';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import {IConstants, S4E_CONSTANTS} from '../../../app.constants';
 import {ActivateStore} from './activate.store';
 import {Router} from '@angular/router';
 import {delay, finalize} from 'rxjs/operators';
+import {S4eConfig} from '../../../utils/initializer/config.service';
 
 @Injectable({providedIn: 'root'})
 export class ActivateService {
 
   constructor(private activateStore: ActivateStore,
-              @Inject(S4E_CONSTANTS) private CONSTANTS: IConstants,
+              private CONFIG: S4eConfig,
               private router: Router,
               private http: HttpClient) {
   }
@@ -22,7 +22,7 @@ export class ActivateService {
     this.activateStore.setLoading(true);
     this.activateStore.setState('activating');
 
-    this.http.post(`${this.CONSTANTS.apiPrefixV1}/confirm-email`, {}, {params: {token}})
+    this.http.post(`${this.CONFIG.apiPrefixV1}/confirm-email`, {}, {params: {token}})
       .pipe(delay(1000), finalize(() => this.activateStore.setLoading(false)))
       .subscribe(
         () => {
@@ -39,7 +39,7 @@ export class ActivateService {
     this.activateStore.setLoading(true);
     this.activateStore.setState('resending');
 
-    this.http.post(`${this.CONSTANTS.apiPrefixV1}/resend-registration-token-by-token`, {}, {params: {token}})
+    this.http.post(`${this.CONFIG.apiPrefixV1}/resend-registration-token-by-token`, {}, {params: {token}})
       .pipe(delay(1000), finalize(() => this.activateStore.setLoading(false)))
       .subscribe(
         () => {

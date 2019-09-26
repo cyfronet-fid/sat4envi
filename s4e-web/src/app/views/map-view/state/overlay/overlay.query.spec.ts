@@ -2,7 +2,6 @@ import {OverlayQuery} from './overlay.query';
 import {OverlayStore} from './overlay.store';
 import {async, TestBed} from '@angular/core/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
-import {TestingConstantsProvider} from '../../../../app.constants.spec';
 
 describe('OverlayQuery', () => {
   let query: OverlayQuery;
@@ -11,7 +10,6 @@ describe('OverlayQuery', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [OverlayStore,
-        TestingConstantsProvider,
         TestingConfigProvider]
     });
 

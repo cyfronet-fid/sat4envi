@@ -4,8 +4,8 @@ import {SessionStore} from './session.store';
 import {finalize} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {action, resetStores} from '@datorama/akita';
-import {IConstants, S4E_CONSTANTS} from '../../app.constants';
 import {LoginRequestResponse} from './session.model';
+import {S4eConfig} from '../../utils/initializer/config.service';
 
 @Injectable({providedIn: 'root'})
 export class SessionService {
@@ -13,7 +13,7 @@ export class SessionService {
   constructor(private sessionStore: SessionStore,
               private http: HttpClient,
               private router: Router,
-              @Inject(S4E_CONSTANTS) private CONSTANTS: IConstants) {
+              private CONFIG: S4eConfig) {
   }
 
   init() {
@@ -44,13 +44,13 @@ export class SessionService {
   @action('login')
   login(email: string, password: string) {
     this.sessionStore.setLoading(true);
-    this.http.post<LoginRequestResponse>(`${this.CONSTANTS.apiPrefixV1}/login`, {email: email, password: password})
+    this.http.post<LoginRequestResponse>(`${this.CONFIG.apiPrefixV1}/login`, {email: email, password: password})
       .pipe(
         finalize(() => this.sessionStore.setLoading(false))
       ).subscribe(data => {
-        this.setToken(data.token, data.email);
-        this.router.navigate(['/']);
-      });
+      this.setToken(data.token, data.email);
+      this.router.navigate(['/']);
+    });
   }
 
   @action('logout')

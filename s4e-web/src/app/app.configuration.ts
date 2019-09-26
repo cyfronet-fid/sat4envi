@@ -1,14 +1,21 @@
 import {JsonObject, JsonProperty} from 'json2typescript';
 
-export interface IConfiguration {
+export interface IRemoteConfiguration {
   geoserverUrl: string;
   geoserverWorkspace: string;
   backendDateFormat: string;
   recaptchaSiteKey: string;
 }
 
+export interface IConfiguration extends IRemoteConfiguration {
+  projection: { toProjection: string, coordinates: [number, number] };
+  apiPrefixV1: string;
+  userLocalStorageKey: string;
+  generalErrorKey: string;
+}
+
 @JsonObject
-export class ConfigurationResponse implements IConfiguration {
+export class RemoteConfigurationResponse implements IRemoteConfiguration {
   @JsonProperty('geoserverUrl', String)
   geoserverUrl: string = undefined;
 

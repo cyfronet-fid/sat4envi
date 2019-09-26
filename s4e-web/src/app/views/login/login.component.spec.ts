@@ -1,10 +1,10 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { LoginComponent } from './login.component';
+import {LoginComponent} from './login.component';
 import {ShareModule} from '../../common/share.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConstantsProvider} from '../../app.constants.spec';
 import {SessionService} from '../../state/session/session.service';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -14,10 +14,10 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ShareModule, RouterTestingModule],
-      declarations: [ LoginComponent ],
-      providers: [TestingConstantsProvider]
+      declarations: [LoginComponent],
+      providers: [TestingConfigProvider]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -31,10 +31,10 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-    it('should not send non valid form', () => {
-      const spy = spyOn(sessionService, 'login');
-      component.login();
-      expect(spy).not.toHaveBeenCalled();
+  it('should not send non valid form', () => {
+    const spy = spyOn(sessionService, 'login');
+    component.login();
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
