@@ -123,7 +123,7 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private List<Product> generateProducts(ProductType productType, String suffix) {
-        val count = 24 * 30; // 1 month worth of layers. One each hour.
+        val count = 24 * 3000;
         val products = new ArrayList<Product>();
         for (int i = 0; i < count; i++) {
             val timestamp = BASE_TIME.plusHours(i);
