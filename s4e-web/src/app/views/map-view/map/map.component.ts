@@ -26,7 +26,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  public set activeProduct(gr: Product | null) {
+  public set activeProduct(gr: Product | null | undefined) {
     this.activeProduct$.next(gr);
   }
 
@@ -64,7 +64,7 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.clear();
     mapLayers.push(this.baseLayer);
 
-    if (product !== null) {
+    if (product != null) {
       mapLayers.push(new Image({
         source: new ImageWMS({
           url: this.CONFIG.geoserverUrl,

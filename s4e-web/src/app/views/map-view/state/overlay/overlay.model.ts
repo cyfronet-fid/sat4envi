@@ -37,6 +37,6 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, activ
       })
     }),
     cid: overlay.id,
-    active
+    active: true
   };
 }

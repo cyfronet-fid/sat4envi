@@ -1,6 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Layer, Image} from 'ol/layer';
-import {ImageWMS} from 'ol/source';
 import {IUILayer} from '../state/common.model';
 
 @Component({
@@ -12,11 +10,12 @@ export class ViewManagerComponent {
   @Input() loading = true;
   @Input() userLoggedIn: boolean = false;
   @Input() products: IUILayer[] = [];
+  @Input() productsTypes: IUILayer[] = [];
   @Input() productTypeLoading: boolean = true;
   @Output() selectProductType = new EventEmitter<number>();
-
   @Input() overlays: IUILayer[] = [];
   @Input() overlaysLoading: boolean = true;
+
   @Output() selectOverlay = new EventEmitter<string>();
   @Output() logout = new EventEmitter<void>();
 

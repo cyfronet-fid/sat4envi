@@ -1,7 +1,7 @@
 import { ProductTypeQuery } from './product-type.query';
 import { ProductTypeStore } from './product-type.store';
-import {ProductQuery} from '../product/product-query.service';
-import {ProductStore} from '../product/product-store.service';
+import {ProductQuery} from '../product/product.query';
+import {ProductStore} from '../product/product.store';
 
 describe('ProductTypeQuery', () => {
   let query: ProductTypeQuery;

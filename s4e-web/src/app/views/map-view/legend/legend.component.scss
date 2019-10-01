@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  position: absolute;
+  background-color: white;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.desc-container {
+  width: 300px;
+  height: 100%;
+  right: 80px;
+  position: absolute;
+  background-color: white;
+  padding: 15px;
+}

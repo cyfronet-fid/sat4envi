@@ -3,13 +3,18 @@
                   [userLoggedIn]="userLoggedIn$ | async"
                   [loading]="viewManagerLoading$ | async"
                   [overlaysLoading]="false"
-                  [products]="productsTypeList$ | async"
+                  [productsTypes]="productsTypeList$ | async"
                   [productTypeLoading]="productTypeLoading$ | async"
                   (logout)="logout()"
                   (selectOverlay)="selectOverlay($event)"
                   (selectProductType)="selectProductType($event)">
 </s4e-view-manager>
-`
+<s4e-legend *ngIf="legend$ | async"
+            [isOpen]="(legendState$ | async).isOpen"
+            (opened)="toggleLegend()"
+            [activeLegend]="legend$ | async"
+            class="legend"></s4e-legend>
+
 <s4e-timeline class="section timeline"
               [products]="products$ | async"
               [loading]="productsAreLoading$ | async"
