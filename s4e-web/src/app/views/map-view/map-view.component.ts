@@ -18,6 +18,8 @@ import {OverlayQuery} from './state/overlay/overlay.query';
 import {map} from 'rxjs/operators';
 import {OverlayService} from './state/overlay/overlay.service';
 import {IUILayer} from './state/common.model';
+import {MapStore} from './state/map/map.store';
+import {MapState} from './state/map/map.model';
 
 @Component({
   selector: 's4e-map-view',
@@ -38,6 +40,7 @@ export class MapViewComponent implements OnInit {
   public productsAreLoading$: Observable<boolean>;
   public viewManagerLoading$: Observable<boolean>;
   public productTypeLoading$: Observable<boolean>;
+  public mapState$: Observable<MapState>;
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -65,6 +68,8 @@ export class MapViewComponent implements OnInit {
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();
+    this.mapState$ = this.mapQuery.select();
+    this.activeProductType$ = this.productTypeQuery.selectActive() as Observable<ProductType>;
 
     this.productTypeService.get();
     this.overlayService.get();
@@ -88,5 +93,9 @@ export class MapViewComponent implements OnInit {
 
   selectOverlay(overlayId: string) {
 
+  }
+
+  toggleLegend() {
+    this.mapService.toggleLegend();
   }
 }

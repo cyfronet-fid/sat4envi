@@ -1,0 +1,9 @@
+<ng-container *ngIf="isOpen; else collapsed">
+  <div class="img-container">
+    <img src="../../../../assets/images/legend.svg">
+  </div>
+</ng-container>
+
+<ng-template #collapsed>
+  <img src="../../../../assets/images/legend.svg">
+</ng-template>

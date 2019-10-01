@@ -7,7 +7,12 @@
                   (selectOverlay)="selectOverlay($event)"
                   (selectProductType)="selectProductType($event)">
 </s4e-view-manager>
-`
+<s4e-legend *ngIf="(activeProductType$ | async)"
+            [isOpen]="(mapState$ | async)?.legendOpened"
+            (opened)="toggleLegend()"
+            [activeLegend]="(activeProductType$ | async)?.legend"
+            class="legend"></s4e-legend>
+
 <s4e-timeline class="section timeline"
               [products]="products$ | async"
               [loading]="productsAreLoading$ | async"

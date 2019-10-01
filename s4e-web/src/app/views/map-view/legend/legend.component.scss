@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  position: absolute;
+  background-color: white;
+}
+
+.img-container {
+  height: 100%;
+  width: 30px;
+}
+
+img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}

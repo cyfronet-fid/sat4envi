@@ -19,6 +19,7 @@ import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {OverlayStore} from './state/overlay/overlay.store';
 import {BsDropdownModule} from 'ngx-bootstrap';
+import { LegendComponent } from './legend/legend.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {BsDropdownModule} from 'ngx-bootstrap';
     LayerPicker,
     TimelineComponent,
     MapComponent,
+    LegendComponent,
   ],
   exports: [
     MapViewComponent,

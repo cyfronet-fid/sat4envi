@@ -12,7 +12,7 @@ import {ProductTypeQuery} from './product-type.query';
 @Injectable({providedIn: 'root'})
 export class ProductTypeService {
 
-  constructor(private productStore: ProductTypeStore,
+  constructor(private productTypeStore: ProductTypeStore,
               @Inject(S4E_CONSTANTS) private CONSTANTS: IConstants,
               private http: HttpClient,
               private productTypeQuery: ProductTypeQuery,
@@ -22,29 +22,30 @@ export class ProductTypeService {
   }
 
   get() {
-    this.productStore.setLoading(true);
+    this.productTypeStore.setLoading(true);
     this.http.get<ProductType[]>(`${this.CONSTANTS.apiPrefixV1}/productTypes`).pipe(
-      finalize(() => this.productStore.setLoading(false)),
-    ).subscribe(data => this.productStore.set(data));
+      finalize(() => this.productTypeStore.setLoading(false)),
+    ).subscribe(data => this.productTypeStore.set(data));
   }
 
-  setActive(productId: number | null) {
-    if (productId != null && this.recentViewQuery.getActiveId() !== productId) {
-      const currentView = this.recentViewQuery.getEntity(productId);
+  setActive(productTypeId: number | null) {
+    this.productTypeStore.setActive(productTypeId);
+    if (productTypeId != null && this.recentViewQuery.getActiveId() !== productTypeId) {
+      const currentView = this.recentViewQuery.getEntity(productTypeId);
 
       if (currentView == null) {
-        this.recentViewStore.upsert(productId, ({productId: null, productTypeId: productId}));
+        this.recentViewStore.upsert(productTypeId, ({productId: null, productTypeId: productTypeId}));
       } else {
-        this.recentViewStore.update(productId, ({productId: currentView.productId, productTypeId: productId}));
+        this.recentViewStore.update(productTypeId, ({productId: currentView.productId, productTypeId: productTypeId}));
       }
 
-      this.recentViewStore.setActive(productId);
+      this.recentViewStore.setActive(productTypeId);
 
-      if (this.productTypeQuery.getEntity(productId).productIds === undefined) {
-        this.productService.get(productId);
+      if (this.productTypeQuery.getEntity(productTypeId).productIds === undefined) {
+        this.productService.get(productTypeId);
       }
     }
-    else if (this.recentViewQuery.hasEntity(productId)){
+    else if (this.recentViewQuery.hasEntity(productTypeId)){
       this.recentViewStore.setActive(null);
     }
   }
