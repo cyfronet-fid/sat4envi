@@ -31,7 +31,9 @@ import java.util.Optional;
 public class PersistingJwtTokenStore implements TokenStore {
     private interface JwtTokenStoreExcluded {
         void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication);
+
         OAuth2RefreshToken readRefreshToken(String tokenValue);
+
         void removeRefreshToken(OAuth2RefreshToken token);
     }
 

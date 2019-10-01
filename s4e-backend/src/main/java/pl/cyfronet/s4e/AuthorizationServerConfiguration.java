@@ -13,9 +13,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import pl.cyfronet.s4e.security.PersistingJwtTokenStore;
 
 import java.security.KeyPair;
 
@@ -24,8 +24,8 @@ import java.security.KeyPair;
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
     public static final KeyPair JWT_KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
-    public static final int ACCESS_TOKEN_VALIDITY_SECONDS = 30*60; // 30 min
-    public static final int REFRESH_TOKEN_VALIDITY_SECONDS = 365*24*60*60; // 365 days
+    public static final int ACCESS_TOKEN_VALIDITY_SECONDS = 30 * 60; // 30 min
+    public static final int REFRESH_TOKEN_VALIDITY_SECONDS = 365 * 24 * 60 * 60; // 365 days
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -34,7 +34,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TokenStore tokenStore;
+    private PersistingJwtTokenStore persistingJwtTokenStore;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -53,7 +53,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .approvalStoreDisabled()
-                .tokenStore(tokenStore)
+                .tokenStore(persistingJwtTokenStore)
                 .accessTokenConverter(jwtAccessTokenConverter())
                 .authenticationManager(authenticationManager);
     }
