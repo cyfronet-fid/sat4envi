@@ -1,5 +1,5 @@
-import { ProductQuery } from './product-query.service';
-import { ProductStore } from './product-store.service';
+import { ProductQuery } from './product.query';
+import { ProductStore } from './product.store';
 
 describe('ProductQuery', () => {
   let query: ProductQuery;

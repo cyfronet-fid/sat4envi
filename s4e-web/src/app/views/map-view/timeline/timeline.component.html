@@ -11,7 +11,7 @@
   <ul class="timeline__grid">
     <li class="timeline__item"
         *ngFor="let product of day.products"
-        [ngClass]="{active: product.id === activeProduct.id}"
+        [ngClass]="{active: product.id === activeProduct?.id}"
         (click)="selectProduct.emit(product)">
       {{ product.timestamp | date : 'shortTime' }}
     </li>

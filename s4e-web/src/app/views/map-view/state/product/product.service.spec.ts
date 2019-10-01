@@ -1,12 +1,12 @@
 import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {ProductService} from './product.service';
-import {ProductStore} from './product-store.service';
+import {ProductStore} from './product.store';
 import {ProductTypeQuery} from '../product-type/product-type.query';
 import {ProductTypeStore} from '../product-type/product-type.store';
 import {RecentViewQuery} from '../recent-view/recent-view.query';
 import {RecentViewStore} from '../recent-view/recent-view.store';
-import {ProductQuery} from './product-query.service';
+import {ProductQuery} from './product.query';
 import {take, toArray} from 'rxjs/operators';
 import {ProductResponseFactory} from './product.factory.spec';
 import {deserializeJsonResponse} from '../../../../utils/miscellaneous/miscellaneous';
