@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
@@ -13,7 +14,6 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
-import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.RefreshToken;
@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
 @Primary
 @RequiredArgsConstructor
 public class PersistingJwtTokenStore implements TokenStore {
@@ -38,6 +37,7 @@ public class PersistingJwtTokenStore implements TokenStore {
     }
 
     @Delegate(excludes = JwtTokenStoreExcluded.class)
+    @Qualifier("jwtTokenStore")
     private final JwtTokenStore jwtTokenStore;
 
     private final ObjectMapper objectMapper;

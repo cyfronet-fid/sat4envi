@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.val;
@@ -15,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import pl.cyfronet.s4e.data.repository.RefreshTokenRepository;
 import pl.cyfronet.s4e.security.PersistingJwtTokenStore;
 
 import java.security.KeyPair;
@@ -34,7 +36,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PersistingJwtTokenStore persistingJwtTokenStore;
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -53,7 +58,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .approvalStoreDisabled()
-                .tokenStore(persistingJwtTokenStore)
+                .tokenStore(persistingJwtTokenStore())
                 .accessTokenConverter(jwtAccessTokenConverter())
                 .authenticationManager(authenticationManager);
     }
@@ -71,8 +76,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         return converter;
     }
 
-    @Bean
+    @Bean("jwtTokenStore")
     public JwtTokenStore jwtTokenStore() {
         return new JwtTokenStore(jwtAccessTokenConverter());
+    }
+
+    @Bean("tokenStore")
+    public PersistingJwtTokenStore persistingJwtTokenStore(){
+        return new PersistingJwtTokenStore(jwtTokenStore(), objectMapper, refreshTokenRepository);
     }
 }
