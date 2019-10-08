@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,12 +20,11 @@
     <properties>
         <jjwt.version>0.10.7</jjwt.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
-        <junit.version>5.5.2</junit.version>
-        <mockito.version>3.1.0</mockito.version>
         <springfox.version>3.0.0-SNAPSHOT</springfox.version>
-        <awaitility.version>4.0.1</awaitility.version>
         <commonmark.version>0.13.0</commonmark.version>
-        <hibernate-types.version>2.7.0</hibernate-types.version>
+        <hibernate-types.version>2.7.1</hibernate-types.version>
+        <poiooxml.version>4.1.1</poiooxml.version>
+        <greenmail.version>1.5.11</greenmail.version>
         <slugify.version>2.4</slugify.version>
     </properties>
 
@@ -76,18 +75,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-            <exclusions>
-                <!-- until junit 5 isn't included in this starter -->
-                <exclusion>
-                    <artifactId>junit</artifactId>
-                    <groupId>junit</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.icegreen</groupId>
             <artifactId>greenmail</artifactId>
-            <version>1.5.10</version>
+            <version>${greenmail.version}</version>
             <scope>test</scope>
             <!-- junit 5 isn't in junit:junit, so exclude it -->
             <exclusions>
@@ -100,7 +92,6 @@
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -125,20 +116,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-
-        <!-- until junit 5 isn't included in spring-boot-starter-test -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <scope>test</scope>
+            <version>${poiooxml.version}</version>
         </dependency>
 
         <dependency>
@@ -201,14 +179,14 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
+                <version>3.0.0-M3</version>
                 <configuration>
                     <excludedGroups>integration</excludedGroups>
                 </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.22.1</version>
+                <version>3.0.0-M3</version>
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
