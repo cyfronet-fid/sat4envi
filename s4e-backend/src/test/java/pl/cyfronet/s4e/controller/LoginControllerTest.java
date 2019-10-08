@@ -58,7 +58,7 @@ class LoginControllerTest {
                 .content(objectMapper.writeValueAsBytes(loginRequest)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("email", is(equalTo("some@email.com"))))
-            .andExpect(jsonPath("token", is(not(isEmptyOrNullString()))));
+            .andExpect(jsonPath("token", is(not(is(emptyOrNullString())))));
     }
 
     @Test
