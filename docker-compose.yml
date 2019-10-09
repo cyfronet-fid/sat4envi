@@ -38,7 +38,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: savi/geoserver:1.1.0-GS2.16.0
+    image: jswk/geoserver:1.1.0-GS2.16.0
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
     ports:

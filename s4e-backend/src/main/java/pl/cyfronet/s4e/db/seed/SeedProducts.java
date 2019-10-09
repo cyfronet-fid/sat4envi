@@ -18,6 +18,7 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
+import pl.cyfronet.s4e.service.GeoServerService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,16 +40,28 @@ public class SeedProducts implements ApplicationRunner {
     @Value("${seed.products.sync-geoserver:true}")
     private boolean syncGeoserver;
 
+    @Value("${seed.products.days:10000}")
+    private long days;
+
     private final ProductTypeRepository productTypeRepository;
     private final ProductRepository productRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
 
+    private final GeoServerService geoServerService;
     private final GeoServerSynchronizer geoServerSynchronizer;
 
     @Async
     @Override
     public void run(ApplicationArguments args) {
+//        if (syncGeoserver) {
+//            try {
+//                geoServerSynchronizer.resetWorkspace();
+//            } catch (Exception e) {
+//                log.warn(e.getMessage(), e);
+//            }
+//        }
+
         if (seedDb) {
             productRepository.deleteAll();
             productTypeRepository.deleteAll();
@@ -60,22 +73,14 @@ public class SeedProducts implements ApplicationRunner {
         }
 
         if (syncGeoserver) {
-            if (!seedDb) {
-                setAllProductsNotCreated();
+            try {
+                geoServerSynchronizer.synchronizeOverlays();
+            } catch (Exception e) {
+                log.warn(e.getMessage(), e);
             }
-            geoServerSynchronizer.resetWorkspace();
-            geoServerSynchronizer.synchronizeOverlays();
-            geoServerSynchronizer.synchronizeProducts();
         }
 
         log.info("Seeding complete");
-    }
-
-    private void setAllProductsNotCreated() {
-        for (val product: productRepository.findAll()) {
-            product.setCreated(false);
-            productRepository.save(product);
-        }
     }
 
     private void seedProducts() {
@@ -96,12 +101,10 @@ public class SeedProducts implements ApplicationRunner {
         });
         productTypeRepository.saveAll(productTypes);
 
-        log.info("Seeding Products");
-        val products = new ArrayList<Product>();
-        products.addAll(generateProducts(productTypes.get(0), "_Merkator_Europa_ir_108m"));
-        products.addAll(generateProducts(productTypes.get(1), "_Merkator_Europa_ir_108_setvak"));
-        products.addAll(generateProducts(productTypes.get(2), "_Merkator_WV-IR"));
-        productRepository.saveAll(products);
+        log.info("Seeding Products, base time: "+BASE_TIME.toString());
+        seedProducts(productTypes.get(0), "_Merkator_Europa_ir_108m");
+        seedProducts(productTypes.get(1), "_Merkator_Europa_ir_108_setvak");
+        seedProducts(productTypes.get(2), "_Merkator_WV-IR");
     }
 
     private void seedOverlays() {
@@ -122,25 +125,44 @@ public class SeedProducts implements ApplicationRunner {
         prgOverlayRepository.saveAll(prgOverlays);
     }
 
-    private List<Product> generateProducts(ProductType productType, String suffix) {
-        val count = 24 * 3000;
-        val products = new ArrayList<Product>();
-        for (int i = 0; i < count; i++) {
+    private void seedProducts(ProductType productType, String suffix) {
+        long count = 24 * days;
+        log.info("Seeding products of product type '"+productType.getName()+"', "+count+" total");
+        for (long i = 0; i < count; i++) {
             val timestamp = BASE_TIME.plusHours(i);
             val layerName = DATE_TIME_PATTERN.format(timestamp) + suffix;
 
             val timestampModuloDay = BASE_TIME.plusHours(i % 24); // The timestamp we actually have data for.
             val s3Path = DATE_TIME_PATTERN.format(timestampModuloDay) + suffix + ".tif";
 
-            products.add(Product.builder()
+            val product = Product.builder()
                     .productType(productType)
                     .timestamp(timestamp)
                     .layerName(layerName)
                     .s3Path(s3Path)
-                    // if we're not syncing GeoServer then assume it is populated
-                    .created(!syncGeoserver)
-                    .build());
+                    .build();
+
+            productRepository.save(product);
+
+            if (syncGeoserver) {
+                int retryCount = 3;
+                while (retryCount-- > 0) {
+                    try {
+                        if (!geoServerService.layerExists(product.getLayerName())) {
+                            geoServerService.addLayer(product);
+                        }
+                        break;
+                    } catch (Exception e) {
+                        log.warn(String.format("Retrying. %d retries left. %s", retryCount, product.toString()), e);
+                    }
+                }
+                product.setCreated(true);
+                productRepository.save(product);
+            }
+
+            if ((i+1) % 100 == 0) {
+                log.info((i+1)+"/"+count+" products of product type '"+productType.getName()+"' processed");
+            }
         }
-        return products;
     }
 }

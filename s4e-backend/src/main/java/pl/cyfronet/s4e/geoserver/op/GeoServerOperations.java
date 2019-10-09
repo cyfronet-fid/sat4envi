@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.cyfronet.s4e.geoserver.op.request.*;
@@ -21,6 +22,7 @@ import pl.cyfronet.s4e.geoserver.op.response.LayerResponse;
 import java.io.*;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,12 +38,21 @@ public class GeoServerOperations {
     @Value("${geoserver.baseUrl}")
     private String geoserverBaseUrl;
 
+    @Value("${geoserver.timeout.connect:60}")
+    private Long geoserverTimeoutConnect;
+    @Value("${geoserver.timeout.read:60}")
+    private Long geoserverTimeoutRead;
+
     private final RestTemplateBuilder restTemplateBuilder;
     private final ResourceLoader resourceLoader;
     private final ObjectMapper objectMapper;
 
     private RestTemplate restTemplate() {
-        return restTemplateBuilder.basicAuthentication(geoserverUsername, geoserverPassword).build();
+        return restTemplateBuilder
+                .basicAuthentication(geoserverUsername, geoserverPassword)
+                .setConnectTimeout(Duration.ofSeconds(geoserverTimeoutConnect))
+                .setReadTimeout(Duration.ofSeconds(geoserverTimeoutRead))
+                .build();
     }
 
     private <T> HttpEntity<T> httpEntity(T payload) {
@@ -165,12 +176,15 @@ public class GeoServerOperations {
         restTemplate().delete(url);
     }
 
-
     public boolean layerExists(String workspace, String layerName) {
         URI url = UriComponentsBuilder.fromHttpUrl(geoserverBaseUrl+"/workspaces/{workspace}/layers/{layerName}")
                 .buildAndExpand(workspace, layerName).toUri();
-        ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
-        return responseEntity.getStatusCode().is2xxSuccessful();
+        try {
+            ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
+            return responseEntity.getStatusCode().is2xxSuccessful();
+        } catch (HttpClientErrorException.NotFound e) {
+            return false;
+        }
     }
 
     public LayerResponse getLayer(String workspace, String layerName) {
