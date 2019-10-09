@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -130,6 +131,16 @@ public class AppUserController {
         appUserService.save(appUser);
 
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(verificationToken, LocaleContextHolder.getLocale()));
+
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("Add user to an institution")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User was added")
+    })
+    @PostMapping("/institutions/{institution}/users")
+    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request ) {
 
         return ResponseEntity.ok().build();
     }

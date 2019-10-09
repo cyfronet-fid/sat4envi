@@ -22,17 +22,21 @@ public class AppUserService {
         try {
             return appUserRepository.save(appUser);
         } catch (DataIntegrityViolationException e) {
-            log.info("Cannot create AppUser with email '"+appUser.getEmail()+"'", e);
+            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
             throw new AppUserCreationException(e);
         }
     }
 
     @Transactional
-    public AppUser update(AppUser appUser){
+    public AppUser update(AppUser appUser) {
         return appUserRepository.save(appUser);
     }
 
     public Optional<AppUser> findByEmail(String email) {
         return appUserRepository.findByEmail(email);
+    }
+
+    public Optional<AppUser> findById(Long id) {
+        return appUserRepository.findById(id);
     }
 }

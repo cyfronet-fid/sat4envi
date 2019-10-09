@@ -1,0 +1,6 @@
+Dzień dobry!
+
+Zostałeś dodany do grupy [( ${groupName} )] w instytucji [( ${institutionName} )].
+
+Pozdrawiamy,
+Zespół sat4envi

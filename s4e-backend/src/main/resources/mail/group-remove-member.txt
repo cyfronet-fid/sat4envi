@@ -1,0 +1,6 @@
+Dzień dobry!
+
+Zostałeś usunięty z grupy [( ${groupName} )] w instytucji [( ${institutionName} )].
+
+Pozdrawiamy,
+Zespół sat4envi
