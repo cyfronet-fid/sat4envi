@@ -5,6 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,8 +27,12 @@ import java.security.KeyPair;
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
     public static final KeyPair JWT_KEY_PAIR = Keys.keyPairFor(SignatureAlgorithm.RS256);
-    public static final int ACCESS_TOKEN_VALIDITY_SECONDS = 30 * 60; // 30 min
-    public static final int REFRESH_TOKEN_VALIDITY_SECONDS = 365 * 24 * 60 * 60; // 365 days
+
+    @Value("${oauth.access-token.validity:#{30*60}}") // 30 min
+    private int accessTokenValiditySeconds;
+
+    @Value("${oauth.refresh-token.validity:#{365 * 24 * 60 * 60}}") // 365 days
+    private int refreshTokenValiditySeconds;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -50,8 +55,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .authorizedGrantTypes("password", "refresh_token")
                 .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
                 .scopes("read", "write", "trust")
-                .accessTokenValiditySeconds(ACCESS_TOKEN_VALIDITY_SECONDS)
-                .refreshTokenValiditySeconds(REFRESH_TOKEN_VALIDITY_SECONDS);
+                .accessTokenValiditySeconds(accessTokenValiditySeconds)
+                .refreshTokenValiditySeconds(refreshTokenValiditySeconds);
     }
 
     @Override
