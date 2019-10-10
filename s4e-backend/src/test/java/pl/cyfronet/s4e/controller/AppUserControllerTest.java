@@ -138,7 +138,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("?token="));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
     }
 
     @Test
@@ -265,7 +265,7 @@ public class AppUserControllerTest {
 
         // Finally, an email with info that the account has been activated should be sent.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString(appUser.getEmail()));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString("aktywowane"));
     }
 
     @Test
@@ -332,7 +332,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("?token="));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
@@ -386,7 +386,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("?token="));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));

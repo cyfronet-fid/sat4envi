@@ -3,12 +3,12 @@ package pl.cyfronet.s4e.listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.service.EmailVerificationService;
+import pl.cyfronet.s4e.service.MailService;
 
 import java.util.Optional;
 
@@ -16,16 +16,18 @@ import static org.mockito.Mockito.*;
 
 class EmailVerificationListenerTest {
     private EmailVerificationListener listener;
-    private JavaMailSender javaMailSender;
     private EmailVerificationService emailVerificationService;
     private MessageSource messageSource;
+    private TemplateEngine templateEngine;
+    private MailService mailService;
 
     @BeforeEach
     public void beforeEach() {
-        javaMailSender = mock(JavaMailSender.class);
         emailVerificationService = mock(EmailVerificationService.class);
         messageSource = mock(MessageSource.class);
-        listener = new EmailVerificationListener(javaMailSender, emailVerificationService, messageSource);
+        templateEngine = mock(TemplateEngine.class);
+        mailService = mock(MailService.class);
+        listener = new EmailVerificationListener(emailVerificationService, messageSource, templateEngine, mailService);
     }
 
     @Test
@@ -62,7 +64,7 @@ class EmailVerificationListenerTest {
 
         listener.handle(new OnResendRegistrationTokenEvent(appUser, null));
 
-        verify(javaMailSender).send(any(SimpleMailMessage.class));
+        verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any());
     }
 
 }
