@@ -1,0 +1,7 @@
+Dzień dobry!
+
+Twoje konto '[( ${email} )]' zostało utworzone.
+Wejdź w [( ${activationUrl} )] aby potwierdzić adres email i aktywować konto.
+
+Pozdrawiamy,
+Zespół sat4envi

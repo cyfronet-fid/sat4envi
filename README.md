@@ -67,9 +67,15 @@ They are executed on every startup, but they can also be run by setting appropri
 Spring application profile can be set with the var `spring.profiles.active`.
 Several profiles can be specified in a comma separated list, e.g. `production,run-seed-products`.
 
-`development`: The seeds are run on every startup and exception handler includes information about stacktraces.
+`development`: 
+- The seeds are run on every startup.
+- Exception handler includes information about stacktraces.
+- Mails are output to the logs.
 
-`production`: No seeds are run and information about stacktraces is not included in responses.
+`production`:
+- No seeds are run by default.
+- Exception handler excludes information about stacktraces.
+- Mailer properties must be configured.
 
 `run-seed-users`: Runs `SeedUsers`.
 

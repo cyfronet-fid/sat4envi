@@ -3,11 +3,11 @@ package pl.cyfronet.s4e.listener;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
 import pl.cyfronet.s4e.event.OnPasswordResetTokenEmailEvent;
+import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.service.PasswordService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -15,16 +15,18 @@ import static org.mockito.Mockito.*;
 
 public class PasswordListenerTest {
     private PasswordListener listener;
-    private JavaMailSender javaMailSender;
     private PasswordService passwordService;
     private MessageSource messageSource;
+    private TemplateEngine templateEngine;
+    private MailService mailService;
 
     @BeforeEach
     public void beforeEach() {
-        javaMailSender = mock(JavaMailSender.class);
         passwordService = mock(PasswordService.class);
         messageSource = mock(MessageSource.class);
-        listener = new PasswordListener(javaMailSender, passwordService, messageSource);
+        templateEngine = mock(TemplateEngine.class);
+        mailService = mock(MailService.class);
+        listener = new PasswordListener(passwordService, messageSource, templateEngine, mailService);
     }
 
     @Test
@@ -42,6 +44,6 @@ public class PasswordListenerTest {
 
         listener.handle(new OnPasswordResetTokenEmailEvent(appUser, null));
 
-        verify(javaMailSender).send(any(SimpleMailMessage.class));
+        verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any());
     }
 }

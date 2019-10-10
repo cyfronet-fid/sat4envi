@@ -1,0 +1,6 @@
+Dzień dobry!
+
+Twoje konto '[( ${email} )]' zostało aktywowane.
+
+Pozdrawiamy,
+Zespół sat4envi

@@ -2,18 +2,20 @@ package pl.cyfronet.s4e.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.service.EmailVerificationService;
+import pl.cyfronet.s4e.service.MailService;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -21,9 +23,13 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class EmailVerificationListener {
-    private final JavaMailSender javaMailSender;
     private final EmailVerificationService emailVerificationService;
     private final MessageSource messageSource;
+    private final TemplateEngine templateEngine;
+    private final MailService mailService;
+
+    @Value("${mail.urlDomain}")
+    private String urlDomain;
 
     @Async
     @EventListener
@@ -55,12 +61,12 @@ public class EmailVerificationListener {
         String recipientAddress = appUser.getEmail();
         String subject = messageSource.getMessage("email.account-activated.subject", null, event.getLocale());
 
-        sendEmail(
-                recipientAddress,
-                subject,
-                messageSource.getMessage("email.account-activated.text", new Object[]{
-                        appUser.getEmail()
-                }, event.getLocale()));
+        Context ctx = new Context(event.getLocale());
+        ctx.setVariable("email", appUser.getEmail());
+
+        String content = templateEngine.process("account-activated.txt", ctx);
+
+        mailService.sendEmail(recipientAddress, subject, content);
     }
 
     private void sendConfirmationEmail(AppUser appUser, Locale locale) {
@@ -68,18 +74,14 @@ public class EmailVerificationListener {
 
         String recipientAddress = appUser.getEmail();
         String subject = messageSource.getMessage("email.confirm-email.subject", null, locale);
-        String confirmationUrl = "/confirm-email?token=" + verificationToken.getToken();
+        String activationUrl = urlDomain + "/activate/" + verificationToken.getToken();
 
-        String text = messageSource.getMessage("email.confirm-email.text", new Object[]{confirmationUrl}, locale);
+        Context ctx = new Context(locale);
+        ctx.setVariable("email", appUser.getEmail());
+        ctx.setVariable("activationUrl", activationUrl);
 
-        sendEmail(recipientAddress, subject, text);
-    }
+        String content = templateEngine.process("confirm-email.txt", ctx);
 
-    private void sendEmail(String to, String subject, String text) {
-        val email = new SimpleMailMessage();
-        email.setTo(to);
-        email.setSubject(subject);
-        email.setText(text);
-        javaMailSender.send(email);
+        mailService.sendEmail(recipientAddress, subject, content);
     }
 }
