@@ -1,40 +1,81 @@
-<h1 i18n>Rejestracja</h1>
-
-<form (ngSubmit)="register()" [formGroup]="form">
-  <div class="alert alert-danger" *ngIf="form.errors?.length">
-    <ul>
-      <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
-        <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
-        <ng-container *ngSwitchCase="'__general__'">{{form.errors['__general__']}}</ng-container>
-      </li>
-    </ul>
+<div class="container">
+  <div class="intro">
+    <div class="logo logo--white"></div>
+    <div class="intro__content">
+      <h1>
+        Dane satelitarne na wyciągnięcie ręki
+      </h1>
+      <p>
+        Kompleksowy system udostępniania danych satelitarnych
+        z programu Copernicus oraz z innych satelitów środowiskowych i meteorologicznych
+      </p>
+    </div>
+    <img src="../../../assets/images/logo_partners.png" alt="Partnerzy: IMGW, Cyfronet, CBK"/>
   </div>
+  <div class="content">
+    <div class="logo logo--color"></div>
+    <section class="content__switch content__switch--right">
+      <p>
+        Masz już konto?
+      </p>
+      <a class="button" routerLink="/login">
+        Zaloguj się
+      </a>
+    </section>
+    <div class="content__formContainer">
+      <!--suppress AngularInvalidExpressionResultType -->
+      <form (ngSubmit)="register()" [formGroup]="form">
+        <h2 class="content__header" i18n>Rejestracja</h2>
+        <div class="alert alert-danger" *ngIf="form.errors?.length">
+          <ul s4e-form-error [control]="form"></ul>
+        </div>
 
-  <div class="mb-3">
-    <label for="registration-login" i18n>Email</label>
-    <input class="form-control" formControlName="email" id="registration-login" autocomplete="new-password">
-    <ul s4e-form-error [errors]="form.controls.email.errors"></ul>
+        <ul class="form__list">
+          <li class="form__element">
+            <label for="registration-login" i18n>Email</label>
+            <input class="form-control" formControlName="email" id="registration-login" autocomplete="new-password"
+                   type="text">
+            <ul s4e-form-error [control]="form.controls.email"></ul>
+          </li>
+
+          <li class="form__element">
+            <label for="registration-password" i18n>Hasło</label>
+            <input class="form-control" formControlName="password" id="registration-password" type="password"
+                   autocomplete="new-password">
+            <ul s4e-form-error [control]="form.controls.password"></ul>
+          </li>
+
+          <li class="form__element">
+            <label for="registration-password-repeat" i18n>Powtórz hasło</label>
+            <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat"
+                   type="password">
+            <ul s4e-form-error [control]="form.controls.passwordRepeat"></ul>
+          </li>
+
+          <li class="form__element">
+            <re-captcha formControlName="recaptcha" [siteKey]="CONFIG.recaptchaSiteKey"></re-captcha>
+          </li>
+
+          <li class="form__element">
+            <button class="button button--secondary" type="submit">
+              <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+              <ng-container i18n>Utwórz konto</ng-container>
+            </button>
+          </li>
+        </ul>
+      </form>
+    </div>
   </div>
+</div>
 
-  <div class="mb-3">
-    <label for="registration-password" i18n>Hasło</label>
-    <input class="form-control" formControlName="password" id="registration-password" type="password" autocomplete="new-password">
-    <ul s4e-form-error [errors]="form.controls.password.errors"></ul>
-  </div>
 
-  <div class="mb-3">
-    <label for="registration-password-repeat" i18n>Powtórz hasło</label>
-    <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat" type="password">
-    <ul s4e-form-error [errors]="form.controls.passwordRepeat.errors"></ul>
-  </div>
 
-  <div class="mb-3">
-    <re-captcha formControlName="recaptcha" [siteKey]="CONFIG.recaptchaSiteKey"></re-captcha>
-  </div>
 
-  <button class="btn btn-primary btn-block" type="submit">
-    <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
-    <ng-container i18n>Utwórz konto</ng-container>
-  </button>
 
-</form>
+
+
+
+
+
+
+

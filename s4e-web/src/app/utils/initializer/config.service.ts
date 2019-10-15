@@ -33,7 +33,6 @@ export class S4eConfig implements IConfiguration {
   }
 
   loadConfiguration(): Promise<IRemoteConfiguration> {
-    console.log('aaa');
     return this.http.get<IRemoteConfiguration>(`api/v1/config`).pipe(
       map(data => deserializeJsonResponse(data, RemoteConfigurationResponse)),
       tap(config => this.init(config))

@@ -18,7 +18,7 @@
       <p>
         Nie masz jeszcze konta?
       </p>
-      <a class="button" href="/register">
+      <a class="button" routerLink="/register">
         Zarejestruj się
       </a>
     </section>
@@ -41,21 +41,12 @@
           <li class="form__element">
             <label for="login-login" i18n>Email</label>
             <input class="form-control" formControlName="login" id="login-login" type="text">
-            <ul class="invalid-feedback special__error">
-              <li *ngFor="let error of (form.controls.login.errors | errorKeys)" [ngSwitch]="error">
-                <ng-container *ngSwitchCase="'email'" i18n>Login musi być emailem</ng-container>
-                <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
-              </li>
-            </ul>
+            <ul s4e-form-error [control]="form.controls.login"></ul>
           </li>
           <li class="form__element">
             <label for="login-password" i18n>Hasło</label>
             <input class="form-control" formControlName="password" id="login-password" type="password">
-            <ul class="invalid-feedback  special__error">
-              <li *ngFor="let error of (form.controls.password.errors | errorKeys)" [ngSwitch]="error">
-                <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
-              </li>
-            </ul>
+            <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
           <li class="form__element form__checkbox">
             <input type="checkbox" class="form-check-input" id="login-remember-me">

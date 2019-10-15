@@ -1,16 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {RegisterFormState} from './state/register.model';
 import {RegisterQuery} from './state/register.query';
-import {Observable} from 'rxjs';
 import {RegisterService} from './state/register.service';
-import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
-import {HashMap} from '@datorama/akita';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {debounceTime} from 'rxjs/operators';
-import {connectErrorsToForm} from '../../utils/miscellaneous/forms';
+import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {Router} from '@angular/router';
+import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
 import {S4eConfig} from '../../utils/initializer/config.service';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
@@ -35,18 +32,16 @@ export function MustMatch(controlName: string, matchingControlName: string) {
 @Component({
   selector: 's4e-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  styleUrls: ['./register.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
-export class RegisterComponent implements OnInit, OnDestroy {
-  public form: FormGroup<RegisterFormState>;
-  public error: HashMap<string> = {};
-  public loading$: Observable<boolean>;
-
-
-  constructor(private fm: AkitaNgFormsManager<FormState>,
+export class RegisterComponent extends GenericFormComponent<RegisterQuery, RegisterFormState> {
+  constructor(fm: AkitaNgFormsManager<FormState>,
+              router: Router,
+              public CONFIG: S4eConfig,
               private registerService: RegisterService,
-              private registerQuery: RegisterQuery,
-              private CONFIG: S4eConfig) {
+              private registerQuery: RegisterQuery) {
+    super(fm, router, registerQuery, 'register');
   }
 
   ngOnInit() {
@@ -57,16 +52,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
       recaptcha: new FormControl('', [Validators.required])
     }, {validators: MustMatch('password', 'passwordRepeat')});
 
-    this.loading$ = this.registerQuery.selectLoading();
-
-    devRestoreFormState(this.fm.query.getValue().register, this.form);
-    this.fm.upsert('register', this.form);
-
-    // In order for dev error setting to work debounceTime(100) must be set
-    this.registerQuery.selectError().pipe(debounceTime(100), untilDestroyed(this)).subscribe(errors => {
-      this.error = errors;
-      connectErrorsToForm(errors, this.form);
-    });
+    super.ngOnInit();
   }
 
   register() {
@@ -77,9 +63,5 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
 
     this.registerService.register(this.form.controls.email.value, this.form.controls.password.value, this.form.controls.recaptcha.value);
-  }
-
-  ngOnDestroy(): void {
-    this.fm.unsubscribe('register');
   }
 }

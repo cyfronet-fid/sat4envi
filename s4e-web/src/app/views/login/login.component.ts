@@ -1,12 +1,13 @@
-import {Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {Observable} from 'rxjs';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
-import {devRestoreFormState, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {SessionQuery} from '../../state/session/session.query';
 import {SessionService} from '../../state/session/session.service';
 import {LoginFormState} from '../../state/session/session.model';
+import {Router} from '@angular/router';
+import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
 
 @Component({
   selector: 's4e-login',
@@ -14,15 +15,13 @@ import {LoginFormState} from '../../state/session/session.model';
   styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  public form: FormGroup<LoginFormState>;
-  public error$: Observable<any>;
-  public loading$: Observable<boolean>;
-
-
-  constructor(private fm: AkitaNgFormsManager<FormState>,
+export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> {
+  constructor(fm: AkitaNgFormsManager<FormState>,
+              router: Router,
               private sessionService: SessionService,
-              private sessionQuery: SessionQuery) { }
+              private sessionQuery: SessionQuery) {
+    super(fm, router, sessionQuery, 'login');
+  }
 
   ngOnInit() {
     this.form = new FormGroup<LoginFormState>({
@@ -31,12 +30,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       rememberMe: new FormControl(false)
     });
 
-    this.error$ = this.sessionQuery.selectError();
-    this.loading$ = this.sessionQuery.selectLoading();
-
-    devRestoreFormState(this.fm.query.getValue().login, this.form);
-
-    this.fm.upsert('login', this.form);
+    super.ngOnInit();
   }
 
   login() {
@@ -45,9 +39,5 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (!this.form.valid) { return; }
 
     this.sessionService.login(this.form.controls.login.value, this.form.controls.password.value);
-  }
-
-  ngOnDestroy(): void {
-    this.fm.unsubscribe('login');
   }
 }
