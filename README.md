@@ -56,7 +56,8 @@ Alternatively, the app can be built and run by issuing `./mvnw spring-boot:run -
 
 Both methods will expose the server under `http://localhost:4201`.
 
-During bootstrap Flyway will migrate the schema based on migrations placed in `src/main/resources/db/migration`.
+Properties spring.flyway.enabled is set to false. It disabled flyway, to turn it on you have to change properties: 
+`spring.flyway.enabled`, `spring.jpa.hibernate.ddl-auto`, `spring.flyway.clean-disabled` and `spring.flyway.clean-on-validation-error`
 
 In the `development` mode the DB and GeoServer are seeded by components from `pl.cyfronet.s4e.db.seed`.
 They are executed on every startup, but they can also be run by setting appropriate profiles.
