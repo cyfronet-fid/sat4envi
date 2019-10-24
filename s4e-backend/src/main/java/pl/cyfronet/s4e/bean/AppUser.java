@@ -16,6 +16,7 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty
+    @Column(unique = true)
     private String email;
     /// password hash
     @NotEmpty
