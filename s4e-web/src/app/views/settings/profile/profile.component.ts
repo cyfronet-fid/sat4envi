@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {SessionQuery} from '../../state/session/session.query';
+import {SessionQuery} from '../../../state/session/session.query';
 import {Observable} from 'rxjs';
 
 @Component({

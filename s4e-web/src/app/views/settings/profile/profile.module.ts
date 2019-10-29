@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 
-import {ShareModule} from '../../common/share.module';
+import {ShareModule} from '../../../common/share.module';
 import {ProfileComponent} from './profile.component';
 
 @NgModule({
@@ -9,6 +9,9 @@ import {ProfileComponent} from './profile.component';
   ],
   imports: [
     ShareModule,
+  ],
+  exports: [
+    ProfileComponent
   ]
 })
 export class ProfileModule { }

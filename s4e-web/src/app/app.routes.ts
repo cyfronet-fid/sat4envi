@@ -1,6 +1,5 @@
 import {Routes} from '@angular/router';
 import {MapViewComponent} from './views/map-view/map-view.component';
-import {ProfileComponent} from './views/profile/profile.component';
 import {LoginComponent} from './views/login/login.component';
 import {ResetPasswordComponent} from './views/reset-password/reset-password.component';
 import {RegisterComponent} from './views/register/register.component';
@@ -23,10 +22,6 @@ export const appRoutes: Routes = [
     path: 'register',
     component: RegisterComponent,
     canActivate: [IsNotLoggedIn]
-  }, {
-    path: 'profile',
-    component: ProfileComponent,
-    canActivate: [IsLoggedIn]
   }, {
     path: 'reset-password',
     component: ResetPasswordComponent,

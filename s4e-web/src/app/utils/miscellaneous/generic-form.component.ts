@@ -19,11 +19,13 @@ export class GenericFormComponent<Q extends Query<any>, FS extends object> imple
   constructor(protected fm: AkitaNgFormsManager<FormState>,
               protected router: Router,
               protected query: Q,
-              protected formKey: keyof FormState) {}
+              protected formKey: keyof FormState) {
+  }
 
   ngOnInit(): void {
-    if (this.form == null)
+    if (this.form == null) {
       throw new Error('GenericFormComponent has no defined `form`, be sure to assign it before calling `super.ngOnInit()`');
+    }
 
     this.loading$ = this.query.selectLoading();
     this.error$ = this.query.selectError();
@@ -35,7 +37,7 @@ export class GenericFormComponent<Q extends Query<any>, FS extends object> imple
     this.query.selectError().pipe(debounceTime(100), untilDestroyed(this))
       .subscribe(errors => connectErrorsToForm(errors, this.form));
 
-    if(environment.hmr) {
+    if (environment.hmr) {
       this.router.events.pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => this.fm.remove(this.formKey));
     }

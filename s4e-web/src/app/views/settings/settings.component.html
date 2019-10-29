@@ -1,0 +1,14 @@
+<div class="navbar">
+  <ul>
+    <li><a [routerLink]="['/']" translate>Wstecz</a></li>
+    <li><a [routerLink]="['./dashboard']" translate>Dashboard</a></li>
+    <li><a [routerLink]="['./profile']" translate>Profil</a></li>
+    <li><a [routerLink]="['./groups']" translate>Grupy</a></li>
+    <li><a [routerLink]="['./people']" translate>Ludzie</a></li>
+    <li><a [routerLink]="['./institution']" translate>Profil Instytucji</a></li>
+  </ul>
+</div>
+
+<div>
+  <router-outlet></router-outlet>
+</div>
