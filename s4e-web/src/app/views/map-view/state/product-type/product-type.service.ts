@@ -85,6 +85,8 @@ export class ProductTypeService {
   }
 
   setSelectedDate($event: string) {
-    this.store.update(store => ({...store, ui: {...store.ui, selectedDate: $event}}));
+    const date = moment.utc($event, 'YYYY-MM-DD');
+
+    this.store.update(store => ({...store, ui: {...store.ui, selectedMonth: date.month(), selectedYear: date.year(), selectedDay: date.day(), selectedDate: $event}}));
   }
 }

@@ -45,6 +45,7 @@ export class SessionService {
   @action('login')
   login(email: string, password: string) {
     this.sessionStore.setLoading(true);
+
     this.http.post<LoginRequestResponse>(`${this.CONFIG.apiPrefixV1}/login`, {email: email, password: password})
       .pipe(
         finalize(() => this.sessionStore.setLoading(false))
