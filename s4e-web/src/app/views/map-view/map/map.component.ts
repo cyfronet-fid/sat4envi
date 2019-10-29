@@ -8,11 +8,12 @@ import {Icon, Style} from 'ol/style';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Product} from '../state/product/product.model';
-import {Observable, ReplaySubject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {SearchResult} from '../state/search-results/search-result.model';
 import {Point} from 'ol/geom';
+import {distinctUntilChanged} from 'rxjs/operators';
 
 
 @Component({
@@ -21,7 +22,18 @@ import {Point} from 'ol/geom';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy {
-  @Input() public overlays: UIOverlay[] = [];
+  get overlays(): UIOverlay[] {
+    return this._overlays;
+  }
+
+  @Input() set overlays(value: UIOverlay[]) {
+    console.log(this._overlays);
+    this._overlays = value;
+    this.overlays$.next(value);
+  }
+  private _overlays: UIOverlay[] = [];
+
+  private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
   function;
   selectedLocationSub: Subscription = null;
   private baseLayer: Layer;
@@ -87,7 +99,13 @@ export class MapComponent implements OnInit, OnDestroy {
       this.map.getLayers().push(overlay.olLayer);
     }
 
-    this.activeProduct$.pipe(untilDestroyed(this)).subscribe(gr => this.updateLayers(gr));
+    combineLatest([
+      this.activeProduct$.pipe(distinctUntilChanged()),
+      this.overlays$.pipe(distinctUntilChanged())
+    ]).pipe(untilDestroyed(this)).subscribe(([gr, overlays]) => {
+      this.overlays = overlays;
+      this.updateLayers(gr)
+    });
 
     const markerStyle = new Style({
       image: new Icon({
@@ -112,7 +130,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private updateLayers(product: Product | null) {
-    console.log('updateLayers', product);
     const mapLayers = this.map.getLayers();
     mapLayers.clear();
     mapLayers.push(this.baseLayer);
@@ -126,7 +143,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }));
     }
 
-    for (const overlay of this.overlays) {
+    for (const overlay of this.overlays.filter(ol => ol.active)) {
       mapLayers.push(overlay.olLayer);
     }
   }

@@ -4,6 +4,12 @@ import {IUILayer} from '../common.model';
 
 export type OverlayType = 'wms'; // later |'tile'|'etc' may be added
 
+export interface OverlayResponse {
+  id: number;
+  name: string;
+  layerName: string; //id
+}
+
 export interface Overlay {
   id: string;
   type: OverlayType;
@@ -37,6 +43,6 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, activ
       })
     }),
     cid: overlay.id,
-    active: true
+    active: active
   };
 }

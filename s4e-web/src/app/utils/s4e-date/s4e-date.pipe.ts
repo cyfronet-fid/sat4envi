@@ -1,4 +1,4 @@
-import {Pipe} from '@angular/core';
+import {Inject, LOCALE_ID, Pipe} from '@angular/core';
 import {S4eConfig} from '../initializer/config.service';
 import moment from 'moment';
 import {DatePipe} from '@angular/common';
@@ -7,7 +7,7 @@ import {DatePipe} from '@angular/common';
   name: 'S4EDate'
 })
 export class S4EDatePipe extends DatePipe {
-  constructor(locale: string, private config: S4eConfig) {
+  constructor(@Inject(LOCALE_ID) locale: string, private config: S4eConfig) {
     super(locale);
   }
 

@@ -44,6 +44,8 @@ export class MapViewComponent implements OnInit {
   public mapState$: Observable<MapState>;
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
+  public overlaysLoading$: Observable<boolean>;
+  public activeOverlays$: Observable<UIOverlay[]>;
   public userLoggedIn$: Observable<boolean>;
   public placeSearchResults$: Observable<SearchResult[]>;
   public placeSearchLoading$: Observable<boolean>;
@@ -78,6 +80,8 @@ export class MapViewComponent implements OnInit {
     this.products$ = this.productQuery.selectAll();
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
+    this.activeOverlays$ = this.overlayQuery.selectActiveUIOverlays();
+    this.overlaysLoading$ = this.overlayQuery.selectLoading();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();
     this.mapState$ = this.mapQuery.select();
     this.activeProductType$ = this.productTypeQuery.selectActive() as Observable<ProductType>;
@@ -101,7 +105,7 @@ export class MapViewComponent implements OnInit {
   }
 
   selectOverlay(overlayId: string) {
-
+      this.overlayService.setActive(overlayId);
   }
 
   logout() {
