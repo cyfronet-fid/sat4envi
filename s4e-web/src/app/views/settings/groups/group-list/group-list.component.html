@@ -1,0 +1,41 @@
+<h1 i18n>Zarządzaj Grupami</h1>
+
+<ng-container *ngIf="(error$ | async) == null; else errorView">
+  <a class="button button--default" routerLink="../groups/add" queryParamsHandling="preserve">Dodaj nową Grupę</a>
+
+  <select (change)="setInstitution($event.target.value)">
+    <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
+    <ng-template #institutions>
+      <option *ngFor="let institution of (institutions$ | async)" [value]="institution.slug">{{institution.name}}</option>
+    </ng-template>
+  </select>
+
+  <div i18n>W tym miejscu masz możliwość edytowania, dodawania i usuwania grup do których możesz przypisać osoby z dostępem do zasobów ustalonych dla Urzędu Gminy Chrzanów.</div>
+
+  <table>
+    <ng-container *ngIf="!((loading$ | async) || (institutionsLoading$ | async)); else tableLoading">
+      <thead>
+      <tr>
+        <th i18n>Nazwa</th>
+        <th i18n>Akcje</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let group of (groups$ | async)">
+        <td>{{group.name}}</td>
+        <td></td>
+      </tr>
+      </tbody>
+    </ng-container>
+    <ng-template #tableLoading>
+      <tbody>
+      <tr>
+        <td colspan="5" style="text-align: center" i18n>Ładowanie...</td>
+      </tr>
+      </tbody>
+    </ng-template>
+  </table>
+</ng-container>
+<ng-template #errorView>
+  <p i18n>Nie posiadasz uprawnień do instytucji</p>
+</ng-template>

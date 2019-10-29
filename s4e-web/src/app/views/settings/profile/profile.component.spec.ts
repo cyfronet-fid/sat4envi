@@ -1,12 +1,12 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ShareModule} from '../../common/share.module';
+import {ShareModule} from '../../../common/share.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {SessionService} from '../../state/session/session.service';
+import {SessionService} from '../../../state/session/session.service';
 import {ProfileComponent} from './profile.component';
-import {SessionQuery} from '../../state/session/session.query';
-import {SessionStore} from '../../state/session/session.store';
-import {TestingConfigProvider} from '../../app.configuration.spec';
+import {SessionQuery} from '../../../state/session/session.query';
+import {SessionStore} from '../../../state/session/session.store';
+import {TestingConfigProvider} from '../../../app.configuration.spec';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;

@@ -100,6 +100,9 @@
     </ng-container>
     <ng-template #logoutLink>
       <li>
+        <button class="button button--primary button--large" routerLink="/settings" i18n>Ustawienia</button>
+      </li>
+      <li>
         <a href="javascript:undefined" (click)="logout.emit()" i18n>Wyloguj</a>
       </li>
     </ng-template>

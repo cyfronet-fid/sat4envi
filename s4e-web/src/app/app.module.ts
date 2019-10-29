@@ -3,7 +3,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {ShareModule} from './common/share.module';
 import {MapModule} from './views/map-view/map.module';
-import {ProfileModule} from './views/profile/profile.module';
+import {ProfileModule} from './views/settings/profile/profile.module';
 import {RootComponent} from './components/root/root.component';
 import {ContentTypeInterceptor} from './utils/content-type-interceptor/content-type.interceptor';
 import {AuthInterceptor} from './utils/auth-interceptor/auth.interceptor';
@@ -25,6 +25,7 @@ import {ResetPasswordModule} from './views/reset-password/reset-password.module'
 import {ActivateModule} from './views/activate/activate.module';
 import {InjectorModule} from './common/injector.module';
 import {S4eConfig} from './utils/initializer/config.service';
+import {SettingsModule} from './views/settings/settings.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -48,7 +49,8 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     CommonStateModule.forRoot(),
     MapModule,
     ProfileModule,
-    InjectorModule
+    InjectorModule,
+    SettingsModule
   ],
   providers: [
     S4eConfig,

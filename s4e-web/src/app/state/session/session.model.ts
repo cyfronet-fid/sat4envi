@@ -1,17 +1,20 @@
-import { ID } from '@datorama/akita';
-import {JsonObject, JsonProperty} from 'json2typescript';
-
 export interface LoginFormState {
   login: string;
   password: string;
   rememberMe: boolean;
 }
 
+export interface Role {
+  role: string,
+  institution: number|null,
+  group: number|null,
+}
+
 export interface Session {
   initialized: boolean;
   token: string|null;
   email: string|null;
-  roles: string[];
+  roles: Role[];
 }
 
 export interface LoginRequestResponse {
