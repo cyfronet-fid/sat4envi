@@ -51,11 +51,36 @@
               "vendorChunk": false,
               "buildOptimizer": true
             },
+            "production.private": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.private.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
             "hmr": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.hmr.ts"
+                }
+              ]
+            },
+            "hmr.private": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hmr.private.ts"
                 }
               ]
             },
@@ -77,9 +102,16 @@
             "production": {
               "browserTarget": "s4e-angular:build:production"
             },
+            "production.private": {
+              "browserTarget": "s4e-angular:build:production.private"
+            },
             "hmr": {
               "hmr": true,
               "browserTarget": "s4e-angular:build:hmr"
+            },
+            "hmr.private": {
+              "hmr": true,
+              "browserTarget": "s4e-angular:build:hmr.private"
             },
             "en": {
               "browserTarget": "s4e-angular:build:en"

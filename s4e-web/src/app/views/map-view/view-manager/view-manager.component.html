@@ -78,11 +78,18 @@
 
 <section class="section login">
   <ul>
+    <ng-container *ngIf="!userLoggedIn; else logoutLink">
     <li>
       <button class="button button--primary button--large" routerLink="/login" i18n>Zaloguj</button>
     </li>
     <li>
       <a routerLink="/register" i18n>Zarejestruj</a>
     </li>
+    </ng-container>
+    <ng-template #logoutLink>
+      <li>
+        <a href="javascript:undefined" (click)="logout.emit()" i18n>Wyloguj</a>
+      </li>
+    </ng-template>
   </ul>
 </section>

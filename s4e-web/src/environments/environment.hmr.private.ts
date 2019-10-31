@@ -5,5 +5,5 @@
 export const environment = {
   production: false,
   hmr: true,
-  inviteOnly: false
+  inviteOnly: true
 };
