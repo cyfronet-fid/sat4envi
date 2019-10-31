@@ -1,9 +1,11 @@
 <s4e-view-manager class="section sidebar"
                   [overlays]="overlays$ | async"
+                  [userLoggedIn]="userLoggedIn$ | async"
                   [loading]="viewManagerLoading$ | async"
                   [overlaysLoading]="false"
                   [products]="productsTypeList$ | async"
                   [productTypeLoading]="productTypeLoading$ | async"
+                  (logout)="logout()"
                   (selectOverlay)="selectOverlay($event)"
                   (selectProductType)="selectProductType($event)">
 </s4e-view-manager>

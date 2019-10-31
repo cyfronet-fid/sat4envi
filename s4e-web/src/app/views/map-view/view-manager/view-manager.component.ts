@@ -10,7 +10,7 @@ import {IUILayer} from '../state/common.model';
 })
 export class ViewManagerComponent {
   @Input() loading = true;
-
+  @Input() userLoggedIn: boolean = false;
   @Input() products: IUILayer[] = [];
   @Input() productTypeLoading: boolean = true;
   @Output() selectProductType = new EventEmitter<number>();
@@ -18,6 +18,7 @@ export class ViewManagerComponent {
   @Input() overlays: IUILayer[] = [];
   @Input() overlaysLoading: boolean = true;
   @Output() selectOverlay = new EventEmitter<string>();
+  @Output() logout = new EventEmitter<void>();
 
   constructor() {}
 }

@@ -7,12 +7,14 @@ import {RegisterComponent} from './views/register/register.component';
 import {IsLoggedIn, IsNotLoggedIn} from './utils/auth-guard/auth-guard.service';
 import {ActivateComponent} from './views/activate/activate.component';
 import {activateMatcher} from './utils';
+import {environment} from '../environments/environment';
 
 export const appRoutes: Routes = [
 
   {
     path: '',
     component: MapViewComponent,
+    canActivate: environment.inviteOnly ? [IsLoggedIn] : []
   }, {
     path: 'login',
     component: LoginComponent,
@@ -24,7 +26,7 @@ export const appRoutes: Routes = [
   }, {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [IsNotLoggedIn]
+    canActivate: [IsLoggedIn]
   }, {
     path: 'reset-password',
     component: ResetPasswordComponent,

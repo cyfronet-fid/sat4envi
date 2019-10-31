@@ -18,6 +18,8 @@ import {map} from 'rxjs/operators';
 import {OverlayService} from './state/overlay/overlay.service';
 import {IUILayer} from './state/common.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
+import {SessionQuery} from '../../state/session/session.query';
+import {SessionService} from '../../state/session/session.service';
 
 @Component({
   selector: 's4e-map-view',
@@ -38,6 +40,7 @@ export class MapViewComponent implements OnInit {
   public productsAreLoading$: Observable<boolean>;
   public viewManagerLoading$: Observable<boolean>;
   public productTypeLoading$: Observable<boolean>;
+  public userLoggedIn$: Observable<boolean>;
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -49,6 +52,8 @@ export class MapViewComponent implements OnInit {
               private productTypeQuery: ProductTypeQuery,
               private recentViewQuery: RecentViewQuery,
               private productQuery: ProductQuery,
+              private sessionQuery: SessionQuery,
+              private sessionService: SessionService,
               private CONFIG: S4eConfig) {
   }
 
@@ -66,6 +71,7 @@ export class MapViewComponent implements OnInit {
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();
+    this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
 
     this.productTypeService.get();
     this.overlayService.get();
@@ -89,5 +95,9 @@ export class MapViewComponent implements OnInit {
 
   selectOverlay(overlayId: string) {
 
+  }
+
+  logout() {
+    this.sessionService.logout();
   }
 }

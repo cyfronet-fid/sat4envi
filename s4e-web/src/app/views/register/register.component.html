@@ -26,7 +26,7 @@
       <!--suppress AngularInvalidExpressionResultType -->
       <form (ngSubmit)="register()" [formGroup]="form">
         <h2 class="content__header" i18n>Rejestracja</h2>
-        <div class="alert alert-danger" *ngIf="form.errors?.length">
+        <div class="alert alert-danger" *ngIf="form.errors">
           <ul s4e-form-error [control]="form"></ul>
         </div>
 
