@@ -31,7 +31,11 @@
 <!--</ng-container>-->
 
 <section class="section search">
-  <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder />
+  <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder #searchPlacesInput
+         [formControl]="searchFc"/>
+  <button class="reset_search_button" (click)="resetSelectedLocation()">
+    <img src="../../../../assets/images/ico_eye_open.svg" alt="Clear selection" i18n-alt />
+  </button>
   <button class="search__button">
     <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt />
   </button>
@@ -56,6 +60,14 @@
                     [items]="overlays"
                     (itemSelected)="selectOverlay.emit($event)">
 </s4e-product-picker>
+
+<s4e-search-results *ngIf="searchResultsOpen"
+                    [searchResults]="searchResults"
+                    [loading]="searchResultsLoading"
+                    (placeSelected)="resultsClicked($event)"
+                    class="searchResults"
+>
+</s4e-search-results>
 
 <!--<section class="box layers">-->
   <!--<header class="box__header">-->

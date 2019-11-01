@@ -1,0 +1,25 @@
+.searchResult__item {
+  height: 20px;
+  margin: 2px;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.searchResult__item:hover {
+  background-color:lightgrey;
+  cursor: pointer;
+}
+
+.searchResult {
+  padding: 10px;
+}
+
+.type, .voivodeship{
+  margin-left: 5px;
+  color: #666666;
+  font-size: 1em;
+}
+
+ul {
+  display: block;
+}

@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {ErrorKeysPipe} from './error-keys/error-keys.pipe';
 
 @NgModule({
@@ -12,4 +12,5 @@ import {ErrorKeysPipe} from './error-keys/error-keys.pipe';
     ErrorKeysPipe
   ]
 })
-export class UtilsModule { }
+export class UtilsModule {
+}

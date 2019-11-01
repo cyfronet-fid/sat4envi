@@ -22,6 +22,8 @@ import { LegendComponent } from './legend/legend.component';
 import {LegendStore} from './state/legend/legend.store';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
+import { SearchResultsComponent } from './search-results/search-results.component';
+import {AkitaGuidService} from './state/search-results/guid.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import {LegendService} from './state/legend/legend.service';
     TimelineComponent,
     MapComponent,
     LegendComponent,
+    SearchResultsComponent
   ],
   exports: [
     MapViewComponent,
@@ -54,7 +57,8 @@ import {LegendService} from './state/legend/legend.service';
     OverlayStore,
     LegendStore,
     LegendQuery,
-    LegendService
+    LegendService,
+    AkitaGuidService
   ],
 })
 export class MapModule {
@@ -75,7 +79,8 @@ export class MapModule {
         OverlayService,
         OverlayStore,
         LegendQuery,
-        LegendService
+        LegendService,
+        AkitaGuidService
       ]
     };
   }
