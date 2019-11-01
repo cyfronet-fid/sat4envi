@@ -7,7 +7,13 @@
                   [productTypeLoading]="productTypeLoading$ | async"
                   (logout)="logout()"
                   (selectOverlay)="selectOverlay($event)"
-                  (selectProductType)="selectProductType($event)">
+                  (selectProductType)="selectProductType($event)"
+                  (searchForPlaces)="serachForPlaces($event)"
+                  [searchResults]="placeSearchResults$ | async"
+                  [searchResultsLoading]="placeSearchLoading$ | async"
+                  [searchResultsOpen]="placeSearchResultsOpen$ | async"
+                  (searchResultClicked)="navigateToPlace($event)"
+>
 </s4e-view-manager>
 <s4e-legend *ngIf="legend$ | async"
             [isOpen]="(legendState$ | async).isOpen"
@@ -23,4 +29,9 @@
 </s4e-timeline>
 
 <s4e-map class="section map"
-  [overlays]="overlays$ | async" [activeProduct]="activeProduct$ | async"></s4e-map>
+         [selectedLocation]="selectedLocation$"
+         [overlays]="overlays$ | async"
+         [activeProduct]="activeProduct$ | async"
+>
+
+</s4e-map>

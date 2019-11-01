@@ -1,0 +1,22 @@
+<div class="searchResult">
+
+  <div [hidden]="!loading">
+    <fa-icon [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <span i18n>Ładowanie wyników</span>
+  </div>
+
+  <div [hidden]="loading">
+    <div *ngIf="searchResults.length == 0">
+      <span i18n>Brak wyników</span>
+    </div>
+    <ul>
+      <li class="searchResult__item"
+          *ngFor="let place of searchResults"
+          (click)="placeSelected.emit(place)">
+        <span class="name">{{place.name}}</span>
+        <span class="type">{{place.type}}</span>
+        <span class="voivodeship">{{place.voivodeship}}</span>
+      </li>
+    </ul>
+  </div>
+</div>

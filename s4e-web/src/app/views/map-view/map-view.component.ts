@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
@@ -10,15 +10,19 @@ import {ProductQuery} from './state/product/product.query';
 import {Product} from './state/product/product.model';
 import {ProductService} from './state/product/product.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
+
 import {OverlayService} from './state/overlay/overlay.service';
 import {IUILayer} from './state/common.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
-import {SessionQuery} from '../../state/session/session.query';
-import {SessionService} from '../../state/session/session.service';
 import {MapState} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
+import {SearchResult} from './state/search-results/search-result.model';
+import {SearchResultsQuery} from './state/search-results/search-results.query';
+import {SearchResultsService} from './state/search-results/search-results.service';
+import {SessionService} from '../../state/session/session.service';
+import {SessionQuery} from '../../state/session/session.query';
 
 @Component({
   selector: 's4e-map-view',
@@ -32,7 +36,7 @@ export class MapViewComponent implements OnInit {
 
   public loading$: Observable<boolean>;
   public activeProduct$: Observable<Product>;
-  public activeProductType$: Observable<ProductType|null>;
+  public activeProductType$: Observable<ProductType | null>;
   public products$: Observable<Product[]>;
   public productsAreLoading$: Observable<boolean>;
   public viewManagerLoading$: Observable<boolean>;
@@ -41,6 +45,10 @@ export class MapViewComponent implements OnInit {
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
   public userLoggedIn$: Observable<boolean>;
+  public placeSearchResults$: Observable<SearchResult[]>;
+  public placeSearchLoading$: Observable<boolean>;
+  public placeSearchResultsOpen$: Observable<boolean>;
+  public selectedLocation$: Subject<SearchResult> = new Subject<SearchResult>();
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -54,6 +62,8 @@ export class MapViewComponent implements OnInit {
               private sessionService: SessionService,
               private legendQuery: LegendQuery,
               private legendService: LegendService,
+              private searchResultsService: SearchResultsService,
+              private searchResultsQuery: SearchResultsQuery,
               private CONFIG: S4eConfig) {
   }
 
@@ -67,12 +77,13 @@ export class MapViewComponent implements OnInit {
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();
-    this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
     this.mapState$ = this.mapQuery.select();
     this.activeProductType$ = this.productTypeQuery.selectActive() as Observable<ProductType>;
     this.legend$ = this.legendQuery.selectLegend();
     this.legendState$ = this.legendQuery.select();
-
+    this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
+    this.placeSearchResults$ = this.searchResultsQuery.selectAll();
+    this.placeSearchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
     this.productTypeService.get();
     this.overlayService.get();
   }
@@ -97,4 +108,13 @@ export class MapViewComponent implements OnInit {
   toggleLegend() {
     this.legendService.toggleLegend();
   }
+
+  serachForPlaces(place: string) {
+    this.searchResultsService.get(place);
+  }
+
+  navigateToPlace(place: SearchResult) {
+    this.selectedLocation$.next(place);
+  }
+
 }

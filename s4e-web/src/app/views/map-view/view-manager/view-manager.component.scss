@@ -48,6 +48,17 @@
           margin-top: 1px;
         }
       }
+
+      .reset_search_button {
+        width: 30px;
+        margin-left: auto;
+
+        img {
+          float:right;
+          margin-top: 1px;
+        }
+      }
+
     }
 
     &.login {
@@ -68,4 +79,15 @@
       }
     }
   }
+}
+
+.searchResults {
+  position: absolute;
+  background: #ffffff;
+  opacity: 0.9;
+  border-radius: 5px;
+  left: 400px;
+  top: 15px;
+  z-index: 10;
+  width: max-content;
 }
