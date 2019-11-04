@@ -15,6 +15,6 @@ public class PlaceService {
     private final PlaceRepository placeRepository;
 
     public Page<Place> findPlace(String name, Pageable pageable) {
-        return placeRepository.findAllByNameIsStartingWith(name, pageable);
+        return placeRepository.findAllByNameIsStartingWithIgnoreCase(name, pageable);
     }
 }

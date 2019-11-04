@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import pl.cyfronet.s4e.bean.Place;
 
 public interface PlaceRepository extends CrudRepository<Place, Long> {
-    Page<Place> findAllByNameIsStartingWith(String name, Pageable pageable);
+    Page<Place> findAllByNameIsStartingWithIgnoreCase(String name, Pageable pageable);
 }
