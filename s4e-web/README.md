@@ -50,3 +50,7 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Running `ng build --prod` may fail due to a bug in either angular-cli or openlayers: https://github.com/openlayers/openlayers/issues/8357.
 Makeshift fix is to remove `sideEffects` property from `node_modules/ol/package.json` as described in the github issue. 
+
+When building with `mvn`, you can customize the `run-script` build execution's argument.
+By default, it runs the script `build`, but you can override it with an environment variable `NPM_BUILD_RUN_SCRIPT_ARG`,
+e.g., `NPM_BUILD_RUN_SCRIPT_ARG=build-private ../mvnw package`.
