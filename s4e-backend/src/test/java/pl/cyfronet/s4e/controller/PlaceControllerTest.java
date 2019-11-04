@@ -53,6 +53,13 @@ class PlaceControllerTest {
     }
 
     @Test
+    public void shouldReturnAllMatchesCaseInsensitive() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=naz"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content.length()", is(equalTo(4))));
+    }
+
+    @Test
     public void shouldPage() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2"))
                 .andExpect(status().isOk())
