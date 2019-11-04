@@ -13,6 +13,28 @@
   <artifactId>s4e-web</artifactId>
   <packaging>pom</packaging>
 
+  <properties>
+    <npm.build.run-script-arg>build</npm.build.run-script-arg>
+  </properties>
+
+  <profiles>
+    <!--
+     Override variable `npm.build.run-script-arg` with env-var.
+     I know of no more concise way to do it so that there is a default value to the var.
+    -->
+    <profile>
+      <id>npm-build-run-script-arg</id>
+      <activation>
+        <property>
+          <name>env.NPM_BUILD_RUN_SCRIPT_ARG</name>
+        </property>
+      </activation>
+      <properties>
+        <npm.build.run-script-arg>${env.NPM_BUILD_RUN_SCRIPT_ARG}</npm.build.run-script-arg>
+      </properties>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
@@ -65,7 +87,7 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>run-script build</arguments>
+              <arguments>run-script ${npm.build.run-script-arg}</arguments>
             </configuration>
           </execution>
           <execution>
