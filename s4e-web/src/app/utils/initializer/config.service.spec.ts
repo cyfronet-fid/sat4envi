@@ -25,7 +25,6 @@ describe('Configuration service', () => {
     configService.loadConfiguration().then(() => {
       expect(configService.geoserverUrl).toBe('localhost:8080/test/wms');
       expect(configService.geoserverWorkspace).toBe('testWorkspace');
-      expect(configService.backendDateFormat).toBe('yyyy-mm-dd');
       expect(configService.recaptchaSiteKey).toBe('key');
       done();
     });
@@ -35,7 +34,6 @@ describe('Configuration service', () => {
     req.flush({
       geoserverUrl: 'localhost:8080/test/wms',
       geoserverWorkspace: 'testWorkspace',
-      backendDateFormat: 'yyyy-mm-dd',
       recaptchaSiteKey: 'key'
     });
 
