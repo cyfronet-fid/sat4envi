@@ -1,4 +1,4 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SessionStore} from './session.store';
 import {finalize} from 'rxjs/operators';
@@ -22,8 +22,9 @@ export class SessionService {
 
     if (token != null) {
       this.sessionStore.update(store => ({...store, token, email}));
+    } else {
+      this.sessionStore.update(store => ({...store, initialized: true, token: null, email: null}));
     }
-    this.sessionStore.update(store => ({...store, initialized: true, token: null, email: null}));
   }
 
   setToken(token: string | null, email: string | null) {
