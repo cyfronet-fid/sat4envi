@@ -1,18 +1,21 @@
 import {deserializeJsonResponse, disableEnableForm} from './miscellaneous';
-import {FormControl, FormGroup} from '@angular/forms';
 import {JsonObject, JsonProperty} from 'json2typescript';
 import {DateConverter} from '../date-converter/date-converter';
 import {async, TestBed} from '@angular/core/testing';
 import {InjectorModule} from '../../common/injector.module';
-import {format} from 'date-fns';
 import {Injector} from '@angular/core';
 import {TestingConfigProvider} from '../../app.configuration.spec';
+import {FormControl, FormGroup} from '@ng-stack/forms';
+
+export interface FS {
+  login: string;
+}
 
 describe('disableEnableForm', () => {
-  let form: FormGroup;
+  let form: FormGroup<FS>;
 
   beforeEach(() => {
-    form = new FormGroup({
+    form = new FormGroup<FS>({
       login: new FormControl('')
     });
   });
@@ -55,7 +58,7 @@ describe('deserializeJsonResponse', function () {
 
     expect(deserializeJsonResponse({
       _login: 'abc',
-      _time: format(time, 'yyyy-MM-dd\'T\'HH:mm:ss')
+      _time: '2019-03-21T23:04:19Z'
     }, Data)).toEqual({
       login: 'abc',
       time: time

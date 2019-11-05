@@ -11,6 +11,7 @@ export class S4eConfig implements IConfiguration {
   geoserverUrl: string;
   geoserverWorkspace: string;
   recaptchaSiteKey: string;
+  momentDateFormat: string;
 
   projection: { toProjection: string, coordinates: [number, number] };
   apiPrefixV1: string;
@@ -21,11 +22,12 @@ export class S4eConfig implements IConfiguration {
   }
 
   init(config: IRemoteConfiguration) {
-    this.backendDateFormat = config.backendDateFormat;
     this.geoserverUrl = config.geoserverUrl;
     this.geoserverWorkspace = config.geoserverWorkspace;
     this.recaptchaSiteKey = config.recaptchaSiteKey;
 
+    this.backendDateFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+    this.momentDateFormat = 'YYYY-MM-DDTHH:mm:ss[Z]';
     this.projection = {toProjection: 'EPSG:3857', coordinates: [19, 52]};
     this.apiPrefixV1 = 'api/v1';
     this.userLocalStorageKey = 'user';

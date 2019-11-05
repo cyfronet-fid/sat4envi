@@ -26,12 +26,12 @@ describe('DateConverter', () => {
   });
 
   it('should serialize', () => {
-    expect(service.serialize(new Date(Date.UTC(2019, 2, 21, 22, 4, 19, 0))))
-      .toEqual('2019-03-21T23:04:19');
+    expect(service.serialize(new Date('2019-03-21T22:04:19Z')))
+      .toEqual('2019-03-21T22:04:19Z');
   });
 
   it('should deserialize', () => {
-    expect(service.deserialize('2019-03-21T23:04:19'))
-      .toEqual(new Date(Date.UTC(2019, 2, 21, 22, 4, 19, 0)));
+    expect(service.deserialize('2019-03-21T23:04:19Z'))
+      .toEqual(new Date(Date.UTC(2019, 2, 21, 23, 4, 19, 0)));
   });
 });
