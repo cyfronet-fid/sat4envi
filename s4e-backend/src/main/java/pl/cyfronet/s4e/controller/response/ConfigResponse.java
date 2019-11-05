@@ -8,6 +8,5 @@ import lombok.Value;
 public class ConfigResponse {
     String geoserverUrl;
     String geoserverWorkspace;
-    String backendDateFormat;
     String recaptchaSiteKey;
 }

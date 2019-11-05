@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.Constants;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -26,7 +25,6 @@ public class ConfigControllerTest {
     public void shouldReturnConfiguration() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1+"/config"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.backendDateFormat").value(Constants.JACKSON_DATE_FORMAT))
                 .andExpect(jsonPath("$.geoserverUrl").value(geoserverOutsideBaseUrl));
     }
 }
