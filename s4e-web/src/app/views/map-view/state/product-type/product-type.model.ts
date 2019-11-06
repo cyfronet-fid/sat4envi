@@ -6,4 +6,5 @@ export interface ProductType {
   imageUrl: string;
   description: string;
   productIds: number[] | undefined;
+  legend: Legend|null|undefined;
 }

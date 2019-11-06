@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductTypeStore} from './product-type.store';
 import {ProductType} from './product-type.model';
-import {finalize} from 'rxjs/operators';
+import {finalize, tap} from 'rxjs/operators';
 import {ProductService} from '../product/product.service';
 import {ProductTypeQuery} from './product-type.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {ProductStore} from '../product/product.store';
 import {LegendService} from '../legend/legend.service';
+import {Observable, of} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class ProductTypeService {
@@ -28,45 +29,32 @@ export class ProductTypeService {
     ).subscribe(data => this.productTypeStore.set(data));
   }
 
+  private getProducts(productType: ProductType) {
+    if (productType.productIds === undefined) {
+      this.productService.get(productType.id);
+    }
+  }
+
   setActive(productTypeId: number | null) {
-    this.legendService.set({
-      url: '/assets/images/legend.svg',
-      type: 'gradient',
-      leftDescription: {
-        0.1: '10%',
-        0.2: '20%',
-        0.3: '30%',
-        0.4: '40%',
-        0.5: '50%',
-        0.6: '60%',
-        0.7: '70%',
-        0.8: '80%',
-        0.9: '90%',
-        1.0: '100%'
-      },
-      rightDescription: {
-        0.1: 'A',
-        0.2: 'B',
-        0.3: 'C',
-        0.4: 'D',
-        0.5: 'E',
-        0.6: 'F',
-        0.7: 'G',
-        0.8: 'H',
-        0.9: 'I',
-        1.0: 'J'
-      },
-      metricBottom: '',
-      metricTop: ''
-    });
     if (productTypeId != null && this.productTypeQuery.getActiveId() !== productTypeId) {
-      if (this.productTypeQuery.getEntity(productTypeId).productIds === undefined) {
-        this.productService.get(productTypeId);
-      }
+      const productType = this.productTypeQuery.getEntity(productTypeId);
+      let precondition: Observable<any>|null = null;
+      this.getSingle$(productType)
+        .subscribe(() => this.getProducts(productType));
       this.productTypeStore.setActive(productTypeId);
     } else {
       this.productTypeStore.setActive(null);
       this.productStore.setActive(null);
+      this.legendService.set(null);
+    }
+  }
+
+  private getSingle$(productType: ProductType): Observable<any> {
+    if (productType.legend === undefined) {
+      return this.http.get<ProductType>(`${this.CONFIG.apiPrefixV1}/productTypes/${productType.id}`)
+        .pipe(tap(product => this.productTypeStore.upsert(productType.id, product)));
+    } else {
+      return of(null);
     }
   }
 }

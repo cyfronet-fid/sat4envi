@@ -15,5 +15,4 @@ export class LegendComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }
