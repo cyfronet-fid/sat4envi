@@ -27,7 +27,9 @@
       "/node_modules/",
       "/src/app/app.constants.spec.ts",
       "/src/app/app.configuration.spec.ts",
-      "/src/app/views/map-view/state/product/product.factory.spec.ts"
+      "/src/app/views/map-view/state/product/product.factory.spec.ts",
+      "/src/app/views/map-view/state/legend/legend.factory.spec.ts",
+      "/src/app/views/map-view/state/product-type/product-type.factory.spec.ts"
     ],
     "transform": {
       "(?!<rootDir>/node_modules/proj4)/.*\\.js$": "babel-jest"

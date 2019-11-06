@@ -1,10 +1,12 @@
+import {HashMap} from '@datorama/akita';
+
 export interface Legend {
   type: 'gradient';
   url: string;
-  leftDescription: { [key: number]: string };
-  rightDescription: { [key: number]: string };
-  metricTop: string;
-  metricBottom: string;
+  leftDescription: HashMap<string>;
+  rightDescription: HashMap<string>;
+  topMetric: HashMap<string>;
+  bottomMetric: HashMap<string>;
 }
 
 export interface LegendState {

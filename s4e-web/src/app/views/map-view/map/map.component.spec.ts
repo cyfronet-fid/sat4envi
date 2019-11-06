@@ -1,7 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {MapComponent} from './map.component';
-import {RecentViewQuery} from '../state/recent-view/recent-view.query';
 import {TestingConfigProvider} from '../../../app.configuration.spec';
 
 describe('MapComponent', () => {
@@ -12,7 +10,6 @@ describe('MapComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         TestingConfigProvider,
-        RecentViewQuery
       ],
       declarations: [MapComponent]
     })

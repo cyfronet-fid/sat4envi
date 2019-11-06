@@ -1,26 +1,13 @@
 import {JsonObject, JsonProperty} from 'json2typescript';
 import {DateConverter} from '../../../../utils/date-converter/date-converter';
+import {Legend} from '../legend/legend.model';
 
 export interface Product {
   id: number;
   productTypeId: number;
-  timestamp: Date;
+  timestamp: string;
   layerName: string;
-}
-
-@JsonObject
-export class ProductResponse implements Product {
-  @JsonProperty('id', Number)
-  id: number = undefined;
-
-  @JsonProperty('productTypeId', Number)
-  productTypeId: number = undefined;
-
-  @JsonProperty('timestamp', DateConverter)
-  timestamp: Date = undefined;
-
-  @JsonProperty('layerName', String)
-  layerName: string = undefined;
+  legend: Legend|null;
 }
 
 /**
