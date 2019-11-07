@@ -63,7 +63,7 @@ export class MapViewComponent implements OnInit {
     this.loading$ = this.mapQuery.selectLoading();
     this.productsTypeList$ = this.productTypeQuery.selectAllAsUILayer();
     this.activeProduct$ = this.productQuery.selectActive();
-    this.products$ = this.productTypeQuery.selectAllProducts();
+    this.products$ = this.productQuery.selectAll();
     this.productsAreLoading$ = this.productQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.productTypeLoading$ = this.productTypeQuery.selectLoading();

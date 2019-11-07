@@ -92,19 +92,22 @@ describe('ProductService', () => {
     });
 
     it('should set state in store', (done) => {
-      const productId = 1;
+      const productType = ProductTypeFactory.build();
+      const productTypeId = productType.id;
+      const productTypeStore: ProductTypeStore = TestBed.get(ProductTypeStore);
+      productTypeStore.add(productType);
 
-      productQuery.selectAll().pipe(take(2), toArray()).subscribe(data => {
-        expect(data).toEqual([[], [productR]]);
+      productQuery.selectAll().pipe(take(3), toArray()).subscribe(data => {
+        expect(data).toEqual([[], [], [productR]]);
         done();
       });
 
       const productR = ProductFactory.build();
 
-      productService.get(productId);
+      productService.get(productTypeId);
 
-      const r = http.expectOne(`api/v1/products/productTypeId/${productId}`);
-      r.flush(productR);
+      const r = http.expectOne(`api/v1/products/productTypeId/${productTypeId}`);
+      r.flush([productR]);
     });
   });
 });
