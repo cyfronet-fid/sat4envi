@@ -5,6 +5,5 @@ export interface ProductType {
   name: string;
   imageUrl: string;
   description: string;
-  productIds: number[] | undefined;
   legend: Legend|null|undefined;
 }

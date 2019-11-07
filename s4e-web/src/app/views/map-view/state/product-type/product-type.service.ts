@@ -29,19 +29,13 @@ export class ProductTypeService {
     ).subscribe(data => this.productTypeStore.set(data));
   }
 
-  private getProducts(productType: ProductType) {
-    if (productType.productIds === undefined) {
-      this.productService.get(productType.id);
-    }
-  }
-
   setActive(productTypeId: number | null) {
     if (productTypeId != null && this.productTypeQuery.getActiveId() !== productTypeId) {
       const productType = this.productTypeQuery.getEntity(productTypeId);
       let precondition: Observable<any>|null = null;
-      this.getSingle$(productType)
-        .subscribe(() => this.getProducts(productType));
       this.productTypeStore.setActive(productTypeId);
+      this.getSingle$(productType)
+        .subscribe(() => this.productService.get(productType.id));
     } else {
       this.productTypeStore.setActive(null);
       this.productStore.setActive(null);
@@ -52,7 +46,7 @@ export class ProductTypeService {
   private getSingle$(productType: ProductType): Observable<any> {
     if (productType.legend === undefined) {
       return this.http.get<ProductType>(`${this.CONFIG.apiPrefixV1}/productTypes/${productType.id}`)
-        .pipe(tap(product => this.productTypeStore.upsert(productType.id, product)));
+        .pipe(tap(pt => this.productTypeStore.upsert(productType.id, pt)));
     } else {
       return of(null);
     }
