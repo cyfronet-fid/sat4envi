@@ -67,6 +67,8 @@ public class AppUserController {
         validateRecaptcha(request);
 
         AppUser appUser = appUserService.save(AppUser.builder()
+                .name(registerRequest.getName())
+                .surname(registerRequest.getSurname())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 // for now it will be only possible to register as the lowest category

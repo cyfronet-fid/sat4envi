@@ -42,12 +42,16 @@ public class SeedUsers implements ApplicationRunner {
         List<AppUser> appUsers = Arrays.asList(new AppUser[]{
                 AppUser.builder()
                         .email("cat1user@mail.pl")
+                        .name("Name1")
+                        .surname("Surname1")
                         .password(passwordEncoder.encode("cat1user"))
                         .role(AppRole.CAT1)
                         .enabled(true)
                         .build(),
                 AppUser.builder()
                         .email("cat2user@mail.pl")
+                        .name("Name2")
+                        .surname("Surname2")
                         .password(passwordEncoder.encode("cat2user"))
                         .role(AppRole.CAT1)
                         .role(AppRole.CAT2)
@@ -55,6 +59,8 @@ public class SeedUsers implements ApplicationRunner {
                         .build(),
                 AppUser.builder()
                         .email("cat3user@mail.pl")
+                        .name("Name3")
+                        .surname("Surname3")
                         .password(passwordEncoder.encode("cat3user"))
                         .role(AppRole.CAT1)
                         .role(AppRole.CAT2)
@@ -63,6 +69,8 @@ public class SeedUsers implements ApplicationRunner {
                         .build(),
                 AppUser.builder()
                         .email("cat4user@mail.pl")
+                        .name("Name3")
+                        .surname("Surname4")
                         .password(passwordEncoder.encode("cat4user"))
                         .role(AppRole.CAT1)
                         .role(AppRole.CAT2)

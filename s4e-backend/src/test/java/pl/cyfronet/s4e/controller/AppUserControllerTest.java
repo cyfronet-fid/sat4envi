@@ -111,6 +111,8 @@ public class AppUserControllerTest {
     public void shouldCreateUser() throws Exception {
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("admin123")
                 .build();
         GreenMailUser mailUser = greenMail.setUser("some@email.pl", "");
@@ -151,6 +153,8 @@ public class AppUserControllerTest {
 
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("admin123")
                 .build();
 
@@ -204,9 +208,13 @@ public class AppUserControllerTest {
     public void shouldReturn200EvenIfEmailExists() throws Exception {
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("admin123")
                 .build();
         appUserRepository.save(AppUser.builder()
+                .name("Name")
+                .surname("Surname")
                 .email(registerRequest.getEmail())
                 .password("someHash")
                 .build());
@@ -228,6 +236,8 @@ public class AppUserControllerTest {
     public void shouldActivateUserBasedOnToken() throws Exception {
         AppUser appUser = appUserRepository.save(AppUser.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .enabled(false)
                 .build());
@@ -272,6 +282,8 @@ public class AppUserControllerTest {
     public void shouldntActivateUserBasedOnExpiredToken() throws Exception {
         AppUser appUser = appUserRepository.save(AppUser.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .enabled(false)
                 .build());
@@ -303,6 +315,8 @@ public class AppUserControllerTest {
 
         AppUser appUser = appUserRepository.save(AppUser.builder()
                 .email(EMAIL)
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .enabled(false)
                 .build());
@@ -357,6 +371,8 @@ public class AppUserControllerTest {
 
         AppUser appUser = appUserRepository.save(AppUser.builder()
                 .email(EMAIL)
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .enabled(false)
                 .build());

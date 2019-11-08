@@ -22,6 +22,13 @@ public class AppUser {
     @Column(unique = true)
     @EqualsAndHashCode.Include
     private String email;
+
+    @NotEmpty
+    private String name;
+
+    @NotEmpty
+    private String surname;
+
     /// password hash
     @NotEmpty
     private String password;

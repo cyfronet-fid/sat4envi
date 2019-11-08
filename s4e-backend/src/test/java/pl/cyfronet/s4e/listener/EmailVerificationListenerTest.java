@@ -34,6 +34,8 @@ class EmailVerificationListenerTest {
     public void onResendRegistrationTokenEventShouldDeleteExistingToken() {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .build();
         EmailVerification emailVerification = EmailVerification.builder()
                 .id(42L)
@@ -53,6 +55,8 @@ class EmailVerificationListenerTest {
     public void onResendRegistrationTokenEventShouldSendEmail() {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .build();
         EmailVerification emailVerification = EmailVerification.builder()
                 .id(42L)

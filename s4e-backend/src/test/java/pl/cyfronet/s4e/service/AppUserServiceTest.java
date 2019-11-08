@@ -32,6 +32,8 @@ class AppUserServiceTest {
         String email = "test@some.pl";
         appUserRepository.save(AppUser.builder()
                 .email(email)
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .build());
 
@@ -40,6 +42,8 @@ class AppUserServiceTest {
         assertThrows(
                 AppUserCreationException.class,
                 () -> appUserService.save(AppUser.builder()
+                        .name("Name")
+                        .surname("Surname")
                         .email(email)
                         .password("someHash")
                         .build())
