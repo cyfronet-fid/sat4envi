@@ -80,10 +80,83 @@ Several profiles can be specified in a comma separated list, e.g. `production,ru
 `run-seed-users`: Runs `SeedUsers`.
 
 `run-seed-products`: Runs `SeedProducts`.
-The operation of seeding products first seeds the DB, then synchronizes GeoServer to it.
-To disable either phase set `seed.products.seed-db=false` or `seed.products.sync-geoserver=false`, respectively.
+See the section Seeding for more info.
 
 `run-seed-places`: Runs `SeedPlaces`.
+
+
+#### Seeding
+
+The operation of seeding products seeds the DB and synchronizes GeoServer to it.
+To disable either phase set `seed.products.seed-db=false` or `seed.products.sync-geoserver=false`, respectively.
+
+If GeoServer is not seeded then the `Product::created` flag is set to true without extra checks.
+
+You can also disable GeoServer workspace reset by setting `seed.products.sync-geoserver.reset-workspace=true`.
+This may come handy if the GeoServer workspace has a lot of layers and operation of deleting it would trigger
+the `RestTemplate`'s timeout.
+
+There are currently two data sets which the backend is capable of seeding: `minio-data-v1` and `s4e-demo`.
+The default is `minio-data-v1`, but another one can be set with the property `seed.products.data-set`.
+
+`minio-data-v1` contains a single day of data for three product types.
+It uses local minio for S3 storage.
+
+`s4e-demo` is a data set which consists of a month of data of five product types.
+There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
+After setting the property `seed.products.data-set`, you must modify the GeoServer docker container volume to point to
+the `s3.properties` file with cyfronet's CEPH instance url and credentials.
+Moreover, you must set a proper bucket by setting `s3.geoserver.bucket=s4e-demo` so that layers provisioned to the
+GeoServer have correct bucket set.
+(The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
+the products seeding by setting the profile `skip-seed-products`.)
+
+#### Seeding with s4e-demo data
+
+The first thing is to obtain production CEPH credentials, they are for example [here](https://docs.cyfronet.pl/display/FID/Projekty).
+Once you have them, create a copy of the file `resources/geoserver/s3.properties` called `s3.properties.prod` in the
+same dir and set the `endpoint` (`url`), `user` (`access_key`) and `password` (`secret_key`) accordingly.
+
+Then, update the `docker-compose.yml`.
+The service `geoserver` should be wired up to the newly created `s3.properties.prod` file.
+```yaml
+  geoserver:
+    [...]
+    volumes:
+      - ./resources/geoserver/s3.properties.prod:/opt/geoserver/s3.properties
+    [...]
+```
+
+If you run with docker, package the application with `./mvnw package -DskipTests` first.
+
+Run required docker-compose services with `docker-compose up -d db minio geoserver`.
+
+Then, run the backend with properties:
+```
+spring.profiles.active=development
+seed.products.data-set=s4e-demo
+s3.geoserver.bucket=s4e-demo
+```
+If you run with docker, update the backend-development.env (or another env file you have wired up to `s4e-backend`
+service in `docker-compose.yml`) by appending:
+```
+SEED_PRODUCTS_DATASET=s4e-demo
+S3.GEOSERVER.BUCKET=s4e-demo
+```
+
+The backend will seed db and GeoServer, which will take around an hour.
+It is normal that there are some errors in the backend's logs as there are gaps in the available data.
+However, the beginning of the data is quite clean, so you should see progress info when the seeder starts.
+
+If you want to skip seeding db and GeoServer with products on subsequent runs add profile `skip-seed-products`,
+either by adding property:
+```
+spring.profiles.active=development,skip-seed-products
+```
+or by setting envvar:
+```
+SPRING_PROFILES_ACTIVE=development,skip-seed-products
+```
 
 
 #### Places CSV generation
@@ -185,6 +258,8 @@ In order do run docker-compose following steps must be done (**unless stated oth
    mc cp cyfronet-ceph/data-packs/minio-data-v1.tar.xz .
    tar -xJf minio-data-v1.tar.xz -C ./tmp
    ```
+   
+   This step may not be necessary, depending on the data set used.
    
 4. Create a bucket with static application content as well as shown [here](#backend-static).
 

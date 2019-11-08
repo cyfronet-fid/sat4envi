@@ -24,21 +24,6 @@ public class GeoServerSynchronizer {
 
     private final GeoServerService geoServerService;
 
-    public void resetWorkspace() {
-        geoServerService.resetWorkspace();
-    }
-
-    @Transactional
-    public void synchronizeProducts() {
-        log.info("Creating products");
-        for (val product: productRepository.findAll()) {
-            if (!product.isCreated()) {
-                geoServerService.addLayer(product);
-                product.setCreated(true);
-            }
-        }
-    }
-
     @Transactional
     public void synchronizeOverlays() {
         log.info("Creating styles");
