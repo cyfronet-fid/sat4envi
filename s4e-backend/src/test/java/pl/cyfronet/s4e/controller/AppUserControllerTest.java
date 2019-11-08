@@ -20,7 +20,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
@@ -47,6 +50,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -73,6 +77,9 @@ public class AppUserControllerTest {
     @Autowired
     private RecaptchaProperties recaptchaProperties;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private GreenMail greenMail;
 
     @Autowired
@@ -82,6 +89,14 @@ public class AppUserControllerTest {
     public void beforeEach() {
         emailVerificationRepository.deleteAll();
         appUserRepository.deleteAll();
+
+        appUserRepository.save(AppUser.builder()
+                .email("get@profile.com")
+                .name("Get")
+                .surname("Profile")
+                .password(passwordEncoder.encode("password"))
+                .enabled(true)
+                .build());
 
         greenMail = new GreenMailSupplier().get();
         greenMail.start();
@@ -420,6 +435,20 @@ public class AppUserControllerTest {
 
         // OnResendRegistrationTokenEvent shouldn't be fired.
         verifyNoMoreInteractions(testListener);
+    }
+
+
+    @Test
+    public void shouldReturnForbiddenCode403() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1+"/users/me"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithUserDetails("get@profile.com")
+    public void shouldReturnProfile() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1+"/users/me"))
+                .andExpect(status().isOk());
     }
 
     public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {
