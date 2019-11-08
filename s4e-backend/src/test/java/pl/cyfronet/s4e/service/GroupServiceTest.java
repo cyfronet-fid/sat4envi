@@ -77,6 +77,8 @@ public class GroupServiceTest {
 
         AppUser user = appUserService.save(AppUser.builder()
                 .email("mail@test.pl")
+                .name("Name")
+                .surname("Surname")
                 .password("someHash")
                 .build());
         group.addMember(user);

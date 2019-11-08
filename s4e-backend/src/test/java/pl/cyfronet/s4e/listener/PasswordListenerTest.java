@@ -33,6 +33,8 @@ public class PasswordListenerTest {
     public void onPasswordResetTokenEmailEventShouldSendEmail() {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
                 .build();
         PasswordReset passwordReset = PasswordReset.builder()
                 .id(42L)

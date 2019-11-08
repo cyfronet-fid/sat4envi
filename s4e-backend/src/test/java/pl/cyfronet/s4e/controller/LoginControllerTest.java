@@ -44,6 +44,8 @@ class LoginControllerTest {
     public void shouldReturnJWSToken() throws Exception {
         val appUser = appUserRepository.save(AppUser.builder()
                 .email("some@email.com")
+                .name("Name")
+                .surname("Surname")
                 .password(passwordEncoder.encode("password"))
                 .enabled(true)
                 .build());
@@ -65,6 +67,8 @@ class LoginControllerTest {
     public void shouldReturn403ForDisabledAccount() throws Exception {
         val appUser = appUserRepository.save(AppUser.builder()
                 .email("some@email.com")
+                .name("Name")
+                .surname("Surname")
                 .password(passwordEncoder.encode("password"))
                 .enabled(false)
                 .build());
@@ -84,6 +88,8 @@ class LoginControllerTest {
     public void shouldReturn401ForIncorrectCredentials() throws Exception {
         val appUser = appUserRepository.save(AppUser.builder()
                 .email("some@email.com")
+                .name("Name")
+                .surname("Surname")
                 .password(passwordEncoder.encode("password"))
                 .enabled(true)
                 .build());
