@@ -10,19 +10,20 @@ import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
+import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
-import pl.cyfronet.s4e.ex.AppUserCreationException;
-import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.ex.RecaptchaException;
-import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
+import pl.cyfronet.s4e.ex.*;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 
@@ -109,7 +110,7 @@ public class AppUserController {
             eventPublisher.publishEvent(new OnResendRegistrationTokenEvent(optionalToken.get().getAppUser(), LocaleContextHolder.getLocale()));
             return ResponseEntity.ok().build();
         } else {
-            throw new NotFoundException("Provided token '"+token+"' not found");
+            throw new NotFoundException("Provided token '" + token + "' not found");
         }
     }
 
@@ -122,10 +123,10 @@ public class AppUserController {
     @PostMapping("/confirm-email")
     public ResponseEntity<?> confirmEmail(@RequestParam @NotEmpty @Valid String token) throws NotFoundException, AppUserCreationException, RegistrationTokenExpiredException {
         val verificationToken = emailVerificationService.findByToken(token)
-                .orElseThrow(() -> new NotFoundException("Provided token '"+token+"' not found"));
+                .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
 
         if (verificationToken.getExpiryTimestamp().isBefore(LocalDateTime.now())) {
-            throw new RegistrationTokenExpiredException("Provided token '"+token+"' expired");
+            throw new RegistrationTokenExpiredException("Provided token '" + token + "' expired");
         }
 
         val appUser = verificationToken.getAppUser();
@@ -142,9 +143,22 @@ public class AppUserController {
             @ApiResponse(code = 200, message = "User was added")
     })
     @PostMapping("/institutions/{institution}/users")
-    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request ) {
+    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request) {
 
         return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("Get user profile")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User was retrieved"),
+            @ApiResponse(code = 403, message = "User not authorized")
+    })
+    @GetMapping("/users/me")
+    @PreAuthorize("isAuthenticated()")
+    public AppUserResponse getMe() {
+        AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUser appUser = appUserDetails.getAppUser();
+        return AppUserResponse.of(appUser);
     }
 
     private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {
