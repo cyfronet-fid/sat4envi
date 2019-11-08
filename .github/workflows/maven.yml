@@ -25,8 +25,8 @@ jobs:
       with:
         java-version: 11.0.2
     - name: Maven compile
-      run: ./mvnw compile -DskipTests
+      run: ./mvnw clean compile -DskipTests
     - name: Maven test
-      run: ./mvnw test
+      run: ./mvnw clean test
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/sat4envi_test
