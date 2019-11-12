@@ -69,7 +69,7 @@
   align-content: center;
 
   > * {
-    align-self: baseline;
+    align-self: center;
   }
 
   &:last-child {
@@ -102,7 +102,7 @@
 /* 3. Buttons */
 
 @mixin button {
-  border-radius: $border-radius-default;
+  border-radius: $border-radius-circle;
   background: $color-grey-secondary;
   padding: $space-small $space-xlarge;
   font-weight: 700;
@@ -119,6 +119,7 @@
   @include button;
   background: $color-primary;
   color: $color-white;
+  font-size: 0.875rem;
 }
 
 .button--secondary {

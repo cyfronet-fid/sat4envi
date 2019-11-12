@@ -21,14 +21,17 @@
     margin-bottom: $space-xlarge;
     overflow:hidden;
 
+
     &.search {
       background: #fff;
-      padding: $space-small;
       box-shadow: $shadow-primary;
+      display: flex;
+      flex-direction: row;
+      align-content: center;
+      padding: $space-default;
 
       .search__input {
-        width: 85%;
-        float:left;
+        width: 100%;
         font-size: 0.875rem;
 
         &::placeholder {
@@ -36,12 +39,9 @@
           color: $color-grey;
         }
       }
-
-
-
       .search__button {
-        float: right;
-        width: 10%;
+        width: 30px;
+        margin-left: auto;
       }
     }
 
@@ -49,6 +49,10 @@
       margin-top: auto;
       align-self: center;
       text-align: center;
+
+      a {
+        color: $color-grey;
+      }
 
       li {
         margin-bottom: $space-small;
