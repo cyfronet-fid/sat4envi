@@ -10,6 +10,7 @@ import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,6 +22,12 @@ public class ProductService {
 
     public List<Product> getProducts(Long productTypeId) {
         return productRepository.findByProductTypeId(productTypeId);
+    }
+
+    public List<Product> getProducts(Long productTypeId, LocalDateTime start, LocalDateTime end) {
+        return productRepository.findAllByProductTypeIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
+                productTypeId, start, end
+        );
     }
 
     public void saveProduct(Product product) {
