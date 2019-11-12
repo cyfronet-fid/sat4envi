@@ -1,16 +1,35 @@
+@import "../../../../scss/variables";
+
 :host {
   display: block;
   position: absolute;
   background-color: white;
+  right: 10px;
+  top: 80px;
+  z-index: 10;
+  width: 60px;
+  height: calc(100% - 170px);
 }
 
-img {
+
+
+
+.legend__chart {
   height: 100%;
-  width: 100%;
-  object-fit: cover;
+  display: flex;
+  flex-direction: row;
+
+  ul {
+    position: relative;
+    height: 100%;
+  }
+
+  ul:last-child {
+    color: $color-white;
+  }
 }
 
-.desc-container {
+.legend__description {
   width: 300px;
   height: 100%;
   right: 80px;
@@ -18,3 +37,15 @@ img {
   background-color: white;
   padding: 15px;
 }
+
+.legend__image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  position:absolute;
+}
+
+.chart__label {
+  position: absolute;
+}
+
