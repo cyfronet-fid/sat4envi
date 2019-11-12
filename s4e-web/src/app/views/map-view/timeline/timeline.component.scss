@@ -25,62 +25,15 @@
   align-content: center;
   justify-content: flex-start;
 
-
-
-  > * {
-    background: $color-primary;
-    padding: 5px 10px;
-    text-align: center;
-    position: relative;
-  }
-
-  li:first-child {
-    border-radius: $border-radius-default 0 0;
-    padding-right: 20px;
-
-    &:after {
-      content: "";
-      width: 7px;
-      height: 7px;
-      display: inline-block;
-      position: absolute;
-      top: 15px;
-      right: 5px;
-      border-top: 2px solid $color-white;
-      border-right: 2px solid $color-white;
-      transform: rotate(-135deg);
-      margin-left: 10px;
-      margin-top: -3px;
-    }
-  }
-
-  li:nth-child(2) {
-    background: $color-primary-darker;
-  }
-
-  li:last-child {
-    border-radius: 0 $border-radius-default 0 0;
-    padding-left: 20px;
-
-    &:before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      display: inline-block;
-      position: absolute;
-      top: 15px;
-      left: 5px;
-      border-top: 2px solid $color-white;
-      border-right: 2px solid $color-white;
-      transform: rotate(45deg);
-      margin-right: 10px;
-      margin-top: -3px;
-    }
-  }
 }
 
 .timeline__currentday {
   display:flex;
+  padding: $space-small;
+  background: $color-white;
+  color: $color-black;
+  font-size: 0.875rem;
+  font-weight: bold;
 
   > * {
     align-self: center;
@@ -88,9 +41,14 @@
   }
 }
 
-.timeline__changedate {
-  width: 12px;
+.timeline__calendar {
+  width: 14px;
   color: $color-white;
+  background: $color-primary;
+  padding: $space-small;
+  align-self: center;
+  border-left: 1px solid $color-primary-darker;
+  border-top-right-radius: $border-radius-default;
 }
 
 
@@ -98,8 +56,8 @@
   overflow: hidden;
   display:flex;
   flex-direction: row;
-  padding: 0;
-  background: $color-grey-secondary;
+  background: $color-white;
+  margin-top: 1px;
   border-radius: 0 $border-radius-default $border-radius-default;
 
   &:after {
@@ -110,17 +68,19 @@
 
 .timeline__item {
   font-size: 0.75rem;
-  padding: 12px 10px;
+  padding: $space-default $space-small;
   color: $color-grey;
   cursor: pointer;
+  border-bottom: 4px solid $color-grey-secondary;
+
 
   &:hover {
     background: $color-grey-primary;
   }
 
   &.active {
-    background: $color-grey;
-    color: #fff;
+    border-bottom: 4px solid $color-secondary;
+    font-weight: bold;
   }
 }
 

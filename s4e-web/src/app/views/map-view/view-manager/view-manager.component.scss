@@ -5,7 +5,7 @@
   -webkit-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
-  width: 380px;
+  width: 360px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -42,6 +42,11 @@
       .search__button {
         width: 30px;
         margin-left: auto;
+
+        img {
+          float:right;
+          margin-top: 1px;
+        }
       }
     }
 
@@ -52,6 +57,9 @@
 
       a {
         color: $color-grey;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 0.75rem;
       }
 
       li {
