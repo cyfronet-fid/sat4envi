@@ -4,13 +4,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.response.ProductResponse;
 import pl.cyfronet.s4e.service.ProductService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +28,18 @@ public class ProductController {
             @ApiResponse(code = 200, message = "Successfully retrieved list")
     })
     @GetMapping("/products/productTypeId/{productTypeId}")
-    public List<ProductResponse> getProducts(@PathVariable Long productTypeId) {
+    public List<ProductResponse> getProducts(
+            @PathVariable Long productTypeId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        if (date != null) {
+            LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
+            LocalDateTime end = start.plusDays(1);
+            return productService.getProducts(productTypeId, start, end).stream()
+                    .map(ProductResponse::of)
+                    .collect(Collectors.toList());
+        }
+
         return productService.getProducts(productTypeId).stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());

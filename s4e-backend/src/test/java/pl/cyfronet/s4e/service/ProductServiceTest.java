@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.service;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,6 +16,8 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -46,24 +49,37 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void shouldReturnAllProducts() {
+    public void shouldReturnFilteredProducts() {
         ProductType productType = ProductType.builder()
                 .name("testProductType")
                 .build();
         productTypeRepository.save(productType);
 
-        Product product = Product.builder()
-                .productType(productType)
-                .layerName("testLayerName")
-                .timestamp(LocalDateTime.now())
-                .s3Path("some/path")
-                .build();
+        val products = List.of(
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName1")
+                        .timestamp(LocalDateTime.of(2019, 10, 11, 0, 0))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName2")
+                        .timestamp(LocalDateTime.of(2019, 10, 11, 1, 0))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName3")
+                        .timestamp(LocalDateTime.of(2019, 10, 12, 0, 0))
+                        .s3Path("some/path")
+                        .build()
+        );
+        productRepository.saveAll(products);
 
-        assertThat(productRepository.count(), is(equalTo(0L)));
+        List<Product> returned = productService.getProducts(productType.getId(), products.get(0).getTimestamp(), products.get(2).getTimestamp());
 
-        productRepository.save(product);
-
-        assertThat(productRepository.count(), is(equalTo(1L)));
+        assertThat(returned.stream().map(Product::getId).collect(Collectors.toList()), contains(products.get(0).getId(),products.get(1).getId()));
     }
 
     @Test
