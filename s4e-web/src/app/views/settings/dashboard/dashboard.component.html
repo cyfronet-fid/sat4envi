@@ -1,36 +1,43 @@
-<p i18n>Tu jesteś: Dashboard</p>
+<main class="dashboard">
+  <header class="page__header">
+    <h1>Witamy w panelu administratora Sat4Envi</h1>
+    <p>Jesteś administratorem zasobów i dostępów Sat4Envi w Urzędzie Miasta Krakowa
+      Co możesz zrobić:</p>
+  </header>
 
-<div>
-  <p i18n>Witamy w panelu zarządzania instytucją.
-  Jesteś administratorem zasobów i dostępów Sat4Envi w Urzędzie Miasta Krakowa
-    Co możesz zrobić:</p>
-</div>
-
-<div>
-  <div>
-    <p i18n>
-      Zarządzaj ludźmi
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-    </p>
-
-    <button [routerLink]="['../people']">CTA</button>
-  </div>
-  <div>
-    Zarządzaj grupami
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-
-    <button [routerLink]="['../groups']">CTA</button>
-  </div>
-  <div>
-    Profil instytucji
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-
-    <button [routerLink]="['../institution']">CTA</button>
-  </div>
-  <div>
-    Twój profil
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum laoreet.
-
-    <button [routerLink]="['../profile']">CTA</button>
-  </div>
-</div>
+  <section class="panel">
+    <div class="panel__item">
+      <header class="panel__header">
+        Ludzie
+      </header>
+      <p i18n>
+        Panel służy do zarządzania osobami, które są pracownikami lub współpracownikami instytucji.
+      </p>
+      <footer class="panel__footer">
+        <button [routerLink]="['../people']" class="button button--secondary ">Zarządzaj ludźmi</button>
+      </footer>
+    </div>
+    <div class="panel__item">
+      <header class="panel__header">
+        Grupy
+      </header>
+      <p i18n>
+          Każda osoba w systemie należy do jakiejść grupy. W tym miejscu możesz zarządzać ich uprawnieniami.
+      </p>
+      <footer class="panel__footer">
+        <button [routerLink]="['../groups']" class="button button--secondary">Zarządzaj grupami</button>
+      </footer>
+    </div>
+    <div class="panel__item">
+      <header class="panel__header">
+        Profil instytucji
+      </header>
+      <p i18n>
+        To instytucja, której jesteś administratorem. Możesz edytować tam podstawowe informacje.
+      </p>
+      <footer class="panel__footer">
+        <button [routerLink]="['../institution']" class="button button--secondary">Zobacz profil</button>
+      </footer>
+    </div>
+  </section>
+</main>
