@@ -29,6 +29,7 @@ import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.SlugService;
 
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -55,7 +56,17 @@ public class GroupController {
             throws GroupCreationException, NotFoundException {
         val institution = institutionService.getInstitution(institutionSlug)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
-        Group group = Group.builder().name(request.getName()).slug(slugService.slugify(request.getName())).institution(institution).build();
+        Group group = Group.builder()
+                .name(request.getName())
+                .slug(slugService.slugify(request.getName()))
+                .institution(institution)
+                .build();
+        if (request.getMembersEmails() != null) {
+            group.setMembers(request.getMembersEmails().stream()
+                    .map(appUserService::findByEmail)
+                    .flatMap(Optional::stream)
+                    .collect(Collectors.toSet()));
+        }
         groupService.save(group);
         return ResponseEntity.ok().build();
     }
@@ -67,15 +78,15 @@ public class GroupController {
             @ApiResponse(code = 404, message = "Group or user not found")
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members")
-    public ResponseEntity<?> addMember(@RequestBody Long userId,
+    public ResponseEntity<?> addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
             throws NotFoundException, GroupUpdateException, BadRequestException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
         checkInstitution(institutionSlug, group);
-        val appUser = appUserService.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found for id '" + userId));
+        val appUser = appUserService.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
         group.addMember(appUser);
         groupService.update(group);
         eventPublisher.publishEvent(new OnAddToGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
@@ -91,13 +102,13 @@ public class GroupController {
     @PostMapping("/institutions/{institution}/groups/{group}/members/{userId}")
     public ResponseEntity<?> removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
-                                          @PathVariable Long userId)
+                                          @PathVariable String email)
             throws NotFoundException, GroupUpdateException, BadRequestException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
         checkInstitution(institutionSlug, group);
-        val appUser = appUserService.findById(userId)
-                .orElseThrow(() -> new NotFoundException("User not found for id '" + groupSlug));
+        val appUser = appUserService.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
         group.removeMember(appUser);
         groupService.update(group);
         eventPublisher.publishEvent(new OnRemoveFromGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
@@ -168,6 +179,13 @@ public class GroupController {
         checkInstitution(institutionSlug, group);
         group.setName(request.getName());
         group.setSlug(slugService.slugify(request.getName()));
+        if (request.getMembersEmails() != null) {
+            group.setMembers(
+                    request.getMembersEmails().stream()
+                            .map(appUserService::findByEmail)
+                            .flatMap(Optional::stream)
+                            .collect(Collectors.toSet()));
+        }
         groupService.update(group);
         return ResponseEntity.ok().build();
     }
