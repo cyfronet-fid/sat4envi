@@ -69,23 +69,16 @@
   color: $color-grey-tertiary;
 }
 
+p {
+  line-height: 1.25rem;
+}
+
 .dashboard {
   display: flex;
   align-content: center;
   flex-direction: column;
   height: 100%;
   justify-content: center;
-}
-
-.page__header {
-  margin-bottom: $space-xlarge;
-
-  h1 {
-    font-size: 2.5rem;
-    font-weight: 500;
-    margin-bottom: $space-default;
-    font-family: $font-secondary;
-  }
 }
 
 .panel {
@@ -100,7 +93,6 @@
     flex-direction: column;
 
     p {
-      line-height: 1.25rem;
       margin-bottom: $space-xlarge;
     }
   }
@@ -118,8 +110,67 @@
       font-size: 0.875rem;
     }
   }
+}
 
+.page__content {
+  background: $color-white;
+  padding: $space-xlarge;
+}
 
+.page__header {
+  margin-bottom: $space-xlarge;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 500;
+    margin-bottom: $space-default;
+    font-family: $font-secondary;
+  }
+}
+
+.page__form {
+
+  li {
+    margin-bottom: $space-xlarge;
+    font-size: 0.875rem;
+  }
+
+  .actions {
+    margin-bottom: 0;
+    margin-top: $space-large;
+    padding-top: $space-large;
+    border-top: 1px solid $color-grey-secondary;
+
+    & > * {
+      margin-right: $space-small;
+    }
+
+    a {
+      color: $color-grey;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+  }
+
+  label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: $space-small;
+  }
+
+  input[type=text],
+  input[type=email],
+  textarea {
+    background: $color-tertiary;
+    font-size: 0.875rem;
+    padding: $space-small;
+    border-radius: $border-radius-default;
+  }
 
 
 }
+
+
+
+

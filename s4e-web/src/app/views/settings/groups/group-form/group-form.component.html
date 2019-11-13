@@ -1,19 +1,31 @@
-<h1 i18n>Dodaj nową grupę</h1>
-<form [formGroup]="form" (ngSubmit)="submit()">
-  <label for="name" i18n>Nazwa Grupy</label>
-  <input id="name" formControlName="name">
-
-  <label for="description" i18n>Opis Grupy <span>(widoczny dla wszystkich osób w grupie)</span></label>
-  <input id="description" formControlName="description">
-
-  <p>Możliwości grupy</p>
-
-  <h2 i18n>Osoby należące do grupy</h2>
-  <s4e-check-box-list [items]="users$ | async" formControlName="users"></s4e-check-box-list>
-  <ng-template #groupsLoading>
-    Ładowanie...
-  </ng-template>
-
-  <button type="submit" i18n>Zapisz</button>
-  <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
-</form>
+<header class="page__header">
+  <h1 i18n>Dodaj nową grupę</h1>
+</header>
+<section class="page__content">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="page__form">
+    <ul>
+      <li>
+        <label for="name" i18n>Nazwa Grupy</label>
+        <input id="name" type=text  formControlName="name">
+      </li>
+      <li>
+        <label for="description" i18n>Opis Grupy <span>(widoczny dla wszystkich osób w grupie)</span></label>
+        <textarea id="description" formControlName="description"></textarea>
+      </li>
+      <li>
+        <label>Możliwości grupy</label>
+      </li>
+      <li>
+        <strong i18n>Osoby należące do grupy</strong>
+        <s4e-check-box-list [items]="users$ | async" formControlName="users"></s4e-check-box-list>
+        <ng-template #groupsLoading>
+          Ładowanie...
+        </ng-template>
+      </li>
+      <li class="actions">
+        <button type="submit" class="button button--primary" i18n>Zapisz</button>
+        <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
+      </li>
+    </ul>
+  </form>
+</section>
