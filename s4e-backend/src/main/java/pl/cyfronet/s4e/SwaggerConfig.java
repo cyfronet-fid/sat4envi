@@ -12,6 +12,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
+import java.time.LocalDate;
+
 @Configuration
 @EnableSwagger2WebMvc
 @Import(BeanValidatorPluginsConfiguration.class)
@@ -25,7 +27,8 @@ public class SwaggerConfig {
                     .build()
                 .groupName("v1")
                 .apiInfo(apiInfo())
-                .useDefaultResponseMessages(false);
+                .useDefaultResponseMessages(false)
+                .directModelSubstitute(LocalDate.class, String.class);
     }
 
     private ApiInfo apiInfo() {

@@ -12,6 +12,7 @@ import pl.cyfronet.s4e.service.ProductService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,5 +44,14 @@ public class ProductController {
         return productService.getProducts(productTypeId).stream()
                 .map(ProductResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "Return days on which ProductType is available")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully retrieved list")
+    })
+    @GetMapping("/products/productTypeId/{productTypeId}/available")
+    public List<LocalDate> getAvailabilityDates(@PathVariable Long productTypeId, @RequestParam YearMonth yearMonth) {
+        return productService.getAvailabilityDates(productTypeId, yearMonth);
     }
 }

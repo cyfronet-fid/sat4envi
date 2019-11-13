@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.ProductType;
@@ -10,8 +11,12 @@ import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +48,12 @@ public class ProductService {
 
     public ProductType getProductType(String key) throws NotFoundException {
         return productTypeRepository.findByNameContainingIgnoreCase(s3Util.getProductType(key)).orElseThrow(() -> new NotFoundException());
+    }
+
+    public List<LocalDate> getAvailabilityDates(Long productTypeId, YearMonth yearMonth) {
+        val start = LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), 1, 0, 0);
+        return productRepository.findDatesWithData(productTypeId, start, start.plusMonths(1)).stream()
+                .map(Date::toLocalDate)
+                .collect(Collectors.toList());
     }
 }
