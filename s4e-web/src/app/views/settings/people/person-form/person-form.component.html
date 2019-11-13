@@ -1,21 +1,35 @@
-<h1 i18n>Dodaj nową osobę</h1>
-<form [formGroup]="form">
-<label for="name" i18n>Imię</label>
-<input id="name" formControlName="name">
+<header class="page__header">
+  <h1 i18n>Dodaj nową osobę</h1>
+</header>
 
-<label for="surname" i18n>Nazwisko</label>
-<input id="surname" formControlName="surname">
+<section class="page__content">
 
-<label for="email" i18n>Email</label>
-<input id="email" formControlName="email">
-
-<h2 i18n>Grupy</h2>
-  <s4e-check-box-list [items]="groups$ | async" formControlName="groups"></s4e-check-box-list>
-  <ng-template #groupsLoading>
-    Ładowanie...
-  </ng-template>
-
-  <button type="submit" (click)="saveAndNext()" i18n>Zapisz i dodaj kolejną osobę</button>
-  <button type="submit" (click)="saveAndBack()" i18n>Zapisz i zamknij stronę</button>
-  <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
-</form>
+  <form [formGroup]="form" class="page__form">
+    <ul>
+      <li>
+        <label for="name" i18n>Imię</label>
+        <input id="name" type=text formControlName="name">
+      </li>
+      <li>
+        <label for="surname" i18n>Nazwisko</label>
+        <input id="surname" type=text formControlName="surname">
+      </li>
+      <li>
+        <label for="email" i18n>Email</label>
+        <input id="email" type="email" formControlName="email">
+      </li>
+      <li>
+        <strong i18n>Grupy</strong>
+        <s4e-check-box-list [items]="groups$ | async" formControlName="groups"></s4e-check-box-list>
+        <ng-template #groupsLoading>
+          Ładowanie...
+        </ng-template>
+      </li>
+      <li class="actions">
+        <button type="submit" (click)="saveAndNext()" class="button button--primary" i18n>Zapisz i dodaj kolejną osobę</button>
+        <button type="submit" (click)="saveAndBack()" class="button button--primary" i18n>Zapisz i zamknij stronę</button>
+        <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
+      </li>
+    </ul>
+  </form>
+</section>

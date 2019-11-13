@@ -1,7 +1,15 @@
-<h1>Profile</h1>
-<p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
-  Zaloguj się by zobaczyć swój profil
-</p>
-<ng-template #userDetails>
-  <p i18n>Email: {{(userEmail$ | async) //ex. email@domain.com}}</p>
-</ng-template>
+<header class="page__header">
+  <h1 i18n>Twój profil</h1>
+  <p i18n>
+    Twoje dane które podałeś podczas rejestracji.
+  </p>
+</header>
+
+<section class="page__content">
+  <p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
+    Zaloguj się by zobaczyć swój profil
+  </p>
+  <ng-template #userDetails>
+    <p i18n>Email: {{(userEmail$ | async) //ex. email@domain.com}}</p>
+  </ng-template>
+</section>

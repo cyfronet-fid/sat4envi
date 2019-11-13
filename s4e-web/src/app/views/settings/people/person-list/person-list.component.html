@@ -1,51 +1,56 @@
-<h1 i18n>Zarządzaj ludźmi</h1>
+<header class="page__header">
+  <h1 i18n>Zarządzaj ludźmi</h1>
+  <p i18n>
+    W tym miejscu masz możliwość edytowania, dodawania i usuwania osób,
+    które mają dostęp do zasobów ustalonych dla Urzędu Miasta Kraków
+  </p>
+</header>
+<section class="page__content">
+  <ng-container *ngIf="(error$ | async) == null; else errorView">
 
-<ng-container *ngIf="(error$ | async) == null; else errorView">
-<a class="button button--default" routerLink="../people/add" queryParamsHandling="preserve">Dodaj nową osobę</a>
+  <button class="button button--secondary button--large" routerLink="../people/add" queryParamsHandling="preserve">Dodaj nową osobę</button>
 
-<select (change)="setInstitution($event.target.value)">
-  <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
-  <ng-template #institutions>
-    <option *ngFor="let institution of (institutions$ | async)" [value]="institution.slug">{{institution.name}}</option>
-  </ng-template>
-</select>
+  <select (change)="setInstitution($event.target.value)">
+    <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
+    <ng-template #institutions>
+      <option *ngFor="let institution of (institutions$ | async)" [value]="institution.slug">{{institution.name}}</option>
+    </ng-template>
+  </select>
 
-<div i18n>
-  W tym miejscu masz możliwość edytowania, dodawania i usuwania osób,
-  które mają dostęp do zasobów ustalonych dla Urzędu Miasta Kraków</div>
 
-<table>
-  <ng-container *ngIf="!((loading$ | async) || (institutionsLoading$ | async)); else tableLoading">
-  <thead>
-    <tr>
-      <th i18n>Imię i nazwisko</th>
-      <th i18n>Email</th>
-      <th i18n>Grupa</th>
-<!--      <th i18n>Dodano</th>-->
-      <th i18n>Akcje</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let user of (users$ | async)">
-      <td i18n>{{user.name}} {{user.surname}}</td>
-      <td>{{user.email}}</td>
-      <td>
-        <span *ngFor="let role of user.roles">{{role}}</span>
-      </td>
-<!--      <td>{{user.createDate | S4EDate}}</td>-->
-      <td></td>
-    </tr>
-  </tbody>
-  </ng-container>
-  <ng-template #tableLoading>
-    <tbody>
+  <table>
+    <ng-container *ngIf="!((loading$ | async) || (institutionsLoading$ | async)); else tableLoading">
+    <thead>
       <tr>
-        <td colspan="5" style="text-align: center" i18n>Ładowanie...</td>
+        <th i18n>Imię i nazwisko</th>
+        <th i18n>Email</th>
+        <th i18n>Grupa</th>
+  <!--      <th i18n>Dodano</th>-->
+        <th i18n>Akcje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of (users$ | async)">
+        <td i18n>{{user.name}} {{user.surname}}</td>
+        <td>{{user.email}}</td>
+        <td>
+          <span *ngFor="let role of user.roles">{{role}}</span>
+        </td>
+  <!--      <td>{{user.createDate | S4EDate}}</td>-->
+        <td></td>
       </tr>
     </tbody>
+    </ng-container>
+    <ng-template #tableLoading>
+      <tbody>
+        <tr>
+          <td colspan="5" style="text-align: center" i18n>Ładowanie...</td>
+        </tr>
+      </tbody>
+    </ng-template>
+  </table>
+  </ng-container>
+  <ng-template #errorView>
+    <p i18n>Nie posiadasz uprawnień do instytucji</p>
   </ng-template>
-</table>
-</ng-container>
-<ng-template #errorView>
-  <p i18n>Nie posiadasz uprawnień do instytucji</p>
-</ng-template>
+</section>
