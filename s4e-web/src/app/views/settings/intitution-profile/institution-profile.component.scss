@@ -1,1 +1,29 @@
 @import "../../../../scss/panel";
+
+:host {
+  width: 70%;
+}
+
+.institution__box {
+  background: url("/../../../../assets/images/logo_um.png") no-repeat left;
+  padding-left: 150px;
+  background-size: 110px;
+  min-height: 120px;
+  position: relative;
+
+  h2 {
+    margin-bottom: 15px;
+  }
+
+  li {
+    margin-bottom: 7px;
+  }
+
+  .button {
+    position: absolute;
+    right: 20px;
+    top: 35px;
+  }
+}
+
+

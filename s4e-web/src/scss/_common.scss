@@ -80,12 +80,12 @@
 .list__name {
   font-size: 0.875rem;
   color: $color-grey;
+  text-align: left;
+  margin-right: 15px;
 }
 
 .list__icon {
-  overflow: hidden;
   margin: 0 $space-small 0 0;
-
 
   img {
     border-radius: 50%;
@@ -97,6 +97,15 @@
     display: inline-block;
   }
 }
+
+.layers {
+  .list__item {
+    .list__icon {
+      display: none;
+    }
+  }
+}
+
 
 
 /* 3. Buttons */

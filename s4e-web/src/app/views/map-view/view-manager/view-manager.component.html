@@ -44,18 +44,14 @@
 <s4e-product-picker class="section"
                     caption="Produkty"
                     i18n-caption
-                    help="Jak tworzone są zdjęcia?"
-                    i18n-help
                     [loading]="productTypeLoading"
                     [items]="productsTypes"
                     (itemSelected)="selectProductType.emit($event)">
 </s4e-product-picker>
 
-<s4e-product-picker class="section"
+<s4e-product-picker class="section layers"
                     caption="Warstwy"
                     i18n-caption
-                    help="Co to są nakładki?"
-                    i18n-help
                     [loading]="overlaysLoading"
                     [items]="overlays"
                     (itemSelected)="selectOverlay.emit($event)">
