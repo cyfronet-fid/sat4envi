@@ -13,14 +13,16 @@
   flex-direction: column;
   width: 360px;
   padding: 0 $space-default;
-  color: $color-white;
+  color: $color-black;
   height: 100%;
   background-size: 140px;
-  background: $color-primary-darker 40px 40px no-repeat;
-  background-image:  url("/../assets/images/logo_s4e_white.png");
+  background: $color-white 40px 40px no-repeat;
+  background-image:  url("/../assets/images/logo_s4e_color.png");
   position: absolute;
   z-index: 1;
   justify-content: center;
+  font-family: $font-secondary;
+  font-weight: bold;
 
   &__list {
     font-size: 1.25rem;
@@ -31,6 +33,20 @@
     li {
       margin: $space-xlarge 0;
       display: block;
+
+      &.active:after {
+        background: url("/../assets/images/ico_arrow_right.svg") right no-repeat;
+        background-size: 15px;
+        padding-right: $space-xlarge;
+        content: " ";
+        margin-left: $space-xlarge;
+      }
+
+      &:hover {
+        a {
+          color: $color-grey;
+        }
+      }
     }
 
     li:last-child {
@@ -40,7 +56,7 @@
   }
 
   a {
-    color: $color-white;
+    color: $color-black;
     font-weight: 500;
   }
 
@@ -53,12 +69,17 @@
 
     button.button {
       font-size: 0.875rem;
-      margin-bottom: $space-default
+      margin-bottom: $space-default;
+      border-radius: $border-radius-circle;
+
     }
 
     a {
       font-size: 0.75rem;
       text-transform: uppercase;
+      font-weight: bold;
+      font-family: $font-base;
+      color: $color-grey;
     }
   }
 }
@@ -66,7 +87,10 @@
 .content {
   padding: $space-xlarge;
   margin-left: 400px;
+  padding-top: 100px;
   color: $color-grey-tertiary;
+  width: 100%;
+  display: flex;
 }
 
 p {
@@ -79,6 +103,13 @@ p {
   flex-direction: column;
   height: 100%;
   justify-content: center;
+  margin-top: -100px;
+
+  .page__header {
+    margin-bottom: $space-xlarge * 3;
+    text-align: center;
+  }
+
 }
 
 .panel {
@@ -166,9 +197,57 @@ p {
     font-size: 0.875rem;
     padding: $space-small;
     border-radius: $border-radius-default;
+    width: 50%;
+  }
+
+  textarea {
+    width: 88%;
+    min-height: 250px;
   }
 
 
+}
+
+table {
+  margin: $space-xlarge 0;
+  float: none;
+  border-radius: $border-radius-default;
+  width: 99%;
+
+  th,
+  td {
+    text-align: left;
+    padding: $space-default $space-large;
+  }
+
+  th {
+    background: $color-tertiary;
+    color: $color-grey;
+  }
+
+  td {
+    border-bottom: 1px solid $color-grey-secondary;
+    span {
+      margin-right: $space-small;
+    }
+  }
+
+  tr:hover {
+    background: $color-hover;
+  }
+
+  i {
+    opacity: 0.5;
+    margin-right: $space-default;
+  }
+}
+
+.list__checkbox {
+  margin: $space-default 0;
+
+  li {
+    margin-bottom: $space-small;
+  }
 }
 
 

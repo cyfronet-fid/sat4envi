@@ -6,7 +6,7 @@
 </header>
 <section class="page__content">
   <ng-container *ngIf="(error$ | async) == null; else errorView">
-    <button class="button button--secondary button--large" routerLink="../groups/add" queryParamsHandling="preserve">Dodaj nową Grupę</button>
+
 
     <select (change)="setInstitution($event.target.value)">
       <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
@@ -27,7 +27,10 @@
         <tbody>
         <tr *ngFor="let group of (groups$ | async)">
           <td>{{group.name}}</td>
-          <td></td>
+          <td>
+            <i class="fas fa-trash"></i>
+            <i class="fas fa-edit"></i>
+          </td>
         </tr>
         </tbody>
       </ng-container>
@@ -39,6 +42,7 @@
         </tbody>
       </ng-template>
     </table>
+    <button class="button button--secondary button--large" routerLink="../groups/add" queryParamsHandling="preserve">Dodaj nową Grupę</button>
   </ng-container>
   <ng-template #errorView>
     <p i18n>Nie posiadasz uprawnień do instytucji</p>
