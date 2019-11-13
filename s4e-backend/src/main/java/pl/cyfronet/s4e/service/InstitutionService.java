@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
@@ -19,12 +21,19 @@ import java.util.Optional;
 @Slf4j
 public class InstitutionService {
 
+    private static final String DEFAULT = "default";
+    private static final String PREFIX = "__";
+    private static final String SUFFIX = "__";
     private final InstitutionRepository institutionRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
     public Institution save(Institution institution) throws InstitutionCreationException {
         try {
-            return institutionRepository.save(institution);
+            Institution result = institutionRepository.save(institution);
+            Group group = Group.builder().institution(result).name(PREFIX+DEFAULT+SUFFIX).slug(DEFAULT).build();
+            groupRepository.save(group);
+            return result;
         } catch (DataIntegrityViolationException e) {
             log.info("Cannot create Institution with name '" + institution.getName() + "'", e);
             throw new InstitutionCreationException("Cannot create Institution", e);
