@@ -30,6 +30,6 @@ describe('LegendComponent', () => {
   it('should show description if isOpen is true', () => {
     component.isOpen = true;
     fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('.desc-container'))).toBeTruthy()
+    expect(fixture.debugElement.query(By.css('.legend__description'))).toBeTruthy();
   });
 });
