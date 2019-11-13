@@ -145,5 +145,64 @@ public class ProductControllerTest {
                         equalTo(products.get(0).getId().intValue()),
                         equalTo(products.get(1).getId().intValue()))));
     }
+
+    @Test
+    public void shouldReturnAvailabilityDates() throws Exception {
+        val productType = productTypeRepository.save(ProductType.builder()
+                .name("108m")
+                .description("sth")
+                .build());
+
+        /*
+        We create data for the days marked with * and we will extract availability for October.
+           Sep | Oct     | Nov
+              *|**      *|*
+         */
+        val products = List.of(
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName0")
+                        .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName1")
+                        .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName2")
+                        .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName3")
+                        .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName4")
+                        .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
+                        .s3Path("some/path")
+                        .build(),
+                Product.builder()
+                        .productType(productType)
+                        .layerName("testLayerName5")
+                        .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
+                        .s3Path("some/path")
+                        .build()
+        );
+        productRepository.saveAll(products);
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/productTypeId/" + productType.getId() + "/available")
+                .param("yearMonth", "2019-10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(3))))
+                .andExpect(jsonPath("$", contains("2019-10-01","2019-10-02","2019-10-31")));
+    }
 }
 
