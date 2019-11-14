@@ -228,12 +228,33 @@ public class SeedProducts implements ApplicationRunner {
         sldStyleRepository.saveAll(sldStyles);
 
         log.info("Seeding PRGOverlays");
-        val prgOverlays = new ArrayList<PRGOverlay>();
-        prgOverlays.add(PRGOverlay.builder()
-                .name("wojewodztwa")
-                .featureType("wojew%C3%B3dztwa")
-                .sldStyle(sldStyles.get(0))
-                .build());
+        val prgOverlays = List.of(new PRGOverlay[] {
+                PRGOverlay.builder()
+                        .name("wojewodztwa")
+                        .featureType("wojew%C3%B3dztwa")
+                        .sldStyle(sldStyles.get(0))
+                        .build(),
+                PRGOverlay.builder()
+                        .name("powiaty")
+                        .featureType("powiaty")
+                        .sldStyle(sldStyles.get(0))
+                        .build(),
+                PRGOverlay.builder()
+                        .name("gminy")
+                        .featureType("gminy")
+                        .sldStyle(sldStyles.get(0))
+                        .build(),
+                PRGOverlay.builder()
+                        .name("jednostki_ewidencyjne")
+                        .featureType("jednostki_ewidencyjne")
+                        .sldStyle(sldStyles.get(0))
+                        .build(),
+                PRGOverlay.builder()
+                        .name("obreby_ewidencyjne")
+                        .featureType("obreby_ewidencyjne")
+                        .sldStyle(sldStyles.get(0))
+                        .build(),
+        });
         prgOverlayRepository.saveAll(prgOverlays);
     }
 
