@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.UserViaInstitutionCreationException;
 
 import java.util.Optional;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 @Slf4j
 public class AppUserService {
     private final AppUserRepository appUserRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional(rollbackFor = AppUserCreationException.class)
     public AppUser save(AppUser appUser) throws AppUserCreationException {
@@ -38,5 +41,22 @@ public class AppUserService {
 
     public Optional<AppUser> findById(Long id) {
         return appUserRepository.findById(id);
+    }
+
+    @Transactional
+    public void saveWithGroupUpdate(AppUser appUser) throws UserViaInstitutionCreationException {
+        try {
+            appUserRepository.save(appUser);
+            if (appUser.getGroups() != null) {
+                appUser.getGroups().forEach(group -> {
+                    group.addMember(appUser);
+                    groupRepository.save(group);
+                });
+            }
+        } catch (DataIntegrityViolationException e) {
+            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
+            throw new UserViaInstitutionCreationException(e);
+        }
+
     }
 }

@@ -70,6 +70,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
+    @ExceptionHandler(UserViaInstitutionCreationException.class)
+    public ResponseEntity<?> handleInstitutionCreationException(UserViaInstitutionCreationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
+    }
+
     @ExceptionHandler(InstitutionUpdateException.class)
     public ResponseEntity<?> handleInstitutionUpdateException(InstitutionUpdateException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));

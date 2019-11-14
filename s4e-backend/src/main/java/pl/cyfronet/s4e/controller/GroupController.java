@@ -99,7 +99,7 @@ public class GroupController {
             @ApiResponse(code = 400, message = "Member not removed"),
             @ApiResponse(code = 404, message = "Group or user not found")
     })
-    @PostMapping("/institutions/{institution}/groups/{group}/members/{userId}")
+    @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
     public ResponseEntity<?> removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)

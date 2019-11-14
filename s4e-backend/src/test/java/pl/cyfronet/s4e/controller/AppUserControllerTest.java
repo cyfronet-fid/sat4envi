@@ -23,22 +23,29 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
+import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
+import pl.cyfronet.s4e.service.GroupService;
+import pl.cyfronet.s4e.service.InstitutionService;
+import pl.cyfronet.s4e.service.SlugService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static java.util.Collections.emptyList;
@@ -49,8 +56,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -61,6 +67,9 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class AppUserControllerTest {
     @Autowired
     private AppUserRepository appUserRepository;
+
+    @Autowired
+    private InstitutionRepository institutionRepository;
 
     @Autowired
     private EmailVerificationRepository emailVerificationRepository;
@@ -80,6 +89,15 @@ public class AppUserControllerTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SlugService slugService;
+
+    @Autowired
+    private InstitutionService institutionService;
+
+    @Autowired
+    private GroupService groupService;
+
     private GreenMail greenMail;
 
     @Autowired
@@ -88,6 +106,7 @@ public class AppUserControllerTest {
     @BeforeEach
     public void beforeEach() {
         emailVerificationRepository.deleteAll();
+        institutionRepository.deleteAll();
         appUserRepository.deleteAll();
 
         appUserRepository.save(AppUser.builder()
@@ -449,6 +468,57 @@ public class AppUserControllerTest {
     public void shouldReturnProfile() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1+"/users/me"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldCreateUserAndAddToGroup() throws Exception {
+        String test_institution = "Test Institution";
+        String slugInstitution = slugService.slugify(test_institution);
+        institutionService.save(Institution.builder()
+                .name(test_institution)
+                .slug(slugInstitution)
+                .build());
+
+        Set<String> groups = new HashSet<>();
+        groups.add("default");
+        CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
+                .name("Name")
+                .surname("Surname")
+                .email("email@test.pl")
+                .groupSlugs(groups)
+                .build();
+
+        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/users", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution,"default"), hasSize(1));
+    }
+
+    @Test
+    public void shouldCreateUserWithoutAddingtoGroup() throws Exception {
+        String test_institution = "Test Institution";
+        String slugInstitution = slugService.slugify(test_institution);
+        institutionService.save(Institution.builder()
+                .name(test_institution)
+                .slug(slugInstitution)
+                .build());
+
+        CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
+                .name("Name")
+                .surname("Surname")
+                .email("email@test.pl")
+                .build();
+
+        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/users", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution,"default"), hasSize(0));
     }
 
     public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {

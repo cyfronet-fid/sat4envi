@@ -26,6 +26,8 @@ import pl.cyfronet.s4e.ex.*;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.EmailVerificationService;
+import pl.cyfronet.s4e.service.GroupService;
+import pl.cyfronet.s4e.service.InstitutionService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -33,6 +35,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
@@ -45,6 +49,8 @@ public class AppUserController {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
     private final RecaptchaValidator recaptchaValidator;
+    private final InstitutionService institutionService;
+    private final GroupService groupService;
 
     @ApiOperation("Register a new user")
     @ApiImplicitParams({
@@ -54,9 +60,9 @@ public class AppUserController {
             @ApiResponse(code = 200, message = "If user was registered. But also, when the username was taken and the registration didn't succeed"),
             @ApiResponse(code = 400, message = "The request was not valid or recaptcha failed", examples = @Example({
                     @ExampleProperty(mediaType = "application/json", value =
-                            "{\"email\":[\"musi być adresem e-mail\"]}\n"+
-                            "or\n"+
-                            "{\"recaptcha\":[\"invalid-input-response\"]}"
+                            "{\"email\":[\"musi być adresem e-mail\"]}\n" +
+                                    "or\n" +
+                                    "{\"recaptcha\":[\"invalid-input-response\"]}"
                     )
             }))
     })
@@ -103,7 +109,8 @@ public class AppUserController {
             @ApiResponse(code = 404, message = "The token was not found")
     })
     @PostMapping("/resend-registration-token-by-token")
-    public ResponseEntity<?> resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token) throws NotFoundException {
+    public ResponseEntity<?> resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token
+    ) throws NotFoundException {
         val optionalToken = emailVerificationService.findByToken(token);
 
         if (optionalToken.isPresent()) {
@@ -121,7 +128,8 @@ public class AppUserController {
             @ApiResponse(code = 404, message = "The token wasn't found")
     })
     @PostMapping("/confirm-email")
-    public ResponseEntity<?> confirmEmail(@RequestParam @NotEmpty @Valid String token) throws NotFoundException, AppUserCreationException, RegistrationTokenExpiredException {
+    public ResponseEntity<?> confirmEmail(@RequestParam @NotEmpty @Valid String token
+    ) throws NotFoundException, AppUserCreationException, RegistrationTokenExpiredException {
         val verificationToken = emailVerificationService.findByToken(token)
                 .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
 
@@ -143,8 +151,24 @@ public class AppUserController {
             @ApiResponse(code = 200, message = "User was added")
     })
     @PostMapping("/institutions/{institution}/users")
-    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request) {
-
+    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
+                                                  @PathVariable("institution") String institutionSlug) throws UserViaInstitutionCreationException {
+        AppUser appUser = AppUser.builder()
+                .name(request.getName())
+                .surname(request.getSurname())
+                .email(request.getEmail())
+                // TODO: FIXME
+                .password(passwordEncoder.encode("passTemporary"))
+                .enabled(false)
+                .build();
+        if (request.getGroupSlugs() != null) {
+            appUser.setGroups(request.getGroupSlugs().stream()
+                    .map(slugGroup -> groupService.getGroup(institutionSlug, slugGroup))
+                    .flatMap(Optional::stream)
+                    .collect(Collectors.toSet()));
+        }
+        appUserService.saveWithGroupUpdate(appUser);
+//        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
 
