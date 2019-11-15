@@ -1,10 +1,12 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,8 +33,9 @@ public class PlaceController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved page")
     })
+    @PageableAsQueryParam
     @GetMapping("/places")
-    public Page<PlaceResponse> find(@RequestParam String namePrefix, Pageable pageable) {
+    public Page<PlaceResponse> find(@RequestParam String namePrefix, @Parameter(hidden = true) Pageable pageable) {
         Page<Place> page = placeService.findPlace(namePrefix, pageable);
         return new PageImpl<>(
                 page.stream()
