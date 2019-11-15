@@ -159,54 +159,54 @@ public class SeedProducts implements ApplicationRunner {
         log.info("Seeding ProductTypes: s4e-demo");
         List<ProductType> productTypes = Arrays.asList(new ProductType[]{
                 ProductType.builder()
-                        .name("108m")
+                        .name("Zachmurzenie (108m)")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
                 ProductType.builder()
-                        .name("NatCol")
+                        .name("Detekcja chmur lodowych i wodnych (RGB NatCol)")
                         .description("Opis produktu NatCol.")
                         .build(),
                 ProductType.builder()
-                        .name("Polsafi")
+                        .name("Wyładowania atmosferyczne (Polsafi)")
                         .description("Opis produktu Polsafi.")
                         .build(),
                 ProductType.builder()
-                        .name("RGB24_micro")
+                        .name("Mikrofizyka chmur, mgły (RGB24 Micro)")
                         .description("Opis produktu RGB24_micro.")
                         .build(),
                 ProductType.builder()
-                        .name("Setvak")
+                        .name("Chmury konwekcyjne (Setvak)")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
         });
         productTypeRepository.saveAll(productTypes);
 
         val productParams = Map.of(
-                "108m", ProductParams.builder()
+                productTypes.get(0).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,10,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,11,1,0,0))
                         .layerNameFormat("108m_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
                         .build(),
-                "NatCol", ProductParams.builder()
+                productTypes.get(1).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,06,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,07,1,0,0))
                         .layerNameFormat("NatCol_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
                         .build(),
-                "Polsafi", ProductParams.builder()
+                productTypes.get(2).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,9,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,10,1,0,0))
                         .layerNameFormat("Polsafi_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
                         .build(),
-                "RGB24_micro", ProductParams.builder()
+                productTypes.get(3).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,8,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,9,1,0,0))
                         .layerNameFormat("RGB24micro_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
                         .build(),
-                "Setvak", ProductParams.builder()
+                productTypes.get(4).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,7,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,8,1,0,0))
                         .layerNameFormat("Setvak_{timestamp}")
