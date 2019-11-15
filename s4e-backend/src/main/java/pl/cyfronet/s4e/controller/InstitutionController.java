@@ -1,11 +1,13 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springdoc.core.converters.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -74,9 +76,10 @@ public class InstitutionController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get list")
     })
+    @PageableAsQueryParam
     @GetMapping("/institutions")
     @PreAuthorize("isAdmin()")
-    public Page<InstitutionResponse> getAll(Pageable pageable) {
+    public Page<InstitutionResponse> getAll(@Parameter(hidden = true) Pageable pageable) {
         Page<Institution> page = institutionService.getAll(pageable);
         return new PageImpl<>(
                 page.stream()

@@ -1,11 +1,13 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springdoc.core.converters.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -89,10 +91,11 @@ public class GroupController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get a list")
     })
+    @PageableAsQueryParam
     @GetMapping("/institutions/{institution}/groups")
     @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public Page<GroupResponse> getAllByInstitutionName(@PathVariable("institution") String institutionSlug,
-                                                       Pageable pageable) {
+                                                       @Parameter(hidden = true) Pageable pageable) {
         Page<Group> page = groupService.getAllByInstitution(institutionSlug, pageable);
         return new PageImpl<>(
                 page.stream()

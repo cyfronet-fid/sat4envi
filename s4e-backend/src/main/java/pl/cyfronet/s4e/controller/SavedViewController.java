@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -64,9 +65,10 @@ public class SavedViewController {
 
     @Operation(summary = "List SavedViews of authenticated user")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Operation successful"))
+    @PageableAsQueryParam
     @GetMapping("/saved-views")
     public Page<SavedViewResponse> list(
-            @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @Parameter(hidden = true) @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return savedViewService.listByAppUser(authentication.getName(), pageable);
