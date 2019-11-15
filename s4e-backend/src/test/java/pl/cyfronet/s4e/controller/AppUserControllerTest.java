@@ -21,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -471,6 +472,7 @@ public class AppUserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void shouldCreateUserAndAddToGroup() throws Exception {
         String test_institution = "Test Institution";
         String slugInstitution = slugService.slugify(test_institution);
@@ -498,6 +500,7 @@ public class AppUserControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void shouldCreateUserWithoutAddingtoGroup() throws Exception {
         String test_institution = "Test Institution";
         String slugInstitution = slugService.slugify(test_institution);

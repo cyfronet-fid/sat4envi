@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Institution;
@@ -27,9 +30,9 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
-@AutoConfigureMockMvc
 @BasicTest
 @Slf4j
 public class GroupControllerTest {
@@ -54,13 +57,28 @@ public class GroupControllerTest {
 
     private String slugInstitution = "";
 
+    public static final String PROFILE_EMAIL = "get@profile.com";
+
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
     private MockMvc mockMvc;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void beforeEach() {
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
+
+        appUserRepository.save(AppUser.builder()
+                .email(PROFILE_EMAIL)
+                .name("Get")
+                .surname("Profile")
+                .password(passwordEncoder.encode("password"))
+                .enabled(true)
+                .build());
 
         String test_institution = "Test Institution";
         slugInstitution = slugService.slugify(test_institution);
@@ -68,92 +86,84 @@ public class GroupControllerTest {
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());
+
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(sharedHttpSession())
+                .build();
     }
 
     @Test
+    @WithMockUser
     public void shouldCreateGroupWithoutMembers() throws Exception {
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/groups", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(groupRepository.findBySlugAndInstitution_Slug("creategrouptest",slugInstitution).isPresent(), is(true));
+        assertThat(groupRepository.findBySlugAndInstitution_Slug("creategrouptest", slugInstitution).isPresent(), is(true));
     }
 
     @Test
+    @WithMockUser
     public void shouldCreateGroupWithMembers() throws Exception {
-        String email = "some@email.pl";
-        appUserRepository.save(AppUser.builder()
-                .name("Name")
-                .surname("Surname")
-                .email(email)
-                .password("admin123")
-                .enabled(true)
-                .build());
         Set<String> members = new HashSet<>();
-        members.add(email);
+        members.add(PROFILE_EMAIL);
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
                 .membersEmails(members)
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/groups", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findBySlugAndInstitution_Slug(
-                "creategrouptest",slugInstitution).isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"creategrouptest"), hasSize(1));
+                "creategrouptest", slugInstitution).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(1));
     }
 
     @Test
+    @WithMockUser
     public void shouldUpdateGroupWithoutMembers() throws Exception {
-        String email = "some@email.pl";
-        appUserRepository.save(AppUser.builder()
-                .name("Name")
-                .surname("Surname")
-                .email(email)
-                .password("admin123")
-                .enabled(true)
-                .build());
         Set<String> members = new HashSet<>();
-        members.add(email);
+        members.add(PROFILE_EMAIL);
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
                 .membersEmails(members)
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/groups", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findBySlugAndInstitution_Slug(
-                "creategrouptest",slugInstitution).isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"creategrouptest"), hasSize(1));
+                "creategrouptest", slugInstitution).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(1));
 
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
                 .name("UpdateGroupTest")
                 .build();
 
-        mockMvc.perform(put(API_PREFIX_V1+"/institutions/{institution}/groups/{group}", slugInstitution,"creategrouptest")
+        mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/groups/{group}", slugInstitution, "creategrouptest")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupUpdateRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(groupRepository.findBySlugAndInstitution_Slug("updategrouptest",slugInstitution).isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"updategrouptest"), hasSize(1));
+        assertThat(groupRepository.findBySlugAndInstitution_Slug("updategrouptest", slugInstitution).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "updategrouptest"), hasSize(1));
     }
 
     @Test
+    @WithMockUser
     public void shouldUpdateGroupWithMembers() throws Exception {
         String email = "some@email.pl";
-        String email2 = "some2@email.pl";
         appUserRepository.save(AppUser.builder()
                 .name("Name")
                 .surname("Surname")
@@ -161,29 +171,22 @@ public class GroupControllerTest {
                 .password("admin123")
                 .enabled(true)
                 .build());
-        appUserRepository.save(AppUser.builder()
-                .name("Name2")
-                .surname("Surname2")
-                .email(email2)
-                .password("admin123")
-                .enabled(true)
-                .build());
         Set<String> members = new HashSet<>();
+        members.add(PROFILE_EMAIL);
         members.add(email);
-        members.add(email2);
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
                 .membersEmails(members)
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/groups", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findBySlugAndInstitution_Slug(
-                "creategrouptest",slugInstitution).isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"creategrouptest"), hasSize(2));
+                "creategrouptest", slugInstitution).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(2));
 
         members.remove(email);
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
@@ -191,12 +194,12 @@ public class GroupControllerTest {
                 .membersEmails(members)
                 .build();
 
-        mockMvc.perform(put(API_PREFIX_V1+"/institutions/{institution}/groups/{group}", slugInstitution,"creategrouptest")
+        mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/groups/{group}", slugInstitution, "creategrouptest")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(groupUpdateRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(groupRepository.findBySlugAndInstitution_Slug("updategrouptest",slugInstitution).isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"updategrouptest"), hasSize(1));
+        assertThat(groupRepository.findBySlugAndInstitution_Slug("updategrouptest", slugInstitution).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "updategrouptest"), hasSize(1));
     }
 }
