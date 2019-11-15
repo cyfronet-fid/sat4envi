@@ -11,10 +11,7 @@ import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
-import pl.cyfronet.s4e.ex.AppUserCreationException;
-import pl.cyfronet.s4e.ex.GroupCreationException;
-import pl.cyfronet.s4e.ex.GroupUpdateException;
-import pl.cyfronet.s4e.ex.InstitutionCreationException;
+import pl.cyfronet.s4e.ex.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -84,7 +81,7 @@ public class GroupServiceTest {
         group.addMember(user);
         groupService.update(group);
 
-        val groupDB =  groupService.getGroup("instytucja-12", "group-13");
+        val groupDB = groupService.getGroup("instytucja-12", "group-13");
         val institutionDB = institutionRepository.findBySlug("instytucja-12");
         val appUserDB = appUserService.findByEmail("mail@test.pl");
         Set<AppUser> members = groupService.getMembers("instytucja-12", "group-13");
@@ -96,7 +93,7 @@ public class GroupServiceTest {
 
         groupService.delete(groupDB.get());
         val appUserDB2 = appUserService.findByEmail("mail@test.pl");
-        val groupDB2 =  groupService.getGroup("instytucja-12", "group-13");
+        val groupDB2 = groupService.getGroup("instytucja-12", "group-13");
         Set<AppUser> members2 = groupService.getMembers("instytucja-12", "group-13");
 
         assertThat(groupDB2.isEmpty(), is(true));
@@ -104,6 +101,4 @@ public class GroupServiceTest {
         assertThat(appUserDB2.isEmpty(), is(false));
         assertThat(institutionDB.isPresent(), is(true));
     }
-
-
 }
