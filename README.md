@@ -141,7 +141,7 @@ If you run with docker, update the backend-development.env (or another env file 
 service in `docker-compose.yml`) by appending:
 ```
 SEED_PRODUCTS_DATASET=s4e-demo
-S3.GEOSERVER.BUCKET=s4e-demo
+S3_GEOSERVER_BUCKET=s4e-demo
 ```
 
 The backend will seed db and GeoServer, which will take around an hour.
