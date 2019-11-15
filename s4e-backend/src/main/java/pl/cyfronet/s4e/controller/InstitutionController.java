@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
@@ -38,6 +39,7 @@ public class InstitutionController {
             @ApiResponse(code = 400, message = "Institution not created")
     })
     @PostMapping("/institutions")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
         institutionService.save(Institution.builder().name(request.getName()).slug(slugService.slugify(request.getName())).build());
         return ResponseEntity.ok().build();
@@ -48,6 +50,7 @@ public class InstitutionController {
             @ApiResponse(code = 200, message = "Successfully retrieved list")
     })
     @GetMapping("/institutions")
+    @PreAuthorize("isAuthenticated()")
     public Page<InstitutionResponse> getAll(Pageable pageable) {
         Page<Institution> page = institutionService.getAll(pageable);
         return new PageImpl<>(
@@ -64,6 +67,7 @@ public class InstitutionController {
             @ApiResponse(code = 404, message = "Institution not found")
     })
     @GetMapping("/institutions/{institution}")
+    @PreAuthorize("isAuthenticated()")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
         val institution = institutionService.getInstitution(institutionSlug)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
@@ -77,6 +81,7 @@ public class InstitutionController {
             @ApiResponse(code = 404, message = "Institution not found")
     })
     @PutMapping("/institutions/{institution}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> update(@RequestBody UpdateInstitutionRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws NotFoundException, InstitutionUpdateException {
@@ -93,6 +98,7 @@ public class InstitutionController {
             @ApiResponse(code = 200, message = "If institution was deleted.")
     })
     @DeleteMapping("/institutions/{institution}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
         return ResponseEntity.ok().build();

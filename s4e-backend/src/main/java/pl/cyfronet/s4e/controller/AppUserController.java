@@ -151,6 +151,7 @@ public class AppUserController {
             @ApiResponse(code = 200, message = "User was added")
     })
     @PostMapping("/institutions/{institution}/users")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws UserViaInstitutionCreationException {
         AppUser appUser = AppUser.builder()
