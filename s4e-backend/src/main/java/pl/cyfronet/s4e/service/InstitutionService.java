@@ -21,9 +21,9 @@ import java.util.Optional;
 @Slf4j
 public class InstitutionService {
 
-    private static final String DEFAULT = "default";
-    private static final String PREFIX = "__";
-    private static final String SUFFIX = "__";
+    public static final String DEFAULT = "default";
+    public static final String PREFIX = "__";
+    public static final String SUFFIX = "__";
     private final InstitutionRepository institutionRepository;
     private final GroupRepository groupRepository;
 

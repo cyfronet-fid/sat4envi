@@ -29,6 +29,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -201,5 +202,19 @@ public class GroupControllerTest {
 
         assertThat(groupRepository.findBySlugAndInstitution_Slug("updategrouptest", slugInstitution).isPresent(), is(true));
         assertThat(groupService.getMembers(slugInstitution, "updategrouptest"), hasSize(1));
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldNotCreateGroupWithoutMembersIfNameInvalid() throws Exception {
+        CreateGroupRequest groupRequest = CreateGroupRequest.builder()
+                .name("__default__")
+                .build();
+
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(groupRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name[0]", containsString("nie może zawierać podkreśleń")));
     }
 }

@@ -20,10 +20,7 @@ import pl.cyfronet.s4e.controller.response.GroupResponse;
 import pl.cyfronet.s4e.controller.response.MembersResponse;
 import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
-import pl.cyfronet.s4e.ex.BadRequestException;
-import pl.cyfronet.s4e.ex.GroupCreationException;
-import pl.cyfronet.s4e.ex.GroupUpdateException;
-import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.*;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.InstitutionService;
@@ -178,7 +175,7 @@ public class GroupController {
     })
     @PutMapping("/institutions/{institution}/groups/{group}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> update(@RequestBody UpdateGroupRequest request,
+    public ResponseEntity<?> update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
             throws NotFoundException, GroupUpdateException, BadRequestException {
