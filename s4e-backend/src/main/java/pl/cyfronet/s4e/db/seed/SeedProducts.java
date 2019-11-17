@@ -158,25 +158,25 @@ public class SeedProducts implements ApplicationRunner {
     private void seedProductsS4EDemo() {
         log.info("Seeding ProductTypes: s4e-demo");
         List<ProductType> productTypes = Arrays.asList(new ProductType[]{
-                ProductType.builder()
+                ProductType.builder() // 108m
                         .name("Zachmurzenie (108m)")
-                        .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
+                        .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
                         .build(),
-                ProductType.builder()
-                        .name("Detekcja chmur lodowych i wodnych (RGB NatCol)")
-                        .description("Opis produktu NatCol.")
+                ProductType.builder() // NatCol
+                        .name("Detekcja chmur lodowych i śniegu")
+                        .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
                         .build(),
-                ProductType.builder()
-                        .name("Wyładowania atmosferyczne (Polsafi)")
-                        .description("Opis produktu Polsafi.")
+                ProductType.builder() // Polsafi
+                        .name("Burze")
+                        .description("Obraz satelitarny HRV z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
                         .build(),
-                ProductType.builder()
-                        .name("Mikrofizyka chmur, mgły (RGB24 Micro)")
-                        .description("Opis produktu RGB24_micro.")
+                ProductType.builder() // RGB24_micro
+                        .name("Mikrofizyka chmur")
+                        .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
                         .build(),
-                ProductType.builder()
-                        .name("Chmury konwekcyjne (Setvak)")
-                        .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
+                ProductType.builder() // Setvak_Eu
+                        .name("Chmury konwekcyjne")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
                         .build(),
         });
         productTypeRepository.saveAll(productTypes);
