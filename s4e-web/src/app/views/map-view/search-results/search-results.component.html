@@ -1,13 +1,13 @@
 <div class="searchResult">
 
   <div [hidden]="!loading">
-    <fa-icon [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
-    <span i18n>Ładowanie wyników</span>
+    <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+    <span class="search__loading" i18n>Wczytywanie wyników</span>
   </div>
 
-  <div [hidden]="loading">
+  <div [hidden]="loading" class="searchresult__container">
     <div *ngIf="searchResults.length == 0">
-      <span i18n>Brak wyników</span>
+      <span class="search__notfound"i18n>Niestety nie znamy takiej miejscowości</span>
     </div>
     <ul>
       <li class="searchResult__item"

@@ -54,6 +54,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
 
   resetSelectedLocation() {
     this.searchResultClicked.emit(null);
+    this.searchForPlaces.emit('');
+    this.searchFc.setValue('');
   }
 
   ngOnDestroy(): void {

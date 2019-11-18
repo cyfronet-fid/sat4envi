@@ -75,6 +75,10 @@
   &:last-child {
     margin-bottom: 0;
   }
+
+  &.active .list__name{
+    font-weight: bold;
+  }
 }
 
 .list__name {
@@ -95,6 +99,7 @@
 .list--inline {
   .list__item {
     display: inline-block;
+
   }
 }
 

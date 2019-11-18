@@ -1,3 +1,6 @@
+@import "../../../../scss/variables";
+
+
 .searchResult__item {
   height: 20px;
   margin: 2px;
@@ -5,21 +8,54 @@
   border-radius: 4px;
 }
 
-.searchResult__item:hover {
-  background-color:lightgrey;
-  cursor: pointer;
+.search__notfound,
+.search__loading {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: $space-default;
+  text-transform: uppercase;
+  color: $color-grey;
 }
+
 
 .searchResult {
   padding: 10px;
+  border-radius: $border-radius-default;
+
+  fa-icon {
+    margin-right: $space-xsmall;
+  }
+
+  ul {
+    li {
+      margin-bottom: $space-xsmall;
+      padding: $space-xsmall $space-xsmall 1px $space-xsmall;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      & .type,
+      & .voivodeship{
+        font-style: italic;
+        color: $color-grey;
+        opacity: 0.5;
+        margin-left: $space-xsmall;
+      }
+
+      & .name {
+        margin-right: $space-small;
+      }
+
+      &:hover {
+        border-radius: $border-radius-default;
+        background: $color-grey-primary;
+        cursor: pointer;
+        padding-left: $space-small;
+      }
+    }
+
+
+  }
 }
 
-.type, .voivodeship{
-  margin-left: 5px;
-  color: #666666;
-  font-size: 1em;
-}
-
-ul {
-  display: block;
-}
