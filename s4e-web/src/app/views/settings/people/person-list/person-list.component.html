@@ -7,7 +7,7 @@
 </header>
 <section class="page__content">
   <ng-container *ngIf="(error$ | async) == null; else errorView">
-    <select (change)="setInstitution($event.target.value)">
+    <select (change)="setInstitution($event.target.value)" *ngIf="(institutions$ | async).length > 1">
       <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
       <ng-template #institutions>
         <option *ngFor="let institution of (institutions$ | async)" [value]="institution.slug">{{institution.name}}</option>

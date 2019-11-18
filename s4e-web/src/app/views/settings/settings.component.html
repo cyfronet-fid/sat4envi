@@ -1,19 +1,19 @@
 <div class="container">
   <nav class="navigation">
     <ul class="navigation__list">
-      <li routerLinkActive="active"><a [routerLink]="['./dashboard']" translate>Dashboard</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./groups']" translate>Grupy</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./people']" translate>Ludzie</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./institution']" translate>Profil Instytucji</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./profile']" translate>Twój profil</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['./dashboard']" queryParamsHandling="merge" i18n>Dashboard</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['./groups']" queryParamsHandling="merge" i18n>Grupy</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['./people']" queryParamsHandling="merge" i18n>Ludzie</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['./institution']" queryParamsHandling="merge" i18n>Profil Instytucji</a></li>
+      <li routerLinkActive="active"><a [routerLink]="['./profile']" queryParamsHandling="merge" i18n>Twój profil</a></li>
     </ul>
     <section class="login">
       <ul>
         <li>
-          <button [routerLink]="['/']" translate class="button button--primary button--large">Wróć do mapy</button>
+          <button [routerLink]="['/']" i18n class="button button--primary button--large">Wróć do mapy</button>
         </li>
         <li>
-          <a href="javascript:undefined" (click)="logout.emit()" i18n>Wyloguj</a>
+          <a href="javascript:undefined" (click)="logout()" i18n>Wyloguj</a>
         </li>
       </ul>
     </section>

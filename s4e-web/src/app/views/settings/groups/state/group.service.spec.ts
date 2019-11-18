@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { GroupService } from './group.service';
 import { GroupStore } from './group.store';
+import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('GroupService', () => {
   let groupService: GroupService;
@@ -9,7 +10,7 @@ describe('GroupService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GroupService, GroupStore],
+      providers: [GroupService, GroupStore, TestingConfigProvider],
       imports: [ HttpClientTestingModule ]
     });
 

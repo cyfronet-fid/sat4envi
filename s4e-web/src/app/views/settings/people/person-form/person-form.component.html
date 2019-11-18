@@ -3,7 +3,6 @@
 </header>
 
 <section class="page__content">
-
   <form [formGroup]="form" class="page__form">
     <ul>
       <li>
@@ -20,14 +19,14 @@
       </li>
       <li>
         <strong i18n>Grupy</strong>
-        <s4e-check-box-list [items]="groups$ | async" formControlName="groups"></s4e-check-box-list>
+        <s4e-check-box-list [items]="groups$ | async" formControlName="groupSlugs"></s4e-check-box-list>
         <ng-template #groupsLoading>
           Ładowanie...
         </ng-template>
       </li>
       <li class="actions">
-        <button type="submit" (click)="saveAndNext()" class="button button--primary" i18n>Zapisz i dodaj kolejną osobę</button>
-        <button type="submit" (click)="saveAndBack()" class="button button--primary" i18n>Zapisz i zamknij stronę</button>
+        <button type="submit" (click)="saveAndNext()" [disabled]="loading$ | async" class="button button--primary" i18n>Zapisz i dodaj kolejną osobę</button>
+        <button type="submit" (click)="saveAndBack()" [disabled]="loading$ | async" class="button button--primary" i18n>Zapisz i zamknij stronę</button>
         <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
       </li>
     </ul>

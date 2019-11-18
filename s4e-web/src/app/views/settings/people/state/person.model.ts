@@ -1,4 +1,5 @@
 export const DEFAULT_GROUP_NAME = '__default__';
+export const DEFAULT_GROUP_SLUG = 'default';
 
 export interface Person {
   // this is ID
@@ -13,7 +14,7 @@ export interface PersonForm {
   name: string;
   surname: string;
   email: string;
-  groups: any; //{_: string[]}
+  groupSlugs: any;
 }
 
 /**

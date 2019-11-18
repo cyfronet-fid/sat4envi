@@ -46,7 +46,7 @@ export class InstitutionService {
   }
 
   setInstitution(route: ActivatedRoute, institutionSlug: string) {
-    this.store.setActive(institutionSlug);
+    this.setActive(institutionSlug);
     this.router.navigate(['.'], {relativeTo: route, queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}})
   }
 
@@ -64,7 +64,6 @@ export class InstitutionService {
         route.queryParamMap.pipe(map(params => params.get('institution')))
       ])),
       map(([institutions, selectedInstitution]) => {
-        console.log([institutions, selectedInstitution]);
         let error = null;
         if (selectedInstitution == null) {
           if(institutions.length == 0) {

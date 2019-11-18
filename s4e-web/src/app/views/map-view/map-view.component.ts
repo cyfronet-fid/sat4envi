@@ -88,6 +88,7 @@ export class MapViewComponent implements OnInit {
     this.placeSearchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
     this.productTypeService.get();
     this.overlayService.get();
+    this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
   }
 
   selectProductType(productTypeId: number | null) {

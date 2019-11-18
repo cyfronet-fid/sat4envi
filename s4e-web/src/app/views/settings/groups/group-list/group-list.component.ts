@@ -1,9 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Person} from '../../people/state/person.model';
 import {Institution} from '../../state/institution.model';
-import {PersonQuery} from '../../people/state/person.query';
-import {PersonService} from '../../people/state/person.service';
 import {InstitutionQuery} from '../../state/institution.query';
 import {InstitutionService} from '../../state/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -31,10 +28,9 @@ export class GroupListComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.error$ = this.groupQuery.selectError();
     this.loading$ = this.groupQuery.selectLoading();
-    this.groups$ = this.groupQuery.selectAll();
+    this.groups$ = this.groupQuery.selectAllWithoutDefault();
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
-
 
     this.institutionService.connectIntitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
       instSlug => this.groupService.fetchAll(instSlug)

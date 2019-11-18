@@ -44,10 +44,12 @@ export class PersonFormComponent extends GenericFormComponent<PersonQuery, Perso
       email: new FormControl<string>(),
       name: new FormControl<string>(),
       surname: new FormControl<string>(),
-      groups: new FormControl<{_: string[]}>({value: {_: []}, disabled: false}),
+      groupSlugs: new FormControl<{_: string[]}>({value: {_: []}, disabled: false}),
     });
 
-    this.groups$ = this.groupQuery.selectAll().pipe(map(groups => groups.map(gr => ({value: gr.slug, caption: gr.name}))));
+
+
+    this.groups$ = this.groupQuery.selectAllWithoutDefault().pipe(map(groups => groups.map(gr => ({value: gr.slug, caption: gr.name}))));
     this.groupsLoading$ = this.groupQuery.selectLoading();
 
     this.institutionService.connectIntitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
@@ -61,10 +63,12 @@ export class PersonFormComponent extends GenericFormComponent<PersonQuery, Perso
   }
 
   saveAndNext() {
+    console.log(this.form.value);
     this.personService.create$(this.instSlug, this.form.value).subscribe(() => this.form.reset());
   }
 
   saveAndBack() {
+    console.log(this.form.value);
     this.personService.create$(this.instSlug, this.form.value).subscribe(() =>
       this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'})
     );
