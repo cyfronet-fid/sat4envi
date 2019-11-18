@@ -1,15 +1,21 @@
-<div *ngFor="let day of days; let $first = first; let $last = last">
+<div>
   <section class="timeline__manage">
     <div class="timeline__currentday">
-      <span>{{ day.label }}</span>
+      <span>{{currentDate}}</span>
     </div>
     <div class="timeline__calendar">
-      <img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate" />
+      <input style="visibility: hidden; width: 1px;" [owlDateTimeFilter]="filterInactiveDays" (dateTimeChange)="selectDate($event)"
+             [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
+      <span [owlDateTimeTrigger]="datepicker"><img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate"/></span>
+      <owl-date-time #datepicker
+                     [startAt]="currentDate"
+                     [pickerMode]="'popup'" [pickerType]="'calendar'" (monthSelected)="monthSelected($event)"></owl-date-time>
     </div>
   </section>
   <ul class="timeline__grid">
+    <li class="timeline__item" *ngIf="products.length == 0 && !loading">Brak produktów, wybierz inną datę</li>
     <li class="timeline__item"
-        *ngFor="let product of day.products"
+        *ngFor="let product of products"
         [ngClass]="{active: product.id === activeProduct?.id}"
         (click)="selectProduct.emit(product)">
       {{ product.timestamp | date : 'shortTime' }}

@@ -24,6 +24,8 @@ import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
 import { SearchResultsComponent } from './search-results/search-results.component';
 import {AkitaGuidService} from './state/search-results/guid.service';
+import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,10 @@ import {AkitaGuidService} from './state/search-results/guid.service';
   ],
   imports: [
     ShareModule,
-    BsDropdownModule
+    BsDropdownModule,
+    BrowserAnimationsModule,
+    OwlDateTimeModule,
+    OwlNativeDateTimeModule
   ],
   providers: [
     MapQuery,

@@ -72,6 +72,7 @@ describe('ProductService', () => {
   describe('get', () => {
     it('loading should be set', (done) => {
       const productId = 1;
+      const dateF = '2019-10-01';
       const stream = productQuery.selectLoading();
 
       stream.pipe(take(2), toArray()).subscribe(data => {
@@ -79,19 +80,21 @@ describe('ProductService', () => {
         done();
       });
 
-      productService.get(productId);
+      productService.get(productId, dateF);
 
-      const r = http.expectOne(`api/v1/products/productTypeId/${productId}`);
+      const r = http.expectOne(`api/v1/products/productTypeId/${productId}?date=${dateF}`);
       r.flush(null);
     });
 
     it('should call http endpoint', () => {
       const productId = 1;
-      productService.get(productId);
-      http.expectOne(`api/v1/products/productTypeId/${productId}`);
+      const dateF = '2019-10-01';
+      productService.get(productId, dateF);
+      http.expectOne(`api/v1/products/productTypeId/${productId}?date=${dateF}`);
     });
 
     it('should set state in store', (done) => {
+      const dateF = '2019-10-01';
       const productType = ProductTypeFactory.build();
       const productTypeId = productType.id;
       const productTypeStore: ProductTypeStore = TestBed.get(ProductTypeStore);
@@ -104,9 +107,9 @@ describe('ProductService', () => {
 
       const productR = ProductFactory.build();
 
-      productService.get(productTypeId);
+      productService.get(productTypeId, dateF);
 
-      const r = http.expectOne(`api/v1/products/productTypeId/${productTypeId}`);
+      const r = http.expectOne(`api/v1/products/productTypeId/${productTypeId}?date=${dateF}`);
       r.flush([productR]);
     });
   });

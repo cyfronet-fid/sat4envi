@@ -6,11 +6,12 @@ import {ProductQuery} from '../product/product.query';
 import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
 import {map} from 'rxjs/operators';
+import moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductTypeQuery extends QueryEntity<ProductTypeState, ProductType> {
+export class ProductTypeQuery extends QueryEntity<ProductTypeState, ProductType, Number> {
   constructor(protected store: ProductTypeStore, private productQuery: ProductQuery) {
     super(store);
   }
@@ -19,5 +20,9 @@ export class ProductTypeQuery extends QueryEntity<ProductTypeState, ProductType>
     return combineLatest(this.selectAll(), this.selectActiveId()).pipe(
       map(([productTypes, activeId]) => productTypes.map(pt => ({cid: pt.id, caption: pt.name, active: pt.id === activeId})))
     );
+  }
+
+  selectSelectedDate() {
+    return this.select(state => state.ui.selectedDate);
   }
 }

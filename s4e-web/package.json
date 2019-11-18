@@ -38,6 +38,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^7.2.4",
+    "@angular/cdk": "^7.2.4",
     "@angular/common": "^7.2.4",
     "@angular/compiler": "^7.2.4",
     "@angular/core": "^7.2.4",
@@ -59,6 +60,7 @@
     "date-fns": "^2.0.0-alpha.27",
     "json2typescript": "^1.2.0",
     "moment": "^2.24.0",
+    "ng-pick-datetime": "^7.0.0",
     "ng-recaptcha": "^5.0.0",
     "ngx-bootstrap": "^3.2.0",
     "ngx-take-until-destroy": "^5.4.0",

@@ -21,10 +21,10 @@ export class ProductService {
               private CONFIG: S4eConfig) {
   }
 
-  get(productTypeId: number) {
+  get(productTypeId: number, date: string) {
     this.productStore.setLoading(true);
     this.productStore.set([]);
-    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products/productTypeId/${productTypeId}`).pipe(
+    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products/productTypeId/${productTypeId}`, {params: {date}}).pipe(
       finalize(() => this.productStore.setLoading(false))
     ).subscribe((entities) => {
       this.productStore.set(entities);
@@ -38,9 +38,10 @@ export class ProductService {
     });
   }
 
-  setActive(productId: number) {
+  setActive(productId: number|null) {
     this.productStore.setActive(productId);
-    const productLegend = this.productQuery.getActive().legend;
+
+    const productLegend = productId == null ? null : this.productQuery.getActive().legend;
     if(productLegend != null) {
       this.legendService.set(productLegend)
     } else {
