@@ -22,7 +22,11 @@
             class="legend"></s4e-legend>
 
 <s4e-timeline class="section timeline"
+              *ngIf="(activeProductType$ | async) != null"
               [products]="products$ | async"
+              [currentDate]="currentTimelineDate$ | async"
+              (dateSelected)="setDate($event)"
+              (loadAvailableDates)="loadAvailableDates($event)"
               [loading]="productsAreLoading$ | async"
               [activeProduct]="activeProduct$ | async"
               (selectProduct)="selectProduct($event?.id)">

@@ -12,6 +12,7 @@ export class S4eConfig implements IConfiguration {
   geoserverWorkspace: string;
   recaptchaSiteKey: string;
   momentDateFormat: string;
+  momentDateFormatShort: string;
 
   projection: { toProjection: string, coordinates: [number, number] };
   apiPrefixV1: string;
@@ -28,6 +29,7 @@ export class S4eConfig implements IConfiguration {
 
     this.backendDateFormat = 'YYYY-MM-DDTHH:mm:ssZ';
     this.momentDateFormat = 'YYYY-MM-DDTHH:mm:ss[Z]';
+    this.momentDateFormatShort = 'YYYY-MM-DD';
     this.projection = {toProjection: 'EPSG:3857', coordinates: [19, 52]};
     this.apiPrefixV1 = 'api/v1';
     this.userLocalStorageKey = 'user';

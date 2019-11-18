@@ -49,6 +49,7 @@ export class MapViewComponent implements OnInit {
   public placeSearchLoading$: Observable<boolean>;
   public placeSearchResultsOpen$: Observable<boolean>;
   public selectedLocation$: Subject<SearchResult> = new Subject<SearchResult>();
+  public currentTimelineDate$: Observable<string>;
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -72,6 +73,7 @@ export class MapViewComponent implements OnInit {
     //   .pipe(map(values => values.reduce((prev, curr) => prev || curr)));
     this.loading$ = this.mapQuery.selectLoading();
     this.productsTypeList$ = this.productTypeQuery.selectAllAsUILayer();
+    this.currentTimelineDate$ = this.productTypeQuery.selectSelectedDate();
     this.activeProduct$ = this.productQuery.selectActive();
     this.products$ = this.productQuery.selectAll();
     this.productsAreLoading$ = this.productQuery.selectLoading();
@@ -117,4 +119,12 @@ export class MapViewComponent implements OnInit {
     this.selectedLocation$.next(place);
   }
 
+  setDate($event: string) {
+    this.productService.get(this.productTypeQuery.getActiveId(), $event);
+    this.productTypeService.setSelectedDate($event)
+  }
+
+  loadAvailableDates($event: string) {
+    this.productTypeService.fetchAvailableDays($event);
+  }
 }
