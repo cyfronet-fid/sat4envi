@@ -34,7 +34,7 @@
   <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder #searchPlacesInput
          [formControl]="searchFc"/>
   <button class="reset_search_button" (click)="resetSelectedLocation()">
-    <img src="../../../../assets/images/ico_eye_open.svg" alt="Clear selection" i18n-alt />
+    <fa-icon [icon]="['fas', 'times']"></fa-icon>
   </button>
   <button class="search__button">
     <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt />
