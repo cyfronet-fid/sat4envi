@@ -17,7 +17,7 @@
       </li>
       <li>
         <strong i18n>Osoby należące do grupy</strong>
-        <s4e-check-box-list [items]="users$ | async" formControlName="users"></s4e-check-box-list>
+        <s4e-check-box-list [items]="users$ | async" formControlName="membersEmails"></s4e-check-box-list>
         <ng-template #groupsLoading>
           Ładowanie...
         </ng-template>

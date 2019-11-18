@@ -34,7 +34,7 @@ export const settingsRoutes: Routes = [
         component: GroupListComponent,
       },
       {
-        path: 'groups/:groupId',
+        path: 'groups/:groupSlug',
         component: GroupFormComponent,
       },
       {

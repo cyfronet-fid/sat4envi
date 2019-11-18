@@ -38,7 +38,7 @@ export class CheckBoxListComponent<T> implements OnInit, OnDestroy, ControlValue
 
   ngOnInit() {
     this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: boolean[]) => {
-      this.propagateChange({_: values.filter(v => v).map((v, i) => this.items[i].value)});
+      this.propagateChange({_: values.map((v, i) => this.items[i].value).filter((v, i) => values[i])});
     });
   }
 
@@ -46,7 +46,10 @@ export class CheckBoxListComponent<T> implements OnInit, OnDestroy, ControlValue
 
   writeValue(obj: any): void {
     if (obj == null) {obj = {_: []};}
-    if(obj._ == null) { throw new Error('CheckBoxListComponent requires array as a value')}
+    if(obj._ == null || !Array.isArray(obj._)) {
+      console.log(obj);
+      throw new Error(`CheckBoxListComponent requires array as a value, value is: ${obj._}`)
+    }
     obj = obj._;
     this.items.forEach((item, i) => {
       this.form.at(i).setValue(obj.indexOf(item.value) != -1);

@@ -8,7 +8,7 @@
   <ng-container *ngIf="(error$ | async) == null; else errorView">
 
 
-    <select (change)="setInstitution($event.target.value)">
+    <select (change)="setInstitution($event.target.value)" *ngIf="(institutions$ | async).length > 1">
       <option *ngIf="institutionsLoading$ | async; else institutions" i18n>Wczytywanie instytucji...</option>
       <ng-template #institutions>
         <option *ngFor="let institution of (institutions$ | async)" [value]="institution.slug">{{institution.name}}</option>
@@ -21,7 +21,7 @@
         <thead>
         <tr>
           <th i18n>Nazwa</th>
-          <th i18n>Akcje</th>
+          <th style="width: 120px;" i18n>Akcje</th>
         </tr>
         </thead>
         <tbody>
@@ -29,7 +29,7 @@
           <td>{{group.name}}</td>
           <td>
             <i class="fas fa-trash"></i>
-            <i class="fas fa-edit"></i>
+            <a [routerLink]="[group.slug]" queryParamsHandling="preserve"><i class="fas fa-edit"></i></a>
           </td>
         </tr>
         </tbody>

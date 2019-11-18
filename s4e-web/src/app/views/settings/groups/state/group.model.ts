@@ -6,7 +6,7 @@ export interface Group {
 export interface GroupForm {
   name: string;
   description: string;
-  users: any // {_: string[]}
+  membersEmails: any // {_: string[]}
 }
 
 /**
