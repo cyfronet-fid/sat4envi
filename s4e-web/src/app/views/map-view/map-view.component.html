@@ -26,6 +26,7 @@
               [products]="products$ | async"
               [currentDate]="currentTimelineDate$ | async"
               (dateSelected)="setDate($event)"
+              [availableDates]="availableDates$ | async"
               (loadAvailableDates)="loadAvailableDates($event)"
               [loading]="productsAreLoading$ | async"
               [activeProduct]="activeProduct$ | async"

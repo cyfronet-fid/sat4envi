@@ -30,20 +30,22 @@ export class GenericFormComponent<Q extends Query<any>, FS extends object> imple
     this.loading$ = this.query.selectLoading();
     this.error$ = this.query.selectError();
 
-    devRestoreFormState(this.fm.query.getValue()[this.formKey], this.form);
-    this.fm.upsert(this.formKey, this.form);
-
-    // In order for dev error setting to work debounceTime(100) must be set
-    this.query.selectError().pipe(debounceTime(100), untilDestroyed(this))
-      .subscribe(errors => connectErrorsToForm(errors, this.form));
-
     if (environment.hmr) {
+      devRestoreFormState(this.fm.query.getValue()[this.formKey], this.form);
+      this.fm.upsert(this.formKey, this.form);
+
+      // In order for dev error setting to work debounceTime(100) must be set
+      this.query.selectError().pipe(debounceTime(100), untilDestroyed(this))
+        .subscribe(errors => connectErrorsToForm(errors, this.form));
+
       this.router.events.pipe(filter(event => event instanceof NavigationEnd))
         .subscribe(() => this.fm.remove(this.formKey));
     }
   }
 
   ngOnDestroy(): void {
-    this.fm.unsubscribe(this.formKey);
+    if (environment.hmr) {
+      this.fm.unsubscribe(this.formKey);
+    }
   }
 }

@@ -31,7 +31,7 @@ export class ProductTypeService {
   }
 
   setActive(productTypeId: number | null) {
-    this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: []}}));
+    this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
     if (productTypeId != null && this.query.getActiveId() !== productTypeId) {
       const productType = this.query.getEntity(productTypeId);
       let precondition: Observable<any>|null = null;
@@ -56,7 +56,7 @@ export class ProductTypeService {
     }
     this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
     this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/productTypeId/${this.query.getActiveId()}/available?yearMonth=${dateF}`)
-      .subscribe(data => this.store.update(state => ({...state, ui: {...state.ui, availableDays: data.reduce((acc, val) => {acc[val] = true; return acc;}, {})}})));
+      .subscribe(data => this.updateAvailableDays(data));
   }
 
   getAvailableDays() {
@@ -70,7 +70,7 @@ export class ProductTypeService {
     this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/productTypeId/${activeProductTypeId}/available?yearMonth=${dateF}`)
       .pipe(finalize(() => this.store.setLoading(false)))
       .subscribe(data => {
-        this.store.update(state => ({...state, ui: {...state.ui, availableDays: data.reduce((acc, val) => {acc[val] = true; return acc;}, {})}}));
+        this.updateAvailableDays(data);
         this.productService.get(activeProductTypeId, moment.utc({year: ui.selectedYear, month: ui.selectedMonth, day: ui.selectedDay}).format('YYYY-MM-DD'));
       });
   }
@@ -88,5 +88,12 @@ export class ProductTypeService {
     const date = moment.utc($event, 'YYYY-MM-DD');
 
     this.store.update(store => ({...store, ui: {...store.ui, selectedMonth: date.month(), selectedYear: date.year(), selectedDay: date.day(), selectedDate: $event}}));
+  }
+
+  updateAvailableDays(data: string[]) {
+    this.store.update(state => {
+      const days = [...data.filter(d => !state.ui.availableDays.includes(d)), ...state.ui.availableDays];
+      return {...state, ui: {...state.ui, availableDays: days}}
+    })
   }
 }

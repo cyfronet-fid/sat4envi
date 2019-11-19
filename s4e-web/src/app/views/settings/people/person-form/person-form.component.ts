@@ -39,15 +39,12 @@ export class PersonFormComponent extends GenericFormComponent<PersonQuery, Perso
   }
 
   ngOnInit() {
-
     this.form = new FormGroup<PersonForm>({
       email: new FormControl<string>(),
       name: new FormControl<string>(),
       surname: new FormControl<string>(),
       groupSlugs: new FormControl<{_: string[]}>({value: {_: []}, disabled: false}),
     });
-
-
 
     this.groups$ = this.groupQuery.selectAllWithoutDefault().pipe(map(groups => groups.map(gr => ({value: gr.slug, caption: gr.name}))));
     this.groupsLoading$ = this.groupQuery.selectLoading();

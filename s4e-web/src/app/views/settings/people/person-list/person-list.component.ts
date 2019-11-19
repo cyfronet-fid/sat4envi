@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {Person} from '../state/person.model';
 import {PersonQuery} from '../state/person.query';
 import {Institution} from '../../state/institution.model';
@@ -8,7 +8,6 @@ import {PersonService} from '../state/person.service';
 import {InstitutionService} from '../../state/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {filter, map} from 'rxjs/operators';
 
 @Component({
   selector: 's4e-people',
@@ -24,7 +23,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
 
   constructor(private personQuery: PersonQuery, private personService: PersonService,
               private institutionQuery: InstitutionQuery, private institutionService: InstitutionService,
-              private router: Router, private route: ActivatedRoute) { }
+              private router: Router, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.error$ = this.personQuery.selectError();
@@ -43,6 +43,6 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   setInstitution(institutionSlug: string) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}})
+    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}});
   }
 }

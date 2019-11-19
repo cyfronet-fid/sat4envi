@@ -25,4 +25,8 @@ export class ProductTypeQuery extends QueryEntity<ProductTypeState, ProductType,
   selectSelectedDate() {
     return this.select(state => state.ui.selectedDate);
   }
+
+  selectAvailableDates() {
+    return this.select(state => state.ui.availableDays);
+  }
 }

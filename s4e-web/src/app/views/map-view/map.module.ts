@@ -26,6 +26,7 @@ import { SearchResultsComponent } from './search-results/search-results.componen
 import {AkitaGuidService} from './state/search-results/guid.service';
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {OwlMomentDateTimeModule} from 'ng-pick-datetime/date-time/adapter/moment-adapter/moment-date-time.module';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BsDropdownModule,
     BrowserAnimationsModule,
     OwlDateTimeModule,
-    OwlNativeDateTimeModule
+    OwlMomentDateTimeModule,
+    // OwlNativeDateTimeModule
   ],
   providers: [
     MapQuery,
