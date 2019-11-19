@@ -48,6 +48,35 @@ public class GroupService {
         return groupRepository.findAllByInstitution_Slug(institutionSlug, pageable);
     }
 
+    public Set<Group> getAllGroupsBySlugs(Set<String> groupSlugs, String institutionSlug) {
+        return groupRepository.findAllByInstitution_SlugAndSlugIn(institutionSlug, groupSlugs);
+    }
+
+    @Transactional(rollbackFor = GroupUpdateException.class)
+    public void updateUsersGroups(Set<Group> groupsFromRequest, AppUser user, String institutionSlug) throws GroupUpdateException {
+        Set<Group> userGroups = groupRepository.findAllByInstitution_SlugAndMembers_Email(institutionSlug, user.getEmail());
+        removeFromGroups(groupsFromRequest, user, userGroups);
+        addToGroup(groupsFromRequest, user, userGroups);
+    }
+
+    private void addToGroup(Set<Group> groupsFromRequest, AppUser user, Set<Group> userGroups) throws GroupUpdateException {
+        for (Group group : groupsFromRequest) {
+            if (!userGroups.contains(group)) {
+                group.addMember(user);
+                update(group);
+            }
+        }
+    }
+
+    private void removeFromGroups(Set<Group> groupsFromRequest, AppUser user, Set<Group> userGroups) throws GroupUpdateException {
+        for (Group group : userGroups) {
+            if (!groupsFromRequest.contains(group)) {
+                group.removeMember(user);
+                update(group);
+            }
+        }
+    }
+
     @Transactional
     public void delete(Group group) {
         groupRepository.deleteById(group.getId());
@@ -58,7 +87,7 @@ public class GroupService {
         try {
             groupRepository.save(group);
         } catch (DataIntegrityViolationException e) {
-            log.info("Cannot create Group with name '" + group.getName() + "'", e);
+            log.info("Cannot update Group with name '" + group.getName() + "'", e);
             throw new GroupUpdateException("Cannot update Group", e);
         }
     }

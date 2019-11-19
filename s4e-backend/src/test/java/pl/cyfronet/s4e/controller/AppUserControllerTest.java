@@ -16,15 +16,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -33,6 +35,7 @@ import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
+import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
@@ -61,9 +64,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
-@AutoConfigureMockMvc
 @BasicTest
 @Slf4j
 public class AppUserControllerTest {
@@ -103,6 +106,8 @@ public class AppUserControllerTest {
     private GreenMail greenMail;
 
     @Autowired
+    private WebApplicationContext webApplicationContext;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -124,6 +129,11 @@ public class AppUserControllerTest {
 
         recaptchaProperties.getTesting().setSuccessResult(true);
         recaptchaProperties.getTesting().setResultErrorCodes(emptyList());
+
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(webApplicationContext)
+                .apply(sharedHttpSession())
+                .build();
     }
 
     @AfterEach
@@ -134,13 +144,16 @@ public class AppUserControllerTest {
     @Component
     private static class TestListener {
         @EventListener
-        public void handle(OnRegistrationCompleteEvent event) { }
+        public void handle(OnRegistrationCompleteEvent event) {
+        }
 
         @EventListener
-        public void handle(OnEmailConfirmedEvent event) { }
+        public void handle(OnEmailConfirmedEvent event) {
+        }
 
         @EventListener
-        public void handle(OnResendRegistrationTokenEvent event) { }
+        public void handle(OnResendRegistrationTokenEvent event) {
+        }
     }
 
     @Test
@@ -156,7 +169,7 @@ public class AppUserControllerTest {
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/register")
+        mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
                 .andExpect(status().isOk());
@@ -196,7 +209,7 @@ public class AppUserControllerTest {
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/register")
+        mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .param(responseParameter, "testCaptchaResponse")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
@@ -225,7 +238,7 @@ public class AppUserControllerTest {
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/register")
+        mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
                 .andExpect(mvcResult -> {
@@ -257,7 +270,7 @@ public class AppUserControllerTest {
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(true));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/register")
+        mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
                 .andExpect(status().isOk());
@@ -288,7 +301,7 @@ public class AppUserControllerTest {
 
         assertThat(appUser.isEnabled(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/confirm-email")
+        mockMvc.perform(post(API_PREFIX_V1 + "/confirm-email")
                 .param("token", emailVerification.getToken())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -332,7 +345,7 @@ public class AppUserControllerTest {
 
         assertThat(appUser.isEnabled(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/confirm-email")
+        mockMvc.perform(post(API_PREFIX_V1 + "/confirm-email")
                 .param("token", emailVerification.getToken())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -368,7 +381,7 @@ public class AppUserControllerTest {
 
         assertThat(appUser.isEnabled(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/resend-registration-token-by-email")
+        mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-email")
                 .param("email", EMAIL))
                 .andExpect(status().isOk());
 
@@ -392,7 +405,7 @@ public class AppUserControllerTest {
 
     @Test
     public void shouldntResendTokenIfAppUserNotFound() throws Exception {
-        mockMvc.perform(post(API_PREFIX_V1+"/resend-registration-token-by-email")
+        mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-email")
                 .param("email", "some@email.pl"))
                 .andExpect(status().isOk());
 
@@ -424,7 +437,7 @@ public class AppUserControllerTest {
 
         assertThat(appUser.isEnabled(), is(false));
 
-        mockMvc.perform(post(API_PREFIX_V1+"/resend-registration-token-by-token")
+        mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-token")
                 .param("token", TOKEN))
                 .andExpect(status().isOk());
 
@@ -450,7 +463,7 @@ public class AppUserControllerTest {
     public void shouldntResendTokenByNonExistingToken() throws Exception {
         final String TOKEN = "theTokenValue";
 
-        mockMvc.perform(post(API_PREFIX_V1+"/resend-registration-token-by-token")
+        mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-token")
                 .param("token", TOKEN))
                 .andExpect(status().isNotFound());
 
@@ -460,15 +473,16 @@ public class AppUserControllerTest {
 
 
     @Test
+    @WithAnonymousUser
     public void shouldReturnForbiddenCode403() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/users/me"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     @WithUserDetails("get@profile.com")
     public void shouldReturnProfile() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/users/me"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
                 .andExpect(status().isOk());
     }
 
@@ -494,14 +508,14 @@ public class AppUserControllerTest {
                 .groupSlugs(groups)
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/users", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"default"), hasSize(1));
-        assertThat(groupService.getMembers(slugInstitution,"grupa-wladzy"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
     }
 
     @Test
@@ -520,13 +534,91 @@ public class AppUserControllerTest {
                 .email("email@test.pl")
                 .build();
 
-        mockMvc.perform(post(API_PREFIX_V1+"/institutions/{institution}/users", slugInstitution)
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution,"default"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(0));
+    }
+
+    @Test
+    @WithMockUser
+    public void shouldUpdateUserGroupsInInstitution() throws Exception {
+        String test_institution = "Test Institution";
+        String slugInstitution = slugService.slugify(test_institution);
+        Institution institution = institutionService.save(Institution.builder()
+                .name(test_institution)
+                .slug(slugInstitution)
+                .build());
+
+        groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
+
+        appUserRepository.save(AppUser.builder()
+                .email("email@test.pl")
+                .name("Name")
+                .surname("Surname")
+                .password("someHash")
+                .enabled(false)
+                .build());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
+
+        Set<String> groups = new HashSet<>();
+        groups.add("default");
+        groups.add("grupa-wladzy");
+
+        UpdateUserGroupsRequest updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
+                .email("email@test.pl")
+                .groupSlugs(groups)
+                .build();
+
+        mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
+
+        groups = new HashSet<>();
+        groups.add("default");
+
+        updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
+                .email("email@test.pl")
+                .groupSlugs(groups)
+                .build();
+
+        mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
+
+        groups = new HashSet<>();
+        groups.add("default");
+        groups.add("grupa-wladzy");
+
+        updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
+                .email("email@test.pl")
+                .groupSlugs(groups)
+                .build();
+
+        mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
     }
 
     public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {
