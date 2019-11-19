@@ -208,7 +208,7 @@ p {
 
 }
 
-table {
+table:not(.owl-dt-calendar-table) {
   margin: $space-xlarge 0;
   float: none;
   border-radius: $border-radius-default;

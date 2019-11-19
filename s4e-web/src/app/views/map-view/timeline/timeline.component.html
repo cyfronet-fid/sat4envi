@@ -2,11 +2,11 @@
   <section class="timeline__manage">
     <div class="timeline__currentday">
       <span>{{currentDate}}</span>
-    </div>
-    <div class="timeline__calendar">
-      <input style="visibility: hidden; width: 1px;" [owlDateTimeFilter]="filterInactiveDays" (dateTimeChange)="selectDate($event)"
+      <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays" (dateTimeChange)="selectDate($event)"
              [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
-      <span [owlDateTimeTrigger]="datepicker"><img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate"/></span>
+    </div>
+    <div class="timeline__calendar" [owlDateTimeTrigger]="datepicker">
+      <img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate"/>
       <owl-date-time #datepicker
                      [startAt]="currentDate"
                      [pickerMode]="'popup'" [pickerType]="'calendar'" (monthSelected)="monthSelected($event)"></owl-date-time>
