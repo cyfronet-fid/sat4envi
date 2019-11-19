@@ -16,8 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
+import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -35,6 +37,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
@@ -163,6 +166,26 @@ public class AppUserController {
 
         appUserService.saveWithGroupUpdate(appUser, request.getGroupSlugs(), institutionSlug);
 //        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation("Update user groups in an institution")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "User groups were updated"),
+            @ApiResponse(code = 400, message = "Group not updated"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to update user groups")
+    })
+    @PutMapping("/institutions/{institution}/users")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
+                                                           @PathVariable("institution") String institutionSlug)
+            throws NotFoundException, GroupUpdateException {
+        if (request.getGroupSlugs() != null) {
+            val user = appUserService.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new NotFoundException("User not found for email: '" + request.getEmail()));
+            Set<Group> groupsFromRequest = groupService.getAllGroupsBySlugs(request.getGroupSlugs(), institutionSlug);
+            groupService.updateUsersGroups(groupsFromRequest, user, institutionSlug);
+        }
         return ResponseEntity.ok().build();
     }
 

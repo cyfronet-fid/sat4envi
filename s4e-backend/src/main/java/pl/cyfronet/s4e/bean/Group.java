@@ -46,6 +46,6 @@ public class Group {
     }
 
     public void removeMember(AppUser user) {
-        members.removeIf(m -> m.getId() == user.getId());
+        members.remove(user);
     }
 }
