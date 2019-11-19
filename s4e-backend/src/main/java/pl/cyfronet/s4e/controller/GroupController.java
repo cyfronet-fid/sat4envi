@@ -46,6 +46,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If group was created"),
             @ApiResponse(code = 400, message = "Group not created"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to create a group"),
             @ApiResponse(code = 404, message = "Institution not found")
     })
     @PostMapping("/institutions/{institution}/groups")
@@ -74,6 +75,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If member was added"),
             @ApiResponse(code = 400, message = "Member not added"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to add member"),
             @ApiResponse(code = 404, message = "Group or user not found")
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members")
@@ -97,6 +99,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If member was removed"),
             @ApiResponse(code = 400, message = "Member not removed"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to remove member"),
             @ApiResponse(code = 404, message = "Group or user not found")
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
@@ -118,7 +121,8 @@ public class GroupController {
 
     @ApiOperation("Get a list of groups")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved list")
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get a list")
     })
     @GetMapping("/institutions/{institution}/groups")
     @PreAuthorize("isAuthenticated()")
@@ -137,6 +141,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved a group"),
             @ApiResponse(code = 400, message = "Group not retrieved"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get a group"),
             @ApiResponse(code = 404, message = "Group not found")
     })
     @GetMapping("/institutions/{institution}/groups/{group}")
@@ -154,6 +159,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved members"),
             @ApiResponse(code = 400, message = "Members not retrieved"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get members"),
             @ApiResponse(code = 404, message = "Members not found")
     })
     @GetMapping("/institutions/{institution}/groups/{group}/members")
@@ -171,6 +177,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If group was updated"),
             @ApiResponse(code = 400, message = "Group not updated"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to update a group"),
             @ApiResponse(code = 404, message = "Group was not found")
     })
     @PutMapping("/institutions/{institution}/groups/{group}")
@@ -199,6 +206,7 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If group was deleted"),
             @ApiResponse(code = 400, message = "Group was not deleted"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to delete a group"),
             @ApiResponse(code = 404, message = "Group or institution was not found")
     })
     @DeleteMapping("/institutions/{institution}/groups/{group}")
