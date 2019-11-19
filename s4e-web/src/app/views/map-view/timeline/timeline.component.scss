@@ -42,14 +42,13 @@
 }
 
 .timeline__calendar {
-  width: 14px;
+  //width: 34px;
   color: $color-white;
   background: $color-primary;
   padding: $space-small;
   align-self: center;
   border-left: 1px solid $color-primary-darker;
   border-top-right-radius: $border-radius-default;
-  margin-top: -15px;
   cursor: pointer;
 }
 
@@ -85,6 +84,10 @@
     border-bottom: 4px solid $color-secondary;
     font-weight: bold;
   }
+}
+
+.timeline__changedate {
+  width: 14px;
 }
 
 .box_content {
