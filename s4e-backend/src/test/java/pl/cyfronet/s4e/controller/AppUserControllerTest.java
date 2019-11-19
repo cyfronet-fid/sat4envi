@@ -29,6 +29,7 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
+import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
@@ -473,16 +474,19 @@ public class AppUserControllerTest {
 
     @Test
     @WithMockUser
-    public void shouldCreateUserAndAddToGroup() throws Exception {
+    public void shouldCreateUserAndAddToGroups() throws Exception {
         String test_institution = "Test Institution";
         String slugInstitution = slugService.slugify(test_institution);
-        institutionService.save(Institution.builder()
+        Institution institution = institutionService.save(Institution.builder()
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());
 
+        groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
+
         Set<String> groups = new HashSet<>();
         groups.add("default");
+        groups.add("grupa-wladzy");
         CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
                 .name("Name")
                 .surname("Surname")
@@ -497,6 +501,7 @@ public class AppUserControllerTest {
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
         assertThat(groupService.getMembers(slugInstitution,"default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution,"grupa-wladzy"), hasSize(1));
     }
 
     @Test

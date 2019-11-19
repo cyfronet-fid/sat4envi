@@ -35,8 +35,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
@@ -162,13 +160,8 @@ public class AppUserController {
                 .password(passwordEncoder.encode("passTemporary"))
                 .enabled(false)
                 .build();
-        if (request.getGroupSlugs() != null) {
-            appUser.setGroups(request.getGroupSlugs().stream()
-                    .map(slugGroup -> groupService.getGroup(institutionSlug, slugGroup))
-                    .flatMap(Optional::stream)
-                    .collect(Collectors.toSet()));
-        }
-        appUserService.saveWithGroupUpdate(appUser);
+
+        appUserService.saveWithGroupUpdate(appUser, request.getGroupSlugs(), institutionSlug);
 //        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
