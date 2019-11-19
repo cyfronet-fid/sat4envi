@@ -9,7 +9,11 @@
       <img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate"/>
       <owl-date-time #datepicker
                      [startAt]="currentDate"
-                     [pickerMode]="'popup'" [pickerType]="'calendar'" (monthSelected)="monthSelected($event)"></owl-date-time>
+                     [panelClass]="componentId"
+                     (afterPickerOpen)="setPickerOpenState(true)"
+                     (afterPickerClosed)="setPickerOpenState(false)"
+                     [pickerMode]="'popup'" [pickerType]="'calendar'"
+                     (monthSelected)="monthSelected($event)"></owl-date-time>
     </div>
   </section>
   <ul class="timeline__grid">

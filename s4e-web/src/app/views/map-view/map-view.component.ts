@@ -52,6 +52,7 @@ export class MapViewComponent implements OnInit {
   public placeSearchResultsOpen$: Observable<boolean>;
   public selectedLocation$: Subject<SearchResult> = new Subject<SearchResult>();
   public currentTimelineDate$: Observable<string>;
+  public availableDates$: Observable<string[]>;
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -93,6 +94,7 @@ export class MapViewComponent implements OnInit {
     this.productTypeService.get();
     this.overlayService.get();
     this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
+    this.availableDates$ = this.productTypeQuery.selectAvailableDates();
   }
 
   selectProductType(productTypeId: number | null) {

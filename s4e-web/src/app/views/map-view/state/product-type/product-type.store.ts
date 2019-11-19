@@ -10,7 +10,7 @@ export interface ProductTypeState extends EntityState<ProductType>, ActiveState<
     selectedDay: number;
     selectedYear: number;
     selectedMonth: number;
-    availableDays: HashMap<boolean>
+    availableDays: string[];
   }
 }
 
@@ -25,7 +25,7 @@ export function createProductType(state: Partial<ProductTypeState> = {}): Produc
       selectedDay: moment.utc().day(),
       selectedYear: moment.utc().year(),
       selectedMonth: moment.utc().month() + 1,
-      availableDays: {}
+      availableDays: []
     },
     ...state
   };

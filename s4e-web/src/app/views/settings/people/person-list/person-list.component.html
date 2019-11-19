@@ -21,7 +21,7 @@
         <tr>
           <th i18n>Imię i nazwisko</th>
           <th i18n>Email</th>
-          <th i18n>Grupa</th>
+<!--          <th i18n>Grupa</th>-->
           <th i18n>Akcje</th>
         </tr>
       </thead>
@@ -29,9 +29,9 @@
         <tr *ngFor="let user of (users$ | async)">
           <td i18n>{{user.name}} {{user.surname}}</td>
           <td>{{user.email}}</td>
-          <td>
-            <span *ngFor="let role of user.roles">{{role}}</span>
-          </td>
+<!--          <td>-->
+<!--            <span *ngFor="let role of user.roles">{{role}}</span>-->
+<!--          </td>-->
           <td>
             <i class="fas fa-trash"></i>
             <i class="fas fa-user-edit"></i>
