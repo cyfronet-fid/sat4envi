@@ -146,7 +146,8 @@ public class AppUserController {
 
     @ApiOperation("Add user to an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User was added")
+            @ApiResponse(code = 200, message = "User was added"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to add user")
     })
     @PostMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated()")
@@ -169,7 +170,7 @@ public class AppUserController {
     @ApiOperation("Get user profile")
     @ApiResponses({
             @ApiResponse(code = 200, message = "User was retrieved"),
-            @ApiResponse(code = 403, message = "User not authorized")
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get profile")
     })
     @GetMapping("/users/me")
     @PreAuthorize("isAuthenticated()")

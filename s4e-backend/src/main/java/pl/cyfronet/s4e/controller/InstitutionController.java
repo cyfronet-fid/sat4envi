@@ -36,7 +36,8 @@ public class InstitutionController {
     @ApiOperation("Create a new institution")
     @ApiResponses({
             @ApiResponse(code = 200, message = "If institution was created"),
-            @ApiResponse(code = 400, message = "Institution not created")
+            @ApiResponse(code = 400, message = "Institution not created"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to create an institution")
     })
     @PostMapping("/institutions")
     @PreAuthorize("isAuthenticated()")
@@ -47,7 +48,8 @@ public class InstitutionController {
 
     @ApiOperation("Get a list of institutions")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved list")
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get list")
     })
     @GetMapping("/institutions")
     @PreAuthorize("isAuthenticated()")
@@ -64,6 +66,7 @@ public class InstitutionController {
     @ApiOperation("Get an institution")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved an institution"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get an institution"),
             @ApiResponse(code = 404, message = "Institution not found")
     })
     @GetMapping("/institutions/{institution}")
@@ -78,6 +81,7 @@ public class InstitutionController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "If institution was updated"),
             @ApiResponse(code = 400, message = "Institution not updated"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to update an institution"),
             @ApiResponse(code = 404, message = "Institution not found")
     })
     @PutMapping("/institutions/{institution}")
@@ -95,7 +99,8 @@ public class InstitutionController {
 
     @ApiOperation("Delete an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "If institution was deleted.")
+            @ApiResponse(code = 200, message = "If institution was deleted"),
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to delete an institution")
     })
     @DeleteMapping("/institutions/{institution}")
     @PreAuthorize("isAuthenticated()")
