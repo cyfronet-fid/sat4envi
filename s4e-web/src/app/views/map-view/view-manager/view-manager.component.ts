@@ -15,10 +15,10 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 export class ViewManagerComponent implements OnInit, OnDestroy{
   @Input() loading = true;
   @Input() userLoggedIn: boolean = false;
+  @Input() scenes: IUILayer[] = [];
   @Input() products: IUILayer[] = [];
-  @Input() productsTypes: IUILayer[] = [];
-  @Input() productTypeLoading: boolean = true;
-  @Output() selectProductType = new EventEmitter<number>();
+  @Input() productsLoading: boolean = true;
+  @Output() selectProduct = new EventEmitter<number>();
   @Output() changedSearchFocus = new EventEmitter<boolean>();
 
   @Input() overlays: IUILayer[] = [];

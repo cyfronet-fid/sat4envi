@@ -1,5 +1,5 @@
-import {TileWMS, ImageWMS, OSM} from 'ol/source';
-import {Tile, Image, Layer} from 'ol/layer';
+import {ImageWMS} from 'ol/source';
+import {Image, Layer} from 'ol/layer';
 import {IUILayer} from '../common.model';
 
 export type OverlayType = 'wms'; // later |'tile'|'etc' may be added
@@ -7,7 +7,7 @@ export type OverlayType = 'wms'; // later |'tile'|'etc' may be added
 export interface OverlayResponse {
   id: number;
   name: string;
-  layerName: string; //id
+  layerName: string; // id
 }
 
 export interface Overlay {
@@ -20,9 +20,7 @@ export interface Overlay {
  * A factory function that creates Overlay
  */
 export function createOverlay(params: Partial<Overlay>) {
-  return {
-
-  } as Overlay;
+  return {} as Overlay;
 }
 
 /**

@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ID} from '@datorama/akita';
 import {IUILayer} from '../../state/common.model';
-import {ProductType} from '../../state/product-type/product-type.model';
 
 @Component({
   selector: 's4e-product-picker',
@@ -17,7 +16,8 @@ export class LayerPicker implements OnInit {
 
   @Output() itemSelected = new EventEmitter<ID>();
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

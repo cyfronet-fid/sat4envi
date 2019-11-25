@@ -11,21 +11,18 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import {Product} from '../state/product/product.model';
 import moment from 'moment';
 import {S4eConfig} from '../../../utils/initializer/config.service';
-import {BehaviorSubject, ReplaySubject, Subject} from 'rxjs';
-import {Renderer3} from '@angular/core/src/render3/interfaces/renderer';
-import {guid, HashMap} from '@datorama/akita';
+import {Subject} from 'rxjs';
 import {AkitaGuidService} from '../state/search-results/guid.service';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {debounceTime} from 'rxjs/operators';
-import {ProductType} from '../state/product-type/product-type.model';
+import {Scene} from '../state/scene/scene.model';
 
 export interface Day {
   label: string;
-  products: Product[];
+  products: Scene[];
 
 }
 
@@ -48,39 +45,18 @@ export const DATEPICKER_FORMAT_CUSTOMIZATION = {
   ]
 })
 export class TimelineComponent implements OnInit, OnDestroy {
-  private updateStream = new Subject<void>();
-
-  public filterInactiveDays = (date: Date) => {
-    this.loadAvailableDates.emit(moment(date).format('YYYY-MM'));
-    this.updateStream.next();
-    return true;
-  };
-
   @ViewChild('datepicker', {read: ElementRef}) datepicker: ElementRef;
-
-  private _availableDates: string[] = [];
-
-  @Input()
-  public set availableDates(value: string[]) {
-    this._availableDates = value;
-    if (this.pickerState == true) {
-      this.hackCalendar();
-    }
-  }
-
   @Input() public loading: boolean = true;
-
   currentDate: string = '';
   startAt = null;
-
-  @Input('currentDate') set _currentDate(v: string) {
-    this.currentDate = v;
-    this.startAt = moment(v, 'YYYY-MM-DD');
-  }
-
-  @Input() activeProduct: Product | null = null;
-  @Input() products: Product[] = [];
-  // @Input() set products(products: Product[] | null) {
+  @Input() activeProduct: Scene | null = null;
+  @Input() scenes: Scene[] = [];
+  @Output() dateSelected = new EventEmitter<string>();
+  @Output() selectedScene = new EventEmitter<Scene>();
+  @Output() loadAvailableDates = new EventEmitter<string>();
+  pickerState: boolean = false;
+  componentId: string;
+  // @Input() set products(products: Scene[] | null) {
   //   this.days = [];
   //   let currDay: Day;
   //   for (const product of (products || [])) {
@@ -92,15 +68,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   //     currDay.products.push(product);
   //   }
   // }
-
-  @Output() dateSelected = new EventEmitter<string>();
-  @Output() selectProduct = new EventEmitter<Product>();
-  @Output() loadAvailableDates = new EventEmitter<string>();
-
-  selectDate($event: { value: Date }) {
-    console.log($event);
-    this.dateSelected.emit(moment($event.value).utc().format(this.config.momentDateFormatShort));
-  }
+  private updateStream = new Subject<void>();
 
   // tslint:disable-next-line:no-shadowed-variable
   constructor(@Inject(LOCALE_ID) private LOCALE_ID: string, private config: S4eConfig,
@@ -109,12 +77,35 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.componentId = `D${this.guidService.guid()}`;
   }
 
+  private _availableDates: string[] = [];
+
+  @Input()
+  public set availableDates(value: string[]) {
+    this._availableDates = value;
+    if (this.pickerState == true) {
+      this.hackCalendar();
+    }
+  }
+
+  @Input('currentDate') set _currentDate(v: string) {
+    this.currentDate = v;
+    this.startAt = moment(v, 'YYYY-MM-DD');
+  }
+
+  public filterInactiveDays = (date: Date) => {
+    this.loadAvailableDates.emit(moment(date).format('YYYY-MM'));
+    this.updateStream.next();
+    return true;
+  };
+
+  selectDate($event: { value: Date }) {
+    console.log($event);
+    this.dateSelected.emit(moment($event.value).utc().format(this.config.momentDateFormatShort));
+  }
+
   monthSelected($event: any) {
     console.log('month selected', $event);
   }
-
-  pickerState: boolean = false;
-  componentId: string;
 
   setPickerOpenState(state: boolean) {
     this.pickerState = state;
@@ -134,5 +125,6 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.updateStream.pipe(untilDestroyed(this), debounceTime(50)).subscribe(() => this.hackCalendar());
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
 }

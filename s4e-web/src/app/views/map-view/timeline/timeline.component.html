@@ -17,11 +17,11 @@
     </div>
   </section>
   <ul class="timeline__grid">
-    <li class="timeline__item" *ngIf="products.length == 0 && !loading">Brak produktów, wybierz inną datę</li>
+    <li class="timeline__item" *ngIf="scenes.length == 0 && !loading">Brak produktów, wybierz inną datę</li>
     <li class="timeline__item"
-        *ngFor="let product of products"
+        *ngFor="let product of scenes"
         [ngClass]="{active: product.id === activeProduct?.id}"
-        (click)="selectProduct.emit(product)">
+        (click)="selectedScene.emit(product)">
       {{ product.timestamp | date : 'shortTime' }}
     </li>
   </ul>

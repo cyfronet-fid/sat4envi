@@ -1,6 +1,6 @@
 import {SearchResultsStore} from './search-results.store';
 
-describe('ProductTypeStore', () => {
+describe('SearchResultsStore', () => {
   let store: SearchResultsStore;
 
   beforeEach(() => {

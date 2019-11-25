@@ -44,9 +44,9 @@
 <s4e-product-picker class="section"
                     caption="Produkty"
                     i18n-caption
-                    [loading]="productTypeLoading"
-                    [items]="productsTypes"
-                    (itemSelected)="selectProductType.emit($event)">
+                    [loading]="productsLoading"
+                    [items]="products"
+                    (itemSelected)="selectProduct.emit($event)">
 </s4e-product-picker>
 
 <s4e-product-picker class="section layers"

@@ -1,15 +1,42 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ActiveState, EntityState, EntityStore, StoreConfig} from '@datorama/akita';
-import { Product } from './product.model';
+import {Product} from './product.model';
+import moment from 'moment';
 
-export interface ProductState extends EntityState<Product>, ActiveState {}
+export interface ProductState extends EntityState<Product>, ActiveState<number> {
+  ui: {
+    loadedMonths: string[];
+    selectedDate: string;
+    selectedDay: number;
+    selectedYear: number;
+    selectedMonth: number;
+    availableDays: string[];
+  };
+}
 
-@Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'Product', idKey: 'id' })
-export class ProductStore extends EntityStore<ProductState, Product> {
+export function createProduct(state: Partial<ProductState> = {}): ProductState {
+  return {
+    active: null,
+    error: null,
+    loading: false,
+    ui: {
+      loadedMonths: [],
+      selectedDate: moment.utc().format('YYYY-MM-DD'),
+      selectedDay: moment.utc().day(),
+      selectedYear: moment.utc().year(),
+      selectedMonth: moment.utc().month() + 1,
+      availableDays: []
+    },
+    ...state
+  };
+}
 
+
+@Injectable({providedIn: 'root'})
+@StoreConfig({name: 'Product'})
+export class ProductStore extends EntityStore<ProductState, Product, number> {
   constructor() {
-    super();
+    super(createProduct());
   }
 }
 
