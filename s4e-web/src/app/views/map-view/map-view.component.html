@@ -3,11 +3,11 @@
                   [userLoggedIn]="userLoggedIn$ | async"
                   [loading]="viewManagerLoading$ | async"
                   [overlaysLoading]="false"
-                  [productsTypes]="productsTypeList$ | async"
-                  [productTypeLoading]="productTypeLoading$ | async"
+                  [products]="productsTypeList$ | async"
+                  [productsLoading]="productLoading$ | async"
                   (logout)="logout()"
                   (selectOverlay)="selectOverlay($event)"
-                  (selectProductType)="selectProductType($event)"
+                  (selectProduct)="selectProduct($event)"
                   (searchForPlaces)="serachForPlaces($event)"
                   [searchResults]="placeSearchResults$ | async"
                   [searchResultsLoading]="placeSearchLoading$ | async"
@@ -22,21 +22,21 @@
             class="legend"></s4e-legend>
 
 <s4e-timeline class="section timeline"
-              *ngIf="(activeProductType$ | async) != null"
-              [products]="products$ | async"
+              *ngIf="(activeProducts$ | async) != null"
+              [scenes]="scenes$ | async"
               [currentDate]="currentTimelineDate$ | async"
               (dateSelected)="setDate($event)"
               [availableDates]="availableDates$ | async"
               (loadAvailableDates)="loadAvailableDates($event)"
-              [loading]="productsAreLoading$ | async"
-              [activeProduct]="activeProduct$ | async"
-              (selectProduct)="selectProduct($event?.id)">
+              [loading]="scenesAreLoading$ | async"
+              [activeProduct]="activeScene$ | async"
+              (selectedScene)="selectScene($event?.id)">
 </s4e-timeline>
 
 <s4e-map class="section map"
          [selectedLocation]="selectedLocation$"
          [overlays]="overlays$ | async"
-         [activeProduct]="activeProduct$ | async"
+         [activeScene]="activeScene$ | async"
 >
 
 </s4e-map>

@@ -7,7 +7,7 @@ import {ImageWMS, OSM, Vector} from 'ol/source';
 import {Icon, Style} from 'ol/style';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
-import {Product} from '../state/product/product.model';
+import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {S4eConfig} from '../../../utils/initializer/config.service';
@@ -38,15 +38,15 @@ export class MapComponent implements OnInit, OnDestroy {
   selectedLocationSub: Subscription = null;
   private baseLayer: Layer;
   private map: Map;
-  private activeProduct$ = new ReplaySubject<Product | null>(1);
+  private activeScene$ = new ReplaySubject<Scene | null>(1);
   private markerSource: Vector = new Vector();
 
   constructor(private CONFIG: S4eConfig) {
   }
 
   @Input()
-  public set activeProduct(gr: Product | null | undefined) {
-    this.activeProduct$.next(gr);
+  public set activeScene(gr: Scene | null | undefined) {
+    this.activeScene$.next(gr);
   }
 
   @Input()
@@ -100,7 +100,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     combineLatest([
-      this.activeProduct$.pipe(distinctUntilChanged()),
+      this.activeScene$.pipe(distinctUntilChanged()),
       this.overlays$.pipe(distinctUntilChanged())
     ]).pipe(untilDestroyed(this)).subscribe(([gr, overlays]) => {
       this.overlays = overlays;
@@ -124,12 +124,12 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activeProduct$.complete();
+    this.activeScene$.complete();
     this.selectedLocationSub.unsubscribe();
     this.selectedLocationSub = null;
   }
 
-  private updateLayers(product: Product | null) {
+  private updateLayers(product: Scene | null) {
     const mapLayers = this.map.getLayers();
     mapLayers.clear();
     mapLayers.push(this.baseLayer);

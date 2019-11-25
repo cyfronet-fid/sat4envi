@@ -8,6 +8,5 @@ export class MapStore extends Store<MapState> {
   constructor() {
     super(createInitialState());
   }
-
 }
 

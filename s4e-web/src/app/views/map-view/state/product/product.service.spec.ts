@@ -1,116 +1,65 @@
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ProductService} from './product.service';
 import {ProductStore} from './product.store';
-import {ProductTypeQuery} from '../product-type/product-type.query';
-import {ProductTypeStore} from '../product-type/product-type.store';
 import {ProductQuery} from './product.query';
-import {take, toArray} from 'rxjs/operators';
-import {ProductFactory} from './product.factory.spec';
-import {InjectorModule} from '../../../../common/injector.module';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
-import {LegendFactory} from '../legend/legend.factory.spec';
 import {LegendQuery} from '../legend/legend.query';
-import {LegendStore} from '../legend/legend.store';
-import {ProductTypeFactory} from '../product-type/product-type.factory.spec';
+import {LegendService} from '../legend/legend.service';
+import {SceneQuery} from '../scene/scene.query.service';
+import {SceneStore} from '../scene/scene.store.service';
+import {SceneService} from '../scene/scene.service';
 
 describe('ProductService', () => {
   let productService: ProductService;
   let productStore: ProductStore;
   let productQuery: ProductQuery;
+  let sceneQuery: SceneQuery;
+  let sceneStore: SceneStore;
   let legendQuery: LegendQuery;
-  let http: HttpTestingController;
+  let legendService: LegendService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
         ProductService,
         ProductStore,
-        LegendStore,
+        SceneQuery,
+        SceneStore,
         LegendQuery,
-        ProductTypeQuery,
-        ProductTypeStore,
-        TestingConfigProvider],
-      imports: [HttpClientTestingModule, InjectorModule]
+        LegendService,
+        TestingConfigProvider,
+        HttpClientTestingModule,
+        ProductQuery,
+        SceneService
+      ],
+      imports: [HttpClientTestingModule]
     });
 
-    http = TestBed.get(HttpTestingController);
+    productQuery = TestBed.get(ProductQuery);
     productService = TestBed.get(ProductService);
     productStore = TestBed.get(ProductStore);
-    productQuery = TestBed.get(ProductQuery);
+    sceneQuery = TestBed.get(SceneQuery);
     legendQuery = TestBed.get(LegendQuery);
+    sceneStore = TestBed.get(SceneStore);
+    legendService = TestBed.get(LegendService);
   });
 
-  it('should create', () => {
-    expect(productService).toBeTruthy();
+  it('should be created', () => {
+    expect(productService).toBeDefined();
   });
 
   describe('setActive', () => {
-    it('should set legend to Product\'s', () => {
-      const legend = LegendFactory.build();
-      const product = ProductFactory.build({legend});
-      productStore.set([product]);
-      productService.setActive(product.id);
+    it('with null should clear stores', () => {
+      const spy1 = spyOn(sceneStore, 'setActive').and.stub();
+      const spy2 = spyOn(legendService, 'set').and.stub();
+      const spy3 = spyOn(productStore, 'setActive').and.stub();
 
-      expect(legendQuery.getValue().legend).toEqual(legend);
-    });
+      productService.setActive(null);
 
-    it('should set legend to ProductType\'s if Product does not have one', () => {
-      const legend = LegendFactory.build();
-      const product = ProductFactory.build();
-      const productType = ProductTypeFactory.build({legend, productIds: [product.id]});
-      const productTypeStore: ProductTypeStore = TestBed.get(ProductTypeStore);
-      productStore.set([product]);
-      productTypeStore.set([productType]);
-      productTypeStore.setActive(productType.id);
-
-      productService.setActive(product.id);
-      expect(legendQuery.getValue().legend).toEqual(legend);
-    });
-  });
-
-  describe('get', () => {
-    it('loading should be set', (done) => {
-      const productId = 1;
-      const dateF = '2019-10-01';
-      const stream = productQuery.selectLoading();
-
-      stream.pipe(take(2), toArray()).subscribe(data => {
-        expect(data).toEqual([true, false]);
-        done();
-      });
-
-      productService.get(productId, dateF);
-
-      const r = http.expectOne(`api/v1/products/productTypeId/${productId}?date=${dateF}`);
-      r.flush(null);
-    });
-
-    it('should call http endpoint', () => {
-      const productId = 1;
-      const dateF = '2019-10-01';
-      productService.get(productId, dateF);
-      http.expectOne(`api/v1/products/productTypeId/${productId}?date=${dateF}`);
-    });
-
-    it('should set state in store', (done) => {
-      const dateF = '2019-10-01';
-      const productType = ProductTypeFactory.build();
-      const productTypeId = productType.id;
-      const productTypeStore: ProductTypeStore = TestBed.get(ProductTypeStore);
-      productTypeStore.add(productType);
-
-      productQuery.selectAll().pipe(take(3), toArray()).subscribe(data => {
-        expect(data).toEqual([[], [], [productR]]);
-        done();
-      });
-
-      const productR = ProductFactory.build();
-
-      productService.get(productTypeId, dateF);
-
-      const r = http.expectOne(`api/v1/products/productTypeId/${productTypeId}?date=${dateF}`);
-      r.flush([productR]);
+      expect(spy1).toHaveBeenCalledWith(null);
+      expect(spy2).toHaveBeenCalledWith(null);
+      expect(spy3).toHaveBeenCalledWith(null);
     });
   });
 });
