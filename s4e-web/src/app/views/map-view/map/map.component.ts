@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
@@ -14,7 +14,6 @@ import {S4eConfig} from '../../../utils/initializer/config.service';
 import {SearchResult} from '../state/search-results/search-result.model';
 import {Point} from 'ol/geom';
 import {distinctUntilChanged} from 'rxjs/operators';
-
 
 @Component({
   selector: 's4e-map',
@@ -40,6 +39,8 @@ export class MapComponent implements OnInit, OnDestroy {
   private map: Map;
   private activeScene$ = new ReplaySubject<Scene | null>(1);
   private markerSource: Vector = new Vector();
+  @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
+  mapWorking: boolean = false;
 
   constructor(private CONFIG: S4eConfig) {
   }
@@ -125,7 +126,9 @@ export class MapComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.activeScene$.complete();
-    this.selectedLocationSub.unsubscribe();
+    if (this.selectedLocationSub != null){
+      this.selectedLocationSub.unsubscribe();
+    }
     this.selectedLocationSub = null;
   }
 
@@ -146,5 +149,19 @@ export class MapComponent implements OnInit, OnDestroy {
     for (const overlay of this.overlays.filter(ol => ol.active)) {
       mapLayers.push(overlay.olLayer);
     }
+  }
+
+  downloadMap() {
+    this.mapWorking = true;
+    const canvas = this.map.getViewport().firstChild;
+
+    // this will work only on new browsers!
+    this.map.once('rendercomplete', () => {
+      this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
+      this.linkDownload.nativeElement.href = canvas.toDataURL('image/png');
+      this.linkDownload.nativeElement.click();
+      this.mapWorking = false;
+    });
+    this.map.renderSync();
   }
 }
