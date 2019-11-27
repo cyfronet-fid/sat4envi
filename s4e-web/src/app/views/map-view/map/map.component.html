@@ -1,1 +1,6 @@
+<!--<div *ngIf="mapWorking" class="loading-overlay"></div>-->
 <div id="map"></div>
+<a #linkDownload download="map.png"></a>
+<button (click)="downloadMap()" style="position: absolute; bottom: 40px; right: 10px;" class="button button--small">
+  <fa-icon [icon]="'download'"></fa-icon>
+</button>
