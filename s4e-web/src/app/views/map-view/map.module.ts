@@ -11,7 +11,6 @@ import { MapComponent } from './map/map.component';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {OverlayStore} from './state/overlay/overlay.store';
-import {BsDropdownModule} from 'ngx-bootstrap';
 import { LegendComponent } from './legend/legend.component';
 import {LegendStore} from './state/legend/legend.store';
 import {LegendQuery} from './state/legend/legend.query';
@@ -43,7 +42,6 @@ import {SceneStore} from './state/scene/scene.store.service';
   ],
   imports: [
     ShareModule,
-    BsDropdownModule,
     BrowserAnimationsModule,
     OwlDateTimeModule,
     OwlMomentDateTimeModule,

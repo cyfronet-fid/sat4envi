@@ -1,0 +1,7 @@
+<s4e-generic-modal [buttonX]="false">
+  <div class="s4e-modal-header">{{ title }}</div>
+  <div class="s4e-modal-body" [innerHtml]="content"></div>
+  <div class="s4e-modal-footer">
+    <button class="button button--primary" id="accept_btn" (click)="dismiss()" i18n>Ok</button>
+  </div>
+</s4e-generic-modal>

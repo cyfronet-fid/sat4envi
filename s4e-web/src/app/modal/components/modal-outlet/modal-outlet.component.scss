@@ -1,0 +1,43 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
+  opacity: 0.4;
+  z-index: 2;
+}
+
+.backdrop-transparent {
+  opacity: 0;
+  z-index: -1;
+}
+
+.modal {
+  position: absolute;
+  width: 100%;
+  z-index: 3;
+  tab-index: -1;
+  outline: none;
+  margin-top: 150px;
+}
+
+.modal-dialog {
+  margin-right: auto;
+  margin-left: auto;
+  z-index: 2;
+
+  &.modal-md {
+    width: 400px;
+  }
+  &.modal-lg {
+    width: 600px;
+  }
+  &.modal-sm {
+    width: 300px;
+  }
+  &.modal-fl {
+    width: 100%;
+  }
+}
