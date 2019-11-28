@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <button *ngIf="buttonX !== false"
+          type="button"
+          class="close"
+          aria-hidden="true"
+          (click)="dismiss()">&times;</button>
+  <h4 class="modal-title" id="s4e-modal-label"><span>
+    <ng-content select=".s4e-modal-header"></ng-content>
+  </span></h4>
+</div>
+<div class="modal-body">
+  <ng-content select=".s4e-modal-body"></ng-content>
+</div>
+
+<div class="modal-footer">
+  <ng-content select=".s4e-modal-footer"></ng-content>
+</div>

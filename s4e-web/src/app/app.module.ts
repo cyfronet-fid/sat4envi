@@ -26,6 +26,7 @@ import {ActivateModule} from './views/activate/activate.module';
 import {InjectorModule} from './common/injector.module';
 import {S4eConfig} from './utils/initializer/config.service';
 import {SettingsModule} from './views/settings/settings.module';
+import {ModalModule} from './modal/modal.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -50,7 +51,8 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     MapModule,
     ProfileModule,
     InjectorModule,
-    SettingsModule
+    SettingsModule,
+    ModalModule
   ],
   providers: [
     S4eConfig,

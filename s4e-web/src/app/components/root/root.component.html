@@ -1,4 +1,5 @@
 <router-outlet></router-outlet>
+<s4e-modal-outlet></s4e-modal-outlet>
 <button *ngIf="PRODUCTION === false"
         class="dev-reset-btn btn btn-warning btn-sm"
         i18n-tooltip
@@ -7,3 +8,13 @@
         (click)="devRefreshState()">
   <span class="fas fa-xs fa-redo-alt"></span>
 </button>
+
+<button *ngIf="PRODUCTION === false"
+        class="dev-modal-demo-btn btn btn-warning btn-sm"
+        i18n-tooltip
+        tooltip="DEV POKAŻ MODALE"
+        placement="left"
+        (click)="modalDemo()">
+  <span class="fas fa-xs fa-window-restore"></span>
+</button>
+
