@@ -1,4 +1,4 @@
-import { MapStore } from './map.store';
+import {MapStore} from './map.store';
 
 describe('MapStore', () => {
   let store: MapStore;

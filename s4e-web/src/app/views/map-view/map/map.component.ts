@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnDestroy, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import Feature from 'ol/Feature';
@@ -14,6 +14,8 @@ import {S4eConfig} from '../../../utils/initializer/config.service';
 import {SearchResult} from '../state/search-results/search-result.model';
 import {Point} from 'ol/geom';
 import {distinctUntilChanged} from 'rxjs/operators';
+import {ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
+
 
 @Component({
   selector: 's4e-map',
@@ -29,10 +31,11 @@ export class MapComponent implements OnInit, OnDestroy {
     this._overlays = value;
     this.overlays$.next(value);
   }
+
   private _overlays: UIOverlay[] = [];
 
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
-  function;
+  @Output() viewChanged = new EventEmitter<ViewPosition>();
   selectedLocationSub: Subscription = null;
   private baseLayer: Layer;
   private map: Map;
@@ -62,17 +65,16 @@ export class MapComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const coord: number[] = [place.longitude, place.latitude];
-      this.map.getView().setCenter(proj4(this.CONFIG.projection.toProjection, coord));
+      const coord: number[] = proj4(this.CONFIG.projection.toProjection, [place.longitude, place.latitude]);
+      const zoom = this.getZoomLevel(place.type);
+      this.setView(coord, zoom);
       this.addMarker(coord);
     });
   }
 
   addMarker(coordinates: number[]) {
     const iconFeature = new Feature({
-      geometry: new Point(
-        proj4(this.CONFIG.projection.toProjection, coordinates)
-      )
+      geometry: new Point(coordinates)
     });
 
     this.markerSource.addFeature(iconFeature);
@@ -104,7 +106,7 @@ export class MapComponent implements OnInit, OnDestroy {
       this.overlays$.pipe(distinctUntilChanged())
     ]).pipe(untilDestroyed(this)).subscribe(([gr, overlays]) => {
       this.overlays = overlays;
-      this.updateLayers(gr)
+      this.updateLayers(gr);
     });
 
     const markerStyle = new Style({
@@ -121,14 +123,37 @@ export class MapComponent implements OnInit, OnDestroy {
       source: this.markerSource,
       style: markerStyle,
     }));
+
+    this.map.on('moveend', this.onMoveEnd);
   }
 
   ngOnDestroy(): void {
     this.activeScene$.complete();
-    if (this.selectedLocationSub != null){
+    if (this.selectedLocationSub != null) {
       this.selectedLocationSub.unsubscribe();
     }
     this.selectedLocationSub = null;
+    this.map.un('moveend', this.onMoveEnd);
+  }
+
+  onMoveEnd = (event: any) => {
+    const view = event.map.getView();
+    this.viewChanged.emit({
+      centerCoordinates: view.getCenter(),
+      zoomLevel: view.getZoom()
+    });
+  };
+
+
+  private setView(center: number[], zoom: number = null): void {
+    this.map.getView().setCenter(center);
+    if (zoom !== null) {
+      this.map.getView().setZoom(zoom);
+    }
+  }
+
+  private getZoomLevel(type: string): number | null {
+    return ZOOM_LEVELS[type] || null;
   }
 
   private updateLayers(product: Scene | null) {
@@ -164,4 +189,5 @@ export class MapComponent implements OnInit, OnDestroy {
     });
     this.map.renderSync();
   }
+
 }

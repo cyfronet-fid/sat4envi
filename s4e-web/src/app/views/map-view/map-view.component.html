@@ -36,7 +36,9 @@
          #map
          [selectedLocation]="selectedLocation$"
          [overlays]="overlays$ | async"
-         [activeScene]="activeScene$ | async">
+         [activeScene]="activeScene$ | async"
+         (viewChanged)="viewChanged($event)"
+>
 </s4e-map>
 
 <ng-container *ngIf="userLoggedIn$ | async">
