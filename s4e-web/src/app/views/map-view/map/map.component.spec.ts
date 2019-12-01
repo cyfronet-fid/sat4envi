@@ -39,7 +39,7 @@ describe('MapComponent', () => {
       expect(event).toBe('rendercomplete');
       callback();
       expect(component.linkDownload.nativeElement.getAttribute('download')).toContain('SNAPSHOT');
-      expect(component.linkDownload.nativeElement.getAttribute('href')).toEqual('data:image/png;base64,00')
+      expect(component.linkDownload.nativeElement.getAttribute('href')).toEqual('data:image/png;base64,00');
     });
 
 
@@ -47,4 +47,26 @@ describe('MapComponent', () => {
     expect(spy).toHaveBeenCalled();
     expect(spy2).toHaveBeenCalled();
   });
+
+  it('should emit event with correct values', () => {
+    spyOn(component.viewChanged, 'emit');
+
+    class MockView {
+      public getCenter = () => [1, 2];
+      public getZoom = () => 9;
+    }
+
+    class MockMap {
+      public getView = () => new MockView();
+    }
+
+    component.onMoveEnd({map: new MockMap()});
+
+    const expectedView = {
+      centerCoordinates: [1, 2],
+      zoomLevel: 9
+    };
+    expect(component.viewChanged.emit).toHaveBeenCalledWith(expectedView);
+  });
+
 });

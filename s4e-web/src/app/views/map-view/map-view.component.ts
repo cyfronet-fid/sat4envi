@@ -8,7 +8,7 @@ import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {IUILayer} from './state/common.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
-import {MapState} from './state/map/map.model';
+import {MapState, ViewPosition} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
@@ -103,7 +103,7 @@ export class MapViewComponent implements OnInit {
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
   }
 
-  selectProduct (productId: number | null) {
+  selectProduct(productId: number | null) {
     this.productService.setActive(productId);
   }
 
@@ -133,7 +133,7 @@ export class MapViewComponent implements OnInit {
 
   setDate($event: string) {
     this.sceneService.get(this.productQuery.getActiveId(), $event);
-    this.productService.setSelectedDate($event)
+    this.productService.setSelectedDate($event);
   }
 
   loadAvailableDates($event: string) {
@@ -159,5 +159,9 @@ export class MapViewComponent implements OnInit {
 
   openShareViewModal() {
     this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+  }
+
+ viewChanged($event: ViewPosition) {
+    this.mapService.setView($event);
   }
 }
