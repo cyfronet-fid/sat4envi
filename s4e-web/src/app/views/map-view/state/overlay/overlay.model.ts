@@ -36,7 +36,9 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, activ
     ...overlay,
     olLayer: new Image({
       source: new ImageWMS({
+        crossOrigin: 'Anonymous',
         url: geoServerUrl,
+        serverType: 'geoserver',
         params: {LAYERS: overlay.id}
       })
     }),

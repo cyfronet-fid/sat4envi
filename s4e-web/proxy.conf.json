@@ -10,5 +10,9 @@
   "/osm": {
     "target": "http://docker-fid.grid.cyf-kr.edu.pl:7576",
     "secure": false
+  },
+  "/wms": {
+    "target": "http://localhost:8080/geoserver/wms",
+    "secure": false
   }
 }

@@ -92,7 +92,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
 
     this.baseLayer = new Tile({
-      source: new OSM({url: '/osm/{z}/{x}/{y}.png'}),
+      source: new OSM({url: '/osm/{z}/{x}/{y}.png', crossOrigin: 'Anonymous'}),
     });
 
     this.map.getLayers().push(this.baseLayer);
@@ -140,6 +140,7 @@ export class MapComponent implements OnInit, OnDestroy {
     if (product != null) {
       mapLayers.push(new Image({
         source: new ImageWMS({
+          crossOrigin: 'Anonymous',
           url: this.CONFIG.geoserverUrl,
           params: {'LAYERS': this.CONFIG.geoserverWorkspace + ':' + product.layerName},
         }),
