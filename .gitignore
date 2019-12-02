@@ -28,6 +28,7 @@ testem.log
 /typings
 /.env
 /backend-production.env
+/backend-custom.env
 
 # System Files
 .DS_Store
