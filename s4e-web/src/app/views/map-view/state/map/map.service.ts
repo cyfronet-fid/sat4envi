@@ -8,7 +8,7 @@ import {ViewPosition} from './map.model';
 @Injectable({providedIn: 'root'})
 export class MapService {
 
-  constructor(private mapStore: MapStore,
+  constructor(private store: MapStore,
               private mapQuery: MapQuery,
               private http: HttpClient,
               private CONFIG: S4eConfig
@@ -16,10 +16,14 @@ export class MapService {
   }
 
   toggleZKOptions(open: boolean = true) {
-    this.mapStore.update({zkOptionsOpened: open});
+    this.store.update({zkOptionsOpened: open});
+  }
+
+  setWorking($event: boolean) {
+    this.store.setLoading($event);
   }
 
   setView(view: ViewPosition): void {
-    this.mapStore.update({view});
+    this.store.update({view});
   }
 }

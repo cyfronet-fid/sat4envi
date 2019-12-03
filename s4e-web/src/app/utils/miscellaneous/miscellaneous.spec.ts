@@ -1,6 +1,4 @@
-import {deserializeJsonResponse, disableEnableForm} from './miscellaneous';
-import {JsonObject, JsonProperty} from 'json2typescript';
-import {DateConverter} from '../date-converter/date-converter';
+import {disableEnableForm} from './miscellaneous';
 import {async, TestBed} from '@angular/core/testing';
 import {InjectorModule} from '../../common/injector.module';
 import {Injector} from '@angular/core';
@@ -37,14 +35,6 @@ describe('deserializeJsonResponse', function () {
     login: string;
   }
 
-  @JsonObject
-  class Data implements IData {
-    @JsonProperty('_login', String)
-    login: string = undefined;
-    @JsonProperty('_time', DateConverter)
-    time: Date = undefined;
-  }
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [InjectorModule],
@@ -52,16 +42,4 @@ describe('deserializeJsonResponse', function () {
     });
     TestBed.get(InjectorModule);
   }));
-
-  it('should work', function () {
-    const time = new Date('2019-03-21T23:04:19.000Z');
-
-    expect(deserializeJsonResponse({
-      _login: 'abc',
-      _time: '2019-03-21T23:04:19Z'
-    }, Data)).toEqual({
-      login: 'abc',
-      time: time
-    });
-  });
 });

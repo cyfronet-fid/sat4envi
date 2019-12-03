@@ -1,0 +1,20 @@
+<s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+  <div class="s4e-modal-header" i18n>Raport PDF</div>
+  <div class="s4e-modal-body">
+    <div #reportTemplate class="report-template">
+      <h1 class="caption">{{form.controls.caption.value || 'Przykładowy tytuł'}}</h1>
+      <img id="map-miniature" [src]="image">
+      <span class="notes">{{form.controls.notes.value || 'Dodatkowe informacje'}}</span>
+    </div>
+    <form [formGroup]="form">
+      <label i18n>Tytuł</label>
+      <input formControlName="caption" type="text" />
+      <label i18n>Notatka</label>
+      <input formControlName="notes" type="text" />
+    </form>
+  </div>
+  <div class="s4e-modal-footer">
+    <button class="button button--primary" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
+    <button class="button button--primary" type="submit" *ngIf="!isWorking" (click)="accept()" i18n>Wygeneruj</button>
+  </div>
+</s4e-generic-modal>

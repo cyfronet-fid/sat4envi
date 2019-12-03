@@ -1,4 +1,3 @@
-import {JsonConvert} from 'json2typescript';
 import {FormControl, FormGroup} from '@ng-stack/forms';
 import {FormState} from '../../state/form/form.model';
 import {environment} from '../../../environments/environment';
@@ -12,21 +11,6 @@ export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormC
   } else {
     form.enable();
   }
-}
-
-
-export function deserializeJsonResponse<T, Y extends T>(json: T, SerializationClass: { new(): Y }): T;
-export function deserializeJsonResponse<T, Y extends T>(json: T[], SerializationClass: { new(): Y }): T[];
-export function deserializeJsonResponse<T, Y extends T>(json: T | T[], SerializationClass: { new(): Y }): T | T[];
-export function deserializeJsonResponse<T, Y extends T>(json: any, SerializationClass: { new(): Y }): T;
-export function deserializeJsonResponse<T, Y extends T>(json: any[], SerializationClass: { new(): Y }): T[];
-export function deserializeJsonResponse<T, Y extends T>(json: any | any[], SerializationClass: { new(): Y }): T | T[] {
-  const converter = new JsonConvert();
-  const out = converter.deserialize(json, SerializationClass);
-  if (out instanceof Array) {
-    return out.map(element => Object.assign({}, element));
-  }
-  return Object.assign({}, out);
 }
 
 export function validateAllFormFields(formGroup: FormGroup<any>) {

@@ -15,6 +15,8 @@ import {SearchResult} from '../state/search-results/search-result.model';
 import {Point} from 'ol/geom';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
+import {MapData} from '../state/map/map.model';
+import IconAnchorUnits from 'ol/style/IconAnchorUnits';
 
 
 @Component({
@@ -42,7 +44,8 @@ export class MapComponent implements OnInit, OnDestroy {
   private activeScene$ = new ReplaySubject<Scene | null>(1);
   private markerSource: Vector = new Vector();
   @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
-  mapWorking: boolean = false;
+  @Input() isWorking: boolean = false;
+  @Output() working = new EventEmitter<boolean>();
 
   constructor(private CONFIG: S4eConfig) {
   }
@@ -112,8 +115,8 @@ export class MapComponent implements OnInit, OnDestroy {
     const markerStyle = new Style({
       image: new Icon({
         anchor: [0.5, 220],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixel',
+        anchorXUnits: IconAnchorUnits.FRACTION,
+        anchorYUnits: IconAnchorUnits.PIXELS,
         opacity: 0.75,
         scale: 0.25,
         src: 'https://cdn2.iconfinder.com/data/icons/ui-26/128/map-pin-location-256.png'
@@ -176,18 +179,29 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public downloadMap() {
-    this.mapWorking = true;
-    const canvas = this.map.getViewport().firstChild;
+  public getMapData(): Observable<MapData> {
+    this.working.emit(true);
+    const canvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
+
+    const r = new ReplaySubject<MapData>(1);
 
     // this will work only on new browsers!
     this.map.once('rendercomplete', () => {
-      this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
-      this.linkDownload.nativeElement.href = canvas.toDataURL('image/png');
-      this.linkDownload.nativeElement.click();
-      this.mapWorking = false;
+      const data = canvas.toDataURL('image/png');
+      r.next({image: data, width: canvas.width, height: canvas.height});
+      this.working.emit(false);
+      r.complete();
     });
     this.map.renderSync();
+
+    return r;
   }
 
+  public downloadMap() {
+    this.getMapData().subscribe(mapData => {
+      this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
+      this.linkDownload.nativeElement.href = mapData.image;
+      this.linkDownload.nativeElement.click();
+    })
+  }
 }
