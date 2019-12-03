@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 
@@ -32,7 +32,7 @@ public class GeoServerServiceIntegrationTest {
     private String workspace;
 
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -52,7 +52,7 @@ public class GeoServerServiceIntegrationTest {
     @BeforeEach
     public void beforeEach() {
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
     }
@@ -60,13 +60,13 @@ public class GeoServerServiceIntegrationTest {
     @Test
     public void shouldCreateLayer() {
         geoServerService.resetWorkspace();
-        ProductType productType = productTypeRepository.save(
-                ProductType.builder()
+        Product product = productRepository.save(
+                Product.builder()
                         .name("productType")
                         .build());
         Scene scene = sceneRepository.save(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .timestamp(LocalDateTime.now())
                         .layerName("testLayerName")
                         .s3Path("201810042345_Merkator_WV-IR.tif")

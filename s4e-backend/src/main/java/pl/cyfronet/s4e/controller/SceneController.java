@@ -28,30 +28,30 @@ public class SceneController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved list")
     })
-    @GetMapping("/scenes/productTypeId/{productTypeId}")
+    @GetMapping("/scenes/productId/{productId}")
     public List<SceneResponse> getScenes(
-            @PathVariable Long productTypeId,
+            @PathVariable Long productId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         if (date != null) {
             LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
             LocalDateTime end = start.plusDays(1);
-            return sceneService.getScenes(productTypeId, start, end).stream()
+            return sceneService.getScenes(productId, start, end).stream()
                     .map(SceneResponse::of)
                     .collect(Collectors.toList());
         }
 
-        return sceneService.getScenes(productTypeId).stream()
+        return sceneService.getScenes(productId).stream()
                 .map(SceneResponse::of)
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "Return days on which ProductType is available")
+    @ApiOperation(value = "Return days on which Product is available")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved list")
     })
-    @GetMapping("/scenes/productTypeId/{productTypeId}/available")
-    public List<LocalDate> getAvailabilityDates(@PathVariable Long productTypeId, @RequestParam YearMonth yearMonth) {
-        return sceneService.getAvailabilityDates(productTypeId, yearMonth);
+    @GetMapping("/scenes/productId/{productId}/available")
+    public List<LocalDate> getAvailabilityDates(@PathVariable Long productId, @RequestParam YearMonth yearMonth) {
+        return sceneService.getAvailabilityDates(productId, yearMonth);
     }
 }

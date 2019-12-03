@@ -29,11 +29,11 @@ public class S3UtilTest {
     }
 
     @Test
-    public void shouldReturnProductTypeFromWebhookKey() {
-        String productTypeFromWebhook = s3Util.getProductType(WEBHOOK_KEY);
-        String productType = "WV-IR";
+    public void shouldReturnProductFromWebhookKey() {
+        String productFromWebhook = s3Util.getProduct(WEBHOOK_KEY);
+        String product = "WV-IR";
 
-        assertThat(productTypeFromWebhook, is(equalTo(productType)));
+        assertThat(productFromWebhook, is(equalTo(product)));
     }
 
     @Test

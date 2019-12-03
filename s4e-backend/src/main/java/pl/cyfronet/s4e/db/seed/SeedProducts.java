@@ -12,11 +12,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
 import pl.cyfronet.s4e.service.GeoServerService;
@@ -58,7 +58,7 @@ public class SeedProducts implements ApplicationRunner {
     @Value("${seed.products.data-set:minio-data-v1}")
     private String dataSet;
 
-    private final ProductTypeRepository productTypeRepository;
+    private final ProductRepository productRepository;
     private final SceneRepository sceneRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
@@ -75,7 +75,7 @@ public class SeedProducts implements ApplicationRunner {
 
         if (seedDb) {
             sceneRepository.deleteAll();
-            productTypeRepository.deleteAll();
+            productRepository.deleteAll();
             prgOverlayRepository.deleteAll();
             sldStyleRepository.deleteAll();
 
@@ -108,22 +108,22 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private void seedProductsMinioDataV1() {
-        log.info("Seeding ProductTypes: minio-data-v1");
-        List<ProductType> productTypes = Arrays.asList(new ProductType[]{
-                ProductType.builder()
+        log.info("Seeding Products: minio-data-v1");
+        List<Product> products = Arrays.asList(new Product[]{
+                Product.builder()
                         .name("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
-                ProductType.builder()
+                Product.builder()
                         .name("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
-                ProductType.builder()
+                Product.builder()
                         .name("WV-IR")
                         .description("Opis produktu WV-IR.")
                         .build(),
         });
-        productTypeRepository.saveAll(productTypes);
+        productRepository.saveAll(products);
 
         LocalDateTime startInclusive = LocalDateTime.of(2018, 10, 4, 0, 0);
         LocalDateTime endExclusive = startInclusive.plusDays(1);
@@ -150,63 +150,63 @@ public class SeedProducts implements ApplicationRunner {
         );
 
         log.info("Seeding Scenes, from: "+startInclusive.toString()+" to "+endExclusive.toString());
-        for (val productType: productTypes) {
-            seedScenes(productType, productParams.get(productType.getName()));
+        for (val product: products) {
+            seedScenes(product, productParams.get(product.getName()));
         }
     }
 
     private void seedProductsS4EDemo() {
-        log.info("Seeding ProductTypes: s4e-demo");
-        List<ProductType> productTypes = Arrays.asList(new ProductType[]{
-                ProductType.builder() // 108m
+        log.info("Seeding Products: s4e-demo");
+        List<Product> products = Arrays.asList(new Product[]{
+                Product.builder() // 108m
                         .name("Zachmurzenie (108m)")
                         .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
                         .build(),
-                ProductType.builder() // NatCol
+                Product.builder() // NatCol
                         .name("Detekcja chmur lodowych i śniegu")
                         .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
                         .build(),
-                ProductType.builder() // Polsafi
+                Product.builder() // Polsafi
                         .name("Burze")
                         .description("Obraz satelitarny HRV z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
                         .build(),
-                ProductType.builder() // RGB24_micro
+                Product.builder() // RGB24_micro
                         .name("Mikrofizyka chmur")
                         .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
                         .build(),
-                ProductType.builder() // Setvak_Eu
+                Product.builder() // Setvak_Eu
                         .name("Chmury konwekcyjne")
                         .description("Obraz satelitarny IR z dedykowaną paletą barwną")
                         .build(),
         });
-        productTypeRepository.saveAll(productTypes);
+        productRepository.saveAll(products);
 
         val productParams = Map.of(
-                productTypes.get(0).getName(), ProductParams.builder()
+                products.get(0).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,10,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,11,1,0,0))
                         .layerNameFormat("108m_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
                         .build(),
-                productTypes.get(1).getName(), ProductParams.builder()
+                products.get(1).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,06,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,07,1,0,0))
                         .layerNameFormat("NatCol_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
                         .build(),
-                productTypes.get(2).getName(), ProductParams.builder()
+                products.get(2).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,9,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,10,1,0,0))
                         .layerNameFormat("Polsafi_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
                         .build(),
-                productTypes.get(3).getName(), ProductParams.builder()
+                products.get(3).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,8,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,9,1,0,0))
                         .layerNameFormat("RGB24micro_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
                         .build(),
-                productTypes.get(4).getName(), ProductParams.builder()
+                products.get(4).getName(), ProductParams.builder()
                         .startInclusive(LocalDateTime.of(2019,7,1,0,0))
                         .endExclusive(LocalDateTime.of(2019,8,1,0,0))
                         .layerNameFormat("Setvak_{timestamp}")
@@ -214,8 +214,8 @@ public class SeedProducts implements ApplicationRunner {
                         .build()
         );
 
-        for (val productType: productTypes) {
-            seedScenes(productType, productParams.get(productType.getName()));
+        for (val product: products) {
+            seedScenes(product, productParams.get(product.getName()));
         }
     }
 
@@ -258,9 +258,9 @@ public class SeedProducts implements ApplicationRunner {
         prgOverlayRepository.saveAll(prgOverlays);
     }
 
-    private void seedScenes(ProductType productType, ProductParams params) {
+    private void seedScenes(Product product, ProductParams params) {
         val count = Duration.between(params.startInclusive, params.endExclusive).toHours();
-        log.info("Seeding scenes of product type '"+productType.getName()+"', "+count+" total (from "+params.startInclusive+" to "+params.endExclusive+")");
+        log.info("Seeding scenes of product '"+ product.getName()+"', "+count+" total (from "+params.startInclusive+" to "+params.endExclusive+")");
         for (long i = 0; i < count; i++) {
             val timestamp = params.startInclusive.plusHours(i);
             Function<String, String> replacer = (str) -> str
@@ -271,7 +271,7 @@ public class SeedProducts implements ApplicationRunner {
 
             if (syncGeoserver) {
                 val scene = Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .timestamp(timestamp)
                         .layerName(layerName)
                         .s3Path(s3Path)
@@ -297,7 +297,7 @@ public class SeedProducts implements ApplicationRunner {
             // If we don't sync GeoServer, verify the layer exists before saving.
             } else if (geoServerService.layerExists(layerName)) {
                 val scene = Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .timestamp(timestamp)
                         .layerName(layerName)
                         .s3Path(s3Path)
@@ -306,11 +306,11 @@ public class SeedProducts implements ApplicationRunner {
 
                 sceneRepository.save(scene);
             } else {
-                log.info(String.format("Layer '%s' doesn't exist, omitting productType '%s' timestamp %s", layerName, productType.getName(), timestamp));
+                log.info(String.format("Layer '%s' doesn't exist, omitting product '%s' timestamp %s", layerName, product.getName(), timestamp));
             }
 
             if ((i+1) % 100 == 0) {
-                log.info((i+1)+"/"+count+" scenes of product type '"+productType.getName()+"' processed");
+                log.info((i+1)+"/"+count+" scenes of product '"+ product.getName()+"' processed");
             }
         }
     }

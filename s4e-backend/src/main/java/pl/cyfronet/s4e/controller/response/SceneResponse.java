@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 @Builder
 public class SceneResponse {
     private Long id;
-    private Long productTypeId;
+    private Long productId;
     private ZonedDateTime timestamp;
     private String layerName;
     private Legend legend;
@@ -20,7 +20,7 @@ public class SceneResponse {
     public static SceneResponse of(Scene scene) {
         return SceneResponse.builder()
                 .id(scene.getId())
-                .productTypeId(scene.getProductType().getId())
+                .productId(scene.getProduct().getId())
                 .timestamp(ZonedDateTime.of(scene.getTimestamp(), Constants.ZONE_ID))
                 .layerName(scene.getLayerName())
                 .legend(scene.getLegend())

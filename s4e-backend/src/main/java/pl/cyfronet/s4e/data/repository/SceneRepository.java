@@ -9,9 +9,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SceneRepository extends CrudRepository<Scene, Long> {
-    List<Scene> findByProductTypeId(Long productTypeId);
-    List<Scene> findAllByProductTypeIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
-            Long productTypeId, LocalDateTime start, LocalDateTime end
+    List<Scene> findByProductId(Long productId);
+    List<Scene> findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
+            Long productId, LocalDateTime start, LocalDateTime end
     );
 
     // I wanted the method to return List<LocalDate>, but spring-data seems to have a problem with conversions
@@ -21,7 +21,7 @@ public interface SceneRepository extends CrudRepository<Scene, Long> {
     @Query(value =
             "SELECT DISTINCT DATE(s.timestamp) " +
             "FROM Scene AS s " +
-            "WHERE s.product_type_id = :productTypeId AND s.timestamp >= :start AND s.timestamp < :end",
+            "WHERE s.product_id = :productId AND s.timestamp >= :start AND s.timestamp < :end",
             nativeQuery = true)
-    List<Date> findDatesWithData(Long productTypeId, LocalDateTime start, LocalDateTime end);
+    List<Date> findDatesWithData(Long productId, LocalDateTime start, LocalDateTime end);
 }

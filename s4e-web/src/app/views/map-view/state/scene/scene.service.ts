@@ -24,7 +24,7 @@ export class SceneService {
   get(productId: number, date: string) {
     this.sceneStore.setLoading(true);
     this.sceneStore.set([]);
-    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/scenes/productTypeId/${productId}`, {params: {date}}).pipe(
+    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/scenes/productId/${productId}`, {params: {date}}).pipe(
       finalize(() => this.sceneStore.setLoading(false))
     ).subscribe((entities) => {
       this.sceneStore.set(entities);

@@ -17,13 +17,13 @@ import java.util.List;
         name = "jsonb",
         typeClass = JsonBinaryType.class
 )
-public class ProductType {
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotEmpty
     private String name;
-    @OneToMany(mappedBy = "productType")
+    @OneToMany(mappedBy = "product")
     private List<Scene> scenes;
     private String description;
     @Type(type = "jsonb")
