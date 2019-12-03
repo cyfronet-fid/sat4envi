@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
@@ -23,6 +23,8 @@ import {SceneService} from './state/scene/scene.service';
 import {ProductService} from './state/product/product.service';
 import {ProductQuery} from './state/product/product.query';
 import {SceneQuery} from './state/scene/scene.query.service';
+import {MapComponent} from './map/map.component';
+import {ModalService} from '../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-map-view',
@@ -53,6 +55,8 @@ export class MapViewComponent implements OnInit {
   public selectedLocation$: Subject<SearchResult> = new Subject<SearchResult>();
   public currentTimelineDate$: Observable<string>;
   public availableDates$: Observable<string[]>;
+  public showZKOptions$: Observable<boolean>;
+  @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
   constructor(private mapService: MapService,
               private mapQuery: MapQuery,
@@ -68,6 +72,7 @@ export class MapViewComponent implements OnInit {
               private legendService: LegendService,
               private searchResultsService: SearchResultsService,
               private searchResultsQuery: SearchResultsQuery,
+              private modalService: ModalService,
               private CONFIG: S4eConfig) {
   }
 
@@ -85,7 +90,7 @@ export class MapViewComponent implements OnInit {
     this.overlaysLoading$ = this.overlayQuery.selectLoading();
     this.productLoading$ = this.productQuery.selectLoading();
     this.mapState$ = this.mapQuery.select();
-    this.activeProducts$ = this.productQuery.selectActive() as Observable<Product>;
+    this.activeProducts$ = this.productQuery.selectActive();
     this.legend$ = this.legendQuery.selectLegend();
     this.legendState$ = this.legendQuery.select();
     this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
@@ -95,10 +100,10 @@ export class MapViewComponent implements OnInit {
     this.overlayService.get();
     this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
     this.availableDates$ = this.productQuery.selectAvailableDates();
+    this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
   }
 
   selectProduct (productId: number | null) {
-    console.log('selectProduct', productId);
     this.productService.setActive(productId);
   }
 
@@ -133,5 +138,26 @@ export class MapViewComponent implements OnInit {
 
   loadAvailableDates($event: string) {
     this.productService.fetchAvailableDays($event);
+  }
+
+  toggleZKOptions(show: boolean = true) {
+    this.mapService.toggleZKOptions(show);
+  }
+
+
+  downloadMapImage() {
+    this.mapComponent.downloadMap();
+  }
+
+  openReportModal() {
+    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+  }
+
+  openSaveViewModal() {
+    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+  }
+
+  openShareViewModal() {
+    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
   }
 }

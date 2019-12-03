@@ -12,8 +12,7 @@
                   [searchResults]="placeSearchResults$ | async"
                   [searchResultsLoading]="placeSearchLoading$ | async"
                   [searchResultsOpen]="placeSearchResultsOpen$ | async"
-                  (searchResultClicked)="navigateToPlace($event)"
->
+                  (searchResultClicked)="navigateToPlace($event)">
 </s4e-view-manager>
 <s4e-legend *ngIf="legend$ | async"
             [isOpen]="(legendState$ | async).isOpen"
@@ -34,9 +33,25 @@
 </s4e-timeline>
 
 <s4e-map class="section map"
+         #map
          [selectedLocation]="selectedLocation$"
          [overlays]="overlays$ | async"
-         [activeScene]="activeScene$ | async"
->
-
+         [activeScene]="activeScene$ | async">
 </s4e-map>
+
+<ng-container *ngIf="userLoggedIn$ | async">
+  <button (click)="toggleZKOptions()" id="zk-options-button" style="position:absolute; right: 60px; top: 15px;" class="button button--default">
+    <fa-icon icon="bars"></fa-icon>
+  </button>
+  <ng-container *ngIf="showZKOptions$ | async">
+    <div class="backdrop" (click)="toggleZKOptions(false)"></div>
+    <div class="zk-options">
+      <ul>
+        <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz Obraz</a></li>
+        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Zapisz Raport</a></li>
+        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Udostępnij widok</a></li>
+        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok</a></li>
+      </ul>
+    </div>
+  </ng-container>
+</ng-container>

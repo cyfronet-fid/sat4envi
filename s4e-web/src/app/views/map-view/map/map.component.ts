@@ -26,7 +26,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   @Input() set overlays(value: UIOverlay[]) {
-    console.log(this._overlays);
     this._overlays = value;
     this.overlays$.next(value);
   }
@@ -152,7 +151,7 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  downloadMap() {
+  public downloadMap() {
     this.mapWorking = true;
     const canvas = this.map.getViewport().firstChild;
 

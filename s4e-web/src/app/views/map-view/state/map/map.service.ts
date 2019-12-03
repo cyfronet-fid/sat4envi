@@ -14,4 +14,8 @@ export class MapService {
               private CONFIG: S4eConfig
   ) {
   }
+
+  toggleZKOptions(open: boolean = true) {
+    this.mapStore.update({zkOptionsOpened: open});
+  }
 }
