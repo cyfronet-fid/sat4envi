@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.service.GeoServerService;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class GeoServerSynchronizer {
-    private final ProductRepository productRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
 

@@ -24,7 +24,7 @@ public class ProductType {
     @NotEmpty
     private String name;
     @OneToMany(mappedBy = "productType")
-    private List<Product> products;
+    private List<Scene> scenes;
     private String description;
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")

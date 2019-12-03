@@ -11,11 +11,11 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.ProductType;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
@@ -59,7 +59,7 @@ public class SeedProducts implements ApplicationRunner {
     private String dataSet;
 
     private final ProductTypeRepository productTypeRepository;
-    private final ProductRepository productRepository;
+    private final SceneRepository sceneRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
 
@@ -74,12 +74,12 @@ public class SeedProducts implements ApplicationRunner {
         }
 
         if (seedDb) {
-            productRepository.deleteAll();
+            sceneRepository.deleteAll();
             productTypeRepository.deleteAll();
             prgOverlayRepository.deleteAll();
             sldStyleRepository.deleteAll();
 
-            seedProducts();
+            seedScenes();
             seedOverlays();
         }
 
@@ -94,7 +94,7 @@ public class SeedProducts implements ApplicationRunner {
         log.info("Seeding complete");
     }
 
-    private void seedProducts() {
+    private void seedScenes() {
         switch (dataSet) {
             case "minio-data-v1":
                 seedProductsMinioDataV1();
@@ -149,9 +149,9 @@ public class SeedProducts implements ApplicationRunner {
                         .build()
         );
 
-        log.info("Seeding Products, from: "+startInclusive.toString()+" to "+endExclusive.toString());
+        log.info("Seeding Scenes, from: "+startInclusive.toString()+" to "+endExclusive.toString());
         for (val productType: productTypes) {
-            seedProducts(productType, productParams.get(productType.getName()));
+            seedScenes(productType, productParams.get(productType.getName()));
         }
     }
 
@@ -215,7 +215,7 @@ public class SeedProducts implements ApplicationRunner {
         );
 
         for (val productType: productTypes) {
-            seedProducts(productType, productParams.get(productType.getName()));
+            seedScenes(productType, productParams.get(productType.getName()));
         }
     }
 
@@ -258,9 +258,9 @@ public class SeedProducts implements ApplicationRunner {
         prgOverlayRepository.saveAll(prgOverlays);
     }
 
-    private void seedProducts(ProductType productType, ProductParams params) {
+    private void seedScenes(ProductType productType, ProductParams params) {
         val count = Duration.between(params.startInclusive, params.endExclusive).toHours();
-        log.info("Seeding products of product type '"+productType.getName()+"', "+count+" total (from "+params.startInclusive+" to "+params.endExclusive+")");
+        log.info("Seeding scenes of product type '"+productType.getName()+"', "+count+" total (from "+params.startInclusive+" to "+params.endExclusive+")");
         for (long i = 0; i < count; i++) {
             val timestamp = params.startInclusive.plusHours(i);
             Function<String, String> replacer = (str) -> str
@@ -270,7 +270,7 @@ public class SeedProducts implements ApplicationRunner {
             val s3Path = replacer.apply(params.s3PathFormat);
 
             if (syncGeoserver) {
-                val product = Product.builder()
+                val scene = Scene.builder()
                         .productType(productType)
                         .timestamp(timestamp)
                         .layerName(layerName)
@@ -278,25 +278,25 @@ public class SeedProducts implements ApplicationRunner {
                         .created(!syncGeoserver)
                         .build();
 
-                productRepository.save(product);
+                sceneRepository.save(scene);
 
                 try {
-                    if (!geoServerService.layerExists(product.getLayerName())) {
-                        geoServerService.addLayer(product);
+                    if (!geoServerService.layerExists(scene.getLayerName())) {
+                        geoServerService.addLayer(scene);
                     }
-                    product.setCreated(true);
-                    productRepository.save(product);
+                    scene.setCreated(true);
+                    sceneRepository.save(scene);
                 } catch (Exception e) {
-                    log.warn(String.format("Cannot create layer for %s. Deleting product", product.toString()), e);
+                    log.warn(String.format("Cannot create layer for %s. Deleting scene", scene.toString()), e);
                     try {
-                        productRepository.delete(product);
+                        sceneRepository.delete(scene);
                     } catch (Exception e1) {
                         // ignore
                     }
                 }
             // If we don't sync GeoServer, verify the layer exists before saving.
             } else if (geoServerService.layerExists(layerName)) {
-                val product = Product.builder()
+                val scene = Scene.builder()
                         .productType(productType)
                         .timestamp(timestamp)
                         .layerName(layerName)
@@ -304,13 +304,13 @@ public class SeedProducts implements ApplicationRunner {
                         .created(true)
                         .build();
 
-                productRepository.save(product);
+                sceneRepository.save(scene);
             } else {
                 log.info(String.format("Layer '%s' doesn't exist, omitting productType '%s' timestamp %s", layerName, productType.getName(), timestamp));
             }
 
             if ((i+1) % 100 == 0) {
-                log.info((i+1)+"/"+count+" products of product type '"+productType.getName()+"' processed");
+                log.info((i+1)+"/"+count+" scenes of product type '"+productType.getName()+"' processed");
             }
         }
     }

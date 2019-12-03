@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.ProductType;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public class ProductTypeControllerTest {
     private ProductTypeRepository repository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private SceneRepository sceneRepository;
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +40,7 @@ public class ProductTypeControllerTest {
     }
 
     private void resetProductTypes() {
-        productRepository.deleteAll();
+        sceneRepository.deleteAll();
         repository.deleteAll();
         Map<String,String> leftDesc = new HashMap<>();
         leftDesc.put("0.75","upper text left");

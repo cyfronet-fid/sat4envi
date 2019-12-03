@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
         name = "jsonb",
         typeClass = JsonBinaryType.class
 )
-public class Product {
+public class Scene {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

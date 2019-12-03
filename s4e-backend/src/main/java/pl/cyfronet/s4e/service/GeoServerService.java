@@ -9,7 +9,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.util.S3AddressUtil;
@@ -35,11 +35,11 @@ public class GeoServerService {
         geoServerOperations.createWorkspace(workspace);
     }
 
-    public void addLayer(Product product) {
+    public void addLayer(Scene scene) {
         // Both the coverage store, coverage and layer (the last one with workspace prefix) names will be the same
-        String gsName = product.getLayerName();
+        String gsName = scene.getLayerName();
         try {
-            geoServerOperations.createS3CoverageStore(workspace, gsName, s3AddressUtil.getS3Address(product.getS3Path()));
+            geoServerOperations.createS3CoverageStore(workspace, gsName, s3AddressUtil.getS3Address(scene.getS3Path()));
             geoServerOperations.createS3Coverage(workspace, gsName, gsName);
         } catch (RestClientResponseException e) {
             // try to clean up GeoServer state

@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.ProductType;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
@@ -35,7 +35,7 @@ public class GeoServerServiceIntegrationTest {
     private ProductTypeRepository productTypeRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private SceneRepository sceneRepository;
 
     @Autowired
     private SldStyleRepository sldStyleRepository;
@@ -51,7 +51,7 @@ public class GeoServerServiceIntegrationTest {
 
     @BeforeEach
     public void beforeEach() {
-        productRepository.deleteAll();
+        sceneRepository.deleteAll();
         productTypeRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
@@ -64,15 +64,15 @@ public class GeoServerServiceIntegrationTest {
                 ProductType.builder()
                         .name("productType")
                         .build());
-        Product product = productRepository.save(
-                Product.builder()
+        Scene scene = sceneRepository.save(
+                Scene.builder()
                         .productType(productType)
                         .timestamp(LocalDateTime.now())
                         .layerName("testLayerName")
                         .s3Path("201810042345_Merkator_WV-IR.tif")
                         .build());
 
-        geoServerService.addLayer(product);
+        geoServerService.addLayer(scene);
 
         assertThat(geoServerOperations.listCoverages(workspace, "testLayerName"), contains("testLayerName"));
     }
