@@ -12,11 +12,11 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.util.S3AddressUtil;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 class GeoServerServiceTest {
 
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -53,7 +53,7 @@ class GeoServerServiceTest {
     private String workspace;
 
     private GeoServerService geoServerService;
-    private ProductType productType;
+    private Product product;
     private Scene scene;
     private SldStyle sldStyle;
     private PRGOverlay prgOverlay;
@@ -61,7 +61,7 @@ class GeoServerServiceTest {
     @BeforeEach
     public void beforeEach() {
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
     }
@@ -72,13 +72,13 @@ class GeoServerServiceTest {
                 s3AddressUtil);
         ReflectionTestUtils.setField(geoServerService, "workspace", workspace);
 
-        productType = productTypeRepository.save(
-                ProductType.builder()
+        product = productRepository.save(
+                Product.builder()
                         .name("productType")
                         .build());
         scene = sceneRepository.save(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .timestamp(LocalDateTime.now())
                         .layerName("testLayerName")
                         .s3Path("some/s3/path.tif")

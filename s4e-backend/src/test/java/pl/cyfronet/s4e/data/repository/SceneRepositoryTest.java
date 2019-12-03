@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ class SceneRepositoryTest {
     private SceneRepository sceneRepository;
 
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @BeforeEach
     void setUp() {
@@ -39,12 +39,12 @@ class SceneRepositoryTest {
 
     private void reset() {
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Test
     void findDatesWithData() {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("108m")
                 .description("sth")
                 .build());
@@ -56,37 +56,37 @@ class SceneRepositoryTest {
          */
         val scenes = List.of(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName0")
                         .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName4")
                         .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName5")
                         .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
                         .s3Path("some/path")
@@ -94,7 +94,7 @@ class SceneRepositoryTest {
         );
         sceneRepository.saveAll(scenes);
 
-        List<Date> datesWithData = sceneRepository.findDatesWithData(productType.getId(), LocalDateTime.of(2019, 10, 1, 0, 0), LocalDateTime.of(2019, 11, 1, 0, 0));
+        List<Date> datesWithData = sceneRepository.findDatesWithData(product.getId(), LocalDateTime.of(2019, 10, 1, 0, 0), LocalDateTime.of(2019, 11, 1, 0, 0));
 
         List<LocalDate> datesWithDataConverted = datesWithData.stream()
                 .map(Date::toLocalDate)

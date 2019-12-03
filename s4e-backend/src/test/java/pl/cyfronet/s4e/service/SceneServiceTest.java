@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Webhook;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
 
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class SceneServiceTest {
 
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -43,33 +43,33 @@ public class SceneServiceTest {
 
     @BeforeEach
     public void setUp() {
-        sceneService = new SceneService(sceneRepository, productTypeRepository, s3Util);
+        sceneService = new SceneService(sceneRepository, productRepository, s3Util);
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Test
     public void shouldReturnFilteredScenes() {
-        ProductType productType = ProductType.builder()
+        Product product = Product.builder()
                 .name("testProductType")
                 .build();
-        productTypeRepository.save(productType);
+        productRepository.save(product);
 
         val scenes = List.of(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 11, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 11, 1, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 12, 0, 0))
                         .s3Path("some/path")
@@ -77,20 +77,20 @@ public class SceneServiceTest {
         );
         sceneRepository.saveAll(scenes);
 
-        List<Scene> returned = sceneService.getScenes(productType.getId(), scenes.get(0).getTimestamp(), scenes.get(2).getTimestamp());
+        List<Scene> returned = sceneService.getScenes(product.getId(), scenes.get(0).getTimestamp(), scenes.get(2).getTimestamp());
 
         assertThat(returned.stream().map(Scene::getId).collect(Collectors.toList()), contains(scenes.get(0).getId(),scenes.get(1).getId()));
     }
 
     @Test
     public void shouldSaveScene(){
-        ProductType productType = ProductType.builder()
+        Product product = Product.builder()
                 .name("testProductType")
                 .build();
-        productTypeRepository.save(productType);
+        productRepository.save(product);
 
         Scene scene = Scene.builder()
-                .productType(productType)
+                .product(product)
                 .layerName("testLayerName")
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
@@ -109,24 +109,24 @@ public class SceneServiceTest {
                 .eventName("EventName")
                 .key(WEBHOOK_KEY)
                 .build();
-        ProductType productType = ProductType.builder()
+        Product product = Product.builder()
                 .name("WV-IR")
                 .build();
-        productTypeRepository.save(productType);
-        when(s3Util.getProductType(anyString())).thenReturn("WV-IR");
+        productRepository.save(product);
+        when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
 
         Scene buildFromWebhook = sceneService.buildFromWebhook(webhook);
-        assertThat(buildFromWebhook.getProductType().getName(), is(equalTo("WV-IR")));
+        assertThat(buildFromWebhook.getProduct().getName(), is(equalTo("WV-IR")));
     }
 
     @Test
-    public void shouldReturnProductType() throws NotFoundException {
-        ProductType productType = ProductType.builder()
+    public void shouldReturnProduct() throws NotFoundException {
+        Product product = Product.builder()
                 .name("WV-IR")
                 .build();
-        productTypeRepository.save(productType);
-        when(s3Util.getProductType(anyString())).thenReturn("WV-IR");
-        ProductType fromDb = sceneService.getProductType(WEBHOOK_KEY);
+        productRepository.save(product);
+        when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
+        Product fromDb = sceneService.getProduct(WEBHOOK_KEY);
         assertThat(fromDb.getName(), is(equalTo("WV-IR")));
     }
 

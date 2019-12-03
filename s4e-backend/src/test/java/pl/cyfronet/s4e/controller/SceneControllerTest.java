@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
 @BasicTest
 public class SceneControllerTest {
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -48,23 +48,23 @@ public class SceneControllerTest {
 
     private void reset() {
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Test
     public void shouldReturnZuluZonedTimestamp() throws Exception {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("108m")
                 .description("sth")
                 .build());
         sceneRepository.save(Scene.builder()
-                .productType(productType)
+                .product(product)
                 .layerName("testLayerName")
                 .timestamp(LocalDateTime.of(2019, 10, 11, 12, 13))
                 .s3Path("some/path")
                 .build());
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productTypeId/" + productType.getId()))
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
                 .andExpect(jsonPath("$[0].timestamp").value(is(equalTo("2019-10-11T12:13:00Z"))));
@@ -72,26 +72,26 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnScenes() throws Exception {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("108m")
                 .description("sth")
                 .build());
 
         val scenes = List.of(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
                         .s3Path("some/path")
@@ -99,7 +99,7 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productTypeId/" + productType.getId()))
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$..id", contains(
@@ -110,26 +110,26 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnFilteredScenes() throws Exception {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("108m")
                 .description("sth")
                 .build());
 
         val scenes = List.of(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
                         .s3Path("some/path")
@@ -137,7 +137,7 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productTypeId/" + productType.getId())
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId())
                 .param("date", "2019-10-01"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(2))))
@@ -148,7 +148,7 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnAvailabilityDates() throws Exception {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("108m")
                 .description("sth")
                 .build());
@@ -160,37 +160,37 @@ public class SceneControllerTest {
          */
         val scenes = List.of(
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName0")
                         .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName4")
                         .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
                 Scene.builder()
-                        .productType(productType)
+                        .product(product)
                         .layerName("testLayerName5")
                         .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
                         .s3Path("some/path")
@@ -198,7 +198,7 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productTypeId/" + productType.getId() + "/available")
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId() + "/available")
                 .param("yearMonth", "2019-10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))

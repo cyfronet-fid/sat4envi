@@ -23,7 +23,7 @@ public class Scene {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(optional = false)
-    private ProductType productType;
+    private Product product;
     @NotNull
     private LocalDateTime timestamp;
     /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information

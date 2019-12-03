@@ -99,10 +99,10 @@ the `RestTemplate`'s timeout.
 There are currently two data sets which the backend is capable of seeding: `minio-data-v1` and `s4e-demo`.
 The default is `minio-data-v1`, but another one can be set with the property `seed.products.data-set`.
 
-`minio-data-v1` contains a single day of data for three product types.
+`minio-data-v1` contains a single day of data for three products.
 It uses local minio for S3 storage.
 
-`s4e-demo` is a data set which consists of a month of data of five product types.
+`s4e-demo` is a data set which consists of a month of data of five products.
 There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
 After setting the property `seed.products.data-set`, you must modify the GeoServer docker container volume to point to
 the `s3.properties` file with cyfronet's CEPH instance url and credentials.

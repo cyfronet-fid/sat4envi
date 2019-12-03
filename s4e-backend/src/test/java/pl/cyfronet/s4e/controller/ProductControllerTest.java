@@ -8,9 +8,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Legend;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,9 +24,9 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @AutoConfigureMockMvc
 @BasicTest
-public class ProductTypeControllerTest {
+public class ProductControllerTest {
     @Autowired
-    private ProductTypeRepository repository;
+    private ProductRepository repository;
 
     @Autowired
     private SceneRepository sceneRepository;
@@ -36,10 +36,10 @@ public class ProductTypeControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        resetProductTypes();
+        resetProducts();
     }
 
-    private void resetProductTypes() {
+    private void resetProducts() {
         sceneRepository.deleteAll();
         repository.deleteAll();
         Map<String,String> leftDesc = new HashMap<>();
@@ -54,34 +54,34 @@ public class ProductTypeControllerTest {
                 .leftDescription(leftDesc)
                 .rightDescription(rightDesc)
                 .build();
-        List<ProductType> productTypes = Arrays.asList(ProductType.builder()
+        List<Product> products = Arrays.asList(Product.builder()
                         .name("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
-                ProductType.builder()
+                Product.builder()
                         .name("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
-                ProductType.builder()
+                Product.builder()
                         .name("WV-IR")
                         .description("Opis produktu WV-IR.")
                         .legend(legend)
                         .build());
-        repository.saveAll(productTypes);
+        repository.saveAll(products);
     }
 
     @Test
-    public void shouldReturnProductTypeWithoutInfo() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/productTypes"))
+    public void shouldReturnProductWithoutInfo() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$[0].description").doesNotExist());
     }
 
     @Test
-    public void shouldReturnProductTypeWithInfo() throws Exception {
-        ProductType productType = repository.findByNameContainingIgnoreCase("WV-IR").orElseThrow();
-        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/productTypes/" + productType.getId()));
+    public void shouldReturnProductWithInfo() throws Exception {
+        Product product = repository.findByNameContainingIgnoreCase("WV-IR").orElseThrow();
+        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId()));
         result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is(equalTo("WV-IR"))))

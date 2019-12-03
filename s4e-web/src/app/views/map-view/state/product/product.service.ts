@@ -25,7 +25,7 @@ export class ProductService {
 
   get() {
     this.sceneStore.setLoading(true);
-    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/productTypes`).pipe(
+    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products`).pipe(
       finalize(() => this.sceneStore.setLoading(false)),
     ).subscribe(data => this.productStore.set(data));
   }
@@ -54,7 +54,7 @@ export class ProductService {
       return;
     }
     this.productStore.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productTypeId/${this.productQuery.getActiveId()}/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productId/${this.productQuery.getActiveId()}/available?yearMonth=${dateF}`)
       .subscribe(data => this.updateAvailableDays(data));
   }
 
@@ -68,7 +68,7 @@ export class ProductService {
 
     const dateF = moment({year: ui.selectedYear, month: ui.selectedMonth}).format('YYYY-MM');
 
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productTypeId/${activeProductId}/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productId/${activeProductId}/available?yearMonth=${dateF}`)
       .pipe(finalize(() => this.productStore.setLoading(false)))
       .subscribe(data => {
         this.updateAvailableDays(data);
@@ -98,7 +98,7 @@ export class ProductService {
 
   private getSingle$(product: Product): Observable<any> {
     if (product.legend === undefined) {
-      return this.http.get<Product>(`${this.CONFIG.apiPrefixV1}/productTypes/${product.id}`)
+      return this.http.get<Product>(`${this.CONFIG.apiPrefixV1}/products/${product.id}`)
         .pipe(tap(pt => this.productStore.upsert(product.id, pt)));
     } else {
       return of(null);

@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.ProductType;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 
 import java.time.LocalDateTime;
 
@@ -22,17 +22,17 @@ public class DbTimestampTest {
     private SceneRepository sceneRepository;
 
     @Autowired
-    private ProductTypeRepository productTypeRepository;
+    private ProductRepository productRepository;
 
     @BeforeEach
     public void beforeEach() {
         sceneRepository.deleteAll();
-        productTypeRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
     @Test
     public void shouldSaveTimestampWithoutDSTCorrections() {
-        val productType = productTypeRepository.save(ProductType.builder()
+        val product = productRepository.save(Product.builder()
                 .name("testProductType")
                 .build());
 
@@ -40,15 +40,15 @@ public class DbTimestampTest {
         // on writing to DB.
         LocalDateTime dstBorderTimestamp = LocalDateTime.of(2019, 3, 31, 2, 0);
         val scene = sceneRepository.save(Scene.builder()
-                .productType(productType)
+                .product(product)
                 .layerName("testLayerName")
                 .timestamp(dstBorderTimestamp)
                 .s3Path("some/path")
                 .build());
 
-        val productId = sceneRepository.save(scene).getId();
+        val sceneId = sceneRepository.save(scene).getId();
 
-        val retrievedScene = sceneRepository.findById(productId).get();
+        val retrievedScene = sceneRepository.findById(sceneId).get();
         assertThat(retrievedScene.getTimestamp(), is(equalTo(dstBorderTimestamp)));
     }
 }

@@ -11,7 +11,7 @@ public class S3Util {
      *
      * @param key
      *  key should contain bucket/path/to/file/filename.ext
-     *  filename convention: timestamp_*_productType.extension
+     *  filename convention: timestamp_*_product.extension
      * @return LocalDateTime made from timestamp
      */
     public LocalDateTime getTimeStamp(String key) {
@@ -23,10 +23,10 @@ public class S3Util {
      *
      * @param key
      *  key should contain bucket/path/to/file/filename.ext
-     *  filename convention: timestamp_*_productType.extension
-     * @return part of filename that represents productType
+     *  filename convention: timestamp_*_product.extension
+     * @return part of filename that represents product
      */
-    public String getProductType(String key){
+    public String getProduct(String key){
         return key.replaceAll(".*_","").replaceAll("\\..*","");
     }
 
@@ -34,7 +34,7 @@ public class S3Util {
      *
      * @param key
      *  key should contain bucket/path/to/file/filename.ext
-     *  filename convention: timestamp_*_productType.extension
+     *  filename convention: timestamp_*_product.extension
      * @return part of key: path/to/file/filename
      */
     public String getLayerName(String key){
@@ -45,7 +45,7 @@ public class S3Util {
      *
      * @param key
      *  key should contain bucket/path/to/file/filename.ext
-     *  filename convention: timestamp_*_productType.extension
+     *  filename convention: timestamp_*_product.extension
      * @return part of key: path/to/file/filename.ext
      */
     public String getS3Path(String key){
