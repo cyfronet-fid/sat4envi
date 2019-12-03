@@ -11,11 +11,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.ProductType;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
@@ -35,7 +35,7 @@ class GeoServerServiceTest {
     private ProductTypeRepository productTypeRepository;
 
     @Autowired
-    private ProductRepository productRepository;
+    private SceneRepository sceneRepository;
 
     @Autowired
     private SldStyleRepository sldStyleRepository;
@@ -54,13 +54,13 @@ class GeoServerServiceTest {
 
     private GeoServerService geoServerService;
     private ProductType productType;
-    private Product product;
+    private Scene scene;
     private SldStyle sldStyle;
     private PRGOverlay prgOverlay;
 
     @BeforeEach
     public void beforeEach() {
-        productRepository.deleteAll();
+        sceneRepository.deleteAll();
         productTypeRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
@@ -76,8 +76,8 @@ class GeoServerServiceTest {
                 ProductType.builder()
                         .name("productType")
                         .build());
-        product = productRepository.save(
-                Product.builder()
+        scene = sceneRepository.save(
+                Scene.builder()
                         .productType(productType)
                         .timestamp(LocalDateTime.now())
                         .layerName("testLayerName")
@@ -99,10 +99,10 @@ class GeoServerServiceTest {
     public void shouldAddLayerAndSetCreatedFlag() {
         prepare();
 
-        geoServerService.addLayer(product);
+        geoServerService.addLayer(scene);
 
-        verify(geoServerOperations, times(1)).createS3CoverageStore(workspace, product.getLayerName(), s3AddressUtil.getS3Address(product.getS3Path()));
-        verify(geoServerOperations, times(1)).createS3Coverage(workspace, product.getLayerName(), product.getLayerName());
+        verify(geoServerOperations, times(1)).createS3CoverageStore(workspace, scene.getLayerName(), s3AddressUtil.getS3Address(scene.getS3Path()));
+        verify(geoServerOperations, times(1)).createS3Coverage(workspace, scene.getLayerName(), scene.getLayerName());
         verifyNoMoreInteractions(geoServerOperations);
     }
 
@@ -111,10 +111,10 @@ class GeoServerServiceTest {
         prepare();
         doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(geoServerOperations).createS3CoverageStore(any(), any(), any());
 
-        assertThrows(HttpClientErrorException.class, () -> geoServerService.addLayer(product));
+        assertThrows(HttpClientErrorException.class, () -> geoServerService.addLayer(scene));
 
-        verify(geoServerOperations, times(1)).createS3CoverageStore(workspace, product.getLayerName(), s3AddressUtil.getS3Address(product.getS3Path()));
-        verify(geoServerOperations, times(1)).deleteCoverageStore(workspace, product.getLayerName(), true);
+        verify(geoServerOperations, times(1)).createS3CoverageStore(workspace, scene.getLayerName(), s3AddressUtil.getS3Address(scene.getS3Path()));
+        verify(geoServerOperations, times(1)).deleteCoverageStore(workspace, scene.getLayerName(), true);
         verifyNoMoreInteractions(geoServerOperations);
     }
 

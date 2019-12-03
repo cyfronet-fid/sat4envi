@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.ProductType;
 
 import java.sql.Date;
@@ -19,10 +19,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 
 @BasicTest
-class ProductRepositoryTest {
+class SceneRepositoryTest {
 
     @Autowired
-    private ProductRepository productRepository;
+    private SceneRepository sceneRepository;
 
     @Autowired
     private ProductTypeRepository productTypeRepository;
@@ -38,7 +38,7 @@ class ProductRepositoryTest {
     }
 
     private void reset() {
-        productRepository.deleteAll();
+        sceneRepository.deleteAll();
         productTypeRepository.deleteAll();
     }
 
@@ -54,47 +54,47 @@ class ProductRepositoryTest {
            Sep | Oct     | Nov
               *|**      *|*
          */
-        val products = List.of(
-                Product.builder()
+        val scenes = List.of(
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName0")
                         .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
-                Product.builder()
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .s3Path("some/path")
                         .build(),
-                Product.builder()
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
                         .s3Path("some/path")
                         .build(),
-                Product.builder()
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
                         .s3Path("some/path")
                         .build(),
-                Product.builder()
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName4")
                         .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
                         .s3Path("some/path")
                         .build(),
-                Product.builder()
+                Scene.builder()
                         .productType(productType)
                         .layerName("testLayerName5")
                         .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
                         .s3Path("some/path")
                         .build()
         );
-        productRepository.saveAll(products);
+        sceneRepository.saveAll(scenes);
 
-        List<Date> datesWithData = productRepository.findDatesWithData(productType.getId(), LocalDateTime.of(2019, 10, 1, 0, 0), LocalDateTime.of(2019, 11, 1, 0, 0));
+        List<Date> datesWithData = sceneRepository.findDatesWithData(productType.getId(), LocalDateTime.of(2019, 10, 1, 0, 0), LocalDateTime.of(2019, 11, 1, 0, 0));
 
         List<LocalDate> datesWithDataConverted = datesWithData.stream()
                 .map(Date::toLocalDate)

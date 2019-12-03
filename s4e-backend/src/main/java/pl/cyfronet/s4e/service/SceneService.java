@@ -3,10 +3,10 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.ProductType;
 import pl.cyfronet.s4e.bean.Webhook;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductTypeRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
@@ -20,27 +20,27 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ProductService {
-    private final ProductRepository productRepository;
+public class SceneService {
+    private final SceneRepository sceneRepository;
     private final ProductTypeRepository productTypeRepository;
     private final S3Util s3Util;
 
-    public List<Product> getProducts(Long productTypeId) {
-        return productRepository.findByProductTypeId(productTypeId);
+    public List<Scene> getScenes(Long productTypeId) {
+        return sceneRepository.findByProductTypeId(productTypeId);
     }
 
-    public List<Product> getProducts(Long productTypeId, LocalDateTime start, LocalDateTime end) {
-        return productRepository.findAllByProductTypeIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
+    public List<Scene> getScenes(Long productTypeId, LocalDateTime start, LocalDateTime end) {
+        return sceneRepository.findAllByProductTypeIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
                 productTypeId, start, end
         );
     }
 
-    public void saveProduct(Product product) {
-        productRepository.save(product);
+    public void saveScene(Scene scene) {
+        sceneRepository.save(scene);
     }
 
-    public Product buildFromWebhook(Webhook webhook) throws NotFoundException {
-        return Product.builder().productType(getProductType(webhook.getKey()))
+    public Scene buildFromWebhook(Webhook webhook) throws NotFoundException {
+        return Scene.builder().productType(getProductType(webhook.getKey()))
                 .layerName(s3Util.getLayerName(webhook.getKey()))
                 .timestamp(s3Util.getTimeStamp(webhook.getKey()))
                 .s3Path(s3Util.getS3Path(webhook.getKey())).build();
@@ -52,7 +52,7 @@ public class ProductService {
 
     public List<LocalDate> getAvailabilityDates(Long productTypeId, YearMonth yearMonth) {
         val start = LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), 1, 0, 0);
-        return productRepository.findDatesWithData(productTypeId, start, start.plusMonths(1)).stream()
+        return sceneRepository.findDatesWithData(productTypeId, start, start.plusMonths(1)).stream()
                 .map(Date::toLocalDate)
                 .collect(Collectors.toList());
     }

@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Webhook;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.GeoServerService;
-import pl.cyfronet.s4e.service.ProductService;
+import pl.cyfronet.s4e.service.SceneService;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_S3;
 
@@ -21,20 +21,20 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_S3;
 @RequiredArgsConstructor
 public class WebhooksController {
 
-    private final ProductService productService;
+    private final SceneService sceneService;
     private final GeoServerService geoServerService;
 
-    @ApiOperation("Create product in db and add to GeoServer")
+    @ApiOperation("Create scene in db and add to GeoServer")
     @PostMapping("/webhook")
     public void addedFile(@RequestBody Webhook webhook) {
         if (webhook.getEventName().contains("Post") || webhook.getEventName().contains("Put")) {
-            Product product = null;
+            Scene scene = null;
             try {
-                product = productService.buildFromWebhook(webhook);
-                productService.saveProduct(product);
-                geoServerService.addLayer(product);
-                product.setCreated(true);
-                productService.saveProduct(product);
+                scene = sceneService.buildFromWebhook(webhook);
+                sceneService.saveScene(scene);
+                geoServerService.addLayer(scene);
+                scene.setCreated(true);
+                sceneService.saveScene(scene);
             } catch (NotFoundException e) {
                 log.error("Error with files synch: [" + webhook.getKey() + "]" + e.getMessage(), e);
             }
