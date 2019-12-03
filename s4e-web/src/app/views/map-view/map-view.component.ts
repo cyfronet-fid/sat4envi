@@ -25,6 +25,7 @@ import {ProductQuery} from './state/product/product.query';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
+import {REPORT_MODAL_ID, ReportModal} from './report-modal/report-modal.model';
 
 @Component({
   selector: 's4e-map-view',
@@ -112,7 +113,7 @@ export class MapViewComponent implements OnInit {
   }
 
   selectOverlay(overlayId: string) {
-      this.overlayService.setActive(overlayId);
+    this.overlayService.setActive(overlayId);
   }
 
   logout() {
@@ -147,18 +148,28 @@ export class MapViewComponent implements OnInit {
 
   downloadMapImage() {
     this.mapComponent.downloadMap();
+    this.toggleZKOptions(false);
   }
 
   openReportModal() {
-    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+    this.mapComponent.getMapData()
+      .subscribe(mapData => this.modalService.show<ReportModal>({
+        id: REPORT_MODAL_ID, size: 'lg',
+        mapHeight: mapData.height,
+        mapWidth: mapData.width,
+        mapImage: mapData.image,
+      }));
+    this.toggleZKOptions(false);
   }
 
   openSaveViewModal() {
     this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+    this.toggleZKOptions(false);
   }
 
   openShareViewModal() {
     this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+    this.toggleZKOptions(false);
   }
 
  viewChanged($event: ViewPosition) {

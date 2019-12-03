@@ -1,7 +1,17 @@
-// tslint:disable-next-line:no-empty-interface
+export const ZOOM_LEVELS = {
+  'miasto': 10,
+  'wieś': 12
+};
+
 export interface ViewPosition {
   centerCoordinates: [number, number];
   zoomLevel: number;
+}
+
+export interface MapData {
+  image: string;
+  width: number;
+  height: number;
 }
 
 export interface MapState {
@@ -18,8 +28,3 @@ export function createInitialState(): MapState {
     }
   };
 }
-
-export const ZOOM_LEVELS = {
-  'miasto': 10,
-  'wieś': 12
-};

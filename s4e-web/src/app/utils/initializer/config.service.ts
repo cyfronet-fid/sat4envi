@@ -1,7 +1,6 @@
 import {Injectable, InjectionToken, Provider} from '@angular/core';
-import {IConfiguration, IRemoteConfiguration, RemoteConfigurationResponse} from '../../app.configuration';
+import {IConfiguration, IRemoteConfiguration} from '../../app.configuration';
 import {map, tap} from 'rxjs/operators';
-import {deserializeJsonResponse} from '../miscellaneous/miscellaneous';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable()
@@ -38,7 +37,6 @@ export class S4eConfig implements IConfiguration {
 
   loadConfiguration(): Promise<IRemoteConfiguration> {
     return this.http.get<IRemoteConfiguration>(`api/v1/config`).pipe(
-      map(data => deserializeJsonResponse(data, RemoteConfigurationResponse)),
       tap(config => this.init(config))
     ).toPromise();
   }

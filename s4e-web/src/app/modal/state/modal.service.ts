@@ -25,7 +25,7 @@ export class ModalService {
     this.store.remove(modalId);
   }
 
-  show(modal: Partial<Modal> & {id: string}) {
+  show<ModalType extends Modal = Modal>(modal: Partial<ModalType> & {id: string}) {
     if(this.document.activeElement != null) {
       (this.document.activeElement as HTMLElement).blur();
     }

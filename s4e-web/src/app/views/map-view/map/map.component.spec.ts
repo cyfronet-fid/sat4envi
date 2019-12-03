@@ -2,6 +2,8 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MapComponent} from './map.component';
 import {TestingConfigProvider} from '../../../app.configuration.spec';
 import {ShareModule} from '../../../common/share.module';
+import {ReplaySubject} from 'rxjs';
+import {take} from 'rxjs/operators';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -31,21 +33,33 @@ describe('MapComponent', () => {
     component.ngOnInit();
   });
 
-  it('should download snapshot', () => {
+  it('should getMapData generate image', (done) => {
     const spy = spyOn((component as any).map, 'renderSync');
-    const spy2 = spyOn(component.linkDownload.nativeElement, 'click');
 
     spyOn((component as any).map, 'once').and.callFake((event, callback) => {
       expect(event).toBe('rendercomplete');
       callback();
-      expect(component.linkDownload.nativeElement.getAttribute('download')).toContain('SNAPSHOT');
-      expect(component.linkDownload.nativeElement.getAttribute('href')).toEqual('data:image/png;base64,00');
     });
 
-
-    component.downloadMap();
+    component.getMapData().pipe(take(1)).subscribe(data => {
+      expect(data).toEqual({height: 150, width: 300, image: 'data:image/png;base64,00'});
+      done();
+    });
     expect(spy).toHaveBeenCalled();
-    expect(spy2).toHaveBeenCalled();
+  });
+
+  it('should downloadImage', () => {
+    const image = 'data:image/png;base64,00';
+    const mapImage = new ReplaySubject(1);
+    const spy = spyOn(component.linkDownload.nativeElement, 'click');
+    spyOn(component, 'getMapData').and.returnValue(mapImage);
+    component.downloadMap();
+    mapImage.next({image: image, width: 1, height: 1});
+    mapImage.complete();
+
+    expect(component.linkDownload.nativeElement.getAttribute('download')).toContain('SNAPSHOT');
+    expect(component.linkDownload.nativeElement.getAttribute('href')).toEqual(image);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('should emit event with correct values', () => {

@@ -26,6 +26,10 @@ import {ProductStore} from './state/product/product.store';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {SceneService} from './state/scene/scene.service';
 import {SceneStore} from './state/scene/scene.store.service';
+import { ReportModalComponent } from './report-modal/report-modal.component';
+import {makeModalProvider} from '../../modal/modal.providers';
+import {REPORT_MODAL_ID} from './report-modal/report-modal.model';
+import {ModalModule} from '../../modal/modal.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,8 @@ import {SceneStore} from './state/scene/scene.store.service';
     TimelineComponent,
     MapComponent,
     LegendComponent,
-    SearchResultsComponent
+    SearchResultsComponent,
+    ReportModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -45,6 +50,7 @@ import {SceneStore} from './state/scene/scene.store.service';
     BrowserAnimationsModule,
     OwlDateTimeModule,
     OwlMomentDateTimeModule,
+    ModalModule,
     // OwlNativeDateTimeModule
   ],
   providers: [
@@ -63,8 +69,12 @@ import {SceneStore} from './state/scene/scene.store.service';
     LegendStore,
     LegendQuery,
     LegendService,
-    AkitaGuidService
+    AkitaGuidService,
+    makeModalProvider(REPORT_MODAL_ID, ReportModalComponent)
   ],
+  entryComponents: [
+    ReportModalComponent
+  ]
 })
 export class MapModule {
   static forRoot(): ModuleWithProviders {
