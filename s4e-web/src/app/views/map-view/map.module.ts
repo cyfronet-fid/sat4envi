@@ -17,7 +17,7 @@ import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
 import {SearchResultsComponent} from './search-results/search-results.component';
 import {AkitaGuidService} from './state/search-results/guid.service';
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
+import {OwlDateTimeModule} from 'ng-pick-datetime';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OwlMomentDateTimeModule} from 'ng-pick-datetime/date-time/adapter/moment-adapter/moment-date-time.module';
 import {ProductQuery} from './state/product/product.query';
@@ -26,15 +26,17 @@ import {ProductStore} from './state/product/product.store';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {SceneService} from './state/scene/scene.service';
 import {SceneStore} from './state/scene/scene.store.service';
-import {ReportModalComponent} from './report-modal/report-modal.component';
+import {ReportModalComponent} from './zk/report-modal/report-modal.component';
 import {makeModalProvider} from '../../modal/modal.providers';
-import {REPORT_MODAL_ID} from './report-modal/report-modal.model';
+import {REPORT_MODAL_ID} from './zk/report-modal/report-modal.model';
 import {ModalModule} from '../../modal/modal.module';
 import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
 import { SentinelSearchComponent } from './sentinel-search/sentinel-search.component';
 import {InjectorModule} from '../../common/injector.module';
+import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
+import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import {InjectorModule} from '../../common/injector.module';
     LegendComponent,
     SearchResultsComponent,
     ReportModalComponent,
-    SentinelSearchComponent
+    SentinelSearchComponent,
+    ReportModalComponent,
+    ShareConfigurationModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -99,10 +103,12 @@ import {InjectorModule} from '../../common/injector.module';
     LegendQuery,
     LegendService,
     AkitaGuidService,
-    makeModalProvider(REPORT_MODAL_ID, ReportModalComponent)
+    makeModalProvider(REPORT_MODAL_ID, ReportModalComponent),
+    makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent)
   ],
   entryComponents: [
-    ReportModalComponent
+    ReportModalComponent,
+    ShareConfigurationModalComponent
   ]
 })
 export class MapModule {

@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
@@ -22,13 +22,14 @@ import {ProductQuery} from './state/product/product.query';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
-import {REPORT_MODAL_ID, ReportModal} from './report-modal/report-modal.model';
+import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {IUILayer} from './state/common.model';
-import {switchMap} from 'rxjs/operators';
+import {map, switchMap, take} from 'rxjs/operators';
 import {ProfileQuery} from '../../state/profile/profile.query';
+import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 
 @Component({
   selector: 's4e-map-view',
@@ -165,7 +166,15 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openShareViewModal() {
-    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+    combineLatest([
+      this.mapComponent.getMapData(),
+      this.mapQuery.selectQueryParamsFromStore().pipe(take(1), map(query => this.router.serializeUrl(this.router.createUrlTree([], {queryParams: query}))))
+    ])
+      .subscribe(([mapData, path]) => this.modalService.show<ConfigurationModal>({
+        id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
+        mapImage: mapData.image,
+        configurationUrl: path
+      }));
     this.toggleZKOptions(false);
   }
 
