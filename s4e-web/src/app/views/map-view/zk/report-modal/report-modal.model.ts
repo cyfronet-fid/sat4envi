@@ -1,4 +1,4 @@
-import {Modal} from '../../../modal/state/modal.model';
+import {Modal} from '../../../../modal/state/modal.model';
 
 export const REPORT_MODAL_ID = 'report-modal';
 
