@@ -1,106 +1,39 @@
-<!--<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Nakładki</h2>-->
-<!--<ul class="list-group list-group-flush">-->
-  <!--<li class="list-group-item p-2">-->
-    <!--<ng-container *ngIf="!loading">-->
-      <!--<div class="overlay m-0 p-0 text-capitalize"-->
-           <!--*ngFor="let overlay of overlays">{{ overlay.caption }}</div>-->
-    <!--</ng-container>-->
-  <!--</li>-->
-<!--</ul>-->
+<ng-container *ngIf="!(loading$ | async); else loadingRef">
+  <section class="section search">
+    <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder #searchPlacesInput
+           [formControl]="searchFc"/>
+    <button class="reset_search_button" (click)="resetSelectedLocation()">
+      <fa-icon [icon]="['fas', 'times']"></fa-icon>
+    </button>
+    <button class="search__button">
+      <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt/>
+    </button>
+  </section>
 
-<!--<h2 class="text-uppercase p-2 mb-0 font-weight-bold" i18n>Produkty</h2>-->
-<!--<ng-container *ngIf="!loading">-->
-  <!--<div class="product-view p-0 m-0"-->
-       <!--*ngFor="let recentView of recentViews"-->
-       <!--[ngClass]="{'bg-primary active': recentView.productTypeId === activeRecentView?.productTypeId}">-->
-    <!--<ul class="list-group list-group-flush">-->
-      <!--<li class="list-group-item p-2">-->
-        <!--<div class="" (click)="activeViewChange.emit(recentView)">-->
-          <!--<span class="text-capitalize d-inline-block w-40">{{ recentView.activeProductType.name }}</span>-->
+  <s4e-product-picker class="section"
+                      caption="Produkty"
+                      i18n-caption
+                      [loading]="productsLoading$ | async"
+                      [items]="products$ | async"
+                      (itemSelected)="selectProduct($event)">
+  </s4e-product-picker>
 
-          <!--<span class="font-size"><small>{{ recentView.activeProduct?.timestamp | date : 'short' }}</small>-->
-          <!--<a href="#" class="float-right"-->
-             <!--(click)="removeView.emit(recentView)">-->
-          <!--<i class="far fa-trash-alt"></i>-->
-          <!--</a>-->
-        <!--</span>-->
-        <!--</div>-->
-      <!--</li>-->
-    <!--</ul>-->
-  <!--</div>-->
-<!--</ng-container>-->
+  <s4e-product-picker class="section layers"
+                      caption="Warstwy"
+                      i18n-caption
+                      [loading]="overlaysLoading$ | async"
+                      [items]="overlays$ | async"
+                      (itemSelected)="selectOverlay($event)">
+  </s4e-product-picker>
 
-<section class="section search">
-  <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder #searchPlacesInput
-         [formControl]="searchFc"/>
-  <button class="reset_search_button" (click)="resetSelectedLocation()">
-    <fa-icon [icon]="['fas', 'times']"></fa-icon>
-  </button>
-  <button class="search__button">
-    <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt />
-  </button>
-</section>
-
-<s4e-product-picker class="section"
-                    caption="Produkty"
-                    i18n-caption
-                    [loading]="productsLoading"
-                    [items]="products"
-                    (itemSelected)="selectProduct.emit($event)">
-</s4e-product-picker>
-
-<s4e-product-picker class="section layers"
-                    caption="Warstwy"
-                    i18n-caption
-                    [loading]="overlaysLoading"
-                    [items]="overlays"
-                    (itemSelected)="selectOverlay.emit($event)">
-</s4e-product-picker>
-
-<s4e-search-results *ngIf="searchResultsOpen"
-                    [searchResults]="searchResults"
-                    [loading]="searchResultsLoading"
-                    (placeSelected)="resultsClicked($event)"
-                    class="searchResults"
->
-</s4e-search-results>
-
-<!--<section class="box layers">-->
-  <!--<header class="box__header">-->
-    <!--<span class="box__title" i18n>Warstwy</span>-->
-    <!--<span class="box__hint">-->
-      <!--<a href="#" i18n>Co to są nakładki?</a>-->
-    <!--</span>-->
-  <!--</header>-->
-  <!--<section class="box__content">-->
-    <!--<ul class="list">-->
-      <!--<li class="list__item">-->
-        <!--<button class="list__name" i18n>Warstwa x</button>-->
-        <!--<button class="icon_visibility">-->
-          <!--<img src="../../../../../assets/images/ico_eye_open.svg" alt="Eye icon - Widoczność produktu" i18n-alt />-->
-        <!--</button>-->
-      <!--</li>-->
-    <!--</ul>-->
-  <!--</section>-->
-<!--</section>-->
-
-<section class="section login">
-  <ul>
-    <ng-container *ngIf="!userLoggedIn; else logoutLink">
-    <li>
-      <button class="button button--primary button--large" routerLink="/login" i18n>Zaloguj</button>
-    </li>
-    <li>
-      <a routerLink="/register" i18n>Zarejestruj</a>
-    </li>
-    </ng-container>
-    <ng-template #logoutLink>
-      <li>
-        <button class="button button--primary button--large" routerLink="/settings" i18n>Ustawienia</button>
-      </li>
-      <li>
-        <a href="javascript:undefined" (click)="logout.emit()" i18n>Wyloguj</a>
-      </li>
-    </ng-template>
-  </ul>
-</section>
+  <s4e-search-results *ngIf="searchResultsOpen$ | async"
+                      [searchResults]="searchResults$ | async"
+                      [loading]="searchResultsLoading$ | async"
+                      (placeSelected)="navigateToPlace($event)"
+                      class="searchResults">
+  </s4e-search-results>
+</ng-container>
+<ng-template #loadingRef>
+  loading...
+  <!-- put loading here -->
+</ng-template>

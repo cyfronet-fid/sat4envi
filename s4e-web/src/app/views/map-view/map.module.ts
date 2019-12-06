@@ -5,17 +5,17 @@ import {ShareModule} from '../../common/share.module';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {MapStore} from './state/map/map.store';
-import { LayerPicker } from './view-manager/layer-picker/layer-picker.component';
-import { TimelineComponent } from './timeline/timeline.component';
-import { MapComponent } from './map/map.component';
+import {LayerPicker} from './view-manager/layer-picker/layer-picker.component';
+import {TimelineComponent} from './timeline/timeline.component';
+import {MapComponent} from './map/map.component';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {OverlayStore} from './state/overlay/overlay.store';
-import { LegendComponent } from './legend/legend.component';
+import {LegendComponent} from './legend/legend.component';
 import {LegendStore} from './state/legend/legend.store';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
-import { SearchResultsComponent } from './search-results/search-results.component';
+import {SearchResultsComponent} from './search-results/search-results.component';
 import {AkitaGuidService} from './state/search-results/guid.service';
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -26,10 +26,14 @@ import {ProductStore} from './state/product/product.store';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {SceneService} from './state/scene/scene.service';
 import {SceneStore} from './state/scene/scene.store.service';
-import { ReportModalComponent } from './report-modal/report-modal.component';
+import {ReportModalComponent} from './report-modal/report-modal.component';
 import {makeModalProvider} from '../../modal/modal.providers';
 import {REPORT_MODAL_ID} from './report-modal/report-modal.model';
 import {ModalModule} from '../../modal/modal.module';
+import {RouterModule} from '@angular/router';
+import {environment} from '../../../environments/environment';
+import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
+import { SentinelSearchComponent } from './sentinel-search/sentinel-search.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,8 @@ import {ModalModule} from '../../modal/modal.module';
     MapComponent,
     LegendComponent,
     SearchResultsComponent,
-    ReportModalComponent
+    ReportModalComponent,
+    SentinelSearchComponent
   ],
   exports: [
     MapViewComponent,
@@ -51,6 +56,23 @@ import {ModalModule} from '../../modal/modal.module';
     OwlDateTimeModule,
     OwlMomentDateTimeModule,
     ModalModule,
+    RouterModule.forChild([
+      {
+        path: '',
+        component: MapViewComponent,
+        canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
+        children: [
+          {
+            path: 'map',
+            component: ViewManagerComponent
+          },
+          {
+            path: 'sentinel-search',
+            component: SentinelSearchComponent
+          },
+        ]
+      }
+    ])
     // OwlNativeDateTimeModule
   ],
   providers: [
