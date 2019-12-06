@@ -6,14 +6,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
-import pl.cyfronet.s4e.ex.UserViaInstitutionCreationException;
 
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -41,25 +38,24 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
-    public Optional<AppUser> findById(Long id) {
-        return appUserRepository.findById(id);
-    }
+//    public Optional<AppUser> findById(Long id) {
+//        return appUserRepository.findById(id);
+//    }
 
-    @Transactional
-    public void saveWithGroupUpdate(AppUser appUser, Set<String> groupSlugs, String institutionSlug) throws UserViaInstitutionCreationException {
-        try {
-            appUserRepository.save(appUser);
-            if (groupSlugs != null) {
-                groupSlugs.forEach(slug -> {
-                    Group group = groupRepository.findBySlugAndInstitution_Slug(slug, institutionSlug).get();
-                    group.addMember(appUser);
-                    groupRepository.save(group);
-                });
-            }
-        } catch (DataIntegrityViolationException e) {
-            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
-            throw new UserViaInstitutionCreationException(e);
-        }
-
-    }
+//    @Transactional
+//    public void saveWithGroupUpdate(AppUser appUser, Set<String> groupSlugs, String institutionSlug) throws UserViaInstitutionCreationException {
+//        try {
+//            appUserRepository.save(appUser);
+//            if (groupSlugs != null) {
+//                groupSlugs.forEach(slug -> {
+//                    Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, slug).get();
+//                    group.addMember(appUser);
+//                    groupRepository.save(group);
+//                });
+//            }
+//        } catch (DataIntegrityViolationException e) {
+//            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
+//            throw new UserViaInstitutionCreationException(e);
+//        }
+//    }
 }

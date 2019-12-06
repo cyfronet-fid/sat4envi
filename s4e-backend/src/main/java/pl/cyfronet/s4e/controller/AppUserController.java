@@ -13,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
@@ -37,7 +37,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
@@ -155,7 +154,7 @@ public class AppUserController {
     @PostMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
-                                                  @PathVariable("institution") String institutionSlug) throws UserViaInstitutionCreationException {
+                                                  @PathVariable("institution") String institutionSlug) throws AppUserCreationException {
         AppUser appUser = AppUser.builder()
                 .name(request.getName())
                 .surname(request.getSurname())
@@ -165,7 +164,13 @@ public class AppUserController {
                 .enabled(false)
                 .build();
 
-        appUserService.saveWithGroupUpdate(appUser, request.getGroupSlugs(), institutionSlug);
+        appUserService.save(appUser);
+        if (request.getGroupSlugs() != null) {
+            for (String groupSlug : request.getGroupSlugs()) {
+                groupService.addMember(institutionSlug, groupSlug, appUser.getEmail());
+            }
+        }
+
 //        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
@@ -180,12 +185,11 @@ public class AppUserController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
-            throws NotFoundException, GroupUpdateException {
+            throws NotFoundException {
         if (request.getGroupSlugs() != null) {
             val user = appUserService.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new NotFoundException("User not found for email: '" + request.getEmail()));
-            Set<Group> groupsFromRequest = groupService.getAllGroupsBySlugs(request.getGroupSlugs(), institutionSlug);
-            groupService.updateUsersGroups(groupsFromRequest, user, institutionSlug);
+                    .orElseThrow(() -> new NotFoundException("User not found for email: '" + request.getEmail() + "'"));
+            groupService.updateUsersGroups(user.getId(), institutionSlug, request.getGroupSlugs());
         }
         return ResponseEntity.ok().build();
     }
