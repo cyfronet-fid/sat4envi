@@ -1,20 +1,17 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
-
 import {OverlayService} from './state/overlay/overlay.service';
-import {IUILayer} from './state/common.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
-import {MapState, ViewPosition} from './state/map/map.model';
+import {ViewPosition} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
 import {SearchResult} from './state/search-results/search-result.model';
 import {SearchResultsQuery} from './state/search-results/search-results.query';
-import {SearchResultsService} from './state/search-results/search-results.service';
 import {SessionService} from '../../state/session/session.service';
 import {SessionQuery} from '../../state/session/session.query';
 import {Scene} from './state/scene/scene.model';
@@ -33,30 +30,20 @@ import {REPORT_MODAL_ID, ReportModal} from './report-modal/report-modal.model';
   styleUrls: ['./map-view.component.scss'],
 })
 export class MapViewComponent implements OnInit {
-  productsTypeList$: Observable<IUILayer[]>;
-
-  overlays$: Observable<UIOverlay[]>;
-
+  public overlays$: Observable<UIOverlay[]>;
   public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
   public activeProducts$: Observable<Product | null>;
   public scenes$: Observable<Scene[]>;
   public scenesAreLoading$: Observable<boolean>;
-  public viewManagerLoading$: Observable<boolean>;
-  public productLoading$: Observable<boolean>;
-  public mapState$: Observable<MapState>;
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
-  public overlaysLoading$: Observable<boolean>;
   public activeOverlays$: Observable<UIOverlay[]>;
   public userLoggedIn$: Observable<boolean>;
-  public placeSearchResults$: Observable<SearchResult[]>;
-  public placeSearchLoading$: Observable<boolean>;
-  public placeSearchResultsOpen$: Observable<boolean>;
-  public selectedLocation$: Subject<SearchResult> = new Subject<SearchResult>();
   public currentTimelineDate$: Observable<string>;
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
+  public selectedLocation$: Observable<SearchResult | null>;
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
   constructor(private mapService: MapService,
@@ -71,50 +58,34 @@ export class MapViewComponent implements OnInit {
               private sessionService: SessionService,
               private legendQuery: LegendQuery,
               private legendService: LegendService,
-              private searchResultsService: SearchResultsService,
               private searchResultsQuery: SearchResultsQuery,
               private modalService: ModalService,
               private CONFIG: S4eConfig) {
   }
 
   ngOnInit(): void {
-    // this.viewManagerLoading$ = combineLatest(this.recentViewQuery.selectLoading(), this.overlayQuery.selectLoading())
-    //   .pipe(map(values => values.reduce((prev, curr) => prev || curr)));
+    this.selectedLocation$ = this.searchResultsQuery.selectLocation();
     this.loading$ = this.mapQuery.selectLoading();
-    this.productsTypeList$ = this.productQuery.selectAllAsUILayer();
     this.currentTimelineDate$ = this.productQuery.selectSelectedDate();
     this.activeScene$ = this.sceneQuery.selectActive();
     this.scenes$ = this.sceneQuery.selectAll();
     this.scenesAreLoading$ = this.sceneQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
-    this.activeOverlays$ = this.overlayQuery.selectActiveUIOverlays();
-    this.overlaysLoading$ = this.overlayQuery.selectLoading();
-    this.productLoading$ = this.productQuery.selectLoading();
-    this.mapState$ = this.mapQuery.select();
     this.activeProducts$ = this.productQuery.selectActive();
     this.legend$ = this.legendQuery.selectLegend();
     this.legendState$ = this.legendQuery.select();
-    this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
-    this.placeSearchResults$ = this.searchResultsQuery.selectAll();
-    this.placeSearchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
-    this.productService.get();
-    this.overlayService.get();
     this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
     this.availableDates$ = this.productQuery.selectAvailableDates();
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
+    this.productService.get();
+    this.overlayService.get();
   }
 
-  selectProduct(productId: number | null) {
-    this.productService.setActive(productId);
-  }
 
   selectScene(sceneId: number) {
     this.sceneService.setActive(sceneId);
   }
 
-  selectOverlay(overlayId: string) {
-    this.overlayService.setActive(overlayId);
-  }
 
   logout() {
     this.sessionService.logout();
@@ -122,14 +93,6 @@ export class MapViewComponent implements OnInit {
 
   toggleLegend() {
     this.legendService.toggleLegend();
-  }
-
-  serachForPlaces(place: string) {
-    this.searchResultsService.get(place);
-  }
-
-  navigateToPlace(place: SearchResult) {
-    this.selectedLocation$.next(place);
   }
 
   setDate($event: string) {

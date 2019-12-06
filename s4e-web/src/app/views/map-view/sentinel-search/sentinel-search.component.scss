@@ -1,0 +1,192 @@
+@import "../../../../scss/variables";
+
+form {
+  background: $color-grey-secondary;
+  margin: -15px;
+  padding: 25px 15px 50px 15px;
+  position: relative;
+  margin-bottom: 40px;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $space-default;
+  }
+
+  label {
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: $space-xsmall;
+  }
+
+  input,
+  select {
+    font-size: 0.875rem;
+    padding: 12px 15px;
+    background: $color-white;
+    border-radius: $border-radius-default;
+  }
+
+  input {
+    width: calc(100% - 30px);
+    position: relative;
+
+    &.error {
+      border: 1px solid $color-error;
+    }
+
+  }
+
+  select {
+
+  }
+
+  .two__columns {
+    display: flex;
+    flex-direction: row;
+
+    .column {
+      flex-basis: 0;
+      flex-grow: 1;
+
+      &:first-child {
+        margin-right: $space-xsmall;
+      }
+      &:last-child {
+        margin-left: $space-xsmall;
+      }
+    }
+  }
+
+  .half__column {
+    width: calc(50% - 5px);
+  }
+
+  span.error {
+    color: $color-error;
+    font-size: 0.75rem;
+    display: block;
+    margin: $space-xsmall 0;
+  }
+
+  ul + button {
+    position: absolute;
+    display: block;
+    bottom: -20px;
+    left: 34%;
+  }
+
+  .datepicker {
+    position: relative;
+    input {
+      z-index: 2;
+    }
+
+    button {
+      background: url(../../../../assets/images/ico_calendar.svg) no-repeat;
+      width: 20px;
+      height: 20px;
+      filter: brightness(0);
+      position: absolute;
+      right: 10px;
+      top: 9px;
+      z-index: 3;
+    }
+  }
+
+  .percent {
+    position: relative;
+
+    input {
+      padding-right: calc(100%-40px);
+    }
+
+    &:after {
+      content: ' ';
+      background: url(../../../../assets/images/ico_percent.svg) $color-tertiary no-repeat center;
+      height: calc(100% - 2px);
+      width: 40px;
+      position: absolute;
+      z-index: 3;
+      right: 0;
+      -webkit-border-radius: $border-radius-default;
+      -moz-border-radius: $border-radius-default;
+      border-radius: $border-radius-default;
+      border: 1px solid $color-white;
+    }
+  }
+}
+
+.search__result {
+  & > li {
+    background: $color-white;
+    padding: 15px 10px;
+    border-radius: $border-radius-default;
+    font-size: 0.875rem;
+    margin-bottom: $space-xsmall;
+    display: flex;
+    flex-direction: row;
+    position: relative;
+
+    &:hover:after {
+      content: 'Pobierz';
+      height: 100%;
+      width: 23%;
+      background: rgba(255,255,255, 0.85);
+      font-weight: 500;
+      font-size: 0.75rem;
+      color: $color-grey;
+      border-left: 2px solid $color-grey-primary;
+      position: absolute;
+      right: 0;
+      top: 0;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .quick__look {
+      border: 1px solid $color-grey-secondary;
+      border-radius: $border-radius-default;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      background: url("../../../../assets/images/logo_s4e_blank.png") center no-repeat;
+      margin-right: $space-large;
+    }
+
+    li {
+      margin-bottom: 3px;
+    }
+  }
+}
+
+.loading__sentinel {
+  background-color: #fff;
+  height: 90px;
+  width: 100%;
+  border-radius: $border-radius-default;
+  position: relative;
+  animation: 1s loading infinite;
+
+  &:after {
+    display: block;
+    content: "";
+    border-radius: $border-radius-default;
+    width: 60px;
+    height: 60px;
+    background: $color-grey-primary;
+    position: absolute;
+    left: 15px;
+    top: 15px;
+  }
+}
+
+@keyframes loading {
+  0%   { opacity:1; }
+  50%  { opacity:0.4; }
+  100% { opacity:1; }
+}

@@ -1,3 +1,5 @@
+import {EntityState} from '@datorama/akita';
+
 export interface SearchResult {
   id: string;
   latitude: number;
@@ -22,4 +24,19 @@ export interface IPaginable<T> {
 }
 
 export interface PageSearchResult extends IPaginable<SearchResult> {}
+
+export interface SearchResultsState extends EntityState<SearchResult> {
+  isOpen: boolean;
+  queryString: string;
+  selectedLocation: SearchResult|null;
+}
+
+export function createInitialState(): SearchResultsState {
+  return {
+    isOpen: false,
+    queryString: '',
+    selectedLocation: null
+  };
+}
+
 

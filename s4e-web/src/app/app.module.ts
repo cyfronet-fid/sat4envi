@@ -41,18 +41,18 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
   ],
   imports: [
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot(), AkitaNgRouterStoreModule.forRoot()]),
+    RouterModule.forRoot(appRoutes, {enableTracing: true}),
     ...ShareModule.modulesForRoot(),
     LoginModule,
     RegisterModule,
     ActivateModule,
     ResetPasswordModule,
-    RouterModule.forRoot(appRoutes),
     CommonStateModule.forRoot(),
     MapModule,
     ProfileModule,
     InjectorModule,
     SettingsModule,
-    ModalModule
+    ModalModule,
   ],
   providers: [
     S4eConfig,

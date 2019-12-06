@@ -118,7 +118,7 @@
 @mixin button {
   border-radius: $border-radius-circle;
   background: $color-grey-secondary;
-  padding: $space-small $space-xlarge;
+  padding: $space-small 1.5*$space-xlarge;
   font-weight: 700;
   text-transform: uppercase;
   font-family: $font-secondary

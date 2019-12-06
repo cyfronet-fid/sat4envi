@@ -1,0 +1,74 @@
+<form>
+  <ul>
+    <li>
+      <label>Satelita</label>
+      <select>
+        <option>Sentinel 1</option>
+        <option>Sentinel 2</option>
+      </select>
+    </li>
+    <li>
+      <label>Data skanowania</label>
+      <div class="two__columns">
+        <div class="column">
+          <div class="datepicker">
+            <input type="text"/>
+            <button></button>
+          </div>
+        </div>
+        <div class="column">
+          <div class="datepicker">
+            <input type="text"/>
+            <button></button>
+          </div>
+          <span class="error">Musisz podać datę skanowania</span>
+        </div>
+      </div>
+    </li>
+    <li class="half__column">
+      <label>Poziom zachmurzenia</label>
+      <div class="percent">
+        <input type="text" />
+      </div>
+    </li>
+  </ul>
+  <button class="button button--primary" (click)="search()">Szukaj</button>
+</form>
+
+<section class="section" *ngIf="loading; else loadingRef">
+  <header class="box__header">
+    <span class="box__title">
+      Wyniki
+    </span>
+  </header>
+  <ul class="search__result">
+     <li>
+       <div class="quick__look">
+         <!-- miejsce na obrazek (miniaturke) quick look jak jest -->
+       </div>
+       <ul>
+         <li><strong>Mission:</strong> Sentinel-1</li>
+         <li><strong>Instrument:</strong>  SAR-C</li>
+         <li><strong>Sensing Date:</strong>  2019-12-05T18:27:29</li>
+         <li><strong>Size:</strong>  6.97 GB</li>
+       </ul>
+     </li>
+    <li>
+      <div class="quick__look">
+        <!-- miejsce na obrazek (miniaturke) quick look jak jest -->
+      </div>
+      <ul>
+        <li><strong>Mission:</strong> Sentinel-1</li>
+        <li><strong>Instrument:</strong>  SAR-C</li>
+        <li><strong>Sensing Date:</strong>  2019-12-05T18:27:29</li>
+        <li><strong>Size:</strong>  6.97 GB</li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<ng-template #loadingRef>
+  <div class="loading__sentinel"></div>
+</ng-template>
+
+

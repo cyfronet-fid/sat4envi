@@ -149,6 +149,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
 
   private setView(center: number[], zoom: number = null): void {
+    // this is required because of DEV HMR - this method might be called before ngOnInit
+    if(this.map == null) {
+      setTimeout(() => this.setView(center, zoom));
+      return;
+    }
     this.map.getView().setCenter(center);
     if (zoom !== null) {
       this.map.getView().setZoom(zoom);

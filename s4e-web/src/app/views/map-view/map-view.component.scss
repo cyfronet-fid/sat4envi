@@ -1,3 +1,5 @@
+@import "../../../scss/variables";
+
 .zk-options {
   position: absolute;
   right: 10px;
@@ -18,4 +20,71 @@
   bottom: 0;
   opacity: 0.0;
   z-index: 20;
+}
+
+.sidebar {
+  background: $color-grey-primary;
+  -webkit-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
+  -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
+  box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
+  width: 360px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  padding: 15px;
+
+  .switch {
+    margin: -15px;
+    margin-bottom: 15px;
+    padding: 13px 15px;
+    background: $color-white;
+    display: flex;
+    flex-direction: row;
+
+    li {
+      text-align: center;
+      width: 100%;
+      text-transform: uppercase;
+
+      a {
+        color: $color-grey-tertiary;
+        font-family: $font-secondary;
+        font-size: 0.875rem;
+        font-weight: bold;
+        opacity: 0.6
+      }
+
+      &.active {
+        a {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .login {
+    margin: -15px;
+    padding: 40px 15px 30px 15px;
+    margin-top: auto;
+    align-self: center;
+    text-align: center;
+    background: $color-white;
+    width: 100%;
+
+    a:not(.button) {
+      color: $color-grey;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+
+    li {
+      margin-bottom: $space-xlarge;
+      font-weight: 400;
+    }
+  }
+
 }

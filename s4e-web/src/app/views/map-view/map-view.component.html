@@ -1,19 +1,33 @@
-<s4e-view-manager class="section sidebar"
-                  [overlays]="overlays$ | async"
-                  [userLoggedIn]="userLoggedIn$ | async"
-                  [loading]="viewManagerLoading$ | async"
-                  [overlaysLoading]="false"
-                  [products]="productsTypeList$ | async"
-                  [productsLoading]="productLoading$ | async"
-                  (logout)="logout()"
-                  (selectOverlay)="selectOverlay($event)"
-                  (selectProduct)="selectProduct($event)"
-                  (searchForPlaces)="serachForPlaces($event)"
-                  [searchResults]="placeSearchResults$ | async"
-                  [searchResultsLoading]="placeSearchLoading$ | async"
-                  [searchResultsOpen]="placeSearchResultsOpen$ | async"
-                  (searchResultClicked)="navigateToPlace($event)">
-</s4e-view-manager>
+<div class="section sidebar" style="z-index: 5; position: absolute;">
+  <ul class="switch">
+    <li [routerLinkActive]="'active'"><a [routerLink]="['/map']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a></li>
+    <li [routerLinkActive]="'active'"><a [routerLink]="['/sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a></li>
+  </ul>
+
+  <router-outlet></router-outlet>
+
+  <section class="login">
+    <ul>
+      <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
+        <li>
+          <a class="button button--primary button--large" routerLink="/login" i18n>Zaloguj</a>
+        </li>
+        <li>
+          <a routerLink="/register" i18n>Zarejestruj</a>
+        </li>
+      </ng-container>
+      <ng-template #logoutLink>
+        <li>
+          <button class="button button--primary button--large" routerLink="/settings" i18n>Ustawienia</button>
+        </li>
+        <li>
+          <a href="javascript:undefined" (click)="logout()" i18n>Wyloguj</a>
+        </li>
+      </ng-template>
+    </ul>
+  </section>
+</div>
+
 <s4e-legend *ngIf="legend$ | async"
             [isOpen]="(legendState$ | async).isOpen"
             (opened)="toggleLegend()"

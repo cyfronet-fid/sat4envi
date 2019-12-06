@@ -1,26 +1,13 @@
 @import "../../../../scss/variables";
 
 :host {
-  background: $color-grey-primary;
-  -webkit-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
-  -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
-  box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
-  width: 360px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 0;
-  z-index: 2;
-  padding: 15px;
-
   section,
   .section {
     clear:both;
     border-radius: $border-radius-default;
     margin-bottom: $space-xlarge;
     overflow:hidden;
-
+    display: block;
 
     &.search {
       background: #fff;
@@ -59,24 +46,6 @@
         }
       }
 
-    }
-
-    &.login {
-      margin-top: auto;
-      align-self: center;
-      text-align: center;
-
-      a {
-        color: $color-grey;
-        text-transform: uppercase;
-        font-weight: bold;
-        font-size: 0.75rem;
-      }
-
-      li {
-        margin-bottom: $space-small;
-        font-weight: 400;
-      }
     }
   }
 }
