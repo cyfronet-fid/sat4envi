@@ -11,10 +11,11 @@ import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
-import pl.cyfronet.s4e.ex.*;
+import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.GroupCreationException;
+import pl.cyfronet.s4e.ex.GroupUpdateException;
+import pl.cyfronet.s4e.ex.InstitutionCreationException;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -66,7 +67,7 @@ public class GroupServiceTest {
     public void shouldDeleteGroupAndMembers() throws InstitutionCreationException, GroupCreationException, AppUserCreationException, GroupUpdateException {
         Institution institution = Institution.builder().name("Instytycja 12").slug("instytucja-12").build();
         institutionService.save(institution);
-        Group group = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).members(new HashSet<>()).build());
+        Group group = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
         AppUser user = appUserService.save(AppUser.builder()
                 .email("mail@test.pl")
                 .name("Name")
@@ -93,23 +94,6 @@ public class GroupServiceTest {
     }
 
     @Test
-    public void shouldReturnGroupsFromInstitutionViaGroupsSlugSet() throws Exception {
-        Institution institution = Institution.builder().name("Instytycja 12").slug("instytucja-12").build();
-        institutionService.save(institution);
-        groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).members(new HashSet<>()).build());
-        groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).members(new HashSet<>()).build());
-        groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).members(new HashSet<>()).build());
-
-        Set<Group> groups = groupService.getAllGroupsBySlugs(new HashSet<>(Arrays.asList("group-13", "group-14")), "instytucja-12");
-
-        assertThat(groups, not(empty()));
-        assertThat(groups, hasSize(2));
-
-        assertThat(groupService.getAllGroupsBySlugs(
-                new HashSet<>(Arrays.asList("group-13", "group-14", "group-15")), "instytucja-12"), hasSize(3));
-    }
-
-    @Test
     public void shouldUpdateUsersGroupsForUserWithNoGroups() throws Exception {
         appUserService.save(AppUser.builder()
                 .email("mail@test.pl")
@@ -120,21 +104,18 @@ public class GroupServiceTest {
         Institution institution = Institution.builder().name("Instytycja 12").slug("instytucja-12").build();
         institutionService.save(institution);
 
-        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).members(new HashSet<>()).build());
-        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).members(new HashSet<>()).build());
-        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).members(new HashSet<>()).build());
+        groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
+        groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).build());
+        groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).build());
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-14"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-15"), empty());
 
-        Set<Group> groups = new HashSet<>();
-        groups.add(group13);
-        groups.add(group14);
-        groups.add(group15);
+        Set<String> groups = Set.of("group-13", "group-14", "group-15");
         val user = appUserService.findByEmail("mail@test.pl").get();
 
-        groupService.updateUsersGroups(groups, user, "instytucja-12");
+        groupService.updateUsersGroups(user.getId(), "instytucja-12", groups);
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
@@ -157,15 +138,15 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-15"), empty());
 
-        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).members(new HashSet<>()).build());
+        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
         group13.addMember(user);
         groupService.update(group13);
 
-        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).members(new HashSet<>()).build());
+        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).build());
         group14.addMember(user);
         groupService.update(group14);
 
-        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).members(new HashSet<>()).build());
+        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).build());
         group15.addMember(user);
         groupService.update(group15);
 
@@ -173,11 +154,9 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-15"), hasSize(1));
 
-        Set<Group> groups = new HashSet<>();
-        groups.add(group13);
-        groups.add(group14);
+        Set<String> groups = Set.of("group-13", "group-14");
 
-        groupService.updateUsersGroups(groups, user, "instytucja-12");
+        groupService.updateUsersGroups(user.getId(), "instytucja-12", groups);
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
@@ -196,9 +175,10 @@ public class GroupServiceTest {
         Institution institution = Institution.builder().name("Instytycja 12").slug("instytucja-12").build();
         institutionService.save(institution);
 
-        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).members(new HashSet<>()).build());
-        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).members(new HashSet<>()).build());
-        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).members(new HashSet<>()).build());
+        Group group13 = groupService.save(Group.builder()
+                .name("Group 13").slug("group-13").institution(institution).build());
+        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).build());
+        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).build());
         group13.addMember(user);
         group14.addMember(user);
         group15.addMember(user);
@@ -210,11 +190,45 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-15"), hasSize(1));
 
-        Set<Group> groups = new HashSet<>();
-        groupService.updateUsersGroups(groups, user, "instytucja-12");
+        groupService.updateUsersGroups(user.getId(), "instytucja-12", Set.of());
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-14"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-15"), empty());
+    }
+
+    @Test
+    public void shouldUpdateUsersGroupsIfUserInTwoInstitutionsAndRemoveOne() throws Exception {
+        AppUser user = appUserService.save(AppUser.builder()
+                .email("mail@test.pl")
+                .name("Name")
+                .surname("Surname")
+                .password("someHash")
+                .build());
+
+        Institution institution = Institution.builder().name("Instytycja 12").slug("instytucja-12").build();
+        institutionService.save(institution);
+
+        Institution institution2 = Institution.builder().name("Instytycja 22").slug("instytucja-22").build();
+        institutionService.save(institution2);
+
+        assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
+
+        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
+        group13.addMember(user);
+        groupService.update(group13);
+
+        assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
+
+        Group group21 = groupService.save(Group.builder().name("Group 21").slug("group-21").institution(institution2).build());
+        group21.addMember(user);
+        groupService.update(group21);
+
+        assertThat(groupService.getMembers("instytucja-22", "group-21"), hasSize(1));
+
+        groupService.updateUsersGroups(user.getId(), "instytucja-12", Set.of());
+
+        assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
+        assertThat(groupService.getMembers("instytucja-22", "group-21"), hasSize(1));
     }
 }

@@ -39,6 +39,7 @@ public class Group {
     @JoinTable(name = "inst_group_app_users", joinColumns = @JoinColumn(name = "inst_group_id"), inverseJoinColumns = @JoinColumn(name = "app_user_id"),
             uniqueConstraints = {@UniqueConstraint(
                     columnNames = {"inst_group_id", "app_user_id"})})
+    @Builder.Default
     private Set<AppUser> members = new HashSet<>();
 
     public void addMember(AppUser user) {

@@ -83,14 +83,12 @@ public class GroupController {
     public ResponseEntity<?> addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
-            throws NotFoundException, GroupUpdateException, BadRequestException {
+            throws NotFoundException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
         val appUser = appUserService.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
-        group.addMember(appUser);
-        groupService.update(group);
+        groupService.addMember(institutionSlug, groupSlug, email);
         eventPublisher.publishEvent(new OnAddToGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
@@ -107,14 +105,12 @@ public class GroupController {
     public ResponseEntity<?> removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)
-            throws NotFoundException, GroupUpdateException, BadRequestException {
+            throws NotFoundException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
         val appUser = appUserService.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
-        group.removeMember(appUser);
-        groupService.update(group);
+        groupService.removeMember(institutionSlug, groupSlug, email);
         eventPublisher.publishEvent(new OnRemoveFromGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
@@ -131,7 +127,7 @@ public class GroupController {
         Page<Group> page = groupService.getAllByInstitution(institutionSlug, pageable);
         return new PageImpl<>(
                 page.stream()
-                        .map(m -> GroupResponse.of(m))
+                        .map(GroupResponse::of)
                         .collect(Collectors.toList()),
                 page.getPageable(),
                 page.getTotalElements());
@@ -148,10 +144,9 @@ public class GroupController {
     @PreAuthorize("isAuthenticated()")
     public GroupResponse get(@PathVariable("institution") String institutionSlug,
                              @PathVariable("group") String groupSlug)
-            throws NotFoundException, BadRequestException {
+            throws NotFoundException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
         return GroupResponse.of(group);
     }
 
@@ -159,17 +154,12 @@ public class GroupController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully retrieved members"),
             @ApiResponse(code = 400, message = "Members not retrieved"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get members"),
-            @ApiResponse(code = 404, message = "Members not found")
+            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get members")
     })
     @GetMapping("/institutions/{institution}/groups/{group}/members")
     @PreAuthorize("isAuthenticated()")
     public MembersResponse getMembers(@PathVariable("institution") String institutionSlug,
-                                      @PathVariable("group") String groupSlug)
-            throws NotFoundException, BadRequestException {
-        val group = groupService.getGroup(institutionSlug, groupSlug)
-                .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
+                                      @PathVariable("group") String groupSlug) {
         return MembersResponse.of(groupService.getMembers(institutionSlug, groupSlug));
     }
 
@@ -185,10 +175,9 @@ public class GroupController {
     public ResponseEntity<?> update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
-            throws NotFoundException, GroupUpdateException, BadRequestException {
+            throws NotFoundException, GroupUpdateException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
         group.setName(request.getName());
         group.setSlug(slugService.slugify(request.getName()));
         if (request.getMembersEmails() != null) {
@@ -213,17 +202,10 @@ public class GroupController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> delete(@PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
-            throws NotFoundException, BadRequestException {
+            throws NotFoundException {
         val group = groupService.getGroup(institutionSlug, groupSlug)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        checkInstitution(institutionSlug, group);
         groupService.delete(group);
         return ResponseEntity.ok().build();
-    }
-
-    private void checkInstitution(String institutionSlug, Group group) throws BadRequestException {
-        if (!institutionSlug.equals(group.getInstitution().getSlug())) {
-            throw new BadRequestException("Institution is not correct");
-        }
     }
 }

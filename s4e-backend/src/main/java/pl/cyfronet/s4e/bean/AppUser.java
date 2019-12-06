@@ -37,6 +37,7 @@ public class AppUser {
     private Set<AppRole> roles;
 
     @ManyToMany(mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Builder.Default
     private Set<Group> groups = new HashSet<>();
 
     private boolean enabled;
