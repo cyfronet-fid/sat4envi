@@ -1,22 +1,16 @@
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import Feature from 'ol/Feature';
-import {Image, Layer, Tile, Vector as VectorLayer} from 'ol/layer';
-import {ImageWMS, OSM, Vector} from 'ol/source';
-import {Icon, Style} from 'ol/style';
+import {Image, Layer, Tile} from 'ol/layer';
+import {ImageWMS, OSM} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
-import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {S4eConfig} from '../../../utils/initializer/config.service';
-import {SearchResult} from '../state/search-results/search-result.model';
-import {Point} from 'ol/geom';
 import {distinctUntilChanged} from 'rxjs/operators';
-import {ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
-import {MapData} from '../state/map/map.model';
-import IconAnchorUnits from 'ol/style/IconAnchorUnits';
+import {MapData, ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
 
 
 @Component({
@@ -25,6 +19,8 @@ import IconAnchorUnits from 'ol/style/IconAnchorUnits';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy {
+  static readonly DEFAULT_ZOOM_LEVEL=10;
+
   get overlays(): UIOverlay[] {
     return this._overlays;
   }
@@ -38,14 +34,16 @@ export class MapComponent implements OnInit, OnDestroy {
 
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
   @Output() viewChanged = new EventEmitter<ViewPosition>();
-  selectedLocationSub: Subscription = null;
   private baseLayer: Layer;
   private map: Map;
   private activeScene$ = new ReplaySubject<Scene | null>(1);
-  private markerSource: Vector = new Vector();
   @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
   @Input() isWorking: boolean = false;
   @Output() working = new EventEmitter<boolean>();
+  activeView$ = new BehaviorSubject<ViewPosition>({
+    centerCoordinates: this.CONFIG.projection.coordinates,
+    zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
+  });
 
   constructor(private CONFIG: S4eConfig) {
   }
@@ -56,42 +54,22 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  public set selectedLocation(place$: Observable<SearchResult | null>) {
-    if (this.selectedLocationSub != null) {
-      this.selectedLocationSub.unsubscribe();
-    }
-
-    this.selectedLocationSub = place$.subscribe(place => {
-      this.markerSource.clear();
-
-      if (place == null) {
-        return;
-      }
-
-      const coord: number[] = proj4(this.CONFIG.projection.toProjection, [place.longitude, place.latitude]);
-      const zoom = this.getZoomLevel(place.type);
-      this.setView(coord, zoom);
-      this.addMarker(coord);
-    });
-  }
-
-  addMarker(coordinates: number[]) {
-    const iconFeature = new Feature({
-      geometry: new Point(coordinates)
-    });
-
-    this.markerSource.addFeature(iconFeature);
+  public set activeView(view: ViewPosition | null) {
+    this.activeView$.next(view);
   }
 
   ngOnInit(): void {
-    const centerOfPolandWebMercator = proj4(this.CONFIG.projection.toProjection, this.CONFIG.projection.coordinates);
+    const centerOfPolandWebMercator = proj4(
+      this.CONFIG.projection.toProjection,
+      this.activeView$.getValue().centerCoordinates
+    );
     this.map = new Map({
       target: 'map',
       layers: [],
       view: new View({
         center: centerOfPolandWebMercator,
-        zoom: 6,
-        maxZoom: 12
+        zoom: this.activeView$.getValue().zoomLevel,
+        maxZoom: this.CONFIG.maxZoom
       }),
     });
 
@@ -112,30 +90,12 @@ export class MapComponent implements OnInit, OnDestroy {
       this.updateLayers(gr);
     });
 
-    const markerStyle = new Style({
-      image: new Icon({
-        anchor: [0.5, 220],
-        anchorXUnits: IconAnchorUnits.FRACTION,
-        anchorYUnits: IconAnchorUnits.PIXELS,
-        opacity: 0.75,
-        scale: 0.25,
-        src: 'https://cdn2.iconfinder.com/data/icons/ui-26/128/map-pin-location-256.png'
-      })
-    });
-    this.map.getLayers().push(new VectorLayer({
-      source: this.markerSource,
-      style: markerStyle,
-    }));
-
     this.map.on('moveend', this.onMoveEnd);
+    this.activeView$.pipe(untilDestroyed(this)).subscribe(view => this.setView(view));
   }
 
   ngOnDestroy(): void {
     this.activeScene$.complete();
-    if (this.selectedLocationSub != null) {
-      this.selectedLocationSub.unsubscribe();
-    }
-    this.selectedLocationSub = null;
     this.map.un('moveend', this.onMoveEnd);
   }
 
@@ -147,16 +107,12 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   };
 
-
-  private setView(center: number[], zoom: number = null): void {
-    // this is required because of DEV HMR - this method might be called before ngOnInit
-    if(this.map == null) {
-      setTimeout(() => this.setView(center, zoom));
-      return;
+  private setView(view: ViewPosition): void {
+    if (view.centerCoordinates != null) {
+      this.map.getView().setCenter(view.centerCoordinates);
     }
-    this.map.getView().setCenter(center);
-    if (zoom !== null) {
-      this.map.getView().setZoom(zoom);
+    if (view.zoomLevel != null) {
+      this.map.getView().setZoom(view.zoomLevel);
     }
   }
 
@@ -207,6 +163,6 @@ export class MapComponent implements OnInit, OnDestroy {
       this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
       this.linkDownload.nativeElement.href = mapData.image;
       this.linkDownload.nativeElement.click();
-    })
+    });
   }
 }

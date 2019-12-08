@@ -2,17 +2,17 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SceneStore} from './scene.store.service';
 import {Scene} from './scene.model';
-import {finalize} from 'rxjs/operators';
 import {SceneQuery} from './scene.query.service';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {LegendService} from '../legend/legend.service';
 import {ProductQuery} from '../product/product.query';
 import {ProductStore} from '../product/product.store';
+import {applyTransaction} from '@datorama/akita';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
 
-  constructor(private sceneStore: SceneStore,
+  constructor(private store: SceneStore,
               private sceneQuery: SceneQuery,
               private productQuery: ProductQuery,
               private productStore: ProductStore,
@@ -22,30 +22,26 @@ export class SceneService {
   }
 
   get(productId: number, date: string) {
-    this.sceneStore.setLoading(true);
-    this.sceneStore.set([]);
-    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${productId}/scenes`, {params: {date}}).pipe(
-      finalize(() => this.sceneStore.setLoading(false))
-    ).subscribe((entities) => {
-      this.sceneStore.set(entities);
-      let lastProductId: number | null = null;
-      if (this.sceneQuery.getCount() > 0) {
-        lastProductId = this.sceneQuery.getAll()[this.sceneQuery.getCount() - 1].id;
-      }
-
-      this.productStore.setActive(productId);
-      this.setActive(lastProductId);
-    });
+    this.store.setLoading(true);
+    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${productId}/scenes`, {params: {date}})
+      .subscribe((entities) => applyTransaction(() => {
+        this.store.set(entities);
+        if (this.sceneQuery.getCount() > 0) {
+          this.sceneQuery.getAll()[this.sceneQuery.getCount() - 1].id;
+        }
+      }), error => this.store.setError(error));
   }
 
-  setActive(productId: number|null) {
-    this.sceneStore.setActive(productId);
+  setActive(sceneId: number | null) {
+    this.store.setActive(sceneId);
+    const activeScene = this.sceneQuery.getActive();
+    const sceneLegend = activeScene == null ? null : activeScene.legend;
+    const activeProduct = this.productQuery.getActive();
 
-    const productLegend = productId == null ? null : this.sceneQuery.getActive().legend;
-    if(productLegend != null) {
-      this.legendService.set(productLegend)
-    } else {
-      this.legendService.set(this.productQuery.getActive().legend);
+    if (sceneLegend != null) {
+      this.legendService.set(sceneLegend);
+    } else if (activeProduct != null) {
+      this.legendService.set(activeProduct.legend);
     }
   }
 }

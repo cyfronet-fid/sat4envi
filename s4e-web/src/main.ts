@@ -4,7 +4,6 @@ import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
 import {enableAkitaProdMode, persistState} from '@datorama/akita';
 import {hmrBootstrap} from './hmr';
-import serialize from 'serialize-javascript';
 
 if (environment.production) {
   enableProdMode();
@@ -16,8 +15,6 @@ const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 if (environment.hmr) {
   persistState({
     exclude: ['router'], key: 's4eStore',
-    // tslint:disable-next-line:no-eval
-    serialize: serialize, deserialize: (str) => eval(`(${str})`)
   });
 
   if ((module as any).hot) {

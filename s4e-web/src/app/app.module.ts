@@ -14,7 +14,6 @@ import {akitaConfig} from '@datorama/akita';
 import {SessionQuery} from './state/session/session.query';
 import {SessionService} from './state/session/session.service';
 import {CommonStateModule} from './state/common-state.module';
-import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
 import localePl from '@angular/common/locales/pl';

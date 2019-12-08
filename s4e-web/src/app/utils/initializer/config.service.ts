@@ -19,6 +19,7 @@ export class S4eConfig implements IConfiguration {
   apiPrefixV1: string;
   userLocalStorageKey: string;
   generalErrorKey: string;
+  maxZoom: number;
 
   constructor(private http: HttpClient, private profileService: ProfileService) {
   }
@@ -35,6 +36,7 @@ export class S4eConfig implements IConfiguration {
     this.apiPrefixV1 = 'api/v1';
     this.userLocalStorageKey = 'user';
     this.generalErrorKey = '__general__';
+    this.maxZoom = 12;
   }
 
   loadConfiguration(): Promise<IRemoteConfiguration> {

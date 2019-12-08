@@ -32,7 +32,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
-    this.institutionService.connectIntitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
+    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
       instSlug => this.groupService.fetchAll(instSlug)
     );
   }
@@ -41,6 +41,6 @@ export class GroupListComponent implements OnInit, OnDestroy {
   }
 
   setInstitution(institutionSlug: string) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}})
+    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}});
   }
 }

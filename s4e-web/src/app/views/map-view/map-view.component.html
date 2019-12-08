@@ -1,7 +1,7 @@
 <div class="section sidebar" style="z-index: 5; position: absolute;">
   <ul class="switch">
-    <li [routerLinkActive]="'active'"><a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a></li>
-    <li [routerLinkActive]="'active'"><a [routerLink]="['./sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a></li>
+    <li [class.active]="isLinkActive('products')"><a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a></li>
+    <li [class.active]="isLinkActive('sentinel-search')"><a [routerLink]="['./sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a></li>
   </ul>
 
   <router-outlet></router-outlet>
@@ -42,7 +42,7 @@
               [availableDates]="availableDates$ | async"
               (loadAvailableDates)="loadAvailableDates($event)"
               [loading]="scenesAreLoading$ | async"
-              [activeProduct]="activeScene$ | async"
+              [activeScene]="activeScene$ | async"
               (selectedScene)="selectScene($event?.id)">
 </s4e-timeline>
 
@@ -50,9 +50,9 @@
          #map
          [isWorking]="loading$ | async"
          (working)="mapService.setWorking($event)"
-         [selectedLocation]="selectedLocation$"
          [overlays]="overlays$ | async"
          [activeScene]="activeScene$ | async"
+         [activeView]="activeView$ | async"
          (viewChanged)="viewChanged($event)"
 >
 </s4e-map>

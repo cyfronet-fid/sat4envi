@@ -26,16 +26,18 @@
       "/node_modules/"
     ],
     "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/src/app/app.constants.spec.ts",
-      "/src/app/app.configuration.spec.ts",
-      "/src/app/views/map-view/state/product/product.factory.spec.ts",
-      "/src/app/views/map-view/state/legend/legend.factory.spec.ts",
-      "/src/app/views/map-view/state/scene/scene.factory.spec.ts"
+      "<rootDir>/node_modules/",
+      "<rootDir>/src/app/app.constants.spec.ts",
+      "<rootDir>/src/app/app.configuration.spec.ts",
+      "\\.factory.spec.ts$"
     ],
     "transform": {
-      "(?!<rootDir>/node_modules/proj4)/.*\\.js$": "babel-jest"
+      "(?!<rootDir>/node_modules)/.*\\.js$": "babel-jest"
     }
+  },
+  "babelOptions": {
+    "compact": false,
+    "exclude": "/node_modules/"
   },
   "private": true,
   "dependencies": {
@@ -68,7 +70,6 @@
     "ol": "^5.3.3",
     "proj4": "^2.5.0",
     "rxjs": "^6.4.0",
-    "serialize-javascript": "^2.1.1",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
