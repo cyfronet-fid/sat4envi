@@ -49,7 +49,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
   @Input() public loading: boolean = true;
   currentDate: string = '';
   startAt = null;
-  @Input() activeProduct: Scene | null = null;
+  @Input() activeScene: Scene | null = null;
   @Input() scenes: Scene[] = [];
   @Output() dateSelected = new EventEmitter<string>();
   @Output() selectedScene = new EventEmitter<Scene>();

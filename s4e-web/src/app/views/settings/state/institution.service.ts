@@ -1,8 +1,8 @@
-import {Component, Injectable, OnDestroy} from '@angular/core';
-import { ID } from '@datorama/akita';
-import { HttpClient } from '@angular/common/http';
-import { InstitutionStore } from './institution.store';
-import { Institution } from './institution.model';
+import {Injectable} from '@angular/core';
+import {ID} from '@datorama/akita';
+import {HttpClient} from '@angular/common/http';
+import {InstitutionStore} from './institution.store';
+import {Institution} from './institution.model';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {filter, finalize, flatMap, map} from 'rxjs/operators';
 import {InstitutionQuery} from './institution.query';
@@ -10,7 +10,7 @@ import {IPageableResponse} from '../../../state/pagable.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class InstitutionService {
 
   constructor(private store: InstitutionStore,
@@ -21,7 +21,9 @@ export class InstitutionService {
   }
 
   get() {
-    if(this.query.getHasCache()) {return;}
+    if (this.query.getHasCache()) {
+      return;
+    }
 
     this.store.setLoading(true);
     this.store.setError(null);
@@ -39,14 +41,14 @@ export class InstitutionService {
 
   setInstitution(route: ActivatedRoute, institutionSlug: string) {
     this.setActive(institutionSlug);
-    this.router.navigate(['.'], {relativeTo: route, queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}})
+    this.router.navigate(['.'], {relativeTo: route, queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}});
   }
 
   setActive(slug: string) {
     this.store.setActive(slug);
   }
 
-  connectIntitutionToQuery$(route: ActivatedRoute): Observable<string> {
+  connectInstitutionToQuery$(route: ActivatedRoute): Observable<string> {
     this.store.setError(null);
 
     const r = this.query.selectHasCache().pipe(
@@ -56,9 +58,9 @@ export class InstitutionService {
         route.queryParamMap.pipe(map(params => params.get('institution')))
       ])),
       map(([institutions, selectedInstitution]) => {
-        let error = null;
+        const error = null;
         if (selectedInstitution == null) {
-          if(institutions.length == 0) {
+          if (institutions.length == 0) {
             this.store.setError('no_institution');
             return null;
           }

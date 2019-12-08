@@ -58,24 +58,12 @@ export class GroupFormComponent extends GenericFormComponent<GroupQuery, GroupFo
       caption: `${p.surname} ${p.name} <${p.email}>`
     }))));
 
-    this.institutionService.connectIntitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
+    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
       instSlug => {
         this.personService.fetchAll(instSlug);
         this.instSlug = instSlug;
       }
     );
-
-    combineLatest([
-      this.route.paramMap,
-      this.institutionQuery.selectActiveId().pipe(filter(i => i != null))
-    ]).pipe(
-      map(([pm, inst]) => [pm.get('groupSlug'), inst]),
-      filter(([groupSlug, inst]) => groupSlug != null && groupSlug != 'add'),
-      untilDestroyed(this)
-    ).subscribe(([groupSlug, inst]) => {
-      this.groupSlug = groupSlug;
-      this.groupService.fetchForm$(inst, groupSlug).subscribe(fd => this.form.setValue(fd));
-    });
 
     super.ngOnInit();
   }

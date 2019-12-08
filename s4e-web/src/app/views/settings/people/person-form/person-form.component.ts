@@ -49,7 +49,7 @@ export class PersonFormComponent extends GenericFormComponent<PersonQuery, Perso
     this.groups$ = this.groupQuery.selectAllWithoutDefault().pipe(map(groups => groups.map(gr => ({value: gr.slug, caption: gr.name}))));
     this.groupsLoading$ = this.groupQuery.selectLoading();
 
-    this.institutionService.connectIntitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
+    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
       instSlug => {
         this.groupService.fetchAll(instSlug);
         this.instSlug = instSlug;

@@ -12,13 +12,14 @@ export interface ProductState extends EntityState<Product>, ActiveState<number> 
     selectedMonth: number;
     availableDays: string[];
   };
+  loaded: boolean;
 }
 
 export function createProduct(state: Partial<ProductState> = {}): ProductState {
   return {
     active: null,
     error: null,
-    loading: false,
+    loading: true,
     ui: {
       loadedMonths: [],
       selectedDate: moment.utc().format('YYYY-MM-DD'),
@@ -27,6 +28,7 @@ export function createProduct(state: Partial<ProductState> = {}): ProductState {
       selectedMonth: moment.utc().month() + 1,
       availableDays: []
     },
+    loaded: false,
     ...state
   };
 }

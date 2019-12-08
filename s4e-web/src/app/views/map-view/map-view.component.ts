@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
@@ -6,7 +6,7 @@ import {MapService} from './state/map/map.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {S4eConfig} from '../../utils/initializer/config.service';
-import {ViewPosition} from './state/map/map.model';
+import {MapState, ViewPosition, ZOOM_LEVELS} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
@@ -23,6 +23,11 @@ import {SceneQuery} from './state/scene/scene.query.service';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
 import {REPORT_MODAL_ID, ReportModal} from './report-modal/report-modal.model';
+import {ActivatedRoute, Router} from '@angular/router';
+import proj4 from 'proj4';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {IUILayer} from './state/common.model';
+import {switchMap} from 'rxjs/operators';
 import {ProfileQuery} from '../../state/profile/profile.query';
 
 @Component({
@@ -30,8 +35,10 @@ import {ProfileQuery} from '../../state/profile/profile.query';
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss'],
 })
-export class MapViewComponent implements OnInit {
-  public overlays$: Observable<UIOverlay[]>;
+export class MapViewComponent implements OnInit, OnDestroy {
+  productsTypeList$: Observable<IUILayer[]>;
+  overlays$: Observable<UIOverlay[]>;
+
   public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
   public activeProducts$: Observable<Product | null>;
@@ -41,6 +48,10 @@ export class MapViewComponent implements OnInit {
   public legendState$: Observable<LegendState>;
   public activeOverlays$: Observable<UIOverlay[]>;
   public userLoggedIn$: Observable<boolean>;
+  public placeSearchResults$: Observable<SearchResult[]>;
+  public placeSearchLoading$: Observable<boolean>;
+  public placeSearchResultsOpen$: Observable<boolean>;
+  public activeView$: Observable<ViewPosition>;
   public currentTimelineDate$: Observable<string>;
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
@@ -49,6 +60,8 @@ export class MapViewComponent implements OnInit {
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
   constructor(public mapService: MapService,
+              private router: Router,
+              private route: ActivatedRoute,
               private mapQuery: MapQuery,
               private overlayQuery: OverlayQuery,
               private overlayService: OverlayService,
@@ -78,15 +91,33 @@ export class MapViewComponent implements OnInit {
     this.activeProducts$ = this.productQuery.selectActive();
     this.legend$ = this.legendQuery.selectLegend();
     this.legendState$ = this.legendQuery.select();
+    this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
+    this.placeSearchResults$ = this.searchResultsQuery.selectAll();
+    this.placeSearchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
     this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
     this.availableDates$ = this.productQuery.selectAvailableDates();
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
     this.productService.get();
     this.overlayService.get();
+    this.activeView$ = this.mapQuery.select('view');
+
+    this.mapService.setView({
+      centerCoordinates: proj4(this.CONFIG.projection.toProjection, this.CONFIG.projection.coordinates),
+      zoomLevel: 6
+    });
+
+    this.mapService.connectRouterToStore(this.route).pipe(untilDestroyed(this), switchMap(() => this.mapService.connectStoreToRouter())).subscribe();
+
+    this.productService.get();
+    this.overlayService.get();
   }
 
+  selectProduct(productId: number | null) {
+    this.productService.toggleActive(productId);
+  }
 
   selectScene(sceneId: number) {
+    console.log('selectScene', sceneId);
     this.sceneService.setActive(sceneId);
   }
 
@@ -111,7 +142,6 @@ export class MapViewComponent implements OnInit {
   toggleZKOptions(show: boolean = true) {
     this.mapService.toggleZKOptions(show);
   }
-
 
   downloadMapImage() {
     this.mapComponent.downloadMap();
@@ -139,7 +169,14 @@ export class MapViewComponent implements OnInit {
     this.toggleZKOptions(false);
   }
 
- viewChanged($event: ViewPosition) {
+  viewChanged($event: ViewPosition) {
     this.mapService.setView($event);
+  }
+
+  ngOnDestroy(): void {
+  }
+
+  isLinkActive(url: string): boolean {
+    return this.route.snapshot.children[0].url[0].path === url;
   }
 }

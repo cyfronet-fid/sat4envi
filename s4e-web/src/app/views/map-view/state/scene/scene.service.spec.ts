@@ -58,7 +58,7 @@ describe('SceneService', () => {
     it('should set legend to Product\'s if Scene does not have one', () => {
       const legend = LegendFactory.build();
       const scene = SceneFactory.build();
-      const product = ProductFactory.build({legend, productIds: [scene.id]});
+      const product = ProductFactory.build({legend});
       const productStore: ProductStore = TestBed.get(ProductStore);
       sceneStore.set([scene]);
       productStore.set([product]);
@@ -83,7 +83,7 @@ describe('SceneService', () => {
       sceneService.get(productId, dateF);
 
       const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}`);
-      r.flush(null);
+      r.flush([]);
     });
 
     it('should call http endpoint', () => {
@@ -100,8 +100,8 @@ describe('SceneService', () => {
       const productStore: ProductStore = TestBed.get(ProductStore);
       productStore.add(product);
 
-      sceneQuery.selectAll().pipe(take(3), toArray()).subscribe(data => {
-        expect(data).toEqual([[], [], [productR]]);
+      sceneQuery.selectAll().pipe(take(2), toArray()).subscribe(data => {
+        expect(data).toEqual([[], [productR]]);
         done();
       });
 

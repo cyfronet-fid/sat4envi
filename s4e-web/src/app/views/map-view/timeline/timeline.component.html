@@ -19,10 +19,12 @@
   <ul class="timeline__grid">
     <li class="timeline__item" *ngIf="scenes.length == 0 && !loading">Brak produktów, wybierz inną datę</li>
     <li class="timeline__item"
-        *ngFor="let product of scenes"
-        [ngClass]="{active: product.id === activeProduct?.id}"
-        (click)="selectedScene.emit(product)">
-      {{ product.timestamp | date : 'shortTime' }}
+        *ngFor="let scene of scenes"
+        [attr.data-scene-id]="scene.id"
+        [attr.data-active-id]="activeScene?.id"
+        [ngClass]="{active: scene.id === activeScene?.id}"
+        (click)="selectedScene.emit(scene)">
+      {{ scene.timestamp | date : 'shortTime' }}
     </li>
   </ul>
 </div>

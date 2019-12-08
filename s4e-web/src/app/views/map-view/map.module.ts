@@ -34,6 +34,7 @@ import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
 import { SentinelSearchComponent } from './sentinel-search/sentinel-search.component';
+import {InjectorModule} from '../../common/injector.module';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { SentinelSearchComponent } from './sentinel-search/sentinel-search.compo
     MapViewComponent,
   ],
   imports: [
+    InjectorModule,
     ShareModule,
     BrowserAnimationsModule,
     OwlDateTimeModule,
