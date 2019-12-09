@@ -33,12 +33,15 @@ public class AppUser {
     @NotEmpty
     private String password;
 
-    @Singular
-    private Set<AppRole> roles;
-
-    @ManyToMany(mappedBy = "members", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<Group> groups = new HashSet<>();
+    @ToString.Exclude
+    private Set<UserRole> roles = new HashSet<>();
 
     private boolean enabled;
+
+    public void removeRole(UserRole role) {
+        roles.remove(role);
+        role.setUser(null);
+    }
 }

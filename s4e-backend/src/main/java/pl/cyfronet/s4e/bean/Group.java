@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "inst_group", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "institution_id"}),
-                            @UniqueConstraint(columnNames = {"slug", "institution_id"})})
+        @UniqueConstraint(columnNames = {"slug", "institution_id"})})
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,20 +33,16 @@ public class Group {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "institution_id")
+    @ToString.Exclude
     private Institution institution;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @JoinTable(name = "inst_group_app_users", joinColumns = @JoinColumn(name = "inst_group_id"), inverseJoinColumns = @JoinColumn(name = "app_user_id"),
-            uniqueConstraints = {@UniqueConstraint(
-                    columnNames = {"inst_group_id", "app_user_id"})})
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
-    private Set<AppUser> members = new HashSet<>();
+    @ToString.Exclude
+    private Set<UserRole> membersRoles = new HashSet<>();
 
-    public void addMember(AppUser user) {
-        members.add(user);
-    }
-
-    public void removeMember(AppUser user) {
-        members.remove(user);
+    public void removeMemberRole(UserRole role) {
+        membersRoles.remove(role);
+        role.setGroup(null);
     }
 }

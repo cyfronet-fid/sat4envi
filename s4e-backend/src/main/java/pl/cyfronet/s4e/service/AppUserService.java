@@ -3,12 +3,14 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.NotFoundException;
 
 import java.util.Optional;
 
@@ -17,7 +19,8 @@ import java.util.Optional;
 @Slf4j
 public class AppUserService {
     private final AppUserRepository appUserRepository;
-    private final GroupRepository groupRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final GroupService groupService;
 
     @Transactional(rollbackFor = AppUserCreationException.class)
     public AppUser save(AppUser appUser) throws AppUserCreationException {
@@ -29,6 +32,26 @@ public class AppUserService {
         }
     }
 
+    @Transactional(rollbackFor = AppUserCreationException.class)
+    public AppUser createFromRequest(CreateUserWithGroupsRequest request, String institutionSlug) throws AppUserCreationException, NotFoundException {
+        AppUser appUser = AppUser.builder()
+                .name(request.getName())
+                .surname(request.getSurname())
+                .email(request.getEmail())
+                // TODO: FIXME
+                .password(passwordEncoder.encode("passTemporary"))
+                .enabled(false)
+                .build();
+
+        save(appUser);
+        if (request.getGroupSlugs() != null) {
+            for (String groupSlug : request.getGroupSlugs()) {
+                groupService.addMember(institutionSlug, groupSlug, appUser.getEmail());
+            }
+        }
+        return appUser;
+    }
+
     @Transactional
     public AppUser update(AppUser appUser) {
         return appUserRepository.save(appUser);
@@ -38,24 +61,7 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
-//    public Optional<AppUser> findById(Long id) {
-//        return appUserRepository.findById(id);
-//    }
-
-//    @Transactional
-//    public void saveWithGroupUpdate(AppUser appUser, Set<String> groupSlugs, String institutionSlug) throws UserViaInstitutionCreationException {
-//        try {
-//            appUserRepository.save(appUser);
-//            if (groupSlugs != null) {
-//                groupSlugs.forEach(slug -> {
-//                    Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, slug).get();
-//                    group.addMember(appUser);
-//                    groupRepository.save(group);
-//                });
-//            }
-//        } catch (DataIntegrityViolationException e) {
-//            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
-//            throw new UserViaInstitutionCreationException(e);
-//        }
-//    }
+    public Optional<AppUser> findByEmailWithRolesAndGroupsAndInstitution(String email) {
+        return appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(email);
+    }
 }

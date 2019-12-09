@@ -16,7 +16,6 @@ import pl.cyfronet.s4e.bean.SavedView;
 import pl.cyfronet.s4e.controller.request.CreateSavedViewRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.SavedViewRepository;
-import pl.cyfronet.s4e.security.AppUserDetails;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,7 +88,7 @@ public class SavedViewControllerTest {
         mockMvc.perform(post(API_PREFIX_V1 + "/savedViews")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
-                .with(jwtBearerToken(new AppUserDetails(appUser), objectMapper)))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid", matchesPattern(UUID_PATTERN)));
 
@@ -157,14 +156,14 @@ public class SavedViewControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/savedViews")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(new AppUserDetails(appUser), objectMapper)))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("$.content..caption", contains("caption-2", "caption-1")));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/savedViews")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(new AppUserDetails(otherAppUser), objectMapper)))
+                .with(jwtBearerToken(otherAppUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(equalTo(1))))
                 .andExpect(jsonPath("$.content..caption", contains("caption-3")));
@@ -184,7 +183,7 @@ public class SavedViewControllerTest {
 
         mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", savedView.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(new AppUserDetails(appUser), objectMapper)))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk());
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
@@ -212,7 +211,7 @@ public class SavedViewControllerTest {
 
         mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", savedView.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(new AppUserDetails(appUser), objectMapper)))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isForbidden());
 
         assertThat(savedViewRepository.count(), is(equalTo(1L)));
@@ -224,7 +223,7 @@ public class SavedViewControllerTest {
 
         mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", "6dea77af-1de9-4559-be06-0d50b7db1f35")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(new AppUserDetails(appUser), objectMapper)))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isForbidden());
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));

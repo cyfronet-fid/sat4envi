@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,18 +17,11 @@ import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
 import pl.cyfronet.s4e.controller.response.GroupResponse;
 import pl.cyfronet.s4e.controller.response.MembersResponse;
-import pl.cyfronet.s4e.event.OnAddToGroupEvent;
-import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
 import pl.cyfronet.s4e.ex.GroupCreationException;
-import pl.cyfronet.s4e.ex.GroupUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.GroupService;
-import pl.cyfronet.s4e.service.InstitutionService;
-import pl.cyfronet.s4e.service.SlugService;
 
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -41,10 +32,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "group", description = "The Group API")
 public class GroupController {
     private final GroupService groupService;
-    private final AppUserService appUserService;
-    private final InstitutionService institutionService;
-    private final ApplicationEventPublisher eventPublisher;
-    private final SlugService slugService;
 
     @Operation(summary = "Create a new group")
     @ApiResponses({
@@ -58,20 +45,7 @@ public class GroupController {
     public ResponseEntity<?> create(@RequestBody @Valid CreateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws GroupCreationException, NotFoundException {
-        val institution = institutionService.getInstitution(institutionSlug)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
-        Group group = Group.builder()
-                .name(request.getName())
-                .slug(slugService.slugify(request.getName()))
-                .institution(institution)
-                .build();
-        if (request.getMembersEmails() != null) {
-            group.setMembers(request.getMembersEmails().stream()
-                    .map(appUserService::findByEmail)
-                    .flatMap(Optional::stream)
-                    .collect(Collectors.toSet()));
-        }
-        groupService.save(group);
+        groupService.createFromRequest(request, institutionSlug);
         return ResponseEntity.ok().build();
     }
 
@@ -88,12 +62,7 @@ public class GroupController {
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
             throws NotFoundException {
-        val group = groupService.getGroup(institutionSlug, groupSlug)
-                .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        val appUser = appUserService.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
         groupService.addMember(institutionSlug, groupSlug, email);
-        eventPublisher.publishEvent(new OnAddToGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
 
@@ -110,12 +79,7 @@ public class GroupController {
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)
             throws NotFoundException {
-        val group = groupService.getGroup(institutionSlug, groupSlug)
-                .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        val appUser = appUserService.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email));
         groupService.removeMember(institutionSlug, groupSlug, email);
-        eventPublisher.publishEvent(new OnRemoveFromGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
 
@@ -179,19 +143,8 @@ public class GroupController {
     public ResponseEntity<?> update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
-            throws NotFoundException, GroupUpdateException {
-        val group = groupService.getGroup(institutionSlug, groupSlug)
-                .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        group.setName(request.getName());
-        group.setSlug(slugService.slugify(request.getName()));
-        if (request.getMembersEmails() != null) {
-            group.setMembers(
-                    request.getMembersEmails().stream()
-                            .map(appUserService::findByEmail)
-                            .flatMap(Optional::stream)
-                            .collect(Collectors.toSet()));
-        }
-        groupService.update(group);
+            throws NotFoundException {
+        groupService.updateFromRequest(request, institutionSlug, groupSlug);
         return ResponseEntity.ok().build();
     }
 
@@ -207,9 +160,7 @@ public class GroupController {
     public ResponseEntity<?> delete(@PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
             throws NotFoundException {
-        val group = groupService.getGroup(institutionSlug, groupSlug)
-                .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug));
-        groupService.delete(group);
+        groupService.deleteBySlugs(institutionSlug, groupSlug);
         return ResponseEntity.ok().build();
     }
 }

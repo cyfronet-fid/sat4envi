@@ -3,32 +3,35 @@ package pl.cyfronet.s4e.security;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import pl.cyfronet.s4e.bean.AppUser;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
     @Getter
-    private final AppUser appUser;
+    private final String email;
+    @Getter
+    private final String name;
+    @Getter
+    private final String surname;
+    @Getter
+    private final Set<SimpleGrantedAuthority> roles;
+    @Getter
+    private final String password;
+    @Getter
+    private final boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return appUser.getRoles().stream()
-                .flatMap(role -> role.getAuthorities().stream())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return appUser.getPassword();
+        return this.roles;
     }
 
     @Override
     public String getUsername() {
-        return appUser.getEmail();
+        return this.email;
     }
 
     @Override
@@ -46,8 +49,4 @@ public class AppUserDetails implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return appUser.isEnabled();
-    }
 }
