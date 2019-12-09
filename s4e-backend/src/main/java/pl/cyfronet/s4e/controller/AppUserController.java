@@ -20,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
@@ -37,7 +36,6 @@ import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 import pl.cyfronet.s4e.service.GroupService;
-import pl.cyfronet.s4e.service.InstitutionService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -58,7 +56,6 @@ public class AppUserController {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
     private final RecaptchaValidator recaptchaValidator;
-    private final InstitutionService institutionService;
     private final GroupService groupService;
 
     @Operation(summary = "Register a new user")
@@ -81,8 +78,6 @@ public class AppUserController {
                 .surname(registerRequest.getSurname())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
-                // for now it will be only possible to register as the lowest category
-                .role(AppRole.CAT1)
                 .enabled(false)
                 .build());
 
@@ -152,28 +147,14 @@ public class AppUserController {
     @Operation(summary = "Add user to an institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User was added"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add user")
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add user"),
+            @ApiResponse(responseCode = "404", description = "User or Group not found")
     })
     @PostMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
-                                                  @PathVariable("institution") String institutionSlug) throws AppUserCreationException {
-        AppUser appUser = AppUser.builder()
-                .name(request.getName())
-                .surname(request.getSurname())
-                .email(request.getEmail())
-                // TODO: FIXME
-                .password(passwordEncoder.encode("passTemporary"))
-                .enabled(false)
-                .build();
-
-        appUserService.save(appUser);
-        if (request.getGroupSlugs() != null) {
-            for (String groupSlug : request.getGroupSlugs()) {
-                groupService.addMember(institutionSlug, groupSlug, appUser.getEmail());
-            }
-        }
-
+                                                  @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
+        appUserService.createFromRequest(request, institutionSlug);
 //        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
         return ResponseEntity.ok().build();
     }
@@ -190,9 +171,7 @@ public class AppUserController {
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
         if (request.getGroupSlugs() != null) {
-            val user = appUserService.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new NotFoundException("User not found for email: '" + request.getEmail() + "'"));
-            groupService.updateUsersGroups(user.getId(), institutionSlug, request.getGroupSlugs());
+            groupService.updateUserGroups(request, institutionSlug);
         }
         return ResponseEntity.ok().build();
     }
@@ -200,13 +179,15 @@ public class AppUserController {
     @Operation(summary = "Get user profile")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User was retrieved"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get profile")
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get profile"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/users/me")
     @PreAuthorize("isAuthenticated()")
-    public AppUserResponse getMe() {
+    public AppUserResponse getMe() throws NotFoundException {
         AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AppUser appUser = appUserDetails.getAppUser();
+        AppUser appUser = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername())
+                .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
         return AppUserResponse.of(appUser);
     }
 

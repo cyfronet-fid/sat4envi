@@ -1,0 +1,1 @@
+DROP TABLE inst_group_app_users;

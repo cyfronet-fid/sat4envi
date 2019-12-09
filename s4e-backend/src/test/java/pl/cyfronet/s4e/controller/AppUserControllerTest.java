@@ -16,19 +16,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
+import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.bean.Group;
@@ -38,7 +36,6 @@ import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
-import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
@@ -64,17 +61,15 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @BasicTest
 @Slf4j
+@AutoConfigureMockMvc
 public class AppUserControllerTest {
     @Autowired
     private AppUserRepository appUserRepository;
-
-    @Autowired
-    private InstitutionRepository institutionRepository;
 
     @Autowired
     private EmailVerificationRepository emailVerificationRepository;
@@ -92,9 +87,6 @@ public class AppUserControllerTest {
     private RecaptchaProperties recaptchaProperties;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private SlugService slugService;
 
     @Autowired
@@ -103,24 +95,25 @@ public class AppUserControllerTest {
     @Autowired
     private GroupService groupService;
 
+    @Autowired
+    private TestDbHelper testDbHelper;
+
     private GreenMail greenMail;
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
+
+    private AppUser appUser;
 
     @BeforeEach
     public void beforeEach() {
-        emailVerificationRepository.deleteAll();
-        institutionRepository.deleteAll();
-        appUserRepository.deleteAll();
+        reset();
 
-        appUserRepository.save(AppUser.builder()
+        appUser = appUserRepository.save(AppUser.builder()
                 .email("get@profile.com")
                 .name("Get")
                 .surname("Profile")
-                .password(passwordEncoder.encode("password"))
+                .password("{noop}password")
                 .enabled(true)
                 .build());
 
@@ -129,16 +122,16 @@ public class AppUserControllerTest {
 
         recaptchaProperties.getTesting().setSuccessResult(true);
         recaptchaProperties.getTesting().setResultErrorCodes(emptyList());
-
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .apply(sharedHttpSession())
-                .build();
     }
 
     @AfterEach
     public void afterEach() {
         greenMail.stop();
+        reset();
+    }
+
+    private void reset() {
+        testDbHelper.clean();
     }
 
     @Component
@@ -480,9 +473,10 @@ public class AppUserControllerTest {
     }
 
     @Test
-    @WithUserDetails("get@profile.com")
     public void shouldReturnProfile() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk());
     }
 
@@ -595,6 +589,8 @@ public class AppUserControllerTest {
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
@@ -613,6 +609,8 @@ public class AppUserControllerTest {
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 

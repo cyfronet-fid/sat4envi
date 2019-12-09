@@ -100,7 +100,7 @@ public class PasswordController {
     @PreAuthorize("!isAnonymous()")
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordResetRequest passwordReset) throws NotFoundException, BadRequestException {
         val appUser = appUserService.findByEmail(
-                ((AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getAppUser().getEmail())
+                ((AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails()).getEmail())
                 .orElseThrow(() -> new NotFoundException());
         if (appUser.getPassword().equals(passwordEncoder.encode(passwordReset.getOldPassword()))) {
             appUser.setPassword(passwordEncoder.encode(passwordReset.getNewPassword()));

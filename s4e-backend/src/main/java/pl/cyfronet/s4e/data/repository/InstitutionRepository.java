@@ -5,17 +5,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Institution;
 
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 public interface InstitutionRepository extends CrudRepository<Institution, Long> {
     Page<Institution> findAll(Pageable pageable);
 
-    void deleteInstitutionBySlug(String slug);
-
     Optional<Institution> findBySlug(String slug);
 
+    @Transactional
+    @Modifying
+    void deleteInstitutionBySlug(String slug);
+
+    @Transactional
     @Modifying
     @Query("delete from Institution")
     void deleteAll();

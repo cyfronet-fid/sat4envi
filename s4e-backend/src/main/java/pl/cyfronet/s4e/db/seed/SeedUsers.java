@@ -45,7 +45,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Name1")
                         .surname("Surname1")
                         .password(passwordEncoder.encode("cat1user"))
-                        .role(AppRole.CAT1)
                         .enabled(true)
                         .build(),
                 AppUser.builder()
@@ -53,8 +52,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Name2")
                         .surname("Surname2")
                         .password(passwordEncoder.encode("cat2user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
                         .enabled(true)
                         .build(),
                 AppUser.builder()
@@ -62,9 +59,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Name3")
                         .surname("Surname3")
                         .password(passwordEncoder.encode("cat3user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
-                        .role(AppRole.CAT3)
                         .enabled(true)
                         .build(),
                 AppUser.builder()
@@ -72,10 +66,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Name3")
                         .surname("Surname4")
                         .password(passwordEncoder.encode("cat4user"))
-                        .role(AppRole.CAT1)
-                        .role(AppRole.CAT2)
-                        .role(AppRole.CAT3)
-                        .role(AppRole.CAT4)
                         .enabled(true)
                         .build(),
         });
