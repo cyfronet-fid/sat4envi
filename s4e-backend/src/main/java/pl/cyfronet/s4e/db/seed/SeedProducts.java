@@ -232,28 +232,27 @@ public class SeedProducts implements ApplicationRunner {
                 PRGOverlay.builder()
                         .name("wojewodztwa")
                         .featureType("wojewodztwa")
-                        .sldStyle(sldStyles.get(0))
                         .build(),
                 PRGOverlay.builder()
                         .name("powiaty")
                         .featureType("powiaty")
-                        .sldStyle(sldStyles.get(0))
                         .build(),
                 PRGOverlay.builder()
                         .name("gminy")
                         .featureType("gminy")
-                        .sldStyle(sldStyles.get(0))
                         .build(),
                 PRGOverlay.builder()
                         .name("jednostki_ewidencyjne")
                         .featureType("jednostki_ewidencyjne")
-                        .sldStyle(sldStyles.get(0))
                         .build(),
                 PRGOverlay.builder()
                         .name("obreby_ewidencyjne")
                         .featureType("obreby_ewidencyjne")
-                        .sldStyle(sldStyles.get(0))
                         .build(),
+        });
+        prgOverlays.forEach(overlay -> {
+            overlay.setCreated(!syncGeoserver);
+            overlay.setSldStyle(sldStyles.get(0));
         });
         prgOverlayRepository.saveAll(prgOverlays);
     }
