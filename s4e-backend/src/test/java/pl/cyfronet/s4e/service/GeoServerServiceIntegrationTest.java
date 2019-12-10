@@ -100,7 +100,7 @@ public class GeoServerServiceIntegrationTest {
         sldStyle.setCreated(true);
         PRGOverlay prgOverlay = prgOverlayRepository.save(PRGOverlay.builder()
                 .name("wojewodztwa")
-                .featureType("wojew%C3%B3dztwa")
+                .featureType("wojewodztwa")
                 .sldStyle(sldStyle)
                 .build());
 
@@ -109,7 +109,7 @@ public class GeoServerServiceIntegrationTest {
 
         geoServerService.createPrgOverlays(prgOverlays);
 
-        assertThat(geoServerOperations.layerExists("test", "wojew%C3%B3dztwa"), is(true));
-        assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:wojewodztwa")));
+        assertThat(geoServerOperations.layerExists("test", "wojewodztwa"), is(true));
+        assertThat(geoServerOperations.getLayer("test", "wojewodztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:wojewodztwa")));
     }
 }

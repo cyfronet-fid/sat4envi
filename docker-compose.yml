@@ -38,15 +38,17 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: fiddev/geoserver:2.15.0
+    image: fiddev/geoserver:1.1.0-GS2.16.0
     volumes:
       - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
+      - ./tmp/geoserver-data:/opt/geoserver/data_dir
     ports:
       - ${GEOSERVER_PORT:-8080}:8080
     networks:
       - net
     environment:
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD:-admin123}
+      JDBCCONFIG_ENABLED: "false"
   db:
     image: postgres:10-alpine
     ports:
