@@ -1,8 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +26,6 @@ import pl.cyfronet.s4e.service.PasswordService;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-
 import java.time.LocalDateTime;
 
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -33,15 +33,16 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "password", description = "The Password API")
 public class PasswordController {
     private final AppUserService appUserService;
     private final PasswordService passwordService;
     private final ApplicationEventPublisher eventPublisher;
     private final PasswordEncoder passwordEncoder;
 
-    @ApiOperation("Create and send a password reset token based on email")
+    @Operation(summary = "Create and send a password reset token based on email")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Email with a password reset token was sent provided user with it existed")
+            @ApiResponse(responseCode = "200", description = "Email with a password reset token was sent provided user with it existed")
     })
     @PostMapping(value = "/token-create")
     public ResponseEntity<?> resetPassword(@RequestParam @Email @NotEmpty @Valid String email) {
@@ -52,11 +53,11 @@ public class PasswordController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Validate if reset token was used or expired")
+    @Operation(summary = "Validate if reset token was used or expired")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Password reset token is valid"),
-            @ApiResponse(code = 401, message = "The token has expired"),
-            @ApiResponse(code = 404, message = "The token was not found")
+            @ApiResponse(responseCode = "200", description = "Password reset token is valid"),
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @GetMapping(value = "/token-validate")
     public ResponseEntity<?> validateToken(@RequestParam @NotEmpty @Valid String token) throws NotFoundException, PasswordResetTokenExpiredException {
@@ -70,10 +71,10 @@ public class PasswordController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Reset password")
+    @Operation(summary = "Reset password")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Password reset was successful"),
-            @ApiResponse(code = 404, message = "The token was not found")
+            @ApiResponse(responseCode = "200", description = "Password reset was successful"),
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping(value = "/password-reset")
     @ResponseBody
@@ -88,11 +89,11 @@ public class PasswordController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Change password")
+    @Operation(summary = "Change password")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Password change was successful"),
-            @ApiResponse(code = 400, message = "Passwords were incorrect"),
-            @ApiResponse(code = 404, message = "The user was not found")
+            @ApiResponse(responseCode = "200", description = "Password change was successful"),
+            @ApiResponse(responseCode = "400", description = "Passwords were incorrect"),
+            @ApiResponse(responseCode = "404", description = "The user was not found")
     })
     @PostMapping(value = "/password-change")
     @ResponseBody

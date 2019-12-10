@@ -1,6 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +16,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "config", description = "The Config API")
 public class ConfigController {
     @Value("${geoserver.outsideBaseUrl}")
     private String geoserverOutsideBaseUrl;
@@ -23,15 +27,9 @@ public class ConfigController {
     @Value("${recaptcha.validation.siteKey}")
     private String recaptchaSiteKey;
 
-    @ApiOperation("Get the front-end app configuration")
+    @Operation(summary = "Get the front-end app configuration")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK", examples = @Example({
-                    @ExampleProperty(mediaType = "application/json", value = "{\n" +
-                            "    \"geoserverUrl\": \"http://localhost:8080/geoserver/rest\",\n" +
-                            "    \"geoserverWorkspace\": \"development\",\n" +
-                            "    \"recaptchaSiteKey\": \"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI\"\n" +
-                            "}")
-            }))
+            @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping("/config")
     public ConfigResponse config() {

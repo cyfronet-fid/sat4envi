@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +20,13 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_S3;
 @RequestMapping(API_PREFIX_S3)
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "webhook", description = "The Webhook API")
 public class WebhooksController {
 
     private final SceneService sceneService;
     private final GeoServerService geoServerService;
 
-    @ApiOperation("Create scene in db and add to GeoServer")
+    @Operation(summary = "Create scene in db and add to GeoServer")
     @PostMapping("/webhook")
     public void addedFile(@RequestBody Webhook webhook) {
         if (webhook.getEventName().contains("Post") || webhook.getEventName().contains("Put")) {
