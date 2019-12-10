@@ -61,12 +61,12 @@ public class GeoServerOperationsIntegrationTest {
                         " all the PRG layer logic updated as required",
                 featureTypes,
                 containsInAnyOrder(
-                        "Pa%C5%84stwo",
+                        "Panstwo",
                         "gminy",
                         "jednostki_ewidencyjne",
                         "obreby_ewidencyjne",
                         "powiaty",
-                        "wojew%C3%B3dztwa"
+                        "wojewodztwa"
                 )
         );
     }
@@ -128,11 +128,11 @@ public class GeoServerOperationsIntegrationTest {
 
         assertThat(geoServerOperations.listStyles("test"), contains("styleOne"));
         assertThat(geoServerOperations.listDataStores("test"), contains("dataStoreName"));
-        assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), not(equalTo("test:styleOne")));
+        assertThat(geoServerOperations.getLayer("test", "wojewodztwa").getLayer().getDefaultStyle().getName(), not(equalTo("test:styleOne")));
 
-        geoServerOperations.setLayerDefaultStyle("test", "wojew%C3%B3dztwa", "styleOne");
+        geoServerOperations.setLayerDefaultStyle("test", "wojewodztwa", "styleOne");
 
-        assertThat(geoServerOperations.getLayer("test", "wojew%C3%B3dztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:styleOne")));
+        assertThat(geoServerOperations.getLayer("test", "wojewodztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:styleOne")));
     }
 
     @Test

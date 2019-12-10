@@ -231,7 +231,7 @@ public class SeedProducts implements ApplicationRunner {
         val prgOverlays = List.of(new PRGOverlay[] {
                 PRGOverlay.builder()
                         .name("wojewodztwa")
-                        .featureType("wojew%C3%B3dztwa")
+                        .featureType("wojewodztwa")
                         .sldStyle(sldStyles.get(0))
                         .build(),
                 PRGOverlay.builder()
