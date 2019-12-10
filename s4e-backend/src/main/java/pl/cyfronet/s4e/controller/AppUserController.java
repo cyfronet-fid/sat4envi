@@ -4,7 +4,13 @@ import com.github.mkopylec.recaptcha.validation.ErrorCode;
 import com.github.mkopylec.recaptcha.validation.RecaptchaValidationException;
 import com.github.mkopylec.recaptcha.validation.RecaptchaValidator;
 import com.github.mkopylec.recaptcha.validation.ValidationResult;
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -24,7 +29,10 @@ import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
-import pl.cyfronet.s4e.ex.*;
+import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.RecaptchaException;
+import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.EmailVerificationService;
@@ -43,6 +51,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "app-user", description = "The AppUser API")
 public class AppUserController {
     private final AppUserService appUserService;
     private final EmailVerificationService emailVerificationService;
@@ -52,19 +61,13 @@ public class AppUserController {
     private final InstitutionService institutionService;
     private final GroupService groupService;
 
-    @ApiOperation("Register a new user")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "g-recaptcha-response", dataType = "string", paramType = "query", required = true)
+    @Operation(summary = "Register a new user")
+    @Parameters({
+            @Parameter(name = "g-recaptcha-response", in = ParameterIn.QUERY, required = true)
     })
     @ApiResponses({
-            @ApiResponse(code = 200, message = "If user was registered. But also, when the username was taken and the registration didn't succeed"),
-            @ApiResponse(code = 400, message = "The request was not valid or recaptcha failed", examples = @Example({
-                    @ExampleProperty(mediaType = "application/json", value =
-                            "{\"email\":[\"musi być adresem e-mail\"]}\n" +
-                                    "or\n" +
-                                    "{\"recaptcha\":[\"invalid-input-response\"]}"
-                    )
-            }))
+            @ApiResponse(responseCode = "200", description = "If user was registered. But also, when the username was taken and the registration didn't succeed"),
+            @ApiResponse(responseCode = "400", description = "The request was not valid or recaptcha failed")
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(
@@ -88,9 +91,9 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Resend an email verification token based on email")
+    @Operation(summary = "Resend an email verification token based on email")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Email with a new email verification token was sent provided user with it existed and wasn't activated yet")
+            @ApiResponse(responseCode = "200", description = "Email with a new email verification token was sent provided user with it existed and wasn't activated yet")
     })
     @PostMapping("/resend-registration-token-by-email")
     public ResponseEntity<?> resendRegistrationTokenByEmail(@RequestParam @Email @NotEmpty @Valid String email) {
@@ -103,10 +106,10 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Resend registration token based on token")
+    @Operation(summary = "Resend registration token based on token")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Email with a new registration token was resent"),
-            @ApiResponse(code = 404, message = "The token was not found")
+            @ApiResponse(responseCode = "200", description = "Email with a new registration token was resent"),
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping("/resend-registration-token-by-token")
     public ResponseEntity<?> resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token
@@ -121,11 +124,11 @@ public class AppUserController {
         }
     }
 
-    @ApiOperation("Confirm user email")
+    @Operation(summary = "Confirm user email")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User account was activated"),
-            @ApiResponse(code = 401, message = "The token has expired"),
-            @ApiResponse(code = 404, message = "The token wasn't found")
+            @ApiResponse(responseCode = "200", description = "User account was activated"),
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
+            @ApiResponse(responseCode = "404", description = "The token wasn't found")
     })
     @PostMapping("/confirm-email")
     public ResponseEntity<?> confirmEmail(@RequestParam @NotEmpty @Valid String token
@@ -146,10 +149,10 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Add user to an institution")
+    @Operation(summary = "Add user to an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User was added"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to add user")
+            @ApiResponse(responseCode = "200", description = "User was added"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add user")
     })
     @PostMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated()")
@@ -175,11 +178,11 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Update user groups in an institution")
+    @Operation(summary = "Update user groups in an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User groups were updated"),
-            @ApiResponse(code = 400, message = "Group not updated"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to update user groups")
+            @ApiResponse(responseCode = "200", description = "User groups were updated"),
+            @ApiResponse(responseCode = "400", description = "Group not updated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update user groups")
     })
     @PutMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated()")
@@ -194,10 +197,10 @@ public class AppUserController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Get user profile")
+    @Operation(summary = "Get user profile")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "User was retrieved"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get profile")
+            @ApiResponse(responseCode = "200", description = "User was retrieved"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get profile")
     })
     @GetMapping("/users/me")
     @PreAuthorize("isAuthenticated()")

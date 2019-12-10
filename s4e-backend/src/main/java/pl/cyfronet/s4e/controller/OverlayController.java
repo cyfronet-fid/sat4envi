@@ -1,8 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,14 +21,15 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "overlay", description = "The Overlay API")
 public class OverlayController {
 
     private final PRGOverlayService prgOverlayService;
     private final WMSOverlayService wmsOverlayService;
 
-    @ApiOperation(value = "View a list of PRG overlays")
+    @Operation(summary = "View a list of PRG overlays")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
     @GetMapping("/overlays/prg/")
     public List<PRGOverlayResponse> getPRGOverlays() {
@@ -36,9 +38,9 @@ public class OverlayController {
                 .collect(Collectors.toList());
     }
 
-    @ApiOperation(value = "View a list of WMS overlays")
+    @Operation(summary = "View a list of WMS overlays")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
     @GetMapping("/overlays/wms/")
     public List<WMSOverlayResponse> getWMSOverlays() {

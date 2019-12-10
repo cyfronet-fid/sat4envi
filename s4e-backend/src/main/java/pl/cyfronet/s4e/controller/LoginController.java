@@ -1,6 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -21,15 +24,16 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "login", description = "The Login API")
 public class LoginController {
     private final AuthenticationProvider authenticationProvider;
     private final JWTTokenService jwtTokenService;
 
-    @ApiOperation("Login to the application")
+    @Operation(summary = "Login to the application")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 401, message = "Incorrect credentials or account doesn't exist"),
-            @ApiResponse(code = 403, message = "Account disabled (not activated)")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "401", description = "Incorrect credentials or account doesn't exist"),
+            @ApiResponse(responseCode = "403", description = "Account disabled (not activated)")
     })
     @PostMapping("/login")
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws AuthenticationException {

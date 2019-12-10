@@ -1,8 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.domain.Page;
@@ -29,15 +30,16 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "institution", description = "The Institution API")
 public class InstitutionController {
     private final InstitutionService institutionService;
     private final SlugService slugService;
 
-    @ApiOperation("Create a new institution")
+    @Operation(summary = "Create a new institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "If institution was created"),
-            @ApiResponse(code = 400, message = "Institution not created"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to create an institution")
+            @ApiResponse(responseCode = "200", description = "If institution was created"),
+            @ApiResponse(responseCode = "400", description = "Institution not created"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
     })
     @PostMapping("/institutions")
     @PreAuthorize("isAuthenticated()")
@@ -46,10 +48,10 @@ public class InstitutionController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Get a list of institutions")
+    @Operation(summary = "Get a list of institutions")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get list")
     })
     @GetMapping("/institutions")
     @PreAuthorize("isAuthenticated()")
@@ -63,11 +65,11 @@ public class InstitutionController {
                 page.getTotalElements());
     }
 
-    @ApiOperation("Get an institution")
+    @Operation(summary = "Get an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved an institution"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to get an institution"),
-            @ApiResponse(code = 404, message = "Institution not found")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved an institution"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get an institution"),
+            @ApiResponse(responseCode = "404", description = "Institution not found")
     })
     @GetMapping("/institutions/{institution}")
     @PreAuthorize("isAuthenticated()")
@@ -77,12 +79,12 @@ public class InstitutionController {
         return InstitutionResponse.of(institution);
     }
 
-    @ApiOperation("Update an institution")
+    @Operation(summary = "Update an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "If institution was updated"),
-            @ApiResponse(code = 400, message = "Institution not updated"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to update an institution"),
-            @ApiResponse(code = 404, message = "Institution not found")
+            @ApiResponse(responseCode = "200", description = "If institution was updated"),
+            @ApiResponse(responseCode = "400", description = "Institution not updated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update an institution"),
+            @ApiResponse(responseCode = "404", description = "Institution not found")
     })
     @PutMapping("/institutions/{institution}")
     @PreAuthorize("isAuthenticated()")
@@ -97,10 +99,10 @@ public class InstitutionController {
         return ResponseEntity.ok().build();
     }
 
-    @ApiOperation("Delete an institution")
+    @Operation(summary = "Delete an institution")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "If institution was deleted"),
-            @ApiResponse(code = 403, message = "Forbidden: Don't have permission to delete an institution")
+            @ApiResponse(responseCode = "200", description = "If institution was deleted"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to delete an institution")
     })
     @DeleteMapping("/institutions/{institution}")
     @PreAuthorize("isAuthenticated()")

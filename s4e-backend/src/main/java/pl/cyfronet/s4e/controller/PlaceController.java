@@ -1,8 +1,9 @@
 package pl.cyfronet.s4e.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,12 +23,13 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RestController
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
+@Tag(name = "place", description = "The Place API")
 public class PlaceController {
     private final PlaceService placeService;
 
-    @ApiOperation(value = "View a list of places")
+    @Operation(summary = "View a list of places")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved page")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved page")
     })
     @GetMapping("/places")
     public Page<PlaceResponse> find(@RequestParam String namePrefix, Pageable pageable) {

@@ -20,12 +20,12 @@
     <properties>
         <jjwt.version>0.10.7</jjwt.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
-        <springfox.version>3.0.0-SNAPSHOT</springfox.version>
         <commonmark.version>0.13.0</commonmark.version>
         <hibernate-types.version>2.7.1</hibernate-types.version>
         <poiooxml.version>4.1.1</poiooxml.version>
         <greenmail.version>1.5.11</greenmail.version>
         <slugify.version>2.4</slugify.version>
+        <springdoc-openapi.version>1.2.17</springdoc-openapi.version>
     </properties>
 
     <dependencies>
@@ -125,24 +125,14 @@
         </dependency>
 
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-spring-webmvc</artifactId>
-            <version>${springfox.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-data-rest</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <dependency>
@@ -162,15 +152,6 @@
             <version>${slugify.version}</version>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <!-- TODO: remove and depend on springfox 3.0.0-RELEASE once it is released -->
-        <repository>
-            <id>spring-libs-milestone</id>
-            <name>Spring Milestone Maven Repository</name>
-            <url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
