@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
 import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "scene", description = "The Scene API")
 public class SceneController {
     private final SceneService sceneService;
+    private final TimeHelper timeHelper;
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
@@ -39,12 +41,12 @@ public class SceneController {
             LocalDateTime start = LocalDateTime.of(date, LocalTime.of(0, 0));
             LocalDateTime end = start.plusDays(1);
             return sceneService.getScenes(productId, start, end).stream()
-                    .map(SceneResponse::of)
+                    .map(s -> SceneResponse.of(s, timeHelper))
                     .collect(Collectors.toList());
         }
 
         return sceneService.getScenes(productId).stream()
-                .map(SceneResponse::of)
+                .map(s -> SceneResponse.of(s, timeHelper))
                 .collect(Collectors.toList());
     }
 
