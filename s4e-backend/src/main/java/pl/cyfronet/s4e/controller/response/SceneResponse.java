@@ -2,9 +2,9 @@ package pl.cyfronet.s4e.controller.response;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Scene;
+import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.ZonedDateTime;
 
@@ -17,11 +17,11 @@ public class SceneResponse {
     private String layerName;
     private Legend legend;
 
-    public static SceneResponse of(Scene scene) {
+    public static SceneResponse of(Scene scene, TimeHelper timeHelper) {
         return SceneResponse.builder()
                 .id(scene.getId())
                 .productId(scene.getProduct().getId())
-                .timestamp(ZonedDateTime.of(scene.getTimestamp(), Constants.ZONE_ID))
+                .timestamp(timeHelper.getZonedDateTimeWithDefaultZone(scene.getTimestamp()))
                 .layerName(scene.getLayerName())
                 .legend(scene.getLegend())
                 .build();

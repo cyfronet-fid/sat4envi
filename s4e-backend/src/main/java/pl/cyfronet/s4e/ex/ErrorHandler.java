@@ -20,68 +20,68 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     private final ErrorHandlerHelper errorHandlerHelper;
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<?> handleDisabledException(DisabledException e) {
+    public ResponseEntity<?> handle(DisabledException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleCannotAuthenticateException(AccessDeniedException e) {
+    public ResponseEntity<?> handle(AccessDeniedException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleCannotAuthenticateException(AuthenticationException e) {
+    public ResponseEntity<?> handle(AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(AppUserCreationException.class)
-    public ResponseEntity<?> handleAppUserCreationException() {
+    public ResponseEntity<?> handle(AppUserCreationException e) {
         // don't return an error status in this case, as it would open the system to account enumeration attack
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @ExceptionHandler(RecaptchaException.class)
-    public ResponseEntity<?> handleRecaptchaException(RecaptchaException e) {
+    public ResponseEntity<?> handle(RecaptchaException e) {
         return ResponseEntity.badRequest().body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(RegistrationTokenExpiredException.class)
-    public ResponseEntity<?> handleRegistrationTokenExpiredException() {
+    public ResponseEntity<?> handle(RegistrationTokenExpiredException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> handleNotFoundException() {
+    public ResponseEntity<?> handle(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler(PasswordResetTokenExpiredException.class)
-    public ResponseEntity<?> handlePasswordResetTokenExpiredException() {
+    public ResponseEntity<?> handle(PasswordResetTokenExpiredException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handlePBadRequestExpiredException() {
+    public ResponseEntity<?> handle(BadRequestException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ExceptionHandler(InstitutionCreationException.class)
-    public ResponseEntity<?> handleInstitutionCreationException(InstitutionCreationException e) {
+    public ResponseEntity<?> handle(InstitutionCreationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(InstitutionUpdateException.class)
-    public ResponseEntity<?> handleInstitutionUpdateException(InstitutionUpdateException e) {
+    public ResponseEntity<?> handle(InstitutionUpdateException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(GroupCreationException.class)
-    public ResponseEntity<?> handleGroupCreationException(GroupCreationException e) {
+    public ResponseEntity<?> handle(GroupCreationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(GroupUpdateException.class)
-    public ResponseEntity<?> handleGroupUpdateException(GroupUpdateException e) {
+    public ResponseEntity<?> handle(GroupUpdateException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
