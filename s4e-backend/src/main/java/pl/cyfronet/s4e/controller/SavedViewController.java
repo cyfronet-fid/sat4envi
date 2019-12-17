@@ -23,6 +23,7 @@ import pl.cyfronet.s4e.service.SavedViewService;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -51,7 +52,7 @@ public class SavedViewController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID id = savedViewService.create(SavedViewService.Create.builder()
                 .caption(request.getCaption())
-                .thumbnail(request.getThumbnail())
+                .thumbnail(Base64.getDecoder().decode(request.getThumbnail()))
                 .configuration(request.getConfiguration())
                 .ownerEmail(authentication.getName())
                 .createdAt(LocalDateTime.now())

@@ -26,6 +26,7 @@
         <greenmail.version>1.5.11</greenmail.version>
         <slugify.version>2.4</slugify.version>
         <springdoc-openapi.version>1.2.17</springdoc-openapi.version>
+        <awssdk.version>2.10.36</awssdk.version>
     </properties>
 
     <dependencies>
@@ -62,15 +63,17 @@
         </dependency>
 
         <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${awssdk.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -150,6 +153,18 @@
             <groupId>com.github.slugify</groupId>
             <artifactId>slugify</artifactId>
             <version>${slugify.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
