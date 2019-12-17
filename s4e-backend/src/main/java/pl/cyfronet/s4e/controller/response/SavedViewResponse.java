@@ -16,6 +16,7 @@ public interface SavedViewResponse {
     @Value("#{@timeHelper.getZonedDateTimeWithDefaultZone(target.createdAt)}")
     ZonedDateTime getCreatedAt();
 
+    @Value("#{@savedViewService.getThumbnailPath(target.id)}")
     @Schema(description = "a path to the thumbnail")
     String getThumbnail();
 

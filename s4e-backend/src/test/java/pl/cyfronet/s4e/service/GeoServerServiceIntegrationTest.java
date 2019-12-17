@@ -1,19 +1,18 @@
 package pl.cyfronet.s4e.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
-import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 
@@ -24,8 +23,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-@BasicTest
-@Tag("integration")
+@IntegrationTest
 public class GeoServerServiceIntegrationTest {
 
     @Value("${geoserver.workspace}")

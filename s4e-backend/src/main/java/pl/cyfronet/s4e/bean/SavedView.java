@@ -28,8 +28,6 @@ public class SavedView {
 
     private LocalDateTime createdAt;
 
-    private String thumbnail;
-
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> configuration;

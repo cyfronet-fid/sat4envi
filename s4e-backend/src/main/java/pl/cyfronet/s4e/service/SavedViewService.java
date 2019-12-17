@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cyfronet.s4e.FileStorageProperties;
 import pl.cyfronet.s4e.bean.SavedView;
 import pl.cyfronet.s4e.controller.response.SavedViewResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
@@ -29,12 +30,14 @@ public class SavedViewService {
         String ownerEmail;
         LocalDateTime createdAt;
         String caption;
-        String thumbnail;
+        byte[] thumbnail;
         Map<String, Object> configuration;
     }
 
+    private final FileStorageProperties fileStorageProperties;
     private final SavedViewRepository savedViewRepository;
     private final AppUserRepository appUserRepository;
+    private final FileStorage fileStorage;
 
     @Transactional
     public UUID create(Create request) throws NotFoundException {
@@ -43,17 +46,20 @@ public class SavedViewService {
 
         val savedView = savedViewRepository.save(SavedView.builder()
                 .caption(request.getCaption())
-                .thumbnail(request.getThumbnail())
                 .configuration(request.getConfiguration())
                 .createdAt(request.getCreatedAt())
                 .owner(appUser)
                 .build());
+
+        fileStorage.upload(getThumbnailKey(savedView.getId()), request.getThumbnail());
+
         return savedView.getId();
     }
 
     @Transactional
     public void delete(UUID id) {
         savedViewRepository.deleteById(id);
+        fileStorage.delete(getThumbnailKey(id));
     }
 
     public <T> Optional<T> findById(UUID id, Class<T> projection) {
@@ -62,6 +68,14 @@ public class SavedViewService {
 
     public Page<SavedViewResponse> listByAppUser(String email, Pageable pageable) {
         return savedViewRepository.findAllByOwnerEmail(email, pageable);
+    }
+
+    public String getThumbnailPath(UUID id) {
+        return String.join("/", fileStorageProperties.getBucket(), getThumbnailKey(id));
+    }
+
+    public String getThumbnailKey(UUID id) {
+        return fileStorageProperties.getKeyPrefix() + id;
     }
 
     private interface OwnerEmailProjection {
