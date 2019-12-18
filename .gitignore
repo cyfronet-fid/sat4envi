@@ -17,6 +17,12 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# docker-compose
+/docker-compose.override.yml
+/.env
+/backend-production.env
+/backend-custom.env
+
 # misc
 /.sass-cache
 /connect.lock
@@ -26,9 +32,6 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-/.env
-/backend-production.env
-/backend-custom.env
 
 # System Files
 .DS_Store

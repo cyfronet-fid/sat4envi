@@ -159,6 +159,30 @@ SPRING_PROFILES_ACTIVE=development,skip-seed-products
 ```
 
 
+#### Custom docker-compose local configurations
+
+To customize the docker-compose configuration locally use [multiple Compose files](https://docs.docker.com/compose/extends/).
+
+An example customization would be adding a file `/docker-compose.override.yml` with contents:
+```yaml
+services:
+  s4e-backend:
+    env_file:
+      - backend-development.env
+      - backend-custom.env
+```
+and `/backend-custom.env` with contents:
+```properties
+SPRING_PROFILES_ACTIVE=development
+SEED_PRODUCTS_DATASET=s4e-demo
+S3_GEOSERVER_BUCKET=s4e-demo
+SEED_PRODUCTS_SYNCGEOSERVER=false
+```
+Both files are ignored by `.gitignore`, so they won't be accidentally committed and pushed to the public repository.
+
+In this way, plain `docker-compose up` will pick up the override file and result in a customized behavior.
+
+
 #### Places CSV generation
 
 In case it is required to regenerate `places.csv` use `PlacesXlsxToCsv` tool.
