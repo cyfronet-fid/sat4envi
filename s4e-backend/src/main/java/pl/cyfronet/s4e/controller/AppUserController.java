@@ -151,7 +151,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "User or Group not found")
     })
     @PostMapping("/institutions/{institution}/users")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
         appUserService.createFromRequest(request, institutionSlug);
@@ -166,7 +166,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update user groups")
     })
     @PutMapping("/institutions/{institution}/users")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() &&  isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {

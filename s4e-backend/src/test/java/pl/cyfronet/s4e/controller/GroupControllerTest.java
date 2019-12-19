@@ -5,20 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
+import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.SlugService;
 
@@ -31,12 +30,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfigurer.sharedHttpSession;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @BasicTest
 @Slf4j
+@AutoConfigureMockMvc
 public class GroupControllerTest {
+    public static final String PROFILE_EMAIL = "get@profile.com";
 
     @Autowired
     private InstitutionRepository institutionRepository;
@@ -48,6 +49,9 @@ public class GroupControllerTest {
     private AppUserRepository appUserRepository;
 
     @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private GroupService groupService;
 
     @Autowired
@@ -56,24 +60,23 @@ public class GroupControllerTest {
     @Autowired
     private SlugService slugService;
 
-    private String slugInstitution = "";
-
-    public static final String PROFILE_EMAIL = "get@profile.com";
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    private MockMvc mockMvc;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private MockMvc mockMvc;
+
+
+    private AppUser appUser;
+
+    private String slugInstitution;
 
     @BeforeEach
     public void beforeEach() {
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
 
-        appUserRepository.save(AppUser.builder()
+        appUser = appUserRepository.save(AppUser.builder()
                 .email(PROFILE_EMAIL)
                 .name("Get")
                 .surname("Profile")
@@ -83,19 +86,17 @@ public class GroupControllerTest {
 
         String test_institution = "Test Institution";
         slugInstitution = slugService.slugify(test_institution);
-        institutionRepository.save(Institution.builder()
+        Institution institution = institutionRepository.save(Institution.builder()
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(webApplicationContext)
-                .apply(sharedHttpSession())
-                .build();
+        UserRole userRole = UserRole.builder().role(AppRole.INST_MANAGER).user(appUser).group(group).build();
+        userRoleRepository.save(userRole);
     }
 
     @Test
-    @WithMockUser
     public void shouldCreateGroupWithoutMembers() throws Exception {
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
@@ -103,6 +104,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
@@ -121,6 +123,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
@@ -141,6 +144,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
@@ -154,6 +158,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/groups/{group}", slugInstitution, "creategrouptest")
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupUpdateRequest)))
                 .andExpect(status().isOk());
 
@@ -183,6 +188,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
@@ -198,6 +204,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/groups/{group}", slugInstitution, "creategrouptest")
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupUpdateRequest)))
                 .andExpect(status().isOk());
 
@@ -215,6 +222,7 @@ public class GroupControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name[0]", containsString("nie może zawierać podkreśleń")));
