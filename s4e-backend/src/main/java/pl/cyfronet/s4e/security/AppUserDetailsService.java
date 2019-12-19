@@ -26,7 +26,7 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final AppUser appUser;
         try {
-            appUser = appUserRepository.findByEmailWithRolesAndGroups(username).get();
+            appUser = appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(username).get();
         } catch (NoSuchElementException e) {
             log.debug("AppUser with email " + username + " not found", e);
             throw new UsernameNotFoundException("AppUser with email " + username + " not found", e);
@@ -41,7 +41,9 @@ public class AppUserDetailsService implements UserDetailsService {
                                 ROLE_PREFIX
                                         + userRole.getRole().name()
                                         + "_"
-                                        + userRole.getGroup().getId()))
+                                        + userRole.getGroup().getInstitution().getSlug()
+                                        + "_"
+                                        + userRole.getGroup().getSlug()))
                         .collect(Collectors.toSet()),
                 appUser.getPassword(),
                 appUser.isEnabled());

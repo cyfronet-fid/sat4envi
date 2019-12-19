@@ -33,6 +33,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "savedView", description = "The SavedView API")
+@PreAuthorize("isAuthenticated()")
 public class SavedViewController {
     private final SavedViewService savedViewService;
 
@@ -47,7 +48,6 @@ public class SavedViewController {
             @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
     })
     @PostMapping("/savedViews")
-    @PreAuthorize("isAuthenticated()")
     public SavedViewResponse create(@RequestBody @Valid CreateSavedViewRequest request) throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID id = savedViewService.create(SavedViewService.Create.builder()
@@ -65,7 +65,6 @@ public class SavedViewController {
     @Operation(summary = "List SavedViews of authenticated user")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Operation successful"))
     @GetMapping("/savedViews")
-    @PreAuthorize("isAuthenticated()")
     public Page<SavedViewResponse> list(
             @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
@@ -79,7 +78,7 @@ public class SavedViewController {
             @ApiResponse(responseCode = "403", description = "Not authenticated or authorized", content = @Content)
     })
     @DeleteMapping("/savedViews/{uuid}")
-    @PreAuthorize("isAuthenticated() && @savedViewService.canDelete(#uuid, authentication)")
+    @PreAuthorize("@savedViewService.canDelete(#uuid, authentication)")
     public void delete(@PathVariable @Parameter(schema = @Schema(format = "uuid")) UUID uuid) {
         savedViewService.delete(uuid);
     }

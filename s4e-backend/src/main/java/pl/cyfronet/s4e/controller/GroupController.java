@@ -30,6 +30,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RequestMapping(API_PREFIX_V1)
 @RequiredArgsConstructor
 @Tag(name = "group", description = "The Group API")
+@PreAuthorize("isAuthenticated()")
 public class GroupController {
     private final GroupService groupService;
 
@@ -41,7 +42,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Institution not found")
     })
     @PostMapping("/institutions/{institution}/groups")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> create(@RequestBody @Valid CreateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws GroupCreationException, NotFoundException {
@@ -57,7 +58,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Group or user not found")
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
@@ -74,7 +75,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Group or user not found")
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)
@@ -89,7 +90,7 @@ public class GroupController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get a list")
     })
     @GetMapping("/institutions/{institution}/groups")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public Page<GroupResponse> getAllByInstitutionName(@PathVariable("institution") String institutionSlug,
                                                        Pageable pageable) {
         Page<Group> page = groupService.getAllByInstitution(institutionSlug, pageable);
@@ -109,7 +110,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Group not found")
     })
     @GetMapping("/institutions/{institution}/groups/{group}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public GroupResponse get(@PathVariable("institution") String institutionSlug,
                              @PathVariable("group") String groupSlug)
             throws NotFoundException {
@@ -125,7 +126,7 @@ public class GroupController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get members")
     })
     @GetMapping("/institutions/{institution}/groups/{group}/members")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public MembersResponse getMembers(@PathVariable("institution") String institutionSlug,
                                       @PathVariable("group") String groupSlug) {
         return MembersResponse.of(groupService.getMembers(institutionSlug, groupSlug));
@@ -139,7 +140,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Group was not found")
     })
     @PutMapping("/institutions/{institution}/groups/{group}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
@@ -156,7 +157,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Group or institution was not found")
     })
     @DeleteMapping("/institutions/{institution}/groups/{group}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isInstitutionManager(#institutionSlug)")
     public ResponseEntity<?> delete(@PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
             throws NotFoundException {

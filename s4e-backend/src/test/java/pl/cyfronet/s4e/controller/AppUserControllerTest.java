@@ -27,15 +27,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.EmailVerification;
-import pl.cyfronet.s4e.bean.Group;
-import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
@@ -72,6 +68,13 @@ public class AppUserControllerTest {
     private AppUserRepository appUserRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+    @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private EmailVerificationRepository emailVerificationRepository;
 
     @Autowired
@@ -105,6 +108,10 @@ public class AppUserControllerTest {
 
     private AppUser appUser;
 
+    private String slugInstitution;
+
+    private Institution institution;
+
     @BeforeEach
     public void beforeEach() {
         reset();
@@ -122,6 +129,18 @@ public class AppUserControllerTest {
 
         recaptchaProperties.getTesting().setSuccessResult(true);
         recaptchaProperties.getTesting().setResultErrorCodes(emptyList());
+
+
+        String test_institution = "Test Institution";
+        slugInstitution = slugService.slugify(test_institution);
+        institution = institutionRepository.save(Institution.builder()
+                .name(test_institution)
+                .slug(slugInstitution)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        UserRole userRole = UserRole.builder().role(AppRole.INST_MANAGER).user(appUser).group(group).build();
+        userRoleRepository.save(userRole);
     }
 
     @AfterEach
@@ -483,13 +502,6 @@ public class AppUserControllerTest {
     @Test
     @WithMockUser
     public void shouldCreateUserAndAddToGroups() throws Exception {
-        String test_institution = "Test Institution";
-        String slugInstitution = slugService.slugify(test_institution);
-        Institution institution = institutionService.save(Institution.builder()
-                .name(test_institution)
-                .slug(slugInstitution)
-                .build());
-
         groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
 
         Set<String> groups = new HashSet<>();
@@ -504,6 +516,7 @@ public class AppUserControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
@@ -513,15 +526,7 @@ public class AppUserControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void shouldCreateUserWithoutAddingtoGroup() throws Exception {
-        String test_institution = "Test Institution";
-        String slugInstitution = slugService.slugify(test_institution);
-        institutionService.save(Institution.builder()
-                .name(test_institution)
-                .slug(slugInstitution)
-                .build());
-
         CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
                 .name("Name")
                 .surname("Surname")
@@ -530,6 +535,7 @@ public class AppUserControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
@@ -540,13 +546,6 @@ public class AppUserControllerTest {
     @Test
     @WithMockUser
     public void shouldUpdateUserGroupsInInstitution() throws Exception {
-        String test_institution = "Test Institution";
-        String slugInstitution = slugService.slugify(test_institution);
-        Institution institution = institutionService.save(Institution.builder()
-                .name(test_institution)
-                .slug(slugInstitution)
-                .build());
-
         groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
 
         appUserRepository.save(AppUser.builder()
@@ -572,6 +571,7 @@ public class AppUserControllerTest {
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
@@ -588,7 +588,6 @@ public class AppUserControllerTest {
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
-                .contentType(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
@@ -608,7 +607,6 @@ public class AppUserControllerTest {
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
-                .contentType(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
