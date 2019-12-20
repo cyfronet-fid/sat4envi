@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
 import pl.cyfronet.s4e.controller.response.InstitutionResponse;
@@ -45,7 +46,26 @@ public class InstitutionController {
     @PostMapping("/institutions")
     @PreAuthorize("isAdmin()")
     public ResponseEntity<?> create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
-        institutionService.save(Institution.builder().name(request.getName()).slug(slugService.slugify(request.getName())).build());
+        institutionService.save(Institution.builder()
+                .name(request.getName())
+                .slug(slugService.slugify(request.getName()))
+                .parent(null)
+                .build());
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Create a new child institution")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If institution was created"),
+            @ApiResponse(responseCode = "400", description = "Institution not created"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
+    })
+    @PostMapping("/institutions/{institution}/child")
+    @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
+    public ResponseEntity<?> createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
+                                         @PathVariable("institution") String institutionSlug)
+            throws InstitutionCreationException, NotFoundException {
+        institutionService.createChildInstitution(request, institutionSlug);
         return ResponseEntity.ok().build();
     }
 
@@ -76,7 +96,7 @@ public class InstitutionController {
     @PreAuthorize("isInstitutionMember(#institutionSlug)")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
         val institution = institutionService.getInstitution(institutionSlug)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
         return InstitutionResponse.of(institution);
     }
 

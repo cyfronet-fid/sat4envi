@@ -1,9 +1,6 @@
 package pl.cyfronet.s4e.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -14,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "institution",uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
+@Table(name = "institution", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
 public class Institution {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +23,10 @@ public class Institution {
     @NotEmpty
     @NaturalId(mutable = true)
     private String slug;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private Institution parent;
 }
