@@ -1,0 +1,1 @@
+ALTER TABLE institution ADD COLUMN parent_id BIGINT REFERENCES institution;
