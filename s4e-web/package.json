@@ -68,7 +68,7 @@
     "ol": "^5.3.3",
     "proj4": "^2.5.0",
     "rxjs": "^6.4.0",
-    "serialize-javascript": "^1.6.1",
+    "serialize-javascript": "^2.1.1",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
