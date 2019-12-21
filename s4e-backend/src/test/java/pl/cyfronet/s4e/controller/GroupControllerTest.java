@@ -21,7 +21,9 @@ import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.SlugService;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -114,11 +116,11 @@ public class GroupControllerTest {
     @Test
     @WithMockUser
     public void shouldCreateGroupWithMembers() throws Exception {
-        Set<String> members = new HashSet<>();
-        members.add(PROFILE_EMAIL);
+        Map<String, Set<AppRole>> membersRoles = new HashMap<>();
+        membersRoles.put(PROFILE_EMAIL, Set.of(AppRole.GROUP_MEMBER));
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
-                .membersEmails(members)
+                .membersRoles(membersRoles)
                 .build();
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
@@ -133,13 +135,14 @@ public class GroupControllerTest {
     }
 
     @Test
-    @WithMockUser
     public void shouldUpdateGroupWithoutMembers() throws Exception {
+        Map<String, Set<AppRole>> membersRoles = new HashMap<>();
+        membersRoles.put(PROFILE_EMAIL, Set.of(AppRole.GROUP_MEMBER));
         Set<String> members = new HashSet<>();
         members.add(PROFILE_EMAIL);
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
-                .membersEmails(members)
+                .membersRoles(membersRoles)
                 .build();
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
@@ -178,12 +181,12 @@ public class GroupControllerTest {
                 .password("admin123")
                 .enabled(true)
                 .build());
-        Set<String> members = new HashSet<>();
-        members.add(PROFILE_EMAIL);
-        members.add(email);
+        Map<String, Set<AppRole>> membersRoles = new HashMap<>();
+        membersRoles.put(PROFILE_EMAIL, Set.of(AppRole.GROUP_MEMBER));
+        membersRoles.put(email, Set.of(AppRole.GROUP_MEMBER));
         CreateGroupRequest groupRequest = CreateGroupRequest.builder()
                 .name("CreateGroupTest")
-                .membersEmails(members)
+                .membersRoles(membersRoles)
                 .build();
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/groups", slugInstitution)
@@ -196,10 +199,10 @@ public class GroupControllerTest {
                 slugInstitution, "creategrouptest").isPresent(), is(true));
         assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(2));
 
-        members.remove(email);
+        membersRoles.remove(email);
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
                 .name("UpdateGroupTest")
-                .membersEmails(members)
+                .membersRoles(membersRoles)
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/groups/{group}", slugInstitution, "creategrouptest")

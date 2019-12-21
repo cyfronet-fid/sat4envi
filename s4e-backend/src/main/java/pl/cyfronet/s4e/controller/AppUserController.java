@@ -170,7 +170,7 @@ public class AppUserController {
     public ResponseEntity<?> updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
-        if (request.getGroupSlugs() != null) {
+        if (request.getGroupsWithRoles() != null) {
             groupService.updateUserGroups(request, institutionSlug);
         }
         return ResponseEntity.ok().build();

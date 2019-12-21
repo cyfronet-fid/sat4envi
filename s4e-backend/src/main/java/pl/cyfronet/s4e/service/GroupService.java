@@ -10,7 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppRole;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Group;
+import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
@@ -37,6 +40,7 @@ public class GroupService {
     private final UserRoleRepository userRoleRepository;
     private final SlugService slugService;
     private final InstitutionService institutionService;
+    private final UserRoleService userRoleService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(rollbackFor = GroupCreationException.class)
@@ -60,14 +64,16 @@ public class GroupService {
                 .institution(institution)
                 .build();
 
-        if (request.getMembersEmails() != null) {
-            for (String memberEmail : request.getMembersEmails()) {
-                group.getMembersRoles().add(UserRole.builder()
-                        .role(AppRole.GROUP_MEMBER)
-                        .user(appUserRepository.findByEmail(memberEmail)
-                                .orElseThrow(() -> new NotFoundException("User not found for email '" + memberEmail + "'")))
-                        .group(group)
-                        .build());
+        if (request.getMembersRoles() != null) {
+            for (String memberEmail : request.getMembersRoles().keySet()) {
+                for (AppRole role : request.getMembersRoles().get(memberEmail)) {
+                    group.getMembersRoles().add(UserRole.builder()
+                            .role(role)
+                            .user(appUserRepository.findByEmail(memberEmail)
+                                    .orElseThrow(() -> new NotFoundException("User not found for email '" + memberEmail + "'")))
+                            .group(group)
+                            .build());
+                }
             }
         }
 
@@ -93,34 +99,42 @@ public class GroupService {
 
     @Transactional
     public void updateUserGroups(UpdateUserGroupsRequest request, String institutionSlug) throws NotFoundException {
-        Set<Group> targetGroups = request.getGroupSlugs().stream()
-                .flatMap(groupSlug -> groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug).stream())
-                .collect(Collectors.toSet());
         AppUser appUser = appUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found for id: " + request.getEmail() + "'"));
-        Set<Group> userGroups = groupRepository.findAllByInstitutionAndMemberEmail(institutionSlug, appUser.getEmail(), AppRole.GROUP_MEMBER);
-        removeFromGroups(targetGroups, appUser, userGroups);
-        addToGroup(targetGroups, appUser, userGroups);
+        Set<UserRole> targetUserRoles = new HashSet<>();
+        request.getGroupsWithRoles().entrySet().stream()
+                .forEach(entry -> targetUserRoles.addAll(entry.getValue().stream()
+                        .map(role -> UserRole.builder()
+                                .role(role)
+                                .user(appUser)
+                                .group(groupRepository.findByInstitution_SlugAndSlug(institutionSlug, entry.getKey()).get())
+                                .build())
+                        .collect(Collectors.toSet()))
+                );
+        Set<UserRole> userRoles = userRoleRepository.findByUser_Id(appUser.getId());
+
+        removeFromGroups(targetUserRoles, appUser, userRoles);
+        addToGroup(targetUserRoles, appUser, userRoles);
     }
 
-    private void addToGroup(Set<Group> groupsFromRequest, AppUser user, Set<Group> userGroups) {
-        if (!groupsFromRequest.isEmpty()) {
-            for (Group group : groupsFromRequest) {
-                if (!userGroups.contains(group)) {
-                    UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(user).group(group).build();
-                    group.getMembersRoles().add(userRole);
+    private void addToGroup(Set<UserRole> rolesFromRequest, AppUser user, Set<UserRole> userRoles) {
+        if (!rolesFromRequest.isEmpty()) {
+            for (UserRole role : rolesFromRequest) {
+                if (!userRoles.contains(role)) {
+                    UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(user).group(role.getGroup()).build();
+                    role.getGroup().getMembersRoles().add(userRole);
                     user.getRoles().add(userRole);
                 }
             }
         }
     }
 
-    private void removeFromGroups(Set<Group> groupsFromRequest, AppUser user, Set<Group> userGroups) {
-        for (Group group : userGroups) {
-            if (!groupsFromRequest.contains(group)) {
-                userRoleRepository.findByUser_IdAndGroup_Id(user.getId(), group.getId()).forEach(userRole -> {
+    private void removeFromGroups(Set<UserRole> rolesFromRequest, AppUser user, Set<UserRole> userRoles) {
+        for (UserRole role : userRoles) {
+            if (!rolesFromRequest.contains(role)) {
+                userRoleRepository.findByUser_IdAndGroup_Id(user.getId(), role.getGroup().getId()).forEach(userRole -> {
                     user.removeRole(userRole);
-                    group.removeMemberRole(userRole);
+                    role.getGroup().removeMemberRole(userRole);
                     userRoleRepository.delete(userRole);
                 });
             }
@@ -184,10 +198,10 @@ public class GroupService {
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug + "'"));
         group.setName(request.getName());
         group.setSlug(slugService.slugify(request.getName()));
-        if (request.getMembersEmails() != null) {
+        if (request.getMembersRoles() != null) {
             Set<UserRole> updatedMemberRoles = new HashSet<>();
-            membersToRemove.removeAll(request.getMembersEmails());
-            for (String memberEmail : request.getMembersEmails()) {
+            membersToRemove.removeAll(request.getMembersRoles().keySet());
+            for (String memberEmail : request.getMembersRoles().keySet()) {
                 AppUser user = appUserRepository.findByEmail(memberEmail)
                         .orElseThrow(() -> new NotFoundException("User not found for email '" + memberEmail + "'"));
                 updatedMemberRoles.add(userRoleRepository.findByUser_IdAndGroup_IdAndRole(
