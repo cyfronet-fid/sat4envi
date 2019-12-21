@@ -16,6 +16,8 @@ import pl.cyfronet.s4e.ex.GroupCreationException;
 import pl.cyfronet.s4e.ex.GroupUpdateException;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -120,10 +122,16 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-15"), empty());
 
-        Set<String> groups = Set.of("group-13", "group-14", "group-15");
+        Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("group-13", Set.of(AppRole.GROUP_MEMBER));
+        groupsWithRoles.put("group-14", Set.of(AppRole.GROUP_MEMBER));
+        groupsWithRoles.put("group-15", Set.of(AppRole.GROUP_MEMBER));
         val user = appUserService.findByEmail("mail@test.pl").get();
 
-        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder().email(user.getEmail()).groupSlugs(groups).build();
+        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder()
+                .email(user.getEmail())
+                .groupsWithRoles(groupsWithRoles)
+                .build();
         groupService.updateUserGroups(request, "instytucja-12");
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
@@ -147,15 +155,27 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), empty());
         assertThat(groupService.getMembers("instytucja-12", "group-15"), empty());
 
-        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
+        Group group13 = groupService.save(Group.builder()
+                .name("Group 13")
+                .slug("group-13")
+                .institution(institution)
+                .build());
         group13.getMembersRoles().add(buildGroupMemberUserRole(user, group13));
         groupService.update(group13);
 
-        Group group14 = groupService.save(Group.builder().name("Group 14").slug("group-14").institution(institution).build());
+        Group group14 = groupService.save(Group.builder()
+                .name("Group 14")
+                .slug("group-14")
+                .institution(institution)
+                .build());
         group14.getMembersRoles().add(buildGroupMemberUserRole(user, group14));
         groupService.update(group14);
 
-        Group group15 = groupService.save(Group.builder().name("Group 15").slug("group-15").institution(institution).build());
+        Group group15 = groupService.save(Group.builder()
+                .name("Group 15")
+                .slug("group-15")
+                .institution(institution)
+                .build());
         group15.getMembersRoles().add(buildGroupMemberUserRole(user, group15));
         groupService.update(group15);
 
@@ -163,9 +183,15 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-15"), hasSize(1));
 
-        Set<String> groups = Set.of("group-13", "group-14");
 
-        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder().email(user.getEmail()).groupSlugs(groups).build();
+        Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("group-13", Set.of(AppRole.GROUP_MEMBER));
+        groupsWithRoles.put("group-14", Set.of(AppRole.GROUP_MEMBER));
+
+        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder()
+                .email(user.getEmail())
+                .groupsWithRoles(groupsWithRoles)
+                .build();
         groupService.updateUserGroups(request, "instytucja-12");
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
@@ -200,7 +226,10 @@ public class GroupServiceTest {
         assertThat(groupService.getMembers("instytucja-12", "group-14"), hasSize(1));
         assertThat(groupService.getMembers("instytucja-12", "group-15"), hasSize(1));
 
-        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder().email(user.getEmail()).groupSlugs(Set.of()).build();
+        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder()
+                .email(user.getEmail())
+                .groupsWithRoles(Map.of())
+                .build();
         groupService.updateUserGroups(request, "instytucja-12");
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
@@ -225,20 +254,31 @@ public class GroupServiceTest {
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
 
-        Group group13 = groupService.save(Group.builder().name("Group 13").slug("group-13").institution(institution).build());
+        Group group13 = groupService.save(Group.builder()
+                .name("Group 13")
+                .slug("group-13")
+                .institution(institution)
+                .build());
         group13.getMembersRoles().add(buildGroupMemberUserRole(user, group13));
         groupService.update(group13);
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), hasSize(1));
 
-        Group group21 = groupService.save(Group.builder().name("Group 21").slug("group-21").institution(institution2).build());
+        Group group21 = groupService.save(Group.builder()
+                .name("Group 21")
+                .slug("group-21")
+                .institution(institution2)
+                .build());
         group21.getMembersRoles().add(buildGroupMemberUserRole(user, group21));
         groupService.update(group21);
 
         assertThat(groupService.getMembers("instytucja-22", "group-21"), hasSize(1));
 
-        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder().email(user.getEmail()).groupSlugs(Set.of()).build();
-        groupService.updateUserGroups(request, "instytucja-12");
+        UpdateUserGroupsRequest request = UpdateUserGroupsRequest.builder()
+                .email(user.getEmail())
+                .groupsWithRoles(Map.of("group-21", Set.of(AppRole.GROUP_MEMBER)))
+                .build();
+        groupService.updateUserGroups(request, "instytucja-22");
 
         assertThat(groupService.getMembers("instytucja-12", "group-13"), empty());
         assertThat(groupService.getMembers("instytucja-22", "group-21"), hasSize(1));

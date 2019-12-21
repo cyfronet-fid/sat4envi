@@ -6,13 +6,16 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ import java.util.Optional;
 public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
-    private final GroupService groupService;
+    private final UserRoleService userRoleService;
 
     @Transactional(rollbackFor = AppUserCreationException.class)
     public AppUser save(AppUser appUser) throws AppUserCreationException {
@@ -44,9 +47,11 @@ public class AppUserService {
                 .build();
 
         save(appUser);
-        if (request.getGroupSlugs() != null) {
-            for (String groupSlug : request.getGroupSlugs()) {
-                groupService.addMember(institutionSlug, groupSlug, appUser.getEmail());
+        if (request.getGroupsWithRoles() != null) {
+            for (Map.Entry<String, Set<AppRole>> entry : request.getGroupsWithRoles().entrySet()) {
+                for (AppRole role : entry.getValue()) {
+                    userRoleService.addRole(role, appUser.getEmail(), institutionSlug, entry.getKey());
+                }
             }
         }
         return appUser;

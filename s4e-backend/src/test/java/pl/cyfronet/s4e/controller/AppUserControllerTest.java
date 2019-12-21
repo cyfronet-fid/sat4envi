@@ -21,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
@@ -41,9 +40,7 @@ import pl.cyfronet.s4e.service.SlugService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static java.util.Collections.emptyList;
@@ -106,7 +103,7 @@ public class AppUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private AppUser appUser;
+    private AppUser securityAppUser;
 
     private String slugInstitution;
 
@@ -116,7 +113,7 @@ public class AppUserControllerTest {
     public void beforeEach() {
         reset();
 
-        appUser = appUserRepository.save(AppUser.builder()
+        securityAppUser = appUserRepository.save(AppUser.builder()
                 .email("get@profile.com")
                 .name("Get")
                 .surname("Profile")
@@ -139,8 +136,16 @@ public class AppUserControllerTest {
                 .build());
         Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.INST_MANAGER).user(appUser).group(group).build();
-        userRoleRepository.save(userRole);
+        userRoleRepository.save(UserRole.builder().
+                role(AppRole.INST_MANAGER)
+                .user(securityAppUser)
+                .group(group)
+                .build());
+        userRoleRepository.save(UserRole.builder().
+                role(AppRole.GROUP_MEMBER)
+                .user(securityAppUser)
+                .group(group)
+                .build());
     }
 
     @AfterEach
@@ -495,33 +500,32 @@ public class AppUserControllerTest {
     public void shouldReturnProfile() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper)))
+                .with(jwtBearerToken(securityAppUser, objectMapper)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
     public void shouldCreateUserAndAddToGroups() throws Exception {
         groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
 
-        Set<String> groups = new HashSet<>();
-        groups.add("default");
-        groups.add("grupa-wladzy");
+        Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER, AppRole.GROUP_MANAGER));
+        groupsWithRoles.put("grupa-wladzy", Set.of(AppRole.GROUP_MEMBER, AppRole.GROUP_MANAGER));
         CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
                 .name("Name")
                 .surname("Surname")
                 .email("email@test.pl")
-                .groupSlugs(groups)
+                .groupsWithRoles(groupsWithRoles)
                 .build();
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper))
+                .with(jwtBearerToken(securityAppUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
     }
 
@@ -535,16 +539,15 @@ public class AppUserControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper))
+                .with(jwtBearerToken(securityAppUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
     }
 
     @Test
-    @WithMockUser
     public void shouldUpdateUserGroupsInInstitution() throws Exception {
         groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
 
@@ -557,63 +560,63 @@ public class AppUserControllerTest {
                 .build());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
 
-        Set<String> groups = new HashSet<>();
-        groups.add("default");
-        groups.add("grupa-wladzy");
+        Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
+        groupsWithRoles.put("grupa-wladzy", Set.of(AppRole.GROUP_MEMBER));
 
         UpdateUserGroupsRequest updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
                 .email("email@test.pl")
-                .groupSlugs(groups)
+                .groupsWithRoles(groupsWithRoles)
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper))
+                .with(jwtBearerToken(securityAppUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
 
-        groups = new HashSet<>();
-        groups.add("default");
+        groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
 
         updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
                 .email("email@test.pl")
-                .groupSlugs(groups)
+                .groupsWithRoles(groupsWithRoles)
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper))
+                .with(jwtBearerToken(securityAppUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
 
-        groups = new HashSet<>();
-        groups.add("default");
-        groups.add("grupa-wladzy");
+        groupsWithRoles = new HashMap<>();
+        groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
+        groupsWithRoles.put("grupa-wladzy", Set.of(AppRole.GROUP_MEMBER));
 
         updateUserGroupsRequest = UpdateUserGroupsRequest.builder()
                 .email("email@test.pl")
-                .groupSlugs(groups)
+                .groupsWithRoles(groupsWithRoles)
                 .build();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(appUser, objectMapper))
+                .with(jwtBearerToken(securityAppUser, objectMapper))
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
     }
 
