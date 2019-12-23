@@ -1,0 +1,6 @@
+Dzień dobry!
+
+Użytkownik [( ${email} )] wysłał Ci link do widoku, aby go otworzyć kliknij w [( ${link} )] .
+
+Pozdrawiamy,
+Zespół sat4envi

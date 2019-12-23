@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.listener;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -11,6 +12,7 @@ import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
+import pl.cyfronet.s4e.event.OnShareLinkEvent;
 import pl.cyfronet.s4e.service.MailService;
 
 @Component
@@ -19,6 +21,9 @@ public class GroupListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
+
+    @Value("${mail.urlDomain}")
+    private String urlDomain;
 
     @Async
     @EventListener
@@ -56,5 +61,18 @@ public class GroupListener {
         mailService.sendEmail(recipientAddress, subject, content);
     }
 
+    @Async
+    @EventListener
+    public void handle(OnShareLinkEvent event) {
 
+        String subject = messageSource.getMessage("email.link-share.subject", null, event.getLocale());
+        Context ctx = new Context(event.getLocale());
+        ctx.setVariable("email", event.getUser().getEmail());
+        ctx.setVariable("link", urlDomain + event.getLink());
+        String content = templateEngine.process("share-link.txt", ctx);
+
+        for (String recipientAddress : event.getEmails()) {
+            mailService.sendEmail(recipientAddress, subject, content);
+        }
+    }
 }
