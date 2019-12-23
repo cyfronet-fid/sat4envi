@@ -40,6 +40,11 @@ public class AppUser {
 
     private boolean enabled;
 
+    @Column(name = "member_zk")
+    private boolean memberZK;
+
+    private boolean admin;
+
     public void removeRole(UserRole role) {
         roles.remove(role);
         role.setUser(null);

@@ -23,14 +23,16 @@ public class TestJwtUtil {
         };
     }
 
-    private static AppUserDetails createAppUserDetails(AppUser user){
+    private static AppUserDetails createAppUserDetails(AppUser user) {
         return new AppUserDetails(
                 user.getEmail(),
                 user.getName(),
                 user.getSurname(),
                 new HashSet<>(),
                 user.getPassword(),
-                user.isEnabled());
+                user.isEnabled(),
+                user.isMemberZK(),
+                user.isAdmin());
     }
 
     private static String createToken(AppUserDetails appUserDetails, ObjectMapper objectMapper) {

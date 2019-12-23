@@ -23,6 +23,10 @@ public class AppUserDetails implements UserDetails {
     private final String password;
     @Getter
     private final boolean enabled;
+    @Getter
+    private final boolean memberZK;
+    @Getter
+    private final boolean admin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

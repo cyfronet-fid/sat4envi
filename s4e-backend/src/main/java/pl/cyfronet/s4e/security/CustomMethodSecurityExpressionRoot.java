@@ -67,8 +67,14 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
         return false;
     }
 
+    public boolean isZKMember() {
+        AppUserDetails appUserDetails = (AppUserDetails) this.getPrincipal();
+        return appUserDetails.isMemberZK();
+    }
+
     public boolean isAdmin() {
-        return false;
+        AppUserDetails appUserDetails = (AppUserDetails) this.getPrincipal();
+        return appUserDetails.isAdmin();
     }
 
     public boolean isOwner() {
