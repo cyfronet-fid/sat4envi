@@ -46,7 +46,9 @@ public class AppUserDetailsService implements UserDetailsService {
                                         + userRole.getGroup().getSlug()))
                         .collect(Collectors.toSet()),
                 appUser.getPassword(),
-                appUser.isEnabled());
+                appUser.isEnabled(),
+                appUser.isMemberZK(),
+                appUser.isAdmin());
     }
 
 }
