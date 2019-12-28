@@ -1,7 +1,11 @@
+@import "../../../../scss/variables";
+
+
 :host {
-  background-color: white;
-  padding: 15px;
+  background-color: $color-white;
+  padding: $space-large;
   display: block;
+  border-radius: $border-radius-default;
 }
 
 .close {
@@ -10,15 +14,4 @@
   top: -5px;
 }
 
-.modal-header {
-  position: relative;
-  margin-bottom: 10px;
 
-  .modal-title {
-    margin-top: 4px;
-  }
-}
-
-.modal-body {
-
-}

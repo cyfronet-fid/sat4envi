@@ -1,6 +1,31 @@
+@import "variables";
+
+
+.modal-header {
+  position: relative;
+  font-family: $font-secondary;
+  font-weigth: bold;
+  font-size: 1.25rem;
+  margin-bottom: $space-default;
+
+}
+
+.modal-body {
+  margin-bottom: $space-large;
+  font-size: 1rem;
+  line-height: 1.35rem;
+  font-weight: normal;;
+}
+
 .modal-footer {
-  display: grid;
-  > .s4e-modal-footer {
-    text-align: right;
+  border-top: 1px solid $color-grey-secondary;
+  padding-top: $space-large;
+
+  button {
+    font-size: 0.875rem;
+    margin-right: $space-xsmall;
+    padding: $space-xsmall $space-xlarge*1.5;
   }
+
+
 }

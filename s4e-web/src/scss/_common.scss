@@ -151,15 +151,22 @@
   font-size: 0.825rem;
 }
 
-.button--borderBlack {
-  border: 1px solid $color-black
-}
-
 .button--borderWhite {
   @include button;
   background: transparent;
   border: 1px solid $color-white;
   color: $color-white;
+}
+
+.button--borderBlack {
+  border: 1px solid $color-black
+}
+
+.button--borderPrimary {
+  @include button;
+  border: 1px solid $color-primary;
+  color: $color-primary;
+  background: transparent;
 }
 
 /* 4. Various */
