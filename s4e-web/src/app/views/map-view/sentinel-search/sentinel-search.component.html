@@ -1,39 +1,51 @@
-<form>
-  <ul>
-    <li>
-      <label>Satelita</label>
-      <select>
-        <option>Sentinel 1</option>
-        <option>Sentinel 2</option>
-      </select>
-    </li>
-    <li>
-      <label>Data skanowania</label>
-      <div class="two__columns">
-        <div class="column">
-          <div class="datepicker">
-            <input type="text"/>
-            <button></button>
+<div class="form">
+  <!--<form>
+    <ul>
+      <li>
+        <label>Satelita</label>
+        <select>
+          <option>Sentinel 1</option>
+          <option>Sentinel 2</option>
+        </select>
+      </li>
+      <li>
+        <label>Data skanowania</label>
+        <div class="two__columns">
+          <div class="column">
+            <div class="datepicker">
+              <input type="text"/>
+              <button></button>
+            </div>
+          </div>
+          <div class="column">
+            <div class="datepicker">
+              <input type="text"/>
+              <button></button>
+            </div>
+            <span class="error">Musisz podać datę skanowania</span>
           </div>
         </div>
-        <div class="column">
-          <div class="datepicker">
-            <input type="text"/>
-            <button></button>
-          </div>
-          <span class="error">Musisz podać datę skanowania</span>
+      </li>
+      <li class="half__column">
+        <label>Poziom zachmurzenia</label>
+        <div class="percent">
+          <input type="text" />
         </div>
-      </div>
-    </li>
-    <li class="half__column">
-      <label>Poziom zachmurzenia</label>
-      <div class="percent">
-        <input type="text" />
-      </div>
-    </li>
-  </ul>
-  <button class="button button--primary" (click)="search()">Szukaj</button>
-</form>
+      </li>
+    </ul>
+    <button class="button button--primary" (click)="search()">Szukaj</button>
+  </form>-->
+
+  <div class="loading__sentinel loading__sentinel--form">
+    <div class="loading__item"></div>
+    <div class="loading__item"></div>
+    <div class="loading__item"></div>
+    <div class="loading__item"></div>
+    <div class="loading__item"></div>
+    <div class="loading__item"></div>
+  </div>
+
+</div>
 
 <section class="section" *ngIf="loading; else loadingRef">
   <header class="box__header">
@@ -68,7 +80,7 @@
 </section>
 
 <ng-template #loadingRef>
-  <div class="loading__sentinel"></div>
+  <div class="loading__sentinel loading__sentinel--results"></div>
 </ng-template>
 
 
