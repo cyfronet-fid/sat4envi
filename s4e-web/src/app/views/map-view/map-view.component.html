@@ -68,7 +68,8 @@
         <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj Raport</a></li>
         <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
         <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz Obraz</a></li>
-        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok do obrazu PNG</a></li>
+        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok</a></li>
+        <li><a (click)="openListViewModal()" href="javascript:undefined" i18n>Wyświetl zapisane widoki</a></li>
         <li><a data-test-download-original [ngClass]="{disabled: (activeScene$ | async) == null}" [attr.href]="(activeScene$ | async) == null ? null : CONFIG.apiPrefixV1 + '/scenes/' + (activeScene$ | async)?.id + '/download'" target="_blank" i18n>Zapisz oryginalny plik sceny</a></li>
       </ul>
     </div>

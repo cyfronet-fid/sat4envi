@@ -13,6 +13,7 @@ import {SceneQuery} from '../scene/scene.query.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OverlayService} from '../overlay/overlay.service';
 import {ProductService} from '../product/product.service';
+import {ViewRouterConfig} from '../view-configuration/view-configuration.model';
 
 @Injectable({providedIn: 'root'})
 export class MapService {
@@ -44,13 +45,7 @@ export class MapService {
   }
 
   public connectRouterToStore(route: ActivatedRoute) {
-    interface ViewRouterConfig {
-      overlays: string[];
-      viewPosition: ViewPosition;
-      productId: number;
-      date: string;
-      sceneId: number;
-    }
+
 
     return forkJoin([
       route.queryParamMap.pipe(
@@ -86,19 +81,23 @@ export class MapService {
       this.productQuery.selectLoading().pipe(filter(p => p === false), take(1))
     ]).pipe(
       map(([viewConfig, foo, bar]) => {
-        this.setView(viewConfig.viewPosition);
-        this.overlayService.setAllActive(viewConfig.overlays);
-        this.productService.setActive(viewConfig.productId);
-        if (viewConfig.date) {
-          this.productService.setSelectedDate(viewConfig.date);
-        }
-        this.sceneService.setActive(viewConfig.sceneId);
+        this.updateStoreByView(viewConfig);
         return true;
       }),
       catchError((err) => {
         return of(false);
       })
     );
+  }
+
+  public updateStoreByView(viewConfig: ViewRouterConfig) {
+    this.setView(viewConfig.viewPosition);
+    this.overlayService.setAllActive(viewConfig.overlays);
+    this.productService.setActive(viewConfig.productId);
+    if (viewConfig.date) {
+      this.productService.setSelectedDate(viewConfig.date);
+    }
+    this.sceneService.setActive(viewConfig.sceneId);
   }
 
   public connectStoreToRouter() {

@@ -1,0 +1,24 @@
+.report-template {
+  position: relative;
+  width: 100%;
+  //padding-top: 70.7%;
+
+  > #map-miniature {
+    width: 80%;
+  }
+}
+
+.s4e-modal-table {
+  margin: 6px;
+
+  td {
+    padding: 8px;
+    border: 1px solid black;
+  }
+}
+
+.alert {
+  color: red;
+  text-align: left;
+}
+

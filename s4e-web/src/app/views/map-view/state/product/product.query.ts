@@ -10,7 +10,7 @@ import {SceneQuery} from '../scene/scene.query.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ProductQuery extends QueryEntity<ProductState, Product, Number> {
+export class ProductQuery extends QueryEntity<ProductState, Product> {
   constructor(protected store: ProductStore, private sceneQuery: SceneQuery) {
     super(store);
   }

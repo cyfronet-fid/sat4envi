@@ -36,7 +36,7 @@ export function createProduct(state: Partial<ProductState> = {}): ProductState {
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'Product'})
-export class ProductStore extends EntityStore<ProductState, Product, number> {
+export class ProductStore extends EntityStore<ProductState, Product> {
   constructor() {
     super(createProduct());
   }

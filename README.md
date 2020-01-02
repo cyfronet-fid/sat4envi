@@ -232,7 +232,7 @@ mc config host add local-docker http://localhost:9001 minio minio123
 
 Copy the `s4e-backend/static` to `tmp/minio-data` creating bucket `static`.
 
-Set its policy to download: `mc policy download local-docker/static`.
+Set its policy to download: `mc policy set download local-docker/static`.
 
 
 #### Miscellaneous

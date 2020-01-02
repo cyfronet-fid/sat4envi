@@ -1,0 +1,56 @@
+<s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+  <div class="s4e-modal-header" i18n>Wczytaj konfiguracje</div>
+  <div class="s4e-modal-body">
+    <ng-container *ngIf="!(loading$ | async); else loadingRef">
+      <div class="s4e-modal-table" *ngIf="(configs$ | async).length > 0; else noConfigurations">
+        <ul class="list">
+          <li class="list__item" role="menuitem" *ngFor="let config of (configs$ | async)">
+            <div>
+              <span class="view_caption">{{config.caption}}</span>
+              <div class="view_details">
+                <img [src]="config.thumbnail" alt="View thumbnail" i18n-alt/>
+                <table class="view_details">
+                  <tr>
+                    <td>Produkt</td>
+                    <td i18n>{{config.configurationNames.product || 'Nie wybrano'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Data</td>
+                    <td i18n>{{config.configurationNames.selectedDate || 'Nie wybrano'}}</td>
+                  </tr>
+                  <tr>
+                    <td>Nakładki</td>
+                    <td i18n>{{config.configurationNames.overlays.toString() || 'Nie wybrano'}}
+                </table>
+                <div class="view_buttons">
+                  <button class="button button--primary" type="button" (click)="loadConfig(config)" i18n>Wczytaj
+                  </button>
+                  <button class="button button--primary" type="button" (click)="sendTo(config)" i18n>Wyślij do
+                  </button>
+                  <button class="icon__delete" (click)="deleteConfig(config)">
+                    <img src="../../../../../assets/images/ico_delete.svg" alt="Trash icon - delete view" i18n-alt/>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <ng-template #noConfigurations>
+        <span i18n>Brak zapisanych widoków</span>
+      </ng-template>
+    </ng-container>
+    <ng-template #loadingRef>
+      <div class="loading loading--form">
+        <div class="loading__item"></div>
+      </div>
+    </ng-template>
+  </div>
+  <div class="s4e-modal-footer">
+    <div *ngIf="errorMsg" class="alert alert-danger">
+      <ng-container>{{errorMsg}}</ng-container>
+    </div>
+    <fa-icon [hidden]="!isWorking" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <button class="button button--primary" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
+  </div>
+</s4e-generic-modal>

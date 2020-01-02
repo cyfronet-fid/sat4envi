@@ -1,0 +1,35 @@
+.icon__delete {
+  vertical-align: middle;
+
+  img {
+    width: 25px;
+  }
+}
+
+.view_caption {
+  margin-top: 10px;
+  font-weight: bolder;
+  display: block;
+}
+
+.view_details {
+  display: inline;
+  vertical-align: middle;
+
+  td {
+    padding: 3px;
+    border: 1px solid black;
+    //font-size: small;
+  }
+
+  > img {
+    vertical-align: middle;
+    width: 150px;
+    margin: 3px 10px
+  }
+}
+
+.alert {
+  color: red;
+  text-align: left;
+}

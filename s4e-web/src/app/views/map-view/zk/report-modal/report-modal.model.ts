@@ -14,7 +14,7 @@ export interface ReportModal extends Modal {
 }
 
 export function isReportModal(modal: Modal): modal is ReportModal {
-  return modal.id == REPORT_MODAL_ID
+  return modal.id === REPORT_MODAL_ID
     && (modal as ReportModal).mapImage != null
     && (modal as ReportModal).mapWidth != null
     && (modal as ReportModal).mapHeight != null;

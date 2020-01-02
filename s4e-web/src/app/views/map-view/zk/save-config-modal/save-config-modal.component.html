@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="accept()">
+  <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+    <div class="s4e-modal-header" i18n>Zapisz konfigurację widoku</div>
+    <div class="s4e-modal-body">
+      <div class="s4e-modal-table">
+        <table>
+          <tr>
+            <td>Produkt</td>
+            <td i18n>{{ viewConfig.configurationNames.product || 'Nie wybrano'}}</td>
+          </tr>
+          <tr>
+            <td>Data</td>
+            <td i18n>{{viewConfig.configurationNames.selectedDate || 'Nie wybrano'}}</td>
+          </tr>
+          <tr>
+            <td>Nakładki</td>
+            <td i18n>{{viewConfig.configurationNames.overlays.toString() || 'Nie wybrano'}}
+          </tr>
+        </table>
+      </div>
+      <div #reportTemplate class="report-template">
+        <img id="map-miniature" [src]="viewConfig.thumbnail">
+      </div>
+      <label i18n>Nazwa własna konfiguracji</label>
+      <input formControlName="configurationName" #configurationNameRef type="text"/>
+      <span class="error"
+            *ngIf="form.controls.configurationName.hasError('required') && form.controls.configurationName.touched"
+            i18n>To pole jest wymagane</span>
+    </div>
+    <div class="s4e-modal-footer">
+      <div *ngIf="error$ | async" class="alert alert-danger">
+        <ng-container>{{error$ | async}}</ng-container>
+      </div>
+      <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+      <button class="button button--primary" type="button" *ngIf="!(loading$ | async)" (click)="dismiss()" i18n>Anuluj
+      </button>
+      <button class="button button--primary" type="submit" *ngIf="!(loading$ | async)" i18n>Zapisz konfiguracje</button>
+    </div>
+  </s4e-generic-modal>
+</form>

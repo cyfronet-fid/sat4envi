@@ -6,11 +6,11 @@ import {ImageWMS, OSM} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
-import {BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {distinctUntilChanged} from 'rxjs/operators';
-import {MapData, ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
+import {MapData, ViewPosition} from '../state/map/map.model';
 
 
 @Component({
@@ -19,7 +19,7 @@ import {MapData, ViewPosition, ZOOM_LEVELS} from '../state/map/map.model';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit, OnDestroy {
-  static readonly DEFAULT_ZOOM_LEVEL=10;
+  static readonly DEFAULT_ZOOM_LEVEL = 10;
 
   get overlays(): UIOverlay[] {
     return this._overlays;
@@ -114,10 +114,6 @@ export class MapComponent implements OnInit, OnDestroy {
     if (view.zoomLevel != null) {
       this.map.getView().setZoom(view.zoomLevel);
     }
-  }
-
-  private getZoomLevel(type: string): number | null {
-    return ZOOM_LEVELS[type] || null;
   }
 
   private updateLayers(product: Scene | null) {

@@ -6,7 +6,7 @@ import {MapService} from './state/map/map.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {S4eConfig} from '../../utils/initializer/config.service';
-import {MapState, ViewPosition, ZOOM_LEVELS} from './state/map/map.model';
+import {ViewPosition} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
@@ -22,11 +22,13 @@ import {ProductQuery} from './state/product/product.query';
 import {SceneQuery} from './state/scene/scene.query.service';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
+import {SAVE_CONFIG_MODAL_ID, SaveConfigModal} from './zk/save-config-modal/save-config-modal.model';
+import {LIST_CONFIGS_MODAL_ID, ListConfigsModal} from './zk/list-configs-modal/list-configs-modal.model';
+import {ViewConfigurationQuery} from './state/view-configuration/view-configuration.query';
 import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {IUILayer} from './state/common.model';
 import {map, switchMap, take} from 'rxjs/operators';
 import {ProfileQuery} from '../../state/profile/profile.query';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
@@ -37,7 +39,6 @@ import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configurati
   styleUrls: ['./map-view.component.scss'],
 })
 export class MapViewComponent implements OnInit, OnDestroy {
-  productsTypeList$: Observable<IUILayer[]>;
   overlays$: Observable<UIOverlay[]>;
 
   public loading$: Observable<boolean>;
@@ -47,7 +48,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public scenesAreLoading$: Observable<boolean>;
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
-  public activeOverlays$: Observable<UIOverlay[]>;
   public userLoggedIn$: Observable<boolean>;
   public placeSearchResults$: Observable<SearchResult[]>;
   public placeSearchLoading$: Observable<boolean>;
@@ -76,6 +76,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
               private legendService: LegendService,
               private searchResultsQuery: SearchResultsQuery,
               private modalService: ModalService,
+              private viewConfigurationQuery: ViewConfigurationQuery,
               private profileQuery: ProfileQuery,
               private CONFIG: S4eConfig) {
   }
@@ -161,7 +162,17 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openSaveViewModal() {
-    this.modalService.alert('Not Implemented', 'This feature is not yet implemented');
+    this.mapComponent.getMapData()
+      .subscribe(mapData => this.modalService.show<SaveConfigModal>(
+        {
+          id: SAVE_CONFIG_MODAL_ID,
+          size: 'lg',
+          viewConfiguration: {
+            ...this.viewConfigurationQuery.getCurrent(),
+            thumbnail: mapData.image
+          }
+        }
+      ));
     this.toggleZKOptions(false);
   }
 
@@ -180,8 +191,15 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   viewChanged($event: ViewPosition) {
     this.mapService.setView($event);
-
   }
+
+  openListViewModal() {
+    this.modalService.show<ListConfigsModal>({
+      id: LIST_CONFIGS_MODAL_ID, size: 'lg'
+    });
+    this.toggleZKOptions(false);
+  }
+
   ngOnDestroy(): void {
   }
 
