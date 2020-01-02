@@ -1,9 +1,9 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReportModalComponent} from './report-modal.component';
-import {MapModule} from '../../map.module';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {REPORT_MODAL_ID} from './report-modal.model';
 import {By} from '@angular/platform-browser';
+import {MapModule} from '../../map.module';
 
 describe('ReportModalComponent', () => {
   let component: ReportModalComponent;

@@ -30,10 +30,14 @@ import {ReportModalComponent} from './zk/report-modal/report-modal.component';
 import {makeModalProvider} from '../../modal/modal.providers';
 import {REPORT_MODAL_ID} from './zk/report-modal/report-modal.model';
 import {ModalModule} from '../../modal/modal.module';
+import {SaveConfigModalComponent} from './zk/save-config-modal/save-config-modal.component';
+import {SAVE_CONFIG_MODAL_ID} from './zk/save-config-modal/save-config-modal.model';
+import {ListConfigsModalComponent} from './zk/list-configs-modal/list-configs-modal.component';
+import {LIST_CONFIGS_MODAL_ID} from './zk/list-configs-modal/list-configs-modal.model';
 import {RouterModule} from '@angular/router';
 import {environment} from '../../../environments/environment';
 import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
-import { SentinelSearchComponent } from './sentinel-search/sentinel-search.component';
+import {SentinelSearchComponent} from './sentinel-search/sentinel-search.component';
 import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
@@ -49,8 +53,9 @@ import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configurati
     SearchResultsComponent,
     ReportModalComponent,
     SentinelSearchComponent,
-    ReportModalComponent,
-    ShareConfigurationModalComponent
+    ShareConfigurationModalComponent,
+    SaveConfigModalComponent,
+    ListConfigsModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -104,11 +109,15 @@ import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configurati
     LegendService,
     AkitaGuidService,
     makeModalProvider(REPORT_MODAL_ID, ReportModalComponent),
-    makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent)
+    makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent),
+    makeModalProvider(SAVE_CONFIG_MODAL_ID, SaveConfigModalComponent),
+    makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
-    ShareConfigurationModalComponent
+    ShareConfigurationModalComponent,
+    SaveConfigModalComponent,
+    ListConfigsModalComponent
   ]
 })
 export class MapModule {

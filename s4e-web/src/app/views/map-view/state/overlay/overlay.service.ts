@@ -37,13 +37,11 @@ export class OverlayService {
   }
 
   setActive(overlayId: string | null) {
-    console.log('setActive', overlayId);
     this.store.toggleActive(overlayId);
   }
 
   @action('setAllActive')
   setAllActive(overlayIds: string[]) {
-    console.log('setAllActive', overlayIds);
     this.store.setActive(overlayIds);
   }
 
