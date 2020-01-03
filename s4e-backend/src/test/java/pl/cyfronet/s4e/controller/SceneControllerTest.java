@@ -64,7 +64,7 @@ public class SceneControllerTest {
                 .s3Path("some/path")
                 .build());
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId()))
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
                 .andExpect(jsonPath("$[0].timestamp").value(is(equalTo("2019-10-11T12:13:00Z"))));
@@ -99,7 +99,7 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId()))
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$..id", contains(
@@ -137,7 +137,7 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId())
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-10-01"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(2))))
@@ -198,11 +198,11 @@ public class SceneControllerTest {
         );
         sceneRepository.saveAll(scenes);
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/productId/" + product.getId() + "/available")
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
                 .param("yearMonth", "2019-10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
-                .andExpect(jsonPath("$", contains("2019-10-01","2019-10-02","2019-10-31")));
+                .andExpect(jsonPath("$", contains("2019-10-01", "2019-10-02", "2019-10-31")));
     }
 }
 

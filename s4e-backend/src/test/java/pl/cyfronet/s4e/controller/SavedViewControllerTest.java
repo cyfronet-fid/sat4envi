@@ -116,7 +116,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        mockMvc.perform(post(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
@@ -145,7 +145,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        mockMvc.perform(post(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isForbidden());
@@ -164,7 +164,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        mockMvc.perform(post(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
@@ -210,14 +210,14 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(3L)));
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(get(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("$.content..caption", contains("caption-2", "caption-1")));
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(get(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(otherAppUser, objectMapper)))
                 .andExpect(status().isOk())
@@ -238,7 +238,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(1L)));
 
-        mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", savedView.getId())
+        mockMvc.perform(delete(API_PREFIX_V1 + "/saved-views/{uuid}", savedView.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk());
@@ -270,7 +270,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(1L)));
 
-        mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", savedView.getId())
+        mockMvc.perform(delete(API_PREFIX_V1 + "/saved-views/{uuid}", savedView.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isForbidden());
@@ -284,7 +284,7 @@ public class SavedViewControllerTest {
     public void shouldReturnForbiddenIfDeletingNonExistentSavedView() throws Exception {
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", "6dea77af-1de9-4559-be06-0d50b7db1f35")
+        mockMvc.perform(delete(API_PREFIX_V1 + "/saved-views/{uuid}", "6dea77af-1de9-4559-be06-0d50b7db1f35")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isForbidden());

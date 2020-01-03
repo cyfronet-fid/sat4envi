@@ -54,7 +54,7 @@ export class ProductService {
       return;
     }
     this.productStore.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productId/${this.productQuery.getActiveId()}/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${this.productQuery.getActiveId()}/scenes/available?yearMonth=${dateF}`)
       .subscribe(data => this.updateAvailableDays(data));
   }
 
@@ -68,7 +68,7 @@ export class ProductService {
 
     const dateF = moment({year: ui.selectedYear, month: ui.selectedMonth}).format('YYYY-MM');
 
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/scenes/productId/${activeProductId}/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProductId}/scenes/available?yearMonth=${dateF}`)
       .pipe(finalize(() => this.productStore.setLoading(false)))
       .subscribe(data => {
         this.updateAvailableDays(data);
@@ -85,7 +85,13 @@ export class ProductService {
 
     this.productStore.update(store => ({
       ...store,
-      ui: {...store.ui, selectedMonth: date.month(), selectedYear: date.year(), selectedDay: date.day(), selectedDate: $event}
+      ui: {
+        ...store.ui,
+        selectedMonth: date.month(),
+        selectedYear: date.year(),
+        selectedDay: date.day(),
+        selectedDate: $event
+      }
     }));
   }
 

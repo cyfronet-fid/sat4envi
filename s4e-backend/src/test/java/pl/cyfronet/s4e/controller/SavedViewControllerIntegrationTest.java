@@ -110,7 +110,7 @@ public class SavedViewControllerIntegrationTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        mockMvc.perform(post(API_PREFIX_V1 + "/savedViews")
+        mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
@@ -152,7 +152,7 @@ public class SavedViewControllerIntegrationTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(1L)));
 
-        mockMvc.perform(delete(API_PREFIX_V1 + "/savedViews/{uuid}", savedView.getId())
+        mockMvc.perform(delete(API_PREFIX_V1 + "/saved-views/{uuid}", savedView.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk());

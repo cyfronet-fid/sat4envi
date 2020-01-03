@@ -47,7 +47,7 @@ public class SavedViewController {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
     })
-    @PostMapping("/savedViews")
+    @PostMapping("/saved-views")
     public SavedViewResponse create(@RequestBody @Valid CreateSavedViewRequest request) throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID id = savedViewService.create(SavedViewService.Create.builder()
@@ -64,7 +64,7 @@ public class SavedViewController {
 
     @Operation(summary = "List SavedViews of authenticated user")
     @ApiResponses(@ApiResponse(responseCode = "200", description = "Operation successful"))
-    @GetMapping("/savedViews")
+    @GetMapping("/saved-views")
     public Page<SavedViewResponse> list(
             @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
@@ -77,7 +77,7 @@ public class SavedViewController {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "403", description = "Not authenticated or authorized", content = @Content)
     })
-    @DeleteMapping("/savedViews/{uuid}")
+    @DeleteMapping("/saved-views/{uuid}")
     @PreAuthorize("@savedViewService.canDelete(#uuid, authentication)")
     public void delete(@PathVariable @Parameter(schema = @Schema(format = "uuid")) UUID uuid) {
         savedViewService.delete(uuid);
