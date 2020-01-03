@@ -32,9 +32,9 @@ public class SceneController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
-    @GetMapping("/scenes/productId/{productId}")
+    @GetMapping("/products/{id}/scenes")
     public List<SceneResponse> getScenes(
-            @PathVariable Long productId,
+            @PathVariable(name = "id") Long productId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         if (date != null) {
@@ -54,8 +54,8 @@ public class SceneController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
-    @GetMapping("/scenes/productId/{productId}/available")
-    public List<LocalDate> getAvailabilityDates(@PathVariable Long productId, @RequestParam YearMonth yearMonth) {
+    @GetMapping("/products/{id}/scenes/available")
+    public List<LocalDate> getAvailabilityDates(@PathVariable(name = "id") Long productId, @RequestParam YearMonth yearMonth) {
         return sceneService.getAvailabilityDates(productId, yearMonth);
     }
 }
