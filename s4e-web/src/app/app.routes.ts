@@ -24,7 +24,7 @@ export const appRoutes: Routes = [
     component: ActivateComponent
   }, {
     path: '**',
-    redirectTo: '/map',
+    redirectTo: '/map/products',
     pathMatch: 'full',
   },
 ];

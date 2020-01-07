@@ -58,17 +58,22 @@ import { SentinelSearchComponent } from './sentinel-search/sentinel-search.compo
     ModalModule,
     RouterModule.forChild([
       {
-        path: '',
+        path: 'map',
         component: MapViewComponent,
         canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
         children: [
           {
-            path: 'map',
+            path: 'products',
             component: ViewManagerComponent
           },
           {
             path: 'sentinel-search',
             component: SentinelSearchComponent
+          },
+          {
+            path: '',
+            pathMatch: 'prefix',
+            redirectTo: '/map/products'
           },
         ]
       }

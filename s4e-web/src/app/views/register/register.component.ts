@@ -56,7 +56,7 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
   }
 
   register() {
-    validateAllFormFields(this.form);
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
 
     if (!this.form.valid) {
       return;

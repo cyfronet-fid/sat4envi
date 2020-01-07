@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SentinelSearchComponent } from './sentinel-search.component';
+import {MapModule} from '../map.module';
+import {ShareModule} from '../../../common/share.module';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('SentinelSearchComponent', () => {
   let component: SentinelSearchComponent;
@@ -8,7 +11,7 @@ describe('SentinelSearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SentinelSearchComponent ]
+      imports: [ShareModule, MapModule, RouterTestingModule]
     })
     .compileComponents();
   }));

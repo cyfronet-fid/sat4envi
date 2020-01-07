@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SearchResultsStore} from './search-results.store';
-import {PageSearchResult, SearchResult} from './search-result.model';
+import {SearchResult} from './search-result.model';
 import {delay, finalize, map} from 'rxjs/operators';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {AkitaGuidService} from './guid.service';
+import {PageSearchResult} from '../../../../utils/state.types';
 
 @Injectable({providedIn: 'root'})
 export class SearchResultsService {
