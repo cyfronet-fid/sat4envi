@@ -34,7 +34,7 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
   }
 
   login() {
-    validateAllFormFields(this.form);
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
 
     if (!this.form.valid) { return; }
 

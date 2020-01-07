@@ -22,15 +22,5 @@ export class RootComponent {
     resetStores();
     location.reload();
   }
-
-  /**
-   * THIS IS ONLY FOR NON PRODUCTION PURPOSES, UI design
-   * :TODO after properly styling ModalModule this method should be removed
-   */
-  async modalDemo() {
-    if (await this.modalService.confirm('Confirm Modal', 'Jeśli naciśniesz OK zobaczysz ALERT modal')) {
-      await this.modalService.alert('Alert Modal', 'Po kliknięciu OK zobaczysz generyczny modal');
-      this.modalService.show({id: DUMMY_MODAL_ID});
-    }
-  }
 }
+

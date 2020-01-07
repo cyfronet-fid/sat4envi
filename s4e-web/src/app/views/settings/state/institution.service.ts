@@ -37,14 +37,6 @@ export class InstitutionService {
     this.store.add(institution);
   }
 
-  update(id, institution: Partial<Institution>) {
-    this.store.update(id, institution);
-  }
-
-  remove(id: ID) {
-    this.store.remove(id);
-  }
-
   setInstitution(route: ActivatedRoute, institutionSlug: string) {
     this.setActive(institutionSlug);
     this.router.navigate(['.'], {relativeTo: route, queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}})

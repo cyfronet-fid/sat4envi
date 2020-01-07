@@ -1,86 +1,74 @@
 <div class="form">
-  <!--<form>
+  <form [formGroup]="form">
     <ul>
       <li>
-        <label>Satelita</label>
-        <select>
-          <option>Sentinel 1</option>
-          <option>Sentinel 2</option>
+        <label i18n>Satelita</label>
+        <select formControlName="sentinelId">
+          <option value="" i18n>Wybierz satelitę</option>
+          <option *ngFor="let sentinel of (sentinels$ | async)" [value]="sentinel.id">{{sentinel.caption}}</option>
         </select>
+        <span class="error" *ngIf="form.controls.sentinelId.hasError('required') && form.controls.sentinelId.touched" i18n>Musisz wybrać satelitę</span>
       </li>
       <li>
-        <label>Data skanowania</label>
+        <label i18n>Data skanowania</label>
         <div class="two__columns">
           <div class="column">
             <div class="datepicker">
-              <input type="text"/>
-              <button></button>
+              <input formControlName="dateStart" type="text"/>
+              <button [disabled]="form.controls.dateStart.disabled"></button>
             </div>
+            <span class="error" *ngIf="form.controls.dateStart.hasError('required') && form.controls.dateStart.touched" i18n>Musisz podać datę skanowania</span>
           </div>
           <div class="column">
             <div class="datepicker">
-              <input type="text"/>
-              <button></button>
+              <input formControlName="dateEnd" type="text"/>
+              <button [disabled]="form.controls.dateEnd.disabled"></button>
             </div>
-            <span class="error">Musisz podać datę skanowania</span>
+            <span class="error" *ngIf="form.controls.dateEnd.hasError('required') && form.controls.dateEnd.touched" i18n>Musisz podać datę skanowania</span>
           </div>
         </div>
       </li>
       <li class="half__column">
-        <label>Poziom zachmurzenia</label>
+        <label i18n>Poziom zachmurzenia</label>
         <div class="percent">
-          <input type="text" />
+          <input formControlName="clouds" type="text" />
         </div>
       </li>
     </ul>
-    <button class="button button--primary" (click)="search()">Szukaj</button>
-  </form>-->
-
-  <div class="loading__sentinel loading__sentinel--form">
-    <div class="loading__item"></div>
-    <div class="loading__item"></div>
-    <div class="loading__item"></div>
-    <div class="loading__item"></div>
-    <div class="loading__item"></div>
-    <div class="loading__item"></div>
-  </div>
+    <button class="button button--primary" (click)="search()" [disabled]="loading$ | async">
+      <fa-icon class="spinner" [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+      <ng-container i18n>Szukaj</ng-container>
+    </button>
+  </form>
 
 </div>
 
-<section class="section" *ngIf="loading; else loadingRef">
-  <header class="box__header">
+<section class="section" *ngIf="!(loading$ | async); else loadingRef">
+  <header class="box__header" *ngIf="(searchResults$ | async).length > 0">
     <span class="box__title">
       Wyniki
     </span>
   </header>
   <ul class="search__result">
-     <li>
-       <div class="quick__look">
-         <!-- miejsce na obrazek (miniaturke) quick look jak jest -->
-       </div>
-       <ul>
-         <li><strong>Mission:</strong> Sentinel-1</li>
-         <li><strong>Instrument:</strong>  SAR-C</li>
-         <li><strong>Sensing Date:</strong>  2019-12-05T18:27:29</li>
-         <li><strong>Size:</strong>  6.97 GB</li>
-       </ul>
-     </li>
-    <li>
+    <li *ngFor="let result of (searchResults$ | async)">
       <div class="quick__look">
+        <img *ngIf="result.image" [attr.src]="result.image">
         <!-- miejsce na obrazek (miniaturke) quick look jak jest -->
       </div>
       <ul>
-        <li><strong>Mission:</strong> Sentinel-1</li>
-        <li><strong>Instrument:</strong>  SAR-C</li>
-        <li><strong>Sensing Date:</strong>  2019-12-05T18:27:29</li>
-        <li><strong>Size:</strong>  6.97 GB</li>
+        <li><strong i18n>Mission:</strong> {{result.mission}}</li>
+        <li><strong i18n>Instrument:</strong>  {{result.instrument}}</li>
+        <li><strong i18n>Sensing Date:</strong>  {{result.sensingDate}}</li>
+        <li><strong i18n>Size:</strong>  {{result.size}}</li>
       </ul>
     </li>
   </ul>
 </section>
 
 <ng-template #loadingRef>
-  <div class="loading__sentinel loading__sentinel--results"></div>
+  <div class="loading loading--results"></div>
+  <div class="loading loading--results"></div>
+  <div class="loading loading--results"></div>
 </ng-template>
 
 

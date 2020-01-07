@@ -2,6 +2,7 @@ import {FormControl, FormGroup} from '@ng-stack/forms';
 import {FormState} from '../../state/form/form.model';
 import {environment} from '../../../environments/environment';
 import {HashMap} from '@datorama/akita';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 
 export type ServerApiError = HashMap<string[]> | { __exception__: string, __stacktrace__: string, __general__: string[] }
 
@@ -13,7 +14,7 @@ export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormC
   }
 }
 
-export function validateAllFormFields(formGroup: FormGroup<any>) {
+export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManager?: {formKey: keyof FormState, fm: AkitaNgFormsManager<FormState>}) {
   Object.keys(formGroup.controls).forEach(field => {
     const control = formGroup.get(field);
     if (control instanceof FormControl) {
@@ -22,6 +23,10 @@ export function validateAllFormFields(formGroup: FormGroup<any>) {
       this.validateAllFormFields(control);
     }
   });
+
+  if(updateFormManager != null && environment.hmr) {
+    (updateFormManager.fm as any).updateStore(updateFormManager.formKey, formGroup);
+  }
 }
 
 export function devRestoreFormState<K extends keyof FormState>(formValue: any, form: FormGroup) {
