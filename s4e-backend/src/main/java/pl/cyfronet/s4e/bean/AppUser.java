@@ -47,6 +47,5 @@ public class AppUser {
 
     public void removeRole(UserRole role) {
         roles.remove(role);
-        role.setUser(null);
     }
 }

@@ -10,8 +10,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
+import pl.cyfronet.s4e.data.repository.InstitutionRepository;
+import pl.cyfronet.s4e.ex.InstitutionCreationException;
+import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.service.GroupService;
+import pl.cyfronet.s4e.service.InstitutionService;
+import pl.cyfronet.s4e.service.SlugService;
+import pl.cyfronet.s4e.service.UserRoleService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +30,11 @@ import java.util.List;
 @Slf4j
 public class SeedUsers implements ApplicationRunner {
     private final AppUserRepository appUserRepository;
+    private final InstitutionRepository institutionRepository;
+    private final InstitutionService institutionService;
+    private final GroupService groupService;
+    private final UserRoleService userRoleService;
+    private final SlugService slugService;
     private final EmailVerificationRepository emailVerificationRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -30,9 +43,11 @@ public class SeedUsers implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         emailVerificationRepository.deleteAll();
+        institutionRepository.deleteAll();
         appUserRepository.deleteAll();
 
         seedUsers();
+        seedInstitutionsAndRoles();
 
         log.info("Seeding users complete");
     }
@@ -63,12 +78,57 @@ public class SeedUsers implements ApplicationRunner {
                         .build(),
                 AppUser.builder()
                         .email("cat4user@mail.pl")
-                        .name("Name3")
+                        .name("Name4")
                         .surname("Surname4")
                         .password(passwordEncoder.encode("cat4user"))
                         .enabled(true)
                         .build(),
+                AppUser.builder()
+                        .email("zkMember@mail.pl")
+                        .name("Name5")
+                        .surname("Surname5")
+                        .password(passwordEncoder.encode("zkMember"))
+                        .enabled(true)
+                        .memberZK(true)
+                        .build(),
+                AppUser.builder()
+                        .email("zkAdmin@mail.pl")
+                        .name("Name6")
+                        .surname("Surname6")
+                        .password(passwordEncoder.encode("zkAdmin20"))
+                        .enabled(true)
+                        .memberZK(true)
+                        .build(),
+                AppUser.builder()
+                        .email("admin@mail.pl")
+                        .name("Name7")
+                        .surname("Surname7")
+                        .password(passwordEncoder.encode("adminPass20"))
+                        .enabled(true)
+                        .admin(true)
+                        .build(),
         });
         appUserRepository.saveAll(appUsers);
+    }
+
+    private void seedInstitutionsAndRoles() {
+        log.info("Seeding Institutions");
+        try {
+            String name = "Zarządzenie kryzysowe PL";
+            Institution institution = institutionService.save(Institution.builder()
+                    .name(name)
+                    .slug(slugService.slugify(name))
+                    .build());
+            log.info("Seeding roles");
+            String mail = "zkMember@mail.pl";
+            groupService.addMember(institution.getSlug(), "default", mail);
+            String zkAdmin = "zkAdmin@mail.pl";
+            groupService.addMember(institution.getSlug(), "default", zkAdmin);
+            userRoleService.addRole(AppRole.INST_ADMIN, zkAdmin, institution.getSlug(), "default");
+        } catch (InstitutionCreationException e) {
+            log.warn(e.getMessage(), e);
+        } catch (NotFoundException e) {
+            log.warn(e.getMessage(), e);
+        }
     }
 }

@@ -27,6 +27,17 @@ public class UserRoleService {
                 .orElseThrow(() -> new NotFoundException("Group not found for id " + groupSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
+        if (!AppRole.GROUP_MEMBER.equals(role) &&
+            userRoleRepository.findByUser_IdAndGroup_IdAndRole(appUser.getId(), group.getId(), AppRole.GROUP_MEMBER).isEmpty())
+        {
+            UserRole userRole = UserRole.builder().
+                    role(AppRole.GROUP_MEMBER)
+                    .user(appUser)
+                    .group(group)
+                    .build();
+            group.getMembersRoles().add(userRole);
+            appUser.getRoles().add(userRole);
+        }
         UserRole userRole = UserRole.builder().
                 role(role)
                 .user(appUser)

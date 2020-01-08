@@ -43,6 +43,5 @@ public class Group {
 
     public void removeMemberRole(UserRole role) {
         membersRoles.remove(role);
-        role.setGroup(null);
     }
 }
