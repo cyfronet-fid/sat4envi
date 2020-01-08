@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="24px" viewBox="0 0 15 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="dropdown_ZK_inactive" transform="translate(-181.000000, -14.000000)" fill="#2B74BB" fill-rule="nonzero">
+            <g transform="translate(166.000000, 4.000000)" id="ZK-button">
+                <g>
+                    <g id="ico_bolt" transform="translate(15.000000, 10.000000)">
+                        <path d="M13.8753381,7.5 L8.46602462,7.5 L10.4628769,1.415625 C10.6503748,0.703125 10.1113184,0 9.37538929,0 L2.625466,0 C2.06297239,0 1.58485282,0.4171875 1.50985367,0.975 L0.00987072169,12.225 C-0.0791907662,12.9 0.445803267,13.5 1.12548304,13.5 L6.68948231,13.5 L4.52856937,22.6171875 C4.35982129,23.3296875 4.90356511,24 5.62074446,24 C6.00980253,24 6.38948572,23.79375 6.59573338,23.4375 L14.8456396,9.1875 C15.2815722,8.4421875 14.7425158,7.5 13.8753381,7.5 Z M6.57698359,20.4796875 L8.14727824,13.8421875 L8.58321079,11.9953125 L1.5520407,11.9953125 L2.95358727,1.5 L8.8550827,1.5 L7.04104081,7.03125 L6.39417317,9 L13.223783,9 L6.57698359,20.4796875 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

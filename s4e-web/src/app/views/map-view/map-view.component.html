@@ -58,17 +58,17 @@
 </s4e-map>
 
 <ng-container *ngIf="userLoggedIn$ | async">
-  <button (click)="toggleZKOptions()" id="zk-options-button" style="position:absolute; right: 60px; top: 15px;" class="button button--default">
-    <fa-icon icon="bars"></fa-icon>
+  <button (click)="toggleZKOptions()" id="zk-options-button" class="zk_dropdown_button">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
-    <div class="backdrop" (click)="toggleZKOptions(false)"></div>
-    <div class="zk-options">
+    <div class="zk_dropdown_content">
+      <span class="zk_dropdown_header">Zarządzanie kryzysowe</span>
+      <div class="zk__dropdown__close" (click)="toggleZKOptions(false)"></div>
       <ul>
+        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj Raport</a></li>
+        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
         <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz Obraz</a></li>
-        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Zapisz Raport</a></li>
-        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Udostępnij widok</a></li>
-        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok</a></li>
+        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok do obrazu PNG</a></li>
       </ul>
     </div>
   </ng-container>
