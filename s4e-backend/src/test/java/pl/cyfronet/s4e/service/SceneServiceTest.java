@@ -14,6 +14,7 @@ import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
+import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,9 @@ public class SceneServiceTest {
     @Autowired
     private SceneRepository sceneRepository;
 
+    @Autowired
+    private TimeHelper timeHelper;
+
     private SceneService sceneService;
 
     @Mock
@@ -43,7 +47,7 @@ public class SceneServiceTest {
 
     @BeforeEach
     public void setUp() {
-        sceneService = new SceneService(sceneRepository, productRepository, s3Util);
+        sceneService = new SceneService(sceneRepository, productRepository, timeHelper, s3Util);
         sceneRepository.deleteAll();
         productRepository.deleteAll();
     }

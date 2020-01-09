@@ -13,7 +13,7 @@ public interface SavedViewResponse {
 
     String getCaption();
 
-    @Value("#{@timeHelper.getZonedDateTimeWithDefaultZone(target.createdAt)}")
+    @Value("#{@timeHelper.getZonedDateTimeWithBaseZone(target.createdAt)}")
     ZonedDateTime getCreatedAt();
 
     @Value("#{@savedViewService.getThumbnailPath(target.id)}")
