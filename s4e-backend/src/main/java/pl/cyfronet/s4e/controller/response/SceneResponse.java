@@ -6,6 +6,7 @@ import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.util.TimeHelper;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Data
@@ -17,11 +18,11 @@ public class SceneResponse {
     private String layerName;
     private Legend legend;
 
-    public static SceneResponse of(Scene scene, TimeHelper timeHelper) {
+    public static SceneResponse of(Scene scene, ZoneId zoneId, TimeHelper timeHelper) {
         return SceneResponse.builder()
                 .id(scene.getId())
                 .productId(scene.getProduct().getId())
-                .timestamp(timeHelper.getZonedDateTimeWithDefaultZone(scene.getTimestamp()))
+                .timestamp(timeHelper.getZonedDateTime(scene.getTimestamp(), zoneId))
                 .layerName(scene.getLayerName())
                 .legend(scene.getLegend())
                 .build();

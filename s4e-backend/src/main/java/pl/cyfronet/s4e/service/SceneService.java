@@ -3,31 +3,26 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Webhook;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.S3Util;
+import pl.cyfronet.s4e.util.TimeHelper;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.time.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class SceneService {
     private final SceneRepository sceneRepository;
     private final ProductRepository productRepository;
+    private final TimeHelper timeHelper;
     private final S3Util s3Util;
-
-    public List<Scene> getScenes(Long productId) {
-        return sceneRepository.findByProductId(productId);
-    }
 
     public List<Scene> getScenes(Long productId, LocalDateTime start, LocalDateTime end) {
         return sceneRepository.findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
@@ -50,10 +45,24 @@ public class SceneService {
         return productRepository.findByNameContainingIgnoreCase(s3Util.getProduct(key)).orElseThrow(() -> new NotFoundException());
     }
 
-    public List<LocalDate> getAvailabilityDates(Long productId, YearMonth yearMonth) {
-        val start = LocalDateTime.of(yearMonth.getYear(), yearMonth.getMonth(), 1, 0, 0);
-        return sceneRepository.findDatesWithData(productId, start, start.plusMonths(1)).stream()
-                .map(Date::toLocalDate)
-                .collect(Collectors.toList());
+    public List<LocalDate> getAvailabilityDates(Long productId, YearMonth yearMonth, ZoneId tz) {
+        val dates = new ArrayList<LocalDate>();
+        ZonedDateTime curr = ZonedDateTime.of(LocalDate.of(yearMonth.getYear(), yearMonth.getMonth(), 1), LocalTime.MIDNIGHT, tz);
+        ZonedDateTime end = curr.plusMonths(1);
+
+        while (curr.isBefore(end)) {
+            ZonedDateTime next = curr.plusDays(1);
+
+            int count = sceneRepository.countAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThan(
+                    productId, timeHelper.getLocalDateTimeInBaseZone(curr), timeHelper.getLocalDateTimeInBaseZone(next));
+
+            if (count > 0) {
+                dates.add(curr.toLocalDate());
+            }
+
+            curr = next;
+        }
+
+        return dates;
     }
 }
