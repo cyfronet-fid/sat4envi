@@ -27,6 +27,7 @@
         <slugify.version>2.4</slugify.version>
         <springdoc-openapi.version>1.2.25</springdoc-openapi.version>
         <awssdk.version>2.10.44</awssdk.version>
+        <commons-email.version>1.5</commons-email.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,12 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-email</artifactId>
+            <version>${commons-email.version}</version>
         </dependency>
 
         <dependency>

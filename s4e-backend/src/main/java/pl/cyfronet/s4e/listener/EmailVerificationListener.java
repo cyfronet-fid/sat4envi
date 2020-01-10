@@ -64,9 +64,10 @@ public class EmailVerificationListener {
         Context ctx = new Context(event.getLocale());
         ctx.setVariable("email", appUser.getEmail());
 
-        String content = templateEngine.process("account-activated.txt", ctx);
+        String plainText = templateEngine.process("account-activated.txt", ctx);
+        String htmlText = templateEngine.process("account-activated.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, content);
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 
     private void sendConfirmationEmail(AppUser appUser, Locale locale) {
@@ -80,8 +81,9 @@ public class EmailVerificationListener {
         ctx.setVariable("email", appUser.getEmail());
         ctx.setVariable("activationUrl", activationUrl);
 
-        String content = templateEngine.process("confirm-email.txt", ctx);
+        String plainText = templateEngine.process("confirm-email.txt", ctx);
+        String htmlText = templateEngine.process("confirm-email.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, content);
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 }

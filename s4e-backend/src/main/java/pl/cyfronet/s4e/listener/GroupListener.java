@@ -38,9 +38,10 @@ public class GroupListener {
         ctx.setVariable("groupName", group.getName());
         ctx.setVariable("institutionName", group.getInstitution().getName());
 
-        String content = templateEngine.process("group-add-member.txt", ctx);
+        String plainText = templateEngine.process("group-add-member.txt", ctx);
+        String htmlText = templateEngine.process("group-add-member.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, content);
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 
     @Async
@@ -56,23 +57,25 @@ public class GroupListener {
         ctx.setVariable("groupName", group.getName());
         ctx.setVariable("institutionName", group.getInstitution().getName());
 
-        String content = templateEngine.process("group-remove-member.txt", ctx);
+        String plainText = templateEngine.process("group-remove-member.txt", ctx);
+        String htmlText = templateEngine.process("group-remove-member.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, content);
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 
     @Async
     @EventListener
     public void handle(OnShareLinkEvent event) {
-
         String subject = messageSource.getMessage("email.link-share.subject", null, event.getLocale());
         Context ctx = new Context(event.getLocale());
         ctx.setVariable("email", event.getUser().getEmail());
         ctx.setVariable("link", urlDomain + event.getLink());
-        String content = templateEngine.process("share-link.txt", ctx);
+
+        String plainText = templateEngine.process("share-link.txt", ctx);
+        String htmlText = templateEngine.process("share-link.html", ctx);
 
         for (String recipientAddress : event.getEmails()) {
-            mailService.sendEmail(recipientAddress, subject, content);
+            mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
         }
     }
 }

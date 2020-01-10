@@ -38,8 +38,9 @@ public class PasswordListener {
         Context ctx = new Context(event.getLocale());
         ctx.setVariable("resetPasswordUrl", resetPasswordUrl);
 
-        String content = templateEngine.process("password-reset.txt", ctx);
+        String plainText = templateEngine.process("password-reset.txt", ctx);
+        String htmlText = templateEngine.process("password-reset.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, content);
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 }
