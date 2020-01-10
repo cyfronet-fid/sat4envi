@@ -6,6 +6,11 @@
   padding: $space-large;
   display: block;
   border-radius: $border-radius-default;
+  margin-bottom: $space-large;
+  font-size: 1rem;
+  line-height: 1.35rem;
+  font-weight: normal;;
+  background: $color-grey-secondary;
 }
 
 .close {
