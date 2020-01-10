@@ -36,17 +36,17 @@ describe('MapViewComponent', () => {
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.zk-options'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('.zk_dropdown_button'))).toBeTruthy();
     });
 
-    it('clicking .backdrop should toggleZKOptions(false)', () => {
+    it('clicking .zk__dropdown__close should toggleZKOptions(false)', () => {
       // log in user
       (TestBed.get(SessionStore) as SessionStore).update({token: 'valid'});
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
       const spy = spyOn(component, 'toggleZKOptions');
-      fixture.debugElement.query(By.css('.backdrop')).nativeElement.click();
+      fixture.debugElement.query(By.css('.zk__dropdown__close')).nativeElement.click();
       expect(spy).toHaveBeenCalledWith(false);
     });
 

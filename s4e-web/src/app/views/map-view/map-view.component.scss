@@ -88,3 +88,65 @@
   }
 
 }
+
+.zk_dropdown_button {
+  background: url(src/assets/images/ico_bolt.svg) $color-white no-repeat center;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 12px;
+  right: 70px;
+  border-radius: $border-radius-circle;
+  box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
+}
+
+.zk_dropdown_content {
+  background: $color-white;
+  position: absolute;
+  top: 9px;
+  right: 68px;
+  border-radius: $border-radius-default;
+  display: flex;
+  flex-direction: column;
+  padding: $space-xsmall;
+  width: 215px;
+  box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
+
+  .zk_dropdown_header {
+    background: $color-grey-primary;
+    border-radius: $border-radius-circle;
+    padding: $space-small+2px calc(100% - 50px) $space-small $space-default;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: $color-black;
+    font-weight: 600;
+  }
+
+  .zk__dropdown__close {
+    background: url(src/assets/images/ico_close.svg) $color-white no-repeat center;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    border-radius: $border-radius-circle;
+    cursor: pointer;
+  }
+
+  ul {
+    margin-top: $space-xsmall;
+
+    li {
+      padding: $space-small $space-default;
+      a {
+        color: $color-grey;
+        font-size: 0.875rem;
+
+        &:hover {
+          color: $color-black;
+        }
+      }
+    }
+
+  }
+}

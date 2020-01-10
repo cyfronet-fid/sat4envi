@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Combined Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="dropdown_ZK" transform="translate(-181.000000, -19.000000)" fill="#2B74BB">
+            <path d="M187,17 C187.339868,17 187.615385,17.2755171 187.615385,17.6153846 L187.615,24.384 L194.384615,24.3846154 C194.724483,24.3846154 195,24.6601325 195,25 C195,25.3398675 194.724483,25.6153846 194.384615,25.6153846 L187.615,25.615 L187.615385,32.3846154 C187.615385,32.7244829 187.339868,33 187,33 C186.660132,33 186.384615,32.7244829 186.384615,32.3846154 L186.384,25.615 L179.615385,25.6153846 C179.275517,25.6153846 179,25.3398675 179,25 C179,24.6601325 179.275517,24.3846154 179.615385,24.3846154 L186.384,24.384 L186.384615,17.6153846 C186.384615,17.2755171 186.660132,17 187,17 Z" id="Combined-Shape" transform="translate(187.000000, 25.000000) rotate(-315.000000) translate(-187.000000, -25.000000) "></path>
+        </g>
+    </g>
+</svg>
