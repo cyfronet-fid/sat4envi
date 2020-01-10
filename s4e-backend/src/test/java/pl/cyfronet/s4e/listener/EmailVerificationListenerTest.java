@@ -68,7 +68,7 @@ class EmailVerificationListenerTest {
 
         listener.handle(new OnResendRegistrationTokenEvent(appUser, null));
 
-        verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any());
+        verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any(), any());
     }
 
 }

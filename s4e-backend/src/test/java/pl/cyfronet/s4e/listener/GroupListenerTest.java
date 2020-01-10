@@ -36,12 +36,12 @@ public class GroupListenerTest {
                 .build();
 
         listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of(), null));
-        verify(mailService, times(0)).sendEmail(any(), any(), any());
+        verify(mailService, times(0)).sendEmail(any(), any(), any(), any());
 
         listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of("some@email.pl"), null));
-        verify(mailService, times(1)).sendEmail(any(), any(), any());
+        verify(mailService, times(1)).sendEmail(any(), any(), any(), any());
 
         listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of("some@email.pl", "some2@email.pl"), null));
-        verify(mailService, times(3)).sendEmail(any(), any(), any());
+        verify(mailService, times(3)).sendEmail(any(), any(), any(), any());
     }
 }
