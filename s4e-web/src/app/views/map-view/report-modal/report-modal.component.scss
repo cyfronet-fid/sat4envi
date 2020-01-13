@@ -1,22 +1,70 @@
-.report-template {
-  position: relative;
-  width: 100%;
-  //padding-top: 70.7%;
-  > .caption {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    font-size: 14px;
-  }
-  .notes {
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-    font-size: 10px;
-    color: #6e6e6b;
+@import "../../../../scss/variables";
+
+
+.report {
+  display: flex;
+  flex-direction: row-reverse;
+
+  aside {
+    width: 40%;
+    margin-left: $space-xlarge;
+
+    strong,
+    span {
+      font-size: 0.75rem;
+      display: block;
+      line-height: 1rem;
+    }
+
+    strong {
+      text-transform: uppercase;
+    }
+
+    span {
+      color: $color-grey;
+    }
+
+    .report-template {
+      position: relative;
+      margin: $space-default 0;
+
+      > .caption {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        font-size: 14px;
+      }
+      .notes {
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        font-size: 10px;
+        color: #6e6e6b;
+      }
+
+      > #map-miniature {
+        width: 100%;
+      }
+    }
   }
 
-  > #map-miniature {
-    width: 100%;
+  &__details {
+    padding: $space-small;
+    background: $color-tertiary-second;
+
+    li {
+      margin: $space-small 0;
+    }
+
+    li:first-child {
+      margin-top: 0;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
   }
 }
+
+
+

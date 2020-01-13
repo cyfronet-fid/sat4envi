@@ -1,11 +1,25 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
-  <div class="s4e-modal-header" i18n>Raport PDF</div>
-  <div class="s4e-modal-body">
-    <div #reportTemplate class="report-template">
-      <h1 class="caption">{{form.controls.caption.value || 'Przykładowy tytuł'}}</h1>
-      <img id="map-miniature" [src]="image">
-      <span class="notes">{{form.controls.notes.value || 'Dodatkowe informacje'}}</span>
-    </div>
+  <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
+  <div class="s4e-modal-body report">
+    <aside>
+      <strong>Podgląd obszaru</strong>
+      <span>Poruszając poniższą mapą możesz dostosować widok</span>
+      <div #reportTemplate class="report-template">
+        <h1 class="caption">{{form.controls.caption.value || 'Przykładowy tytuł'}}</h1>
+        <img id="map-miniature" [src]="image">
+        <span class="notes">{{form.controls.notes.value || 'Dodatkowe informacje'}}</span>
+      </div>
+      <ul class="report__details">
+        <li>
+          <strong>Data</strong>
+          <span>12.01.2020 g. 14:32</span>
+        </li>
+        <li>
+          <strong>Źródło </strong>
+          <span>Meteosat</span>
+        </li>
+      </ul>
+    </aside>
     <form [formGroup]="form">
       <label i18n>Tytuł</label>
       <input formControlName="caption" type="text" />
@@ -15,6 +29,6 @@
   </div>
   <div class="s4e-modal-footer">
     <button class="button button--primary" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
-    <button class="button button--primary" type="submit" *ngIf="!isWorking" (click)="accept()" i18n>Wygeneruj</button>
+    <button class="button button--primary"  type="submit" *ngIf="!isWorking" (click)="accept()" i18n>Wygeneruj</button>
   </div>
 </s4e-generic-modal>
