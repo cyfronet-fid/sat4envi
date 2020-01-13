@@ -20,15 +20,23 @@
         </li>
       </ul>
     </aside>
-    <form [formGroup]="form">
-      <label i18n>Tytuł</label>
-      <input formControlName="caption" type="text" />
-      <label i18n>Notatka</label>
-      <input formControlName="notes" type="text" />
+    <form [formGroup]="form" class="form">
+      <ul>
+        <li>
+          <label i18n>Tytuł</label>
+          <input formControlName="caption" type="text" />
+        </li>
+        <li>
+          <label i18n>Notatka</label>
+          <textarea></textarea>
+        </li>
+      </ul>
+
+
     </form>
   </div>
   <div class="s4e-modal-footer">
-    <button class="button button--primary" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
-    <button class="button button--primary"  type="submit" *ngIf="!isWorking" (click)="accept()" i18n>Wygeneruj</button>
+    <button class="button button--primary button--small"  type="submit" *ngIf="!isWorking" (click)="accept()" i18n>Zapisz raport na dysk</button>
+    <button class="button button--cancel button--small" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
   </div>
 </s4e-generic-modal>

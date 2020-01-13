@@ -7,7 +7,8 @@
 1. Box
 2. List
 3. Buttons
-4. Various
+4. Form
+5. Various
 =======*/
 
 /* 1. Box */
@@ -169,7 +170,135 @@
   background: transparent;
 }
 
-/* 4. Various */
+.button--cancel {
+  @include button;
+  border: 1px solid $color-grey;
+  border-color: $color-grey;
+  background: transparent;
+  opacity: 0.8;
+}
+
+/* 4. Form */
+
+.form {
+  background: $color-grey-secondary;
+  margin: -15px;
+  padding: $space-xlarge $space-default;
+  position: relative;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $space-default;
+  }
+
+  label {
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: $space-xsmall;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 0.875rem;
+    padding: 12px 15px;
+    background: $color-white;
+    border-radius: $border-radius-default;
+    font-family: $font-base;
+  }
+
+  input {
+    width: calc(100% - 30px);
+    position: relative;
+
+    &.error {
+      border: 1px solid $color-error;
+    }
+
+  }
+
+  .two__columns {
+    display: flex;
+    flex-direction: row;
+
+    .column {
+      flex-basis: 0;
+      flex-grow: 1;
+
+      &:first-child {
+        margin-right: $space-xsmall;
+      }
+      &:last-child {
+        margin-left: $space-xsmall;
+      }
+    }
+  }
+
+  .half__column {
+    width: calc(50% - 5px);
+  }
+
+  span.error {
+    color: $color-error;
+    font-size: 0.75rem;
+    display: block;
+    margin: $space-xsmall 0;
+  }
+
+  ul + button {
+    position: absolute;
+    display: block;
+    bottom: -20px;
+    left: 34%;
+  }
+
+  .datepicker {
+    position: relative;
+    input {
+      z-index: 2;
+    }
+
+    button {
+      background: url(/../assets/images/ico_calendar.svg) no-repeat;
+      width: 20px;
+      height: 20px;
+      filter: brightness(0);
+      position: absolute;
+      right: 10px;
+      top: 9px;
+      z-index: 3;
+    }
+  }
+
+  .percent {
+    position: relative;
+
+    input {
+      //padding-right: calc(100%-40px);
+    }
+
+    &:after {
+      content: ' ';
+      background: url(/../assets/images/ico_percent.svg) $color-tertiary no-repeat center;
+      height: calc(100% - 2px);
+      width: 40px;
+      position: absolute;
+      z-index: 3;
+      right: 0;
+      -webkit-border-radius: $border-radius-default;
+      -moz-border-radius: $border-radius-default;
+      border-radius: $border-radius-default;
+      border: 1px solid $color-white;
+    }
+  }
+}
+
+
+
+
+
+/* 5. Various */
 
 body {
   overflow: hidden;

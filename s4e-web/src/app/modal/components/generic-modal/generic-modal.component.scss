@@ -15,6 +15,7 @@
 .modal-body,
 .modal-footer {
   padding: $space-large $space-large;
+  position: relative;
 }
 
 .modal-header {
@@ -28,9 +29,14 @@
 }
 
 .close {
+  background: url(/../../../../assets/images/ico_close.svg) transparent no-repeat center;
+  fill: #000;
+  height: 35px;
+  width: 35px;
   position: absolute;
-  right: 0;
-  top: -5px;
+  right: $space-default;
+  top: $space-default;
+  filter: brightness(0);
 }
 
 
