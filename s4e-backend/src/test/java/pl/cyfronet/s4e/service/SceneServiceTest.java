@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Webhook;
+import pl.cyfronet.s4e.controller.request.WebhookRequest;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
@@ -109,7 +109,7 @@ public class SceneServiceTest {
 
     @Test
     public void shouldBuildFromWebhook() throws NotFoundException {
-        Webhook webhook  = Webhook.builder()
+        WebhookRequest webhookRequest = WebhookRequest.builder()
                 .eventName("EventName")
                 .key(WEBHOOK_KEY)
                 .build();
@@ -119,7 +119,7 @@ public class SceneServiceTest {
         productRepository.save(product);
         when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
 
-        Scene buildFromWebhook = sceneService.buildFromWebhook(webhook);
+        Scene buildFromWebhook = sceneService.buildFromWebhook(webhookRequest);
         assertThat(buildFromWebhook.getProduct().getName(), is(equalTo("WV-IR")));
     }
 

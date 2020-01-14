@@ -1,7 +1,7 @@
 package pl.cyfronet.s4e.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,15 +11,18 @@ import static org.hamcrest.Matchers.is;
 @BasicTest
 public class MarkdownHtmlUtilTest {
 
+    @Autowired
+    MarkdownHtmlUtil markdownHtmlUtil;
+
     @Test
     public void shouldReturnParagraph() {
-        String result = MarkdownHtmlUtil.markdownToStringHtml("This is paragraph");
+        String result = markdownHtmlUtil.markdownToStringHtml("This is paragraph");
         assertThat(result, is(equalTo("<p>This is paragraph</p>\n")));
     }
 
     @Test
     public void shouldReturnHeader() {
-        String result = MarkdownHtmlUtil.markdownToStringHtml("This is header lvl 1\n" +
+        String result = markdownHtmlUtil.markdownToStringHtml("This is header lvl 1\n" +
                 "===========================\n" +
                 "This is header lvl 2\n" +
                 "-------------------------");
@@ -28,7 +31,7 @@ public class MarkdownHtmlUtilTest {
 
     @Test
     public void shouldReturnList() {
-        String result = MarkdownHtmlUtil.markdownToStringHtml("*   Things.\n" +
+        String result = markdownHtmlUtil.markdownToStringHtml("*   Things.\n" +
                 "*   More Things.\n" +
                 "*   Even More Things.");
         assertThat(result, is(equalTo("<ul>\n" +
@@ -40,7 +43,7 @@ public class MarkdownHtmlUtilTest {
 
     @Test
     public void shouldReturnNumberedList() {
-        String result = MarkdownHtmlUtil.markdownToStringHtml("1.   Things.\n" +
+        String result = markdownHtmlUtil.markdownToStringHtml("1.   Things.\n" +
                 "2.   More Things.\n" +
                 "3.   Even More Things.");
         assertThat(result, is(equalTo("<ol>\n" +

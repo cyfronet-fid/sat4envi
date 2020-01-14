@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppRole;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Group;
 
 import java.util.Optional;
@@ -14,9 +13,8 @@ import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface GroupRepository extends CrudRepository<Group, Long> {
-    Page<Group> findAllByInstitution_Slug(String slug, Pageable pageable);
-
-    Optional<Group> findByInstitution_SlugAndSlug(String institutionSlug, String slug);
+    <T> Page<T> findAllByInstitution_Slug(String slug, Pageable pageable, Class<T> projection);
+    <T> Optional<T> findByInstitution_SlugAndSlug(String institutionSlug, String slug, Class<T> projection);
 
     @Query(value = "SELECT g " +
             "FROM UserRole r " +
@@ -32,7 +30,7 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
             "LEFT JOIN FETCH r.group g " +
             "LEFT JOIN FETCH g.institution i " +
             "WHERE g.institution.slug = :institutionSlug AND g.slug = :groupSlug AND r.role = :role")
-    Set<AppUser> findAllMembers(String institutionSlug, String groupSlug, AppRole role);
+    <T> Set<T> findAllMembers(String institutionSlug, String groupSlug, AppRole role, Class<T> projection);
 
     @Query("SELECT u.email " +
             "FROM UserRole r " +

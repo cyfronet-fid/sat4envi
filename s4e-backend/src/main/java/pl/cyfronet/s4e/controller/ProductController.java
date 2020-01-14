@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +15,12 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.ProductService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(API_PREFIX_V1)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "product", description = "The Product API")
 public class ProductController {
@@ -33,9 +32,7 @@ public class ProductController {
     })
     @GetMapping("/products")
     public List<BasicProductResponse> getProducts() {
-        return productService.getProducts().stream()
-                .map(BasicProductResponse::of)
-                .collect(Collectors.toList());
+        return productService.getProducts();
     }
 
     @Operation(summary = "View product info")
@@ -45,8 +42,7 @@ public class ProductController {
     })
     @GetMapping("/products/{id}")
     public ProductResponse getProduct(@PathVariable Long id) throws NotFoundException {
-        val product = productService.getProduct(id)
+        return productService.getProduct(id)
                 .orElseThrow(() -> new NotFoundException("Product not found for id '" + id));
-        return ProductResponse.of(product);
     }
 }

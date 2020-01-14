@@ -30,6 +30,7 @@ import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
+import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -399,6 +400,7 @@ public class AppUserControllerTest {
         assertThat(appUser.isEnabled(), is(false));
 
         mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-email")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("email", EMAIL))
                 .andExpect(status().isOk());
 
@@ -423,6 +425,7 @@ public class AppUserControllerTest {
     @Test
     public void shouldntResendTokenIfAppUserNotFound() throws Exception {
         mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-email")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("email", "some@email.pl"))
                 .andExpect(status().isOk());
 
@@ -455,6 +458,7 @@ public class AppUserControllerTest {
         assertThat(appUser.isEnabled(), is(false));
 
         mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-token")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("token", TOKEN))
                 .andExpect(status().isOk());
 
@@ -481,6 +485,7 @@ public class AppUserControllerTest {
         final String TOKEN = "theTokenValue";
 
         mockMvc.perform(post(API_PREFIX_V1 + "/resend-registration-token-by-token")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("token", TOKEN))
                 .andExpect(status().isNotFound());
 
@@ -492,7 +497,8 @@ public class AppUserControllerTest {
     @Test
     @WithAnonymousUser
     public void shouldReturnForbiddenCode403() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
 
@@ -525,8 +531,8 @@ public class AppUserControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
     }
 
     @Test
@@ -544,7 +550,7 @@ public class AppUserControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(1));
     }
 
     @Test
@@ -560,8 +566,8 @@ public class AppUserControllerTest {
                 .build());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(1));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(0));
 
         Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
         groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
@@ -579,8 +585,8 @@ public class AppUserControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
 
         groupsWithRoles = new HashMap<>();
         groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
@@ -597,8 +603,8 @@ public class AppUserControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(0));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(0));
 
         groupsWithRoles = new HashMap<>();
         groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER));
@@ -616,8 +622,8 @@ public class AppUserControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "default"), hasSize(2));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy"), hasSize(1));
+        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
+        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
     }
 
     public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {

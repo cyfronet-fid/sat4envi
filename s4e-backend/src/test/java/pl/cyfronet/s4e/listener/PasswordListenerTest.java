@@ -30,7 +30,7 @@ public class PasswordListenerTest {
     }
 
     @Test
-    public void onPasswordResetTokenEmailEventShouldSendEmail() {
+    public void onPasswordResetTokenEmailEventShouldSendEmail() throws Exception {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
                 .name("Name")
@@ -42,9 +42,9 @@ public class PasswordListenerTest {
                 .token("someToken")
                 .build();
 
-        when(passwordService.createPasswordResetTokenForUser(appUser)).thenReturn(passwordReset);
+        when(passwordService.createPasswordResetTokenForUser(appUser.getEmail())).thenReturn(passwordReset);
 
-        listener.handle(new OnPasswordResetTokenEmailEvent(appUser, null));
+        listener.handle(new OnPasswordResetTokenEmailEvent(appUser.getEmail(), null));
 
         verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any(), any());
     }

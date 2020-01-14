@@ -3,25 +3,18 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.cyfronet.s4e.bean.AppRole;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
-import pl.cyfronet.s4e.bean.UserRole;
+import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
-import pl.cyfronet.s4e.event.OnAddToGroupEvent;
-import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
 import pl.cyfronet.s4e.ex.GroupCreationException;
 import pl.cyfronet.s4e.ex.GroupUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
@@ -40,8 +33,6 @@ public class GroupService {
     private final UserRoleRepository userRoleRepository;
     private final SlugService slugService;
     private final InstitutionService institutionService;
-    private final UserRoleService userRoleService;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(rollbackFor = GroupCreationException.class)
     public Group save(Group group) throws GroupCreationException {
@@ -53,10 +44,10 @@ public class GroupService {
         }
     }
 
-    @Transactional(rollbackFor = GroupCreationException.class)
-    public Group createFromRequest(CreateGroupRequest request, String institutionSlug)
+    @Transactional(rollbackFor = {GroupCreationException.class, NotFoundException.class})
+    public void createFromRequest(CreateGroupRequest request, String institutionSlug)
             throws GroupCreationException, NotFoundException {
-        val institution = institutionService.getInstitution(institutionSlug)
+        val institution = institutionService.getInstitution(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
         Group group = Group.builder()
                 .name(request.getName())
@@ -78,26 +69,26 @@ public class GroupService {
         }
 
         try {
-            return groupRepository.save(group);
+            groupRepository.save(group);
         } catch (DataIntegrityViolationException e) {
             log.info("Cannot create Group with name '" + group.getName() + "'", e);
             throw new GroupCreationException("Cannot create Group", e);
         }
     }
 
-    public Optional<Group> getGroup(String institutionSlug, String groupSlug) {
-        return groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug);
+    public <T> Optional<T> getGroup(String institutionSlug, String groupSlug, Class<T> projection) {
+        return groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug, projection);
     }
 
-    public Set<AppUser> getMembers(String institutionSlug, String groupSlug) {
-        return groupRepository.findAllMembers(institutionSlug, groupSlug, AppRole.GROUP_MEMBER);
+    public <T> Set<T> getMembers(String institutionSlug, String groupSlug, Class<T> projection) {
+        return groupRepository.findAllMembers(institutionSlug, groupSlug, AppRole.GROUP_MEMBER, projection);
     }
 
-    public Page<Group> getAllByInstitution(String institutionSlug, Pageable pageable) {
-        return groupRepository.findAllByInstitution_Slug(institutionSlug, pageable);
+    public <T> Page<T> getAllByInstitution(String institutionSlug, Pageable pageable, Class<T> projection) {
+        return groupRepository.findAllByInstitution_Slug(institutionSlug, pageable, projection);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
     public void updateUserGroups(UpdateUserGroupsRequest request, String institutionSlug) throws NotFoundException {
         AppUser appUser = appUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new NotFoundException("User not found for id: " + request.getEmail() + "'"));
@@ -107,7 +98,7 @@ public class GroupService {
                         .map(role -> UserRole.builder()
                                 .role(role)
                                 .user(appUser)
-                                .group(groupRepository.findByInstitution_SlugAndSlug(institutionSlug, entry.getKey()).get())
+                                .group(groupRepository.findByInstitution_SlugAndSlug(institutionSlug, entry.getKey(), Group.class).get())
                                 .build())
                         .collect(Collectors.toSet()))
                 );
@@ -141,21 +132,20 @@ public class GroupService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
     public void addMember(String institutionSlug, String groupSlug, String email) throws NotFoundException {
-        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug)
+        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id " + groupSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
         UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group).build();
         group.getMembersRoles().add(userRole);
         appUser.getRoles().add(userRole);
-        eventPublisher.publishEvent(new OnAddToGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
     public void removeMember(String institutionSlug, String groupSlug, String email) throws NotFoundException {
-        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug)
+        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id " + groupSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
@@ -164,8 +154,6 @@ public class GroupService {
             appUser.removeRole(userRole);
             userRoleRepository.delete(userRole);
         });
-
-        eventPublisher.publishEvent(new OnRemoveFromGroupEvent(appUser, group, LocaleContextHolder.getLocale()));
     }
 
     @Transactional
@@ -173,9 +161,9 @@ public class GroupService {
         groupRepository.deleteById(group.getId());
     }
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
     public void deleteBySlugs(String institutionSlug, String groupSlug) throws NotFoundException {
-        val group = getGroup(institutionSlug, groupSlug)
+        val group = getGroup(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug + "'"));
         groupRepository.deleteById(group.getId());
     }
@@ -190,11 +178,11 @@ public class GroupService {
         }
     }
 
-    @Transactional(rollbackFor = GroupUpdateException.class)
+    @Transactional(rollbackFor = NotFoundException.class)
     public void updateFromRequest(UpdateGroupRequest request, String institutionSlug, String groupSlug) throws NotFoundException {
         Set<String> membersToRemove = groupRepository.findAllMembersEmails(institutionSlug, groupSlug, AppRole.GROUP_MEMBER);
 
-        Group group = getGroup(institutionSlug, groupSlug)
+        Group group = getGroup(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id '" + groupSlug + "'"));
         group.setName(request.getName());
         group.setSlug(slugService.slugify(request.getName()));

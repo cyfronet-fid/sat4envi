@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 
@@ -23,7 +24,8 @@ public class ConfigControllerTest {
 
     @Test
     public void shouldReturnConfiguration() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/config"))
+        mockMvc.perform(get(API_PREFIX_V1+"/config")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.geoserverUrl").value(geoserverOutsideBaseUrl));
     }

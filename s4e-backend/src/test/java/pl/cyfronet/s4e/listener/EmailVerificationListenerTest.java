@@ -31,7 +31,7 @@ class EmailVerificationListenerTest {
     }
 
     @Test
-    public void onResendRegistrationTokenEventShouldDeleteExistingToken() {
+    public void onResendRegistrationTokenEventShouldDeleteExistingToken() throws Exception {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
                 .name("Name")
@@ -43,16 +43,16 @@ class EmailVerificationListenerTest {
                 .token("someToken")
                 .build();
 
-        when(emailVerificationService.findByAppUserId(appUser.getId())).thenReturn(Optional.of(emailVerification));
-        when(emailVerificationService.create(appUser)).thenReturn(emailVerification);
+        when(emailVerificationService.findByAppUserEmail(appUser.getEmail())).thenReturn(Optional.of(emailVerification));
+        when(emailVerificationService.create(appUser.getEmail())).thenReturn(emailVerification);
 
-        listener.handle(new OnResendRegistrationTokenEvent(appUser, null));
+        listener.handle(new OnResendRegistrationTokenEvent(appUser.getEmail(), null));
 
         verify(emailVerificationService).delete(42L);
     }
 
     @Test
-    public void onResendRegistrationTokenEventShouldSendEmail() {
+    public void onResendRegistrationTokenEventShouldSendEmail() throws Exception {
         AppUser appUser = AppUser.builder()
                 .email("some@email.pl")
                 .name("Name")
@@ -64,9 +64,9 @@ class EmailVerificationListenerTest {
                 .token("someToken")
                 .build();
 
-        when(emailVerificationService.create(appUser)).thenReturn(emailVerification);
+        when(emailVerificationService.create(appUser.getEmail())).thenReturn(emailVerification);
 
-        listener.handle(new OnResendRegistrationTokenEvent(appUser, null));
+        listener.handle(new OnResendRegistrationTokenEvent(appUser.getEmail(), null));
 
         verify(mailService).sendEmail(eq(appUser.getEmail()), any(), any(), any());
     }

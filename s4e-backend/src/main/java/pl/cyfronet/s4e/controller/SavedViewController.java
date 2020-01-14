@@ -42,7 +42,7 @@ public class SavedViewController {
             summary = "Create a new SavedView",
             description =
                     "Create a new SavedView, which will have the owner set to the authenticated AppUser. " +
-                    "The createdAt is set to the current datetime."
+                            "The createdAt is set to the current datetime."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operation successful"),

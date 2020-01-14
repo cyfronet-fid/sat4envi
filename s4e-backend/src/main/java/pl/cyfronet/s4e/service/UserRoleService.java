@@ -8,6 +8,8 @@ import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.UserRole;
+import pl.cyfronet.s4e.controller.request.CreateUserRoleRequest;
+import pl.cyfronet.s4e.controller.request.DeleteUserRoleRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
@@ -21,15 +23,19 @@ public class UserRoleService {
     private final AppUserRepository appUserRepository;
     private final GroupRepository groupRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
+    public void addRole(CreateUserRoleRequest request) throws NotFoundException {
+        addRole(request.getRole(), request.getEmail(), request.getInstitutionSlug(), request.getGroupSlug());
+    }
+
+    @Transactional(rollbackFor = NotFoundException.class)
     public void addRole(AppRole role, String email, String institutionSlug, String groupSlug) throws NotFoundException {
-        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug)
+        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id " + groupSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
         if (!AppRole.GROUP_MEMBER.equals(role) &&
-            userRoleRepository.findByUser_IdAndGroup_IdAndRole(appUser.getId(), group.getId(), AppRole.GROUP_MEMBER).isEmpty())
-        {
+                userRoleRepository.findByUser_IdAndGroup_IdAndRole(appUser.getId(), group.getId(), AppRole.GROUP_MEMBER).isEmpty()) {
             UserRole userRole = UserRole.builder().
                     role(AppRole.GROUP_MEMBER)
                     .user(appUser)
@@ -47,9 +53,14 @@ public class UserRoleService {
         appUser.getRoles().add(userRole);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
+    public void removeRole(DeleteUserRoleRequest request) throws NotFoundException {
+        removeRole(request.getRole(), request.getEmail(), request.getInstitutionSlug(), request.getGroupSlug());
+    }
+
+    @Transactional(rollbackFor = NotFoundException.class)
     public void removeRole(AppRole role, String email, String institutionSlug, String groupSlug) throws NotFoundException {
-        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug)
+        Group group = groupRepository.findByInstitution_SlugAndSlug(institutionSlug, groupSlug, Group.class)
                 .orElseThrow(() -> new NotFoundException("Group not found for id " + groupSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));

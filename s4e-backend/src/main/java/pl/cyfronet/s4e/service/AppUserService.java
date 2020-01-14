@@ -2,17 +2,22 @@ package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
+import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -24,6 +29,7 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
+    private final EmailVerificationService emailVerificationService;
 
     @Transactional(rollbackFor = AppUserCreationException.class)
     public AppUser save(AppUser appUser) throws AppUserCreationException {
@@ -36,25 +42,61 @@ public class AppUserService {
     }
 
     @Transactional(rollbackFor = AppUserCreationException.class)
-    public AppUser createFromRequest(CreateUserWithGroupsRequest request, String institutionSlug) throws AppUserCreationException, NotFoundException {
-        AppUser appUser = AppUser.builder()
+    public AppUser register(RegisterRequest registerRequest) throws AppUserCreationException {
+        return save(AppUser.builder()
+                .name(registerRequest.getName())
+                .surname(registerRequest.getSurname())
+                .email(registerRequest.getEmail())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .enabled(false)
+                .build());
+    }
+
+    @Transactional(rollbackFor = {AppUserCreationException.class, NotFoundException.class})
+    public void createFromRequest(CreateUserWithGroupsRequest request, String institutionSlug)
+            throws AppUserCreationException, NotFoundException {
+        AppUser appUser = createUserWithRoles(AppUser.builder()
                 .name(request.getName())
                 .surname(request.getSurname())
                 .email(request.getEmail())
                 // TODO: FIXME
                 .password(passwordEncoder.encode("passTemporary"))
                 .enabled(false)
-                .build();
+                .build(), request.getGroupsWithRoles(), institutionSlug);
+    }
 
+    @Transactional(rollbackFor = {AppUserCreationException.class, NotFoundException.class})
+    public AppUser createUserWithRoles(AppUser appUser, Map<String, Set<AppRole>> groupsWithRoles, String institutionSlug)
+            throws AppUserCreationException, NotFoundException {
         save(appUser);
-        if (request.getGroupsWithRoles() != null) {
-            for (Map.Entry<String, Set<AppRole>> entry : request.getGroupsWithRoles().entrySet()) {
+        if (groupsWithRoles != null) {
+            for (Map.Entry<String, Set<AppRole>> entry : groupsWithRoles.entrySet()) {
                 for (AppRole role : entry.getValue()) {
                     userRoleService.addRole(role, appUser.getEmail(), institutionSlug, entry.getKey());
                 }
             }
         }
         return appUser;
+    }
+
+    @Transactional(rollbackFor = {NotFoundException.class, RegistrationTokenExpiredException.class})
+    public EmailVerification confirmEmail(String token) throws NotFoundException, RegistrationTokenExpiredException {
+        val verificationToken = emailVerificationService.findByToken(token)
+                .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
+
+        if (verificationToken.getExpiryTimestamp().isBefore(LocalDateTime.now())) {
+            throw new RegistrationTokenExpiredException("Provided token '" + token + "' expired");
+        }
+
+        val appUser = verificationToken.getAppUser();
+        appUser.setEnabled(true);
+        return verificationToken;
+    }
+
+    public String getRequesterEmailBy(String token) throws NotFoundException {
+        val optionalToken = emailVerificationService.findByToken(token)
+                .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
+        return optionalToken.getAppUser().getEmail();
     }
 
     @Transactional
@@ -66,7 +108,7 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
-    public Optional<AppUser> findByEmailWithRolesAndGroupsAndInstitution(String email) {
-        return appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(email);
+    public <T> Optional<T> findByEmailWithRolesAndGroupsAndInstitution(String email, Class<T> projection) {
+        return appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(email, projection);
     }
 }

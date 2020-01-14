@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Scene;
@@ -81,6 +82,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-01"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(2))))
@@ -125,6 +127,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -148,6 +151,7 @@ public class SceneControllerTest {
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
@@ -172,6 +176,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -227,6 +232,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-03-31")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -236,6 +242,7 @@ public class SceneControllerTest {
                 .andExpect(jsonPath("$[2].timestamp").value(is(equalTo("2019-03-31T03:01:00+02:00"))));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-27")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -253,6 +260,7 @@ public class SceneControllerTest {
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "incorrect"))
                 .andExpect(status().isBadRequest());
@@ -311,6 +319,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("yearMonth", "2019-10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
@@ -364,6 +373,7 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
+                .contentType(MediaType.APPLICATION_JSON)
                 .param("yearMonth", "2019-10")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
