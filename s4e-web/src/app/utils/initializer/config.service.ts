@@ -2,6 +2,8 @@ import {Injectable, InjectionToken, Provider} from '@angular/core';
 import {IConfiguration, IRemoteConfiguration} from '../../app.configuration';
 import {map, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
+import {combineLatest, of} from 'rxjs';
+import {ProfileService} from '../../state/profile/profile.service';
 
 @Injectable()
 export class S4eConfig implements IConfiguration {
@@ -18,7 +20,7 @@ export class S4eConfig implements IConfiguration {
   userLocalStorageKey: string;
   generalErrorKey: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private profileService: ProfileService) {
   }
 
   init(config: IRemoteConfiguration) {
@@ -36,8 +38,11 @@ export class S4eConfig implements IConfiguration {
   }
 
   loadConfiguration(): Promise<IRemoteConfiguration> {
-    return this.http.get<IRemoteConfiguration>(`api/v1/config`).pipe(
-      tap(config => this.init(config))
+    return combineLatest([
+      this.http.get<IRemoteConfiguration>(`api/v1/config`).pipe(tap(config => this.init(config))),
+      this.profileService.get$()
+    ]).pipe(
+      map(([configuration, profile]) => configuration)
     ).toPromise();
   }
 }

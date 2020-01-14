@@ -57,7 +57,7 @@
 >
 </s4e-map>
 
-<ng-container *ngIf="userLoggedIn$ | async">
+<ng-container *ngIf="userIsZK$ | async">
   <button (click)="toggleZKOptions()" id="zk-options-button" class="zk_dropdown_button">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">

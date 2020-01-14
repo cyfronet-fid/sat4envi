@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SessionStore} from './session.store';
-import {finalize} from 'rxjs/operators';
+import {finalize, switchMap, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {action, resetStores} from '@datorama/akita';
 import {LoginRequestResponse} from './session.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
+import {ProfileService} from '../profile/profile.service';
 
 @Injectable({providedIn: 'root'})
 export class SessionService {
@@ -13,6 +14,7 @@ export class SessionService {
   constructor(private sessionStore: SessionStore,
               private http: HttpClient,
               private router: Router,
+              private profileService: ProfileService,
               private CONFIG: S4eConfig) {
   }
 
@@ -48,9 +50,10 @@ export class SessionService {
 
     this.http.post<LoginRequestResponse>(`${this.CONFIG.apiPrefixV1}/login`, {email: email, password: password})
       .pipe(
+        tap(data => this.setToken(data.token, data.email)),
+        switchMap(data => this.profileService.get$()),
         finalize(() => this.sessionStore.setLoading(false))
       ).subscribe(data => {
-      this.setToken(data.token, data.email);
       this.router.navigate(['/']);
     });
   }

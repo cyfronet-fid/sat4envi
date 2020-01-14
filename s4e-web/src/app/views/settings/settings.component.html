@@ -1,10 +1,10 @@
 <div class="container">
   <nav class="navigation">
     <ul class="navigation__list">
-      <li routerLinkActive="active"><a [routerLink]="['./dashboard']" queryParamsHandling="merge" i18n>Dashboard</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./groups']" queryParamsHandling="merge" i18n>Grupy</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./people']" queryParamsHandling="merge" i18n>Ludzie</a></li>
-      <li routerLinkActive="active"><a [routerLink]="['./institution']" queryParamsHandling="merge" i18n>Profil Instytucji</a></li>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./dashboard']" queryParamsHandling="merge" i18n>Dashboard</a></li>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./groups']" queryParamsHandling="merge" i18n>Grupy</a></li>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./people']" queryParamsHandling="merge" i18n>Ludzie</a></li>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./institution']" queryParamsHandling="merge" i18n>Profil Instytucji</a></li>
       <li routerLinkActive="active"><a [routerLink]="['./profile']" queryParamsHandling="merge" i18n>Twój profil</a></li>
     </ul>
     <section class="login">

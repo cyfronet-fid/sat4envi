@@ -5,10 +5,12 @@ import {TestingConfigProvider} from '../../app.configuration.spec';
 import {RouterTestingModule} from '@angular/router/testing';
 import {By} from '@angular/platform-browser';
 import {MapService} from './state/map/map.service';
-import {SessionStore} from '../../state/session/session.store';
+import {ProfileStore} from '../../state/profile/profile.store';
+
 
 describe('MapViewComponent', () => {
   let component: MapViewComponent;
+  let profileStore: ProfileStore;
   let fixture: ComponentFixture<MapViewComponent>;
 
   beforeEach(async(() => {
@@ -17,6 +19,7 @@ describe('MapViewComponent', () => {
       providers: [TestingConfigProvider]
     })
       .compileComponents();
+    profileStore = TestBed.get(ProfileStore);
   }));
 
   beforeEach(() => {
@@ -30,9 +33,21 @@ describe('MapViewComponent', () => {
   });
 
   describe('ZK Options', () => {
+    it('should not show #zk-options-button if user is not memberZK', () => {
+      profileStore.update({memberZK: false});
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('#zk-options-button'))).toBeNull();
+    });
+
+    it('should show #zk-options-button if user is not memberZK', () => {
+      profileStore.update({memberZK: true});
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(By.css('#zk-options-button'))).not.toBeNull();
+    });
+
     it('clicking #zk-options-button should show options', () => {
       // log in user
-      (TestBed.get(SessionStore) as SessionStore).update({token: 'valid'});
+      profileStore.update({memberZK: true});
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
@@ -41,7 +56,7 @@ describe('MapViewComponent', () => {
 
     it('clicking .zk__dropdown__close should toggleZKOptions(false)', () => {
       // log in user
-      (TestBed.get(SessionStore) as SessionStore).update({token: 'valid'});
+      profileStore.update({memberZK: true});
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
@@ -55,10 +70,6 @@ describe('MapViewComponent', () => {
       const spy = spyOn(service, 'toggleZKOptions');
       component.toggleZKOptions();
       expect(spy).toHaveBeenCalledWith(true);
-    });
-
-    it('should not show zk-options-button if user is not logged in', () => {
-      expect(fixture.debugElement.query(By.css('#zk-options-button'))).toBeFalsy();
     });
   });
 });

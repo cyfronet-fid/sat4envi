@@ -14,6 +14,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {InstitutionService} from './state/institution.service';
 import {InstitutionQuery} from './state/institution.query';
 import {Injectable} from '@angular/core';
+import {IsManagerGuard} from './guards/is-manager/is-manager.guard';
 
 export const settingsRoutes: Routes = [
   {
@@ -24,6 +25,7 @@ export const settingsRoutes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'profile',
@@ -32,26 +34,32 @@ export const settingsRoutes: Routes = [
       {
         path: 'groups',
         component: GroupListComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'groups/:groupSlug',
         component: GroupFormComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'institution',
-        component: InstitutionProfileComponent
+        component: InstitutionProfileComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'people',
-        component: PersonListComponent
+        component: PersonListComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'people/add',
-        component: PersonFormComponent
+        component: PersonFormComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'people/:email',
-        component: PersonFormComponent
+        component: PersonFormComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: '**',

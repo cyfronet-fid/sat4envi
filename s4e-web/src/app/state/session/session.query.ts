@@ -14,7 +14,7 @@ export class SessionQuery extends Query<Session> {
   }
 
   isLoggedIn(): boolean {
-    return this.getValue().token != null;
+    return localStorage.getItem('token') != null;
   }
 
   isLoggedIn$(): Observable<boolean> {
@@ -22,7 +22,7 @@ export class SessionQuery extends Query<Session> {
   }
 
   getToken(): string|null {
-    return this.getValue().token;
+    return localStorage.getItem('token');
   }
 
   isInitialized() {
