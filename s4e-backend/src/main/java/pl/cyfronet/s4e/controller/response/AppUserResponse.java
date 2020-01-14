@@ -13,6 +13,8 @@ public class AppUserResponse {
     private String email;
     private String name;
     private String surname;
+    private boolean admin;
+    private boolean memberZK;
     private Set<UserRoleResponse> roles;
 
     public static AppUserResponse of(AppUser user) {
@@ -20,6 +22,8 @@ public class AppUserResponse {
                 .email(user.getEmail())
                 .name(user.getName())
                 .surname(user.getSurname())
+                .memberZK(user.isMemberZK())
+                .admin(user.isAdmin())
                 .roles(user.getRoles().stream().map(UserRoleResponse::of).collect(Collectors.toSet()))
                 .build();
     }
