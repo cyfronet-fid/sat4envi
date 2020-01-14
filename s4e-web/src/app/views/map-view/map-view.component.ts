@@ -23,6 +23,7 @@ import {SceneQuery} from './state/scene/scene.query.service';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
 import {REPORT_MODAL_ID, ReportModal} from './report-modal/report-modal.model';
+import {ProfileQuery} from '../../state/profile/profile.query';
 
 @Component({
   selector: 's4e-map-view',
@@ -44,9 +45,10 @@ export class MapViewComponent implements OnInit {
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
   public selectedLocation$: Observable<SearchResult | null>;
+  public userIsZK$: Observable<boolean>;
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
-  constructor(private mapService: MapService,
+  constructor(public mapService: MapService,
               private mapQuery: MapQuery,
               private overlayQuery: OverlayQuery,
               private overlayService: OverlayService,
@@ -60,10 +62,12 @@ export class MapViewComponent implements OnInit {
               private legendService: LegendService,
               private searchResultsQuery: SearchResultsQuery,
               private modalService: ModalService,
+              private profileQuery: ProfileQuery,
               private CONFIG: S4eConfig) {
   }
 
   ngOnInit(): void {
+    this.userIsZK$ = this.profileQuery.selectMemberZK();
     this.selectedLocation$ = this.searchResultsQuery.selectLocation();
     this.loading$ = this.mapQuery.selectLoading();
     this.currentTimelineDate$ = this.productQuery.selectSelectedDate();

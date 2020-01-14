@@ -5,9 +5,9 @@ export interface LoginFormState {
 }
 
 export interface Role {
-  role: string,
-  institution: number|null,
-  group: number|null,
+  role: 'INST_ADMIN'|'INST_MANAGER'|'GROUP_MANAGER'|'GROUP_MEMBER',
+  institutionSlug: string|null,
+  groupSlug: string|null,
 }
 
 export interface Session {
