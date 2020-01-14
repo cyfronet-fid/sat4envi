@@ -12,9 +12,9 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface InstitutionRepository extends CrudRepository<Institution, Long> {
-    Page<Institution> findAll(Pageable pageable);
+    <T> Page<T> findAllBy(Class<T> projection, Pageable pageable);
 
-    Optional<Institution> findBySlug(String slug);
+    <T> Optional<T> findBySlug(String slug, Class<T> projection);
 
     @Transactional
     @Modifying

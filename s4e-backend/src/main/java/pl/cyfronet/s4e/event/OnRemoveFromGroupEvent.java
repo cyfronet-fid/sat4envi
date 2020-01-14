@@ -2,22 +2,22 @@ package pl.cyfronet.s4e.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
 
 import java.util.Locale;
 
 @Getter
 public class OnRemoveFromGroupEvent extends ApplicationEvent {
-    private final AppUser appUser;
-    private final Group group;
+    private final String removedMemberEmail;
+    private final String groupSlug;
+    private final String institutionSlug;
     private final Locale locale;
 
-    public OnRemoveFromGroupEvent(AppUser appUser, Group group, Locale locale) {
-        super(group);
+    public OnRemoveFromGroupEvent(String removedMemberEmail, String groupSlug, String institutionSlug, Locale locale) {
+        super(removedMemberEmail);
 
-        this.appUser = appUser;
-        this.group = group;
+        this.removedMemberEmail = removedMemberEmail;
+        this.groupSlug = groupSlug;
+        this.institutionSlug = institutionSlug;
         this.locale = locale;
     }
 }

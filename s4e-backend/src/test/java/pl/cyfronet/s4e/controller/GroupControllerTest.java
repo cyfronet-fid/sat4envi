@@ -14,6 +14,7 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
+import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
@@ -110,7 +111,7 @@ public class GroupControllerTest {
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(groupRepository.findByInstitution_SlugAndSlug(slugInstitution, "creategrouptest").isPresent(), is(true));
+        assertThat(groupRepository.findByInstitution_SlugAndSlug(slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
     }
 
     @Test
@@ -130,8 +131,8 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(1));
+                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(1));
     }
 
     @Test
@@ -152,8 +153,8 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(1));
+                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(1));
 
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
                 .name("UpdateGroupTest")
@@ -166,8 +167,8 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "updategrouptest").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "updategrouptest"), hasSize(1));
+                slugInstitution, "updategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "updategrouptest", AppUserResponse.class), hasSize(1));
     }
 
     @Test
@@ -196,8 +197,8 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "creategrouptest"), hasSize(2));
+                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(2));
 
         membersRoles.remove(email);
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
@@ -212,8 +213,8 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "updategrouptest").isPresent(), is(true));
-        assertThat(groupService.getMembers(slugInstitution, "updategrouptest"), hasSize(1));
+                slugInstitution, "updategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupService.getMembers(slugInstitution, "updategrouptest", AppUserResponse.class), hasSize(1));
     }
 
     @Test

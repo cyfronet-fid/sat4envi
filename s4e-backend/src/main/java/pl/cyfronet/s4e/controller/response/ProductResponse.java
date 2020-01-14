@@ -1,25 +1,15 @@
 package pl.cyfronet.s4e.controller.response;
 
-import lombok.Builder;
-import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import pl.cyfronet.s4e.bean.Legend;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.util.MarkdownHtmlUtil;
 
-@Data
-@Builder
-public class ProductResponse {
-    private Long id;
-    private String name;
-    private String description;
-    private Legend legend;
+public interface ProductResponse {
+    Long getId();
 
-    public static ProductResponse of(Product product) {
-        return ProductResponse.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(MarkdownHtmlUtil.markdownToStringHtml(product.getDescription()))
-                .legend(product.getLegend())
-                .build();
-    }
+    String getName();
+
+    @Value("#{@markdownHtmlUtil.markdownToStringHtml(target.description)}")
+    String getDescription();
+
+    Legend getLegend();
 }

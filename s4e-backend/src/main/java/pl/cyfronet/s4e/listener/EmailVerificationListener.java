@@ -9,11 +9,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 import pl.cyfronet.s4e.service.MailService;
 
@@ -33,36 +33,35 @@ public class EmailVerificationListener {
 
     @Async
     @EventListener
-    public void handle(OnRegistrationCompleteEvent event) {
-        sendConfirmationEmail(event.getAppUser(), event.getLocale());
+    public void handle(OnRegistrationCompleteEvent event) throws NotFoundException {
+        sendConfirmationEmail(event.getRequesterEmail(), event.getLocale());
     }
 
     @Async
     @EventListener
-    public void handle(OnResendRegistrationTokenEvent event) {
-        AppUser appUser = event.getAppUser();
+    public void handle(OnResendRegistrationTokenEvent event) throws NotFoundException {
+        String requesterEmail = event.getRequesterEmail();
 
-        Optional<EmailVerification> optionalExistingVerificationToken = emailVerificationService.findByAppUserId(appUser.getId());
+        Optional<EmailVerification> optionalExistingVerificationToken = emailVerificationService.findByAppUserEmail(requesterEmail);
         if (optionalExistingVerificationToken.isPresent()) {
             emailVerificationService.delete(optionalExistingVerificationToken.get().getId());
         }
 
-        sendConfirmationEmail(appUser, event.getLocale());
+        sendConfirmationEmail(requesterEmail, event.getLocale());
     }
 
     @Async
     @EventListener
     public void handle(OnEmailConfirmedEvent event) {
-        EmailVerification emailVerification = event.getEmailVerification();
-        AppUser appUser = emailVerification.getAppUser();
+        String email = event.getRequesterEmail();
 
-        emailVerificationService.delete(emailVerification.getId());
+        emailVerificationService.delete(event.getEmailVerificationId());
 
-        String recipientAddress = appUser.getEmail();
+        String recipientAddress = email;
         String subject = messageSource.getMessage("email.account-activated.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
-        ctx.setVariable("email", appUser.getEmail());
+        ctx.setVariable("email", email);
 
         String plainText = templateEngine.process("account-activated.txt", ctx);
         String htmlText = templateEngine.process("account-activated.html", ctx);
@@ -70,15 +69,15 @@ public class EmailVerificationListener {
         mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
 
-    private void sendConfirmationEmail(AppUser appUser, Locale locale) {
-        val verificationToken = emailVerificationService.create(appUser);
+    private void sendConfirmationEmail(String email, Locale locale) throws NotFoundException {
+        val verificationToken = emailVerificationService.create(email);
 
-        String recipientAddress = appUser.getEmail();
+        String recipientAddress = email;
         String subject = messageSource.getMessage("email.confirm-email.subject", null, locale);
         String activationUrl = urlDomain + "/activate/" + verificationToken.getToken();
 
         Context ctx = new Context(locale);
-        ctx.setVariable("email", appUser.getEmail());
+        ctx.setVariable("email", email);
         ctx.setVariable("activationUrl", activationUrl);
 
         String plainText = templateEngine.process("confirm-email.txt", ctx);

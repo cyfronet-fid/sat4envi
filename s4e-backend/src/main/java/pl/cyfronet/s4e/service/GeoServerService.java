@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.Constants;
@@ -35,6 +36,7 @@ public class GeoServerService {
         geoServerOperations.createWorkspace(workspace);
     }
 
+    @Transactional(rollbackFor = RestClientResponseException.class)
     public void addLayer(Scene scene) {
         // Both the coverage store, coverage and layer (the last one with workspace prefix) names will be the same
         String gsName = scene.getLayerName();

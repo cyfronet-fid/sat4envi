@@ -14,16 +14,15 @@ import pl.cyfronet.s4e.service.PRGOverlayService;
 import pl.cyfronet.s4e.service.WMSOverlayService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(API_PREFIX_V1)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "overlay", description = "The Overlay API")
 public class OverlayController {
-
     private final PRGOverlayService prgOverlayService;
     private final WMSOverlayService wmsOverlayService;
 
@@ -33,9 +32,7 @@ public class OverlayController {
     })
     @GetMapping("/overlays/prg/")
     public List<PRGOverlayResponse> getPRGOverlays() {
-        return prgOverlayService.getCreatedPRGOverlays().stream()
-                .map(PRGOverlayResponse::of)
-                .collect(Collectors.toList());
+        return prgOverlayService.getCreatedPRGOverlays();
     }
 
     @Operation(summary = "View a list of WMS overlays")
@@ -44,8 +41,6 @@ public class OverlayController {
     })
     @GetMapping("/overlays/wms/")
     public List<WMSOverlayResponse> getWMSOverlays() {
-        return wmsOverlayService.getWMSOverlays().stream()
-                .map(WMSOverlayResponse::of)
-                .collect(Collectors.toList());
+        return wmsOverlayService.getWMSOverlays();
     }
 }

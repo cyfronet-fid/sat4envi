@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
+import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.MailService;
 
 import java.io.IOException;
@@ -18,13 +19,15 @@ public class GroupListenerTest {
     private MessageSource messageSource;
     private TemplateEngine templateEngine;
     private MailService mailService;
+    private GroupService groupService;
 
     @BeforeEach
     public void beforeEach() {
         messageSource = mock(MessageSource.class);
         templateEngine = mock(TemplateEngine.class);
         mailService = mock(MailService.class);
-        listener = new GroupListener(messageSource, templateEngine, mailService);
+        groupService = mock(GroupService.class);
+        listener = new GroupListener(messageSource, templateEngine, mailService, groupService);
     }
 
     @Test

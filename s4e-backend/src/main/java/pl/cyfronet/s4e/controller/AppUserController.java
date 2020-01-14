@@ -12,15 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
@@ -34,29 +30,26 @@ import pl.cyfronet.s4e.ex.RecaptchaException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
-import pl.cyfronet.s4e.service.EmailVerificationService;
 import pl.cyfronet.s4e.service.GroupService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(API_PREFIX_V1)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "app-user", description = "The AppUser API")
 public class AppUserController {
     private final AppUserService appUserService;
-    private final EmailVerificationService emailVerificationService;
-    private final PasswordEncoder passwordEncoder;
-    private final ApplicationEventPublisher eventPublisher;
     private final RecaptchaValidator recaptchaValidator;
     private final GroupService groupService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Operation(summary = "Register a new user")
     @Parameters({
@@ -67,23 +60,13 @@ public class AppUserController {
             @ApiResponse(responseCode = "400", description = "The request was not valid or recaptcha failed")
     })
     @PostMapping("/register")
-    public ResponseEntity<?> register(
+    public void register(
             @RequestBody @Valid RegisterRequest registerRequest,
             HttpServletRequest request
     ) throws AppUserCreationException, RecaptchaException {
         validateRecaptcha(request);
-
-        AppUser appUser = appUserService.save(AppUser.builder()
-                .name(registerRequest.getName())
-                .surname(registerRequest.getSurname())
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .enabled(false)
-                .build());
-
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(appUser, LocaleContextHolder.getLocale()));
-
-        return ResponseEntity.ok().build();
+        appUserService.register(registerRequest);
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registerRequest.getEmail(), LocaleContextHolder.getLocale()));
     }
 
     @Operation(summary = "Resend an email verification token based on email")
@@ -91,14 +74,10 @@ public class AppUserController {
             @ApiResponse(responseCode = "200", description = "Email with a new email verification token was sent provided user with it existed and wasn't activated yet")
     })
     @PostMapping("/resend-registration-token-by-email")
-    public ResponseEntity<?> resendRegistrationTokenByEmail(@RequestParam @Email @NotEmpty @Valid String email) {
-        val optionalAppUser = appUserService.findByEmail(email);
-
-        if (optionalAppUser.isPresent()) {
-            eventPublisher.publishEvent(new OnResendRegistrationTokenEvent(optionalAppUser.get(), LocaleContextHolder.getLocale()));
+    public void resendRegistrationTokenByEmail(@RequestParam @Email @NotEmpty @Valid String email) {
+        if (appUserService.findByEmail(email).isPresent()) {
+            eventPublisher.publishEvent(new OnResendRegistrationTokenEvent(email, LocaleContextHolder.getLocale()));
         }
-
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Resend registration token based on token")
@@ -107,16 +86,10 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping("/resend-registration-token-by-token")
-    public ResponseEntity<?> resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token
+    public void resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token
     ) throws NotFoundException {
-        val optionalToken = emailVerificationService.findByToken(token);
-
-        if (optionalToken.isPresent()) {
-            eventPublisher.publishEvent(new OnResendRegistrationTokenEvent(optionalToken.get().getAppUser(), LocaleContextHolder.getLocale()));
-            return ResponseEntity.ok().build();
-        } else {
-            throw new NotFoundException("Provided token '" + token + "' not found");
-        }
+        String requesterEmail = appUserService.getRequesterEmailBy(token);
+        eventPublisher.publishEvent(new OnResendRegistrationTokenEvent(requesterEmail, LocaleContextHolder.getLocale()));
     }
 
     @Operation(summary = "Confirm user email")
@@ -126,22 +99,11 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "The token wasn't found")
     })
     @PostMapping("/confirm-email")
-    public ResponseEntity<?> confirmEmail(@RequestParam @NotEmpty @Valid String token
+    public void confirmEmail(@RequestParam @NotEmpty @Valid String token
     ) throws NotFoundException, AppUserCreationException, RegistrationTokenExpiredException {
-        val verificationToken = emailVerificationService.findByToken(token)
-                .orElseThrow(() -> new NotFoundException("Provided token '" + token + "' not found"));
-
-        if (verificationToken.getExpiryTimestamp().isBefore(LocalDateTime.now())) {
-            throw new RegistrationTokenExpiredException("Provided token '" + token + "' expired");
-        }
-
-        val appUser = verificationToken.getAppUser();
-        appUser.setEnabled(true);
-        appUserService.save(appUser);
-
-        eventPublisher.publishEvent(new OnEmailConfirmedEvent(verificationToken, LocaleContextHolder.getLocale()));
-
-        return ResponseEntity.ok().build();
+        Long emailVerificationId = appUserService.confirmEmail(token).getId();
+        String requesterEmail = appUserService.getRequesterEmailBy(token);
+        eventPublisher.publishEvent(new OnEmailConfirmedEvent(requesterEmail, emailVerificationId, LocaleContextHolder.getLocale()));
     }
 
     @Operation(summary = "Add user to an institution")
@@ -152,11 +114,10 @@ public class AppUserController {
     })
     @PostMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
-    public ResponseEntity<?> addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
+    public void addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
         appUserService.createFromRequest(request, institutionSlug);
 //        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Update user groups in an institution")
@@ -167,13 +128,12 @@ public class AppUserController {
     })
     @PutMapping("/institutions/{institution}/users")
     @PreAuthorize("isAuthenticated() &&  isInstitutionManager(#institutionSlug)")
-    public ResponseEntity<?> updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
+    public void updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
         if (request.getGroupsWithRoles() != null) {
             groupService.updateUserGroups(request, institutionSlug);
         }
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get user profile")
@@ -186,9 +146,8 @@ public class AppUserController {
     @PreAuthorize("isAuthenticated()")
     public AppUserResponse getMe() throws NotFoundException {
         AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        AppUser appUser = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername())
+        return appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), AppUserResponse.class)
                 .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
-        return AppUserResponse.of(appUser);
     }
 
     private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {

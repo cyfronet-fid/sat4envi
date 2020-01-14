@@ -2,19 +2,20 @@ package pl.cyfronet.s4e.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import pl.cyfronet.s4e.bean.EmailVerification;
 
 import java.util.Locale;
 
 @Getter
 public class OnEmailConfirmedEvent extends ApplicationEvent {
-    private final EmailVerification emailVerification;
+    private final String requesterEmail;
+    private final Long emailVerificationId;
     private final Locale locale;
 
-    public OnEmailConfirmedEvent(EmailVerification emailVerification, Locale locale) {
-        super(emailVerification);
+    public OnEmailConfirmedEvent(String requesterEmail, Long emailVerificationId, Locale locale) {
+        super(requesterEmail);
 
-        this.emailVerification = emailVerification;
+        this.requesterEmail = requesterEmail;
+        this.emailVerificationId = emailVerificationId;
         this.locale = locale;
     }
 }

@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface EmailVerificationRepository extends CrudRepository<EmailVerification, Long> {
     Optional<EmailVerification> findByToken(String token);
     Optional<EmailVerification> findByAppUserId(Long appUserId);
+    Optional<EmailVerification> findByAppUserEmail(String email);
 }

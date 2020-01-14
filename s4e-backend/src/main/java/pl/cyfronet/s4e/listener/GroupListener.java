@@ -7,13 +7,14 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
+import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.MailService;
 
 import javax.mail.util.ByteArrayDataSource;
@@ -27,17 +28,18 @@ public class GroupListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
+    private final GroupService groupService;
 
     @Value("${mail.urlDomain}")
     private String urlDomain;
 
     @Async
     @EventListener
+    @Transactional(readOnly = true)
     public void handle(OnAddToGroupEvent event) {
-        AppUser appUser = event.getAppUser();
-        Group group = event.getGroup();
+        Group group = groupService.getGroup(event.getInstitutionSlug(), event.getGroupSlug(), Group.class).get();
 
-        String recipientAddress = appUser.getEmail();
+        String recipientAddress = event.getAddedMemberEmail();
         String subject = messageSource.getMessage("email.group-add.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
@@ -52,11 +54,11 @@ public class GroupListener {
 
     @Async
     @EventListener
+    @Transactional(readOnly = true)
     public void handle(OnRemoveFromGroupEvent event) {
-        AppUser appUser = event.getAppUser();
-        Group group = event.getGroup();
+        Group group = groupService.getGroup(event.getInstitutionSlug(), event.getGroupSlug(), Group.class).get();
 
-        String recipientAddress = appUser.getEmail();
+        String recipientAddress = event.getRemovedMemberEmail();
         String subject = messageSource.getMessage("email.group-remove.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
@@ -86,7 +88,7 @@ public class GroupListener {
 
         String thumbnailContentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(req.getThumbnail()));
 
-        for (String recipientAddress: req.getEmails()) {
+        for (String recipientAddress : req.getEmails()) {
             mailService.sendEmail(helper -> {
                 helper.setTo(recipientAddress);
                 helper.setSubject(subject);

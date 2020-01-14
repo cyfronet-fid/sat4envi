@@ -5,7 +5,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.Webhook;
+import pl.cyfronet.s4e.controller.request.WebhookRequest;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
@@ -34,11 +34,11 @@ public class SceneService {
         sceneRepository.save(scene);
     }
 
-    public Scene buildFromWebhook(Webhook webhook) throws NotFoundException {
-        return Scene.builder().product(getProduct(webhook.getKey()))
-                .layerName(s3Util.getLayerName(webhook.getKey()))
-                .timestamp(s3Util.getTimeStamp(webhook.getKey()))
-                .s3Path(s3Util.getS3Path(webhook.getKey())).build();
+    public Scene buildFromWebhook(WebhookRequest webhookRequest) throws NotFoundException {
+        return Scene.builder().product(getProduct(webhookRequest.getKey()))
+                .layerName(s3Util.getLayerName(webhookRequest.getKey()))
+                .timestamp(s3Util.getTimeStamp(webhookRequest.getKey()))
+                .s3Path(s3Util.getS3Path(webhookRequest.getKey())).build();
     }
 
     public Product getProduct(String key) throws NotFoundException {

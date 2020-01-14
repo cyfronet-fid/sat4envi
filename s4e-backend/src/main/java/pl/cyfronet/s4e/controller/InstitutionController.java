@@ -6,15 +6,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springdoc.core.converters.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
@@ -23,21 +19,19 @@ import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.InstitutionService;
-import pl.cyfronet.s4e.service.SlugService;
 
 import javax.validation.Valid;
-import java.util.stream.Collectors;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(API_PREFIX_V1)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "institution", description = "The Institution API")
 @PreAuthorize("isAuthenticated()")
 public class InstitutionController {
     private final InstitutionService institutionService;
-    private final SlugService slugService;
 
     @Operation(summary = "Create a new institution")
     @ApiResponses({
@@ -47,13 +41,8 @@ public class InstitutionController {
     })
     @PostMapping("/institutions")
     @PreAuthorize("isAdmin()")
-    public ResponseEntity<?> create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
-        institutionService.save(Institution.builder()
-                .name(request.getName())
-                .slug(slugService.slugify(request.getName()))
-                .parent(null)
-                .build());
-        return ResponseEntity.ok().build();
+    public void create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
+        institutionService.save(request);
     }
 
     @Operation(summary = "Create a new child institution")
@@ -64,11 +53,10 @@ public class InstitutionController {
     })
     @PostMapping("/institutions/{institution}/child")
     @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
-    public ResponseEntity<?> createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
+    public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                                          @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
         institutionService.createChildInstitution(request, institutionSlug);
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get a list of institutions")
@@ -80,13 +68,7 @@ public class InstitutionController {
     @GetMapping("/institutions")
     @PreAuthorize("isAdmin()")
     public Page<InstitutionResponse> getAll(@Parameter(hidden = true) Pageable pageable) {
-        Page<Institution> page = institutionService.getAll(pageable);
-        return new PageImpl<>(
-                page.stream()
-                        .map(m -> InstitutionResponse.of(m))
-                        .collect(Collectors.toList()),
-                page.getPageable(),
-                page.getTotalElements());
+        return institutionService.getAll(pageable, InstitutionResponse.class);
     }
 
     @Operation(summary = "Get an institution")
@@ -98,9 +80,8 @@ public class InstitutionController {
     @GetMapping("/institutions/{institution}")
     @PreAuthorize("isInstitutionMember(#institutionSlug)")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
-        val institution = institutionService.getInstitution(institutionSlug)
+        return institutionService.getInstitution(institutionSlug, InstitutionResponse.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
-        return InstitutionResponse.of(institution);
     }
 
     @Operation(summary = "Update an institution")
@@ -112,15 +93,10 @@ public class InstitutionController {
     })
     @PutMapping("/institutions/{institution}")
     @PreAuthorize("isInstitutionManager(#institutionSlug)")
-    public ResponseEntity<?> update(@RequestBody UpdateInstitutionRequest request,
+    public void update(@RequestBody UpdateInstitutionRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws NotFoundException, InstitutionUpdateException {
-        val institution = institutionService.getInstitution(institutionSlug)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
-        institution.setName(request.getName());
-        institution.setSlug(slugService.slugify(request.getName()));
-        institutionService.update(institution);
-        return ResponseEntity.ok().build();
+        institutionService.update(request, institutionSlug);
     }
 
     @Operation(summary = "Delete an institution")
@@ -130,8 +106,7 @@ public class InstitutionController {
     })
     @DeleteMapping("/institutions/{institution}")
     @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
-    public ResponseEntity<?> delete(@PathVariable("institution") String institutionSlug) {
+    public void delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
-        return ResponseEntity.ok().build();
     }
 }

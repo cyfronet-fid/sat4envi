@@ -1,21 +1,12 @@
 package pl.cyfronet.s4e.controller.response;
 
-import lombok.Builder;
-import lombok.Data;
-import pl.cyfronet.s4e.bean.PRGOverlay;
+import org.springframework.beans.factory.annotation.Value;
 
-@Data
-@Builder
-public class PRGOverlayResponse {
-    private Long id;
-    private String name;
-    private String layerName;
+public interface PRGOverlayResponse {
+    Long getId();
 
-    public static PRGOverlayResponse of(PRGOverlay overlay){
-        return PRGOverlayResponse.builder()
-                .id(overlay.getId())
-                .name(overlay.getName())
-                .layerName(overlay.getFeatureType())
-                .build();
-    }
+    String getName();
+
+    @Value("#{target.featureType}")
+    String getLayerName();
 }

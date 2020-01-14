@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.Webhook;
+import pl.cyfronet.s4e.controller.request.WebhookRequest;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.GeoServerService;
 import pl.cyfronet.s4e.service.SceneService;
@@ -28,17 +28,17 @@ public class WebhooksController {
 
     @Operation(summary = "Create scene in db and add to GeoServer")
     @PostMapping("/webhook")
-    public void addedFile(@RequestBody Webhook webhook) {
-        if (webhook.getEventName().contains("Post") || webhook.getEventName().contains("Put")) {
+    public void addedFile(@RequestBody WebhookRequest webhookRequest) {
+        if (webhookRequest.getEventName().contains("Post") || webhookRequest.getEventName().contains("Put")) {
             Scene scene = null;
             try {
-                scene = sceneService.buildFromWebhook(webhook);
+                scene = sceneService.buildFromWebhook(webhookRequest);
                 sceneService.saveScene(scene);
                 geoServerService.addLayer(scene);
                 scene.setCreated(true);
                 sceneService.saveScene(scene);
             } catch (NotFoundException e) {
-                log.error("Error with files synch: [" + webhook.getKey() + "]" + e.getMessage(), e);
+                log.error("Error with files synch: [" + webhookRequest.getKey() + "]" + e.getMessage(), e);
             }
         }
     }

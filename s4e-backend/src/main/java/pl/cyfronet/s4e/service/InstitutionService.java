@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,8 @@ import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
+import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
+import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
@@ -33,6 +36,15 @@ public class InstitutionService {
     private final SlugService slugService;
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
+    public void save(CreateInstitutionRequest request) throws InstitutionCreationException {
+        save(Institution.builder()
+                .name(request.getName())
+                .slug(slugService.slugify(request.getName()))
+                .parent(null)
+                .build());
+    }
+
+    @Transactional(rollbackFor = InstitutionCreationException.class)
     public Institution save(Institution institution) throws InstitutionCreationException {
         try {
             Institution result = institutionRepository.save(institution);
@@ -45,14 +57,14 @@ public class InstitutionService {
         }
     }
 
-    @Transactional(rollbackFor = InstitutionCreationException.class)
+    @Transactional(rollbackFor = {InstitutionCreationException.class, NotFoundException.class})
     public Institution createChildInstitution(CreateChildInstitutionRequest request, String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
         // create child institution with default group
         Institution result = save(Institution.builder()
                 .name(request.getName())
                 .slug(slugService.slugify(request.getName()))
-                .parent(getInstitution(institutionSlug)
+                .parent(getInstitution(institutionSlug, Institution.class)
                         .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'")))
                 .build());
         // add member to default group
@@ -62,12 +74,21 @@ public class InstitutionService {
         return result;
     }
 
-    public Optional<Institution> getInstitution(String slug) {
-        return institutionRepository.findBySlug(slug);
+    public <T> Optional<T> getInstitution(String slug, Class<T> projection) {
+        return institutionRepository.findBySlug(slug, projection);
     }
 
-    public Page<Institution> getAll(Pageable pageable) {
-        return institutionRepository.findAll(pageable);
+    public <T> Page<T> getAll(Pageable pageable, Class<T> projection) {
+        return institutionRepository.findAllBy(projection, pageable);
+    }
+
+    @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
+    public void update(UpdateInstitutionRequest request, String institutionSlug) throws InstitutionUpdateException, NotFoundException {
+        val institution = getInstitution(institutionSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
+        institution.setName(request.getName());
+        institution.setSlug(slugService.slugify(request.getName()));
+        update(institution);
     }
 
     @Transactional(rollbackFor = InstitutionUpdateException.class)

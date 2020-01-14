@@ -8,9 +8,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
 import pl.cyfronet.s4e.event.OnPasswordResetTokenEmailEvent;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.service.PasswordService;
 
@@ -27,11 +27,10 @@ public class PasswordListener {
 
     @Async
     @EventListener
-    public void handle(OnPasswordResetTokenEmailEvent event) {
-        AppUser appUser = event.getAppUser();
-        PasswordReset reset = passwordService.createPasswordResetTokenForUser(appUser);
+    public void handle(OnPasswordResetTokenEmailEvent event) throws NotFoundException {
+        PasswordReset reset = passwordService.createPasswordResetTokenForUser(event.getRequesterEmail());
 
-        String recipientAddress = appUser.getEmail();
+        String recipientAddress = event.getRequesterEmail();
         String subject = messageSource.getMessage("email.password-reset.subject", null, event.getLocale());
         String resetPasswordUrl = urlDomain + "/password-reset/" + reset.getToken();
 

@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Transactional(readOnly = true)
 public interface SavedViewRepository extends CrudRepository<SavedView, UUID> {
-    <T> List<T> findAllBy(Class<T> projection);
     <T> Optional<T> findById(UUID id, Class<T> projection);
 
     @Query("SELECT sv " +
@@ -28,4 +27,7 @@ public interface SavedViewRepository extends CrudRepository<SavedView, UUID> {
             "JOIN SavedView sv ON sv.owner.id = u.id " +
             "WHERE sv.id = :id")
     <T> Optional<T> findOwnerOf(UUID id, Class<T> projection);
+
+    // Test
+    <T> List<T> findAllBy(Class<T> projection);
 }

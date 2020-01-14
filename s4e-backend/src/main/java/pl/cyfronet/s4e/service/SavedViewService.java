@@ -39,10 +39,10 @@ public class SavedViewService {
     private final AppUserRepository appUserRepository;
     private final FileStorage fileStorage;
 
-    @Transactional
+    @Transactional(rollbackFor = NotFoundException.class)
     public UUID create(Create request) throws NotFoundException {
         val appUser = appUserRepository.findByEmail(request.getOwnerEmail())
-                .orElseThrow(() -> new NotFoundException("AppUser with email '"+request.getOwnerEmail()+"' not found"));
+                .orElseThrow(() -> new NotFoundException("AppUser with email '" + request.getOwnerEmail() + "' not found"));
 
         val savedView = savedViewRepository.save(SavedView.builder()
                 .caption(request.getCaption())

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.cyfronet.s4e.BasicTest;
@@ -72,7 +73,8 @@ public class ProductControllerTest {
 
     @Test
     public void shouldReturnProductWithoutInfo() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/products"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/products")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$[0].description").doesNotExist());
@@ -81,7 +83,8 @@ public class ProductControllerTest {
     @Test
     public void shouldReturnProductWithInfo() throws Exception {
         Product product = repository.findByNameContainingIgnoreCase("WV-IR").orElseThrow();
-        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId()));
+        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId())
+                .contentType(MediaType.APPLICATION_JSON));
         result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is(equalTo("WV-IR"))))
