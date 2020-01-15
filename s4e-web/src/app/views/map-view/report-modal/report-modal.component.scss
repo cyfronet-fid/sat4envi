@@ -1,22 +1,71 @@
-.report-template {
-  position: relative;
-  width: 100%;
-  //padding-top: 70.7%;
-  > .caption {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    font-size: 14px;
-  }
-  .notes {
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-    font-size: 10px;
-    color: #6e6e6b;
+@import "../../../../scss/variables";
+
+
+.report {
+  display: flex;
+  flex-direction: row-reverse;
+
+  textarea {
+    min-height: 247px;
   }
 
-  > #map-miniature {
+  aside {
+    width: 275px;
+    margin-left: $space-xlarge;
+
+    strong,
+    span {
+      font-size: 0.75rem;
+      display: block;
+      line-height: 1rem;
+    }
+
+    strong {
+      text-transform: uppercase;
+    }
+
+    span {
+      color: $color-grey;
+    }
+
+    .report-template {
+      position: relative;
+      margin-top: $space-small;
+      margin-bottom: $space-small;
+      border-radius: $border-radius-default;
+      width: 275px;
+      height: 239px;
+
+      > #map-miniature {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  &__details {
+    padding: $space-small;
+    background: $color-tertiary-second;
+    border-radius: $border-radius-default;
+
+    li {
+      margin: $space-small 0;
+    }
+
+    li:first-child {
+      margin-top: 0;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  form {
     width: 100%;
   }
 }
+
+
+

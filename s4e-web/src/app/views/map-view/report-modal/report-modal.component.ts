@@ -45,7 +45,7 @@ export class ReportModalComponent extends ModalComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.form = new FormGroup<ReportForm>({
       caption: new FormControl<string>('Przykładowy Tytuł'),
-      notes: new FormControl<string>('Na tym obrazku możemy zobaczyć mapę...'),
+      notes: new FormControl<string>(''),
     });
 
     import('./fonts/Ubuntu-Regular-normal').then((ubuntuRegular) => ubuntuRegular.registerFont(JsPDF));
