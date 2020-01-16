@@ -14,15 +14,17 @@
         <div class="two__columns">
           <div class="column">
             <div class="datepicker">
-              <input formControlName="dateStart" type="text"/>
-              <button [disabled]="form.controls.dateStart.disabled"></button>
+              <input [owlDateTime]="start"  formControlName="dateStart" type="text"/>
+              <button [owlDateTimeTrigger]="start" [disabled]="form.controls.dateStart.disabled"></button>
+              <owl-date-time #start [pickerMode]="'popup'" [pickerType]="'calendar'"></owl-date-time>
             </div>
             <span class="error" *ngIf="form.controls.dateStart.hasError('required') && form.controls.dateStart.touched" i18n>Musisz podać datę skanowania</span>
           </div>
           <div class="column">
             <div class="datepicker">
-              <input formControlName="dateEnd" type="text"/>
-              <button [disabled]="form.controls.dateEnd.disabled"></button>
+              <input [owlDateTime]="end" formControlName="dateEnd" type="text"/>
+              <button [owlDateTimeTrigger]="end" [disabled]="form.controls.dateEnd.disabled"></button>
+              <owl-date-time #end [pickerMode]="'popup'" [pickerType]="'calendar'"></owl-date-time>
             </div>
             <span class="error" *ngIf="form.controls.dateEnd.hasError('required') && form.controls.dateEnd.touched" i18n>Musisz podać datę skanowania</span>
           </div>
