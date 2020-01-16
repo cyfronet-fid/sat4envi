@@ -1,6 +1,9 @@
 Dzień dobry!
 
-Użytkownik [( ${email} )] wysłał Ci link do widoku, aby go otworzyć kliknij w [( ${link} )] .
+Użytkownik [( ${email} )] wysłał Ci link do widoku, aby go otworzyć kliknij w [( ${url} )].
+
+Tytuł: [( ${caption} )]
+Opis: [( ${description} )]
 
 Pozdrawiamy,
 Zespół sat4envi

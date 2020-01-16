@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 @Slf4j
 public class MailService {
-    private interface Modifier {
+    public interface Modifier {
         void modify(MimeMessageHelper helper) throws MessagingException;
     }
 
@@ -27,7 +27,7 @@ public class MailService {
         });
     }
 
-    private void sendEmail(Modifier modifier) {
+    public void sendEmail(Modifier modifier) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

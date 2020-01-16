@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.listener;
 
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
@@ -14,6 +15,11 @@ import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
 import pl.cyfronet.s4e.service.MailService;
+
+import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLConnection;
 
 @Component
 @RequiredArgsConstructor
@@ -65,17 +71,28 @@ public class GroupListener {
 
     @Async
     @EventListener
-    public void handle(OnShareLinkEvent event) {
-        String subject = messageSource.getMessage("email.link-share.subject", null, event.getLocale());
+    public void handle(OnShareLinkEvent event) throws IOException {
+        String subject = messageSource.getMessage("email.share-link.subject", null, event.getLocale());
         Context ctx = new Context(event.getLocale());
-        ctx.setVariable("email", event.getUser().getEmail());
-        ctx.setVariable("link", urlDomain + event.getLink());
+
+        val req = event.getRequest();
+        ctx.setVariable("email", event.getRequesterEmail());
+        ctx.setVariable("caption", req.getCaption());
+        ctx.setVariable("description", req.getDescription());
+        ctx.setVariable("url", urlDomain + req.getPath());
 
         String plainText = templateEngine.process("share-link.txt", ctx);
         String htmlText = templateEngine.process("share-link.html", ctx);
 
-        for (String recipientAddress : event.getEmails()) {
-            mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
+        String thumbnailContentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(req.getThumbnail()));
+
+        for (String recipientAddress: req.getEmails()) {
+            mailService.sendEmail(helper -> {
+                helper.setTo(recipientAddress);
+                helper.setSubject(subject);
+                helper.setText(plainText, htmlText);
+                helper.addAttachment("thumbnail", new ByteArrayDataSource(req.getThumbnail(), thumbnailContentType));
+            });
         }
     }
 }

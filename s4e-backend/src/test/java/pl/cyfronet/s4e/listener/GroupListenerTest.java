@@ -1,16 +1,16 @@
 package pl.cyfronet.s4e.listener;
 
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
 import pl.cyfronet.s4e.service.MailService;
 
+import java.io.IOException;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class GroupListenerTest {
@@ -28,20 +28,22 @@ public class GroupListenerTest {
     }
 
     @Test
-    public void onShareLinkEventShouldSendEmail() {
-        AppUser appUser = AppUser.builder()
-                .email("some@email.pl")
-                .name("Name")
-                .surname("Surname")
+    public void shouldntSendIfEmailsEmptyOnShareLinkEvent() throws IOException {
+        val request = OnShareLinkEvent.Request.builder()
+                .emails(List.of())
+                .thumbnail("".getBytes())
                 .build();
+        listener.handle(new OnShareLinkEvent("some@email.pl", request, null));
+        verifyNoInteractions(mailService);
+    }
 
-        listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of(), null));
-        verify(mailService, times(0)).sendEmail(any(), any(), any(), any());
-
-        listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of("some@email.pl"), null));
-        verify(mailService, times(1)).sendEmail(any(), any(), any(), any());
-
-        listener.handle(new OnShareLinkEvent(appUser, "this/is/link", List.of("some@email.pl", "some2@email.pl"), null));
-        verify(mailService, times(3)).sendEmail(any(), any(), any(), any());
+    @Test
+    public void shouldSendMultipleEmailsOnShareLinkEvent() throws IOException {
+        val request = OnShareLinkEvent.Request.builder()
+                .emails(List.of("some@email.pl", "some2@email.pl"))
+                .thumbnail("".getBytes())
+                .build();
+        listener.handle(new OnShareLinkEvent("some@email.pl", request, null));
+        verify(mailService, times(2)).sendEmail(any());
     }
 }

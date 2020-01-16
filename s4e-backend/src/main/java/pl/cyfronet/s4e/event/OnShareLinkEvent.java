@@ -1,25 +1,34 @@
 package pl.cyfronet.s4e.event;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Value;
 import org.springframework.context.ApplicationEvent;
-import pl.cyfronet.s4e.bean.AppUser;
 
 import java.util.List;
 import java.util.Locale;
 
 @Getter
 public class OnShareLinkEvent extends ApplicationEvent {
-    private final AppUser user;
-    private final String link;
-    private final List<String> emails;
+    @Value
+    @Builder
+    public static class Request {
+        String caption;
+        String description;
+        byte[] thumbnail;
+        String path;
+        List<String> emails;
+    }
+
+    private final String requesterEmail;
+    private final Request request;
     private final Locale locale;
 
-    public OnShareLinkEvent(AppUser appUser, String link, List<String> emails, Locale locale) {
-        super(appUser);
+    public OnShareLinkEvent(String requesterEmail, Request request, Locale locale) {
+        super(requesterEmail);
 
-        this.user = appUser;
-        this.link = link;
-        this.emails = emails;
+        this.requesterEmail = requesterEmail;
+        this.request = request;
         this.locale = locale;
     }
 }
