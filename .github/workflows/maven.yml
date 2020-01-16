@@ -26,6 +26,8 @@ jobs:
         java-version: 11.0.2
     - name: Maven compile
       run: ./mvnw clean compile -DskipTests
+    - name: Maven package
+      run: ./mvnw package -DskipTests
     - name: Maven test
       run: ./mvnw clean test
       env:
