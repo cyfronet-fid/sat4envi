@@ -1,7 +1,12 @@
 @import "../../../../scss/variables";
 
+.form {
+  &--sentinel {
+    margin-bottom: 40px;
+  }
+}
+
 .search__result {
-  margin-top: 40px;
   & > li {
     background: $color-white;
     padding: 15px 10px;
