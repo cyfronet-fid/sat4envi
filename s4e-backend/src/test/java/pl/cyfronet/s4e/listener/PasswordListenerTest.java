@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
+import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
 import pl.cyfronet.s4e.event.OnPasswordResetTokenEmailEvent;
@@ -19,6 +20,7 @@ public class PasswordListenerTest {
     private MessageSource messageSource;
     private TemplateEngine templateEngine;
     private MailService mailService;
+    private MailProperties mailProperties;
 
     @BeforeEach
     public void beforeEach() {
@@ -26,7 +28,8 @@ public class PasswordListenerTest {
         messageSource = mock(MessageSource.class);
         templateEngine = mock(TemplateEngine.class);
         mailService = mock(MailService.class);
-        listener = new PasswordListener(passwordService, messageSource, templateEngine, mailService);
+        mailProperties = mock(MailProperties.class);
+        listener = new PasswordListener(passwordService, messageSource, templateEngine, mailService, mailProperties);
     }
 
     @Test

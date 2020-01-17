@@ -2,13 +2,13 @@ package pl.cyfronet.s4e.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -27,9 +27,7 @@ public class EmailVerificationListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
-
-    @Value("${mail.urlDomain}")
-    private String urlDomain;
+    private final MailProperties mailProperties;
 
     @Async
     @EventListener
@@ -74,7 +72,7 @@ public class EmailVerificationListener {
 
         String recipientAddress = email;
         String subject = messageSource.getMessage("email.confirm-email.subject", null, locale);
-        String activationUrl = urlDomain + "/activate/" + verificationToken.getToken();
+        String activationUrl = mailProperties.getUrlDomain() + "/activate/" + verificationToken.getToken();
 
         Context ctx = new Context(locale);
         ctx.setVariable("email", email);

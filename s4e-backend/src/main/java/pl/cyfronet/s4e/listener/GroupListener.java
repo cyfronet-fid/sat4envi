@@ -2,7 +2,6 @@ package pl.cyfronet.s4e.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
@@ -29,9 +29,7 @@ public class GroupListener {
     private final TemplateEngine templateEngine;
     private final MailService mailService;
     private final GroupService groupService;
-
-    @Value("${mail.urlDomain}")
-    private String urlDomain;
+    private final MailProperties mailProperties;
 
     @Async
     @EventListener
@@ -81,7 +79,7 @@ public class GroupListener {
         ctx.setVariable("email", event.getRequesterEmail());
         ctx.setVariable("caption", req.getCaption());
         ctx.setVariable("description", req.getDescription());
-        ctx.setVariable("url", urlDomain + req.getPath());
+        ctx.setVariable("url", mailProperties.getUrlDomain() + req.getPath());
 
         String plainText = templateEngine.process("share-link.txt", ctx);
         String htmlText = templateEngine.process("share-link.html", ctx);

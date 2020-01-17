@@ -13,14 +13,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.GreenMailSupplier;
-import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.TestResourceHelper;
+import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.ShareLinkRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
@@ -57,8 +53,8 @@ public class ShareLinkControllerTest {
     @Autowired
     private TestDbHelper testDbHelper;
 
-    @Value("${mail.urlDomain}")
-    private String urlDomain;
+    @Autowired
+    private MailProperties mailProperties;
 
     private AppUser appUser;
 
@@ -113,14 +109,14 @@ public class ShareLinkControllerTest {
         MimeMessageParser parser1 = getParserForFirstMail(inbox1);
         assertThat(parser1.getPlainContent(), containsString(request.getCaption()));
         assertThat(parser1.getPlainContent(), containsString(request.getDescription()));
-        assertThat(parser1.getPlainContent(), containsString(urlDomain + request.getPath()));
+        assertThat(parser1.getPlainContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
         assertThat(parser1.getAttachmentList().size(), is(equalTo(1)));
         assertThat(parser1.getAttachmentList().get(0).getContentType(), is(equalTo("image/png")));
 
         MimeMessageParser parser2 = getParserForFirstMail(inbox2);
         assertThat(parser2.getPlainContent(), containsString(request.getCaption()));
         assertThat(parser2.getPlainContent(), containsString(request.getDescription()));
-        assertThat(parser2.getPlainContent(), containsString(urlDomain + request.getPath()));
+        assertThat(parser2.getPlainContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
         assertThat(parser2.getAttachmentList().size(), is(equalTo(1)));
         assertThat(parser2.getAttachmentList().get(0).getContentType(), is(equalTo("image/png")));
     }
