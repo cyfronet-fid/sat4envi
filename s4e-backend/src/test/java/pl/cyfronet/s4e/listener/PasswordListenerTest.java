@@ -4,12 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
-import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
 import pl.cyfronet.s4e.event.OnPasswordResetTokenEmailEvent;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.service.PasswordService;
+import pl.cyfronet.s4e.util.MailHelper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -20,7 +20,7 @@ public class PasswordListenerTest {
     private MessageSource messageSource;
     private TemplateEngine templateEngine;
     private MailService mailService;
-    private MailProperties mailProperties;
+    private MailHelper mailHelper;
 
     @BeforeEach
     public void beforeEach() {
@@ -28,8 +28,8 @@ public class PasswordListenerTest {
         messageSource = mock(MessageSource.class);
         templateEngine = mock(TemplateEngine.class);
         mailService = mock(MailService.class);
-        mailProperties = mock(MailProperties.class);
-        listener = new PasswordListener(passwordService, messageSource, templateEngine, mailService, mailProperties);
+        mailHelper = mock(MailHelper.class);
+        listener = new PasswordListener(passwordService, messageSource, templateEngine, mailService, mailHelper);
     }
 
     @Test

@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -16,6 +15,7 @@ import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 import pl.cyfronet.s4e.service.MailService;
+import pl.cyfronet.s4e.util.MailHelper;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -27,7 +27,7 @@ public class EmailVerificationListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
-    private final MailProperties mailProperties;
+    private final MailHelper mailHelper;
 
     @Async
     @EventListener
@@ -59,6 +59,7 @@ public class EmailVerificationListener {
         String subject = messageSource.getMessage("email.account-activated.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
+        mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("email", email);
 
         String plainText = templateEngine.process("account-activated.txt", ctx);
@@ -72,9 +73,10 @@ public class EmailVerificationListener {
 
         String recipientAddress = email;
         String subject = messageSource.getMessage("email.confirm-email.subject", null, locale);
-        String activationUrl = mailProperties.getUrlDomain() + "/activate/" + verificationToken.getToken();
+        String activationUrl = mailHelper.prefixWithDomain("/activate/" + verificationToken.getToken());
 
         Context ctx = new Context(locale);
+        mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("email", email);
         ctx.setVariable("activationUrl", activationUrl);
 

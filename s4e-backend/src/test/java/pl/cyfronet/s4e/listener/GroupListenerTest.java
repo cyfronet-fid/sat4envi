@@ -5,10 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
-import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.MailService;
+import pl.cyfronet.s4e.util.MailHelper;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +21,7 @@ public class GroupListenerTest {
     private TemplateEngine templateEngine;
     private MailService mailService;
     private GroupService groupService;
-    private MailProperties mailProperties;
+    private MailHelper mailHelper;
 
     @BeforeEach
     public void beforeEach() {
@@ -29,8 +29,8 @@ public class GroupListenerTest {
         templateEngine = mock(TemplateEngine.class);
         mailService = mock(MailService.class);
         groupService = mock(GroupService.class);
-        mailProperties = mock(MailProperties.class);
-        listener = new GroupListener(messageSource, templateEngine, mailService, groupService, mailProperties);
+        mailHelper = mock(MailHelper.class);
+        listener = new GroupListener(messageSource, templateEngine, mailService, groupService, mailHelper);
     }
 
     @Test

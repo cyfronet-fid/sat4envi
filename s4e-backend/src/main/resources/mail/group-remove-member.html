@@ -1,12 +1,13 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900&display=swap');
     </style>
 </head>
 <body>
-<div class"container" style="width: 800px;font-family: 'Roboto', sans-serif;padding: 10px;">
-<img src="logo_s4e_mail.png" alt="Logo Satellites for Environment" />
+<div class="container" style="width: 800px;font-family: 'Roboto', sans-serif;padding: 10px;">
+<img th:src="${urlDomain}+'/assets/images/logo_s4e_mail.png'" alt="Logo Satellites for Environment" />
 <div class="content" style="background: #F9FCFE; border: 1px solid #DFEAF5;padding: 20px;border-radius: 5px;margin: 10px 0;">
     <h1 style="font-size: 20px; font-weight: bold;">Dzień dobry!</h1>
     <p style="font-size: 16px; font-weight: normal;">
@@ -18,7 +19,7 @@
     </p>
     <p>
         <small style="font-size: 12px;line-height: 14px;display: block;">
-            Sat4Envi to aplikacja do przeglądania archiwalnych zdjęć satelitarnych. Sprawdź na <a href="#">www.sat4envi.pl</a>
+            Sat4Envi to aplikacja do przeglądania archiwalnych zdjęć satelitarnych. Sprawdź na <a th:href="${urlDomain}">www.sat4envi.pl</a>
         </small>
     </p>
 </div>
@@ -26,4 +27,3 @@
 
 </body>
 </html>
-

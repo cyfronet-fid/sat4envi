@@ -110,6 +110,7 @@ public class ShareLinkControllerTest {
         assertThat(parser1.getPlainContent(), containsString(request.getCaption()));
         assertThat(parser1.getPlainContent(), containsString(request.getDescription()));
         assertThat(parser1.getPlainContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
+        assertThat(parser1.getHtmlContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
         assertThat(parser1.getAttachmentList().size(), is(equalTo(1)));
         assertThat(parser1.getAttachmentList().get(0).getContentType(), is(equalTo("image/png")));
 
@@ -117,6 +118,7 @@ public class ShareLinkControllerTest {
         assertThat(parser2.getPlainContent(), containsString(request.getCaption()));
         assertThat(parser2.getPlainContent(), containsString(request.getDescription()));
         assertThat(parser2.getPlainContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
+        assertThat(parser2.getHtmlContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
         assertThat(parser2.getAttachmentList().size(), is(equalTo(1)));
         assertThat(parser2.getAttachmentList().get(0).getContentType(), is(equalTo("image/png")));
     }
