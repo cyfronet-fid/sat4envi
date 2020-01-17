@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
+import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
@@ -36,12 +37,14 @@ import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.service.GroupService;
-import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.SlugService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static java.util.Collections.emptyList;
@@ -91,13 +94,13 @@ public class AppUserControllerTest {
     private SlugService slugService;
 
     @Autowired
-    private InstitutionService institutionService;
-
-    @Autowired
     private GroupService groupService;
 
     @Autowired
     private TestDbHelper testDbHelper;
+
+    @Autowired
+    private MailProperties mailProperties;
 
     private GreenMail greenMail;
 
@@ -207,7 +210,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
     }
 
     @Test
@@ -414,7 +417,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
@@ -472,7 +475,7 @@ public class AppUserControllerTest {
 
         // The message should contain a link with the token.
         StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString("localhost/activate/"));
+        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
