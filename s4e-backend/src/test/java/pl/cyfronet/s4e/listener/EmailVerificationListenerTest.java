@@ -4,12 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
-import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.service.EmailVerificationService;
 import pl.cyfronet.s4e.service.MailService;
+import pl.cyfronet.s4e.util.MailHelper;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ class EmailVerificationListenerTest {
     private MessageSource messageSource;
     private TemplateEngine templateEngine;
     private MailService mailService;
-    private MailProperties mailProperties;
+    private MailHelper mailHelper;
 
     @BeforeEach
     public void beforeEach() {
@@ -29,8 +29,8 @@ class EmailVerificationListenerTest {
         messageSource = mock(MessageSource.class);
         templateEngine = mock(TemplateEngine.class);
         mailService = mock(MailService.class);
-        mailProperties = mock(MailProperties.class);
-        listener = new EmailVerificationListener(emailVerificationService, messageSource, templateEngine, mailService, mailProperties);
+        mailHelper = mock(MailHelper.class);
+        listener = new EmailVerificationListener(emailVerificationService, messageSource, templateEngine, mailService, mailHelper);
     }
 
     @Test

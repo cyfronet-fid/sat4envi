@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.MailProperties;
 import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.event.OnAddToGroupEvent;
 import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.MailService;
+import pl.cyfronet.s4e.util.MailHelper;
 
 import javax.mail.util.ByteArrayDataSource;
 import java.io.ByteArrayInputStream;
@@ -29,7 +29,7 @@ public class GroupListener {
     private final TemplateEngine templateEngine;
     private final MailService mailService;
     private final GroupService groupService;
-    private final MailProperties mailProperties;
+    private final MailHelper mailHelper;
 
     @Async
     @EventListener
@@ -41,6 +41,7 @@ public class GroupListener {
         String subject = messageSource.getMessage("email.group-add.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
+        mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("groupName", group.getName());
         ctx.setVariable("institutionName", group.getInstitution().getName());
 
@@ -60,6 +61,7 @@ public class GroupListener {
         String subject = messageSource.getMessage("email.group-remove.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
+        mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("groupName", group.getName());
         ctx.setVariable("institutionName", group.getInstitution().getName());
 
@@ -73,13 +75,14 @@ public class GroupListener {
     @EventListener
     public void handle(OnShareLinkEvent event) throws IOException {
         String subject = messageSource.getMessage("email.share-link.subject", null, event.getLocale());
-        Context ctx = new Context(event.getLocale());
-
         val req = event.getRequest();
+
+        Context ctx = new Context(event.getLocale());
+        mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("email", event.getRequesterEmail());
         ctx.setVariable("caption", req.getCaption());
         ctx.setVariable("description", req.getDescription());
-        ctx.setVariable("url", mailProperties.getUrlDomain() + req.getPath());
+        ctx.setVariable("url", mailHelper.prefixWithDomain(req.getPath()));
 
         String plainText = templateEngine.process("share-link.txt", ctx);
         String htmlText = templateEngine.process("share-link.html", ctx);

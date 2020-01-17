@@ -11,6 +11,7 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.mail.util.MimeMessageParser;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,7 @@ import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.SlugService;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -209,8 +211,9 @@ public class AppUserControllerTest {
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
-        StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
+        assertThat(messageParser.getPlainContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        assertThat(messageParser.getHtmlContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
     }
 
     @Test
@@ -416,8 +419,9 @@ public class AppUserControllerTest {
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
-        StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
+        assertThat(messageParser.getPlainContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        assertThat(messageParser.getHtmlContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
@@ -474,8 +478,9 @@ public class AppUserControllerTest {
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
-        StoredMessage storedMessage = inbox.getMessages().get(0);
-        assertThat(getBody(storedMessage.getMimeMessage()), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
+        assertThat(messageParser.getPlainContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
+        assertThat(messageParser.getHtmlContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
         assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
@@ -631,5 +636,9 @@ public class AppUserControllerTest {
 
     public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {
         return greenMail.getManagers().getImapHostManager().getInbox(mailUser);
+    }
+
+    private MimeMessageParser getParser(MimeMessage mimeMessage) throws Exception {
+        return new MimeMessageParser(mimeMessage).parse();
     }
 }
