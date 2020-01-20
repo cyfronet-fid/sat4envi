@@ -18,7 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "user-role", description = "The User Role API")
 @PreAuthorize("isAuthenticated()")
@@ -32,7 +32,7 @@ public class UserRoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add a role"),
             @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
-    @PostMapping("/user-role")
+    @PostMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
     public void add(@RequestBody @Valid CreateUserRoleRequest request) throws NotFoundException {
         userRoleService.addRole(request);
@@ -45,7 +45,7 @@ public class UserRoleController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to remove a role"),
             @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
-    @DeleteMapping("/user-role")
+    @DeleteMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
     public void remove(@RequestBody @Valid DeleteUserRoleRequest request) throws NotFoundException {
         userRoleService.removeRole(request);

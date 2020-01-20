@@ -26,7 +26,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "institution", description = "The Institution API")
 @PreAuthorize("isAuthenticated()")
@@ -39,7 +39,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "400", description = "Institution not created"),
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
     })
-    @PostMapping("/institutions")
+    @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAdmin()")
     public void create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
         institutionService.save(request);
@@ -51,7 +51,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "400", description = "Institution not created"),
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
     })
-    @PostMapping("/institutions/{institution}/child")
+    @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                                          @PathVariable("institution") String institutionSlug)
@@ -91,7 +91,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update an institution"),
             @ApiResponse(responseCode = "404", description = "Institution not found")
     })
-    @PutMapping("/institutions/{institution}")
+    @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isInstitutionManager(#institutionSlug)")
     public void update(@RequestBody UpdateInstitutionRequest request,
                                     @PathVariable("institution") String institutionSlug)

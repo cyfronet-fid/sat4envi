@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "shareLink", description = "The Share link API")
 @PreAuthorize("isAuthenticated()")
@@ -41,7 +41,7 @@ public class ShareLinkController {
             @ApiResponse(responseCode = "200", description = "Operation successful", content = @Content),
             @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
     })
-    @PostMapping("/share-link")
+    @PostMapping(value = "/share-link", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isZKMember()")
     public void shareLink(@RequestBody @Valid ShareLinkRequest request) {
         String requesterEmail = SecurityContextHolder.getContext().getAuthentication().getName();

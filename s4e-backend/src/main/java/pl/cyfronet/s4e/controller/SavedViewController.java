@@ -31,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "savedView", description = "The SavedView API")
 @PreAuthorize("isAuthenticated()")
@@ -48,7 +48,7 @@ public class SavedViewController {
             @ApiResponse(responseCode = "200", description = "Operation successful"),
             @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
     })
-    @PostMapping("/saved-views")
+    @PostMapping(value = "/saved-views", consumes = APPLICATION_JSON_VALUE)
     public SavedViewResponse create(@RequestBody @Valid CreateSavedViewRequest request) throws NotFoundException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UUID id = savedViewService.create(SavedViewService.Create.builder()
