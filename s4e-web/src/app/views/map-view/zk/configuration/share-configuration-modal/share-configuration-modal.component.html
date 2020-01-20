@@ -1,40 +1,47 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
     <div class="s4e-modal-header" i18n>Wyślij wiadomość</div>
-    <div class="s4e-modal-body">
-      <label i18n>Adresaci <span>HINT: Możesz wpisać kilka adresów e-mail po przecinku</span>
-        <input formControlName="emails" type="text"/>
-      </label>
-      <span class="error" *ngIf="form.controls.emails.hasError('required') && form.controls.emails.touched" i18n>To pole jest wymagane</span>
-      <span class="error" *ngIf="form.controls.emails.hasError('email') && form.controls.emails.touched" i18n>To nie jest poprawny email</span>
+    <div class="s4e-modal-body report">
+      <aside>
+        <strong i18n>Podgląd widoku</strong>
+        <div #reportTemplate class="report-template">
+          <img id="map-miniature" [src]="image" alt="Podgląd widoku, który chcesz wysłać"/>
+        </div>
 
-
-      <label i18n>Tytuł wiadomości
-        <input formControlName="caption" type="text"/>
-      </label>
-      <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
-
-
-      <label i18n>Dodatkowe informacje
-        <textarea formControlName="description" type="text"></textarea>
-      </label>
-      <span class="error" *ngIf="form.controls.description.hasError('required') && form.controls.description.touched"
-            i18n>To pole jest wymagane</span>
-
-
-      <label i18n>Załącznik</label>
-      <div #reportTemplate class="report-template">
-        <img id="map-miniature" style="width: 200px;" [src]="image">
+        <strong>Link do widoku</strong>
+        <div class="report__details">
+          <a id="share-link" target="_blank" [attr.href]="displayHref">{{displayHref}}</a>
+        </div>
+      </aside>
+      <div class="form">
+        <ul>
+          <li>
+            <label i18n>Adresaci
+              <span>HINT: Możesz wpisać kilka adresów e-mail po przecinku</span>
+            </label>
+            <input formControlName="emails" type="text"/>
+            <span class="error" *ngIf="form.controls.emails.hasError('required') && form.controls.emails.touched" i18n>To pole jest wymagane</span>
+            <span class="error" *ngIf="form.controls.emails.hasError('email') && form.controls.emails.touched" i18n>To nie jest poprawny email</span>
+          </li>
+          <li>
+            <label i18n>Tytuł wiadomości</label>
+            <input formControlName="caption" type="text"/>
+            <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
+          </li>
+          <li>
+            <label i18n>Dodatkowe informacje</label>
+            <textarea formControlName="description" type="text"></textarea>
+            <span class="error" *ngIf="form.controls.description.hasError('required') && form.controls.description.touched"
+                  i18n>To pole jest wymagane</span>
+          </li>
+        </ul>
       </div>
-
-      <label>Link do widoku</label>
-      <a id="share-link" target="_blank" [attr.href]="displayHref">{{displayHref}}</a>
     </div>
     <div class="s4e-modal-footer">
-      <button class="button button--primary" type="button" [disabled]="(isLoading$ | async)" (click)="dismiss()" i18n>
-        Anuluj
+      <button class="button button--primary button--small" type="submit" [disabled]="(isLoading$ | async)" i18n>Wyślij Wiadomość
       </button>
-      <button class="button button--primary" type="submit" [disabled]="(isLoading$ | async)" i18n>Wyślij Wiadomość
+      <button class="button button--cancel button--small" type="button" [disabled]="(isLoading$ | async)" (click)="dismiss()" i18n>
+        Anuluj
       </button>
     </div>
   </s4e-generic-modal>

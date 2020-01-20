@@ -7,3 +7,75 @@
     padding: $space-xsmall $space-xlarge*1.5;
   }
 }
+
+
+.report {
+  display: flex;
+  flex-direction: row-reverse;
+
+  textarea {
+    min-height: 247px;
+  }
+
+  aside {
+    width: 275px;
+    margin-left: $space-xlarge;
+
+    strong,
+    span {
+      font-size: 0.75rem;
+      display: block;
+      line-height: 1rem;
+    }
+
+    strong {
+      text-transform: uppercase;
+    }
+
+    span {
+      color: $color-grey;
+    }
+
+    .report-template {
+      position: relative;
+      margin-top: $space-small;
+      margin-bottom: $space-small;
+      border-radius: $border-radius-default;
+      width: 275px;
+      height: 239px;
+
+      > #map-miniature {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  &__details {
+    padding: $space-small;
+    background: $color-tertiary-second;
+    border-radius: $border-radius-default;
+    margin: $space-small 0;
+
+    li {
+      margin: $space-small 0;
+    }
+
+    li:first-child {
+      margin-top: 0;
+    }
+
+    li:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .form {
+    width: 100%;
+  }
+}
+
+
+
+

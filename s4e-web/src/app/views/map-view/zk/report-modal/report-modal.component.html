@@ -1,38 +1,40 @@
-<s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
-  <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
-  <div class="s4e-modal-body report">
-    <aside>
-      <strong i18n>Podgląd obszaru</strong>
-      <span i18n>Poruszając poniższą mapą możesz dostosować widok</span>
-      <div #reportTemplate class="report-template">
-        <img id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
+<form [formGroup]="form">
+  <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+    <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
+    <div class="s4e-modal-body report">
+      <aside>
+        <strong i18n>Podgląd obszaru</strong>
+        <span i18n>Poruszając poniższą mapą możesz dostosować widok</span>
+        <div #reportTemplate class="report-template">
+          <img id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
+        </div>
+        <ul class="report__details">
+          <li>
+            <strong>Data</strong>
+            <span>12.01.2020 g. 14:32</span>
+          </li>
+          <li>
+            <strong>Źródło </strong>
+            <span>Meteosat</span>
+          </li>
+        </ul>
+      </aside>
+      <div class="form">
+        <ul>
+          <li>
+            <label for="caption" i18n>Tytuł</label>
+            <input id="caption" formControlName="caption" type="text" />
+          </li>
+          <li>
+            <label for="notes" i18n>Notatka</label>
+            <textarea id="notes" formControlName="notes"></textarea>
+          </li>
+        </ul>
       </div>
-      <ul class="report__details">
-        <li>
-          <strong>Data</strong>
-          <span>12.01.2020 g. 14:32</span>
-        </li>
-        <li>
-          <strong>Źródło </strong>
-          <span>Meteosat</span>
-        </li>
-      </ul>
-    </aside>
-    <form [formGroup]="form" class="form">
-      <ul>
-        <li>
-          <label for="caption" i18n>Tytuł</label>
-          <input id="caption" formControlName="caption" type="text" />
-        </li>
-        <li>
-          <label for="notes" i18n>Notatka</label>
-          <textarea id="notes" formControlName="notes"></textarea>
-        </li>
-      </ul>
-    </form>
-  </div>
-  <div class="s4e-modal-footer">
-    <button class="button button--primary button--small"  type="submit" [disabled]="isWorking" (click)="accept()" i18n>Zapisz raport na dysk</button>
-    <button class="button button--cancel button--small" type="button" [disabled]="isWorking" (click)="dismiss()" i18n>Anuluj</button>
-  </div>
-</s4e-generic-modal>
+    </div>
+    <div class="s4e-modal-footer">
+      <button class="button button--primary button--small"  type="submit" [disabled]="isWorking" (click)="accept()" i18n>Zapisz raport na dysk</button>
+      <button class="button button--cancel button--small" type="button" [disabled]="isWorking" (click)="dismiss()" i18n>Anuluj</button>
+    </div>
+  </s4e-generic-modal>
+</form>
