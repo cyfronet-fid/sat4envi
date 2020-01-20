@@ -1,8 +1,11 @@
 package pl.cyfronet.s4e.listener;
 
 import lombok.val;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
@@ -15,23 +18,21 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class GroupListenerTest {
-    private GroupListener listener;
+    @Mock
     private MessageSource messageSource;
+    @Mock
     private TemplateEngine templateEngine;
+    @Mock
     private MailService mailService;
+    @Mock
     private GroupService groupService;
+    @Mock
     private MailHelper mailHelper;
 
-    @BeforeEach
-    public void beforeEach() {
-        messageSource = mock(MessageSource.class);
-        templateEngine = mock(TemplateEngine.class);
-        mailService = mock(MailService.class);
-        groupService = mock(GroupService.class);
-        mailHelper = mock(MailHelper.class);
-        listener = new GroupListener(messageSource, templateEngine, mailService, groupService, mailHelper);
-    }
+    @InjectMocks
+    private GroupListener listener;
 
     @Test
     public void shouldntSendIfEmailsEmptyOnShareLinkEvent() throws IOException {

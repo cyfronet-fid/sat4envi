@@ -1,7 +1,10 @@
 package pl.cyfronet.s4e.listener;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -15,23 +18,21 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class EmailVerificationListenerTest {
-    private EmailVerificationListener listener;
+    @Mock
     private EmailVerificationService emailVerificationService;
+    @Mock
     private MessageSource messageSource;
+    @Mock
     private TemplateEngine templateEngine;
+    @Mock
     private MailService mailService;
+    @Mock
     private MailHelper mailHelper;
 
-    @BeforeEach
-    public void beforeEach() {
-        emailVerificationService = mock(EmailVerificationService.class);
-        messageSource = mock(MessageSource.class);
-        templateEngine = mock(TemplateEngine.class);
-        mailService = mock(MailService.class);
-        mailHelper = mock(MailHelper.class);
-        listener = new EmailVerificationListener(emailVerificationService, messageSource, templateEngine, mailService, mailHelper);
-    }
+    @InjectMocks
+    private EmailVerificationListener listener;
 
     @Test
     public void onResendRegistrationTokenEventShouldDeleteExistingToken() throws Exception {
