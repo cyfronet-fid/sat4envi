@@ -6,24 +6,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.bean.Scene;
+import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @AutoConfigureMockMvc
 @BasicTest
@@ -35,21 +39,27 @@ public class SceneControllerTest {
     private SceneRepository sceneRepository;
 
     @Autowired
+    private S3Presigner s3Presigner;
+
+    @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private TestDbHelper testDbHelper;
 
     @BeforeEach
     public void beforeEach() {
-        reset();
+        resetDb();
+        reset(s3Presigner);
     }
 
     @AfterEach
     public void afterEach() {
-        reset();
+        resetDb();
     }
 
-    private void reset() {
-        sceneRepository.deleteAll();
-        productRepository.deleteAll();
+    private void resetDb() {
+        testDbHelper.clean();
     }
 
     @Test
@@ -82,7 +92,6 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-01"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(2))))
@@ -127,7 +136,6 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -151,7 +159,6 @@ public class SceneControllerTest {
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
@@ -176,7 +183,6 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -232,7 +238,6 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-03-31")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -242,7 +247,6 @@ public class SceneControllerTest {
                 .andExpect(jsonPath("$[2].timestamp").value(is(equalTo("2019-03-31T03:01:00+02:00"))));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-10-27")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
@@ -260,7 +264,6 @@ public class SceneControllerTest {
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("date", "2019-12-02")
                 .param("tz", "incorrect"))
                 .andExpect(status().isBadRequest());
@@ -319,7 +322,6 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("yearMonth", "2019-10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
@@ -373,12 +375,43 @@ public class SceneControllerTest {
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
-                .contentType(MediaType.APPLICATION_JSON)
                 .param("yearMonth", "2019-10")
                 .param("tz", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$", contains("2019-10-01", "2019-10-02", "2019-10-31")));
+    }
+
+    @Test
+    public void shouldRedirectToDownloadLink() throws Exception {
+        val product = productRepository.save(Product.builder()
+                .name("108m")
+                .description("sth")
+                .build());
+
+        Scene scene = sceneRepository.save(Scene.builder()
+                .product(product)
+                .layerName("testLayerName1")
+                .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
+                .s3Path("some/path")
+                .build());
+
+        String redirectUrl = "https://domain.pl/test?sth=value";
+
+        PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
+        when(pgor.isBrowserExecutable()).thenReturn(true);
+        when(pgor.url()).thenReturn(new URL(redirectUrl));
+        when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", scene.getId()))
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl(redirectUrl));
+    }
+
+    @Test
+    public void shouldReturn404IfSceneNotFound() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", 42L))
+                .andExpect(status().isNotFound());
     }
 }
 

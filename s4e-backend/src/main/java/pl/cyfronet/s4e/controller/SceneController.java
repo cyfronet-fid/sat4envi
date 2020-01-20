@@ -2,23 +2,31 @@ package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.service.SceneStorage;
 import pl.cyfronet.s4e.util.TimeHelper;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.*;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
@@ -27,6 +35,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "scene", description = "The Scene API")
 public class SceneController {
     private final SceneService sceneService;
+    private final SceneStorage sceneStorage;
     private final TimeHelper timeHelper;
 
     @Operation(summary = "View a list of scenes")
@@ -58,5 +67,17 @@ public class SceneController {
             @RequestParam(defaultValue = "UTC") ZoneParameter tz
     ) {
         return sceneService.getAvailabilityDates(productId, yearMonth, tz.getZoneId());
+    }
+
+    @Operation(summary = "Redirect to a presigned download url for a scene")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "Redirect to the presigned download url", content = @Content,
+                    headers = @Header(name = "Location", description = "The presigned download url")),
+            @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
+    })
+    @GetMapping(value = "/scenes/{id}/download")
+    public ResponseEntity<Void> generateDownloadLink(@PathVariable Long id) throws NotFoundException, URISyntaxException {
+        URL downloadLink = sceneStorage.generatePresignedGetLink(id, sceneStorage.getPresignedGetTimeout());
+        return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
     }
 }
