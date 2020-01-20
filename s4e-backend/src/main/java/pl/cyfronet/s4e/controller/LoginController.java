@@ -23,7 +23,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "login", description = "The Login API")
 public class LoginController {
@@ -36,7 +36,7 @@ public class LoginController {
             @ApiResponse(responseCode = "401", description = "Incorrect credentials or account doesn't exist"),
             @ApiResponse(responseCode = "403", description = "Account disabled (not activated)")
     })
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws AuthenticationException {
         val token = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         val authToken = authenticationProvider.authenticate(token);

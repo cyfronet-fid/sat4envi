@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "password", description = "The Password API")
 public class PasswordController {
@@ -60,8 +60,7 @@ public class PasswordController {
             @ApiResponse(responseCode = "200", description = "Password reset was successful"),
             @ApiResponse(responseCode = "404", description = "The token was not found")
     })
-    @PostMapping(value = "/password-reset")
-    @ResponseBody
+    @PostMapping(value = "/password-reset", consumes = APPLICATION_JSON_VALUE)
     public void resetPassword(@RequestBody @Valid PasswordResetRequest passwordReset, @RequestParam("token") String token) throws NotFoundException {
         passwordService.resetPassword(passwordReset, token);
     }
@@ -72,8 +71,7 @@ public class PasswordController {
             @ApiResponse(responseCode = "400", description = "Passwords were incorrect"),
             @ApiResponse(responseCode = "404", description = "The user was not found")
     })
-    @PostMapping(value = "/password-change")
-    @ResponseBody
+    @PostMapping(value = "/password-change", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("!isAnonymous()")
     public void changePassword(@RequestBody @Valid PasswordResetRequest passwordReset) throws NotFoundException, BadRequestException {
         passwordService.changePassword(passwordReset);

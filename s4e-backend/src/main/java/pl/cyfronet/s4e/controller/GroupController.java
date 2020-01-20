@@ -30,7 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "group", description = "The Group API")
 @PreAuthorize("isAuthenticated()")
@@ -45,7 +45,7 @@ public class GroupController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create a group"),
             @ApiResponse(responseCode = "404", description = "Institution not found")
     })
-    @PostMapping("/institutions/{institution}/groups")
+    @PostMapping(value = "/institutions/{institution}/groups", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isInstitutionManager(#institutionSlug)")
     public void create(@RequestBody @Valid CreateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug)
@@ -60,7 +60,7 @@ public class GroupController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add member"),
             @ApiResponse(responseCode = "404", description = "Group or user not found")
     })
-    @PostMapping("/institutions/{institution}/groups/{group}/members")
+    @PostMapping(value = "/institutions/{institution}/groups/{group}/members", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public void addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
@@ -136,7 +136,7 @@ public class GroupController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update a group"),
             @ApiResponse(responseCode = "404", description = "Group was not found")
     })
-    @PutMapping("/institutions/{institution}/groups/{group}")
+    @PutMapping(value = "/institutions/{institution}/groups/{group}", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
     public void update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,

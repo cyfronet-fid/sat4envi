@@ -42,7 +42,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
-@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+@RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "app-user", description = "The AppUser API")
 public class AppUserController {
@@ -59,7 +59,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "200", description = "If user was registered. But also, when the username was taken and the registration didn't succeed"),
             @ApiResponse(responseCode = "400", description = "The request was not valid or recaptcha failed")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = APPLICATION_JSON_VALUE)
     public void register(
             @RequestBody @Valid RegisterRequest registerRequest,
             HttpServletRequest request
@@ -100,7 +100,7 @@ public class AppUserController {
     })
     @PostMapping("/confirm-email")
     public void confirmEmail(@RequestParam @NotEmpty @Valid String token
-    ) throws NotFoundException, AppUserCreationException, RegistrationTokenExpiredException {
+    ) throws NotFoundException, RegistrationTokenExpiredException {
         Long emailVerificationId = appUserService.confirmEmail(token).getId();
         String requesterEmail = appUserService.getRequesterEmailBy(token);
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(requesterEmail, emailVerificationId, LocaleContextHolder.getLocale()));
@@ -112,7 +112,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add user"),
             @ApiResponse(responseCode = "404", description = "User or Group not found")
     })
-    @PostMapping("/institutions/{institution}/users")
+    @PostMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
     public void addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
@@ -126,7 +126,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "400", description = "Group not updated"),
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update user groups")
     })
-    @PutMapping("/institutions/{institution}/users")
+    @PutMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() &&  isInstitutionManager(#institutionSlug)")
     public void updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
