@@ -10,14 +10,14 @@
 
         <strong>Link do widoku</strong>
         <div class="report__details">
-          <a id="share-link" target="_blank" [attr.href]="displayHref">{{displayHref}}</a>
+          <a id="share-link" target="_blank" [attr.href]="displayHref"><small>{{displayHref}}</small></a>
         </div>
       </aside>
       <div class="form">
         <ul>
           <li>
             <label i18n>Adresaci
-              <span>HINT: Możesz wpisać kilka adresów e-mail po przecinku</span>
+              <span>Możesz wpisać kilka adresów e-mail po przecinku</span>
             </label>
             <input formControlName="emails" type="text"/>
             <span class="error" *ngIf="form.controls.emails.hasError('required') && form.controls.emails.touched" i18n>To pole jest wymagane</span>

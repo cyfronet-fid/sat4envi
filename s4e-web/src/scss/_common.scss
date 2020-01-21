@@ -183,7 +183,7 @@
 .form {
   background: $color-grey-secondary;
   margin: -15px;
-  padding: $space-xlarge $space-default;
+  padding: $space-default;
   position: relative;
 
   li {
@@ -196,6 +196,12 @@
     font-size: 0.875rem;
     display: block;
     margin-bottom: $space-xsmall;
+
+    span {
+      color: $color-grey;
+      font-style: italic;
+      opacity: 0.6;
+    }
   }
 
   input,
@@ -206,6 +212,10 @@
     background: $color-white;
     border-radius: $border-radius-default;
     font-family: $font-base;
+
+    &+span.error {
+        margin-top: $space-xsmall;
+    }
   }
 
   input {
@@ -243,7 +253,7 @@
     color: $color-error;
     font-size: 0.75rem;
     display: block;
-    margin: $space-xsmall 0;
+    margin-bottom: $space-xsmall - 3;
   }
 
   ul + button {
