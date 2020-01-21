@@ -1,11 +1,6 @@
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {InjectorModule} from '../../../../common/injector.module';
 
-export const ZOOM_LEVELS = {
-  'miasto': 10,
-  'wieś': 12
-};
-
 export interface ViewPosition {
   centerCoordinates: [number, number];
   zoomLevel: number;
