@@ -6,12 +6,16 @@ import {delay, finalize, map} from 'rxjs/operators';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {AkitaGuidService} from './guid.service';
 import {PageSearchResult} from '../../../../utils/state.types';
+import {MapService} from '../map/map.service';
+import proj4 from 'proj4';
+import {ViewPosition} from '../map/map.model';
 
 @Injectable({providedIn: 'root'})
 export class SearchResultsService {
 
   constructor(private store: SearchResultsStore,
               private guidGenerationService: AkitaGuidService,
+              private mapService: MapService,
               private http: HttpClient,
               private CONFIG: S4eConfig) {
   }
@@ -35,7 +39,20 @@ export class SearchResultsService {
     ).subscribe(data => this.store.set(data));
   }
 
-  setSelectedPlace(place: SearchResult|null) {
-    this.store.update({selectedLocation: place, isOpen: false});
+
+  private getZoomLevel(type: string): number | null {
+    const ZOOM_LEVELS = {
+      'miasto': 10,
+      'wieś': 12
+    };
+    return ZOOM_LEVELS[type] || null;
+  }
+
+  setSelectedPlace(searchResult: SearchResult | null) {
+    this.mapService.setView({
+      centerCoordinates: proj4(this.CONFIG.projection.toProjection, [searchResult.longitude, searchResult.latitude]),
+      zoomLevel: this.getZoomLevel(searchResult.type)
+    } as ViewPosition);
+    this.store.update({selectedLocation: searchResult, isOpen: false});
   }
 }

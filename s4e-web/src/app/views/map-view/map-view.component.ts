@@ -85,7 +85,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userIsZK$ = this.profileQuery.selectMemberZK();
-    this.selectedLocation$ = this.searchResultsQuery.selectLocation();
     this.loading$ = this.mapQuery.selectLoading();
     this.currentTimelineDate$ = this.productQuery.selectSelectedDate();
     this.activeScene$ = this.sceneQuery.selectActive();
