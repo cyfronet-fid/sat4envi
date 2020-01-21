@@ -18,6 +18,18 @@ jobs:
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
+      postgrese2e:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: sat4envi
+          POSTGRES_PASSWORD: sat4envi
+          POSTGRES_DB: sat4envi
+        ports:
+        # will assign a random free host port
+        - 5432/tcp
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
     - uses: actions/checkout@v1     
     - name: Set up JDK 
@@ -29,6 +41,22 @@ jobs:
     - name: Maven package
       run: ./mvnw package -DskipTests
     - name: Maven test
-      run: ./mvnw clean test
+      run: ./mvnw test
       env:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/sat4envi_test
+    - name: E2E tests
+      run: cd s4e-web && npm run e2e
+      env:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgrese2e.ports[5432] }}/sat4envi
+    - name: E2E upload screenshots
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: e2e-results
+        path: s4e-web/cypress/screenshots
+    - name: E2E upload videos
+      uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: e2e-results-videos
+        path: s4e-web/cypress/videos

@@ -1,11 +1,13 @@
 /// <reference types="Cypress" />
 
 context('Sanity', () => {
-  beforeEach(() => {
-    cy.visit('/')
+  it('There should be Products control', () => {
+    cy.visit('/');
+    cy.contains('Produkty');
   });
 
-  it('There should be Products control', () => {
-    cy.contains('Produkty')
+  it('There should be login', () => {
+    cy.visit('/login');
+    cy.contains('Logowanie');
   });
 });

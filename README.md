@@ -52,7 +52,7 @@ Then, execute `./mvnw verify`.
 To build run `./mvnw package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
 
-Alternatively, the app can be built and run by issuing `./mvnw spring-boot:run -Dspring.profiles.active=development` in directory `s4e-backend`. 
+Alternatively, the app can be built and run by issuing `../mvnw spring-boot:run -Dspring-boot.run.profiles=development` in directory `s4e-backend`. 
 
 Both methods will expose the server under `http://localhost:4201`.
 
