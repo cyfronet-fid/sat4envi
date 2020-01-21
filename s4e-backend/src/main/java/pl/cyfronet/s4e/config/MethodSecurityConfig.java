@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

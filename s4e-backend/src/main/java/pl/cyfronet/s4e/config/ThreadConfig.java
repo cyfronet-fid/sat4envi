@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.config;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;

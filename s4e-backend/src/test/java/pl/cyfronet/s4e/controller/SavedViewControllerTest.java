@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.FileStorageProperties;
+import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.AppUser;

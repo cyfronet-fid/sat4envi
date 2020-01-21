@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.cyfronet.s4e.FileStorageProperties;
+import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.bean.SavedView;
 import pl.cyfronet.s4e.controller.response.SavedViewResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;

@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.config;
 
 import com.github.slugify.Slugify;
 import org.springframework.context.annotation.Bean;

@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import static pl.cyfronet.s4e.SecurityConfig.JWT_KEY;
+import static pl.cyfronet.s4e.config.SecurityConfig.JWT_KEY;
 import static pl.cyfronet.s4e.security.JWTTokenService.AUTHORITIES_KEY;
 
 public class TestJwtUtil {

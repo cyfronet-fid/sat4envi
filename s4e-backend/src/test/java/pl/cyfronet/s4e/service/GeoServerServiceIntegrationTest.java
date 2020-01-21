@@ -3,7 +3,6 @@ package pl.cyfronet.s4e.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
@@ -15,6 +14,7 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
+import pl.cyfronet.s4e.properties.GeoServerProperties;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,9 +25,8 @@ import static org.hamcrest.Matchers.*;
 
 @IntegrationTest
 public class GeoServerServiceIntegrationTest {
-
-    @Value("${geoserver.workspace}")
-    private String workspace;
+    @Autowired
+    private GeoServerProperties geoServerProperties;
 
     @Autowired
     private ProductRepository productRepository;
@@ -72,7 +71,7 @@ public class GeoServerServiceIntegrationTest {
 
         geoServerService.addLayer(scene);
 
-        assertThat(geoServerOperations.listCoverages(workspace, "testLayerName"), contains("testLayerName"));
+        assertThat(geoServerOperations.listCoverages(geoServerProperties.getWorkspace(), "testLayerName"), contains("testLayerName"));
     }
 
     @Test
@@ -84,7 +83,7 @@ public class GeoServerServiceIntegrationTest {
 
         geoServerService.addStyle(sldStyle);
 
-        assertThat(geoServerOperations.listStyles(workspace), contains("styleOne"));
+        assertThat(geoServerOperations.listStyles(geoServerProperties.getWorkspace()), contains("styleOne"));
     }
 
     @Transactional

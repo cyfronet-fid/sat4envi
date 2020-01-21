@@ -3,7 +3,7 @@ package pl.cyfronet.s4e.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.MailProperties;
+import pl.cyfronet.s4e.properties.MailProperties;
 
 @Service
 @RequiredArgsConstructor

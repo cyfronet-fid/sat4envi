@@ -4,21 +4,21 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
+import pl.cyfronet.s4e.properties.SeedProperties;
 import pl.cyfronet.s4e.service.GeoServerService;
 
 import java.time.Duration;
@@ -46,18 +46,7 @@ public class SeedProducts implements ApplicationRunner {
         private final String layerNameFormat;
     }
 
-    @Value("${seed.products.seed-db:true}")
-    private boolean seedDb;
-
-    @Value("${seed.products.sync-geoserver:true}")
-    private boolean syncGeoserver;
-
-    @Value("${seed.products.sync-geoserver.reset-workspace:true}")
-    private boolean syncGeoserverResetWorkspace;
-
-    @Value("${seed.products.data-set:minio-data-v1}")
-    private String dataSet;
-
+    private final SeedProperties seedProperties;
     private final ProductRepository productRepository;
     private final SceneRepository sceneRepository;
     private final SldStyleRepository sldStyleRepository;
@@ -69,11 +58,11 @@ public class SeedProducts implements ApplicationRunner {
     @Async
     @Override
     public void run(ApplicationArguments args) {
-        if (syncGeoserver && syncGeoserverResetWorkspace) {
+        if (seedProperties.isSyncGeoserver() && seedProperties.isSyncGeoserverResetWorkspace()) {
             geoServerService.resetWorkspace();
         }
 
-        if (seedDb) {
+        if (seedProperties.isSeedDb()) {
             sceneRepository.deleteAll();
             productRepository.deleteAll();
             prgOverlayRepository.deleteAll();
@@ -83,7 +72,7 @@ public class SeedProducts implements ApplicationRunner {
             seedOverlays();
         }
 
-        if (syncGeoserver) {
+        if (seedProperties.isSyncGeoserver()) {
             try {
                 geoServerSynchronizer.synchronizeOverlays();
             } catch (Exception e) {
@@ -95,7 +84,7 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private void seedScenes() {
-        switch (dataSet) {
+        switch (seedProperties.getDataSet()) {
             case "minio-data-v1":
                 seedProductsMinioDataV1();
                 break;
@@ -103,7 +92,7 @@ public class SeedProducts implements ApplicationRunner {
                 seedProductsS4EDemo();
                 break;
             default:
-                throw new IllegalStateException("Data set: '"+dataSet+"' not recognized");
+                throw new IllegalStateException("Data set: '" + seedProperties.getDataSet() + "' not recognized");
         }
     }
 
@@ -149,8 +138,8 @@ public class SeedProducts implements ApplicationRunner {
                         .build()
         );
 
-        log.info("Seeding Scenes, from: "+startInclusive.toString()+" to "+endExclusive.toString());
-        for (val product: products) {
+        log.info("Seeding Scenes, from: " + startInclusive.toString() + " to " + endExclusive.toString());
+        for (val product : products) {
             seedScenes(product, productParams.get(product.getName()));
         }
     }
@@ -183,38 +172,38 @@ public class SeedProducts implements ApplicationRunner {
 
         val productParams = Map.of(
                 products.get(0).getName(), ProductParams.builder()
-                        .startInclusive(LocalDateTime.of(2019,10,1,0,0))
-                        .endExclusive(LocalDateTime.of(2019,11,1,0,0))
+                        .startInclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 11, 1, 0, 0))
                         .layerNameFormat("108m_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
                         .build(),
                 products.get(1).getName(), ProductParams.builder()
-                        .startInclusive(LocalDateTime.of(2019,06,1,0,0))
-                        .endExclusive(LocalDateTime.of(2019,07,1,0,0))
+                        .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 07, 1, 0, 0))
                         .layerNameFormat("NatCol_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
                         .build(),
                 products.get(2).getName(), ProductParams.builder()
-                        .startInclusive(LocalDateTime.of(2019,9,1,0,0))
-                        .endExclusive(LocalDateTime.of(2019,10,1,0,0))
+                        .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
                         .layerNameFormat("Polsafi_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
                         .build(),
                 products.get(3).getName(), ProductParams.builder()
-                        .startInclusive(LocalDateTime.of(2019,8,1,0,0))
-                        .endExclusive(LocalDateTime.of(2019,9,1,0,0))
+                        .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
                         .layerNameFormat("RGB24micro_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
                         .build(),
                 products.get(4).getName(), ProductParams.builder()
-                        .startInclusive(LocalDateTime.of(2019,7,1,0,0))
-                        .endExclusive(LocalDateTime.of(2019,8,1,0,0))
+                        .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                         .layerNameFormat("Setvak_{timestamp}")
                         .s3PathFormat("MSG_Products_WM/Setvak_Eu/{date}/{timestamp}_Eu_centr_ir_108_setvak_wtemp.tif")
                         .build()
         );
 
-        for (val product: products) {
+        for (val product : products) {
             seedScenes(product, productParams.get(product.getName()));
         }
     }
@@ -228,7 +217,7 @@ public class SeedProducts implements ApplicationRunner {
         sldStyleRepository.saveAll(sldStyles);
 
         log.info("Seeding PRGOverlays");
-        val prgOverlays = List.of(new PRGOverlay[] {
+        val prgOverlays = List.of(new PRGOverlay[]{
                 PRGOverlay.builder()
                         .name("wojewodztwa")
                         .featureType("wojewodztwa")
@@ -251,7 +240,7 @@ public class SeedProducts implements ApplicationRunner {
                         .build(),
         });
         prgOverlays.forEach(overlay -> {
-            overlay.setCreated(!syncGeoserver);
+            overlay.setCreated(!seedProperties.isSyncGeoserver());
             overlay.setSldStyle(sldStyles.get(0));
         });
         prgOverlayRepository.saveAll(prgOverlays);
@@ -259,7 +248,7 @@ public class SeedProducts implements ApplicationRunner {
 
     private void seedScenes(Product product, ProductParams params) {
         val count = Duration.between(params.startInclusive, params.endExclusive).toHours();
-        log.info("Seeding scenes of product '"+ product.getName()+"', "+count+" total (from "+params.startInclusive+" to "+params.endExclusive+")");
+        log.info("Seeding scenes of product '" + product.getName() + "', " + count + " total (from " + params.startInclusive + " to " + params.endExclusive + ")");
         for (long i = 0; i < count; i++) {
             val timestamp = params.startInclusive.plusHours(i);
             Function<String, String> replacer = (str) -> str
@@ -268,13 +257,13 @@ public class SeedProducts implements ApplicationRunner {
             val layerName = replacer.apply(params.layerNameFormat);
             val s3Path = replacer.apply(params.s3PathFormat);
 
-            if (syncGeoserver) {
+            if (seedProperties.isSyncGeoserver()) {
                 val scene = Scene.builder()
                         .product(product)
                         .timestamp(timestamp)
                         .layerName(layerName)
                         .s3Path(s3Path)
-                        .created(!syncGeoserver)
+                        .created(!seedProperties.isSyncGeoserver())
                         .build();
 
                 sceneRepository.save(scene);
@@ -308,8 +297,8 @@ public class SeedProducts implements ApplicationRunner {
                 log.info(String.format("Layer '%s' doesn't exist, omitting product '%s' timestamp %s", layerName, product.getName(), timestamp));
             }
 
-            if ((i+1) % 100 == 0) {
-                log.info((i+1)+"/"+count+" scenes of product '"+ product.getName()+"' processed");
+            if ((i + 1) % 100 == 0) {
+                log.info((i + 1) + "/" + count + " scenes of product '" + product.getName() + "' processed");
             }
         }
     }

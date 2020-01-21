@@ -20,6 +20,7 @@ import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.ShareLinkRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.properties.MailProperties;
 
 import javax.mail.internet.MimeMessage;
 import java.util.List;

@@ -106,7 +106,7 @@ It uses local minio for S3 storage.
 There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
 After setting the property `seed.products.data-set`, you must modify the GeoServer docker container volume to point to
 the `s3.properties` file with cyfronet's CEPH instance url and credentials.
-Moreover, you must set a proper bucket by setting `s3.geoserver.bucket=s4e-demo` so that layers provisioned to the
+Moreover, you must set a proper bucket by setting `s3.bucket=s4e-demo` so that layers provisioned to the
 GeoServer have correct bucket set.
 (The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
 the products seeding by setting the profile `skip-seed-products`.)
@@ -135,13 +135,13 @@ Then, run the backend with properties:
 ```
 spring.profiles.active=development
 seed.products.data-set=s4e-demo
-s3.geoserver.bucket=s4e-demo
+s3.bucket=s4e-demo
 ```
 If you run with docker, update the backend-development.env (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
 ```
 SEED_PRODUCTS_DATASET=s4e-demo
-S3_GEOSERVER_BUCKET=s4e-demo
+S3_BUCKET=s4e-demo
 ```
 
 The backend will seed db and GeoServer, which will take around an hour.
@@ -175,7 +175,7 @@ and `/backend-custom.env` with contents:
 ```properties
 SPRING_PROFILES_ACTIVE=development
 SEED_PRODUCTS_DATASET=s4e-demo
-S3_GEOSERVER_BUCKET=s4e-demo
+S3_BUCKET=s4e-demo
 SEED_PRODUCTS_SYNCGEOSERVER=false
 ```
 Both files are ignored by `.gitignore`, so they won't be accidentally committed and pushed to the public repository.
