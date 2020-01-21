@@ -14,7 +14,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.cyfronet.s4e.SecurityConfig.JWT_KEY;
+import static pl.cyfronet.s4e.config.SecurityConfig.JWT_KEY;
 
 @Service
 @RequiredArgsConstructor

@@ -2,9 +2,9 @@ package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.SceneStorageProperties;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.properties.S3Properties;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -20,7 +20,7 @@ public class SceneStorage {
         String getS3Path();
     }
 
-    private final SceneStorageProperties sceneStorageProperties;
+    private final S3Properties s3Properties;
     private final S3Presigner s3Presigner;
     private final SceneRepository sceneRepository;
 
@@ -29,7 +29,7 @@ public class SceneStorage {
                 .orElseThrow(() -> new NotFoundException("Scene with id '" + id + "' not found"));
 
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(sceneStorageProperties.getBucket())
+                .bucket(s3Properties.getBucket())
                 .key(sceneProjection.getS3Path())
                 .build();
 
@@ -46,6 +46,6 @@ public class SceneStorage {
     }
 
     public Duration getPresignedGetTimeout() {
-        return sceneStorageProperties.getPresignedGetTimeout();
+        return s3Properties.getPresignedGetTimeout();
     }
 }

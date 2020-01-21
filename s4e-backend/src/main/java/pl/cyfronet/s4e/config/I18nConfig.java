@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.config;
 
 import lombok.val;
 import org.springframework.context.MessageSource;

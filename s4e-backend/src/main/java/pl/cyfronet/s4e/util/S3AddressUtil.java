@@ -1,19 +1,17 @@
 package pl.cyfronet.s4e.util;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.properties.S3Properties;
 
 @Service
 @RequiredArgsConstructor
 public class S3AddressUtil {
-    @Value("${s3.geoserver.endpoint}")
-    private String s3GeoserverEndpoint;
-
-    @Value("${s3.geoserver.bucket}")
-    private String s3GeoserverBucket;
+    private final GeoServerProperties geoServerProperties;
+    private final S3Properties s3Properties;
 
     public String getS3Address(String path) {
-        return s3GeoserverEndpoint+"://"+s3GeoserverBucket+"/"+path;
+        return geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/" + path;
     }
 }

@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.properties;
 
 import lombok.Getter;
 import lombok.Setter;

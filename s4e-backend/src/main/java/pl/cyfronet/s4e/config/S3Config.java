@@ -1,8 +1,9 @@
-package pl.cyfronet.s4e;
+package pl.cyfronet.s4e.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import pl.cyfronet.s4e.properties.S3Properties;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -15,7 +16,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 @Profile({"!test", "integration"})
 public class S3Config {
     @Bean
-    public S3Client s3Client(S3ClientProperties props) {
+    public S3Client s3Client(S3Properties props) {
         AwsCredentials credentials = AwsBasicCredentials.create(props.getAccessKey(), props.getSecretKey());
         return S3Client.builder()
                 .serviceConfiguration(S3Configuration.builder()
@@ -32,7 +33,7 @@ public class S3Config {
     }
 
     @Bean
-    public S3Presigner s3Presigner(S3ClientProperties props) {
+    public S3Presigner s3Presigner(S3Properties props) {
         AwsCredentials credentials = AwsBasicCredentials.create(props.getAccessKey(), props.getSecretKey());
         return S3Presigner.builder()
                 .credentialsProvider(StaticCredentialsProvider.create(credentials))

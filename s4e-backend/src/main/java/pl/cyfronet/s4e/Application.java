@@ -14,7 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
         )
 )
 @SpringBootApplication
-@ConfigurationPropertiesScan("pl.cyfronet.s4e")
+@ConfigurationPropertiesScan("pl.cyfronet.s4e.properties")
 public class Application {
 
     public static void main(String[] args) {

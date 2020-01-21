@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
-import pl.cyfronet.s4e.MailProperties;
+import pl.cyfronet.s4e.properties.MailProperties;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;

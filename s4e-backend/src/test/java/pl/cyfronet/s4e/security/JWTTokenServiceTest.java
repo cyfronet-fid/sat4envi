@@ -15,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static pl.cyfronet.s4e.SecurityConfig.JWT_KEY;
+import static pl.cyfronet.s4e.config.SecurityConfig.JWT_KEY;
 import static pl.cyfronet.s4e.security.JWTTokenService.AUTHORITIES_KEY;
 
 class JWTTokenServiceTest {
