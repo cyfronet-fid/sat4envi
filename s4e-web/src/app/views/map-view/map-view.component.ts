@@ -180,8 +180,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   viewChanged($event: ViewPosition) {
     this.mapService.setView($event);
-  }
 
+  }
   ngOnDestroy(): void {
   }
 

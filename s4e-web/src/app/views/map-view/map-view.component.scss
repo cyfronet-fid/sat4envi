@@ -139,11 +139,16 @@
     li {
       padding: $space-small $space-default;
       a {
+        cursor: pointer;
         color: $color-grey;
         font-size: 0.875rem;
 
         &:hover {
           color: $color-black;
+        }
+
+        &.disabled {
+          opacity: 0.4;
         }
       }
     }
