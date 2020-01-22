@@ -12,8 +12,8 @@ import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.GroupCreationException;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 @BasicTest
 @Slf4j
@@ -46,7 +46,7 @@ public class InstitutionServiceTest {
         val groupDB = groupService.getGroup("instytucja-15", "group-15", Group.class);
         val institutionDB = institutionService.getInstitution("instytucja-15", Institution.class);
 
-        assertThat(groupDB.isEmpty(), is(true));
-        assertThat(institutionDB.isEmpty(), is(true));
+        assertThat(groupDB, isEmpty());
+        assertThat(institutionDB, isEmpty());
     }
 }

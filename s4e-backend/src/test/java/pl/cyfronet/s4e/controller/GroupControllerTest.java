@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -111,7 +112,7 @@ public class GroupControllerTest {
                 .content(objectMapper.writeValueAsBytes(groupRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(groupRepository.findByInstitution_SlugAndSlug(slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+        assertThat(groupRepository.findByInstitution_SlugAndSlug(slugInstitution, "creategrouptest", Group.class), isPresent());
     }
 
     @Test
@@ -131,7 +132,7 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+                slugInstitution, "creategrouptest", Group.class), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(1));
     }
 
@@ -153,7 +154,7 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+                slugInstitution, "creategrouptest", Group.class), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(1));
 
         UpdateGroupRequest groupUpdateRequest = UpdateGroupRequest.builder()
@@ -167,7 +168,7 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "updategrouptest", Group.class).isPresent(), is(true));
+                slugInstitution, "updategrouptest", Group.class), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "updategrouptest", AppUserResponse.class), hasSize(1));
     }
 
@@ -197,7 +198,7 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "creategrouptest", Group.class).isPresent(), is(true));
+                slugInstitution, "creategrouptest", Group.class), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "creategrouptest", AppUserResponse.class), hasSize(2));
 
         membersRoles.remove(email);
@@ -213,7 +214,7 @@ public class GroupControllerTest {
                 .andExpect(status().isOk());
 
         assertThat(groupRepository.findByInstitution_SlugAndSlug(
-                slugInstitution, "updategrouptest", Group.class).isPresent(), is(true));
+                slugInstitution, "updategrouptest", Group.class), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "updategrouptest", AppUserResponse.class), hasSize(1));
     }
 
