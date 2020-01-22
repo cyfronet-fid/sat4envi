@@ -8,12 +8,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import pl.cyfronet.s4e.controller.request.PasswordChangeRequest;
 import pl.cyfronet.s4e.controller.request.PasswordResetRequest;
 import pl.cyfronet.s4e.event.OnPasswordResetTokenEmailEvent;
 import pl.cyfronet.s4e.ex.BadRequestException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.PasswordResetTokenExpiredException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.PasswordService;
 
@@ -58,11 +61,13 @@ public class PasswordController {
     @Operation(summary = "Reset password")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Password reset was successful"),
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
             @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping(value = "/password-reset", consumes = APPLICATION_JSON_VALUE)
-    public void resetPassword(@RequestBody @Valid PasswordResetRequest passwordReset, @RequestParam("token") String token) throws NotFoundException {
-        passwordService.resetPassword(passwordReset, token);
+    public void resetPassword(@RequestBody @Valid PasswordResetRequest request)
+            throws NotFoundException, PasswordResetTokenExpiredException {
+        passwordService.resetPassword(request);
     }
 
     @Operation(summary = "Change password")
@@ -73,7 +78,8 @@ public class PasswordController {
     })
     @PostMapping(value = "/password-change", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("!isAnonymous()")
-    public void changePassword(@RequestBody @Valid PasswordResetRequest passwordReset) throws NotFoundException, BadRequestException {
-        passwordService.changePassword(passwordReset);
+    public void changePassword(@RequestBody @Valid PasswordChangeRequest request) throws NotFoundException, BadRequestException {
+        AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        passwordService.changePassword(request, appUserDetails.getUsername());
     }
 }

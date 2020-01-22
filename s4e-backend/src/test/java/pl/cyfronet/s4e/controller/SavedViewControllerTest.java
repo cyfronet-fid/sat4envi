@@ -211,14 +211,12 @@ public class SavedViewControllerTest {
         assertThat(savedViewRepository.count(), is(equalTo(3L)));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/saved-views")
-                .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("$.content..caption", contains("caption-2", "caption-1")));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/saved-views")
-                .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(otherAppUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(equalTo(1))))

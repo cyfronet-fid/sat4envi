@@ -4,23 +4,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @AutoConfigureMockMvc
@@ -73,8 +74,7 @@ public class ProductControllerTest {
 
     @Test
     public void shouldReturnProductWithoutInfo() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/products")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1 + "/products"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$[0].description").doesNotExist());
@@ -83,8 +83,7 @@ public class ProductControllerTest {
     @Test
     public void shouldReturnProductWithInfo() throws Exception {
         Product product = repository.findByNameContainingIgnoreCase("WV-IR").orElseThrow();
-        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId())
-                .contentType(MediaType.APPLICATION_JSON));
+        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId()));
         result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is(equalTo("WV-IR"))))

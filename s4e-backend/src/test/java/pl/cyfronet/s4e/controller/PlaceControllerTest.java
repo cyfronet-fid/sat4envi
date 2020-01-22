@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.Place;
@@ -48,24 +47,21 @@ class PlaceControllerTest {
 
     @Test
     public void shouldReturnAllMatches() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content.length()", is(equalTo(4))));
     }
 
     @Test
     public void shouldReturnAllMatchesCaseInsensitive() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=naz")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=naz"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content.length()", is(equalTo(4))));
     }
 
     @Test
     public void shouldPage() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("totalElements", is(equalTo(4))))
@@ -74,8 +70,7 @@ class PlaceControllerTest {
 
     @Test
     public void shouldSortAndPage() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2&sort=name&name.dir=asc")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2&sort=name&name.dir=asc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("content[0].name", is(equalTo("Nazwa1"))))
@@ -84,8 +79,7 @@ class PlaceControllerTest {
 
     @Test
     public void shouldShowSecondPageSorted() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2&page=1&sort=name&name.dir=asc")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1+"/places?namePrefix=Naz&size=2&page=1&sort=name&name.dir=asc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("content.length()", is(equalTo(2))))
                 .andExpect(jsonPath("content[0].name", is(equalTo("Nazwa3"))))

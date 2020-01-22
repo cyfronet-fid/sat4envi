@@ -507,15 +507,13 @@ public class AppUserControllerTest {
     @Test
     @WithAnonymousUser
     public void shouldReturnForbiddenCode403() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     public void shouldReturnProfile() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
-                .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(securityAppUser, objectMapper)))
                 .andExpect(status().isOk());
     }

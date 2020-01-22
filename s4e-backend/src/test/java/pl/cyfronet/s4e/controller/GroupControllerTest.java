@@ -70,7 +70,6 @@ public class GroupControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     private AppUser appUser;
 
     private String slugInstitution;

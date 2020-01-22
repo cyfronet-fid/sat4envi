@@ -7,9 +7,9 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-public class PasswordResetRequest {
+public class PasswordChangeRequest {
     @NotEmpty
-    private String password;
+    private String oldPassword;
     @NotEmpty
-    private String token;
+    private String newPassword;
 }
