@@ -11,9 +11,9 @@ import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.service.SlugService;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 
 @BasicTest
 public class AppUserRepositoryTest {
@@ -80,8 +80,7 @@ public class AppUserRepositoryTest {
     @Test
     void shouldFindByEmailWithRolesTest() {
         val dbUser = appUserRepository.findByEmailWithRolesAndGroups(email);
-        assertThat(dbUser.isPresent(), is(true));
-        assertThat(dbUser.get().getRoles().isEmpty(), is(false));
+        assertThat(dbUser, isPresent());
         assertThat(dbUser.get().getRoles(), hasSize(1));
     }
 }

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -68,9 +70,9 @@ public class GroupServiceTest {
         val groupDelete = groupService.getGroup("instytucja-12", "group-13", Group.class);
         groupService.delete(groupDelete.get());
 
-        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class).isPresent(), is(false));
-        assertThat(groupService.getGroup("instytucja-12", "group-14", Group.class).isPresent(), is(true));
-        assertThat(institutionService.getInstitution("instytucja-12", Institution.class).isPresent(), is(true));
+        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class), isEmpty());
+        assertThat(groupService.getGroup("instytucja-12", "group-14", Group.class), isPresent());
+        assertThat(institutionService.getInstitution("instytucja-12", Institution.class), isPresent());
     }
 
     @Test
@@ -89,18 +91,18 @@ public class GroupServiceTest {
         Set<AppUser> members = groupService.getMembers("instytucja-12", "group-13", AppUser.class);
 
         assertThat(members, not(empty()));
-        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class).isPresent(), is(true));
-        assertThat(institutionRepository.findBySlug("instytucja-12", Institution.class).isPresent(), is(true));
-        assertThat(appUserService.findByEmail("mail@test.pl").isPresent(), is(true));
+        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class), isPresent());
+        assertThat(institutionRepository.findBySlug("instytucja-12", Institution.class), isPresent());
+        assertThat(appUserService.findByEmail("mail@test.pl"), isPresent());
 
         val groupDB = groupService.getGroup("instytucja-12", "group-13", Group.class);
         groupService.delete(groupDB.get());
         Set<AppUser> members2 = groupService.getMembers("instytucja-12", "group-13", AppUser.class);
 
         assertThat(members2, empty());
-        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class).isPresent(), is(false));
-        assertThat(institutionRepository.findBySlug("instytucja-12", Institution.class).isPresent(), is(true));
-        assertThat(appUserService.findByEmail("mail@test.pl").isPresent(), is(true));
+        assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class), isEmpty());
+        assertThat(institutionRepository.findBySlug("instytucja-12", Institution.class), isPresent());
+        assertThat(appUserService.findByEmail("mail@test.pl"), isPresent());
     }
 
     @Test

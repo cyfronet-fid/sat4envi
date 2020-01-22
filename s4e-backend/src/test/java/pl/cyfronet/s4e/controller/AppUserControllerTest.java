@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static java.util.Collections.emptyList;
 import static org.awaitility.Awaitility.await;
@@ -190,7 +192,7 @@ public class AppUserControllerTest {
         GreenMailUser mailUser = greenMail.setUser("some@email.pl", "");
         MailFolder inbox = getInbox(greenMail, mailUser);
 
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
 
         mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -202,7 +204,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(recaptchaValidator);
 
         // AppUser should have been created and the OnRegistrationCompleteEvent fired.
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isPresent());
         verify(testListener).handle(any(OnRegistrationCompleteEvent.class));
         verifyNoMoreInteractions(testListener);
 
@@ -231,7 +233,7 @@ public class AppUserControllerTest {
                 .password("admin123")
                 .build();
 
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
 
         mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .param(responseParameter, "testCaptchaResponse")
@@ -249,7 +251,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(recaptchaValidator);
 
         // No AppUser should have been created.
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
         verifyNoMoreInteractions(testListener);
     }
 
@@ -260,7 +262,7 @@ public class AppUserControllerTest {
                 .password("")
                 .build();
 
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
 
         mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -273,7 +275,7 @@ public class AppUserControllerTest {
                 .andExpect(jsonPath("password.length()", is(equalTo(2))));
 
         // No AppUser should have been created.
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(false));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
         verifyNoMoreInteractions(testListener);
     }
 
@@ -292,7 +294,7 @@ public class AppUserControllerTest {
                 .password("someHash")
                 .build());
 
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()).isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isPresent());
 
         mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -344,7 +346,7 @@ public class AppUserControllerTest {
 
         // EmailVerification is only removed in the EmailConfirmationListener, so it is verified after
         // the email has been received.
-        assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
+        assertThat(emailVerificationRepository.findById(emailVerification.getId()), isEmpty());
 
         // Finally, an email with info that the account has been activated should be sent.
         StoredMessage storedMessage = inbox.getMessages().get(0);
@@ -424,9 +426,9 @@ public class AppUserControllerTest {
         assertThat(messageParser.getHtmlContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
-        assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
+        assertThat(emailVerificationRepository.findById(emailVerification.getId()), isEmpty());
         // and new one created.
-        assertThat(emailVerificationRepository.findByAppUserId(appUser.getId()).isPresent(), is(true));
+        assertThat(emailVerificationRepository.findByAppUserId(appUser.getId()), isPresent());
     }
 
     @Test
@@ -483,9 +485,9 @@ public class AppUserControllerTest {
         assertThat(messageParser.getHtmlContent(), containsString(mailProperties.getUrlDomain() + "/activate/"));
 
         // The old token should be deleted
-        assertThat(emailVerificationRepository.findById(emailVerification.getId()).isPresent(), is(false));
+        assertThat(emailVerificationRepository.findById(emailVerification.getId()), isEmpty());
         // and new one created.
-        assertThat(emailVerificationRepository.findByAppUserId(appUser.getId()).isPresent(), is(true));
+        assertThat(emailVerificationRepository.findByAppUserId(appUser.getId()), isPresent());
     }
 
     @Test
@@ -538,7 +540,7 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
     }
@@ -557,7 +559,7 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(1));
     }
 
@@ -573,7 +575,7 @@ public class AppUserControllerTest {
                 .enabled(false)
                 .build());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(1));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(0));
 
@@ -592,7 +594,7 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
 
@@ -610,7 +612,7 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(0));
 
@@ -629,7 +631,7 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(updateUserGroupsRequest)))
                 .andExpect(status().isOk());
 
-        assertThat(appUserRepository.findByEmail("email@test.pl").isPresent(), is(true));
+        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
         assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
     }
