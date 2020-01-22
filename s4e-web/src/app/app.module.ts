@@ -56,7 +56,6 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
   providers: [
     S4eConfig,
     {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [S4eConfig], multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'}

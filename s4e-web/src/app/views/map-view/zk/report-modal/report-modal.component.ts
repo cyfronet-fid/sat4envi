@@ -7,8 +7,9 @@ import {isReportModal, ReportForm, ReportModal} from './report-modal.model';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../state/form/form.model';
 import {ModalQuery} from '../../../../modal/state/modal.query';
-import * as JsPDF from 'jspdf';
 import {assertModalType} from '../../../../modal/utils/modal/misc';
+import {ReportGenerator} from './report-generator';
+import {HttpClient} from "@angular/common/http";
 
 
 @Component({
@@ -17,11 +18,11 @@ import {assertModalType} from '../../../../modal/utils/modal/misc';
   styleUrls: ['./report-modal.component.scss']
 })
 export class ReportModalComponent extends FormModalComponent<'report'> {
-  isWorking: boolean = false;
   image: string = '';
   imageWidth: number;
   imageHeight: number;
   imagePositionTop: number = 0;
+  public reportGenerator: ReportGenerator;
   @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
 
   makeForm(): FormGroup<FormState["report"]> {
@@ -31,7 +32,9 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
     });
   }
 
-  constructor(modalService: ModalService, @Inject(MODAL_DEF) modal: ReportModal,
+  constructor(http: HttpClient,
+              modalService: ModalService,
+              @Inject(MODAL_DEF) modal: ReportModal,
               modalQuery: ModalQuery,
               fm: AkitaNgFormsManager<FormState>) {
     super(fm, modalService, modalQuery, modal.id, 'report');
@@ -41,44 +44,17 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
     this.image = modal.mapImage;
     this.imageWidth = modal.mapWidth;
     this.imageHeight = modal.mapHeight;
+
+    this.reportGenerator = new ReportGenerator(http, this.image, this.imageWidth, this.imageHeight);
   }
 
   ngOnInit(): void {
-    import('./fonts/Ubuntu-Regular-normal').then((ubuntuRegular) => ubuntuRegular.registerFont(JsPDF));
+    // noinspection JSIgnoredPromiseFromCall
+    this.reportGenerator.loadAssets();
     super.ngOnInit();
   }
 
   accept() {
-    this.isWorking = true;
-
-    // it is inside of the timeout to make sure not to freeze frontend, and allow for 'loader' to be displayed
-    setTimeout(() => {
-      let doc = new JsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4'
-      });
-
-      const A4Width = 297;
-      const A4Height = 210;
-      const DPM = (72.0 / 25.6); // density per mm
-      const A4Ration = A4Width / A4Height;
-
-      const printImageHeight = this.imageHeight / this.imageWidth * A4Width;
-
-      const imageYOffset = (A4Height - printImageHeight) / 2.0;
-
-      doc.setFont('Ubuntu-Regular');
-      doc.addImage(this.image, 'PNG', 0, imageYOffset, A4Width, printImageHeight);
-      doc.setFontSize(20);
-      doc.text(this.form.controls.caption.value, 10, 10);
-      const noteFontSize = 12.0;
-      doc.setFontSize(noteFontSize);
-      let textWidth = doc.getStringUnitWidth(this.form.controls.notes.value) * noteFontSize / DPM;
-      doc.text(this.form.controls.notes.value, A4Width - 10 - textWidth, A4Height - 10);
-      doc.save(`RAPORT.${new Date().toISOString()}.pdf`);
-      this.isWorking = false;
-      this.dismiss();
-    });
+    this.reportGenerator.generate(this.form.controls.caption.value, this.form.controls.notes.value).subscribe(() => this.dismiss());
   }
 }

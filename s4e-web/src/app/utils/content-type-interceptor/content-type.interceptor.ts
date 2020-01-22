@@ -6,10 +6,6 @@ import {HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 })
 export class ContentTypeInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    req = req.clone({
-      responseType: 'json',
-    });
-
     return next.handle(req);
   }
 }

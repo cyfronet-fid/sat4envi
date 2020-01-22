@@ -122,8 +122,11 @@
   padding: $space-small 1.5*$space-xlarge;
   font-weight: 700;
   text-transform: uppercase;
-  font-family: $font-secondary
+  font-family: $font-secondary;
 
+  &[disabled=""] {
+    opacity: 0.6;
+  }
 }
 
 .button--default {
