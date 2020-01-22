@@ -9,6 +9,7 @@ import pl.cyfronet.s4e.data.repository.*;
 public class TestDbHelper {
     private final EmailVerificationRepository emailVerificationRepository;
     private final InstitutionRepository institutionRepository;
+    private final PasswordResetRepository passwordResetRepository;
     private final AppUserRepository appUserRepository;
     private final PlaceRepository placeRepository;
     private final SceneRepository sceneRepository;
@@ -17,6 +18,7 @@ public class TestDbHelper {
     public void clean() {
         emailVerificationRepository.deleteAll();
         institutionRepository.deleteAll();
+        passwordResetRepository.deleteAll();
         appUserRepository.deleteAll();
         placeRepository.deleteAll();
         sceneRepository.deleteAll();
