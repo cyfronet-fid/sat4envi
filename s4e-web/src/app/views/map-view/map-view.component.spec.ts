@@ -7,12 +7,20 @@ import {By} from '@angular/platform-browser';
 import {MapService} from './state/map/map.service';
 import {ProfileStore} from '../../state/profile/profile.store';
 import {ActivatedRoute, ActivatedRouteSnapshot, UrlSegment} from '@angular/router';
+import {take} from 'rxjs/operators';
+import {MapStore} from './state/map/map.store';
+import {SceneQuery} from './state/scene/scene.query.service';
+import {SceneStore} from './state/scene/scene.store.service';
+import {SceneFactory} from './state/scene/scene.factory.spec';
+import {S4eConfig} from '../../utils/initializer/config.service';
 
 describe('MapViewComponent', () => {
   let component: MapViewComponent;
   let profileStore: ProfileStore;
+  let mapStore: MapStore;
   let fixture: ComponentFixture<MapViewComponent>;
   let route: ActivatedRoute;
+  let sceneStore: SceneStore;
 
   function setActivatedChildPath(path: string) {
     route.snapshot = {
@@ -33,6 +41,8 @@ describe('MapViewComponent', () => {
     })
       .compileComponents();
     profileStore = TestBed.get(ProfileStore);
+    mapStore = TestBed.get(MapStore);
+    sceneStore = TestBed.get(SceneStore);
   }));
 
   beforeEach(() => {
@@ -100,6 +110,30 @@ describe('MapViewComponent', () => {
       const spy = spyOn(service, 'toggleZKOptions');
       component.toggleZKOptions();
       expect(spy).toHaveBeenCalledWith(true);
+    });
+
+    it('Download Original File button should be disabled if there is no activeScene ', async () => {
+      profileStore.update({memberZK: true});
+      mapStore.update({zkOptionsOpened: true});
+      const activeScene = await component.activeScene$.pipe(take(1)).toPromise();
+      fixture.detectChanges();
+      expect(activeScene).toBeFalsy();
+      const link = fixture.debugElement.query(By.css("[data-test-download-original=''].disabled"));
+      expect(link).toBeTruthy();
+      expect((link.nativeElement as HTMLLinkElement).hasAttribute('href')).toBeFalsy();
+    });
+
+    it('Download Original File button should have correct URL in href if scene is active ', async () => {
+      profileStore.update({memberZK: true});
+      mapStore.update({zkOptionsOpened: true});
+      const scene = SceneFactory.build();
+      const config: S4eConfig = TestBed.get(S4eConfig);
+      sceneStore.add(scene);
+      sceneStore.setActive(scene.id);
+      fixture.detectChanges();
+      const link = fixture.debugElement.query(By.css("[data-test-download-original='']:not(.disabled)"));
+      expect(link).toBeTruthy();
+      expect((link.nativeElement as HTMLLinkElement).getAttribute('href')).toEqual(`${config.apiPrefixV1}/scenes/${scene.id}/download`);
     });
   });
 });
