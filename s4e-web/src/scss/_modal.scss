@@ -58,6 +58,7 @@
     border-radius: $border-radius-default;
     margin: $space-small 0;
     line-height: 1rem;
+    overflow-wrap: break-word;
 
     li {
       margin: $space-small 0;
