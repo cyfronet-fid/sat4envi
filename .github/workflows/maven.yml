@@ -5,49 +5,51 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:10.8
-        env:
-          POSTGRES_USER: sat4envi_test
-          POSTGRES_PASSWORD: sat4envi_test
-          POSTGRES_DB: sat4envi_test
-        ports:
-        # will assign a random free host port
-        - 5432/tcp
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-      postgrese2e:
-        image: postgres:10.8
-        env:
-          POSTGRES_USER: sat4envi
-          POSTGRES_PASSWORD: sat4envi
-          POSTGRES_DB: sat4envi
-        ports:
-        # will assign a random free host port
-        - 5432/tcp
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
     steps:
-    - uses: actions/checkout@v1     
-    - name: Set up JDK 
+    - uses: actions/checkout@v2
+    - name: Set up JDK
       uses: actions/setup-java@v1
       with:
         java-version: 11.0.2
+    - name: Cache m2
+      uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Cache npm
+      uses: actions/cache@v1
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Cache Cypress
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/Cypress
+        key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-cypress-
     - name: Maven compile
       run: ./mvnw clean compile -DskipTests
     - name: Maven package
       run: ./mvnw package -DskipTests
+    - name: Start containers
+      run: docker-compose up -d --no-deps s4e-web s4e-backend db db-test
+      env:
+        BACKEND_ENV_PATH: ./backend-gh-e2e.env
+        WEB_CONF_PATH: ./s4e-web/nginx-e2e.conf
     - name: Maven test
       run: ./mvnw test
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgres.ports[5432] }}/sat4envi_test
     - name: E2E tests
       run: cd s4e-web && npm run e2e
-      env:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:${{ job.services.postgrese2e.ports[5432] }}/sat4envi
+    - name: Containers logs
+      if: failure()
+      run: docker-compose logs
+    - name: Stop s4e-backend and s4e-web
+      run: docker-compose down
     - name: E2E upload screenshots
       uses: actions/upload-artifact@v1
       if: failure()

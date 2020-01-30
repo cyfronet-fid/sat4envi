@@ -267,9 +267,6 @@ public class AppUserControllerTest {
         mockMvc.perform(post(API_PREFIX_V1 + "/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
-                .andExpect(mvcResult -> {
-                    log.info(mvcResult.getResponse().getContentAsString());
-                })
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("email.length()", is(equalTo(1))))
                 .andExpect(jsonPath("password.length()", is(equalTo(2))));
