@@ -20,7 +20,7 @@ services:
       - ${WEB_PORT:-4200}:80
     volumes:
       - ./s4e-web/target/webapp:/usr/share/nginx/html
-      - ./s4e-web/nginx.conf:/etc/nginx/nginx.conf
+      - ${WEB_CONF_PATH:-./s4e-web/nginx.conf}:/etc/nginx/nginx.conf
     networks:
       - net
     depends_on:

@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icegreen.greenmail.util.GreenMail;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
@@ -76,9 +78,14 @@ public class PasswordControllerTest {
 
     private AppUser securityAppUser;
 
+    private GreenMail greenMail;
+
     @BeforeEach
     public void beforeEach() {
         reset();
+
+        greenMail = new GreenMailSupplier().get();
+        greenMail.start();
 
         securityAppUser = appUserRepository.save(AppUser.builder()
                 .email(PROFILE_EMAIL)
@@ -91,6 +98,7 @@ public class PasswordControllerTest {
 
     @AfterEach
     public void afterEach() {
+        greenMail.stop();
         reset();
     }
 
