@@ -178,7 +178,7 @@
   opacity: 0.8;
 }
 
-/* 4. Form */
+/* 4. Form content ( HINT// Change name ) */
 
 .form {
   background: $color-grey-secondary;
@@ -190,6 +190,7 @@
     display: flex;
     flex-direction: column;
     margin-bottom: $space-default;
+
   }
 
   label {
@@ -302,6 +303,26 @@
       border: 1px solid $color-white;
     }
   }
+
+  .modal__table {
+    background: $color-white-50;
+    width: 100%;
+    border-radius: $border-radius-default;
+    margin-bottom: $space-large;
+
+    td {
+      border: 1px solid $color-grey-secondary;
+      padding: 12px 15px;
+
+      &:first-child {
+        font-weight: bold;
+        width: 30%;
+      }
+    }
+  }
+
+
+
 }
 
 
