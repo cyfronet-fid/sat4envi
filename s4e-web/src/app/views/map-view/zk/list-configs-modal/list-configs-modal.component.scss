@@ -1,35 +1,50 @@
-.icon__delete {
-  vertical-align: middle;
+@import "~src/scss/variables";
 
-  img {
-    width: 25px;
-  }
-}
 
-.view_caption {
-  margin-top: 10px;
-  font-weight: bolder;
-  display: block;
-}
 
-.view_details {
-  display: inline;
-  vertical-align: middle;
+.element {
+  margin-bottom: $space-xlarge;
+  padding-bottom: $space-large;
+  border-bottom: 2px solid $color-white-50;
 
-  td {
-    padding: 3px;
-    border: 1px solid black;
-    //font-size: small;
+  &:last-child {
+    border: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
 
-  > img {
-    vertical-align: middle;
-    width: 150px;
-    margin: 3px 10px
+  header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: $space-default;
+    display: block;
   }
-}
 
-.alert {
-  color: red;
-  text-align: left;
+  .content {
+    overflow: hidden;
+    figure {
+      width: 150px;
+      height: 80px;
+      overflow: hidden;
+      border: 1px solid $color-white-50;
+      margin-right: $space-default;
+      float: left;
+    }
+
+    p {
+      margin: 0 $space-large;
+      font-size: 0.875rem;
+    }
+
+    .buttons__container {
+      margin-top: $space-small;
+      display: flex;
+      flex-direction: row;
+
+      button {
+        padding: $space-xsmall $space-xlarge;
+        margin: 0 $space-xsmall $space-xsmall;
+      }
+    }
+  }
 }
