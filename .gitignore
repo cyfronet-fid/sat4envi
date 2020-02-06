@@ -23,6 +23,9 @@
 /backend-production.env
 /backend-custom.env
 
+# maven build
+.flattened-pom.xml
+
 # misc
 /.sass-cache
 /connect.lock

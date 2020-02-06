@@ -7,7 +7,7 @@
     <parent>
         <artifactId>s4e</artifactId>
         <groupId>pl.cyfronet.s4e</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${revision}${changelist}</version>
     </parent>
 
     <groupId>pl.cyfronet.s4e</groupId>

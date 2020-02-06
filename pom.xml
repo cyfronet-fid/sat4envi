@@ -6,7 +6,7 @@
 
     <groupId>pl.cyfronet.s4e</groupId>
     <artifactId>s4e</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
     <modules>
         <module>s4e-backend</module>
         <module>s4e-web</module>
@@ -23,6 +23,8 @@
     </parent>
 
     <properties>
+        <revision>4.0.0</revision>
+        <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>
@@ -47,6 +49,28 @@
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
