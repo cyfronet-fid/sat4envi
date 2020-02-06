@@ -82,7 +82,7 @@ describe('SceneService', () => {
 
       sceneService.get(productId, dateF);
 
-      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}`);
+      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
       r.flush([]);
     });
 
@@ -90,7 +90,7 @@ describe('SceneService', () => {
       const productId = 1;
       const dateF = '2019-10-01';
       sceneService.get(productId, dateF);
-      http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}`);
+      http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
     });
 
     it('should set state in store', (done) => {
@@ -109,7 +109,7 @@ describe('SceneService', () => {
 
       sceneService.get(productId, dateF);
 
-      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}`);
+      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
       r.flush([productR]);
     });
   });

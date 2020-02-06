@@ -11,7 +11,6 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import moment from 'moment';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {Subject} from 'rxjs';
 import {AkitaGuidService} from '../state/search-results/guid.service';
@@ -19,6 +18,7 @@ import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {debounceTime} from 'rxjs/operators';
 import {Scene} from '../state/scene/scene.model';
+import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 
 export interface Day {
   label: string;
@@ -27,13 +27,12 @@ export interface Day {
 }
 
 export const DATEPICKER_FORMAT_CUSTOMIZATION = {
-  parseInput: 'l LT',
-  fullPickerInput: 'l LT',
-  datePickerInput: 'l',
-  timePickerInput: 'LT',
-  monthYearLabel: 'MMM YYYY',
-  dateA11yLabel: 'YYYY-MM-DD',
-  monthYearA11yLabel: 'MMMM YYYY',
+  fullPickerInput: {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+  datePickerInput: {year: 'numeric', month: 'numeric', day: 'numeric'},
+  timePickerInput: {hour: 'numeric', minute: 'numeric'},
+  monthYearLabel: {year: 'numeric', month: 'short'},
+  dateA11yLabel: {year: 'numeric', month: '2-digit', day: '2-digit'},
+  monthYearA11yLabel: {year: 'numeric', month: 'long'},
 };
 
 @Component({
@@ -89,18 +88,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   @Input('currentDate') set _currentDate(v: string) {
     this.currentDate = v;
-    this.startAt = moment(v, 'YYYY-MM-DD');
+    this.startAt = v;
   }
 
   public filterInactiveDays = (date: Date) => {
-    this.loadAvailableDates.emit(moment(date).format('YYYY-MM'));
+    this.loadAvailableDates.emit(yyyymm(date));
     this.updateStream.next();
     return true;
   };
 
   selectDate($event: { value: Date }) {
-    console.log($event);
-    this.dateSelected.emit(moment($event.value).utc().format(this.config.momentDateFormatShort));
+    this.dateSelected.emit(yyyymmdd($event.value));
   }
 
   monthSelected($event: any) {
@@ -116,6 +114,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
 
   hackCalendar() {
     this._availableDates
+      .map(date => date.split('-').reverse().join('.'))
       .map(date => document.querySelector(`.${this.componentId} .owl-dt-calendar-cell[aria-label='${date}'] .owl-dt-calendar-cell-content`))
       .filter(element => element != null)
       .forEach(element => this.renderer.addClass(element, 'calendar-data-available'));

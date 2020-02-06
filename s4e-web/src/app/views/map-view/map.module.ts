@@ -17,7 +17,7 @@ import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
 import {SearchResultsComponent} from './search-results/search-results.component';
 import {AkitaGuidService} from './state/search-results/guid.service';
-import {OwlDateTimeModule} from 'ng-pick-datetime';
+import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {OwlMomentDateTimeModule} from 'ng-pick-datetime/date-time/adapter/moment-adapter/moment-date-time.module';
 import {ProductQuery} from './state/product/product.query';
@@ -65,7 +65,7 @@ import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configurati
     ShareModule,
     BrowserAnimationsModule,
     OwlDateTimeModule,
-    OwlMomentDateTimeModule,
+    OwlNativeDateTimeModule,
     ModalModule,
     RouterModule.forChild([
       {

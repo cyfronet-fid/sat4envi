@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActiveState, EntityState, EntityStore, StoreConfig} from '@datorama/akita';
 import {Product} from './product.model';
-import moment from 'moment';
+import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 
 export interface ProductState extends EntityState<Product>, ActiveState<number> {
   ui: {
@@ -16,16 +16,17 @@ export interface ProductState extends EntityState<Product>, ActiveState<number> 
 }
 
 export function createProduct(state: Partial<ProductState> = {}): ProductState {
+  const now = new Date();
   return {
     active: null,
     error: null,
     loading: true,
     ui: {
       loadedMonths: [],
-      selectedDate: moment.utc().format('YYYY-MM-DD'),
-      selectedDay: moment.utc().day(),
-      selectedYear: moment.utc().year(),
-      selectedMonth: moment.utc().month() + 1,
+      selectedDate: yyyymmdd(now),
+      selectedDay: now.getDate(),
+      selectedYear: now.getFullYear(),
+      selectedMonth: now.getMonth(),
       availableDays: []
     },
     loaded: false,

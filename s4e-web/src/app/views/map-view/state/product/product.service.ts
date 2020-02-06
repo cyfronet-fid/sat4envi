@@ -7,10 +7,10 @@ import {ProductQuery} from './product.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {LegendService} from '../legend/legend.service';
 import {Observable, of} from 'rxjs';
-import moment from 'moment';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
-import {action, applyTransaction} from '@datorama/akita';
+import {applyTransaction} from '@datorama/akita';
+import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -62,7 +62,9 @@ export class ProductService {
       return;
     }
     this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`, {
+      params: {tz: this.CONFIG.timezone, yearMonth: dateF}
+    })
       .subscribe(data => this.updateAvailableDays(data));
   }
 
@@ -74,31 +76,30 @@ export class ProductService {
 
     const ui = this.query.getValue().ui;
 
-    const dateF = moment({year: ui.selectedYear, month: ui.selectedMonth}).format('YYYY-MM');
+    const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth , ui.selectedDay));
 
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProductId}/scenes/available?yearMonth=${dateF}`)
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProductId}/scenes/available`,
+      {
+        params: {tz: this.CONFIG.timezone, yearMonth: dateF}
+      })
       .pipe(finalize(() => this.store.setLoading(false)))
       .subscribe(data => {
         this.updateAvailableDays(data);
-        this.sceneService.get(activeProductId, moment.utc({
-          year: ui.selectedYear,
-          month: ui.selectedMonth,
-          day: ui.selectedDay
-        }).format('YYYY-MM-DD'));
+        this.sceneService.get(activeProductId, ui.selectedDate);
       });
   }
 
   setSelectedDate($event: string) {
-    const date = moment.utc($event, 'YYYY-MM-DD');
+    const date = new Date($event);
 
     this.store.update(store => ({
       ...store,
       ui: {
         ...store.ui,
-        selectedMonth: date.month(),
-        selectedYear: date.year(),
-        selectedDay: date.day(),
-        selectedDate: $event
+        selectedMonth: date.getMonth(),
+        selectedYear: date.getFullYear(),
+        selectedDay: date.getDate(),
+        selectedDate: yyyymmdd(date)
       }
     }));
   }
@@ -120,7 +121,7 @@ export class ProductService {
   }
 
   toggleActive(productId: number) {
-    if(this.query.getActiveId() == productId) {
+    if (this.query.getActiveId() == productId) {
       this.setActive(null);
     } else {
       this.setActive(productId);

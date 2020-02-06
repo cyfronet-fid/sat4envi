@@ -6,11 +6,11 @@ export const TestingConfigProvider: Provider = {
     geoserverUrl: 'http://localhost:8080/geoserver/wms',
     geoserverWorkspace: 'testing',
     backendDateFormat: 'YYYY-MM-DDTHH:mm:ssZ',
-    momentDateFormat: 'YYYY-MM-DDTHH:mm:ss[Z]',
     recaptchaSiteKey: 'abc123',
     projection: {toProjection: 'EPSG:3857', coordinates: [19, 52]},
     apiPrefixV1: 'api/v1',
     userLocalStorageKey: 'user',
-    generalErrorKey: '__general__'
+    generalErrorKey: '__general__',
+    timezone: 'testTZ'
   }
 };
