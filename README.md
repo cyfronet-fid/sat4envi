@@ -5,7 +5,7 @@
 - java `^11`
 - docker `^18.09.3`
 - docker-compose `^1.18.0`
-- node `^8`,  npm `^5`
+- node `^11`,  npm `^6`
 
 
 ## System Components
@@ -51,6 +51,11 @@ Then, execute `./mvnw verify`.
 
 To build run `./mvnw package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
+
+To set the version of the built artifacts use the `revision` and `changelist` system variables, for example:
+`./mvnw package -Drevision=4.0.1 -Dchangelist=-RELEASE`.
+The values will be concatenated `${revision}${changelist}` forming the artifact version.
+By default `changelist=-SNAPSHOT`.
 
 Alternatively, the app can be built and run by issuing `../mvnw spring-boot:run -Dspring-boot.run.profiles=development` in directory `s4e-backend`. 
 
