@@ -14,7 +14,7 @@ export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormC
   }
 }
 
-export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManager?: {formKey: keyof FormState, fm: AkitaNgFormsManager<FormState>}) {
+export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManager?: { formKey: keyof FormState, fm: AkitaNgFormsManager<FormState> }) {
   Object.keys(formGroup.controls).forEach(field => {
     const control = formGroup.get(field);
     if (control instanceof FormControl) {
@@ -24,7 +24,7 @@ export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManag
     }
   });
 
-  if(updateFormManager != null && environment.hmr) {
+  if (updateFormManager != null && environment.hmr) {
     (updateFormManager.fm as any).updateStore(updateFormManager.formKey, formGroup);
   }
 }

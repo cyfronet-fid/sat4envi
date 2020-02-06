@@ -10,5 +10,5 @@ export interface IConfiguration extends IRemoteConfiguration {
   userLocalStorageKey: string;
   generalErrorKey: string;
   backendDateFormat: string;
-  momentDateFormat: string;
+  timezone: string;
 }

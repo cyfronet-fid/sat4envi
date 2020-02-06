@@ -40,7 +40,7 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
   ],
   imports: [
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot()]),
-    RouterModule.forRoot(appRoutes, {enableTracing: true}),
+    RouterModule.forRoot(appRoutes, {enableTracing: false }),
     ...ShareModule.modulesForRoot(),
     LoginModule,
     RegisterModule,

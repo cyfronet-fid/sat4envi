@@ -23,7 +23,9 @@ export class SceneService {
 
   get(productId: number, date: string) {
     this.store.setLoading(true);
-    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${productId}/scenes`, {params: {date}})
+    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${productId}/scenes`, {
+      params: {date: date, tz: this.CONFIG.timezone}
+    })
       .subscribe((entities) => applyTransaction(() => {
         this.store.set(entities);
         if (this.sceneQuery.getCount() > 0) {
