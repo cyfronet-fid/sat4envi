@@ -77,7 +77,7 @@ public class PasswordController {
             @ApiResponse(responseCode = "404", description = "The user was not found")
     })
     @PostMapping(value = "/password-change", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("!isAnonymous()")
+    @PreAuthorize("isAuthenticated()")
     public void changePassword(@RequestBody @Valid PasswordChangeRequest request) throws NotFoundException, BadRequestException {
         AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         passwordService.changePassword(request, appUserDetails.getUsername());

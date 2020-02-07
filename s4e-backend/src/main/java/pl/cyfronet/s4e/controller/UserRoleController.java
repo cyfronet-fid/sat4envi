@@ -21,7 +21,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "user-role", description = "The User Role API")
-@PreAuthorize("isAuthenticated()")
 public class UserRoleController {
     private final UserRoleService userRoleService;
 
@@ -33,7 +32,7 @@ public class UserRoleController {
             @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
     @PostMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isAuthenticated() && isAdmin()")
     public void add(@RequestBody @Valid CreateUserRoleRequest request) throws NotFoundException {
         userRoleService.addRole(request);
     }
@@ -46,7 +45,7 @@ public class UserRoleController {
             @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
     @DeleteMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isAuthenticated() && isAdmin()")
     public void remove(@RequestBody @Valid DeleteUserRoleRequest request) throws NotFoundException {
         userRoleService.removeRole(request);
     }
