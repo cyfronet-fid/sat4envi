@@ -38,7 +38,7 @@ public class TestJwtUtil {
     private static String createToken(AppUserDetails appUserDetails, ObjectMapper objectMapper) {
         Claims claims = Jwts.claims()
                 .setSubject(appUserDetails.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L));
+                .setExpiration(new Date(System.currentTimeMillis() + 10000L));
         claims.put(AUTHORITIES_KEY, appUserDetails.getAuthorities().stream()
                 .map(ga -> ga.getAuthority())
                 .collect(Collectors.toList()));

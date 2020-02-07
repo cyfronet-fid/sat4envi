@@ -29,7 +29,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "institution", description = "The Institution API")
-@PreAuthorize("isAuthenticated()")
 public class InstitutionController {
     private final InstitutionService institutionService;
 
@@ -40,7 +39,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
     })
     @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isAuthenticated() && isAdmin()")
     public void create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
         institutionService.save(request);
     }
@@ -52,7 +51,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create an institution")
     })
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                                          @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
@@ -66,7 +65,7 @@ public class InstitutionController {
     })
     @PageableAsQueryParam
     @GetMapping("/institutions")
-    @PreAuthorize("isAdmin()")
+    @PreAuthorize("isAuthenticated() && isAdmin()")
     public Page<InstitutionResponse> getAll(@Parameter(hidden = true) Pageable pageable) {
         return institutionService.getAll(pageable, InstitutionResponse.class);
     }
@@ -78,7 +77,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Institution not found")
     })
     @GetMapping("/institutions/{institution}")
-    @PreAuthorize("isInstitutionMember(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionMember(#institutionSlug)")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
         return institutionService.getInstitution(institutionSlug, InstitutionResponse.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
@@ -92,7 +91,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Institution not found")
     })
     @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isInstitutionManager(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
     public void update(@RequestBody UpdateInstitutionRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws NotFoundException, InstitutionUpdateException {
@@ -105,7 +104,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to delete an institution")
     })
     @DeleteMapping("/institutions/{institution}")
-    @PreAuthorize("isInstitutionAdmin(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
     }

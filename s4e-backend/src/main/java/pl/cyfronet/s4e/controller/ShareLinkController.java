@@ -28,7 +28,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 @Tag(name = "shareLink", description = "The Share link API")
-@PreAuthorize("isAuthenticated()")
 public class ShareLinkController {
     private final ApplicationEventPublisher eventPublisher;
 
@@ -42,7 +41,7 @@ public class ShareLinkController {
             @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
     })
     @PostMapping(value = "/share-link", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isZKMember()")
+    @PreAuthorize("isAuthenticated() && isZKMember()")
     public void shareLink(@RequestBody @Valid ShareLinkRequest request) {
         String requesterEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         val shareRequest = OnShareLinkEvent.Request.builder()
