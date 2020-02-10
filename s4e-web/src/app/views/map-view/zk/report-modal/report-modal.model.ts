@@ -11,6 +11,8 @@ export interface ReportModal extends Modal {
   mapImage: string;
   mapWidth: number;
   mapHeight: number;
+  sceneDate:  string;
+  productName: string;
 }
 
 export function isReportModal(modal: Modal): modal is ReportModal {

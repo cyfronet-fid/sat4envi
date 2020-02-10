@@ -2,7 +2,7 @@ import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
-import {FormControl, FormGroup} from '@ng-stack/forms';
+import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {isReportModal, ReportForm, ReportModal} from './report-modal.model';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../state/form/form.model';
@@ -10,6 +10,9 @@ import {ModalQuery} from '../../../../modal/state/modal.query';
 import {assertModalType} from '../../../../modal/utils/modal/misc';
 import {ReportGenerator} from './report-generator';
 import {HttpClient} from "@angular/common/http";
+import {combineLatest, Observable} from "rxjs";
+import {map} from "rxjs/operators";
+import moment from "moment";
 
 
 @Component({
@@ -21,14 +24,16 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
   image: string = '';
   imageWidth: number;
   imageHeight: number;
-  imagePositionTop: number = 0;
+  public disabled$: Observable<boolean>;
   public reportGenerator: ReportGenerator;
+  public productName: string|null = null;
+  public sceneDate: string|null = null;
   @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
 
   makeForm(): FormGroup<FormState["report"]> {
     return new FormGroup<ReportForm>({
-      caption: new FormControl<string>('Przykładowy Tytuł'),
-      notes: new FormControl<string>(''),
+      caption: new FormControl<string>('Przykładowy Tytuł', [Validators.maxLength(80), Validators.required]),
+      notes: new FormControl<string>('', [Validators.maxLength(800)]),
     });
   }
 
@@ -44,6 +49,10 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
     this.image = modal.mapImage;
     this.imageWidth = modal.mapWidth;
     this.imageHeight = modal.mapHeight;
+    if (modal.sceneDate != null) {
+      this.sceneDate = moment(modal.sceneDate).format('DD.MM.YYYY g. HH:mm');
+    }
+    this.productName = modal.productName;
 
     this.reportGenerator = new ReportGenerator(http, this.image, this.imageWidth, this.imageHeight);
   }
@@ -52,9 +61,19 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
     // noinspection JSIgnoredPromiseFromCall
     this.reportGenerator.loadAssets();
     super.ngOnInit();
+    this.disabled$ = combineLatest([this.reportGenerator.working$, this.reportGenerator.loading$])
+      .pipe(map(([w, l]) => w || l));
   }
 
   accept() {
-    this.reportGenerator.generate(this.form.controls.caption.value, this.form.controls.notes.value).subscribe(() => this.dismiss());
+    if (this.form.invalid) {
+      return;
+    }
+    this.reportGenerator.generate(
+      this.form.controls.caption.value,
+      this.form.controls.notes.value,
+      this.productName,
+      this.sceneDate
+    ).subscribe(() => this.dismiss());
   }
 }

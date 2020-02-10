@@ -9,13 +9,13 @@
           <img id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
         </div>
         <ul class="report__details">
-          <li>
+          <li *ngIf="sceneDate">
             <strong>Data</strong>
-            <span>12.01.2020 g. 14:32</span>
+            <span>{{sceneDate}}</span>
           </li>
-          <li>
-            <strong>Źródło </strong>
-            <span>Meteosat</span>
+          <li *ngIf="productName">
+            <strong>Źródło</strong>
+            <span>{{productName}}</span>
           </li>
         </ul>
       </aside>
@@ -24,17 +24,22 @@
           <li>
             <label for="caption" i18n>Tytuł</label>
             <input id="caption" formControlName="caption" type="text" />
+            <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
+            <!--suppress TypeScriptValidateTypes -->
+            <span class="error" *ngIf="form.controls.caption.hasError('maxlength') && form.controls.caption.touched" i18n>Maksymalna liczba znaków: 80</span>
           </li>
           <li>
             <label for="notes" i18n>Notatka</label>
             <textarea id="notes" formControlName="notes"></textarea>
+            <!--suppress TypeScriptValidateTypes -->
+            <span class="error" *ngIf="form.controls.notes.hasError('maxlength') && form.controls.notes.touched" i18n>Maksymalna liczba znaków: 800</span>
           </li>
         </ul>
       </div>
     </div>
     <div class="s4e-modal-footer">
-      <button class="button button--primary button--small"  type="submit" [disabled]="isWorking" (click)="accept()" i18n>Zapisz raport na dysk</button>
-      <button class="button button--cancel button--small" type="button" [disabled]="isWorking" (click)="dismiss()" i18n>Anuluj</button>
+      <button class="button button--primary button--small"  type="submit" [disabled]="disabled$ | async" (click)="accept()" i18n>Zapisz raport na dysk</button>
+      <button class="button button--cancel button--small" type="button" [disabled]="disabled$ | async" (click)="dismiss()" i18n>Anuluj</button>
     </div>
   </s4e-generic-modal>
 </form>
