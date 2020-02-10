@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- PDF Report generation [#345](https://github.com/cyfronet-fid/sat4envi/pull/345)
 - Timezone support for s4e-web [#363](https://github.com/cyfronet-fid/sat4envi/pull/363)
 - DisplayName field to Product and appropriate view [#365](https://github.com/cyfronet-fid/sat4envi/pull/365)
 - Migration with 'On delete cascade' for AppUser field on PasswordReset and EmailVerification tables [#364](https://github.com/cyfronet-fid/sat4envi/pull/364)

@@ -4,6 +4,7 @@ import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {REPORT_MODAL_ID} from './report-modal.model';
 import {By} from '@angular/platform-browser';
 import {MapModule} from '../../map.module';
+import {filter, take} from 'rxjs/operators';
 
 describe('ReportModalComponent', () => {
   let component: ReportModalComponent;
@@ -30,6 +31,9 @@ describe('ReportModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ReportModalComponent);
     component = fixture.componentInstance;
+    spyOn(component.reportGenerator, 'loadAssets').and.callFake(function () {
+      this.loading$.next(false);
+    });
     fixture.detectChanges();
   });
 
@@ -37,12 +41,10 @@ describe('ReportModalComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('submitting form should call accept', () => {
+  it('submitting form should call accept', async () => {
     const spy = spyOn(component, 'accept').and.stub();
+    await component.disabled$.pipe(filter(d => d === false), take(1)).toPromise();
     fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
     expect(spy).toHaveBeenCalled();
   });
-
-  // NOTE - THIS test will be done via E2E testing
-  it('should generate pdf', () => {});
 });
