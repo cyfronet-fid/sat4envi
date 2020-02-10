@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {combineLatest, Observable} from 'rxjs';
+import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
@@ -151,12 +151,18 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openReportModal() {
-    this.mapComponent.getMapData()
-      .subscribe(mapData => this.modalService.show<ReportModal>({
+    forkJoin([
+      this.mapComponent.getMapData(),
+      this.productQuery.selectActive().pipe(map(p => p == null ? null : p.name), take(1)),
+      this.sceneQuery.selectActive().pipe(map(s => s == null ? null : s.timestamp), take(1))
+    ])
+      .subscribe(([mapData, productName, sceneDate]) => this.modalService.show<ReportModal>({
         id: REPORT_MODAL_ID, size: 'lg',
         mapHeight: mapData.height,
         mapWidth: mapData.width,
         mapImage: mapData.image,
+        productName: productName,
+        sceneDate: sceneDate
       }));
     this.toggleZKOptions(false);
   }

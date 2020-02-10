@@ -1,14 +1,113 @@
 import * as JsPDF from 'jspdf';
 import {forkJoin, fromEvent, Observable, ReplaySubject} from 'rxjs';
 import {delay, filter, map, switchMap, take, tap} from 'rxjs/operators';
-import {HttpClient} from "@angular/common/http";
-import {fromPromise} from "rxjs/internal-compatibility";
+import {HttpClient} from '@angular/common/http';
+import {fromPromise} from 'rxjs/internal-compatibility';
+import moment from "moment";
+
+interface ImageMeta {
+  data: string;
+  width: number;
+  height: number;
+}
 
 interface ReportImages {
-  s4eLogo: null|{
-    data: string;
-    width: number;
-    height: number;
+  s4eLogo: null | ImageMeta;
+  partners: null | ImageMeta;
+}
+
+class LegendComposer {
+  private width: number;
+  private height: number;
+  private currentY: number;
+  readonly PPM = (72.0 / 25.6); // density per mm
+  readonly IMAGE_SCALING = 0.125;
+  readonly FONT_NAME = 'Ubuntu-Regular';
+  private direction: 'bottom-top' | 'top-bottom';
+
+  constructor(private doc: JsPDF,
+              private xStart: number,
+              private yStart: number,
+              private xEnd: number,
+              private yEnd: number,
+              private defaultSpacing: number = 0) {
+
+    this.width = this.xEnd - this.xStart;
+    this.height = this.yEnd - this.yStart;
+    this.direction = 'top-bottom';
+    this.currentY = this.yStart;
+  }
+
+  private advanceY(distance: number) {
+    if (this.direction === 'top-bottom') {
+      this.currentY += distance;
+    } else if (this.direction === 'bottom-top') {
+      this.currentY -= distance;
+    }
+  }
+
+  public insertTextBox(text: string, options?: Partial<{fontSize: number, fontStyle: 'bold'|'normal', align: 'right' | 'left' | 'center', margin}>) {
+    options = options || {};
+    let align = options.align || 'left';
+    let marginTop = options.margin || this.defaultSpacing;
+    let fontStyle = options.fontStyle || 'normal';
+
+    if (options.fontSize !== undefined) {
+      this.doc.setFontSize(options.fontSize);
+    }
+
+    this.doc.setFont(this.FONT_NAME, fontStyle);
+
+    this.advanceY(marginTop);
+
+    let x: number = this.xStart;
+    let y: number = this.currentY;
+
+    switch (align) {
+      case 'center': {
+        x = this.xStart + this.width / 2.0;
+        break;
+      }
+      case 'right': {
+        x = this.xEnd;
+        break;
+      }
+    }
+    const textBoxHeight = this.doc.splitTextToSize(text, this.width).length * this.doc.getFontSize() / this.PPM * this.doc.getLineHeightFactor();
+
+    if (this.direction === 'bottom-top') {
+      y -= textBoxHeight;
+    }
+
+    this.doc.text(text, x, y, {maxWidth: this.width, align: align, baseline: 'top'});
+
+    this.advanceY(textBoxHeight);
+  }
+
+  public insertImage(img: ImageMeta, marginTop?: number) {
+    this.advanceY(marginTop || this.defaultSpacing);
+
+    const imgWidthScaled = img.width * this.IMAGE_SCALING;
+    const imgHeightScaled = img.height * this.IMAGE_SCALING;
+
+    let y = this.currentY;
+
+    if (this.direction === 'bottom-top') {
+      y -= imgHeightScaled;
+    }
+
+    this.doc.addImage(img.data, 'PNG', this.xStart + (this.width - imgWidthScaled) / 2.0, y, imgWidthScaled, imgHeightScaled);
+
+    this.advanceY(imgHeightScaled);
+  }
+
+  setFlow(direction: 'bottom-top' | 'top-bottom') {
+    if (direction === 'top-bottom') {
+      this.currentY = this.yStart;
+    } else if (direction === 'bottom-top') {
+      this.currentY = this.yEnd;
+    }
+    this.direction = direction;
   }
 }
 
@@ -17,7 +116,8 @@ export class ReportGenerator {
   public readonly working$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   private images: ReportImages = {
-    s4eLogo: null
+    s4eLogo: null,
+    partners: null,
   };
 
   constructor(private http: HttpClient,
@@ -37,7 +137,7 @@ export class ReportGenerator {
           const r = fromEvent(reader, 'load').pipe(take(1), switchMap(
             () => {
               const image = new Image();
-              const _r = fromEvent(image, 'load').pipe(tap(() => {
+              const _r = fromEvent(image, 'load').pipe(take(1), tap(() => {
                 this.images[key] = {
                   height: image.height,
                   width: image.width,
@@ -56,20 +156,20 @@ export class ReportGenerator {
       );
   }
 
-  private loadFonts(): Observable<any> {
-    return fromPromise(import('./fonts/Ubuntu-Regular-normal').then((fontModule) => {
+  private loadFont(fontPromise: Promise<any>): Observable<any> {
+    return fromPromise(fontPromise.then((fontModule) => {
       fontModule.registerFont(JsPDF);
     }));
   }
 
-  public generate(caption: string, notes: string): Observable<any> {
+  public generate(caption: string, notes: string, productName: string, sceneDate: string): Observable<any> {
     // ignore this call if the generator is doing something
     return this.working$.pipe(
       take(1),
       filter(w => !w),
       tap(() => this.working$.next(true)),
       delay(0),
-      tap(() => this.combineDocument(caption, notes)),
+      tap(() => this.combineDocument(caption, notes, productName, sceneDate)),
       delay(0),
       tap(() => this.working$.next(false))
     );
@@ -79,16 +179,16 @@ export class ReportGenerator {
    *
    * @return height of the added text box
    */
-  private insertTextBox(doc: JsPDF, text: string, x: number, y: number, width: number, align: 'right'|'left'|'center' = 'left'): number {
-    doc.text(text, x, y, {maxWidth: width, align: align});
-    return 0;
-  }
 
-  private combineDocument(caption: string, notes: string) {
-    caption = 'POLSKA - mapa sytuacyjna';
-    notes = 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using \'Content here, content here\', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum\' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).';
+  private combineDocument(caption: string, notes: string, productName: string, sceneDate: string) {
+    if(notes.length > 800) {
+      throw Error('description too long');
+    }
+    if(caption.length > 80) {
+      throw Error('caption too long');
+    }
 
-    let doc = new JsPDF({
+    const doc = new JsPDF({
       orientation: 'landscape',
       unit: 'mm',
       format: 'a4'
@@ -96,70 +196,79 @@ export class ReportGenerator {
 
     const A4Width = 297;
     const A4Height = 210;
-    const DPM = (72.0 / 25.6); // density per mm
-    const A4Ration = A4Width / A4Height;
-
     const printImageHeight = this.imageHeight / this.imageWidth * A4Width;
-
-    const imageYOffset = (A4Height - printImageHeight) / 2.0;
-
     const margin = 10;
     const middleMargin = margin;
-    const legendTextMargin = 40;
 
     const headerFontSize = 14.0;
     const noteFontSize = 10.0;
     const detailsFontSize = 9.0;
     const noteHeaderFontSize = 12.0;
 
-    // noinspection JSSuspiciousNameCombination
-    const legendX = A4Height;
-    const maxTextWidth = A4Width - legendX - margin;
+    const composer = new LegendComposer(doc, A4Height, margin, A4Width - margin, A4Height - margin);
 
-    doc.setFont('Ubuntu-Regular');
-    doc.addImage(this.image, 'PNG', margin, margin, A4Height - margin - middleMargin, A4Height - 2 * margin);
+    composer.insertImage(this.images.s4eLogo);
 
-    const logoWidthScaled = this.images.s4eLogo.width / 8.0;
-    const logoHeightScaled = this.images.s4eLogo.height / 8.0;
+    composer.insertTextBox(caption, {fontStyle: 'bold', fontSize: headerFontSize, margin: 5, align: 'center'});
+    composer.insertTextBox('Opis', {fontStyle: 'bold', fontSize: noteHeaderFontSize, margin: 5});
+    composer.insertTextBox(notes, {fontSize: noteFontSize, margin: 2.5});
+    composer.insertTextBox('Szczegóły', {fontStyle: 'bold', fontSize: noteHeaderFontSize, margin: 5});
 
-    doc.addImage(this.images.s4eLogo.data, 'PNG', legendX + (maxTextWidth - logoWidthScaled) / 2.0, margin, logoWidthScaled, logoHeightScaled);
+    if (productName) {
+      composer.insertTextBox('Produkt', {fontSize: noteFontSize, fontStyle: 'bold', margin: 2});
+      composer.insertTextBox(productName, {fontSize: noteFontSize});
+    }
 
-    doc.setFontSize(headerFontSize);
-    // this.insertTextBox(doc, caption, )
-    doc.text(caption, (A4Width - legendX - margin) / 2 + A4Height, legendTextMargin, {
-      maxWidth: maxTextWidth,
-      align: 'center'
-    });
+    if (sceneDate) {
+      composer.insertTextBox('Data wykonania zdjęcia', {fontSize: noteFontSize, fontStyle: 'bold', margin: 5});
+      composer.insertTextBox(sceneDate, {fontSize: noteFontSize});
+    }
 
-    doc.setFontSize(noteHeaderFontSize);
-    // let textWidth = doc.getStringUnitWidth(notes) * noteFontSize / DPM;
-    doc.text('Opis', legendX, legendTextMargin, {maxWidth: maxTextWidth});
-    doc.setFontSize(noteFontSize);
+    composer.insertTextBox('Data wygenerowania raportu', {fontSize: noteFontSize, fontStyle: 'bold', margin: 5});
+    composer.insertTextBox(moment(new Date()).format('DD.MM.YYYY g. HH:mm'), {fontSize: noteFontSize});
 
-    doc.text(notes, legendX, legendTextMargin + 5 + noteHeaderFontSize, {maxWidth: maxTextWidth});
+    composer.setFlow('bottom-top');
 
-    const detailsY = legendTextMargin + 60;
-    doc.setFontSize(detailsFontSize);
-    doc.text('Szczegóły', legendX, detailsY, {maxWidth: maxTextWidth});
+    composer.insertTextBox('© 2020 sat4envi', {fontSize: detailsFontSize, align: 'center'});
+    composer.insertTextBox('Mapa została wygenerowana w aplikacji www.sat4envi.pl', {fontSize: detailsFontSize, align: 'center', margin: 2});
 
-    doc.text('Data wykonania zdjęcia', legendX, detailsY + 5);
-    doc.text('Meteosat kanał 008', legendX, detailsY + 10);
+    composer.insertImage(this.images.partners, 3);
 
-    doc.text('Produkt', legendX, detailsY + 5);
-    doc.text('12.01.2020 g. 14:00', legendX, detailsY + 10);
-
-    doc.text('Data wykonania raportu', legendX, detailsY + 15);
-    doc.text('15.01.2020 g. 13:50', legendX, detailsY + 20);
+    this.drawMapImage(doc, margin, A4Height, middleMargin);
 
     doc.save(`RAPORT.${new Date().toISOString()}.pdf`);
   }
 
+  private drawMapImage(doc: JsPDF, margin, A4Height, middleMargin) {
+    doc.rect(margin, margin, A4Height - margin - middleMargin, A4Height - 2 * margin, null);
+    doc.clip();
+
+    let imageScaleFactor = (A4Height - 2 * margin) / this.imageHeight;
+    let printHeight = A4Height - 2 * margin;
+
+    if (this.imageHeight > this.imageWidth) {
+      imageScaleFactor = (A4Height - 2*margin) / this.imageWidth;
+      printHeight = this.imageHeight * imageScaleFactor
+    }
+
+    let printWidth = this.imageWidth * imageScaleFactor;
+
+    doc.addImage(this.image, 'PNG', A4Height / 2 - printWidth / 2, A4Height / 2 - printHeight / 2, printWidth, printHeight);
+
+    doc.setDrawColor('#3a3a3a');
+    doc.rect(margin, margin, A4Height - margin - middleMargin, A4Height - 2 * margin);
+  }
+
   loadAssets() {
     forkJoin([
-      this.loadFonts(),
-      this.loadImage('./assets/images/logo_s4e_color.png', 's4eLogo')
+      this.loadFont(import('./fonts/Ubuntu-Regular-normal')),
+      this.loadFont(import('./fonts/Ubuntu-Regular-bold')),
+      this.loadImage('./assets/images/logo_s4e_color.png', 's4eLogo'),
+      this.loadImage('./assets/images/logo_partners.png', 'partners')
     ]).subscribe(
-      () => this.loading$.next(false)
+      () =>
+        this.loading$.next(false),
+      error => this.loading$.error(error)
     );
   }
 }
