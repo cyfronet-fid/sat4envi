@@ -44,6 +44,8 @@ jobs:
     - name: Maven test
       run: ./mvnw test
     - name: E2E tests
+      env: 
+        CYPRESS_DONT_DELETE_DOWNLOADED_FILES: true
       run: cd s4e-web && npm run e2e
     - name: Containers logs
       if: failure()
@@ -62,3 +64,10 @@ jobs:
       with:
         name: e2e-results-videos
         path: s4e-web/cypress/videos
+    # Enable after downloading files in E2E has been resolved
+    #- name: E2E upload Report PDF
+    #  uses: actions/upload-artifact@v1
+    #  if: success()
+    #  with:
+    #    name: report.pdf
+    #    path: /root/Downloads/RAPORT.1990-01-01T00_00_00.000Z.pdf
