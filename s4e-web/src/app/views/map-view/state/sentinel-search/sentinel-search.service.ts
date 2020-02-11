@@ -23,14 +23,16 @@ export class SentinelSearchService {
         mission: 'Sentinel-1',
         instrument: 'SAR-C',
         sensingDate: '2019-12-05T18:27:29',
-        size: '6.97 GB'
+        size: '6.97 GB',
+        url: 'http://s4e-sentinel-training.storage.cloud.cyfronet.pl/S1B_IW_GRDH_1SDV_20200210T045115_20200210T045144_020202_0263F2_0D45.SAFE.zip'
       }),
       createSentinelSearchResult({
         image: null,
         mission: 'Sentinel-1',
         instrument: 'SAR-C',
         sensingDate: '2019-12-05T18:27:29',
-        size: '6.97 GB'
+        size: '6.97 GB',
+        url: 'http://s4e-sentinel-training.storage.cloud.cyfronet.pl/S1B_IW_GRDH_1SDV_20200210T045115_20200210T045144_020202_0263F2_0D45.SAFE.zip'
       })
     ]).pipe(delay(1500), finalize(() => this.store.setLoading(false))).subscribe(
       data => this.store.set(data),
