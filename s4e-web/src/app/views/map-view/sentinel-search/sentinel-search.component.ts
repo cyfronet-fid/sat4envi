@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Sentinel, SentinelSearchForm, SentinelSearchResult} from '../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
@@ -16,7 +16,7 @@ import {FormState} from '../../../state/form/form.model';
   templateUrl: './sentinel-search.component.html',
   styleUrls: ['./sentinel-search.component.scss']
 })
-export class SentinelSearchComponent extends GenericFormComponent<SentinelSearchQuery, SentinelSearchForm>{
+export class SentinelSearchComponent extends GenericFormComponent<SentinelSearchQuery, SentinelSearchForm> implements OnInit {
   searchResults$: Observable<SentinelSearchResult[]>;
   loading$: Observable<boolean>;
   sentinels$: Observable<Sentinel[]>;

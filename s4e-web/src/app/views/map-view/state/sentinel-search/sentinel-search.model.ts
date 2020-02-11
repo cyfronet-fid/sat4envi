@@ -14,6 +14,7 @@ export interface SentinelSearchResult {
   instrument: string;
   sensingDate: string;
   size: string;
+  url: string;
 }
 
 export interface Sentinel {
