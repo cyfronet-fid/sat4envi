@@ -8,6 +8,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * There is ON CASCADE DELETE on Institution
+ */
 @Entity
 @Data
 @Builder

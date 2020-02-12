@@ -7,6 +7,9 @@ import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * If you delete user, you will also delete password_reset and email_verification entries
+ */
 @Entity
 @Data
 @Builder
@@ -49,3 +52,4 @@ public class AppUser {
         roles.remove(role);
     }
 }
+

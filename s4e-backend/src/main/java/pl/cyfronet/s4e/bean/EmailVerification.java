@@ -8,6 +8,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+/**
+ * There is ON CASCADE DELETE on Appuser
+ */
 @Entity
 @Data
 @Builder

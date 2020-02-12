@@ -84,9 +84,6 @@ public class PasswordControllerTest {
     public void beforeEach() {
         reset();
 
-        greenMail = new GreenMailSupplier().get();
-        greenMail.start();
-
         securityAppUser = appUserRepository.save(AppUser.builder()
                 .email(PROFILE_EMAIL)
                 .name("Get")
@@ -94,6 +91,9 @@ public class PasswordControllerTest {
                 .password(passwordEncoder.encode("password"))
                 .enabled(true)
                 .build());
+
+        greenMail = new GreenMailSupplier().get();
+        greenMail.start();
     }
 
     @AfterEach

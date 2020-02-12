@@ -8,6 +8,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
+/**
+ * If you delete Product, you will also delete all Scene entries
+ */
 @Entity
 @Data
 @Builder
