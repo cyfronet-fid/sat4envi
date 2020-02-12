@@ -6,6 +6,9 @@ import org.hibernate.annotations.NaturalId;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+/**
+ * If you delete Institution, you will also delete all Group entries
+ */
 @Entity
 @Data
 @Builder
