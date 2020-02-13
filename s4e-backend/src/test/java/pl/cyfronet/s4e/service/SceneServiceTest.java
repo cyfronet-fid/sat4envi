@@ -56,6 +56,7 @@ public class SceneServiceTest {
     public void shouldReturnFilteredScenes() {
         Product product = Product.builder()
                 .name("testProductType")
+                .displayName("testProductType")
                 .build();
         productRepository.save(product);
 
@@ -90,6 +91,7 @@ public class SceneServiceTest {
     public void shouldSaveScene(){
         Product product = Product.builder()
                 .name("testProductType")
+                .displayName("testProductType")
                 .build();
         productRepository.save(product);
 
@@ -115,6 +117,7 @@ public class SceneServiceTest {
                 .build();
         Product product = Product.builder()
                 .name("WV-IR")
+                .displayName("WV-IR")
                 .build();
         productRepository.save(product);
         when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
@@ -127,6 +130,7 @@ public class SceneServiceTest {
     public void shouldReturnProduct() throws NotFoundException {
         Product product = Product.builder()
                 .name("WV-IR")
+                .displayName("WV-IR")
                 .build();
         productRepository.save(product);
         when(s3Util.getProduct(anyString())).thenReturn("WV-IR");

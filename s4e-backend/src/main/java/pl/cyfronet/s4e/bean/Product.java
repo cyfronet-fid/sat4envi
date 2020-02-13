@@ -20,6 +20,8 @@ public class Product {
     private Long id;
     @NotEmpty
     private String name;
+    @NotEmpty
+    private String displayName;
     @OneToMany(mappedBy = "product")
     private List<Scene> scenes;
     private String description;

@@ -60,6 +60,7 @@ public class GeoServerServiceIntegrationTest {
         Product product = productRepository.save(
                 Product.builder()
                         .name("productType")
+                        .displayName("productType")
                         .build());
         Scene scene = sceneRepository.save(
                 Scene.builder()

@@ -4,4 +4,6 @@ public interface BasicProductResponse {
     Long getId();
 
     String getName();
+
+    String getDisplayName();
 }

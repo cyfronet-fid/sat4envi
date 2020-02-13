@@ -8,6 +8,8 @@ public interface ProductResponse {
 
     String getName();
 
+    String getDisplayName();
+
     @Value("#{@markdownHtmlUtil.markdownToStringHtml(target.description)}")
     String getDescription();
 

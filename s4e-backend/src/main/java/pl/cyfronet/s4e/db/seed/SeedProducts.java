@@ -101,14 +101,17 @@ public class SeedProducts implements ApplicationRunner {
         List<Product> products = Arrays.asList(new Product[]{
                 Product.builder()
                         .name("108m")
+                        .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
                 Product.builder()
                         .name("Setvak")
+                        .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
                 Product.builder()
                         .name("WV-IR")
+                        .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
                         .build(),
         });
@@ -149,22 +152,27 @@ public class SeedProducts implements ApplicationRunner {
         List<Product> products = Arrays.asList(new Product[]{
                 Product.builder() // 108m
                         .name("Zachmurzenie (108m)")
+                        .displayName("Zachmurzenie (108m)")
                         .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
                         .build(),
                 Product.builder() // NatCol
                         .name("Detekcja chmur lodowych i śniegu")
+                        .displayName("Detekcja chmur lodowych i śniegu")
                         .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
                         .build(),
                 Product.builder() // Polsafi
                         .name("Burze")
+                        .displayName("Burze")
                         .description("Obraz satelitarny HRV z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
                         .build(),
                 Product.builder() // RGB24_micro
                         .name("Mikrofizyka chmur")
+                        .displayName("Mikrofizyka chmur")
                         .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
                         .build(),
                 Product.builder() // Setvak_Eu
                         .name("Chmury konwekcyjne")
+                        .displayName("Chmury konwekcyjne")
                         .description("Obraz satelitarny IR z dedykowaną paletą barwną")
                         .build(),
         });

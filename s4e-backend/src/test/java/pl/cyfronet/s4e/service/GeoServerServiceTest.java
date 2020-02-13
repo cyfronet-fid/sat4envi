@@ -74,6 +74,7 @@ class GeoServerServiceTest {
         product = productRepository.save(
                 Product.builder()
                         .name("productType")
+                        .displayName("productType")
                         .build());
         scene = sceneRepository.save(
                 Scene.builder()
