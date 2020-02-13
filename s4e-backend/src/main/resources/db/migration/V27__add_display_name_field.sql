@@ -1,0 +1,2 @@
+ALTER TABLE product ADD COLUMN
+    display_name VARCHAR UNIQUE NOT NULL;

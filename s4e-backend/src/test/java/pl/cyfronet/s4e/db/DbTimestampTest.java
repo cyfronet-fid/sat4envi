@@ -34,6 +34,7 @@ public class DbTimestampTest {
     public void shouldSaveTimestampWithoutDSTCorrections() {
         val product = productRepository.save(Product.builder()
                 .name("testProductType")
+                .displayName("testProductType")
                 .build());
 
         // A datetime, which if Polish timezone is used gets shifted one hour forward

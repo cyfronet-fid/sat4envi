@@ -58,14 +58,17 @@ public class ProductControllerTest {
                 .build();
         List<Product> products = Arrays.asList(Product.builder()
                         .name("108m")
+                        .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .build(),
                 Product.builder()
                         .name("Setvak")
+                        .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .build(),
                 Product.builder()
                         .name("WV-IR")
+                        .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
                         .legend(legend)
                         .build());
@@ -87,6 +90,7 @@ public class ProductControllerTest {
         result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is(equalTo("WV-IR"))))
+                .andExpect(jsonPath("displayName", is(equalTo("WV-IR"))))
                 .andExpect(jsonPath("description", is(equalTo("<p>Opis produktu WV-IR.</p>\n"))))
                 .andExpect(jsonPath("$.legend['type']", is("gradient")))
                 .andExpect(jsonPath("$.legend['url']", is("url")))

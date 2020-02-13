@@ -66,6 +66,7 @@ public class SceneControllerTest {
     public void shouldReturnFilteredScenes() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -104,6 +105,7 @@ public class SceneControllerTest {
     public void shouldReturnFilteredScenesInChosenTimeZone() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -149,6 +151,7 @@ public class SceneControllerTest {
     public void shouldReturnZuluZonedTimestampByDefault() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
         sceneRepository.save(Scene.builder()
@@ -169,6 +172,7 @@ public class SceneControllerTest {
     public void shouldReturnZonedTimestamp() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -194,6 +198,7 @@ public class SceneControllerTest {
     public void shouldReturnZonedTimestampsAroundDST() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -260,6 +265,7 @@ public class SceneControllerTest {
     public void shouldReturn400IfZoneIncorrect() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -273,6 +279,7 @@ public class SceneControllerTest {
     public void shouldReturnAvailabilityDates() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -332,6 +339,7 @@ public class SceneControllerTest {
     public void shouldReturnAvailabilityDatesWithTimezone() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
@@ -386,6 +394,7 @@ public class SceneControllerTest {
     public void shouldRedirectToDownloadLink() throws Exception {
         val product = productRepository.save(Product.builder()
                 .name("108m")
+                .displayName("108m")
                 .description("sth")
                 .build());
 
