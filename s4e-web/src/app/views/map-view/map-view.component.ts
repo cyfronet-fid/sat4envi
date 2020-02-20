@@ -32,6 +32,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {map, switchMap, take} from 'rxjs/operators';
 import {ProfileQuery} from '../../state/profile/profile.query';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
+import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 
 @Component({
   selector: 's4e-map-view',
@@ -168,14 +169,16 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openSaveViewModal() {
-    this.mapComponent.getMapData()
+    this.mapComponent.getMapData().pipe(
+      switchMap(data => resizeImage(data.image, 170, 105))
+    )
       .subscribe(mapData => this.modalService.show<SaveConfigModal>(
         {
           id: SAVE_CONFIG_MODAL_ID,
           size: 'lg',
           viewConfiguration: {
             ...this.viewConfigurationQuery.getCurrent(),
-            thumbnail: mapData.image
+            thumbnail: mapData
           }
         }
       ));
@@ -184,12 +187,12 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   openShareViewModal() {
     combineLatest([
-      this.mapComponent.getMapData(),
+      this.mapComponent.getMapData().pipe(switchMap(data => resizeImage(data.image, 400, 247))),
       this.mapQuery.selectQueryParamsFromStore().pipe(take(1), map(query => this.router.serializeUrl(this.router.createUrlTree([], {queryParams: query}))))
     ])
       .subscribe(([mapData, path]) => this.modalService.show<ConfigurationModal>({
         id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
-        mapImage: mapData.image,
+        mapImage: mapData,
         configurationUrl: path
       }));
     this.toggleZKOptions(false);

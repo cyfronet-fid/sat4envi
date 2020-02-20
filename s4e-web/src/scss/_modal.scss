@@ -42,12 +42,11 @@
       margin-bottom: $space-small;
       border-radius: $border-radius-default;
       width: 275px;
-      height: 239px;
 
       > #map-miniature {
-        object-fit: cover;
+        //object-fit: cover;
         width: 100%;
-        height: 100%;
+        //height: 100%;
       }
     }
   }
