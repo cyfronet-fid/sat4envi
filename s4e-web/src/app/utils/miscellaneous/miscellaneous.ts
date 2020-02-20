@@ -3,6 +3,11 @@ import {FormState} from '../../state/form/form.model';
 import {environment} from '../../../environments/environment';
 import {HashMap} from '@datorama/akita';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {Base64Image} from '../../common/types';
+import {Observable} from 'rxjs';
+import {InjectorModule} from '../../common/injector.module';
+import {map, take} from 'rxjs/operators';
+import {DOCUMENT} from '@angular/common';
 
 export type ServerApiError = HashMap<string[]> | { __exception__: string, __stacktrace__: string, __general__: string[] }
 
@@ -63,4 +68,52 @@ export function devRestoreFormState<K extends keyof FormState>(formValue: any, f
       this.devRestoreFormState(formValue, control);
     }
   });
+}
+
+
+export function resizeImage(data: Base64Image, outWidth: number, outHeight: number): Observable<Base64Image> {
+  const document = InjectorModule.Injector.get<Document>(DOCUMENT);
+  let canvas: HTMLCanvasElement = document.createElement('canvas') as HTMLCanvasElement;
+  canvas.width = outWidth;
+  canvas.height = outHeight;
+  const ctx = canvas.getContext('2d');
+
+  const out: Observable<any> = new Observable(
+    (observer) => {
+      const image = new Image();
+      image.onload = () => {
+        observer.next(image);
+        observer.complete();
+      };
+
+      image.src = data;
+    });
+
+  return out.pipe(
+    take(1),
+    map((img) => {
+      let w: number;
+      let h: number;
+      let x: number = 0;
+      let y: number = 0;
+
+      const ratio = outWidth / outHeight;
+      const imgRatio = img.width / img.height;
+
+      // img is wider
+      if (ratio  < imgRatio) {
+        h = outHeight;
+        w = imgRatio * h;
+        x = -(w * 0.5 - outWidth * 0.5);
+      }
+      //img is higher
+      else {
+        w = outWidth;
+        h = w / imgRatio;
+        y = -(h * 0.5 - outHeight * 0.5);
+      }
+
+      ctx.drawImage(img, x, y, w, h);
+      return canvas.toDataURL('image/png');
+    }));
 }
