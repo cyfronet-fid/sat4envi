@@ -101,7 +101,7 @@ You can also disable GeoServer workspace reset by setting `seed.products.sync-ge
 This may come handy if the GeoServer workspace has a lot of layers and operation of deleting it would trigger
 the `RestTemplate`'s timeout.
 
-There are currently two data sets which the backend is capable of seeding: `minio-data-v1` and `s4e-demo`.
+There are currently 3 data sets which the backend is capable of seeding: `minio-data-v1`, `s4e-demo` and `s4e-demo-2`.
 The default is `minio-data-v1`, but another one can be set with the property `seed.products.data-set`.
 
 `minio-data-v1` contains a single day of data for three products.
@@ -115,6 +115,10 @@ Moreover, you must set a proper bucket by setting `s3.bucket=s4e-demo` so that l
 GeoServer have correct bucket set.
 (The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
 the products seeding by setting the profile `skip-seed-products`.)
+
+`s4e-demo-2` is an extension of `s4e-demo`, which has 14 products with variable amount of data.
+Like in the case of the base dataset, the data is stored in the Cyfronet CEPH in bucket `s4e-demo-2`.
+You have to observe the steps for `s4e-demo` with updated dataset and bucket names.
 
 #### Seeding with s4e-demo data
 

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Data set: s4e-demo-2 [#369](https://github.com/cyfronet-fid/sat4envi/pull/369)
 - Thumbnail scaling before POSTing in share view and save view [#341](https://github.com/cyfronet-fid/sat4envi/pull/367/files)
 - PDF Report generation [#345](https://github.com/cyfronet-fid/sat4envi/pull/345)
 - Timezone support for s4e-web [#363](https://github.com/cyfronet-fid/sat4envi/pull/363)

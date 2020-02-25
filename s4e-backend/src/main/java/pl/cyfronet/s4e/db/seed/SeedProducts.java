@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.db.seed;
 
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.boot.ApplicationArguments;
@@ -37,13 +38,24 @@ import java.util.function.Function;
 public class SeedProducts implements ApplicationRunner {
     private static final DateTimeFormatter DATE_TIME_PATTERN = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
     private static final DateTimeFormatter DATE_PATTERN = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter YEAR_PATTERN = DateTimeFormatter.ofPattern("yyyy");
+    private static final DateTimeFormatter TIME_PATTERN = DateTimeFormatter.ofPattern("HHmm");
 
     @Builder
+    @Value
     private static class ProductParams {
-        private final LocalDateTime startInclusive;
-        private final LocalDateTime endExclusive;
-        private final String s3PathFormat;
-        private final String layerNameFormat;
+        LocalDateTime startInclusive;
+        LocalDateTime endExclusive;
+        String s3PathFormat;
+        String layerNameFormat;
+        @Builder.Default Duration increment = Duration.ofHours(1);
+    }
+
+    @Builder
+    @Value
+    private static class ProductParamsPair {
+        Product product;
+        ProductParams params;
     }
 
     private final SeedProperties seedProperties;
@@ -90,6 +102,9 @@ public class SeedProducts implements ApplicationRunner {
                 break;
             case "s4e-demo":
                 seedProductsS4EDemo();
+                break;
+            case "s4e-demo-2":
+                seedProductsS4EDemo2();
                 break;
             default:
                 throw new IllegalStateException("Data set: '" + seedProperties.getDataSet() + "' not recognized");
@@ -216,6 +231,207 @@ public class SeedProducts implements ApplicationRunner {
         }
     }
 
+    private void seedProductsS4EDemo2() {
+        log.info("Seeding Products: s4e-demo-2");
+        List<ProductParamsPair> prods = new ArrayList<>();
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("H03")
+                        .displayName("Intensywność opadu")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia  intensywność opadu w mm/h.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2020, 2, 1, 0, 0))
+                        .layerNameFormat("H03_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Opad_H03/{date}/H3_{date}_{time}.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("H05_03")
+                        .displayName("Suma opadu (3h)")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .increment(Duration.ofHours(3))
+                        .layerNameFormat("H05_03_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_03.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("H05_06")
+                        .displayName("Suma opadu (6h)")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .increment(Duration.ofHours(3))
+                        .layerNameFormat("H05_06_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_06.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("H05_12")
+                        .displayName("Suma opadu (12h)")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .increment(Duration.ofHours(3))
+                        .layerNameFormat("H05_12_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_12.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("H05_24")
+                        .displayName("Suma opadu (24h)")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .increment(Duration.ofHours(3))
+                        .layerNameFormat("H05_24_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_24.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("OST")
+                        .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
+                        .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .layerNameFormat("OST_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/OST/{date}/{timestamp}_WV-IR.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder() // ex 3
+                        .name("Polsafi")
+                        .displayName("Polsafi, wyładowania atmosferyczne")
+                        .description("Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
+                        .layerNameFormat("Polsafi_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("SM1")
+                        .displayName("Wilgotność gleby - SM1")
+                        .description("Procentowy wskaźnik wilgotności gleby - SM1")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2020, 2, 3, 0, 0))
+                        .increment(Duration.ofDays(1))
+                        .layerNameFormat("SM1_{date}")
+                        .s3PathFormat("MSG_Products_WM/Soil_Moisture/SM1/{year}/SM1_{date}_WM.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("SM2")
+                        .displayName("Wilgotność gleby - SM2")
+                        .description("Procentowy wskaźnik wilgotności gleby - SM2")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 1, 2, 0, 0))
+                        .endExclusive(LocalDateTime.of(2020, 1, 17, 0, 0))
+                        .increment(Duration.ofDays(1))
+                        .layerNameFormat("SM2_{date}")
+                        .s3PathFormat("MSG_Products_WM/Soil_Moisture/SM2/{year}/SM2_{date}_WM.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder()
+                        .name("Dust")
+                        .displayName("Pył w atmosferze")
+                        .description("Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2020, 2, 1, 0, 0))
+                        .layerNameFormat("Dust_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Dust/{date}/{timestamp}_RGB_DUST_Eu.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder() // ex 2
+                        .name("NatCol")
+                        .displayName("Detekcja chmur lodowych i śniegu")
+                        .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 07, 1, 0, 0))
+                        .layerNameFormat("NatCol_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder() // ex 1
+                        .name("108m")
+                        .displayName("Zachmurzenie (108m)")
+                        .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 11, 1, 0, 0))
+                        .layerNameFormat("108m_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder() // ex 4
+                        .name("RGB24_micro")
+                        .displayName("Mikrofizyka chmur")
+                        .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
+                        .layerNameFormat("RGB24micro_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
+                        .build())
+                .build());
+        prods.add(ProductParamsPair.builder()
+                .product(Product.builder() // ex 5
+                        .name("Setvak_Eu")
+                        .displayName("Chmury konwekcyjne")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
+                        .build())
+                .params(ProductParams.builder()
+                        .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
+                        .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
+                        .layerNameFormat("Setvak_{timestamp}")
+                        .s3PathFormat("MSG_Products_WM/Setvak_Eu/{date}/{timestamp}_Eu_centr_ir_108_setvak_wtemp.tif")
+                        .build())
+                .build());
+
+        prods.stream()
+                .map(ProductParamsPair::getProduct)
+                .forEach(productRepository::save);
+
+        for (val pair: prods) {
+            seedScenes(pair.getProduct(), pair.getParams());
+        }
+    }
+
     private void seedOverlays() {
         log.info("Seeding SldStyles");
         val sldStyles = new ArrayList<SldStyle>();
@@ -255,13 +471,15 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private void seedScenes(Product product, ProductParams params) {
-        val count = Duration.between(params.startInclusive, params.endExclusive).toHours();
+        val count = Duration.between(params.startInclusive, params.endExclusive).dividedBy(params.increment);
         log.info("Seeding scenes of product '" + product.getName() + "', " + count + " total (from " + params.startInclusive + " to " + params.endExclusive + ")");
         for (long i = 0; i < count; i++) {
-            val timestamp = params.startInclusive.plusHours(i);
+            val timestamp = params.startInclusive.plus(params.increment.multipliedBy(i));
             Function<String, String> replacer = (str) -> str
                     .replace("{timestamp}", DATE_TIME_PATTERN.format(timestamp))
-                    .replace("{date}", DATE_PATTERN.format(timestamp));
+                    .replace("{date}", DATE_PATTERN.format(timestamp))
+                    .replace("{year}", YEAR_PATTERN.format(timestamp))
+                    .replace("{time}", TIME_PATTERN.format(timestamp));
             val layerName = replacer.apply(params.layerNameFormat);
             val s3Path = replacer.apply(params.s3PathFormat);
 
@@ -287,7 +505,7 @@ public class SeedProducts implements ApplicationRunner {
                     try {
                         sceneRepository.delete(scene);
                     } catch (Exception e1) {
-                        // ignore
+                        log.warn("Exception when cleaning up", e1);
                     }
                 }
             // If we don't sync GeoServer, verify the layer exists before saving.
