@@ -26,13 +26,13 @@
             <input id="caption" formControlName="caption" type="text" />
             <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
             <!--suppress TypeScriptValidateTypes -->
-            <span class="error" *ngIf="form.controls.caption.hasError('maxlength') && form.controls.caption.touched" i18n>Maksymalna liczba znaków: 80</span>
+            <span class="error" *ngIf="form.controls.caption.hasError('maxLength') && form.controls.caption.touched" i18n>Maksymalna liczba znaków: 80</span>
           </li>
           <li>
             <label for="notes" i18n>Notatka</label>
             <textarea id="notes" formControlName="notes"></textarea>
             <!--suppress TypeScriptValidateTypes -->
-            <span class="error" *ngIf="form.controls.notes.hasError('maxlength') && form.controls.notes.touched" i18n>Maksymalna liczba znaków: 800</span>
+            <span class="error" *ngIf="form.controls.notes.hasError('maxLength') && form.controls.notes.touched" i18n>Maksymalna liczba znaków: 800</span>
           </li>
         </ul>
       </div>
