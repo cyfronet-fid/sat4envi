@@ -60,16 +60,19 @@ public class ProductControllerTest {
                         .name("108m")
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
+                        .layerName("108m")
                         .build(),
                 Product.builder()
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
+                        .layerName("Setvak")
                         .build(),
                 Product.builder()
                         .name("WV-IR")
                         .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
+                        .layerName("WV-IR")
                         .legend(legend)
                         .build());
         repository.saveAll(products);

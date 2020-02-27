@@ -3,7 +3,7 @@ package pl.cyfronet.s4e.bean;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
+ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -37,6 +37,8 @@ public class Product {
     @Column(columnDefinition = "jsonb")
     @ToString.Exclude
     private Legend legend;
+    /// How the layer will be identified in GeoServer, excluding workspace
+    private String layerName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude

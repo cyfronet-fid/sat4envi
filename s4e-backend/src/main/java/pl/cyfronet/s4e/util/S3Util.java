@@ -35,20 +35,22 @@ public class S3Util {
      * @param key
      *  key should contain bucket/path/to/file/filename.ext
      *  filename convention: timestamp_*_product.extension
-     * @return part of key: path/to/file/filename
-     */
-    public String getLayerName(String key){
-        return key.substring(key.indexOf("/")+1).replaceAll("\\..*","");
-    }
-
-    /**
-     *
-     * @param key
-     *  key should contain bucket/path/to/file/filename.ext
-     *  filename convention: timestamp_*_product.extension
      * @return part of key: path/to/file/filename.ext
      */
     public String getS3Path(String key){
         return key.substring(key.indexOf("/")+1);
+    }
+
+    /**
+     *
+     * @param endpoint
+     * @param bucket
+     * @param key
+     *  key should contain bucket/path/to/file/filename.ext
+     *  filename convention: timestamp_*_product.extension
+     * @return part of key with prepended endpoint and bucket: mailto://bucket/path/to/file/filename.ext
+     */
+    public String getGranulePath(String endpoint, String bucket, String key) {
+        return endpoint + "://" + bucket + "/" + key.substring(key.indexOf("/")+1);
     }
 }

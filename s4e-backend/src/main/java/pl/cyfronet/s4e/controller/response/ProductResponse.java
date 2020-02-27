@@ -14,4 +14,6 @@ public interface ProductResponse {
     String getDescription();
 
     Legend getLegend();
+
+    String getLayerName();
 }

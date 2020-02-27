@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.TestGeometryHelper;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -24,6 +25,9 @@ public class DbTimestampTest {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private TestGeometryHelper geom;
+
     @BeforeEach
     public void beforeEach() {
         sceneRepository.deleteAll();
@@ -35,6 +39,7 @@ public class DbTimestampTest {
         val product = productRepository.save(Product.builder()
                 .name("testProductType")
                 .displayName("testProductType")
+                .layerName("testLayerName")
                 .build());
 
         // A datetime, which if Polish timezone is used gets shifted one hour forward
@@ -42,9 +47,10 @@ public class DbTimestampTest {
         LocalDateTime dstBorderTimestamp = LocalDateTime.of(2019, 3, 31, 2, 0);
         val scene = sceneRepository.save(Scene.builder()
                 .product(product)
-                .layerName("testLayerName")
                 .timestamp(dstBorderTimestamp)
                 .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any())
                 .build());
 
         val sceneId = sceneRepository.save(scene).getId();

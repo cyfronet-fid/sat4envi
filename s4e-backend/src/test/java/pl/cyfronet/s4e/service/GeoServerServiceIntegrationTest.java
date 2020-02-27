@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
@@ -16,7 +14,6 @@ import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,27 +49,6 @@ public class GeoServerServiceIntegrationTest {
         productRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
-    }
-
-    @Test
-    public void shouldCreateLayer() {
-        geoServerService.resetWorkspace();
-        Product product = productRepository.save(
-                Product.builder()
-                        .name("productType")
-                        .displayName("productType")
-                        .build());
-        Scene scene = sceneRepository.save(
-                Scene.builder()
-                        .product(product)
-                        .timestamp(LocalDateTime.now())
-                        .layerName("testLayerName")
-                        .s3Path("201810042345_Merkator_WV-IR.tif")
-                        .build());
-
-        geoServerService.addLayer(scene);
-
-        assertThat(geoServerOperations.listCoverages(geoServerProperties.getWorkspace(), "testLayerName"), contains("testLayerName"));
     }
 
     @Test

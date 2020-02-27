@@ -95,7 +95,7 @@ public class GeoServerOperationsIntegrationTest {
     @Test
     public void shouldCreateS3Coverage() {
         geoServerOperations.createWorkspace("test");
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "cyfro://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
+        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "mailto://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
 
         assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), hasSize(0));
 
@@ -107,7 +107,7 @@ public class GeoServerOperationsIntegrationTest {
     @Test
     public void shouldDeleteCoverage() {
         geoServerOperations.createWorkspace("test");
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "cyfro://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
+        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "mailto://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
         geoServerOperations.createS3Coverage("test", "covDataStoreName", "covName");
 
         assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), contains("covName"));

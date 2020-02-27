@@ -4,10 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
+import pl.cyfronet.s4e.TestGeometryHelper;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
@@ -18,7 +17,6 @@ import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
-import pl.cyfronet.s4e.util.S3AddressUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,10 +41,10 @@ class GeoServerServiceTest {
     private PRGOverlayRepository prgOverlayRepository;
 
     @Autowired
-    private S3AddressUtil s3AddressUtil;
+    private GeoServerProperties geoServerProperties;
 
     @Autowired
-    private GeoServerProperties geoServerProperties;
+    private TestGeometryHelper geom;
 
     @Mock
     private GeoServerOperations geoServerOperations;
@@ -66,22 +64,21 @@ class GeoServerServiceTest {
     }
 
     private void prepare() {
-        geoServerService = new GeoServerService(
-                geoServerOperations,
-                s3AddressUtil,
-                geoServerProperties);
+        geoServerService = new GeoServerService(geoServerOperations, geoServerProperties);
 
         product = productRepository.save(
                 Product.builder()
                         .name("productType")
                         .displayName("productType")
+                        .layerName("testLayerName")
                         .build());
         scene = sceneRepository.save(
                 Scene.builder()
                         .product(product)
                         .timestamp(LocalDateTime.now())
-                        .layerName("testLayerName")
                         .s3Path("some/s3/path.tif")
+                        .granulePath("mailto://bucket/some/s3/path.tif")
+                        .footprint(geom.any())
                         .build());
         sldStyle = sldStyleRepository.save(
                 SldStyle.builder()
@@ -93,29 +90,6 @@ class GeoServerServiceTest {
                         .featureType("wojewodztwaFeatureType")
                         .sldStyle(sldStyle)
                         .build());
-    }
-
-    @Test
-    public void shouldAddLayerAndSetCreatedFlag() {
-        prepare();
-
-        geoServerService.addLayer(scene);
-
-        verify(geoServerOperations, times(1)).createS3CoverageStore(geoServerProperties.getWorkspace(), scene.getLayerName(), s3AddressUtil.getS3Address(scene.getS3Path()));
-        verify(geoServerOperations, times(1)).createS3Coverage(geoServerProperties.getWorkspace(), scene.getLayerName(), scene.getLayerName());
-        verifyNoMoreInteractions(geoServerOperations);
-    }
-
-    @Test
-    public void shouldTryToRollbackWhenAddLayerThrows() {
-        prepare();
-        doThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST)).when(geoServerOperations).createS3CoverageStore(any(), any(), any());
-
-        assertThrows(HttpClientErrorException.class, () -> geoServerService.addLayer(scene));
-
-        verify(geoServerOperations, times(1)).createS3CoverageStore(geoServerProperties.getWorkspace(), scene.getLayerName(), s3AddressUtil.getS3Address(scene.getS3Path()));
-        verify(geoServerOperations, times(1)).deleteCoverageStore(geoServerProperties.getWorkspace(), scene.getLayerName(), true);
-        verifyNoMoreInteractions(geoServerOperations);
     }
 
     @Test
