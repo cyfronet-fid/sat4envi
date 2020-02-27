@@ -15,7 +15,6 @@ public class SceneResponse {
     private Long id;
     private Long productId;
     private ZonedDateTime timestamp;
-    private String layerName;
     private Legend legend;
 
     public static SceneResponse of(Scene scene, ZoneId zoneId, TimeHelper timeHelper) {
@@ -23,7 +22,6 @@ public class SceneResponse {
                 .id(scene.getId())
                 .productId(scene.getProduct().getId())
                 .timestamp(timeHelper.getZonedDateTime(scene.getTimestamp(), zoneId))
-                .layerName(scene.getLayerName())
                 .legend(scene.getLegend())
                 .build();
     }

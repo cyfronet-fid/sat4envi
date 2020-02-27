@@ -7,12 +7,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.TestGeometryHelper;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.controller.request.WebhookRequest;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.util.S3Util;
 import pl.cyfronet.s4e.util.TimeHelper;
 
@@ -38,6 +41,15 @@ public class SceneServiceTest {
     @Autowired
     private TimeHelper timeHelper;
 
+    @Autowired
+    private S3Properties s3Properties;
+
+    @Autowired
+    private GeoServerProperties geoServerProperties;
+
+    @Autowired
+    private TestGeometryHelper geom;
+
     private SceneService sceneService;
 
     @Mock
@@ -47,7 +59,7 @@ public class SceneServiceTest {
 
     @BeforeEach
     public void setUp() {
-        sceneService = new SceneService(sceneRepository, productRepository, timeHelper, s3Util);
+        sceneService = new SceneService(sceneRepository, productRepository, timeHelper, s3Util, s3Properties, geoServerProperties);
         sceneRepository.deleteAll();
         productRepository.deleteAll();
     }
@@ -57,27 +69,31 @@ public class SceneServiceTest {
         Product product = Product.builder()
                 .name("testProductType")
                 .displayName("testProductType")
+                .layerName("test")
                 .build();
         productRepository.save(product);
 
         val scenes = List.of(
                 Scene.builder()
                         .product(product)
-                        .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 10, 11, 0, 0))
                         .s3Path("some/path")
+                        .granulePath("mailto://bucket/some/path")
+                        .footprint(geom.any())
                         .build(),
                 Scene.builder()
                         .product(product)
-                        .layerName("testLayerName2")
                         .timestamp(LocalDateTime.of(2019, 10, 11, 1, 0))
                         .s3Path("some/path")
+                        .granulePath("mailto://bucket/some/path")
+                        .footprint(geom.any())
                         .build(),
                 Scene.builder()
                         .product(product)
-                        .layerName("testLayerName3")
                         .timestamp(LocalDateTime.of(2019, 10, 12, 0, 0))
                         .s3Path("some/path")
+                        .granulePath("mailto://bucket/some/path")
+                        .footprint(geom.any())
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -92,14 +108,16 @@ public class SceneServiceTest {
         Product product = Product.builder()
                 .name("testProductType")
                 .displayName("testProductType")
+                .layerName("test")
                 .build();
         productRepository.save(product);
 
         Scene scene = Scene.builder()
                 .product(product)
-                .layerName("testLayerName")
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any())
                 .build();
 
         assertThat(sceneRepository.count(), is(equalTo(0L)));
@@ -118,6 +136,7 @@ public class SceneServiceTest {
         Product product = Product.builder()
                 .name("WV-IR")
                 .displayName("WV-IR")
+                .layerName("test")
                 .build();
         productRepository.save(product);
         when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
@@ -131,6 +150,7 @@ public class SceneServiceTest {
         Product product = Product.builder()
                 .name("WV-IR")
                 .displayName("WV-IR")
+                .layerName("test")
                 .build();
         productRepository.save(product);
         when(s3Util.getProduct(anyString())).thenReturn("WV-IR");

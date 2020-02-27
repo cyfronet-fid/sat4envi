@@ -9,6 +9,8 @@ import pl.cyfronet.s4e.controller.request.WebhookRequest;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.util.S3Util;
 import pl.cyfronet.s4e.util.TimeHelper;
 
@@ -23,6 +25,8 @@ public class SceneService {
     private final ProductRepository productRepository;
     private final TimeHelper timeHelper;
     private final S3Util s3Util;
+    private final S3Properties s3Properties;
+    private final GeoServerProperties geoServerProperties;
 
     public List<Scene> getScenes(Long productId, LocalDateTime start, LocalDateTime end) {
         return sceneRepository.findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
@@ -35,10 +39,12 @@ public class SceneService {
     }
 
     public Scene buildFromWebhook(WebhookRequest webhookRequest) throws NotFoundException {
-        return Scene.builder().product(getProduct(webhookRequest.getKey()))
-                .layerName(s3Util.getLayerName(webhookRequest.getKey()))
+        return Scene.builder()
+                .product(getProduct(webhookRequest.getKey()))
                 .timestamp(s3Util.getTimeStamp(webhookRequest.getKey()))
-                .s3Path(s3Util.getS3Path(webhookRequest.getKey())).build();
+                .s3Path(s3Util.getS3Path(webhookRequest.getKey()))
+                .granulePath(s3Util.getGranulePath(geoServerProperties.getEndpoint(), s3Properties.getBucket(), webhookRequest.getKey()))
+                .build();
     }
 
     public Product getProduct(String key) throws NotFoundException {

@@ -23,6 +23,9 @@ public class S3Properties {
     private URI endpoint;
     /**
      * A bucket name to use.
+     *
+     * <p>
+     * This is the bucket which contains scenes.
      */
     @NotBlank
     private String bucket;

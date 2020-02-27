@@ -125,6 +125,7 @@ You have to observe the steps for `s4e-demo` with updated dataset and bucket nam
 The first thing is to obtain production CEPH credentials, they are for example [here](https://docs.cyfronet.pl/display/FID/Projekty).
 Once you have them, create a copy of the file `resources/geoserver/s3.properties` called `s3.properties.prod` in the
 same dir and set the `endpoint` (`url`), `user` (`access_key`) and `password` (`secret_key`) accordingly.
+**UNDER NO CIRCUMSTANCES DO NOT COMMIT OR PUSH THIS FILE TO THE REPO!!!**
 
 Then, update the `docker-compose.yml`.
 The service `geoserver` should be wired up to the newly created `s3.properties.prod` file.
@@ -145,12 +146,18 @@ Then, run the backend with properties:
 spring.profiles.active=development
 seed.products.data-set=s4e-demo
 s3.bucket=s4e-demo
+s3.access-key=<access_key>
+s3.secret-key=<secret_key>
+S3_ENDPOINT=<path to storage>
 ```
 If you run with docker, update the backend-development.env (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
 ```
 SEED_PRODUCTS_DATASET=s4e-demo
 S3_BUCKET=s4e-demo
+S3_ACCESSKEY=<access_key>
+S3_SECRETKEY=<secret_key>
+S3_ENDPOINT=<path to storage>
 ```
 
 The backend will seed db and GeoServer, which will take around an hour.
@@ -264,7 +271,7 @@ This docker-compose recipe can be used to either run whole application for demo 
 
 In order do run docker-compose following steps must be done (**unless stated otherwise working directory should be project root**):
 
-1. No it's time to get S3 data to the application.
+1. Now it's time to get S3 data to the application.
    First make sure that you have [minio client](https://github.com/minio/mc) (`mc`) installed.
    
 2. Configure `mc`.

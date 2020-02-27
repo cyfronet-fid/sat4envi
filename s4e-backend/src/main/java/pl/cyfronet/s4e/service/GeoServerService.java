@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Scene;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
-import pl.cyfronet.s4e.util.S3AddressUtil;
 
 import java.util.List;
 
@@ -22,7 +20,6 @@ import java.util.List;
 @Slf4j
 public class GeoServerService {
     private final GeoServerOperations geoServerOperations;
-    private final S3AddressUtil s3AddressUtil;
     private final GeoServerProperties geoServerProperties;
 
     public void resetWorkspace() {
@@ -34,25 +31,8 @@ public class GeoServerService {
         geoServerOperations.createWorkspace(geoServerProperties.getWorkspace());
     }
 
-    @Transactional(rollbackFor = RestClientResponseException.class)
-    public void addLayer(Scene scene) {
-        // Both the coverage store, coverage and layer (the last one with workspace prefix) names will be the same
-        String gsName = scene.getLayerName();
-        try {
-            geoServerOperations.createS3CoverageStore(geoServerProperties.getWorkspace(), gsName, s3AddressUtil.getS3Address(scene.getS3Path()));
-            geoServerOperations.createS3Coverage(geoServerProperties.getWorkspace(), gsName, gsName);
-        } catch (RestClientResponseException e) {
-            // try to clean up GeoServer state
-            log.warn("Error when adding product", e);
-            try {
-                geoServerOperations.deleteCoverageStore(geoServerProperties.getWorkspace(), gsName, true);
-            } catch (HttpClientErrorException.NotFound e1) {
-                log.warn("Probably coverage store wasn't created", e1);
-            } catch (RestClientResponseException e1) {
-                log.error("Couldn't clean up GeoServer state", e1);
-            }
-            throw e;
-        }
+    public void addLayer(Product product) {
+        // FIXME: implement
     }
 
     public void addStyle(SldStyle sldStyle) {

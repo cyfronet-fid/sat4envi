@@ -37,18 +37,17 @@ public class S3UtilTest {
     }
 
     @Test
-    public void shouldReturnLayerNameFromWebhookKey() {
-        String layerNameFromWebhook = s3Util.getLayerName(WEBHOOK_KEY);
-        String layerName = "test/201810042345_Merkator_WV-IR";
-
-        assertThat(layerNameFromWebhook, is(equalTo(layerName)));
-    }
-
-    @Test
     public void shouldReturnS3PathFromWebhookKey() {
         String pathFromWebhook = s3Util.getS3Path(WEBHOOK_KEY);
         String path = "test/201810042345_Merkator_WV-IR.tif";
 
         assertThat(pathFromWebhook, is(equalTo(path)));
+    }
+
+    @Test
+    public void shouldReturnGranulePathFromWebhookKey() {
+        String granulePathFromWebhook = s3Util.getGranulePath("mailto", "bucket", WEBHOOK_KEY);
+
+        assertThat(granulePathFromWebhook, is(equalTo("mailto://bucket/test/201810042345_Merkator_WV-IR.tif")));
     }
 }

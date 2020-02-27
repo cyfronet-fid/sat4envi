@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
+import pl.cyfronet.s4e.TestGeometryHelper;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
@@ -47,6 +48,9 @@ public class SceneControllerTest {
     @Autowired
     private TestDbHelper testDbHelper;
 
+    @Autowired
+    private TestGeometryHelper geom;
+
     @BeforeEach
     public void beforeEach() {
         resetDb();
@@ -68,26 +72,24 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
+        val defaultBuilder = Scene.builder()
+                .product(product)
+                .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any());
+
         val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName1")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName2")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 1, 23, 59, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName3")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .s3Path("some/path")
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -107,32 +109,27 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
+        val defaultBuilder = Scene.builder()
+                .product(product)
+                .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any());
+
         val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName1")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 12, 1, 22, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName2")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName3")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 12, 2, 22, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName4")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 12, 2, 23, 0))
-                        .s3Path("some/path")
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -153,12 +150,14 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
         sceneRepository.save(Scene.builder()
                 .product(product)
-                .layerName("testLayerName")
                 .timestamp(LocalDateTime.of(2019, 10, 11, 12, 13))
                 .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any())
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -174,14 +173,16 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
         val scenes = List.of(
                 Scene.builder()
                         .product(product)
-                        .layerName("testLayerName1")
                         .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
                         .s3Path("some/path")
+                        .granulePath("mailto://bucket/some/path")
+                        .footprint(geom.any())
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -200,44 +201,33 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
+        val defaultBuilder = Scene.builder()
+                .product(product)
+                .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any());
+
         val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName1")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 3, 31, 0, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName2")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 3, 31, 1, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName3")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 3, 31, 1, 1))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName4")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 27, 0, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName5")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 27, 1, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName6")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 27, 1, 1))
-                        .s3Path("some/path")
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -267,6 +257,7 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -281,7 +272,14 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
+
+        val defaultBuilder = Scene.builder()
+                .product(product)
+                .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any());
 
         /*
         We create data for the days marked with * and we will extract availability for October.
@@ -289,41 +287,23 @@ public class SceneControllerTest {
               *|**      *|*
          */
         val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName0")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName1")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName2")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName3")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName4")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName5")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
-                        .s3Path("some/path")
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -341,7 +321,14 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
+
+        val defaultBuilder = Scene.builder()
+                .product(product)
+                .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any());
 
         /*
         We create data for the days marked with * and we will extract availability for October.
@@ -349,35 +336,20 @@ public class SceneControllerTest {
               *|**      *|*
          */
         val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName0")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 9, 30, 21, 59, 59))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName1")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 9, 30, 22, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName2")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName3")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
-                        .s3Path("some/path")
                         .build(),
-                Scene.builder()
-                        .product(product)
-                        .layerName("testLayerName4")
+                defaultBuilder
                         .timestamp(LocalDateTime.of(2019, 10, 31, 21, 59, 59))
-                        .s3Path("some/path")
                         .build()
         );
         sceneRepository.saveAll(scenes);
@@ -396,13 +368,15 @@ public class SceneControllerTest {
                 .name("108m")
                 .displayName("108m")
                 .description("sth")
+                .layerName("108m")
                 .build());
 
         Scene scene = sceneRepository.save(Scene.builder()
                 .product(product)
-                .layerName("testLayerName1")
                 .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
                 .s3Path("some/path")
+                .granulePath("mailto://bucket/some/path")
+                .footprint(geom.any())
                 .build());
 
         String redirectUrl = "https://domain.pl/test?sth=value";

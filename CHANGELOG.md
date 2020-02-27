@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Modify Product and Scene to work with GeoServer ImageMosaic [#371](https://github.com/cyfronet-fid/sat4envi/pull/371)
 - Update GeoServer image to 1.3.0-GS2.16.2, which includes JNDI and removes JDBCConfig support [#378](https://github.com/cyfronet-fid/sat4envi/pull/378)
 - Update db image to postgis/postgis:12-3.0-alpine and use Postgis hibernate dialect [#371](https://github.com/cyfronet-fid/sat4envi/pull/371)
 - Update GeoServer image to 1.2.0-GS2.16.2 and use URL-correct S3Geotiff endpoint [#371](https://github.com/cyfronet-fid/sat4envi/pull/371)
