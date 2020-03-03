@@ -355,3 +355,13 @@ docker-compose stop db
 docker-compose rm db
 docker-compose up db
 ```
+
+__Q: Creating a read-only PostgreSQL user__
+
+```postgresql
+REVOKE CREATE ON SCHEMA public FROM public;
+CREATE USER eva WITH PASSWORD 'secret';
+CREATE ROLE readaccess;
+GRANT readaccess TO eva;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+```

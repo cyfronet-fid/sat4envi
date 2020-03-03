@@ -50,7 +50,7 @@ services:
       GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_ADMIN_PASSWORD:-admin123}
       JDBCCONFIG_ENABLED: "false"
   db:
-    image: postgres:10-alpine
+    image: postgis/postgis:12-3.0-alpine
     ports:
       - ${DB_PORT:-5433}:5432
     networks:
@@ -60,7 +60,7 @@ services:
       POSTGRES_USER: ${DB_POSTGRES_USER:-sat4envi}
       POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-sat4envi}
   db-test:
-    image: postgres:10-alpine
+    image: postgis/postgis:12-3.0-alpine
     ports:
       - ${DB_TEST_PORT:-5434}:5432
     networks:
