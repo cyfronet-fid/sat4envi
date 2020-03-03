@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Possibility to set maven artifact version with properties [#356](https://github.com/cyfronet-fid/sat4envi/pull/356)
 - This changelog file [#355](https://github.com/cyfronet-fid/sat4envi/pull/355)
 
+### Changed
+
+- Update GeoServer image to 1.2.0-GS2.16.2 and use URL-correct S3Geotiff endpoint [#371](https://github.com/cyfronet-fid/sat4envi/pull/371)
 
 ### Fixed
 
