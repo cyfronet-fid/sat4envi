@@ -15,34 +15,17 @@
       </aside>
       <div class="form">
         <ul>
-          <li>
-            <label i18n>Adresaci
-              <span>Możesz wpisać kilka adresów e-mail po przecinku</span>
-            </label>
-            <input formControlName="emails" type="text"/>
-            <span class="error" *ngIf="form.controls.emails.hasError('required') && form.controls.emails.touched" i18n>To pole jest wymagane</span>
-            <span class="error" *ngIf="form.controls.emails.hasError('email') && form.controls.emails.touched" i18n>To nie jest poprawny email</span>
-          </li>
-          <li>
-            <label i18n>Tytuł wiadomości</label>
-            <input formControlName="caption" type="text"/>
-            <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
-          </li>
-          <li>
-            <label i18n>Dodatkowe informacje</label>
-            <textarea formControlName="description" type="text"></textarea>
-            <span class="error" *ngIf="form.controls.description.hasError('required') && form.controls.description.touched"
-                  i18n>To pole jest wymagane</span>
-          </li>
+          <li><ext-input formControlName="emails" label="Adresaci" i18n-label help="Możesz wpisać kilka adresów e-mail po przecinku" i18n-help></ext-input></li>
+          <li><ext-input formControlName="caption" label="Tytuł wiadomości" i18n-label></ext-input></li>
+          <li><ext-textarea formControlName="description" label="Dodatkowe informacje" i18n-label></ext-textarea></li>
         </ul>
       </div>
     </div>
     <div class="s4e-modal-footer">
-      <button class="button button--primary button--small" type="submit" [disabled]="(isLoading$ | async)" i18n>Wyślij Wiadomość
-      </button>
-      <button class="button button--cancel button--small" type="button" [disabled]="(isLoading$ | async)" (click)="dismiss()" i18n>
-        Anuluj
-      </button>
+      <button class="button button--primary button--small"
+              type="submit" [disabled]="(isLoading$ | async)" i18n>Wyślij Wiadomość</button>
+      <button class="button button--cancel button--small"
+              type="button" [disabled]="(isLoading$ | async)" (click)="dismiss()" i18n>Anuluj</button>
     </div>
   </s4e-generic-modal>
 </form>

@@ -8,7 +8,7 @@ context('productNavigation', () => {
   it('should load product map', () => {
     // waiting for backend to respond with all the data
     cy.get('s4e-product-picker ul.list', {timeout: 30000}).should('contain', '108m');
-    cy.get('[caption="Produkty"] .list > :nth-child(1) > .list__name').click();
+    cy.get('[caption="Produkty"] .list > :nth-child(1) > .list__name').click({force: true});
     cy.get('.timeline__grid').should('be.visible');
     cy.get('.timeline__grid').should('contain', 'Brak produktów, wybierz inną datę');
     cy.get('.timeline__calendar').click();

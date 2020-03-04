@@ -6,7 +6,7 @@ import {Modal} from '../../state/modal.model';
 import {isAlertModal} from './alert-modal.model';
 
 @Component({
-  selector: 'nts-alert-modal',
+  selector: 's4e-alert-modal',
   templateUrl: './alert-modal.component.html',
   styleUrls: ['./alert-modal.component.scss']
 })

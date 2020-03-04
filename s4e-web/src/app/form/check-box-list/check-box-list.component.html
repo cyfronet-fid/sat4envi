@@ -1,6 +1,7 @@
 <ul class="list__checkbox">
   <li *ngFor="let fc of form.controls; index as $index">
     <label>
+      <!--suppress AngularInvalidExpressionResultType -->
       <input [formControl]="fc" type="checkbox" [value]="items[$index].value" />
       {{items[$index].caption}}
     </label>

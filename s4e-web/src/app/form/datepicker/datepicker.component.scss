@@ -1,0 +1,33 @@
+.form-control.now-btn {
+  width: calc(100% - 40px);
+  float: left;
+  border-radius: 4px 0 0 4px;
+}
+
+.input-sm.now-btn {
+  width: calc(100% - 34px);
+}
+
+
+.input-sm.now-btn, .input-sm.extra-button {
+  width: calc(100% - 34px);
+}
+
+
+.input-sm.now-btn.extra-button {
+  width: calc(100% - 68px);
+}
+
+.input-xs.now-btn {
+  width: calc(100% - 23px);
+}
+
+.input-lg.now-btn {
+  width: calc(100% - 60px);
+}
+
+.input-group-btn {
+  width: unset;
+}
+
+

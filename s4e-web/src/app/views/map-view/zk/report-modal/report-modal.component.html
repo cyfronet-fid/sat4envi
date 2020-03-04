@@ -21,19 +21,8 @@
       </aside>
       <div class="form">
         <ul>
-          <li>
-            <label for="caption" i18n>Tytuł</label>
-            <input id="caption" formControlName="caption" type="text" />
-            <span class="error" *ngIf="form.controls.caption.hasError('required') && form.controls.caption.touched" i18n>To pole jest wymagane</span>
-            <!--suppress TypeScriptValidateTypes -->
-            <span class="error" *ngIf="form.controls.caption.hasError('maxLength') && form.controls.caption.touched" i18n>Maksymalna liczba znaków: 80</span>
-          </li>
-          <li>
-            <label for="notes" i18n>Notatka</label>
-            <textarea id="notes" formControlName="notes"></textarea>
-            <!--suppress TypeScriptValidateTypes -->
-            <span class="error" *ngIf="form.controls.notes.hasError('maxLength') && form.controls.notes.touched" i18n>Maksymalna liczba znaków: 800</span>
-          </li>
+          <li><ext-input id="caption" formControlName="caption" label="Tytuł" i18n-label ></ext-input></li>
+          <li><ext-textarea id="notes" formControlName="notes" label="Notatka" i18n-label></ext-textarea></li>
         </ul>
       </div>
     </div>

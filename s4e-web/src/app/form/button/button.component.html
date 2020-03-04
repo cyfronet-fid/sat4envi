@@ -1,0 +1,10 @@
+<button (click)="onClick()"
+        [attr.type]="type"
+        class="button"
+        [ngClass]="cssClass"
+        [disabled]="_disabled">
+  <fa-icon *ngIf="isLoading" class="spinner" [hidden]="!isLoading" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+  <div class="button-content">
+    <ng-content select></ng-content>
+  </div>
+</button>

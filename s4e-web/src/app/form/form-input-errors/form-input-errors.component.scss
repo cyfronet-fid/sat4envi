@@ -1,0 +1,24 @@
+
+.nts-input-error-list {
+  list-style: none;
+  margin-top: 10px;
+  padding-left: 8px;
+
+  border-left: solid 5px #a94442;
+}
+
+.nts-input-error-list.ng-enter, .nts-input-error-list.ng-leave {
+  transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1.0s;
+}
+
+.nts-input-error-list.ng-enter,
+.nts-input-error-list.ng-leave.ng-leave-active {
+  opacity: 0;
+  padding-left: 0px;
+}
+
+.nts-input-error-list.ng-leave,
+.nts-input-error-list.ng-enter.ng-enter-active {
+  opacity: 1;
+  padding-left: 8px;
+}

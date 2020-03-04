@@ -15,6 +15,7 @@ import {ViewConfigurationEx} from '../../state/view-configuration/view-configura
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
 import {ViewConfigurationQuery} from '../../state/view-configuration/view-configuration.query';
 import {Observable} from 'rxjs';
+import {InputComponent} from '../../../../form/input/input.component';
 
 @Component({
   selector: 's4e-save-config-modal',
@@ -28,7 +29,7 @@ export class SaveConfigModalComponent extends ModalComponent implements OnInit, 
   error$: Observable<any>;
 
   @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
-  @ViewChild('configurationNameRef') configurationNameRef: ElementRef;
+  @ViewChild('configurationNameRef', {read: InputComponent}) configurationNameRef: InputComponent;
   readonly viewConfig: ViewConfigurationEx;
 
   constructor(modalService: ModalService,
@@ -48,7 +49,8 @@ export class SaveConfigModalComponent extends ModalComponent implements OnInit, 
     this.form = new FormGroup<SaveConfigForm>({
       configurationName: new FormControl<string>(this.viewConfig.configuration.date, Validators.required)
     });
-    this.configurationNameRef.nativeElement.focus();
+
+    setTimeout(() => this.configurationNameRef.focus(), 500);
 
     this.error$ = this.configurationQuery.selectError();
     this.loading$ = this.configurationQuery.selectLoading();

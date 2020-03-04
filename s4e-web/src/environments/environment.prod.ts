@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
   hmr: false,
-  inviteOnly: false
+  inviteOnly: false,
+  uiDevelopment: false
 };

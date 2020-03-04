@@ -1,0 +1,21 @@
+<ng-container *ngIf="messages?.length > 0">
+  <div role="alert"
+       *ngFor="let messageGroup of messages | sortMessages"
+       class="ext-message-container alert alert-danger"
+       [ngClass]="{'alert-danger': messageGroup.type === MessageType.Error,
+       'alert-warning': messageGroup.type === MessageType.Warning,
+       'alert-info': messageGroup.type === MessageType.Info,
+       'alert-success': messageGroup.type === MessageType.Success}">
+    <ul>
+      <li *ngFor="let message of messageGroup.messages">
+        <ng-container [ngSwitch]="message.type">
+          <span *ngSwitchCase="MessageType.Error"></span>
+          <span *ngSwitchCase="MessageType.Warning"></span>
+          <span *ngSwitchCase="MessageType.Info"></span>
+          <span *ngSwitchCase="MessageType.Success"></span>
+        </ng-container>
+        {{message.content}}
+      </li>
+    </ul>
+  </div>
+</ng-container>
