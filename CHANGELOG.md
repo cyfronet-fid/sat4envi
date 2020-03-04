@@ -25,8 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Build in private scope [#372](https://github.com/cyfronet-fid/sat4envi/pull/372)
 - Constraints names on Product and Scene tables [#364](https://github.com/cyfronet-fid/sat4envi/pull/364)
-- Build in private scope
 
 ### Updates
 

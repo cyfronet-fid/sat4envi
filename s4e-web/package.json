@@ -7,7 +7,7 @@
     "start-private": "ng serve --proxy-config proxy.conf.json --configuration hmr.private",
     "start-production": "ng serve --proxy-config proxy.conf.json --configuration production",
     "start-production-private": "ng serve --proxy-config proxy.conf.json --configuration production.private",
-    "build": "ng build",
+    "build": "ng build --prod",
     "build-private": "ng build --configuration production.private",
     "test": "ng test",
     "lint": "ng lint",
