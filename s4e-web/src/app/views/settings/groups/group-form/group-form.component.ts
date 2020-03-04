@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {GenericFormComponent} from '../../../../utils/miscellaneous/generic-form.component';
 import {PersonQuery} from '../../people/state/person.query';
-import {PersonForm} from '../../people/state/person.model';
 import {FormControl, FormGroup} from '@ng-stack/forms';
-import {combineLatest, Observable} from 'rxjs';
-import {CheckBoxEntry} from '../../../../utils/s4e-forms/check-box-list/check-box-list.model';
+import {Observable} from 'rxjs';
+import {CheckBoxEntry} from '../../../../form/check-box-list/check-box-list.model';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../state/form/form.model';
 import {InstitutionService} from '../../state/institution.service';

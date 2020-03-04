@@ -13,7 +13,7 @@ import {GenericFormComponent} from '../../../../utils/miscellaneous/generic-form
 import {PersonQuery} from '../state/person.query';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../state/form/form.model';
-import {CheckBoxEntry} from '../../../../utils/s4e-forms/check-box-list/check-box-list.model';
+import {CheckBoxEntry} from '../../../../form/check-box-list/check-box-list.model';
 import {PersonService} from '../state/person.service';
 
 @Component({

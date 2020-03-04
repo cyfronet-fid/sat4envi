@@ -4,7 +4,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {PersonListComponent} from './person-list/person-list.component';
 import {PersonFormComponent} from './person-form/person-form.component';
 import {RouterModule} from '@angular/router';
-import {S4EFormsModule} from '../../../utils/s4e-forms/s4e-forms.module';
+import {S4EFormsModule} from '../../../form/form.module';
 
 @NgModule({
   declarations: [

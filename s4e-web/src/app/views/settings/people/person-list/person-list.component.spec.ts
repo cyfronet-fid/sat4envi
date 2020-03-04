@@ -1,11 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PersonListComponent } from './person-list.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {S4EFormsModule} from '../../../../utils/s4e-forms/s4e-forms.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
+import {PersonListComponent} from './person-list.component';
+import {SettingsModule} from '../../settings.module';
 
 describe('PeopleComponent', () => {
   let component: PersonListComponent;
@@ -13,18 +11,14 @@ describe('PeopleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PersonListComponent ],
       imports: [
-        ReactiveFormsModule,
+        SettingsModule,
         RouterTestingModule,
-        S4EFormsModule,
         HttpClientTestingModule
       ],
-      providers: [
-        TestingConfigProvider
-      ]
+      providers: [TestingConfigProvider]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

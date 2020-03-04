@@ -10,7 +10,7 @@ import {GroupFormComponent} from './groups/group-form/group-form.component';
 import {GroupListComponent} from './groups/group-list/group-list.component';
 import {PeopleModule} from './people/people.module';
 import {ReactiveFormsModule} from '@angular/forms';
-import {S4EFormsModule} from '../../utils/s4e-forms/s4e-forms.module';
+import {S4EFormsModule} from '../../form/form.module';
 
 @NgModule({
   declarations: [

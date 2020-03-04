@@ -222,6 +222,10 @@
     }
   }
 
+  textarea {
+    width: calc(100% - 30px);
+  }
+
   input {
     width: calc(100% - 30px);
     position: relative;
@@ -361,7 +365,9 @@ button > fa-icon.spinner {
   margin-right: 5px;
 }
 
-
+ext-button + ext-button {
+  margin-left: 5px;
+}
 
 
 

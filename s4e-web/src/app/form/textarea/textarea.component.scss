@@ -1,0 +1,17 @@
+@import "../../../scss/variables";
+
+.text-container {
+  position: relative;
+}
+
+.btn-confirm {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+textarea {
+  width: 100%;
+  resize: none;
+  height: 100% !important;
+}

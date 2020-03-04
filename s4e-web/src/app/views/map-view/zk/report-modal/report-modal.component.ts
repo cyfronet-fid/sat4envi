@@ -67,6 +67,7 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
 
   accept() {
     if (this.form.invalid) {
+      console.log(this.form.errors);
       return;
     }
     this.reportGenerator.generate(

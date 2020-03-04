@@ -1,0 +1,14 @@
+<ext-form-control [options]="formControlOptions" class="notes">
+  <div class="text-container full-height">
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <textarea class="form-control full-height"
+              (blur)="onTouched()"
+              [attr.id]="elementId"
+              [attr.aria-describedby]="controlId + 'Help'"
+              [ngClass]="{'is-invalid': hasErrors()}"
+              [placeholder]="_placeholder"
+              [formControl]="fc"
+              #input>
+    </textarea>
+  </div>
+</ext-form-control>

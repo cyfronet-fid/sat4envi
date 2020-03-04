@@ -6,7 +6,7 @@ import {Modal} from '../../state/modal.model';
 import {isConfirmModal} from './confirm-modal.model';
 
 @Component({
-  selector: 'nts-confirm-modal',
+  selector: 's4e-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss']
 })

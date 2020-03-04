@@ -1,0 +1,15 @@
+<ext-form-control [options]="formControlOptions">
+  <div [ngClass]="inputType">
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input [attr.type]="controlType"
+           class="form-control"
+           autocomplete="off"
+           (blur)="onTouched()"
+           [attr.id]="elementId"
+           [attr.aria-describedby]="controlId + 'Help'"
+           [ngClass]="{'is-invalid': hasErrors()}"
+           [placeholder]="_placeholder"
+           #input
+           [formControl]="fc">
+  </div>
+</ext-form-control>

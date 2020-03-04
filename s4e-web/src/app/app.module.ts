@@ -5,7 +5,6 @@ import {ShareModule} from './common/share.module';
 import {MapModule} from './views/map-view/map.module';
 import {ProfileModule} from './views/settings/profile/profile.module';
 import {RootComponent} from './components/root/root.component';
-import {ContentTypeInterceptor} from './utils/content-type-interceptor/content-type.interceptor';
 import {AuthInterceptor} from './utils/auth-interceptor/auth.interceptor';
 import {ErrorInterceptor} from './utils/error-interceptor/error.interceptor';
 import {appRoutes} from './app.routes';
@@ -26,6 +25,7 @@ import {InjectorModule} from './common/injector.module';
 import {S4eConfig} from './utils/initializer/config.service';
 import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
+import {S4EFormsModule} from './form/form.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -52,6 +52,7 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     InjectorModule,
     SettingsModule,
     ModalModule,
+    S4EFormsModule
   ],
   providers: [
     S4eConfig,

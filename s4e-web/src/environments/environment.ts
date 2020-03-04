@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   hmr: false,
-  inviteOnly: false
+  inviteOnly: false,
+  uiDevelopment: false
 };
 
 /*

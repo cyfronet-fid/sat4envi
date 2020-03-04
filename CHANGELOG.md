@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Favourite Products [#403](https://github.com/cyfronet-fid/sat4envi/issues/403)
+- Forms module [#370](https://github.com/cyfronet-fid/sat4envi/issues/370)
 
 ### Changed
 

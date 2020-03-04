@@ -19,7 +19,6 @@ import {SearchResultsComponent} from './search-results/search-results.component'
 import {AkitaGuidService} from './state/search-results/guid.service';
 import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {OwlMomentDateTimeModule} from 'ng-pick-datetime/date-time/adapter/moment-adapter/moment-date-time.module';
 import {ProductQuery} from './state/product/product.query';
 import {ProductService} from './state/product/product.service';
 import {ProductStore} from './state/product/product.store';
@@ -41,6 +40,7 @@ import {SentinelSearchComponent} from './sentinel-search/sentinel-search.compone
 import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
+import {S4EFormsModule} from '../../form/form.module';
 
 @NgModule({
   declarations: [
@@ -60,37 +60,38 @@ import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configurati
   exports: [
     MapViewComponent,
   ],
-  imports: [
-    InjectorModule,
-    ShareModule,
-    BrowserAnimationsModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    ModalModule,
-    RouterModule.forChild([
-      {
-        path: 'map',
-        component: MapViewComponent,
-        canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
-        children: [
-          {
-            path: 'products',
-            component: ViewManagerComponent
-          },
-          {
-            path: 'sentinel-search',
-            component: SentinelSearchComponent
-          },
-          {
-            path: '',
-            pathMatch: 'prefix',
-            redirectTo: '/map/products'
-          },
-        ]
-      }
-    ])
-    // OwlNativeDateTimeModule
-  ],
+    imports: [
+        InjectorModule,
+        ShareModule,
+        BrowserAnimationsModule,
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
+        ModalModule,
+        RouterModule.forChild([
+            {
+                path: 'map',
+                component: MapViewComponent,
+                canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
+                children: [
+                    {
+                        path: 'products',
+                        component: ViewManagerComponent
+                    },
+                    {
+                        path: 'sentinel-search',
+                        component: SentinelSearchComponent
+                    },
+                    {
+                        path: '',
+                        pathMatch: 'prefix',
+                        redirectTo: '/map/products'
+                    },
+                ]
+            }
+        ]),
+        S4EFormsModule,
+        // OwlNativeDateTimeModule
+    ],
   providers: [
     MapQuery,
     MapService,
