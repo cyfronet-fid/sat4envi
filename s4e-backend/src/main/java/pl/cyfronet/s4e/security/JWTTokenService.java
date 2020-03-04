@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.JacksonDeserializer;
-import io.jsonwebtoken.io.JacksonSerializer;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -26,9 +26,10 @@ public class JWTTokenService {
     private final ObjectMapper objectMapper;
 
     public Jws<Claims> parseClaimsJws(String token) {
-         return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(JWT_KEY)
                 .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
+                .build()
                 .parseClaimsJws(token);
     }
 

@@ -3,7 +3,7 @@ package pl.cyfronet.s4e;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.JacksonSerializer;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.security.AppUserDetails;

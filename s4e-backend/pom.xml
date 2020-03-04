@@ -18,15 +18,15 @@
     <description>Sat4envi backend</description>
 
     <properties>
-        <jjwt.version>0.10.7</jjwt.version>
+        <jjwt.version>0.11.0</jjwt.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <commonmark.version>0.14.0</commonmark.version>
-        <hibernate-types.version>2.9.3</hibernate-types.version>
-        <poiooxml.version>4.1.1</poiooxml.version>
+        <hibernate-types.version>2.9.4</hibernate-types.version>
+        <poiooxml.version>4.1.2</poiooxml.version>
         <greenmail.version>1.5.11</greenmail.version>
         <slugify.version>2.4</slugify.version>
-        <springdoc-openapi.version>1.2.30</springdoc-openapi.version>
-        <awssdk.version>2.10.57</awssdk.version>
+        <springdoc-openapi.version>1.2.33</springdoc-openapi.version>
+        <awssdk.version>2.10.78</awssdk.version>
         <commons-email.version>1.5</commons-email.version>
     </properties>
 
