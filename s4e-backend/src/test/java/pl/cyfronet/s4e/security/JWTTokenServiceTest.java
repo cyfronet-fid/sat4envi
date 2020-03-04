@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.JacksonDeserializer;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -33,9 +33,10 @@ class JWTTokenServiceTest {
 
         String jws = service.generateClaimsJws(token);
 
-        Jws<Claims> jwsClaims = Jwts.parser()
+        Jws<Claims> jwsClaims = Jwts.parserBuilder()
                 .setSigningKey(JWT_KEY)
                 .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
+                .build()
                 .parseClaimsJws(jws);
 
         assertThat(jwsClaims.getBody().getSubject(), is("test"));
