@@ -9,9 +9,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Base64Validator.class)
-public @interface Base64 {
-    String message() default "{pl.cyfronet.s4e.controller.validation.Base64.message}";
+@Constraint(validatedBy = ContentTypeValidator.class)
+public @interface ContentType {
+    String message() default "{pl.cyfronet.s4e.controller.validation.ContentType.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+    String pattern();
 }

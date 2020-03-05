@@ -168,7 +168,7 @@ public class SavedViewControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.thumbnail", hasSize(1)));
+                .andExpect(jsonPath("$.thumbnail", hasSize(3)));
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
         verifyNoMoreInteractions(fileStorage);
