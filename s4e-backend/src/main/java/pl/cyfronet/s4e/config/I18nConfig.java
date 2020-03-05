@@ -17,14 +17,20 @@ public class I18nConfig {
         // Always use special escaping of characters such as ' => "'".
         // Consult https://docs.oracle.com/javase/8/docs/api/java/text/MessageFormat.html
         // in case of problems.
-        resourceBundleMessageSource.setAlwaysUseMessageFormat(true);
+        // resourceBundleMessageSource.setAlwaysUseMessageFormat(true);
+        //
+        // See: https://github.com/spring-projects/spring-framework/issues/11396#issuecomment-453347114
+        // If this is set to false, then interpolation of statements such as '{min}' in validation messages work.
+        // Doesn't work with true...
+        resourceBundleMessageSource.setAlwaysUseMessageFormat(false);
         return resourceBundleMessageSource;
     }
 
     @Bean
-    public LocalValidatorFactoryBean getValidator() {
+    public LocalValidatorFactoryBean validator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
     }
+
 }

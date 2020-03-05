@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import pl.cyfronet.s4e.*;
+import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.GreenMailSupplier;
+import pl.cyfronet.s4e.TestDbHelper;
+import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.ShareLinkRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
@@ -29,6 +32,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
@@ -122,6 +126,24 @@ public class ShareLinkControllerTest {
         assertThat(parser2.getHtmlContent(), containsString(mailProperties.getUrlDomain() + request.getPath()));
         assertThat(parser2.getAttachmentList().size(), is(equalTo(1)));
         assertThat(parser2.getAttachmentList().get(0).getContentType(), is(equalTo("image/png")));
+    }
+
+    @Test
+    public void shouldValidateThumbnail() throws Exception {
+        val request = ShareLinkRequest.builder()
+                .caption("Some caption")
+                .description("Yet another description")
+                .path("/some/path?hehe=tralala")
+                .thumbnail("bad thumbnail format")
+                .emails(List.of("some-1@email.pl", "some-2@email.pl"))
+                .build();
+
+        mockMvc.perform(post(API_PREFIX_V1 + "/share-link")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request))
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.thumbnail", hasSize(3)));
     }
 
     public static MimeMessageParser getParserForFirstMail(MailFolder inbox) throws Exception {

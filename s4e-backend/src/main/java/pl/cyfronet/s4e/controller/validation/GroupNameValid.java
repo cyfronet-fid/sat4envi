@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = GroupNameValidator.class)
 public @interface GroupNameValid {
-    String message() default "{Group.name.not.valid.message}";
+    String message() default "{pl.cyfronet.s4e.controller.validation.GroupNameValid.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
