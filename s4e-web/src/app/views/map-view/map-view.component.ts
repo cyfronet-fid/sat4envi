@@ -57,6 +57,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public currentTimelineDate$: Observable<string>;
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
+  public showLoginOptions$: Observable<boolean>;
   public selectedLocation$: Observable<SearchResult | null>;
   public userIsZK$: Observable<boolean>;
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
@@ -100,6 +101,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
     this.availableDates$ = this.productQuery.selectAvailableDates();
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
+    this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
     this.productService.get();
     this.overlayService.get();
     this.activeView$ = this.mapQuery.select('view');
@@ -144,6 +146,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   toggleZKOptions(show: boolean = true) {
     this.mapService.toggleZKOptions(show);
+  }
+
+  toggleLoginOptions(show: boolean = true) {
+    this.mapService.toggleLoginOptions(show);
   }
 
   downloadMapImage() {

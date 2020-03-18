@@ -9,7 +9,6 @@ import {ProfileStore} from '../../state/profile/profile.store';
 import {ActivatedRoute, ActivatedRouteSnapshot, UrlSegment} from '@angular/router';
 import {take} from 'rxjs/operators';
 import {MapStore} from './state/map/map.store';
-import {SceneQuery} from './state/scene/scene.query.service';
 import {SceneStore} from './state/scene/scene.store.service';
 import {SceneFactory} from './state/scene/scene.factory.spec';
 import {S4eConfig} from '../../utils/initializer/config.service';
@@ -91,7 +90,7 @@ describe('MapViewComponent', () => {
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.zk_dropdown_button'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('.dropdown_button--zk'))).toBeTruthy();
     });
 
     it('clicking .zk__dropdown__close should toggleZKOptions(false)', () => {
@@ -101,7 +100,7 @@ describe('MapViewComponent', () => {
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
       const spy = spyOn(component, 'toggleZKOptions');
-      fixture.debugElement.query(By.css('.zk__dropdown__close')).nativeElement.click();
+      fixture.debugElement.query(By.css('.dropdown_close')).nativeElement.click();
       expect(spy).toHaveBeenCalledWith(false);
     });
 
