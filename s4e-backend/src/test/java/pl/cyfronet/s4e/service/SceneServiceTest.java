@@ -134,28 +134,28 @@ public class SceneServiceTest {
                 .key(WEBHOOK_KEY)
                 .build();
         Product product = Product.builder()
-                .name("WV-IR")
+                .name("WV_IR")
                 .displayName("WV-IR")
                 .layerName("test")
                 .build();
         productRepository.save(product);
-        when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
+        when(s3Util.getProduct(anyString())).thenReturn("WV_IR");
 
         Scene buildFromWebhook = sceneService.buildFromWebhook(webhookRequest);
-        assertThat(buildFromWebhook.getProduct().getName(), is(equalTo("WV-IR")));
+        assertThat(buildFromWebhook.getProduct().getName(), is(equalTo("WV_IR")));
     }
 
     @Test
     public void shouldReturnProduct() throws NotFoundException {
         Product product = Product.builder()
-                .name("WV-IR")
+                .name("WV_IR")
                 .displayName("WV-IR")
                 .layerName("test")
                 .build();
         productRepository.save(product);
-        when(s3Util.getProduct(anyString())).thenReturn("WV-IR");
+        when(s3Util.getProduct(anyString())).thenReturn("WV_IR");
         Product fromDb = sceneService.getProduct(WEBHOOK_KEY);
-        assertThat(fromDb.getName(), is(equalTo("WV-IR")));
+        assertThat(fromDb.getName(), is(equalTo("WV_IR")));
     }
 
 }

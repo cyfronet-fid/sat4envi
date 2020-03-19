@@ -39,7 +39,7 @@ public class DbTimestampTest {
         val product = productRepository.save(Product.builder()
                 .name("testProductType")
                 .displayName("testProductType")
-                .layerName("testLayerName")
+                .layerName("test_layer_name")
                 .build());
 
         // A datetime, which if Polish timezone is used gets shifted one hour forward

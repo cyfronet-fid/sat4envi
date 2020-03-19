@@ -105,6 +105,7 @@ public class SeedProducts implements ApplicationRunner {
 
         if (seedProperties.isSyncGeoserver()) {
             try {
+                geoServerSynchronizer.synchronizeStoreAndMosaics();
                 geoServerSynchronizer.synchronizeOverlays();
             } catch (Exception e) {
                 log.warn(e.getMessage(), e);
@@ -143,13 +144,13 @@ public class SeedProducts implements ApplicationRunner {
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
-                        .layerName("Setvak")
+                        .layerName("setvak")
                         .build(),
                 Product.builder()
-                        .name("WV-IR")
+                        .name("WV_IR")
                         .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
-                        .layerName("WV-IR")
+                        .layerName("wv_ir")
                         .build(),
         });
         productRepository.saveAll(products);
@@ -187,7 +188,7 @@ public class SeedProducts implements ApplicationRunner {
                         .s3PathFormat("{timestamp}_Merkator_Europa_ir_108_setvak.tif")
                         .footprint(footprint)
                         .build(),
-                "WV-IR", ProductParams.builder()
+                "WV_IR", ProductParams.builder()
                         .startInclusive(startInclusive)
                         .endExclusive(endExclusive)
                         .s3PathFormat("{timestamp}_Merkator_WV-IR.tif")
@@ -199,6 +200,8 @@ public class SeedProducts implements ApplicationRunner {
         for (val product : products) {
             seedScenes(product, productParams.get(product.getName()));
         }
+
+
     }
 
     private void seedProductsS4EDemo() {
@@ -214,25 +217,25 @@ public class SeedProducts implements ApplicationRunner {
                         .name("NatCol")
                         .displayName("Detekcja chmur lodowych i śniegu")
                         .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
-                        .layerName("NatCol")
+                        .layerName("natcol")
                         .build(),
                 Product.builder()
                         .name("Polsafi")
                         .displayName("Burze")
                         .description("Obraz satelitarny HRV z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
-                        .layerName("Polsafi")
+                        .layerName("polsafi")
                         .build(),
                 Product.builder()
                         .name("RGB24_micro")
                         .displayName("Mikrofizyka chmur")
                         .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
-                        .layerName("RGB24_micro")
+                        .layerName("rgb24_micro")
                         .build(),
                 Product.builder()
                         .name("Setvak_Eu")
                         .displayName("Chmury konwekcyjne")
                         .description("Obraz satelitarny IR z dedykowaną paletą barwną")
-                        .layerName("Setvak_Eu")
+                        .layerName("setvak_eu")
                         .build(),
         });
         productRepository.saveAll(products);
@@ -289,7 +292,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("H03")
                             .displayName("Intensywność opadu")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia  intensywność opadu w mm/h.")
-                            .layerName("H03")
+                            .layerName("h03")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -303,7 +306,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("H05_03")
                             .displayName("Suma opadu (3h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
-                            .layerName("H05_03")
+                            .layerName("h05_03")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -318,7 +321,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("H05_06")
                             .displayName("Suma opadu (6h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
-                            .layerName("H05_06")
+                            .layerName("h05_06")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -333,7 +336,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("H05_12")
                             .displayName("Suma opadu (12h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
-                            .layerName("H05_12")
+                            .layerName("h05_12")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -348,7 +351,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("H05_24")
                             .displayName("Suma opadu (24h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
-                            .layerName("H05_24")
+                            .layerName("h05_24")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -363,7 +366,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("OST")
                             .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
                             .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
-                            .layerName("OST")
+                            .layerName("ost")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
@@ -377,7 +380,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("Polsafi")
                             .displayName("Polsafi, wyładowania atmosferyczne")
                             .description("Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
-                            .layerName("Polsafi")
+                            .layerName("polsafi")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
@@ -391,7 +394,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("SM1")
                             .displayName("Wilgotność gleby - SM1")
                             .description("Procentowy wskaźnik wilgotności gleby - SM1")
-                            .layerName("SM1")
+                            .layerName("sm1")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -406,7 +409,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("SM2")
                             .displayName("Wilgotność gleby - SM2")
                             .description("Procentowy wskaźnik wilgotności gleby - SM2")
-                            .layerName("SM2")
+                            .layerName("sm2")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 1, 2, 0, 0))
@@ -421,7 +424,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("Dust")
                             .displayName("Pył w atmosferze")
                             .description("Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.")
-                            .layerName("Dust")
+                            .layerName("dust")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -435,7 +438,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("NatCol")
                             .displayName("Detekcja chmur lodowych i śniegu")
                             .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
-                            .layerName("NatCol")
+                            .layerName("natcol")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
@@ -463,7 +466,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("RGB24_micro")
                             .displayName("Mikrofizyka chmur")
                             .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
-                            .layerName("RGB24_micro")
+                            .layerName("rgb24_micro")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
@@ -477,7 +480,7 @@ public class SeedProducts implements ApplicationRunner {
                             .name("Setvak_Eu")
                             .displayName("Chmury konwekcyjne")
                             .description("Obraz satelitarny IR z dedykowaną paletą barwną")
-                            .layerName("Setvak_Eu")
+                            .layerName("setvak_eu")
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
@@ -503,7 +506,7 @@ public class SeedProducts implements ApplicationRunner {
     private void createViews(List<Product> products) {
         for (val product: products) {
             String id = product.getId().toString();
-            String name = product.getName().toLowerCase();
+            String name = product.getLayerName();
             jdbcTemplate.execute("DROP VIEW IF EXISTS scene_" + name);
             jdbcTemplate.execute("CREATE VIEW scene_" + name + " AS " +
                     "SELECT  s.id, s.footprint, s.timestamp, s.granule_path " +

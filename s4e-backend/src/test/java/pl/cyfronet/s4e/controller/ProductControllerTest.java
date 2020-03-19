@@ -66,13 +66,13 @@ public class ProductControllerTest {
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
-                        .layerName("Setvak")
+                        .layerName("setvak")
                         .build(),
                 Product.builder()
-                        .name("WV-IR")
+                        .name("WV_IR")
                         .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
-                        .layerName("WV-IR")
+                        .layerName("wv_ir")
                         .legend(legend)
                         .build());
         repository.saveAll(products);
@@ -88,11 +88,11 @@ public class ProductControllerTest {
 
     @Test
     public void shouldReturnProductWithInfo() throws Exception {
-        Product product = repository.findByNameContainingIgnoreCase("WV-IR").orElseThrow();
+        Product product = repository.findByNameContainingIgnoreCase("WV_IR").orElseThrow();
         ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId()));
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name", is(equalTo("WV-IR"))))
+                .andExpect(jsonPath("name", is(equalTo("WV_IR"))))
                 .andExpect(jsonPath("displayName", is(equalTo("WV-IR"))))
                 .andExpect(jsonPath("description", is(equalTo("<p>Opis produktu WV-IR.</p>\n"))))
                 .andExpect(jsonPath("$.legend['type']", is("gradient")))

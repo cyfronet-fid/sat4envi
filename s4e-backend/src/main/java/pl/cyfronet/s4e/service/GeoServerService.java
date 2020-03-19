@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.Constants;
@@ -31,8 +32,25 @@ public class GeoServerService {
         geoServerOperations.createWorkspace(geoServerProperties.getWorkspace());
     }
 
-    public void addLayer(Product product) {
-        // FIXME: implement
+    @Transactional(rollbackFor = RestClientResponseException.class)
+    public void addStoreAndLayer(Product product) {
+        // Both the coverage store, coverage and layer (the last one with workspace prefix) names will be the same
+        String gsName = product.getLayerName();
+        try {
+            geoServerOperations.createS3CoverageStore(geoServerProperties.getWorkspace(), gsName);
+            geoServerOperations.createS3Coverage(geoServerProperties.getWorkspace(), gsName, gsName);
+        } catch (RestClientResponseException e) {
+            // try to clean up GeoServer state
+            log.warn("Error when adding product", e);
+            try {
+                geoServerOperations.deleteCoverageStore(geoServerProperties.getWorkspace(), gsName, true);
+            } catch (HttpClientErrorException.NotFound e1) {
+                log.warn("Probably coverage store wasn't created", e1);
+            } catch (RestClientResponseException e1) {
+                log.error("Couldn't clean up GeoServer state", e1);
+            }
+            throw e;
+        }
     }
 
     public void addStyle(SldStyle sldStyle) {
