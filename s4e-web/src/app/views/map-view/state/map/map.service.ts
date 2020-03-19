@@ -36,6 +36,10 @@ export class MapService {
     this.store.update({zkOptionsOpened: open});
   }
 
+  toggleLoginOptions(open: boolean = true) {
+    this.store.update({loginOptionsOpened: open});
+  }
+
   setWorking($event: boolean) {
     this.store.setLoading($event);
   }

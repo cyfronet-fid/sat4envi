@@ -3,29 +3,7 @@
     <li [class.active]="isLinkActive('products')"><a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a></li>
     <li [class.active]="isLinkActive('sentinel-search')"><a [routerLink]="['./sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a></li>
   </ul>
-
   <router-outlet></router-outlet>
-
-  <section class="login">
-    <ul>
-      <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
-        <li>
-          <a class="button button--primary button--large" routerLink="/login" i18n>Zaloguj</a>
-        </li>
-        <li>
-          <a routerLink="/register" i18n>Zarejestruj</a>
-        </li>
-      </ng-container>
-      <ng-template #logoutLink>
-        <li>
-          <button class="button button--borderPrimary button--small" routerLink="/settings" i18n>Ustawienia</button>
-        </li>
-        <li>
-          <a href="javascript:undefined" (click)="logout()" i18n>Wyloguj</a>
-        </li>
-      </ng-template>
-    </ul>
-  </section>
 </div>
 
 <s4e-legend *ngIf="legend$ | async"
@@ -57,13 +35,43 @@
 >
 </s4e-map>
 
+
+
+<button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown_button dropdown_button--login">
+</button>
+<ng-container *ngIf="showLoginOptions$ | async">
+  <div class="dropdown_content dropdown_content--login">
+    <span class="dropdown_header">Twoje Sat4Envi</span>
+    <div class="dropdown_close" (click)="toggleLoginOptions(false)"></div>
+    <ul>
+      <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
+        <li>
+          <a routerLink="/login" i18n>Zaloguj</a>
+        </li>
+        <li>
+          <a routerLink="/register" i18n>Zarejestruj</a>
+        </li>
+      </ng-container>
+      <ng-template #logoutLink>
+        <li>
+          <a routerLink="/settings" i18n>Ustawienia</a>
+        </li>
+        <li>
+          <a href="javascript:undefined" (click)="logout()" i18n>Wyloguj</a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
+</ng-container>
+
+
 <ng-container *ngIf="userIsZK$ | async">
-  <button (click)="toggleZKOptions()" id="zk-options-button" class="zk_dropdown_button">
+  <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown_button dropdown_button--zk">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
-    <div class="zk_dropdown_content">
-      <span class="zk_dropdown_header">Zarządzanie kryzysowe</span>
-      <div class="zk__dropdown__close" (click)="toggleZKOptions(false)"></div>
+    <div class="dropdown_content dropdown_content--zk">
+      <span class="dropdown_header">Zarządzanie kryzysowe</span>
+      <div class="dropdown_close dropdown" (click)="toggleZKOptions(false)"></div>
       <ul>
         <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj Raport</a></li>
         <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
