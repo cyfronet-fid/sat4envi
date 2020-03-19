@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.geoserver.op;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @IntegrationTest
+@Slf4j
 public class GeoServerOperationsIntegrationTest {
-
     @Autowired
     private GeoServerOperations geoServerOperations;
+    @Autowired
+    private SeedProductsTest seedProductsTest;
 
     @BeforeEach
     public void beforeEach() {
         for (String workspace: geoServerOperations.listWorkspaces()) {
             geoServerOperations.deleteWorkspace(workspace, true);
         }
+        seedProductsTest.preparedb();
     }
 
     @Test
@@ -75,19 +79,19 @@ public class GeoServerOperationsIntegrationTest {
 
         assertThat(geoServerOperations.listCoverageStores("test"), hasSize(0));
 
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "cyfro://blahblah");
+        geoServerOperations.createS3CoverageStore("test", "setvak");
 
-        assertThat(geoServerOperations.listCoverageStores("test"), contains("covDataStoreName"));
+        assertThat(geoServerOperations.listCoverageStores("test"), contains("setvak"));
     }
 
     @Test
     public void shouldDeleteCoverageStore() {
         geoServerOperations.createWorkspace("test");
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "cyfro://blahblah");
+        geoServerOperations.createS3CoverageStore("test", "setvak");
 
-        assertThat(geoServerOperations.listCoverageStores("test"), contains("covDataStoreName"));
+        assertThat(geoServerOperations.listCoverageStores("test"), contains("setvak"));
 
-        geoServerOperations.deleteCoverageStore("test", "covDataStoreName", false);
+        geoServerOperations.deleteCoverageStore("test", "setvak", false);
 
         assertThat(geoServerOperations.listCoverageStores("test"), hasSize(0));
     }
@@ -95,26 +99,26 @@ public class GeoServerOperationsIntegrationTest {
     @Test
     public void shouldCreateS3Coverage() {
         geoServerOperations.createWorkspace("test");
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "mailto://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
+        geoServerOperations.createS3CoverageStore("test", "setvak");
 
-        assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), hasSize(0));
+        assertThat(geoServerOperations.listCoverages("test", "setvak"), hasSize(0));
 
-        geoServerOperations.createS3Coverage("test", "covDataStoreName", "covName");
+        geoServerOperations.createS3Coverage("test", "setvak", "setvak");
 
-        assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), contains("covName"));
+        assertThat(geoServerOperations.listCoverages("test", "setvak"), contains("setvak"));
     }
 
     @Test
     public void shouldDeleteCoverage() {
         geoServerOperations.createWorkspace("test");
-        geoServerOperations.createS3CoverageStore("test", "covDataStoreName", "mailto://s4e-test-1/201810040000_Merkator_Europa_ir_108_setvak.tif");
-        geoServerOperations.createS3Coverage("test", "covDataStoreName", "covName");
+        geoServerOperations.createS3CoverageStore("test", "setvak");
+        geoServerOperations.createS3Coverage("test", "setvak", "setvak");
 
-        assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), contains("covName"));
+        assertThat(geoServerOperations.listCoverages("test", "setvak"), contains("setvak"));
 
-        geoServerOperations.deleteCoverage("test", "covDataStoreName", "covName");
+        geoServerOperations.deleteCoverage("test", "setvak", "setvak");
 
-        assertThat(geoServerOperations.listCoverages("test", "covDataStoreName"), hasSize(0));
+        assertThat(geoServerOperations.listCoverages("test", "setvak"), hasSize(0));
     }
 
     @Test

@@ -70,7 +70,7 @@ class GeoServerServiceTest {
                 Product.builder()
                         .name("productType")
                         .displayName("productType")
-                        .layerName("testLayerName")
+                        .layerName("test_layer_name")
                         .build());
         scene = sceneRepository.save(
                 Scene.builder()

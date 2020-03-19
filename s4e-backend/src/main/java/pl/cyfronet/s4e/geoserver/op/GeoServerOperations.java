@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.geoserver.op;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kong.unirest.Unirest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -13,9 +14,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.cyfronet.s4e.geoserver.op.request.*;
+import pl.cyfronet.s4e.geoserver.op.request.CreateS3CoverageRequest;
+import pl.cyfronet.s4e.geoserver.op.request.CreateStyleRequest;
+import pl.cyfronet.s4e.geoserver.op.request.CreateWorkspaceRequest;
+import pl.cyfronet.s4e.geoserver.op.request.SetLayerDefaultStyleRequest;
 import pl.cyfronet.s4e.geoserver.op.response.LayerResponse;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
@@ -26,6 +31,8 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -104,7 +111,7 @@ public class GeoServerOperations {
     /**
      * @param workspace
      * @param dataStoreName
-     * @param path the path to shapefiles, including the "file://" prefix
+     * @param path          the path to shapefiles, including the "file://" prefix
      */
     public void createExternalShpDataStore(String workspace, String dataStoreName, String path) {
         URI url = UriComponentsBuilder.fromHttpUrl(
@@ -123,12 +130,52 @@ public class GeoServerOperations {
         return list("coverageStore", url);
     }
 
-    public void createS3CoverageStore(String workspace, String coverageStore, String s3url) {
-        URI url = UriComponentsBuilder.fromHttpUrl(
-                geoServerProperties.getBaseUrl() + "/workspaces/{workspace}/coveragestores")
-                .buildAndExpand(workspace).toUri();
-        val entity = httpEntity(new CreateS3CoverageStoreRequest(workspace, coverageStore, s3url));
-        restTemplate().postForObject(url, entity, String.class);
+    public void createS3CoverageStore(String workspace, String coverageStore) {
+        InputStream file = getArchive(coverageStore);
+
+        Unirest.put(geoServerProperties.getBaseUrl() + "/workspaces/{ws}/coveragestores/{cs}/file.imagemosaic?configure=none")
+                .header("Content-Type", "application/zip")
+                .routeParam("ws", workspace)
+                .routeParam("cs", coverageStore)
+                .basicAuth(geoServerProperties.getUsername(), geoServerProperties.getPassword())
+                .connectTimeout(geoServerProperties.getTimeoutConnect().intValue() * 1000)
+                .socketTimeout(geoServerProperties.getTimeoutRead().intValue() * 1000)
+                .field("file", file)
+                .asString()
+                .ifFailure(String.class, r -> {
+                    throw new RestClientException(r.getBody());
+                });
+    }
+
+    public InputStream getArchive(String coverageStore) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        String mosaic = "Name=" + coverageStore + "\n" +
+                "TypeName=scene_" + coverageStore + "\n" +
+                "Levels=5000,5000\n" +
+                "LevelsNum=1\n";
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try (
+                InputStream streamMosaic = new SequenceInputStream(new ByteArrayInputStream(mosaic.getBytes()), classloader.getResourceAsStream("geoserver/mosaic.properties"));
+                InputStream streamStore = classloader.getResourceAsStream("geoserver/datastore.properties");
+                ZipOutputStream zos = new ZipOutputStream(bos)) {
+            zos.putNextEntry(new ZipEntry(coverageStore + ".properties"));
+            zos.write(streamMosaic.readAllBytes());
+            zos.closeEntry();
+
+            zos.putNextEntry(new ZipEntry("datastore.properties"));
+            zos.write(streamStore.readAllBytes());
+            zos.closeEntry();
+        } catch (FileNotFoundException ex) {
+            log.warn("Couldn't read properties file", ex);
+            throw new RuntimeException(ex);
+        } catch (IOException ex) {
+            log.warn("Couldn't get archive", ex);
+            throw new RuntimeException(ex);
+        }
+
+        return new ByteArrayInputStream(bos.toByteArray());
     }
 
     public void deleteCoverageStore(String workspace, String coverageStore, boolean recurse) {

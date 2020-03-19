@@ -29,6 +29,7 @@
         <awssdk.version>2.11.7</awssdk.version>
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>22.2</geotools.version>
+        <unirest.version>3.6.01</unirest.version>
     </properties>
 
     <dependencies>
@@ -226,6 +227,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>${unirest.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

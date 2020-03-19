@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class Product {
     private Long id;
 
     @NotEmpty
+    @Pattern(regexp="^[-a-zA-Z_0-9]+$")
     private String name;
 
     @NotEmpty
@@ -38,6 +40,7 @@ public class Product {
     @ToString.Exclude
     private Legend legend;
     /// How the layer will be identified in GeoServer, excluding workspace
+    @Pattern(regexp="^[a-z_0-9]+$")
     private String layerName;
 
     @ManyToOne(fetch = FetchType.LAZY)

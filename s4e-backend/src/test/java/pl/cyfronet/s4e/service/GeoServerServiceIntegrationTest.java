@@ -1,17 +1,22 @@
 package pl.cyfronet.s4e.service;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.bean.PRGOverlay;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
+import pl.cyfronet.s4e.geoserver.op.SeedProductsTest;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
 import java.util.ArrayList;
@@ -43,8 +48,20 @@ public class GeoServerServiceIntegrationTest {
     @Autowired
     private GeoServerService geoServerService;
 
+    @Autowired
+    private SeedProductsTest seedProductsTest;
+
     @BeforeEach
     public void beforeEach() {
+        seedProductsTest.preparedb();
+        prgOverlayRepository.deleteAll();
+        sldStyleRepository.deleteAll();
+
+        geoServerService.resetWorkspace();
+    }
+
+    @AfterEach
+    public void afterEach() {
         sceneRepository.deleteAll();
         productRepository.deleteAll();
         prgOverlayRepository.deleteAll();
@@ -53,7 +70,6 @@ public class GeoServerServiceIntegrationTest {
 
     @Test
     public void shouldCreateSldStyle() {
-        geoServerService.resetWorkspace();
         SldStyle sldStyle = sldStyleRepository.save(SldStyle.builder()
                 .name("styleOne")
                 .build());
@@ -66,7 +82,6 @@ public class GeoServerServiceIntegrationTest {
     @Transactional
     @Test
     public void shouldCreatePrgLayers() {
-        geoServerService.resetWorkspace();
         SldStyle sldStyle = sldStyleRepository.save(SldStyle.builder()
                 .name("wojewodztwa")
                 .build());
@@ -85,5 +100,35 @@ public class GeoServerServiceIntegrationTest {
 
         assertThat(geoServerOperations.layerExists("test", "wojewodztwa"), is(true));
         assertThat(geoServerOperations.getLayer("test", "wojewodztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:wojewodztwa")));
+    }
+
+    @Test
+    public void shouldAddStoreAndLayer() {
+        Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
+        geoServerService.addStoreAndLayer(product);
+
+        assertThat(geoServerOperations.layerExists("test", "108m"), is(true));
+        assertThat(geoServerOperations.getLayer("test", "108m").getLayer().getName(),
+                is(equalTo("108m")));
+    }
+
+    @Test
+    public void shouldntAddStoreAndLayer() {
+        Product product = Product.builder()
+                .name("test")
+                .layerName("test")
+                .displayName("test")
+                .description("Description")
+                .build();
+        Assertions.assertThrows(RestClientException.class, () -> geoServerService.addStoreAndLayer(product));
+    }
+
+    @Test
+    public void shouldCheckIfLayerExists(){
+        Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
+        geoServerService.addStoreAndLayer(product);
+
+        assertThat(geoServerOperations.layerExists("test", "108m"), is(true));
+        assertThat(geoServerOperations.layerExists("test", "108m12"), is(false));
     }
 }

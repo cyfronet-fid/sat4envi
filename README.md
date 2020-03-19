@@ -39,7 +39,13 @@ Then, run `./mvnw test`.
 
 #### Running integration tests
 
+Geoserver will need to be aware of db-test instance, you will need to set it up with envs:
+`GEOSERVER_JNDI_URL=jdbc:postgresql://db-test:5432/sat4envi_test`
+`GEOSERVER_JNDI_USERNAME=sat4envi_test`
+`GEOSERVER_JNDI_PASSWORD=sat4envi_test`
+
 You will need test db, minio and geoserver for the tests to pass.
+
 Run them by `docker-compose up db-test geoserver minio`.
 
 Minio must be provisioned with `data-packs/minio-data-v1.tar.xz`.
@@ -148,7 +154,7 @@ seed.products.data-set=s4e-demo
 s3.bucket=s4e-demo
 s3.access-key=<access_key>
 s3.secret-key=<secret_key>
-S3_ENDPOINT=<path to storage>
+s3.endpoint=<path to storage>
 ```
 If you run with docker, update the backend-development.env (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
