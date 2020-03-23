@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Schema data model and CRD [#69](https://github.com/cyfronet-fid/sat4envi/issues/69)
+
 ### Changed
 
 - Login/Settings/User functionality changed to dropdown button [#386](https://github.com/cyfronet-fid/sat4envi/issues/386)

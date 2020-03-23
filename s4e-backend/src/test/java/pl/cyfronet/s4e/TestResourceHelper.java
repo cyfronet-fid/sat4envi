@@ -17,7 +17,7 @@ public class TestResourceHelper {
     private final ResourceLoader resourceLoader;
 
     public byte[] getAsBytes(String path) {
-        try (InputStream inputStream = resourceLoader.getResource(path).getInputStream()) {
+        try (InputStream inputStream = getAsInputStream(path)) {
             return inputStream.readAllBytes();
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
@@ -25,6 +25,16 @@ public class TestResourceHelper {
             log.warn("Couldn't read file at path '" + path + "'", e);
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * The stream has to be closed after use.
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    public InputStream getAsInputStream(String path) throws IOException {
+        return resourceLoader.getResource(path).getInputStream();
     }
 
     public String getAsStringInBase64(String path) {

@@ -10,6 +10,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface ProductRepository extends CrudRepository<Product, Long> {
     Optional<Product> findByNameContainingIgnoreCase(String name);
+
     <T> List<T> findAllBy(Class<T> projection);
+
     <T> Optional<T> findById(Long id, Class<T> projection);
+
+    boolean existsBySceneSchemaId(Long id);
+
+    boolean existsByMetadataSchemaId(Long id);
 }

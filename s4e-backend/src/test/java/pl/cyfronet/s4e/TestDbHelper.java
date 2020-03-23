@@ -11,11 +11,13 @@ public class TestDbHelper {
     private final AppUserRepository appUserRepository;
     private final PlaceRepository placeRepository;
     private final ProductRepository productRepository;
+    private final SchemaRepository schemaRepository;
 
     public void clean() {
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
         placeRepository.deleteAll();
         productRepository.deleteAll();
+        schemaRepository.deleteAll();
     }
 }
