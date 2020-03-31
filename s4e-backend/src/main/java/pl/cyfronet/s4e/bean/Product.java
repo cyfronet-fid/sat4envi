@@ -39,6 +39,7 @@ public class Product {
     @Column(columnDefinition = "jsonb")
     @ToString.Exclude
     private Legend legend;
+
     /// How the layer will be identified in GeoServer, excluding workspace
     @Pattern(regexp="^[a-z_0-9]+$")
     private String layerName;

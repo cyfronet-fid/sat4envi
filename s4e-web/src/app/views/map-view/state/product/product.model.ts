@@ -7,4 +7,5 @@ export interface Product {
   imageUrl: string;
   description: string;
   legend: Legend | null | undefined;
+  layerName: string;
 }

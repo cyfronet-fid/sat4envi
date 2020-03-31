@@ -136,7 +136,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   setDate($event: string) {
-    this.sceneService.get(this.productQuery.getActiveId(), $event);
+    this.sceneService.get(this.productQuery.getActive(), $event);
     this.productService.setSelectedDate($event);
   }
 

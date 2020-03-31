@@ -11,6 +11,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
+import moment from 'moment';
 
 
 @Component({
@@ -116,17 +117,21 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateLayers(product: Scene | null) {
+  private updateLayers(scene: Scene | null) {
     const mapLayers = this.map.getLayers();
     mapLayers.clear();
     mapLayers.push(this.baseLayer);
 
-    if (product != null) {
+    if (scene != null) {
       mapLayers.push(new Image({
         source: new ImageWMS({
           crossOrigin: 'Anonymous',
           url: this.CONFIG.geoserverUrl,
-          params: {'LAYERS': this.CONFIG.geoserverWorkspace + ':' + product.layerName},
+          serverType: 'geoserver',
+          params: {
+            'LAYERS': this.CONFIG.geoserverWorkspace + ':' + scene.layerName,
+            'TIME': moment(scene.timestamp).utc().toISOString(),
+          },
         }),
       }));
     }

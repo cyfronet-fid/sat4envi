@@ -8,6 +8,8 @@ import {LegendService} from '../legend/legend.service';
 import {ProductQuery} from '../product/product.query';
 import {ProductStore} from '../product/product.store';
 import {applyTransaction} from '@datorama/akita';
+import {map} from 'rxjs/operators';
+import {Product} from '../product/product.model';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
@@ -21,11 +23,11 @@ export class SceneService {
               private CONFIG: S4eConfig) {
   }
 
-  get(productId: number, date: string) {
+  get(product: Product, date: string) {
     this.store.setLoading(true);
-    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${productId}/scenes`, {
+    this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${product.id}/scenes`, {
       params: {date: date, tz: this.CONFIG.timezone}
-    })
+    }).pipe(map(entities => entities.map(s => ({...s, layerName: product.layerName}))))
       .subscribe((entities) => applyTransaction(() => {
         this.store.set(entities);
         if (this.sceneQuery.getCount() > 0) {

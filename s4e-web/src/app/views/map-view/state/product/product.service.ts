@@ -36,12 +36,13 @@ export class ProductService {
   setActive(productId: number | null) {
     if (productId != null) {
       const product = this.query.getEntity(productId);
-      applyTransaction(() => {
-        this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
-        this.store.setActive(productId);
+      this.getSingle$(product).subscribe((product) => {
+        applyTransaction(() => {
+          this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
+          this.store.setActive(productId);
+        });
+        this.getAvailableDays();
       });
-      console.log(`productService.setActive(${product})`);
-      this.getSingle$(product).subscribe(() => this.getAvailableDays());
     } else {
       applyTransaction(() => {
         this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
@@ -69,8 +70,8 @@ export class ProductService {
   }
 
   getAvailableDays() {
-    const activeProductId: number = this.query.getActiveId() as number;
-    if (activeProductId == null) {
+    const activeProduct: Product = this.query.getActive();
+    if (activeProduct == null) {
       return;
     }
 
@@ -78,14 +79,12 @@ export class ProductService {
 
     const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth , ui.selectedDay));
 
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProductId}/scenes/available`,
-      {
-        params: {tz: this.CONFIG.timezone, yearMonth: dateF}
-      })
+    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
+      {params: {tz: this.CONFIG.timezone, yearMonth: dateF}})
       .pipe(finalize(() => this.store.setLoading(false)))
       .subscribe(data => {
         this.updateAvailableDays(data);
-        this.sceneService.get(activeProductId, ui.selectedDate);
+        this.sceneService.get(activeProduct, ui.selectedDate);
       });
   }
 

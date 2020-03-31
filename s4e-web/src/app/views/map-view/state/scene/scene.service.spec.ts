@@ -72,6 +72,7 @@ describe('SceneService', () => {
   describe('get', () => {
     it('loading should be set', (done) => {
       const productId = 1;
+      const product = ProductFactory.build({id: productId});
       const dateF = '2019-10-01';
       const stream = sceneQuery.selectLoading();
 
@@ -80,7 +81,7 @@ describe('SceneService', () => {
         done();
       });
 
-      sceneService.get(productId, dateF);
+      sceneService.get(product, dateF);
 
       const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
       r.flush([]);
@@ -88,8 +89,9 @@ describe('SceneService', () => {
 
     it('should call http endpoint', () => {
       const productId = 1;
+      const product = ProductFactory.build({id: productId});
       const dateF = '2019-10-01';
-      sceneService.get(productId, dateF);
+      sceneService.get(product, dateF);
       http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
     });
 
@@ -99,18 +101,17 @@ describe('SceneService', () => {
       const productId = product.id;
       const productStore: ProductStore = TestBed.get(ProductStore);
       productStore.add(product);
+      const scene = SceneFactory.build();
 
       sceneQuery.selectAll().pipe(take(2), toArray()).subscribe(data => {
-        expect(data).toEqual([[], [productR]]);
+        expect(data).toEqual([[], [{...scene, layerName: product.layerName}]]);
         done();
       });
 
-      const productR = SceneFactory.build();
-
-      sceneService.get(productId, dateF);
+      sceneService.get(product, dateF);
 
       const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&tz=testTZ`);
-      r.flush([productR]);
+      r.flush([scene]);
     });
   });
 });
