@@ -13,8 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Separate backend and web tests in gh-actions [#399] (https://github.com/cyfronet-fid/sat4envi/issues/399)
-- Rework backend Spring Security [#390] (https://github.com/cyfronet-fid/sat4envi/issues/390)
+- Integrate Image Mosaic with TIME parameter [#389](https://github.com/cyfronet-fid/sat4envi/issues/389)
+- Separate backend and web tests in gh-actions [#399](https://github.com/cyfronet-fid/sat4envi/issues/399)
+- Rework backend Spring Security [#390](https://github.com/cyfronet-fid/sat4envi/issues/390)
 - Login/Settings/User functionality changed to dropdown button [#386](https://github.com/cyfronet-fid/sat4envi/issues/386)
 
 ## [v4.0.0]

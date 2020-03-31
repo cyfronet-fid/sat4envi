@@ -4,8 +4,8 @@ export interface Scene {
   id: number;
   sceneId: number;
   timestamp: string;
-  layerName: string;
   legend: Legend | null;
+  layerName: string;
 }
 
 /**

@@ -7,6 +7,8 @@
     "outDir": "../out-tsc/spec",
     "module": "commonjs",
     "types": [
+      "ol",
+      "openlayers",
       "jest",
       "jsdom",
       "node"

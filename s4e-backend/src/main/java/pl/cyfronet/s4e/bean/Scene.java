@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
@@ -33,17 +32,13 @@ public class Scene {
     /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
     @NotEmpty
     private String s3Path;
+
     /// E.g. "mailto://s4e-sth/path/to/granule.tiff". Including endpoint and bucket information.
     @NotEmpty
     private String granulePath;
+
     @NotNull
     private Geometry footprint;
-
-    /// How the layer will be identified in GeoServer, excluding workspace
-    private String layerName;
-
-    /// Has the layer, store and coverage been created for this product
-    private boolean created;
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")
