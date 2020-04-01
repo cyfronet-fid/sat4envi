@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +34,9 @@ public class LoginController {
     @Operation(summary = "Login to the application")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "401", description = "Incorrect credentials or account doesn't exist"),
-            @ApiResponse(responseCode = "403", description = "Account disabled (not activated)")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated: Incorrect credentials or account doesn't exist", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Account disabled (not activated)", content = @Content)
     })
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws AuthenticationException {

@@ -129,7 +129,7 @@ public class SchemaControllerTest {
         mockMvc.perform(post(API_PREFIX_V1 + "/schema")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
 
         assertThat(schemaRepository.count(), is(equalTo(0L)));
     }

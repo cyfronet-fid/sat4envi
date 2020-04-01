@@ -38,7 +38,8 @@ public class ShareLinkController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operation successful", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/share-link", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isZKMember()")

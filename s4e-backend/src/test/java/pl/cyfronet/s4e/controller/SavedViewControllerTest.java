@@ -148,7 +148,7 @@ public class SavedViewControllerTest {
         mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
         verifyNoMoreInteractions(fileStorage);

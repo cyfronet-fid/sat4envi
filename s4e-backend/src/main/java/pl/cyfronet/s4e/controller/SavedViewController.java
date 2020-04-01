@@ -45,7 +45,9 @@ public class SavedViewController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operation successful"),
-            @ApiResponse(responseCode = "403", description = "Not authenticated", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/saved-views", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -64,7 +66,10 @@ public class SavedViewController {
     }
 
     @Operation(summary = "List SavedViews of authenticated user")
-    @ApiResponses(@ApiResponse(responseCode = "200", description = "Operation successful"))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Operation successful"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
+    })
     @PageableAsQueryParam
     @GetMapping("/saved-views")
     @PreAuthorize("isAuthenticated()")
@@ -78,7 +83,9 @@ public class SavedViewController {
     @Operation(summary = "Delete a SavedView")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Operation successful"),
-            @ApiResponse(responseCode = "403", description = "Not authenticated or authorized", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @DeleteMapping("/saved-views/{uuid}")
     @PreAuthorize("isAuthenticated() && @savedViewService.canDelete(#uuid, authentication)")
