@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +28,8 @@ public class ConfigController {
 
     @Operation(summary = "Get the front-end app configuration")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "OK")
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/config")
     public ConfigResponse config() {

@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,9 +41,10 @@ public class GroupController {
     @Operation(summary = "Create a new group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If group was created"),
-            @ApiResponse(responseCode = "400", description = "Group not created"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to create a group"),
-            @ApiResponse(responseCode = "404", description = "Institution not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/groups", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
@@ -55,9 +57,10 @@ public class GroupController {
     @Operation(summary = "Add a new member to the group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If member was added"),
-            @ApiResponse(responseCode = "400", description = "Member not added"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add member"),
-            @ApiResponse(responseCode = "404", description = "Group or user not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/groups/{group}/members", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
@@ -72,9 +75,10 @@ public class GroupController {
     @Operation(summary = "Remove a member from the group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If member was removed"),
-            @ApiResponse(responseCode = "400", description = "Member not removed"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to remove member"),
-            @ApiResponse(responseCode = "404", description = "Group or user not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
     @PreAuthorize("isAuthenticated() && isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
@@ -89,7 +93,10 @@ public class GroupController {
     @Operation(summary = "Get a list of groups")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get a list")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PageableAsQueryParam
     @GetMapping("/institutions/{institution}/groups")
@@ -102,9 +109,10 @@ public class GroupController {
     @Operation(summary = "Get a group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved a group"),
-            @ApiResponse(responseCode = "400", description = "Group not retrieved"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get a group"),
-            @ApiResponse(responseCode = "404", description = "Group not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/institutions/{institution}/groups/{group}")
     @PreAuthorize("isAuthenticated() && (isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug))")
@@ -118,8 +126,10 @@ public class GroupController {
     @Operation(summary = "Get members")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved members"),
-            @ApiResponse(responseCode = "400", description = "Members not retrieved"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get members")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/institutions/{institution}/groups/{group}/members")
     @PreAuthorize("isAuthenticated() && (isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug))")
@@ -131,9 +141,10 @@ public class GroupController {
     @Operation(summary = "Update a group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If group was updated"),
-            @ApiResponse(responseCode = "400", description = "Group not updated"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update a group"),
-            @ApiResponse(responseCode = "404", description = "Group was not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}/groups/{group}", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && (isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug))")
@@ -147,9 +158,10 @@ public class GroupController {
     @Operation(summary = "Delete a group")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If group was deleted"),
-            @ApiResponse(responseCode = "400", description = "Group was not deleted"),
-            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to delete a group"),
-            @ApiResponse(responseCode = "404", description = "Group or institution was not found")
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/institutions/{institution}/groups/{group}")
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
