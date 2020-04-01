@@ -9,6 +9,12 @@
       <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt/>
     </button>
   </section>
+  <s4e-search-results *ngIf="searchResultsOpen$ | async"
+                      [searchResults]="searchResults$ | async"
+                      [loading]="searchResultsLoading$ | async"
+                      (placeSelected)="navigateToPlace($event)"
+                      class="searchResults">
+  </s4e-search-results>
 
   <s4e-product-picker class="section"
                       caption="Produkty"
@@ -26,12 +32,7 @@
                       (itemSelected)="selectOverlay($event)">
   </s4e-product-picker>
 
-  <s4e-search-results *ngIf="searchResultsOpen$ | async"
-                      [searchResults]="searchResults$ | async"
-                      [loading]="searchResultsLoading$ | async"
-                      (placeSelected)="navigateToPlace($event)"
-                      class="searchResults">
-  </s4e-search-results>
+
 </ng-container>
 <ng-template #loadingRef>
   <div class="loading loading--form">

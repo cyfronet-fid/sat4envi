@@ -7,6 +7,7 @@
     border-radius: $border-radius-default;
     margin-bottom: $space-xlarge;
     display: block;
+    position: relative;
 
     &.search {
       background: #fff;
@@ -18,7 +19,7 @@
 
       .search__input {
         width: 100%;
-        font-size: 0.875rem;
+        font-size: 0.938rem;
 
         &::placeholder {
           font-style: italic;
@@ -50,12 +51,13 @@
 }
 
 .searchResults {
-  position: absolute;
-  background: #ffffff;
-  opacity: 0.9;
-  border-radius: 5px;
-  left: 400px;
-  top: 15px;
+  padding: 10px 0;
+  background: $color-white;
+  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-top: 1px solid $color-grey-secondary;
+  top: 104px;
   z-index: 10;
-  width: max-content;
+  position: absolute;
+  width: calc(100% - 30px);
+  box-shadow: $shadow-primary;
 }

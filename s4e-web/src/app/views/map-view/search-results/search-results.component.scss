@@ -1,5 +1,8 @@
 @import "../../../../scss/variables";
 
+.searchResult__loader {
+  padding: 0 15px;
+}
 
 .searchResult__item {
   height: 20px;
@@ -19,17 +22,10 @@
 
 
 .searchResult {
-  padding: 10px;
-  border-radius: $border-radius-default;
-
-  fa-icon {
-    margin-right: $space-xsmall;
-  }
-
   ul {
     li {
-      margin-bottom: $space-xsmall;
-      padding: $space-xsmall $space-xsmall 1px $space-xsmall;
+      padding: $space-xsmall $space-default;
+      font-size: 0.938rem;
 
       &:last-child {
         margin-bottom: 0;
@@ -48,14 +44,10 @@
       }
 
       &:hover {
-        border-radius: $border-radius-default;
         background: $color-grey-primary;
         cursor: pointer;
-        padding-left: $space-small;
       }
     }
-
-
   }
 }
 
