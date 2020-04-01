@@ -1,5 +1,9 @@
 @import "../../../scss/variables";
 
+#map {
+  left: 360px;
+}
+
 .zk-options {
   position: absolute;
   right: 10px;
@@ -31,11 +35,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  left: 0;
   z-index: 2;
   padding: 15px;
-  overflow-x: scroll;
+  box-sizing: padding-box;
 
   .switch {
     margin: -15px;
@@ -66,31 +68,6 @@
     }
   }
 }
-
-//.login {
-//  padding: 40px 15px 10px 15px;
-//  margin-top: auto;
-//  align-self: center;
-//  text-align: center;
-//  background: $color-white;
-//  position: fixed;
-//  bottom: 0;
-//  width: 360px;
-//  box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
-//
-//  a:not(.button) {
-//    color: $color-grey;
-//    text-transform: uppercase;
-//    font-weight: bold;
-//    font-size: 0.75rem;
-//  }
-//
-//  li {
-//    margin-bottom: $space-xlarge;
-//    font-weight: 400;
-//  }
-//}
-
 
 .dropdown_button {
   width: 50px;
