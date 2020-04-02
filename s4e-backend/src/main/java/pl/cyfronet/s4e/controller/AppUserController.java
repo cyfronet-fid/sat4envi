@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -72,9 +71,7 @@ public class AppUserController {
 
     @Operation(summary = "Resend an email verification token based on email")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Email with a new email verification token was sent provided user with it existed and wasn't activated yet"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Email with a new email verification token was sent provided user with it existed and wasn't activated yet")
     })
     @PostMapping("/resend-registration-token-by-email")
     public void resendRegistrationTokenByEmail(@RequestParam @Email @NotEmpty @Valid String email) {
@@ -86,8 +83,7 @@ public class AppUserController {
     @Operation(summary = "Resend registration token based on token")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Email with a new registration token was resent"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping("/resend-registration-token-by-token")
     public void resendRegistrationTokenByToken(@RequestParam @NotEmpty @Valid String token
@@ -99,9 +95,8 @@ public class AppUserController {
     @Operation(summary = "Confirm user email")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User account was activated"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated: The token has expired", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
+            @ApiResponse(responseCode = "404", description = "The token wasn't found")
     })
     @PostMapping("/confirm-email")
     public void confirmEmail(@RequestParam @NotEmpty @Valid String token
@@ -114,10 +109,8 @@ public class AppUserController {
     @Operation(summary = "Add user to an institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User was added"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add user"),
+            @ApiResponse(responseCode = "404", description = "User or Group not found")
     })
     @PostMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
@@ -130,10 +123,8 @@ public class AppUserController {
     @Operation(summary = "Update user groups in an institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User groups were updated"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Group not updated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to update user groups")
     })
     @PutMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() &&  isInstitutionManager(#institutionSlug)")
@@ -148,10 +139,8 @@ public class AppUserController {
     @Operation(summary = "Get user profile")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User was retrieved"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to get profile"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/users/me")
     @PreAuthorize("isAuthenticated()")

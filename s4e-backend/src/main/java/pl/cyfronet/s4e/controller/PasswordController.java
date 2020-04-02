@@ -1,7 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,8 +38,7 @@ public class PasswordController {
 
     @Operation(summary = "Create and send a password reset token based on email")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Email with a password reset token was sent provided user with it existed"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Email with a password reset token was sent provided user with it existed")
     })
     @PostMapping(value = "/token-create")
     public void tokenCreate(@RequestParam @Email @NotEmpty @Valid String email) {
@@ -52,9 +50,8 @@ public class PasswordController {
     @Operation(summary = "Validate if reset token was used or expired")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Password reset token is valid"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated: The token has expired", content = @Content),
-            @ApiResponse(responseCode = "404", description = "The token was not found", content = @Content)
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @GetMapping(value = "/token-validate")
     public void validateToken(@RequestParam @NotEmpty @Valid String token) throws NotFoundException, PasswordResetTokenExpiredException {
@@ -64,9 +61,8 @@ public class PasswordController {
     @Operation(summary = "Reset password")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Password reset was successful"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated: The token has expired", content = @Content),
-            @ApiResponse(responseCode = "404", description = "The token was not found", content = @Content)
+            @ApiResponse(responseCode = "401", description = "The token has expired"),
+            @ApiResponse(responseCode = "404", description = "The token was not found")
     })
     @PostMapping(value = "/password-reset", consumes = APPLICATION_JSON_VALUE)
     public void resetPassword(@RequestBody @Valid PasswordResetRequest request)
@@ -77,9 +73,8 @@ public class PasswordController {
     @Operation(summary = "Change password")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Password change was successful"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request: Passwords were incorrect", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "404", description = "The user was not found", content = @Content)
+            @ApiResponse(responseCode = "400", description = "Passwords were incorrect"),
+            @ApiResponse(responseCode = "404", description = "The user was not found")
     })
     @PostMapping(value = "/password-change", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
