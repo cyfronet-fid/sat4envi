@@ -1,7 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,10 +27,9 @@ public class UserRoleController {
     @Operation(summary = "Add a role to user")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If user role was added"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Role, group or user not found", content = @Content)
+            @ApiResponse(responseCode = "400", description = "User role was not added"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to add a role"),
+            @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
     @PostMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isAdmin()")
@@ -42,10 +40,9 @@ public class UserRoleController {
     @Operation(summary = "Remove a role from user")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If user role was removed"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Role, group or user not found", content = @Content)
+            @ApiResponse(responseCode = "400", description = "User role was not removed"),
+            @ApiResponse(responseCode = "403", description = "Forbidden: Don't have permission to remove a role"),
+            @ApiResponse(responseCode = "404", description = "Role, group or user not found")
     })
     @DeleteMapping(value = "/user-role", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isAdmin()")
