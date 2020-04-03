@@ -2,68 +2,96 @@ name: Build & Test
 
 on: [push]
 jobs:
-  tests:
+  backend:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11.0.2
-    - name: Cache m2
-      uses: actions/cache@v1
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-    - name: Cache npm
-      uses: actions/cache@v1
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Cache Cypress
-      uses: actions/cache@v1
-      with:
-        path: ~/.cache/Cypress
-        key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-cypress-
-    - name: Maven compile
-      run: ./mvnw clean compile -DskipTests
-    - name: Maven package
-      run: ./mvnw package -DskipTests
-    - name: Start containers
-      run: docker-compose up -d --no-deps s4e-web s4e-backend db db-test
-      env:
-        BACKEND_ENV_PATH: ./backend-gh-e2e.env
-        WEB_CONF_PATH: ./s4e-web/nginx-e2e.conf
-    - name: Maven test
-      run: ./mvnw test
-    - name: E2E tests
-      env: 
-        CYPRESS_DONT_DELETE_DOWNLOADED_FILES: true
-      run: cd s4e-web && npm run e2e
-    - name: Containers logs
-      if: failure()
-      run: docker-compose logs
-    - name: Stop s4e-backend and s4e-web
-      run: docker-compose down
-    - name: E2E upload screenshots
-      uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: e2e-results
-        path: s4e-web/cypress/screenshots
-    - name: E2E upload videos
-      uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: e2e-results-videos
-        path: s4e-web/cypress/videos
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.0.2
+      - name: Cache m2
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Maven package
+        run: ../mvnw clean package -DskipTests
+        working-directory: s4e-backend
+      - name: Start db-test
+        run: docker-compose up -d --no-deps db-test
+      - name: Maven test
+        run: ../mvnw test
+        working-directory: s4e-backend
+      - name: Containers logs
+        if: failure()
+        run: docker-compose logs
+      - name: Stop containers
+        run: docker-compose down
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11.0.2
+      - name: Cache m2
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Cache npm
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Cache Cypress
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-cypress-
+      - name: Maven package
+        run: ./mvnw clean package -DskipTests
+      - name: Start containers
+        run: docker-compose up -d --no-deps s4e-web s4e-backend db db-test
+        env:
+          BACKEND_ENV_PATH: ./backend-gh-e2e.env
+          WEB_CONF_PATH: ./s4e-web/nginx-e2e.conf
+      - name: Maven test
+        run: ../mvnw test
+        working-directory: s4e-web
+      - name: E2E tests
+        env:
+          CYPRESS_DONT_DELETE_DOWNLOADED_FILES: true
+        run: npm run e2e
+        working-directory: s4e-web
+      - name: Containers logs
+        if: failure()
+        run: docker-compose logs
+      - name: Stop s4e-backend and s4e-web
+        run: docker-compose down
+      - name: E2E upload screenshots
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: e2e-results
+          path: s4e-web/cypress/screenshots
+      - name: E2E upload videos
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: e2e-results-videos
+          path: s4e-web/cypress/videos
     # Enable after downloading files in E2E has been resolved
     #- name: E2E upload Report PDF
     #  uses: actions/upload-artifact@v1
