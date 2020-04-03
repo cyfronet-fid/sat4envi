@@ -23,7 +23,7 @@
     </parent>
 
     <properties>
-        <revision>5.0.0</revision>
+        <revision>5.1.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
