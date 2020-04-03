@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [v5.0.0]
+
 ### Added
 
 - Schema data model and CRD [#69](https://github.com/cyfronet-fid/sat4envi/issues/69)
@@ -49,5 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v4.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v5.0.0...HEAD
+[v5.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v4.0.0...v5.0.0
 [v4.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/0ebb1138...v4.0.0

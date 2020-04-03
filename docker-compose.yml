@@ -5,7 +5,7 @@ services:
     env_file:
       - ${BACKEND_ENV_PATH:-backend-development.env}
     volumes:
-      - ${BACKEND_JAR_PATH:-./s4e-backend/target/s4e-backend-5.0.0-SNAPSHOT.jar}:/app/app.jar
+      - ${BACKEND_JAR_PATH:-./s4e-backend/target/s4e-backend-5.1.0-SNAPSHOT.jar}:/app/app.jar
     ports:
       - ${BACKEND_PORT:-4201}:4201
     networks:
