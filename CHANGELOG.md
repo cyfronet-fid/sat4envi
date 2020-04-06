@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Run e2e and integration tests in gh-actions and modify docker-compose files [#401](https://github.com/cyfronet-fid/sat4envi/issues/401)
 - Add more seeds for tests [#411](https://github.com/cyfronet-fid/sat4envi/issues/411)
 
 ## [v5.0.0]

@@ -31,7 +31,7 @@ The Dockerfile may be updated in cases such as updating java version.
 
 #### <a id="backend-running-unit-tests"></a> Running unit tests
 
-You will need the test db up and running: `docker-compose up db-test`.
+You will need the test db up and running: `docker-compose -f docker-compose-test.yml up db-test`.
 It will be exposed at `localhost:5434`.
 
 Then, run `./mvnw test`.
@@ -39,16 +39,9 @@ Then, run `./mvnw test`.
 
 #### Running integration tests
 
-Geoserver will need to be aware of db-test instance, you will need to set it up with envs:
-`GEOSERVER_JNDI_URL=jdbc:postgresql://db-test:5432/sat4envi_test`
-`GEOSERVER_JNDI_USERNAME=sat4envi_test`
-`GEOSERVER_JNDI_PASSWORD=sat4envi_test`
-
 You will need test db, minio and geoserver for the tests to pass.
 
-Run them by `docker-compose up db-test geoserver minio`.
-
-Minio must be provisioned with `data-packs/minio-data-v1.tar.xz`.
+Run them with `docker-compose -f docker-compose-test.yml up db-test geoserver-test minio-test`.
 
 Then, execute `./mvnw verify`.
 
@@ -57,6 +50,7 @@ Then, execute `./mvnw verify`.
 
 To build run `./mvnw package` in directory `s4e-backend`. This will produce a jar in `s4e-backend/target`, which can be
 started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
+(For the tests to pass follow the instructions in [section about running unit tests](#backend-running-unit-tests) or skip them with `-DskipTests`.)
 
 To set the version of the built artifacts use the `revision` and `changelist` system variables, for example:
 `./mvnw package -Drevision=4.0.1 -Dchangelist=-RELEASE`.
@@ -116,7 +110,7 @@ It uses local minio for S3 storage.
 `s4e-demo` is a data set which consists of a month of data of five products.
 There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
 After setting the property `seed.products.data-set`, you must modify the GeoServer docker container volume to point to
-the `s3.properties` file with cyfronet's CEPH instance url and credentials.
+the `s3.properties` file with Cyfronet's CEPH instance url and credentials.
 Moreover, you must set a proper bucket by setting `s3.bucket=s4e-demo` so that layers provisioned to the
 GeoServer have correct bucket set.
 (The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
@@ -166,7 +160,7 @@ S3_SECRETKEY=<secret_key>
 S3_ENDPOINT=<path to storage>
 ```
 
-The backend will seed db and GeoServer, which will take around an hour.
+The backend will seed db and GeoServer.
 It is normal that there are some errors in the backend's logs as there are gaps in the available data.
 However, the beginning of the data is quite clean, so you should see progress info when the seeder starts.
 
@@ -236,6 +230,8 @@ When you run the backend Swagger-UI is exposed under `http://localhost:4201/swag
 
 #### <a id="backend-static"></a> Static images S3 storage
 
+**This is somehow outdated, but describes the **
+
 To easily set bucket policies, install [minio client](https://github.com/minio/mc).
 
 On Linux it is enough to run:
@@ -276,6 +272,8 @@ In the root project directory `docker-compose.yml` is provide for developer's ea
 This docker-compose recipe can be used to either run whole application for demo purposes, or to run specific parts of the application which can be usefull if for example we would like to develop only frontend part of the application.
 
 In order do run docker-compose following steps must be done (**unless stated otherwise working directory should be project root**):
+
+**NOTE**: If you use the fiddev/minio-test image then you can skip points 1-4.
 
 1. Now it's time to get S3 data to the application.
    First make sure that you have [minio client](https://github.com/minio/mc) (`mc`) installed.

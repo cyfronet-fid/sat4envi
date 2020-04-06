@@ -26,9 +26,7 @@ services:
     depends_on:
       - s4e-backend
   minio:
-    image: minio/minio
-    volumes:
-      - ./tmp/minio-data:/data
+    image: fiddev/minio-test:1.0.1
     ports:
       - ${MINIO_PORT:-9001}:9000
     networks:
@@ -61,16 +59,6 @@ services:
       POSTGRES_DB: ${DB_POSTGRES_DB:-sat4envi}
       POSTGRES_USER: ${DB_POSTGRES_USER:-sat4envi}
       POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-sat4envi}
-  db-test:
-    image: postgis/postgis:12-3.0-alpine
-    ports:
-      - ${DB_TEST_PORT:-5434}:5432
-    networks:
-      - net
-    environment:
-      POSTGRES_DB: ${DB_TEST_POSTGRES_DB:-sat4envi_test}
-      POSTGRES_USER: ${DB_TEST_POSTGRES_USER:-sat4envi_test}
-      POSTGRES_PASSWORD: ${DB_TEST_POSTGRES_PASSWORD:-sat4envi_test}
 
 networks:
   net:

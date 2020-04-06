@@ -1,0 +1,65 @@
+version: '3'
+services:
+  s4e-backend-e2e:
+    build: ./s4e-backend
+    env_file:
+      - ${BACKEND_E2E_ENV_PATH:-backend-e2e.env}
+    volumes:
+      - ${BACKEND_E2E_JAR_PATH:-./s4e-backend/target/s4e-backend-5.1.0-SNAPSHOT.jar}:/app/app.jar
+    ports:
+      - ${BACKEND_E2E_PORT:-4203}:4201
+    networks:
+      - net-test
+    depends_on:
+      - db-test
+      - geoserver-test
+      - minio-test
+  s4e-web-e2e:
+    image: nginx:alpine
+    ports:
+      - ${WEB_E2E_PORT:-4202}:80
+    volumes:
+      - ./s4e-web/target/webapp:/usr/share/nginx/html
+      - ${WEB_E2E_CONF_PATH:-./s4e-web/nginx-e2e.conf}:/etc/nginx/nginx.conf
+    networks:
+      - net-test
+    depends_on:
+      - s4e-backend-e2e
+      - geoserver-test
+      - minio-test
+  minio-test:
+    image: fiddev/minio-test:1.0.1
+    ports:
+      - ${MINIO_TEST_PORT:-9002}:9000
+    networks:
+      - net-test
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_TEST_ACCESS_KEY:-miniotest}
+      MINIO_SECRET_KEY: ${MINIO_TEST_SECRET_KEY:-miniotest123}
+    command: server /data
+  geoserver-test:
+    image: fiddev/geoserver:1.3.0-GS2.16.2
+    volumes:
+      - ./resources/geoserver/s3-test.properties:/opt/geoserver/s3.properties
+    ports:
+      - ${GEOSERVER_TEST_PORT:-8081}:8080
+    networks:
+      - net-test
+    environment:
+      GEOSERVER_ADMIN_PASSWORD: ${GEOSERVER_TEST_ADMIN_PASSWORD:-admintest123}
+      JNDI_URL: ${GEOSERVER_TEST_JNDI_URL:-jdbc:postgresql://db-test:5432/sat4envi_test}
+      JNDI_USERNAME: ${GEOSERVER_TEST_JNDI_USERNAME:-sat4envi_test}
+      JNDI_PASSWORD: ${GEOSERVER_TEST_JNDI_PASSWORD:-sat4envi_test}
+  db-test:
+    image: postgis/postgis:12-3.0-alpine
+    ports:
+      - ${DB_TEST_PORT:-5434}:5432
+    networks:
+      - net-test
+    environment:
+      POSTGRES_DB: ${DB_TEST_POSTGRES_DB:-sat4envi_test}
+      POSTGRES_USER: ${DB_TEST_POSTGRES_USER:-sat4envi_test}
+      POSTGRES_PASSWORD: ${DB_TEST_POSTGRES_PASSWORD:-sat4envi_test}
+
+networks:
+  net-test:
