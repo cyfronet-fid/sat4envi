@@ -63,7 +63,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/groups/{group}/members", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && (isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug))")
     public void addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
@@ -81,7 +81,7 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
-    @PreAuthorize("isAuthenticated() && isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && (isGroupManager(#institutionSlug, #groupSlug) || isInstitutionManager(#institutionSlug))")
     public void removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)
