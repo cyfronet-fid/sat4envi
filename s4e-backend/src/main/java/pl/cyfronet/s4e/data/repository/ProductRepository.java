@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.data.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,8 +11,6 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    Optional<Product> findByNameContainingIgnoreCase(String name);
-
     <T> List<T> findAllBy(Class<T> projection);
 
     @Query("SELECT CASE WHEN COUNT(p)> 0 THEN 'true' ELSE 'false' END FROM Product p " +
@@ -20,6 +19,11 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     boolean isFavouriteByEmailAndProductId(String email, Long productId);
 
     <T> Optional<T> findById(Long id, Class<T> projection);
+
+    Optional<Product> findByNameContainingIgnoreCase(String name);
+
+    @EntityGraph(attributePaths={ "sceneSchema", "metadataSchema" })
+    <T> Optional<T> findByName(String name, Class<T> projection);
 
     boolean existsBySceneSchemaId(Long id);
 

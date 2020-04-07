@@ -7,13 +7,14 @@ The most recent changes are on top, in each type of changes category.
 
 ## [Unreleased]
 
+### Added
+
+- SceneAcceptor driven by files from S3 [#160](https://github.com/cyfronet-fid/sat4envi/issues/160)
+- Notifications module [#423](https://github.com/cyfronet-fid/sat4envi/issues/423)
+
 ### Fixed
 
 - [Bugfix] places input should keep state [#427](https://github.com/cyfronet-fid/sat4envi/issues/427)
-
-### Added
-
-- Notifications module [#423](https://github.com/cyfronet-fid/sat4envi/issues/423)
 
 ## [v5.1.0]
 

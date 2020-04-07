@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.bean;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -10,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 /**
  * There is ON CASCADE DELETE on Product
@@ -47,9 +47,9 @@ public class Scene {
 
     @Type(type = "jsonb")
     @ToString.Exclude
-    private Map<String, Object> sceneContent;
+    private JsonNode sceneContent;
 
     @Type(type = "jsonb")
     @ToString.Exclude
-    private Map<String, Object> metadataContent;
+    private JsonNode metadataContent;
 }

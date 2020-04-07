@@ -11,9 +11,9 @@
     "polarisation",
     "sensing_time",
     "ingestion_time",
-    "relative_orbit_number",   
+    "relative_orbit_number",
     "polygon",
-    "format",  
+    "format",
     "schema"
   ],
   "type": "object",
@@ -47,7 +47,7 @@
     },
     "polygon": {
       "type": "string",
-      "pattern": "^(-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)( -?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)+ \\1$"
+      "pattern": "^(-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)( -?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)+$"
     },
     "format": {
       "type": "string"

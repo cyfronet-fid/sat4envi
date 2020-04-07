@@ -94,7 +94,7 @@ public class SeedProductsTest {
 
         Geometry footprint;
         try {
-            footprint = geom.parseWKT("POLYGON((0 -10379291.247,0 0,10463673.528 0,10463673.528 -10379291.247,0 -10379291.247))");
+            footprint = geom.parseWKT("POLYGON((0 -10379291.247,0 0,10463673.528 0,10463673.528 -10379291.247,0 -10379291.247))", GeometryUtil.FACTORY_3857);
         } catch (ParseException e) {
             throw new IllegalStateException(e);
         }
