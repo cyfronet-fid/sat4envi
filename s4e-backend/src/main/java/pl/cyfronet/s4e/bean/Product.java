@@ -60,7 +60,22 @@ public class Product {
     @ToString.Exclude
     private Schema metadataSchema;
 
-    private String granuleArtifact;
+    /**
+     * A map, where key, a format value => an artifact key, which will be used as an ImageMosaic granule path.
+     *
+     * <p>
+     * The format value can be for example <code>GeoTiff</code>, or <code>COG</code>.
+     * <p>
+     * If given format is not found in the keys, then the default key is taken.
+     * It should be always defined.
+     * <p>
+     * For example, <code>{"default":"foo", "bar":"baz"}</code>.
+     * If format is <code>bar</code>, then the granule path key will be <code>baz</code>.
+     * When format is <code>foobar</code>, then a default granule path key <code>foo</code> will be taken.
+     */
+    @Type(type = "jsonb")
+    @ToString.Exclude
+    private Map<String, String> granuleArtifactRule;
 
     @Type(type = "jsonb")
     @ToString.Exclude

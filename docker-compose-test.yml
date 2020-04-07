@@ -28,7 +28,7 @@ services:
       - geoserver-test
       - minio-test
   minio-test:
-    image: fiddev/minio-test:1.0.1
+    image: fiddev/minio-test:1.1.0
     ports:
       - ${MINIO_TEST_PORT:-9002}:9000
     networks:

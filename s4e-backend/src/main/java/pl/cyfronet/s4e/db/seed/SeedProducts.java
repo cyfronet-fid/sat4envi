@@ -170,7 +170,7 @@ public class SeedProducts implements ApplicationRunner {
 
         Geometry footprint;
         try {
-            footprint = geom.parseWKT("POLYGON(("+a1+","+a2+","+a3+","+a4+","+a1+"))");
+            footprint = geom.parseWKT("POLYGON(("+a1+","+a2+","+a3+","+a4+","+a1+"))", GeometryUtil.FACTORY_3857);
         } catch (ParseException e) {
             throw new IllegalStateException(e);
         }
@@ -247,31 +247,31 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 11, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
-                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))"))
+                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))", GeometryUtil.FACTORY_3857))
                             .build(),
                     products.get(1).getName(), ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 07, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
-                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))"))
+                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))", GeometryUtil.FACTORY_3857))
                             .build(),
                     products.get(2).getName(), ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
-                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))"))
+                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))", GeometryUtil.FACTORY_3857))
                             .build(),
                     products.get(3).getName(), ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
-                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))"))
+                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))", GeometryUtil.FACTORY_3857))
                             .build(),
                     products.get(4).getName(), ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Setvak_Eu/{date}/{timestamp}_Eu_centr_ir_108_setvak_wtemp.tif")
-                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))"))
+                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))", GeometryUtil.FACTORY_3857))
                             .build()
             );
 
@@ -298,7 +298,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2020, 2, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Opad_H03/{date}/H3_{date}_{time}.tif")
-                            .footprint(geom.parseWKT("POLYGON((1335833.88951928 6107041.03216704,1335833.88951928 7558415.65608179,2894508.58290632 7558415.65608179,2894508.58290632 6107041.03216704,1335833.88951928 6107041.03216704))"))
+                            .footprint(geom.parseWKT("POLYGON((1335833.88951928 6107041.03216704,1335833.88951928 7558415.65608179,2894508.58290632 7558415.65608179,2894508.58290632 6107041.03216704,1335833.88951928 6107041.03216704))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -313,7 +313,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .increment(Duration.ofHours(3))
                             .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_03.tif")
-                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))"))
+                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -328,7 +328,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .increment(Duration.ofHours(3))
                             .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_06.tif")
-                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))"))
+                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -343,7 +343,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .increment(Duration.ofHours(3))
                             .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_12.tif")
-                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))"))
+                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -358,7 +358,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .increment(Duration.ofHours(3))
                             .s3PathFormat("MSG_Products_WM/Opad_H05/{date}/H5_{date}_{time}_24.tif")
-                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))"))
+                            .footprint(geom.parseWKT("POLYGON((1447153.38031256 6274987.3523514,1447153.38031256 7361866.11305119,2783679.36335795 7361866.11305119,2783679.36335795 6274987.3523514,1447153.38031256 6274987.3523514))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -372,7 +372,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/OST/{date}/{timestamp}_WV-IR.tif")
-                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))"))
+                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -386,7 +386,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Polsafi/{date}/{timestamp}_Polsaf.tif")
-                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))"))
+                            .footprint(geom.parseWKT("POLYGON((1400382.79507599 6018960.88304283,1400382.79507599 7411723.12812701,2905828.06969773 7411723.12812701,2905828.06969773 6018960.88304283,1400382.79507599 6018960.88304283))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -401,7 +401,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2020, 2, 3, 0, 0))
                             .increment(Duration.ofDays(1))
                             .s3PathFormat("MSG_Products_WM/Soil_Moisture/SM1/{year}/SM1_{date}_WM.tif")
-                            .footprint(geom.parseWKT("POLYGON((1558472.87110583 6275378.93937109,1558472.87110583 7361866.11305119,2693587.98734195 7361866.11305119,2693587.98734195 6275378.93937109,1558472.87110583 6275378.93937109))"))
+                            .footprint(geom.parseWKT("POLYGON((1558472.87110583 6275378.93937109,1558472.87110583 7361866.11305119,2693587.98734195 7361866.11305119,2693587.98734195 6275378.93937109,1558472.87110583 6275378.93937109))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -416,7 +416,7 @@ public class SeedProducts implements ApplicationRunner {
                             .endExclusive(LocalDateTime.of(2020, 1, 17, 0, 0))
                             .increment(Duration.ofDays(1))
                             .s3PathFormat("MSG_Products_WM/Soil_Moisture/SM2/{year}/SM2_{date}_WM.tif")
-                            .footprint(geom.parseWKT("POLYGON((1558472.87110583 6275378.93937109,1558472.87110583 7361866.11305119,2693587.98734195 7361866.11305119,2693587.98734195 6275378.93937109,1558472.87110583 6275378.93937109))"))
+                            .footprint(geom.parseWKT("POLYGON((1558472.87110583 6275378.93937109,1558472.87110583 7361866.11305119,2693587.98734195 7361866.11305119,2693587.98734195 6275378.93937109,1558472.87110583 6275378.93937109))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -430,7 +430,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2020, 2, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Dust/{date}/{timestamp}_RGB_DUST_Eu.tif")
-                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))"))
+                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -444,7 +444,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 07, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/NatCol/{date}/{timestamp}_RGB_Nat_Co.tif")
-                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))"))
+                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -458,7 +458,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 11, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/108m/{date}/{timestamp}_kan_10800m.tif")
-                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))"))
+                            .footprint(geom.parseWKT("POLYGON((-5873698.67467749 2651116.00239174,-5873698.67467749 13108846.6493595,8837890.82944027 13108846.6493595,8837890.82944027 2651116.00239174,-5873698.67467749 2651116.00239174))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -472,7 +472,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/RGB24_micro/{date}/{timestamp}_RGB_24_micro.gif.tif")
-                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))"))
+                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
             prods.add(ProductParamsPair.builder()
@@ -486,7 +486,7 @@ public class SeedProducts implements ApplicationRunner {
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
                             .endExclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
                             .s3PathFormat("MSG_Products_WM/Setvak_Eu/{date}/{timestamp}_Eu_centr_ir_108_setvak_wtemp.tif")
-                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))"))
+                            .footprint(geom.parseWKT("POLYGON((-88492.2868752733 5025123.1874692,-88492.2868752733 8834823.91466135,4607643.45957048 8834823.91466135,4607643.45957048 5025123.1874692,-88492.2868752733 5025123.1874692))", GeometryUtil.FACTORY_3857))
                             .build())
                     .build());
 
