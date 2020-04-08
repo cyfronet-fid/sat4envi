@@ -30,4 +30,17 @@ context('productNavigation', () => {
     //   expect(networkrequests.length).to.eq(1);
     // })
   });
+
+  it('should search places', () => {
+    cy.get('.search__input').type('warsz');
+    cy.get('.searchResults', {timeout: 10000}).should('be.visible');
+    cy.get('.searchresult__container > ul > :nth-child(1)').as('searchResult');
+    cy.get('@searchResult').should('contain', 'Warszawa');
+    cy.get('@searchResult').get('.type').should('contain', 'miasto');
+    cy.get('@searchResult').get('.voivodeship').should('contain', 'mazowieckie');
+    cy.get('@searchResult').click();
+    cy.get('.searchResults').should('not.visible');
+    cy.get('.reset_search_button').click();
+    cy.get('.search__input').should('have.value', '');
+  });
 });

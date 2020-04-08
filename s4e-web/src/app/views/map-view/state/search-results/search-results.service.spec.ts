@@ -5,6 +5,8 @@ import {SearchResultsStore} from './search-results.store';
 import {SearchResultsQuery} from './search-results.query';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {AkitaGuidService} from './guid.service';
+import {InjectorModule} from '../../../../common/injector.module';
+import {RouterTestingModule} from '@angular/router/testing';
 
 
 describe('SearchResultsService', () => {
@@ -17,7 +19,7 @@ describe('SearchResultsService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [SearchResultsService, SearchResultsStore, SearchResultsQuery, TestingConfigProvider, AkitaGuidService],
-      imports: [HttpClientTestingModule]
+      imports: [InjectorModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
