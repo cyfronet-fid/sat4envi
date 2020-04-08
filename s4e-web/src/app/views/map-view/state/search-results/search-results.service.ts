@@ -9,11 +9,13 @@ import {PageSearchResult} from '../../../../utils/state.types';
 import {MapService} from '../map/map.service';
 import proj4 from 'proj4';
 import {ViewPosition} from '../map/map.model';
+import {SearchResultsQuery} from './search-results.query';
 
 @Injectable({providedIn: 'root'})
 export class SearchResultsService {
 
   constructor(private store: SearchResultsStore,
+              private query: SearchResultsQuery,
               private guidGenerationService: AkitaGuidService,
               private mapService: MapService,
               private http: HttpClient,
@@ -54,5 +56,11 @@ export class SearchResultsService {
       zoomLevel: this.getZoomLevel(searchResult.type)
     } as ViewPosition);
     this.store.update({selectedLocation: searchResult, isOpen: false});
+  }
+
+  setFirstAsSelectedPlace() {
+    if(this.query.getAll().length) {
+      this.setSelectedPlace(this.query.getAll()[0]);
+    }
   }
 }

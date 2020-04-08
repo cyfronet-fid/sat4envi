@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {FormControl} from '@ng-stack/forms';
 import {SearchResult} from '../state/search-results/search-result.model';
@@ -68,7 +68,6 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
   }
 
   resetSelectedLocation() {
-    this.navigateToPlace(null);
     this.searchForPlaces('');
     this.searchFc.setValue('');
   }
@@ -90,5 +89,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
 
   navigateToPlace(place: SearchResult) {
     this.searchResultsService.setSelectedPlace(place);
+  }
+
+  selectFirstResult() {
+    this.searchResultsService.setFirstAsSelectedPlace()
   }
 }
