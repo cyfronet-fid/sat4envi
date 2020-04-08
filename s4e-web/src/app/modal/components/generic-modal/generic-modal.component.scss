@@ -9,6 +9,11 @@
   font-size: 1rem;
   line-height: 1.35rem;
   font-weight: normal;
+  scrollbar-width: thin;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 25px);
+
 }
 
 .modal-header,

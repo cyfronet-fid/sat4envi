@@ -39,6 +39,21 @@
       .reset_search_button {
         width: 30px;
         margin-left: auto;
+        padding-right: 10px;
+        margin-right: 5px;
+        position: relative;
+
+        &:before {
+          content: " ";
+          width: 1px;
+          background: $color-grey-secondary;
+          position: absolute;
+          height: 32px;
+          right: 0;
+          top: -5px;
+          display: block;
+          z-index: 2;
+        }
 
         img {
           float:right;

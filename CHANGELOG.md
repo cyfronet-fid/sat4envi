@@ -17,6 +17,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Overflow for map, sidebar, modals [#359](https://github.com/cyfronet-fid/sat4envi/issues/359) 
 - Run e2e and integration tests in gh-actions and modify docker-compose files [#401](https://github.com/cyfronet-fid/sat4envi/issues/401)
 - Add more seeds for tests [#411](https://github.com/cyfronet-fid/sat4envi/issues/411)
 - Update handlebars version to 4.6.0
