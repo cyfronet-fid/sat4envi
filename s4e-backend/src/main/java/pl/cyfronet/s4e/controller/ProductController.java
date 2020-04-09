@@ -1,17 +1,18 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.response.BasicProductResponse;
 import pl.cyfronet.s4e.controller.response.ProductResponse;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.ProductService;
 
 import java.util.List;
@@ -44,5 +45,31 @@ public class ProductController {
     public ProductResponse getProduct(@PathVariable Long id) throws NotFoundException {
         return productService.getProduct(id)
                 .orElseThrow(() -> new NotFoundException("Product not found for id '" + id));
+    }
+
+    @Operation(summary = "Add to favourite Products")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully added"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+    })
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/products/{id}/favourite")
+    public void addFavourite(@PathVariable Long id) throws NotFoundException {
+        AppUserDetails userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        productService.addFavourite(id, userDetails.getUsername());
+    }
+
+    @Operation(summary = "Remove from favourite Products")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully removed"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+    })
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/products/{id}/favourite")
+    public void deleteFavourite(@PathVariable Long id) throws NotFoundException {
+        AppUserDetails userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        productService.deleteFavourite(id, userDetails.getUsername());
     }
 }
