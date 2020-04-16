@@ -4,4 +4,5 @@ export interface IUILayer {
   cid: ID;
   caption: string;
   active: boolean;
+  favourite: boolean;
 }

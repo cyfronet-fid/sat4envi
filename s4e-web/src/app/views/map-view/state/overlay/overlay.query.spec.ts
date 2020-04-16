@@ -38,6 +38,7 @@ describe('OverlayQuery', () => {
             type: 'wms',
             cid: 'test-overlay-id',
             active: false,
+            favourite: false
           }
         ]);
         done();

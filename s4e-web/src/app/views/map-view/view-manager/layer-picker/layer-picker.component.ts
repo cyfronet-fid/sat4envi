@@ -3,22 +3,19 @@ import {ID} from '@datorama/akita';
 import {IUILayer} from '../../state/common.model';
 
 @Component({
-  selector: 's4e-product-picker',
+  selector: 's4e-items-picker',
   templateUrl: './layer-picker.component.html',
   styleUrls: ['./layer-picker.component.scss']
 })
-export class LayerPicker implements OnInit {
+export class ItemsPickerComponent {
   @Input() items: IUILayer[] = [];
-  @Input() loading: boolean = true;
   @Input() selectedIds: number[] = [];
+  @Input() loading: boolean = true;
+  @Input() hasFavourite: boolean = false;
+
   @Input() help: string;
   @Input() caption: string;
 
   @Output() itemSelected = new EventEmitter<ID>();
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
+  @Output() isFavoriteSelected = new EventEmitter<{ID: number, isFavorite: boolean}>();
 }

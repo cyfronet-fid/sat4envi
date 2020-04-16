@@ -5,7 +5,7 @@ import {ShareModule} from '../../common/share.module';
 import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {MapStore} from './state/map/map.store';
-import {LayerPicker} from './view-manager/layer-picker/layer-picker.component';
+import {ItemsPickerComponent} from './view-manager/layer-picker/layer-picker.component';
 import {TimelineComponent} from './timeline/timeline.component';
 import {MapComponent} from './map/map.component';
 import {OverlayQuery} from './state/overlay/overlay.query';
@@ -41,12 +41,13 @@ import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {S4EFormsModule} from '../../form/form.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
     MapViewComponent,
     ViewManagerComponent,
-    LayerPicker,
+    ItemsPickerComponent,
     TimelineComponent,
     MapComponent,
     LegendComponent,

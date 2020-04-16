@@ -8,4 +8,5 @@ export interface Product {
   description: string;
   legend: Legend | null | undefined;
   layerName: string;
+  favourite: boolean;
 }

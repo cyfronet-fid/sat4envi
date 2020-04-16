@@ -16,22 +16,23 @@
                       class="searchResults">
   </s4e-search-results>
 
-  <s4e-product-picker class="section"
+  <s4e-items-picker class="section"
                       caption="Produkty"
                       i18n-caption
                       [loading]="productsLoading$ | async"
                       [items]="products$ | async"
-                      (itemSelected)="selectProduct($event)">
-  </s4e-product-picker>
+                      [hasFavourite]="isLoggedIn"
+                      (itemSelected)="selectProduct($event)"
+                      (isFavoriteSelected)="isFavoriteProduct($event.ID, $event.isFavorite)">
+  </s4e-items-picker>
 
-  <s4e-product-picker class="section layers"
+  <s4e-items-picker class="section layers"
                       caption="Warstwy"
                       i18n-caption
                       [loading]="overlaysLoading$ | async"
                       [items]="overlays$ | async"
                       (itemSelected)="selectOverlay($event)">
-  </s4e-product-picker>
-
+  </s4e-items-picker>
 
 </ng-container>
 <ng-template #loadingRef>

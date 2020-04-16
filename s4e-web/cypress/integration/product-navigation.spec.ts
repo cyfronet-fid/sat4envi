@@ -7,7 +7,7 @@ context('productNavigation', () => {
 
   it('should load product map', () => {
     // waiting for backend to respond with all the data
-    cy.get('s4e-product-picker ul.list', {timeout: 30000}).should('contain', '108m');
+    cy.get('s4e-items-picker ul.list', {timeout: 30000}).should('contain', '108m');
     cy.get('[caption="Produkty"] .list > :nth-child(1) > .list__name').click({force: true});
     cy.get('.timeline__grid').should('be.visible');
     cy.get('.timeline__grid').should('contain', 'Brak produktów, wybierz inną datę');
@@ -41,5 +41,31 @@ context('productNavigation', () => {
     cy.get('.searchResults').should('not.visible');
     cy.get('.reset_search_button').click();
     cy.get('.search__input').should('have.value', '');
+  });
+
+  it.only('should set favorite after login', () => {
+    // log in
+    cy.visit('/login');
+    cy.fixture('users/zkMember.json').as('zkMember')
+      .then((zkMember) => {
+        cy.get('#login-login').type(zkMember.email);
+        cy.get('#login-password').type(zkMember.password);
+        cy.get('button[type="submit"]').click();
+      });
+
+    // click first product as favorite
+    cy.location('pathname').should('eq', '/map/products');
+
+    cy.get('body').then($body => {
+      if ($body.find('.e2e-favorite-btn').length > 0) {
+          cy.get('.e2e-favorite-btn').each((el) => el.click());
+      }
+    });
+
+    cy.get('.e2e-favorite-btn').should('not.exist');
+    cy.get('.e2e-non-favorite-btn').first().click({force: true});
+
+    cy.visit('/');
+    cy.get('.e2e-favorite-btn').should('exist');
   });
 });

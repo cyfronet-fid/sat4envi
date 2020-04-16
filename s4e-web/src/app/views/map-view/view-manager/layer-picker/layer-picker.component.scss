@@ -5,15 +5,20 @@
 }
 
 .list > .list__item {
-
-  cursor: pointer;
-
-  .icon__visibility {
-    visibility: hidden;
+  i.fas.fa-star {
+    color: yellow;
   }
 
-  &.active
-    .icon__visibility {
-      visibility: visible;
-    }
+  i.far.fa-star {
+    color: lightgray;
+  }
+
+  i {
+    font-size: 19px;
+    margin: 4px auto 9px auto;
+  }
+
+  .active.list__name {
+    font-weight: bold;
+  }
 }

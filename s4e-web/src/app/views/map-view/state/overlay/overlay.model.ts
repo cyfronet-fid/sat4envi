@@ -33,6 +33,7 @@ export interface UIOverlay extends Overlay, IUILayer {
 
 export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, active: boolean = false): UIOverlay {
   return {
+    favourite: false,
     ...overlay,
     olLayer: new Image({
       source: new ImageWMS({

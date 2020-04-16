@@ -6,15 +6,19 @@
 </header>
 <section class="box__content">
   <ul class="list">
-    <li class="list__item" [ngClass]="{active: item.active}" role="menuitem" *ngFor="let item of items" (click)="itemSelected.emit(item.cid)">
-      <figure class="list__icon">
+    <li class="list__item" [ngClass]="{active: item.active}" role="menuitem" *ngFor="let item of items">
+      <button *ngIf="hasFavourite" (click)="isFavoriteSelected.emit({ID: item.cid, isFavorite: !item.favourite}); item.favourite = !item.favourite">
+        <i *ngIf="!item.favourite" class="far fa-star e2e-non-favorite-btn"></i>
+        <i *ngIf="item.favourite" class="fas fa-star e2e-favorite-btn"></i>
+      </button>
+      <button class="list__icon" (click)="itemSelected.emit(item.cid)">
         <img src="../../../../../assets/images/ico_product_default.png" alt="Default product icon" i18n-alt />
-      </figure>
-      <button class="list__name">
+      </button>
+      <button class="list__name" (click)="itemSelected.emit(item.cid)">
         {{item.caption}}
       </button>
-      <button class="icon__visibility">
-        <img src="../../../../../assets/images/ico_eye_open.svg" alt="Eye icon - product visibility" i18n-alt />
+      <button *ngIf="item.active" class="icon__visibility" (click)="itemSelected.emit(item.cid)">
+        <i class="far fa-eye"></i>
       </button>
     </li>
   </ul>

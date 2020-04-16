@@ -2,11 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {Product} from './product.model';
-import {finalize, tap} from 'rxjs/operators';
+import {finalize, tap, catchError} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {LegendService} from '../legend/legend.service';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction} from '@datorama/akita';
@@ -55,6 +55,35 @@ export class ProductService {
 
   setDateRange(month: number, year: number) {
 
+  }
+
+  toggleFavorite(ID: number, isFavourite: boolean) {
+    if (isFavourite) {
+      console.log(ID, isFavourite, `${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`);
+      this.http
+        .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {
+          headers: {'Content-Type': 'application/json'}
+        })
+        .pipe(
+          catchError(error => {
+            this.store.setError(error);
+            return throwError(error);
+          })
+        )
+        .subscribe(() => this.store.setLoading(false));
+    } else {
+      this.http
+        .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {
+          headers: {'Content-Type': 'application/json'}
+        })
+        .pipe(
+          catchError(error => {
+            this.store.setError(error);
+            return throwError(error);
+          })
+        )
+        .subscribe(() => this.store.setLoading(false));
+    }
   }
 
   fetchAvailableDays(dateF: string) {
