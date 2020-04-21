@@ -2,8 +2,8 @@
   <section class="section search">
     <input class="search__input" placeholder="Wpisz szukaną miejscowość..." i18n-placeholder #searchPlacesInput
            [formControl]="searchFc"/>
-    <button class="reset_search_button" (click)="resetSelectedLocation()">
-      <fa-icon [icon]="['fas', 'times']"></fa-icon>
+    <button class="reset_search_button" *ngIf="!(searchFc.value == '')" (click)="resetSelectedLocation()">
+      <img src="../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
     </button>
     <button class="search__button" (click)="selectFirstResult()">
       <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt/>

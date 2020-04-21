@@ -23,7 +23,6 @@
   z-index: 300;
   tab-index: -1;
   outline: none;
-  margin-top: 150px;
 }
 
 .modal-dialog {
@@ -43,4 +42,11 @@
   &.modal-fl {
     width: 100%;
   }
+}
+
+.modal-content {
+  scrollbar-width: thin;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-top: 25px;
 }

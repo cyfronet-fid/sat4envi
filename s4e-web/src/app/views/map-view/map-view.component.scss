@@ -1,9 +1,5 @@
 @import "../../../scss/variables";
 
-#map {
-  left: 360px;
-}
-
 .zk-options {
   position: absolute;
   right: 10px;
@@ -36,12 +32,15 @@
   display: flex;
   flex-direction: column;
   z-index: 2;
-  padding: 15px;
+  padding: 0 15px;
   box-sizing: padding-box;
+  scrollbar-width: thin;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .switch {
-    margin: -15px;
-    margin-bottom: 15px;
+    margin: 0 -15px 15px -15px;
     padding: 13px 15px;
     background: $color-white;
     display: flex;
