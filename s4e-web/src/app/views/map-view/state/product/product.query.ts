@@ -16,9 +16,12 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   public selectAllAsUILayer(): Observable<IUILayer[]> {
-    return combineLatest(this.selectAll(), this.selectActiveId()).pipe(
-      map(([products, activeId]) => products.map(pt => ({cid: pt.id, caption: pt.displayName, active: pt.id === activeId})))
-    );
+    return combineLatest(this.selectAll(), this.selectActiveId())
+      .pipe(
+        map(([products, activeId]) => products
+          .map(pt => ({cid: pt.id, caption: pt.displayName, active: pt.id === activeId, favourite: pt.favourite}))
+        )
+      );
   }
 
   selectSelectedDate() {

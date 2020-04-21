@@ -1,3 +1,4 @@
+import { SessionQuery } from './../../../state/session/session.query';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {FormControl} from '@ng-stack/forms';
@@ -40,7 +41,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
               private searchResultsQuery: SearchResultsQuery,
               private productService: ProductService,
               private overlayService: OverlayService,
-              private searchResultsService: SearchResultsService) {
+              private searchResultsService: SearchResultsService,
+              private sessionQuery: SessionQuery) {
   }
 
   ngOnInit(): void {
@@ -67,6 +69,10 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
     ).subscribe((text: string) => this.searchForPlaces(text));
   }
 
+  get isLoggedIn() {
+    return this.sessionQuery.isLoggedIn();
+  }
+
   resetSelectedLocation() {
     this.searchForPlaces('');
     this.searchFc.setValue('');
@@ -83,6 +89,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
     this.overlayService.setActive(overlayId);
   }
 
+
+  isFavoriteProduct = (ID: number, isFavorite: boolean): void => this.productService.toggleFavorite(ID, isFavorite);
+
   searchForPlaces(place: string) {
     this.searchResultsService.get(place);
   }
@@ -92,6 +101,6 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
   }
 
   selectFirstResult() {
-    this.searchResultsService.setFirstAsSelectedPlace()
+    this.searchResultsService.setFirstAsSelectedPlace();
   }
 }

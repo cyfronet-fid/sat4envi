@@ -11,6 +11,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Favorites products [#420] (https://github.com/cyfronet-fid/sat4envi/issues/420)
 - Favourite Products [#403](https://github.com/cyfronet-fid/sat4envi/issues/403)
 - Forms module [#370](https://github.com/cyfronet-fid/sat4envi/issues/370)
 

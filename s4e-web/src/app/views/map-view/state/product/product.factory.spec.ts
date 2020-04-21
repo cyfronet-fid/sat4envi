@@ -8,5 +8,6 @@ export const ProductFactory = Factory.makeFactory<Product>({
   imageUrl: Factory.each(i => `/assets/product-type-logo/${i}.png`),
   description: '',
   layerName: Factory.each(i => `layer #${i}`),
-  legend: null
+  legend: null,
+  favourite: false
 });
