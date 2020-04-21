@@ -1,1 +1,11 @@
 @import "../../../../scss/panel";
+
+input {
+  border: 1px solid lightgray;
+  max-width: calc(100% - 150px);
+  float: right;
+}
+
+button {
+  margin-left: calc(50% - 85px);
+}

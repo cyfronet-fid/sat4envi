@@ -98,7 +98,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
   }
 
 
-  isFavoriteProduct = (ID: number, isFavorite: boolean): void => this.productService.toggleFavorite(ID, isFavorite);
+  isFavouriteProduct = (ID: number, isFavourite: boolean): void => this.productService.toggleFavourite(ID, isFavourite);
 
   searchForPlaces(place: string) {
     this.searchResultsService.get(place);

@@ -23,7 +23,7 @@
                       [items]="products$ | async"
                       [hasFavourite]="isLoggedIn"
                       (itemSelected)="selectProduct($event)"
-                      (isFavoriteSelected)="isFavoriteProduct($event.ID, $event.isFavorite)">
+                      (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)">
   </s4e-items-picker>
 
   <s4e-items-picker class="section layers"
