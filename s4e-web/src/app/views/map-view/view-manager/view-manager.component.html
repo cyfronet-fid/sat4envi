@@ -5,7 +5,7 @@
     <button class="reset_search_button" *ngIf="!(searchFc.value == '')" (click)="resetSelectedLocation()">
       <img src="../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
     </button>
-    <button class="search__button" (click)="selectFirstResult()">
+    <button class="search__button" (click)="selectFirstResult()" [disabled]="searchFc.value == ''">
       <img src="../../../../assets/images/ico_magnifying.svg" alt="Search icon" i18n-alt/>
     </button>
   </section>

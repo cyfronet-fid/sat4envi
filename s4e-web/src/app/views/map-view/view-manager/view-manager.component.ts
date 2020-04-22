@@ -33,6 +33,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
   searchResultsOpen$: Observable<boolean>;
   searchFc: FormControl<string> = new FormControl<string>('');
 
+  hasBeenSelected: boolean = false;
+
   constructor(private searchResultQuery: SearchResultsQuery,
               private productQuery: ProductQuery,
               private overlayQuery: OverlayQuery,
@@ -66,7 +68,13 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
       debounceTime(300),
       distinctUntilChanged(),
       untilDestroyed(this),
-    ).subscribe((text: string) => this.searchForPlaces(text));
+    ).subscribe((text: string) => {
+      if (!this.hasBeenSelected) {
+        this.searchForPlaces(text);
+      }
+
+      this.hasBeenSelected = false;
+    });
   }
 
   get isLoggedIn() {
@@ -98,6 +106,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
 
   navigateToPlace(place: SearchResult) {
     this.searchResultsService.setSelectedPlace(place);
+    this.hasBeenSelected = true;
+    this.searchFc.setValue(place.name);
   }
 
   selectFirstResult() {
