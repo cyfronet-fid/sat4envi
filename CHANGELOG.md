@@ -7,6 +7,12 @@ The most recent changes are on top, in each type of changes category.
 
 ## [Unreleased]
 
+### Fixed
+
+- [Bugfix] places input should keep state [#427](https://github.com/cyfronet-fid/sat4envi/issues/427)
+
+
+
 ## [v5.1.0]
 
 ### Added

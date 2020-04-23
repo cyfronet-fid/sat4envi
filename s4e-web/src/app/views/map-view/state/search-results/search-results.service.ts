@@ -52,7 +52,10 @@ export class SearchResultsService {
 
   setSelectedPlace(searchResult: SearchResult | null) {
     this.mapService.setView({
-      centerCoordinates: proj4(this.CONFIG.projection.toProjection, [searchResult.longitude, searchResult.latitude]),
+      centerCoordinates: proj4(
+        this.CONFIG.projection.toProjection,
+        [searchResult.longitude, searchResult.latitude]
+      ),
       zoomLevel: this.getZoomLevel(searchResult.type)
     } as ViewPosition);
     this.store.update({selectedLocation: searchResult, isOpen: false});

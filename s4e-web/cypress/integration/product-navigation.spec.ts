@@ -38,12 +38,13 @@ context('productNavigation', () => {
     cy.get('@searchResult').get('.type').should('contain', 'miasto');
     cy.get('@searchResult').get('.voivodeship').should('contain', 'mazowieckie');
     cy.get('@searchResult').click();
+    cy.get('.search__input').should('have.value', 'Warszawa');
     cy.get('.searchResults').should('not.visible');
     cy.get('.reset_search_button').click();
     cy.get('.search__input').should('have.value', '');
   });
 
-  it.only('should set favorite after login', () => {
+  it('should set favorite after login', () => {
     // log in
     cy.visit('/login');
     cy.fixture('users/zkMember.json').as('zkMember')
