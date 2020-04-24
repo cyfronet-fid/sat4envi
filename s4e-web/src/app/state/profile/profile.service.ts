@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { ProfileStore } from './profile.store';
-import {Observable, of, pipe, throwError} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {ProfileStore} from './profile.store';
+import {Observable, of} from 'rxjs';
 import {Profile} from './profile.model';
 import {catchError, shareReplay, tap} from 'rxjs/operators';
 import {SessionQuery} from '../session/session.query';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {HttpClient} from '@angular/common/http';
+import {catchErrorAndHandleStore} from '../../common/store.util';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class ProfileService {
 
   constructor(private store: ProfileStore,
@@ -15,8 +15,8 @@ export class ProfileService {
               private http: HttpClient) {
   }
 
-  get$(): Observable<Profile|null> {
-    if(localStorage.getItem('token') == null) {
+  get$(): Observable<Profile | null> {
+    if (localStorage.getItem('token') == null) {
       return of(null);
     }
 
@@ -35,8 +35,10 @@ export class ProfileService {
 
   resetPassword(oldPassword: string, newPassword: string): void {
     this.store.setLoading(true);
-    this.http.post('/api/v1/password-change', {oldPassword, newPassword})
-      .pipe(catchErrorAndHandleStore(this.store))
+    this.http.post(
+      '/api/v1/password-change',
+      {oldPassword, newPassword}
+    ).pipe(catchErrorAndHandleStore(this.store))
       .subscribe(() => this.store.setLoading(false));
   }
 }

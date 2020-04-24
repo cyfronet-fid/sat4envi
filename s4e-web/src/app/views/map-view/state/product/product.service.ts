@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {Product} from './product.model';
-import {finalize, tap, catchError} from 'rxjs/operators';
+import {catchError, finalize, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {LegendService} from '../legend/legend.service';
@@ -11,7 +11,8 @@ import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction} from '@datorama/akita';
 import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -61,9 +62,9 @@ export class ProductService {
     (
       isFavourite
         ? this.http
-          .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {})
+          .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {}, HANDLE_ALL_ERRORS)
         : this.http
-          .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`)
+          .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
     )
       .pipe(catchErrorAndHandleStore(this.store))
       .subscribe(() => this.store.setLoading(false));
@@ -89,11 +90,17 @@ export class ProductService {
 
     const ui = this.query.getValue().ui;
 
-    const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth , ui.selectedDay));
+    const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
 
     this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
       {params: {tz: this.CONFIG.timezone, yearMonth: dateF}})
-      .pipe(finalize(() => this.store.setLoading(false)))
+      .pipe(
+        finalize(() => this.store.setLoading(false)),
+        catchError(error => {
+          this.store.setError(error);
+          return throwError(error);
+        }),
+      )
       .subscribe(data => {
         this.updateAvailableDays(data);
         this.sceneService.get(activeProduct, ui.selectedDate);
@@ -122,20 +129,20 @@ export class ProductService {
     });
   }
 
+  toggleActive(productId: number) {
+    if (this.query.getActiveId() == productId) {
+      this.setActive(null);
+    } else {
+      this.setActive(productId);
+    }
+  }
+
   private getSingle$(product: Product): Observable<any> {
     if (product.legend === undefined) {
       return this.http.get<Product>(`${this.CONFIG.apiPrefixV1}/products/${product.id}`)
         .pipe(tap(pt => this.store.upsert(product.id, pt)));
     } else {
       return of(null);
-    }
-  }
-
-  toggleActive(productId: number) {
-    if (this.query.getActiveId() == productId) {
-      this.setActive(null);
-    } else {
-      this.setActive(productId);
     }
   }
 }

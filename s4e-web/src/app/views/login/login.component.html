@@ -26,7 +26,10 @@
       <form (ngSubmit)="login()" [formGroup]="form" autocomplete="off">
         <h2 class="content__header" i18n>Logowanie</h2>
         <div class="alert alert-danger" *ngIf="error$ | async">
-          {{(error$ | async)?.message || 'Nieoczekiwany błąd'}}
+          <ng-container [ngSwitch]="(error$ | async).status">
+            <ng-container *ngSwitchCase="401">Niepoprawny login / hasło</ng-container>
+            <ng-container *ngSwitchDefault>Nieoczekiwany błąd</ng-container>
+          </ng-container>
         </div>
 
         <div class="alert alert-danger" *ngIf="form.errors">

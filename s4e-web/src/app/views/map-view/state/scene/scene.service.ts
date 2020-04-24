@@ -10,7 +10,7 @@ import {ProductStore} from '../product/product.store';
 import {applyTransaction} from '@datorama/akita';
 import {map} from 'rxjs/operators';
 import {Product} from '../product/product.model';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {catchErrorAndHandleStore} from '../../../../common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
@@ -29,9 +29,9 @@ export class SceneService {
     this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${product.id}/scenes`, {
       params: {date: date, tz: this.CONFIG.timezone}
     }).pipe(
-        catchErrorAndHandleStore(this.store),
-        map(entities => entities.map(s => ({...s, layerName: product.layerName})))
-      )
+      catchErrorAndHandleStore(this.store),
+      map(entities => entities.map(s => ({...s, layerName: product.layerName})))
+    )
       .subscribe((entities) => applyTransaction(() => {
         this.store.set(entities);
         if (this.sceneQuery.getCount() > 0) {

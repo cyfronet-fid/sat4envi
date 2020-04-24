@@ -13,7 +13,7 @@ export abstract class Dao<T, S extends EntityState<T>, Store extends EntityStore
   fetch$(id: getIDType<S>, url?: string): Observable<T> {
     this.store.setLoading(true);
     this.store.setError(null);
-    const r =this.http.get<T>(`${url || this.url}/${id}`)
+    const r = this.http.get<T>(`${url || this.url}/${id}`)
       .pipe(
         finalize(() => this.store.setLoading(false)),
         tap(data => this.store.upsert(id, data)),

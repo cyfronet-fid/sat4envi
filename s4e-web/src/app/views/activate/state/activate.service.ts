@@ -1,7 +1,6 @@
-import {Inject, Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {action} from '@datorama/akita';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-
 import {ActivateStore} from './activate.store';
 import {Router} from '@angular/router';
 import {delay, finalize} from 'rxjs/operators';

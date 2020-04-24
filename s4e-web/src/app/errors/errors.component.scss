@@ -1,0 +1,19 @@
+.container {
+  min-width: 300px;
+  width: 50%;
+  padding: 10px;
+  margin: calc(50vh - 300px) auto;
+  background-color: smokewhite;
+  border-radius: 8px;
+  border: 2px solid #fc1303;
+  text-align: center;
+  line-height: 30px;
+}
+
+.title {
+  color: #fc1303;
+}
+
+.description {
+  color: lightgray;
+}

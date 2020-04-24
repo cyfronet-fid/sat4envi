@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add global error handling [#430](https://github.com/cyfronet-fid/sat4envi/issues/430)
 - UI Refactoring [#448](https://github.com/cyfronet-fid/sat4envi/issues/448)
 - Add /logout routing and clear storage on logout (inconsistent state of storage) [#445](https://github.com/cyfronet-fid/sat4envi/issues/445)
 - Synchronize scenes from S3 (s4-sync-1 dataset) [#439](https://github.com/cyfronet-fid/sat4envi/issues/439)
