@@ -26,6 +26,7 @@ import {S4eConfig} from './utils/initializer/config.service';
 import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
+import {NotificationsModule} from 'notifications';
 
 registerLocaleData(localePl, 'pl');
 
@@ -52,7 +53,8 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     InjectorModule,
     SettingsModule,
     ModalModule,
-    S4EFormsModule
+    S4EFormsModule,
+    NotificationsModule.forRoot(environment.production)
   ],
   providers: [
     S4eConfig,
@@ -73,7 +75,5 @@ export class AppModule {
     if (environment.hmr === false && !sessionQuery.isInitialized()) {
       this.sessionService.init();
     }
-
-    // this.bootstrapService.init();
   }
 }

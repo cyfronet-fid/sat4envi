@@ -1,0 +1,10 @@
+<div [ngClass]="{clickable: notification.clearable}"
+     (click)="activated.emit()"
+     class="notification-container ui-notification {{notification.type}}"
+     role="alert">
+<!--  <h3 *ngIf="notification.caption">{{notification.caption}}</h3>-->
+  <div class="message" [innerHtml]="notification.content"></div>
+<!--  <div *ngIf="notification.clearable" class="notification-action">-->
+<!--    <button (click)="activated.emit()">{{notification.actionCaption}}</button>-->
+<!--  </div>-->
+</div>

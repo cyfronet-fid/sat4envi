@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {resetStores} from '@datorama/akita';
 import {environment} from '../../../environments/environment';
 import {ModalService} from '../../modal/state/modal.service';
-import {DUMMY_MODAL_ID} from '../../modal/components/dummy-modal/dummy-modal.model';
+import {NotificationService} from 'notifications';
 
 @Component({
   selector: 's4e-root',
@@ -12,7 +12,7 @@ import {DUMMY_MODAL_ID} from '../../modal/components/dummy-modal/dummy-modal.mod
 export class RootComponent {
   PRODUCTION: boolean = environment.production;
 
-  constructor(private modalService: ModalService) {
+  constructor(private modalService: ModalService, private notificationService: NotificationService) {
   }
 
   /**
@@ -21,6 +21,25 @@ export class RootComponent {
   devRefreshState() {
     resetStores();
     location.reload();
+  }
+
+  devShowNotifications() {
+    this.notificationService.addGeneral({
+      type: 'info',
+      content: 'hello'
+    });
+    this.notificationService.addGeneral({
+      type: 'warning',
+      content: 'hello'
+    });
+    this.notificationService.addGeneral({
+      type: 'success',
+      content: 'hello'
+    });
+    this.notificationService.addGeneral({
+      type: 'error',
+      content: 'hello'
+    });
   }
 }
 
