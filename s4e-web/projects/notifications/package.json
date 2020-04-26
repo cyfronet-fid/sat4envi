@@ -1,0 +1,26 @@
+{
+  "name": "notifications",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "ng test"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/jest.setup.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "\\.factory.spec.ts$"
+    ],
+    "transform": {
+      "(?!<rootDir>/node_modules)/.*\\.js$": "babel-jest"
+    }
+  },
+  "peerDependencies": {
+    "@angular/common": "^7.0.0",
+    "@angular/core": "^7.0.0"
+  }
+}

@@ -167,6 +167,44 @@
           }
         }
       }
+    },
+    "notifications": {
+      "root": "projects/notifications",
+      "sourceRoot": "projects/notifications/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/notifications/tsconfig.lib.json",
+            "project": "projects/notifications/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-builders/jest:run",
+          "options": {
+            "tsConfig": "projects/notifications/tsconfig.spec.json",
+            "styles": [
+              "projects/notifications/src/scss/notifications.scss"
+            ],
+            "scripts": []
+          }
+
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/notifications/tsconfig.lib.json",
+              "projects/notifications/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "s4e-angular",
