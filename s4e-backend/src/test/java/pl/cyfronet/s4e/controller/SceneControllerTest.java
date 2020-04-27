@@ -136,7 +136,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
-                .param("tz", "Europe/Warsaw"))
+                .param("timeZone", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(2))))
                 .andExpect(jsonPath("$..id", contains(
@@ -189,7 +189,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
-                .param("tz", "Europe/Warsaw"))
+                .param("timeZone", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
                 .andExpect(jsonPath("$[0].timestamp").value(is(equalTo("2019-12-02T00:00:00+01:00"))));
@@ -234,7 +234,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-03-31")
-                .param("tz", "Europe/Warsaw"))
+                .param("timeZone", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$[0].timestamp").value(is(equalTo("2019-03-31T01:59:00+01:00"))))
@@ -243,7 +243,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-10-27")
-                .param("tz", "Europe/Warsaw"))
+                .param("timeZone", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$[0].timestamp").value(is(equalTo("2019-10-27T02:59:00+02:00"))))
@@ -262,7 +262,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
-                .param("tz", "incorrect"))
+                .param("timeZone", "incorrect"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -356,7 +356,7 @@ public class SceneControllerTest {
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
                 .param("yearMonth", "2019-10")
-                .param("tz", "Europe/Warsaw"))
+                .param("timeZone", "Europe/Warsaw"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$", contains("2019-10-01", "2019-10-02", "2019-10-31")));

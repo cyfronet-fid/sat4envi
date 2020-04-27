@@ -93,7 +93,7 @@ export class ProductService {
     const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
 
     this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
-      {params: {tz: this.CONFIG.timezone, yearMonth: dateF}})
+      {params: {timeZone: this.CONFIG.timezone, yearMonth: dateF}})
       .pipe(
         finalize(() => this.store.setLoading(false)),
         catchError(error => {

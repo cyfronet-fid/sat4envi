@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Scene extends CreationAndModificationAudited {
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_PRODUCT_ID = "product_id";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
