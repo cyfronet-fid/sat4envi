@@ -27,7 +27,7 @@ export class SceneService {
   get(product: Product, date: string) {
     this.store.setLoading(true);
     this.http.get<Scene[]>(`${this.CONFIG.apiPrefixV1}/products/${product.id}/scenes`, {
-      params: {date: date, tz: this.CONFIG.timezone}
+      params: {date: date, timeZone: this.CONFIG.timezone}
     }).pipe(
       catchErrorAndHandleStore(this.store),
       map(entities => entities.map(s => ({...s, layerName: product.layerName})))

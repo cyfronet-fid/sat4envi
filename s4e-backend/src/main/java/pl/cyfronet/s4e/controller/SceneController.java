@@ -46,13 +46,13 @@ public class SceneController {
     public List<SceneResponse> getScenes(
             @PathVariable(name = "id") Long productId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(defaultValue = "UTC") ZoneParameter tz
+            @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
     ) {
-        ZonedDateTime zdtStart = ZonedDateTime.of(date, LocalTime.MIDNIGHT, tz.getZoneId());
+        ZonedDateTime zdtStart = ZonedDateTime.of(date, LocalTime.MIDNIGHT, timeZone.getZoneId());
         LocalDateTime start = timeHelper.getLocalDateTimeInBaseZone(zdtStart);
         LocalDateTime end = timeHelper.getLocalDateTimeInBaseZone(zdtStart.plusDays(1));
         return sceneService.getScenes(productId, start, end).stream()
-                .map(s -> SceneResponse.of(s, tz.getZoneId(), timeHelper))
+                .map(s -> SceneResponse.of(s, timeZone.getZoneId(), timeHelper))
                 .collect(Collectors.toList());
     }
 
@@ -64,9 +64,9 @@ public class SceneController {
     public List<LocalDate> getAvailabilityDates(
             @PathVariable(name = "id") Long productId,
             @Parameter(schema = @Schema(type = "string", example = "2019-12")) @RequestParam YearMonth yearMonth,
-            @RequestParam(defaultValue = "UTC") ZoneParameter tz
+            @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
     ) {
-        return sceneService.getAvailabilityDates(productId, yearMonth, tz.getZoneId());
+        return sceneService.getAvailabilityDates(productId, yearMonth, timeZone.getZoneId());
     }
 
     @Operation(summary = "Redirect to a presigned download url for a scene")
@@ -76,7 +76,8 @@ public class SceneController {
             @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
     })
     @GetMapping(value = "/scenes/{id}/download")
-    public ResponseEntity<Void> generateDownloadLink(@PathVariable Long id) throws NotFoundException, URISyntaxException {
+    public ResponseEntity<Void> generateDownloadLink(@PathVariable Long id)
+            throws NotFoundException, URISyntaxException {
         URL downloadLink = sceneStorage.generatePresignedGetLink(id, sceneStorage.getPresignedGetTimeout());
         return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
     }

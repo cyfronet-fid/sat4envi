@@ -39,7 +39,8 @@ public class SchemaController {
     })
     @PostMapping(value = "/schema", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isAdmin()")
-    public SchemaResponse create(@RequestBody @Valid CreateSchemaRequest request) throws NotFoundException, SchemaCreationException {
+    public SchemaResponse create(@RequestBody @Valid CreateSchemaRequest request)
+            throws NotFoundException, SchemaCreationException {
         schemaService.create(SchemaService.Create.builder()
                 .name(request.getName())
                 .type(request.getType())
