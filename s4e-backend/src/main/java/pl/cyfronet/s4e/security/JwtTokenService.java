@@ -10,24 +10,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.security.KeyPair;
 import java.time.Duration;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static pl.cyfronet.s4e.config.SecurityConfig.JWT_KEY;
-
 @Service
 @RequiredArgsConstructor
-public class JWTTokenService {
+public class JwtTokenService {
     /// Half a day. In case of an 8h shift require a login every day.
     public static final long EXPIRATION_TIME = Duration.ofHours(12).toMillis();
     public static final String AUTHORITIES_KEY = "authorities";
 
     private final ObjectMapper objectMapper;
+    private final KeyPair jwtKeyPair;
 
     public Jws<Claims> parseClaimsJws(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(JWT_KEY)
+                .setSigningKey(jwtKeyPair.getPublic())
                 .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
                 .build()
                 .parseClaimsJws(token);
@@ -42,7 +42,7 @@ public class JWTTokenService {
                 .collect(Collectors.toList()));
         return Jwts.builder()
                 .setClaims(claims)
-                .signWith(JWT_KEY)
+                .signWith(jwtKeyPair.getPrivate())
                 .serializeToJsonWith(new JacksonSerializer<>(objectMapper))
                 .compact();
     }
