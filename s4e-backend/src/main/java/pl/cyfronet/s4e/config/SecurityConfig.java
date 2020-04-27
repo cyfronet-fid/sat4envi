@@ -1,7 +1,5 @@
 package pl.cyfronet.s4e.config;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,19 +13,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.cyfronet.s4e.security.JWTAuthenticationFilter;
+import pl.cyfronet.s4e.security.JwtAuthenticationFilter;
 
-import java.security.Key;
 import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    public static final Key JWT_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-
     @Autowired
-    private JWTAuthenticationFilter jwtAuthenticationFilter;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
     private UserDetailsService userDetailsService;

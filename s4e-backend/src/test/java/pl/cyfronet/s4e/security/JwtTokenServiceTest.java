@@ -14,16 +14,15 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static pl.cyfronet.s4e.config.SecurityConfig.JWT_KEY;
-import static pl.cyfronet.s4e.security.JWTTokenService.AUTHORITIES_KEY;
+import static pl.cyfronet.s4e.TestJwtUtil.JWT_KEY_PAIR;
+import static pl.cyfronet.s4e.security.JwtTokenService.AUTHORITIES_KEY;
 
-class JWTTokenServiceTest {
-
+class JwtTokenServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void shouldGenerateClaims() {
-        JWTTokenService service = new JWTTokenService(objectMapper);
+        JwtTokenService service = new JwtTokenService(objectMapper, JWT_KEY_PAIR);
 
         String[] authorities = new String[]{
                 "ROLE_1",
@@ -34,7 +33,7 @@ class JWTTokenServiceTest {
         String jws = service.generateClaimsJws(token);
 
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(JWT_KEY)
+                .setSigningKey(JWT_KEY_PAIR.getPublic())
                 .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
                 .build()
                 .parseClaimsJws(jws);

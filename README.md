@@ -222,6 +222,35 @@ To test the production experience generate the keys yourself under https://www.g
 (You can use the domain `localhost` to test locally.)
 
 
+#### JWT signing
+
+The application has to be configured with a key-store.
+By default, in the development and test, we use a key-store **committed to the repository**.
+
+In deployment, the key-store should be set using properties:
+```
+jwt.key-store=
+jwt.key-store-password=
+jwt.key-alias=
+jwt.key-password=
+```
+or envvars:
+```
+JWT_KEYSTORE=<path to key-store>
+JWT_KEYSTOREPASSWORD=<key-store password>
+JWT_KEYALIAS=<key alias>
+JWT_KEYPASSWORD=<key password>
+```
+The application requires passwords on both key-store and key.
+
+Example snippet to generate PKCS12 keystore `$NAME.p12` and extract public key `$NAME.pub`:
+```shell script
+openssl req -x509 -newkey rsa:2048 -keyout $NAME.pem -out $NAME.crt
+openssl rsa -pubout -in $NAME.pem -out $NAME.pub
+openssl pkcs12 -export -inkey $NAME.pem -in $NAME.crt -out $NAME.p12
+```
+
+
 #### API docs
 
 We use Swagger to create API documentation.

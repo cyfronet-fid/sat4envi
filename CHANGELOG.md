@@ -12,6 +12,10 @@ The most recent changes are on top, in each type of changes category.
 - SceneAcceptor driven by files from S3 [#160](https://github.com/cyfronet-fid/sat4envi/issues/160)
 - Notifications module [#423](https://github.com/cyfronet-fid/sat4envi/issues/423)
 
+### Changed
+
+- Use RSA key-pair to sign and verify JWT tokens [#428](https://github.com/cyfronet-fid/sat4envi/issues/428)
+
 ### Fixed
 
 - [Bugfix] places input should keep state [#427](https://github.com/cyfronet-fid/sat4envi/issues/427)
