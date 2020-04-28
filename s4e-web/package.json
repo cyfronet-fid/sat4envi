@@ -41,6 +41,13 @@
     ],
     "transform": {
       "(?!<rootDir>/node_modules)/.*\\.js$": "babel-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ],
+    "moduleNameMapper": {
+      "^notifications$": "<rootDir>/projects/notifications/src/public_api.ts",
+      "^notifications/(.*)$": "<rootDir>/projects/notifications/src/$1"
     }
   },
   "babelOptions": {

@@ -11,6 +11,7 @@ The most recent changes are on top, in each type of changes category.
 
 - SceneAcceptor driven by files from S3 [#160](https://github.com/cyfronet-fid/sat4envi/issues/160)
 - Notifications module [#423](https://github.com/cyfronet-fid/sat4envi/issues/423)
+- Notification for successful share configuration [#435](https://github.com/cyfronet-fid/sat4envi/issues/435)
 
 ### Changed
 

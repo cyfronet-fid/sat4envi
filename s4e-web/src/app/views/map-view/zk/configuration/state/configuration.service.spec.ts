@@ -4,14 +4,16 @@ import { ConfigurationService } from './configuration.service';
 import { ConfigurationStore } from './configuration.store';
 import {ConfigurationQuery} from './configuration.query';
 import {TestingConfigProvider} from '../../../../../app.configuration.spec';
-import {last, take, toArray} from 'rxjs/operators';
+import {take, toArray} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
+import {NotificationService} from 'notifications';
 
 describe('ConfigurationService', () => {
   let service: ConfigurationService;
   let query: ConfigurationQuery;
   let store: ConfigurationStore;
   let http: HttpTestingController;
+  let notifications: NotificationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,6 +21,7 @@ describe('ConfigurationService', () => {
       imports: [ MapModule, HttpClientTestingModule ]
     });
 
+    notifications = TestBed.get(NotificationService);
     query = TestBed.get(ConfigurationQuery);
     service = TestBed.get(ConfigurationService);
     store = TestBed.get(ConfigurationStore);
@@ -39,6 +42,7 @@ describe('ConfigurationService', () => {
     };
 
     it('should call http, pass data and return true if ok', async () => {
+      spyOn(notifications, 'addGeneral').and.stub();
       const r = service.shareConfiguration(body).toPromise();
       const req = http.expectOne({method: 'POST', url: 'api/v1/share-link'});
       req.flush({});
@@ -46,6 +50,7 @@ describe('ConfigurationService', () => {
       expect(req.request.body).toEqual(body);
       expect(await r).toBeTruthy();
       expect(await query.selectLoading().pipe(take(1)).toPromise()).toBeFalsy();
+      expect(notifications.addGeneral).toHaveBeenCalledWith({"content": "Link został wysłany na adres a@a", "type": "success"});
     });
 
     it('should return set store error and return false if http errored', async () => {
