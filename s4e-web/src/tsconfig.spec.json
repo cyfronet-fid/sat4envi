@@ -17,6 +17,9 @@
   "files": [
     "polyfills.ts"
   ],
+  "modulePathIgnorePatterns": [
+    "projects/notifications"
+  ],
   "include": [
     "**/*.spec.ts",
     "**/*.d.ts"

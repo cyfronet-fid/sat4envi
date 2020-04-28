@@ -7,11 +7,13 @@ import {ConfigurationQuery} from './configuration.query';
 import {S4eConfig} from '../../../../../utils/initializer/config.service';
 import {Dao} from '../../../../../common/dao.service';
 import {Observable, of} from 'rxjs';
+import {NotificationService} from 'notifications';
 
 @Injectable({providedIn: 'root'})
 export class ConfigurationService extends Dao<Configuration, ConfigurationState, ConfigurationStore> {
   constructor(store: ConfigurationStore,
               http: HttpClient,
+              private notifications: NotificationService,
               private config: S4eConfig,
               private query: ConfigurationQuery) {
     super(http, `${config.apiPrefixV1}/configurations`, store);
@@ -22,6 +24,10 @@ export class ConfigurationService extends Dao<Configuration, ConfigurationState,
     const r = this.http.post<void>(`${this.config.apiPrefixV1}/share-link`, conf)
       .pipe(
         map(r => {
+          this.notifications.addGeneral({
+            type: 'success',
+            content: `Link został wysłany na adres ${conf.emails.join(', ')}`
+          });
           return true;
         }), catchError(error => {
           this.store.setError(error);

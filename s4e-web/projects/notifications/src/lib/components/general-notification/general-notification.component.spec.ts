@@ -1,5 +1,4 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-
 import {GeneralNotificationComponent} from './general-notification.component';
 import {By} from '@angular/platform-browser';
 import {createGeneralNotification, GeneralNotification} from '../../state/notification.model';
