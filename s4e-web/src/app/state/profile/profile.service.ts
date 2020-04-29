@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import { ProfileStore } from './profile.store';
-import {Observable, of, pipe} from 'rxjs';
+import {Observable, of, pipe, throwError} from 'rxjs';
 import {Profile} from './profile.model';
 import {catchError, shareReplay, tap} from 'rxjs/operators';
 import {SessionQuery} from '../session/session.query';
@@ -31,5 +31,14 @@ export class ProfileService {
     r.subscribe();
 
     return r;
+  }
+
+  resetPassword(oldPassword: string, newPassword: string): void {
+    this.store.setLoading(true);
+    this.http.post('/api/v1/password-change', {oldPassword, newPassword})
+      .subscribe(() => this.store.setLoading(false), (error) => {
+        this.store.setError(error);
+        return throwError(error);
+      });
   }
 }

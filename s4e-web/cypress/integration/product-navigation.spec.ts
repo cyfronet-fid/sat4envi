@@ -44,7 +44,7 @@ context('productNavigation', () => {
     cy.get('.search__input').should('have.value', '');
   });
 
-  it('should set favorite after login', () => {
+  it('should set favourite after login', () => {
     // log in
     cy.visit('/login');
     cy.fixture('users/zkMember.json').as('zkMember')
@@ -54,19 +54,13 @@ context('productNavigation', () => {
         cy.get('button[type="submit"]').click();
       });
 
-    // click first product as favorite
+    // click first product as favourite
     cy.location('pathname').should('eq', '/map/products');
 
-    cy.get('body').then($body => {
-      if ($body.find('.e2e-favorite-btn').length > 0) {
-          cy.get('.e2e-favorite-btn').each((el) => el.click());
-      }
-    });
-
-    cy.get('.e2e-favorite-btn').should('not.exist');
-    cy.get('.e2e-non-favorite-btn').first().click({force: true});
+    cy.get('.e2e-favourite-btn').should('not.exist');
+    cy.get('.e2e-non-favourite-btn').should('be.visible').click({multiple: true, force: true});
 
     cy.visit('/');
-    cy.get('.e2e-favorite-btn').should('exist');
+    cy.get('.e2e-favourite-btn').should('be.visible').should('exist').click({multiple: true, force: true});
   });
 });

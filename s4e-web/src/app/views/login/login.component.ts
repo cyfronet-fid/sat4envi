@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
@@ -15,7 +15,7 @@ import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.compo
   styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> {
+export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> implements OnInit {
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
               private sessionService: SessionService,

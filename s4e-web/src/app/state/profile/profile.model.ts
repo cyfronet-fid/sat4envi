@@ -24,3 +24,8 @@ export function createInitialState(): ProfileState {
     admin: false
   };
 }
+
+export interface PasswordChangeFormState {
+  oldPassword: string;
+  newPassword: string;
+}

@@ -27,7 +27,7 @@ fdescribe('ItemsPickerComponent', () => {
   it('should have star on enabled', () => {
     component.hasFavourite = true;
     component.items = [{cid: 0, caption: '', active: true, favourite: false}];
-    spyOn(component.isFavoriteSelected, 'emit');
+    spyOn(component.isFavouriteSelected, 'emit');
     fixture.detectChanges();
 
     expect(fixture.debugElement.queryAll(By.css('.fa-star'))).toBeTruthy();
@@ -36,7 +36,7 @@ fdescribe('ItemsPickerComponent', () => {
       .queryAll(By.css('.fa-star'))[0].nativeElement.click();
     fixture.detectChanges();
 
-    expect(component.isFavoriteSelected.emit).toHaveBeenCalled();
+    expect(component.isFavouriteSelected.emit).toHaveBeenCalledWith({ID: 0, isFavourite: true});
   });
 
   it('should not have star on disabled', () => {

@@ -57,9 +57,8 @@ export class ProductService {
 
   }
 
-  toggleFavorite(ID: number, isFavourite: boolean) {
+  toggleFavourite(ID: number, isFavourite: boolean) {
     if (isFavourite) {
-      console.log(ID, isFavourite, `${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`);
       this.http
         .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {
           headers: {'Content-Type': 'application/json'}

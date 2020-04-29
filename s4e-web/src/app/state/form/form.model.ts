@@ -1,3 +1,4 @@
+import { PasswordChangeFormState } from './../profile/profile.model';
 import {RegisterFormState} from '../../views/register/state/register.model';
 import {LoginFormState} from '../session/session.model';
 import {PersonForm} from '../../views/settings/people/state/person.model';
@@ -16,4 +17,5 @@ export interface FormState {
   saveConfig: SaveConfigForm;
   sentinelSearch: SentinelSearchForm;
   configurationShare: ShareConfigurationForm;
+  resetPassword: PasswordChangeFormState;
 }

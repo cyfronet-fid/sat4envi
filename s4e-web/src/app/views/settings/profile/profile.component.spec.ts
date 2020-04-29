@@ -1,3 +1,4 @@
+import { ProfileService } from './../../../state/profile/profile.service';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ShareModule} from '../../../common/share.module';
@@ -14,6 +15,7 @@ describe('ProfileComponent', () => {
   let sessionService: SessionService;
   let sessionQuery: SessionQuery;
   let sessionStore: SessionStore;
+  let profileService: ProfileService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -29,6 +31,7 @@ describe('ProfileComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     sessionService = TestBed.get(SessionService);
+    profileService = TestBed.get(ProfileService);
     sessionQuery = TestBed.get(SessionQuery);
     sessionStore = TestBed.get(SessionStore);
   });
@@ -47,5 +50,33 @@ describe('ProfileComponent', () => {
     sessionStore.update(state => ({...state, initialized: true, email: 'email@domain', token: '12345'}));
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.textContent).toContain('Email: email@domain');
+  });
+
+  it('should not send non valid form', () => {
+    const spy = spyOn(profileService, 'resetPassword');
+    component.submitPasswordChange();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should send valid form', () => {
+    const spy = spyOn(profileService, 'resetPassword');
+    component.form
+      .setValue({oldPassword: 'zkMember', newPassword: 'ZKMEMBER'});
+    component.submitPasswordChange();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should validate old password', () => {
+    component.form.controls.oldPassword.setValue('');
+    expect(component.form.controls.oldPassword.valid).toBeFalsy();
+    component.form.controls.oldPassword.setValue('pass');
+    expect(component.form.controls.oldPassword.valid).toBeTruthy();
+  });
+
+  it('should validate new password', () => {
+    component.form.controls.newPassword.setValue('');
+    expect(component.form.controls.newPassword.valid).toBeFalsy();
+    component.form.controls.newPassword.setValue('pass');
+    expect(component.form.controls.newPassword.valid).toBeTruthy();
   });
 });
