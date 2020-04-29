@@ -9,6 +9,14 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [v6.0.0]
+
+### Added
+
 - Password change front [#158](https://github.com/cyfronet-fid/sat4envi/issues/158)
 - SceneAcceptor driven by files from S3 [#160](https://github.com/cyfronet-fid/sat4envi/issues/160)
 - Notifications module [#423](https://github.com/cyfronet-fid/sat4envi/issues/423)
@@ -81,7 +89,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v5.1.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...HEAD
+[v6.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.1.0...v6.0.0
 [v5.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.0.0...v5.1.0
 [v5.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v4.0.0...v5.0.0
 [v4.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/0ebb1138...v4.0.0
