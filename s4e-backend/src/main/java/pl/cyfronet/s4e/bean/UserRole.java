@@ -1,9 +1,6 @@
 package pl.cyfronet.s4e.bean;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,8 +8,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "user_role",uniqueConstraints = @UniqueConstraint(columnNames = {"role", "app_user_id", "inst_group_id"}))
+@Table(name = "user_role", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "app_user_id", "inst_group_id"}))
 public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -21,6 +21,7 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
     @NotEmpty
     @Column(unique = true)
     @EqualsAndHashCode.Include

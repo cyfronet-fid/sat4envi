@@ -1,9 +1,7 @@
 package pl.cyfronet.s4e.bean;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Geometry;
 
@@ -18,6 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Scene {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

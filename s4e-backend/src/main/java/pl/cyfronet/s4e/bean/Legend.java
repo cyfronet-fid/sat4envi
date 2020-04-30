@@ -9,14 +9,19 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Legend implements Serializable {
     private String type;
+
     private String url;
+
     private Map<String,String> leftDescription;
+
     private Map<String,String> rightDescription;
+
     private Map<String,String> topMetric;
+
     private Map<String,String> bottomMetric;
 }
