@@ -15,8 +15,9 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
-### Updates
+### Updated
 
+- GeoServer image to fiddev/geoserver:1.4.0-GS2.17.0
 - 2020.05 backend dependencies update
 
 ## [v6.0.0]

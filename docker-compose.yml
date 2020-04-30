@@ -37,9 +37,8 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: fiddev/geoserver:1.3.0-GS2.16.2
+    image: fiddev/geoserver:1.4.0-GS2.17.0
     volumes:
-      - ./resources/geoserver/s3.properties:/opt/geoserver/s3.properties
       - ./tmp/geoserver-data:/opt/geoserver/data_dir
     ports:
       - ${GEOSERVER_PORT:-8080}:8080
@@ -50,6 +49,9 @@ services:
       JNDI_URL: ${GEOSERVER_JNDI_URL:-jdbc:postgresql://db:5432/sat4envi}
       JNDI_USERNAME: ${GEOSERVER_JNDI_USERNAME:-sat4envi}
       JNDI_PASSWORD: ${GEOSERVER_JNDI_PASSWORD:-sat4envi}
+      S3_ENDPOINT: ${GEOSERVER_S3_ENDPOINT:-http://minio:9000/}
+      S3_ACCESS_KEY: ${GEOSERVER_S3_ACCESS_KEY:-minio}
+      S3_SECRET_KEY: ${GEOSERVER_S3_SECRET_KEY:-minio123}
   db:
     image: postgis/postgis:12-3.0-alpine
     ports:
