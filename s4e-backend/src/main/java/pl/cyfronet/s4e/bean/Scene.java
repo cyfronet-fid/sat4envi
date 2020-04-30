@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Geometry;
+import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Scene {
+public class Scene extends CreationAndModificationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

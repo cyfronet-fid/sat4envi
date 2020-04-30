@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.bean;
 
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
+import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "institution", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
-public class Institution {
+public class Institution extends CreationAndModificationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
