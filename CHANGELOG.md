@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Audit selected entities [#158](https://github.com/cyfronet-fid/sat4envi/issues/158)
+
 ### Changed
 
 ### Fixed

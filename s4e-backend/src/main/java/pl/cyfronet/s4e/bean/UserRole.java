@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.bean;
 
 import lombok.*;
+import pl.cyfronet.s4e.bean.audit.CreationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "user_role", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "app_user_id", "inst_group_id"}))
-public class UserRole {
+public class UserRole extends CreationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
