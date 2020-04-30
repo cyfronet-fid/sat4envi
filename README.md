@@ -109,8 +109,7 @@ It uses local minio for S3 storage.
 
 `s4e-demo` is a data set which consists of a month of data of five products.
 There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
-After setting the property `seed.products.data-set`, you must modify the GeoServer docker container volume to point to
-the `s3.properties` file with Cyfronet's CEPH instance url and credentials.
+After setting the property `seed.products.data-set`, point the GeoServer to the Cyfronet's CEPH instance.
 Moreover, you must set a proper bucket by setting `s3.bucket=s4e-demo` so that layers provisioned to the
 GeoServer have correct bucket set.
 (The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
@@ -123,23 +122,21 @@ You have to observe the steps for `s4e-demo` with updated dataset and bucket nam
 #### Seeding with s4e-demo data
 
 The first thing is to obtain production CEPH credentials, they are for example [here](https://docs.cyfronet.pl/display/FID/Projekty).
-Once you have them, create a copy of the file `resources/geoserver/s3.properties` called `s3.properties.prod` in the
-same dir and set the `endpoint` (`url`), `user` (`access_key`) and `password` (`secret_key`) accordingly.
-**UNDER NO CIRCUMSTANCES DO NOT COMMIT OR PUSH THIS FILE TO THE REPO!!!**
-
-Then, update the `docker-compose.yml`.
-The service `geoserver` should be wired up to the newly created `s3.properties.prod` file.
-```yaml
-  geoserver:
-    [...]
-    volumes:
-      - ./resources/geoserver/s3.properties.prod:/opt/geoserver/s3.properties
-    [...]
+Once you have them, point your GeoServer instance to the Cyfronet CEPH by setting the following evvars in `.env`:
 ```
+GEOSERVER_S3_ENDPOINT=http://minio:9000/
+GEOSERVER_S3_ACCESS_KEY=minio
+GEOSERVER_S3_SECRET_KEY=minio123
+```
+
+The `.env` file is ignored in `.gitignore`, **UNDER NO CIRCUMSTANCES DO NOT COMMIT, NOR PUSH THIS FILE TO THE REPO!!!**
 
 If you run with docker, package the application with `./mvnw package -DskipTests` first.
 
-Run required docker-compose services with `docker-compose up -d db minio geoserver`.
+If you had already created a GeoServer container you may need to recreate it: `docker-compose down`, to remove
+the container.
+This will also erase other containers from the project.
+Then, run required docker-compose services with `docker-compose up -d db minio geoserver`.
 
 Then, run the backend with properties:
 ```
@@ -150,7 +147,7 @@ s3.access-key=<access_key>
 s3.secret-key=<secret_key>
 s3.endpoint=<path to storage>
 ```
-If you run with docker, update the backend-development.env (or another env file you have wired up to `s4e-backend`
+If you run with docker, update the `backend-development.env` (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
 ```
 SEED_PRODUCTS_DATASET=s4e-demo
@@ -169,7 +166,7 @@ either by adding property:
 ```
 spring.profiles.active=development,skip-seed-products
 ```
-or by setting envvar:
+or by setting envvar (in `backend-development.env`, not `.env`):
 ```
 SPRING_PROFILES_ACTIVE=development,skip-seed-products
 ```
