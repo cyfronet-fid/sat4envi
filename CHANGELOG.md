@@ -15,6 +15,10 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+### Updates
+
+- 2020.05 backend dependencies update
+
 ## [v6.0.0]
 
 ### Added

@@ -21,15 +21,15 @@
         <jjwt.version>0.11.1</jjwt.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <commonmark.version>0.14.0</commonmark.version>
-        <hibernate-types.version>2.9.7</hibernate-types.version>
+        <hibernate-types.version>2.9.9</hibernate-types.version>
         <poiooxml.version>4.1.2</poiooxml.version>
-        <greenmail.version>1.5.11</greenmail.version>
+        <greenmail.version>1.5.13</greenmail.version>
         <slugify.version>2.4</slugify.version>
-        <springdoc-openapi.version>1.3.0</springdoc-openapi.version>
-        <awssdk.version>2.11.7</awssdk.version>
+        <springdoc-openapi.version>1.3.7</springdoc-openapi.version>
+        <awssdk.version>2.13.8</awssdk.version>
         <commons-email.version>1.5</commons-email.version>
-        <geotools.version>22.2</geotools.version>
-        <unirest.version>3.6.01</unirest.version>
+        <geotools.version>23.0</geotools.version>
+        <unirest.version>3.7.02</unirest.version>
     </properties>
 
     <dependencies>
@@ -263,15 +263,17 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0-M4</version>
                 <configuration>
                     <excludedGroups>integration</excludedGroups>
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0-M4</version>
                 <configuration>
                     <includes>
                         <include>**/*Test.java</include>
