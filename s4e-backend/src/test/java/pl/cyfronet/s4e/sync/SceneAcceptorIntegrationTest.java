@@ -76,7 +76,7 @@ class SceneAcceptorIntegrationTest {
 
         assertThat(sceneRepository.count(), is(equalTo(0L)));
 
-        String sceneKey = "/Sentinel-1/GRDH/2020-02-28/S1A_IW_GRDH_1SDV_20200228T045117_20200228T045142_031448_039EDF_82C8.scene";
+        String sceneKey = "Sentinel-1/GRDH/2020-02-28/S1A_IW_GRDH_1SDV_20200228T045117_20200228T045142_031448_039EDF_82C8.scene";
         sceneAcceptor.accept(sceneKey);
 
         assertThat(sceneRepository.count(), is(equalTo(1L)));

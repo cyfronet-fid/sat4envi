@@ -32,7 +32,7 @@ public class IngestS3Path<T extends BaseContext> implements Step<T, Error> {
         String artifactKey = getArtifactKey(format, granuleArtifactRule);
         String path = artifacts.get(artifactKey);
 
-        update.accept(context, convertToS3Path(path));
+        update.accept(context, path);
 
         return null;
     }
@@ -43,10 +43,5 @@ public class IngestS3Path<T extends BaseContext> implements Step<T, Error> {
             return key;
         }
         return granuleArtifactRule.get(METADATA_FORMAT_DEFAULT);
-    }
-
-    private String convertToS3Path(String path) {
-        // Skip leading slash, as product.s3_path assumes no leading slash.
-        return path.substring(1);
     }
 }

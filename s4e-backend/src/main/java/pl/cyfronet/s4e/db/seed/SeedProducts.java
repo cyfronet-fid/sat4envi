@@ -79,6 +79,7 @@ public class SeedProducts implements ApplicationRunner {
 
     private final GeoServerService geoServerService;
     private final GeoServerSynchronizer geoServerSynchronizer;
+    private final SceneStorage sceneStorage;
 
     private final GeometryUtil geom;
 
@@ -574,28 +575,20 @@ public class SeedProducts implements ApplicationRunner {
                     .footprint(params.getFootprint())
                     .build();
 
-            if (objectExists(s3Path)) {
-                sceneRepository.save(scene);
-            } else {
-                log.info("Key doesn't exist: '" + s3Path + "', omitting scene");
+            try {
+                if (sceneStorage.exists(s3Path)) {
+                    sceneRepository.save(scene);
+                } else {
+                    log.info("Key doesn't exist: '" + s3Path + "', omitting scene");
+                }
+            } catch (S3ClientException e) {
+                log.info("Aborting, exception when checking for existence of key: '" + s3Path + "'", e);
+                return;
             }
 
             if ((i + 1) % 100 == 0) {
                 log.info((i + 1) + "/" + count + " scenes of product '" + product.getName() + "' processed");
             }
-        }
-    }
-
-    private boolean objectExists(String key) {
-        HeadObjectRequest request = HeadObjectRequest.builder()
-                .bucket(s3Properties.getBucket())
-                .key(key)
-                .build();
-        try {
-            s3Client.headObject(request);
-            return true;
-        } catch (NoSuchKeyException e) {
-            return false;
         }
     }
 }

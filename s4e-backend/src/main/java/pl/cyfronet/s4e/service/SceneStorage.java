@@ -9,6 +9,7 @@ import pl.cyfronet.s4e.properties.S3Properties;
 import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -31,6 +32,7 @@ public class SceneStorage {
     private final SceneRepository sceneRepository;
 
     public String get(String key) throws NotFoundException, S3ClientException {
+        verifyKey(key);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(s3Properties.getBucket())
                 .key(key)
@@ -47,12 +49,13 @@ public class SceneStorage {
     }
 
     public boolean exists(String key) throws S3ClientException {
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+        verifyKey(key);
+        HeadObjectRequest request = HeadObjectRequest.builder()
                 .bucket(s3Properties.getBucket())
                 .key(key)
                 .build();
         try {
-            s3Client.getObject(getObjectRequest);
+            s3Client.headObject(request);
             return true;
         } catch (NoSuchKeyException e) {
             return false;
@@ -84,5 +87,11 @@ public class SceneStorage {
 
     public Duration getPresignedGetTimeout() {
         return s3Properties.getPresignedGetTimeout();
+    }
+
+    private static void verifyKey(String key) {
+        if (key.startsWith("/")) {
+            throw new IllegalArgumentException("Key must not have a leading slash");
+        }
     }
 }
