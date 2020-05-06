@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import pl.cyfronet.s4e.util.ResourceReader;
 import pl.cyfronet.s4e.geoserver.op.request.CreateS3CoverageRequest;
 import pl.cyfronet.s4e.geoserver.op.request.CreateStyleRequest;
 import pl.cyfronet.s4e.geoserver.op.request.CreateWorkspaceRequest;
@@ -26,11 +27,9 @@ import pl.cyfronet.s4e.properties.GeoServerProperties;
 
 import java.io.*;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -284,9 +283,8 @@ public class GeoServerOperations {
 
 
     private String loadSldFile(String path) {
-        try (InputStream inputStream = resourceLoader.getResource(path).getInputStream()) {
-            return new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                    .lines().collect(Collectors.joining("\n"));
+        try {
+            return ResourceReader.asString(resourceLoader.getResource(path));
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
         } catch (IOException e) {
