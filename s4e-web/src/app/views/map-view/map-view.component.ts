@@ -125,11 +125,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.sceneService.setActive(sceneId);
   }
 
-
-  logout() {
-    this.sessionService.logout();
-  }
-
   toggleLegend() {
     this.legendService.toggleLegend();
   }

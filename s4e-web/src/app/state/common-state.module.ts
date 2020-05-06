@@ -7,16 +7,10 @@ import {SessionService} from './session/session.service';
   declarations: [],
   imports: [
     CommonModule
+  ],
+  providers: [
+    SessionQuery,
+    SessionService,
   ]
 })
-export class CommonStateModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: CommonStateModule,
-      providers: [
-        SessionQuery,
-        SessionService,
-      ]
-    };
-  }
-}
+export class CommonStateModule {}

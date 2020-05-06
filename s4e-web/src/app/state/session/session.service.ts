@@ -1,9 +1,11 @@
+import { NotificationService } from 'notifications';
+import { SessionQuery } from './session.query';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SessionStore} from './session.store';
 import {finalize, switchMap, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import {action, resetStores} from '@datorama/akita';
+import {action, resetStores, akitaConfig, persistState} from '@datorama/akita';
 import {LoginRequestResponse} from './session.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
 import {ProfileService} from '../profile/profile.service';
@@ -12,10 +14,12 @@ import {ProfileService} from '../profile/profile.service';
 export class SessionService {
 
   constructor(private sessionStore: SessionStore,
+              private sessionQuery: SessionQuery,
               private http: HttpClient,
               private router: Router,
               private profileService: ProfileService,
-              private CONFIG: S4eConfig) {
+              private CONFIG: S4eConfig,
+              private _notificationService: NotificationService) {
   }
 
   init() {
@@ -60,8 +64,12 @@ export class SessionService {
 
   @action('logout')
   logout() {
-    this.setToken(null, null);
-    resetStores();
-    this.router.navigate(['/login']);
+    if (this.sessionQuery.isLoggedIn()) {
+      this.setToken(null, null);
+      resetStores({
+        exclude: ['Notification']
+      });
+      this.router.navigateByUrl('login');
+    }
   }
 }
