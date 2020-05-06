@@ -13,24 +13,21 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.SldStyle;
-import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.SldStyleRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.geoserver.sync.GeoServerSynchronizer;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.properties.SeedProperties;
 import pl.cyfronet.s4e.service.GeoServerService;
+import pl.cyfronet.s4e.service.SceneStorage;
+import pl.cyfronet.s4e.sync.PrefixScanner;
+import pl.cyfronet.s4e.sync.SceneAcceptor;
 import pl.cyfronet.s4e.util.GeometryUtil;
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,8 +35,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Profile({"development & !skip-seed-products", "run-seed-products"})
 @Component
@@ -72,6 +74,7 @@ public class SeedProducts implements ApplicationRunner {
     private final S3Properties s3Properties;
     private final GeoServerProperties geoServerProperties;
 
+    private final SchemaRepository schemaRepository;
     private final ProductRepository productRepository;
     private final SceneRepository sceneRepository;
     private final SldStyleRepository sldStyleRepository;
@@ -85,7 +88,9 @@ public class SeedProducts implements ApplicationRunner {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final S3Client s3Client;
+    private final PrefixScanner prefixScanner;
+    private final SceneAcceptor sceneAcceptor;
+    private final SchemaScanner schemaScanner;
 
     @Async
     @Override
@@ -99,6 +104,7 @@ public class SeedProducts implements ApplicationRunner {
             productRepository.deleteAll();
             prgOverlayRepository.deleteAll();
             sldStyleRepository.deleteAll();
+            schemaRepository.deleteAll();
 
             seedScenes();
             seedOverlays();
@@ -126,6 +132,9 @@ public class SeedProducts implements ApplicationRunner {
                 break;
             case "s4e-demo-2":
                 seedProductsS4EDemo2();
+                break;
+            case "s4e-sync-1":
+                seedProductsSync1();
                 break;
             default:
                 throw new IllegalStateException("Data set: '" + seedProperties.getDataSet() + "' not recognized");
@@ -201,8 +210,6 @@ public class SeedProducts implements ApplicationRunner {
         for (val product : products) {
             seedScenes(product, productParams.get(product.getName()));
         }
-
-
     }
 
     private void seedProductsS4EDemo() {
@@ -504,6 +511,91 @@ public class SeedProducts implements ApplicationRunner {
         }
     }
 
+    private void seedProductsSync1() {
+        log.info("Seeding Products: s4e-sync-1");
+        List<Schema> schemasList;
+        try {
+            schemasList = schemaScanner.scan("classpath:schema/s4e-sync-1");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        schemaRepository.saveAll(schemasList);
+        Map<String, Schema> schemas = schemasList.stream().collect(Collectors.toMap(Schema::getName, s -> s));
+        val granuleArtifactRuleMSG = Map.of("default", "product_file");
+        val granuleArtifactRuleSentinel = Map.of(
+                "default", "quicklook",
+                "COG", "RGBs_8b"
+        );
+        List<Product> products = List.of(
+                Product.builder()
+                        .name("Setvak_Eu")
+                        .layerName("setvak_eu")
+                        .displayName("Chmury konwekcyjne")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Setvak_PL")
+                        .layerName("setvak_pl")
+                        .displayName("Chmury konwekcyjne (PL)")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("OST")
+                        .layerName("ost")
+                        .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
+                        .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Sentinel-1-GRDH")
+                        .layerName("sentinel_1_grdh")
+                        .displayName("Sentinel 1 GRDH")
+                        .description("Opis GRDH")
+                        .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
+                        .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleSentinel)
+                        .build(),
+                Product.builder()
+                        .name("Sentinel-1-GRDM")
+                        .layerName("sentinel_1_grdm")
+                        .displayName("Sentinel 1 GRDM")
+                        .description("Opis GRDM")
+                        .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
+                        .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleSentinel)
+                        .build(),
+                Product.builder()
+                        .name("Sentinel-1-SLC_")
+                        .layerName("sentinel_1_slc")
+                        .displayName("Sentinel 1 SLC")
+                        .description("Opis SLC")
+                        .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
+                        .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleSentinel)
+                        .build()
+        );
+
+        productRepository.saveAll(products);
+        createViews(products);
+
+        Stream.of(
+                "Sentinel-1/GRDH/",
+                "Sentinel-1/GRDM/",
+                "Sentinel-1/SLC_/",
+                "MSG_Products_WM/Setvak_Eu/",
+                "MSG_Products_WM/Setvak_PL/",
+                "MSG_Products_WM/OST/"
+        ).forEach(this::readScenes);
+    }
+
     private void createViews(List<Product> products) {
         for (val product: products) {
             String id = product.getId().toString();
@@ -589,6 +681,44 @@ public class SeedProducts implements ApplicationRunner {
             if ((i + 1) % 100 == 0) {
                 log.info((i + 1) + "/" + count + " scenes of product '" + product.getName() + "' processed");
             }
+        }
+    }
+
+    private void readScenes(String prefix) {
+        // AWS SDK has a default connection pool size of 50, so 40 threads should be fine.
+        ExecutorService es = Executors.newFixedThreadPool(40);
+
+        try {
+            List<String> allSceneKeys = prefixScanner.scan(prefix)
+                    .map(S3Object::key)
+                    .filter(key -> key.endsWith(".scene"))
+                    .collect(Collectors.toList());
+            log.info(String.format("Scanning prefix: '%s'. Total: %d", prefix, allSceneKeys.size()));
+            List<String> sceneKeysToSync = optionallyTruncateToLimit(allSceneKeys, seedProperties.getS4eSyncV1().getLimit());
+            AtomicInteger count = new AtomicInteger(0);
+            es.submit(() -> sceneKeysToSync.stream()
+                    .parallel()
+                    .forEach(sceneKey -> {
+                        sceneAcceptor.accept(sceneKey);
+                        int i = count.addAndGet(1);
+                        log.info(String.format("%d/%d. scene key: '%s'", i, sceneKeysToSync.size(), sceneKey));
+                    })).get();
+        } catch (InterruptedException e) {
+            log.error(e.getMessage(), e);
+        } catch (ExecutionException e) {
+            log.error(e.getMessage(), e);
+        } finally {
+            es.shutdown();
+        }
+    }
+
+    private <T> List<T> optionallyTruncateToLimit(List<T> list, int limit) {
+        if (limit > 0) {
+            return list.stream()
+                    .limit(limit)
+                    .collect(Collectors.toList());
+        } else {
+            return list;
         }
     }
 }
