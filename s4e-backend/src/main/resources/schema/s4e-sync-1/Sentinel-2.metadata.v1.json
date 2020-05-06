@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "Sentinel-2.metadata.v1.json",
+  "title": "Sentinel-2.metadata.v1",
+  "description": "First schema for Sentinel-2 metadata",
+  "required": [
+    "spacecraft",
+    "processing_level",
+    "sensing_time",
+    "ingestion_time",
+    "relative_orbit_number",
+    "tile",
+    "polygon",
+    "cloud_cover",
+    "schema"
+  ],
+  "type": "object",
+  "properties": {
+    "spacecraft": {
+      "type": "string"
+    },
+    "processing_level": {
+      "type": "string"
+    },
+    "sensing_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ingestion_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "relative_orbit_number": {
+      "type": "string"
+    },
+    "tile": {
+      "type": "string"
+    },
+    "polygon": {
+      "type": "string",
+      "pattern": "^(-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)( -?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)+$"
+    },
+    "cloud_cover": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "format": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    }
+  }
+}

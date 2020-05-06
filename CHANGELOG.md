@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Synchronize scenes from S3 (s4-sync-1 dataset) [#439](https://github.com/cyfronet-fid/sat4envi/issues/439)
 - Audit selected entities [#158](https://github.com/cyfronet-fid/sat4envi/issues/158)
 
 ### Changed

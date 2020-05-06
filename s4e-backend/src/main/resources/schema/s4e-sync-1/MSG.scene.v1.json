@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "MSG.scene.v1.json",
+  "title": "MSG_Products.scene.v1",
+  "description": "Schema for MSG Products",
+  "required": [
+    "product_type",
+    "artifacts",
+    "schema"
+  ],
+  "type": "object",
+  "properties": {
+    "product_type": {
+      "type": "string",
+      "pattern": "^[-_a-zA-Z0-9]+$"
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "metadata",
+        "product_file",
+	"original_file"
+        ],
+      "properties": {
+        "metadata": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.metadata$"
+        },
+        "product_file": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.tif$"
+        },
+        "original_file": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+$"
+        },
+        "source_raw_data": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.zip$"
+        }
+      }
+    },
+    "schema": {
+      "type": "string"
+    }
+  }
+}

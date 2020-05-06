@@ -119,14 +119,21 @@ the products seeding by setting the profile `skip-seed-products`.)
 Like in the case of the base dataset, the data is stored in the Cyfronet CEPH in bucket `s4e-demo-2`.
 You have to observe the steps for `s4e-demo` with updated dataset and bucket names.
 
+`s4e-sync-1` is the first dataset which scenes are loaded based on their scene files.
+It consists of 6 products: OST, Setvak_Eu, Setvak_PL, Sentinel-1-GRDH, Sentinel-1-GRDM and Sentinel-1-SLC_.
+See the separate section for info on loading it.
+
+
 #### Seeding with s4e-demo data
 
-The first thing is to obtain production CEPH credentials, they are for example [here](https://docs.cyfronet.pl/display/FID/Projekty).
+The first thing is to obtain production CEPH credentials, they are for example
+[here](https://docs.cyfronet.pl/display/FID/Projekty).
+(Use `storage.cloud...` endpoint for `s4e-demo` and `s3.cloud...` for `s4e-sync`.)
 Once you have them, point your GeoServer instance to the Cyfronet CEPH by setting the following evvars in `.env`:
 ```
-GEOSERVER_S3_ENDPOINT=http://minio:9000/
-GEOSERVER_S3_ACCESS_KEY=minio
-GEOSERVER_S3_SECRET_KEY=minio123
+GEOSERVER_S3_ENDPOINT=<endpoint>
+GEOSERVER_S3_ACCESS_KEY=<access key>
+GEOSERVER_S3_SECRET_KEY=<secret key>
 ```
 
 The `.env` file is ignored in `.gitignore`, **UNDER NO CIRCUMSTANCES DO NOT COMMIT, NOR PUSH THIS FILE TO THE REPO!!!**
@@ -136,13 +143,13 @@ If you run with docker, package the application with `./mvnw package -DskipTests
 If you had already created a GeoServer container you may need to recreate it: `docker-compose down`, to remove
 the container.
 This will also erase other containers from the project.
-Then, run required docker-compose services with `docker-compose up -d db minio geoserver`.
+Then, run required docker-compose services with `docker-compose up -d db geoserver`.
 
 Then, run the backend with properties:
 ```
 spring.profiles.active=development
-seed.products.data-set=s4e-demo
-s3.bucket=s4e-demo
+seed.products.data-set=<dataset>
+s3.bucket=<dataset>
 s3.access-key=<access_key>
 s3.secret-key=<secret_key>
 s3.endpoint=<path to storage>
@@ -150,8 +157,8 @@ s3.endpoint=<path to storage>
 If you run with docker, update the `backend-development.env` (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
 ```
-SEED_PRODUCTS_DATASET=s4e-demo
-S3_BUCKET=s4e-demo
+SEED_PRODUCTS_DATASET=<dataset>
+S3_BUCKET=<dataset>
 S3_ACCESSKEY=<access_key>
 S3_SECRETKEY=<secret_key>
 S3_ENDPOINT=<path to storage>
@@ -159,7 +166,11 @@ S3_ENDPOINT=<path to storage>
 
 The backend will seed db and GeoServer.
 It is normal that there are some errors in the backend's logs as there are gaps in the available data.
-However, the beginning of the data is quite clean, so you should see progress info when the seeder starts.
+However, the beginning of the `s4e-demo` data is quite clean, so you should see progress info when the seeder starts.
+
+If you're seeding `s4e-sync-1` there can also be some errors in the logs, however, most likely it is fine.
+Nevertheless, if you see S3ClientExceptions, or too many keys not found errors, you may need to evaluate if you have
+correct credentials.
 
 If you want to skip seeding db and GeoServer with products on subsequent runs add profile `skip-seed-products`,
 either by adding property:
@@ -170,6 +181,10 @@ or by setting envvar (in `backend-development.env`, not `.env`):
 ```
 SPRING_PROFILES_ACTIVE=development,skip-seed-products
 ```
+
+To control the number of scenes seeded per product for `s4e-sync-1` dataset use property
+`seed.products.s4e-sync-v1.limit`, by default the seeder loads only 100 scenes of each product.
+To load an unlimited number set its value to -1.
 
 
 #### Custom docker-compose local configurations
