@@ -55,13 +55,13 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
         when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
 
-        when(sceneStorage.exists("/path_1")).thenReturn(true);
-        when(sceneStorage.exists("/path_2")).thenReturn(true);
+        when(sceneStorage.exists("path_1")).thenReturn(true);
+        when(sceneStorage.exists("path_2")).thenReturn(true);
 
         Error error = step.apply(context);
 
         assertThat(error, is(nullValue()));
-        verify(update).accept(eq(context), eq(Map.of("key_1", "/path_1", "key_2", "/path_2")));
+        verify(update).accept(eq(context), eq(Map.of("key_1", "path_1", "key_2", "path_2")));
         verifyNoMoreInteractions(update);
     }
 
@@ -94,17 +94,17 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
         when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
 
-        when(sceneStorage.exists("/path_1")).thenReturn(false);
-        when(sceneStorage.exists("/path_2")).thenReturn(true);
-        when(sceneStorage.exists("/path_3")).thenReturn(false);
+        when(sceneStorage.exists("path_1")).thenReturn(false);
+        when(sceneStorage.exists("path_2")).thenReturn(true);
+        when(sceneStorage.exists("path_3")).thenReturn(false);
 
         Error error = step.apply(context);
 
         assertThat(error, is(notNullValue()));
         assertThat(error.getCode(), is(equalTo(ERR_ARTIFACTS_NOT_FOUND)));
         assertThat(error.getParameters(), allOf(
-                hasEntry("artifact_key_1", "/path_1"),
-                hasEntry("artifact_key_3", "/path_3")
+                hasEntry("artifact_key_1", "path_1"),
+                hasEntry("artifact_key_3", "path_3")
         ));
         verifyNoMoreInteractions(update);
     }
@@ -118,14 +118,14 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
         when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
 
-        when(sceneStorage.exists("/path_1")).thenThrow(S3ClientException.class);
+        when(sceneStorage.exists("path_1")).thenThrow(S3ClientException.class);
 
         Error error = step.apply(context);
 
         assertThat(error, is(notNullValue()));
         assertThat(error.getCode(), is(equalTo(ERR_S3_CLIENT_EXCEPTION)));
         assertThat(error.getParameters(), allOf(
-                hasEntry("artifact_key_1", "/path_1")
+                hasEntry("artifact_key_1", "path_1")
         ));
         verifyNoMoreInteractions(update);
     }

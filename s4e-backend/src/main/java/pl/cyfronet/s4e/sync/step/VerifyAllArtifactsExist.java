@@ -45,14 +45,15 @@ public class VerifyAllArtifactsExist<T extends BaseContext> implements Step<T, E
                 return error.code(ERR_ARTIFACT_PATH_INCORRECT)
                         .parameter("artifact_" + name, path).build();
             }
-            artifacts.put(name, path);
+            String artifactKey = pathToKey(path);
+            artifacts.put(name, artifactKey);
             try {
-                if (!sceneStorage.exists(path)) {
-                    notFound.put(name, path);
+                if (!sceneStorage.exists(artifactKey)) {
+                    notFound.put(name, artifactKey);
                 }
             } catch (S3ClientException e) {
-                return error.code(ERR_S3_CLIENT_EXCEPTION)
-                        .parameter("artifact_" + name, path).build();
+                return error.code(ERR_S3_CLIENT_EXCEPTION).cause(e)
+                        .parameter("artifact_" + name, artifactKey).build();
             }
         }
         if (!notFound.isEmpty()) {
@@ -67,5 +68,9 @@ public class VerifyAllArtifactsExist<T extends BaseContext> implements Step<T, E
 
     private boolean isPathCorrect(String path) {
         return path.startsWith("/");
+    }
+
+    private String pathToKey(String path) {
+        return path.substring(1);
     }
 }

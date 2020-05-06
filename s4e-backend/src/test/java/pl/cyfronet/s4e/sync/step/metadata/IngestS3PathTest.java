@@ -49,7 +49,7 @@ class IngestS3PathTest extends BaseStepTest<BaseContext> {
     public void shouldWork() {
         when(metadataJson.getString(eq(METADATA_FORMAT_PROPERTY), any(String.class)))
                 .thenReturn("GeoTiff");
-        artifacts.put("key_1", "/some/path");
+        artifacts.put("key_1", "some/path");
         when(product.getGranuleArtifactRule()).thenReturn(Map.of("GeoTiff", "key_1"));
 
         Error error = step.apply(context);
@@ -63,7 +63,7 @@ class IngestS3PathTest extends BaseStepTest<BaseContext> {
     public void shouldUseDefault() {
         when(metadataJson.getString(eq(METADATA_FORMAT_PROPERTY), any(String.class)))
                 .thenReturn("GeoTiff");
-        artifacts.put("key_1", "/some/path");
+        artifacts.put("key_1", "some/path");
         when(product.getGranuleArtifactRule()).thenReturn(Map.of("default", "key_1"));
 
         Error error = step.apply(context);
