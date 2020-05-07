@@ -35,7 +35,8 @@ export class GenericFormComponent<Q extends Query<any>, FS extends object> imple
       this.fm.upsert(this.formKey, this.form);
 
       // In order for dev error setting to work debounceTime(100) must be set
-      this.query.selectError().pipe(debounceTime(100), untilDestroyed(this))
+      this.query.selectError()
+        .pipe(debounceTime(100), untilDestroyed(this))
         .subscribe(errors => connectErrorsToForm(errors, this.form));
 
       this.router.events.pipe(filter(event => event instanceof NavigationEnd))

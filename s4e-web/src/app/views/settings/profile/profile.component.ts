@@ -15,7 +15,7 @@ import { FormState } from 'src/app/state/form/form.model';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent extends GenericFormComponent<ProfileQuery, PasswordChangeFormState> implements OnInit {
+export class ProfileComponent extends GenericFormComponent<ProfileQuery, PasswordChangeFormState> {
   public isLoggedIn$: Observable<boolean>;
   public userEmail$: Observable<string>;
   public form: FormGroup<PasswordChangeFormState>;

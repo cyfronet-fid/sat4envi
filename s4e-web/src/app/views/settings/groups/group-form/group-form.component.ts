@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {GenericFormComponent} from '../../../../utils/miscellaneous/generic-form.component';
 import {PersonQuery} from '../../people/state/person.query';
 import {FormControl, FormGroup} from '@ng-stack/forms';
@@ -47,33 +47,36 @@ export class GroupFormComponent extends GenericFormComponent<GroupQuery, GroupFo
     });
 
     (this.form.get('membersEmails').valueChanges as Observable<any>)
-      .pipe(untilDestroyed(this),
+      .pipe(
+        untilDestroyed(this),
         filter(() => this.groupSlug != null),
         distinctUntilChanged()
-      ).subscribe(a => console.log(a));
+      ).subscribe();
 
     this.users$ = this.personQuery.selectAll().pipe(map(ppl => ppl.map(p => ({
       value: p.email,
       caption: `${p.surname} ${p.name} <${p.email}>`
     }))));
 
-    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
-      instSlug => {
-        this.personService.fetchAll(instSlug);
-        this.instSlug = instSlug;
-      }
-    );
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        instSlug => {
+          this.personService.fetchAll(instSlug);
+          this.instSlug = instSlug;
+        }
+      );
 
     super.ngOnInit();
   }
 
   submit() {
-    if (this.groupSlug == null) {
-      this.groupService.create$(this.instSlug, this.form.value)
-        .subscribe(() => this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'}));
-    } else {
-      this.groupService.update$(this.instSlug, this.groupSlug, this.form.value)
-        .subscribe(() => this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'}));
-    }
+    (
+      this.groupSlug == null
+        ? this.groupService.create$(this.instSlug, this.form.value)
+        : this.groupService.update$(this.instSlug, this.groupSlug, this.form.value)
+    )
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'}));
   }
 }

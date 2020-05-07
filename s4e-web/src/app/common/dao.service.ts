@@ -1,7 +1,8 @@
-import {EntityState, EntityStore, getIDType, ID} from '@datorama/akita';
-import {Observable, throwError} from 'rxjs';
+import {EntityState, EntityStore, getIDType} from '@datorama/akita';
+import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
-import {catchError, finalize, publish, shareReplay, tap} from 'rxjs/operators';
+import { finalize, shareReplay, tap} from 'rxjs/operators';
+import { catchErrorAndHandleStore } from './store.util';
 
 export abstract class Dao<T, S extends EntityState<T>, Store extends EntityStore<S, T>> {
   protected constructor(protected http: HttpClient,
@@ -16,15 +17,12 @@ export abstract class Dao<T, S extends EntityState<T>, Store extends EntityStore
       .pipe(
         finalize(() => this.store.setLoading(false)),
         tap(data => this.store.upsert(id, data)),
-        catchError(error => {
-          this.store.setError(error);
-          return throwError(error)
-        }),
+        catchErrorAndHandleStore(this.store),
         shareReplay(1)
       );
 
     r.subscribe();
-    return r
+    return r;
   }
 
   fetchAll$(url?: string): Observable<T[]> {
@@ -34,14 +32,11 @@ export abstract class Dao<T, S extends EntityState<T>, Store extends EntityStore
       .pipe(
         finalize(() => this.store.setLoading(false)),
         tap(data => this.store.set(data)),
-        catchError(error => {
-          this.store.setError(error);
-          return throwError(error)
-        }),
+        catchErrorAndHandleStore(this.store),
         shareReplay(1)
       );
 
     r.subscribe();
-    return r
+    return r;
   }
 }

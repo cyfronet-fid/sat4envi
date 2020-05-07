@@ -34,9 +34,11 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
 
-    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
-      instSlug => this.personService.fetchAll(instSlug)
-    );
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        instSlug => this.personService.fetchAll(instSlug)
+      );
   }
 
   ngOnDestroy(): void {

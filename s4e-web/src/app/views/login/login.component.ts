@@ -15,7 +15,7 @@ import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.compo
   styleUrls: ['./login.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> implements OnInit {
+export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> {
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
               private sessionService: SessionService,

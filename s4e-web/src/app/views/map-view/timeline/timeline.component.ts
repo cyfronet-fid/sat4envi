@@ -101,9 +101,7 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.dateSelected.emit(yyyymmdd($event.value));
   }
 
-  monthSelected($event: any) {
-    console.log('month selected', $event);
-  }
+  monthSelected($event: any) {}
 
   setPickerOpenState(state: boolean) {
     this.pickerState = state;
@@ -121,9 +119,10 @@ export class TimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.updateStream.pipe(untilDestroyed(this), debounceTime(50)).subscribe(() => this.hackCalendar());
+    this.updateStream
+      .pipe(untilDestroyed(this), debounceTime(50))
+      .subscribe(() => this.hackCalendar());
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 }

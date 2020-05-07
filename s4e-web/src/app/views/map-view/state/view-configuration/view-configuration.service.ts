@@ -7,6 +7,7 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Observable, throwError} from 'rxjs';
 import {IPageableResponse} from '../../../../state/pagable.model';
 import {ViewConfigurationQuery} from './view-configuration.query';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class ViewConfigurationService {
@@ -23,10 +24,7 @@ export class ViewConfigurationService {
     const r = this.http.post<ViewConfiguration>(`${this.config.apiPrefixV1}/saved-views`, viewConfiguration)
       .pipe(
         map(r => true),
-        catchError(error => {
-          this.store.setError(error);
-          return throwError(error);
-        }),
+        catchErrorAndHandleStore(this.store),
         finalize(() => this.store.setLoading(false)),
         shareReplay(1));
     r.subscribe();
@@ -38,12 +36,12 @@ export class ViewConfigurationService {
     this.store.setLoading(true);
     this.http.delete(`${this.config.apiPrefixV1}/saved-views/${uuid}`, {
       headers: {'Content-Type': 'application/json'}
-    }).pipe(
-      finalize(() => this.store.setLoading(false))
-    ).subscribe(
-      () => this.store.remove(uuid),
-      error => this.store.setError(error)
-    );
+    })
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setLoading(false))
+      )
+      .subscribe(() => this.store.remove(uuid));
   }
 
   get() {
@@ -51,11 +49,11 @@ export class ViewConfigurationService {
     this.store.setLoading(true);
     this.http.get<IPageableResponse<ViewConfiguration>>(`${this.config.apiPrefixV1}/saved-views`, {
       headers: {'Content-Type': 'application/json'}
-    }).pipe(
-      finalize(() => this.store.setLoading(false))
-    ).subscribe(
-      data => this.store.set(data.content),
-      error => this.store.setError(error)
-    );
+    })
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setLoading(false))
+      )
+      .subscribe(data => this.store.set(data.content));
   }
 }

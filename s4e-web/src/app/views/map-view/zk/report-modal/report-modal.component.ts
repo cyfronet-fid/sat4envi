@@ -1,4 +1,5 @@
-import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import {Component, ElementRef, Inject, ViewChild, OnInit, OnDestroy} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
@@ -20,7 +21,7 @@ import moment from "moment";
   templateUrl: './report-modal.component.html',
   styleUrls: ['./report-modal.component.scss']
 })
-export class ReportModalComponent extends FormModalComponent<'report'> {
+export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit {
   image: string = '';
   imageWidth: number;
   imageHeight: number;
@@ -67,14 +68,16 @@ export class ReportModalComponent extends FormModalComponent<'report'> {
 
   accept() {
     if (this.form.invalid) {
-      console.log(this.form.errors);
       return;
     }
-    this.reportGenerator.generate(
-      this.form.controls.caption.value,
-      this.form.controls.notes.value,
-      this.productName,
-      this.sceneDate
-    ).subscribe(() => this.dismiss());
+    this.reportGenerator
+      .generate(
+        this.form.controls.caption.value,
+        this.form.controls.notes.value,
+        this.productName,
+        this.sceneDate
+      )
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this.dismiss());
   }
 }

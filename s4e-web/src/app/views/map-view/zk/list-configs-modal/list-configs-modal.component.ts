@@ -55,7 +55,5 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
     this.dismiss();
   }
 
-  sendTo(configuration: ViewConfiguration) {
-    console.log(`SendTo configuration ${configuration.uuid}`);
-  }
+  sendTo(configuration: ViewConfiguration) {}
 }

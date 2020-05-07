@@ -32,9 +32,11 @@ export class GroupListComponent implements OnInit, OnDestroy {
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
-    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
-      instSlug => this.groupService.fetchAll(instSlug)
-    );
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        instSlug => this.groupService.fetchAll(instSlug)
+      );
   }
 
   ngOnDestroy(): void {

@@ -1,4 +1,5 @@
-import {Component, forwardRef, Host, Optional, SkipSelf, ViewChild, ViewEncapsulation} from '@angular/core';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Component, forwardRef, Host, Optional, SkipSelf, ViewChild, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
 import {ControlContainer, FormControl, NG_VALUE_ACCESSOR, SelectControlValueAccessor} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
 import {DateUtilsService} from '../../utils/s4e-date/date-utils.service';
@@ -27,9 +28,15 @@ export class SelectComponent extends GeneralInput {
               @Optional() extForm: ExtFormDirective,
               @Optional() @Host() @SkipSelf() cc: ControlContainer) {
     super(cc, extForm);
-    this.inputFormControl.valueChanges.subscribe(value => {
-      this.onChange(null, value);
-    });
+  }
+
+  ngOnInit() {
+    this.inputFormControl.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe(value => {
+        this.onChange(null, value);
+      });
+    super.ngOnInit();
   }
 
   writeValue(value: any): void {

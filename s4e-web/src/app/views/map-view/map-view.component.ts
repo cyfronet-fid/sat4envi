@@ -121,7 +121,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   selectScene(sceneId: number) {
-    console.log('selectScene', sceneId);
     this.sceneService.setActive(sceneId);
   }
 

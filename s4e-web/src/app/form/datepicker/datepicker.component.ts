@@ -1,6 +1,9 @@
+import { untilDestroyed } from 'ngx-take-until-destroy';
 import {
   Component, EventEmitter, forwardRef, Host, Input, Optional, Output, SkipSelf,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnDestroy,
+  OnInit
 } from '@angular/core';
 import {ControlContainer, FormControl, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
@@ -30,10 +33,6 @@ export class DatepickerComponent extends GeneralInput {
               @Optional() extForm: ExtFormDirective,
               @Optional() @Host() @SkipSelf() cc: ControlContainer) {
     super(cc, extForm);
-    this.inputFormControl.valueChanges.subscribe(value => {
-      this.onChange(null, this.dateUtils.dateToApiString(value));
-    });
-
   }
 
   @Input() placement: 'top'|'bottom'|'left'|'right' = 'bottom';
@@ -42,6 +41,15 @@ export class DatepickerComponent extends GeneralInput {
   @Input() extraButtonIcon: string = 'question-sign';
 
   @Output() extraButtonClick = new EventEmitter();
+
+  ngOnInit() {
+    super.ngOnInit();
+    this.inputFormControl.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe(value => {
+        this.onChange(null, this.dateUtils.dateToApiString(value));
+      });
+  }
 
   setDateToNow() {
     this.writeValue(new Date());
