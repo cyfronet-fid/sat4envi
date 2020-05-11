@@ -7,7 +7,6 @@ import {ProfileQuery} from '../../../../state/profile/profile.query';
 import {ProfileStore} from '../../../../state/profile/profile.store';
 import {of} from 'rxjs';
 
-
 @Component({selector: 'neutral', template: ''})
 class NeutralComponent {
 }
@@ -42,7 +41,7 @@ describe('IsManagerGuard', () => {
 
   it('should allow if selectCanSeeInstitutions resolves true', async () => {
     spyOn(query, 'selectCanSeeInstitutions').and.returnValue(of(true));
-    expect(await router.navigate(['/restricted'])).toBeTruthy();
+    expect(await router.navigate(['/settings/profile'])).toBeTruthy();
   });
 
   it('should return redirect if selectCanSeeInstitutions resolves false', async () => {

@@ -1,16 +1,15 @@
-import { DashboardModule } from './dashboard.module';
+import { AdminDashboardModule } from './admin-dashboard.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashboardComponent } from './dashboard.component';
+import { AdminDashboardComponent } from './admin-dashboard.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { Router } from '@angular/router';
-import { By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 
-describe('DashboardComponent', () => {
-  let component: DashboardComponent;
-  let fixture: ComponentFixture<DashboardComponent>;
+describe('AdminDashboardComponent', () => {
+  let component: AdminDashboardComponent;
+  let fixture: ComponentFixture<AdminDashboardComponent>;
   let de: DebugElement;
   let router: Router;
   let spy: any;
@@ -20,12 +19,12 @@ describe('DashboardComponent', () => {
       imports: [
         CommonModule,
         RouterTestingModule.withRoutes([]),
-        DashboardModule
+        AdminDashboardModule
       ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DashboardComponent);
+    fixture = TestBed.createComponent(AdminDashboardComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
     router = TestBed.get(Router);

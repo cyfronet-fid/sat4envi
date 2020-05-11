@@ -1,3 +1,4 @@
+import { ProfileQuery } from 'src/app/state/profile/profile.query';
 import {NotificationService} from 'notifications';
 import {SessionQuery} from './session.query';
 import {ERROR_INTERCEPTOR_CODES_TO_SKIP} from '../../utils/error-interceptor/error.helper';
@@ -20,6 +21,7 @@ export class SessionService {
 
   constructor(private sessionStore: SessionStore,
               private sessionQuery: SessionQuery,
+              private _profileQuery: ProfileQuery,
               private http: HttpClient,
               private router: Router,
               private profileService: ProfileService,
@@ -68,7 +70,9 @@ export class SessionService {
         switchMap(data => this.profileService.get$()),
         finalize(() => this.sessionStore.setLoading(false))
       )
-      .subscribe(data => this._navigateToApplication());
+      .subscribe(data => {
+        this._navigateToApplication();
+      });
   }
 
   @action('logout')

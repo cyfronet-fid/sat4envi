@@ -1,4 +1,5 @@
-import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot, Routes} from '@angular/router';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { Routes} from '@angular/router';
 import {ProfileComponent} from './profile/profile.component';
 import {SettingsComponent} from './settings.component';
 import {GroupListComponent} from './groups/group-list/group-list.component';
@@ -8,13 +9,8 @@ import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
 import {PersonFormComponent} from './people/person-form/person-form.component';
 import {GroupFormComponent} from './groups/group-form/group-form.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {combineLatest, Observable} from 'rxjs';
-import {filter, map, switchMap, take} from 'rxjs/operators';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {InstitutionService} from './state/institution.service';
-import {InstitutionQuery} from './state/institution.query';
-import {Injectable} from '@angular/core';
 import {IsManagerGuard} from './guards/is-manager/is-manager.guard';
+import { adminDashboardMatcher, managerDashboardMatcher } from 'src/app/utils';
 
 export const settingsRoutes: Routes = [
   {
@@ -23,9 +19,12 @@ export const settingsRoutes: Routes = [
     canActivate: [IsLoggedIn],
     children: [
       {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [IsManagerGuard]
+        matcher: adminDashboardMatcher,
+        component: AdminDashboardComponent
+      },
+      {
+        matcher: managerDashboardMatcher,
+        component: DashboardComponent
       },
       {
         path: 'profile',
@@ -63,7 +62,7 @@ export const settingsRoutes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'dashboard',
+        redirectTo: 'profile',
         pathMatch: 'full',
       },
     ]

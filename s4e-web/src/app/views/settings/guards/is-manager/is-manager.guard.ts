@@ -8,8 +8,7 @@ import {map, take} from 'rxjs/operators';
   providedIn: 'root'
 })
 export class IsManagerGuard implements CanActivate {
-  constructor(private profileQuery: ProfileQuery, private router: Router) {
-  }
+  constructor(private profileQuery: ProfileQuery, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean|UrlTree> | Promise<boolean|UrlTree> | boolean|UrlTree {
