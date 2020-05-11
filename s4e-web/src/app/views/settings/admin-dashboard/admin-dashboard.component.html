@@ -8,14 +8,36 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Wybierz instytucję</header>
       <p i18n tile-description>Wybierz instytucję aby móc nią zarządzać</p>
-      <input class="search__input" placeholder="Wpisz szukaną instytucję..."
-        i18n-placeholder footer-navigation />
+      <s4e-search
+        placeholder="Wpisz szukaną instytucję..."
+        [searchResults]="institutions$ | async"
+        [isSearchLoading]="institutionsLoading$ | async"
+        [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
+        [value]="searchValue"
+
+        (selectResult)="selectInstitution($event)"
+        (refreshResults)="searchForInstitutions($event)"
+        (selectFirstResult)="selectFirstInstitution()"
+        (resetSearch)="resetSearch()"
+        footer-navigation
+      >
+        <ng-template #result let-result>
+          <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
+          <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
+        </ng-template>
+      </s4e-search>
     </s4e-tile>
 
     <s4e-tile>
       <header class="panel__header" tile-title>Zarządzaj instytucjami</header>
       <p i18n tile-description>Lista wszystkich instytucji. W tym miejscu możesz je edytować</p>
-      <button routerLink="../groups" class="button button--secondary" footer-navigation>
+      <button
+        routerLink="../groups"
+        queryParamsHandling="merge"
+        class="button button--secondary"
+        [disabled]="!(hasSelectedInstitution$ | async)"
+        footer-navigation
+      >
         Zarządzaj
       </button>
     </s4e-tile>

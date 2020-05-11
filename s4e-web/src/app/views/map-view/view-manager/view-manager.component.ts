@@ -1,12 +1,9 @@
 import { SessionQuery } from './../../../state/session/session.query';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {IUILayer} from '../state/common.model';
-import {FormControl} from '@ng-stack/forms';
-import {SearchResult} from '../state/search-results/search-result.model';
-import {SearchResultsQuery} from '../state/search-results/search-results.query';
+import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {map} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 import {ProductQuery} from '../state/product/product.query';
 import {OverlayQuery} from '../state/overlay/overlay.query';
@@ -14,7 +11,8 @@ import {MapQuery} from '../state/map/map.query';
 import {SceneQuery} from '../state/scene/scene.query.service';
 import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
-import {SearchResultsService} from '../state/search-results/search-results.service';
+import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
+import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
 
 @Component({
   selector: 's4e-view-manager',
@@ -28,19 +26,18 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
   productsLoading$: Observable<boolean>;
   overlays$: Observable<IUILayer[]>;
   overlaysLoading$: Observable<boolean>;
-  searchResults$: Observable<SearchResult[]>;
+  searchResults$: Observable<LocationSearchResult[]>;
   searchResultsLoading$: Observable<boolean>;
   searchResultsOpen$: Observable<boolean>;
-  searchFc: FormControl<string> = new FormControl<string>('');
 
-  hasBeenSelected: boolean = false;
+  searchValue: string;
 
-  constructor(private searchResultQuery: SearchResultsQuery,
+  constructor(
               private productQuery: ProductQuery,
               private overlayQuery: OverlayQuery,
               private mapQuery: MapQuery,
               private sceneQuery: SceneQuery,
-              private searchResultsQuery: SearchResultsQuery,
+              private searchResultsQuery: LocationSearchResultsQuery,
               private productService: ProductService,
               private overlayService: OverlayService,
               private searchResultsService: SearchResultsService,
@@ -61,29 +58,13 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
     ]).pipe(map(([overlayLoading, productsLoading]) => overlayLoading || productsLoading));
 
     if (environment.hmr) {
-      this.searchFc.setValue(this.searchResultQuery.getValue().queryString);
+      const location = this.searchResultsQuery.getValue().searchResult;
+      this.searchValue = !!location && location.name || '';
     }
-
-    this.searchFc.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      untilDestroyed(this),
-    ).subscribe((text: string) => {
-      if (!this.hasBeenSelected) {
-        this.searchForPlaces(text);
-      }
-
-      this.hasBeenSelected = false;
-    });
   }
 
   get isLoggedIn() {
     return this.sessionQuery.isLoggedIn();
-  }
-
-  resetSelectedLocation() {
-    this.searchForPlaces('');
-    this.searchFc.setValue('');
   }
 
   ngOnDestroy(): void {
@@ -107,13 +88,20 @@ export class ViewManagerComponent implements OnInit, OnDestroy{
     this.searchResultsService.get(place);
   }
 
-  navigateToPlace(place: SearchResult) {
+  navigateToPlace(place: LocationSearchResult) {
     this.searchResultsService.setSelectedPlace(place);
-    this.hasBeenSelected = true;
-    this.searchFc.setValue(place.name);
+    this.searchValue = place.name;
   }
 
   selectFirstResult() {
-    this.searchResultsService.setFirstAsSelectedPlace();
+    const firstSearchResult = this.searchResultsQuery.getAll()[0];
+    if(!!firstSearchResult) {
+      this.navigateToPlace(firstSearchResult);
+    }
+  }
+
+  resetSearch() {
+    this.searchValue = '';
+    this.searchResultsService.setSelectedPlace(null);
   }
 }

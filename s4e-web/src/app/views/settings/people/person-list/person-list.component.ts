@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Person} from '../state/person.model';
 import {PersonQuery} from '../state/person.query';
-import {Institution} from '../../state/institution.model';
-import {InstitutionQuery} from '../../state/institution.query';
+import {Institution} from '../../state/institution/institution.model';
+import {InstitutionQuery} from '../../state/institution/institution.query';
 import {PersonService} from '../state/person.service';
-import {InstitutionService} from '../../state/institution.service';
+import {InstitutionService} from '../../state/institution/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 

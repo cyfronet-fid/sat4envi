@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {GroupStore} from './group.store';
 import {IPageableResponse} from '../../../../state/pagable.model';
-import {Institution} from '../../state/institution.model';
+import {Institution} from '../../state/institution/institution.model';
 import {finalize, map} from 'rxjs/operators';
 import {GroupQuery} from './group.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';

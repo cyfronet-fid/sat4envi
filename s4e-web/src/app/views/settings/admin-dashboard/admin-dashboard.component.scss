@@ -5,3 +5,17 @@
   border: 1px solid lightgray;
   padding: 10px;
 }
+
+s4e-search {
+  & .type,
+  & .voivodeship{
+    font-style: italic;
+    color: $color-grey;
+    opacity: 0.5;
+    margin-left: $space-xsmall;
+  }
+
+  & .name {
+    margin-right: $space-small;
+  }
+}

@@ -1,5 +1,5 @@
 import {ModalWithReturnValue, Modal} from '../../../../modal/state/modal.model';
-import { Institution } from '../../state/institution.model';
+import { Institution } from '../../state/institution/institution.model';
 
 export const PARENT_INSTITUTION_MODAL_ID = 'parent-institution-modal';
 

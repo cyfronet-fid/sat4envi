@@ -1,6 +1,4 @@
-import { InstitutionService } from './../../state/institution.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import { InstitutionQuery } from './../../state/institution.query';
 import { ModalComponent } from './../../../../modal/utils/modal/modal.component';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ModalService } from 'src/app/modal/state/modal.service';
@@ -11,9 +9,11 @@ import {
   ParentInstitutionModal,
   PARENT_INSTITUTION_MODAL_ID
 } from './parent-institution-modal.model';
-import { Institution } from '../../state/institution.model';
 import { FormControl } from '@ng-stack/forms';
 import { combineLatest } from 'rxjs';
+import { Institution } from '../../state/institution/institution.model';
+import { InstitutionQuery } from '../../state/institution/institution.query';
+import { InstitutionService } from '../../state/institution/institution.service';
 
 function isSearchedInstitution(institution: Institution, searchValue: string) {
   const normalizedInstitutionName = institution.name.trim().toLocaleLowerCase();

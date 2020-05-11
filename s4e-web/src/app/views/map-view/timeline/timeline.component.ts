@@ -13,12 +13,12 @@ import {
 } from '@angular/core';
 import {S4eConfig} from '../../../utils/initializer/config.service';
 import {Subject} from 'rxjs';
-import {AkitaGuidService} from '../state/search-results/guid.service';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {debounceTime} from 'rxjs/operators';
 import {Scene} from '../state/scene/scene.model';
 import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
+import { AkitaGuidService } from '../state/search-results/guid.service';
 
 export interface Day {
   label: string;

@@ -1,3 +1,4 @@
+import { SearchModule } from './../../components/search/search.module';
 import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -30,8 +31,10 @@ import { ParentInstitutionModalModule } from './manage-institutions/parent-insti
     AdminDashboardModule,
     PeopleModule,
     RouterModule.forChild(settingsRoutes),
-    ParentInstitutionModalModule
-  ]
+    ParentInstitutionModalModule,
+    SearchModule
+  ],
+  providers: []
 })
 export class SettingsModule {
 }

@@ -1,15 +1,14 @@
 import {Injectable} from '@angular/core';
-import {QueryEntity} from '@datorama/akita';
-import {SearchResultsStore} from './search-results.store';
-import {SearchResult, SearchResultsState} from './search-result.model';
+import {QueryEntity, EntityStore} from '@datorama/akita';
+import {SearchResultsState} from './search-result.model';
 import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SearchResultsQuery extends QueryEntity<SearchResultsState, SearchResult> {
+export class SearchResultsQuery<T> extends QueryEntity<SearchResultsState<T>, T> {
 
-  constructor(protected store: SearchResultsStore) {
+  constructor(protected store: EntityStore<SearchResultsState<T>, T>) {
     super(store);
   }
 
@@ -17,8 +16,8 @@ export class SearchResultsQuery extends QueryEntity<SearchResultsState, SearchRe
     return this.select(state  => state.isOpen);
   }
 
-  selectLocation(): Observable<SearchResult|null> {
-    return this.select(state  => state.selectedLocation);
+  selectLocation(): Observable<T | null> {
+    return this.select(state  => state.searchResult);
   }
 
 }
