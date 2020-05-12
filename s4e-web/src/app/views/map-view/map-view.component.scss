@@ -41,8 +41,6 @@
 
   .switch {
     margin: 0 -15px 15px -15px;
-    padding: 13px 15px;
-    background: $color-white;
     display: flex;
     flex-direction: row;
 
@@ -50,6 +48,20 @@
       text-align: center;
       width: 100%;
       text-transform: uppercase;
+      padding: 13px 15px;
+      background: $color-white;
+
+      a {
+        display: block;
+      }
+
+      &:first-child.active {
+        background: $color-grey-primary;
+      }
+
+      &:last-child.active {
+        background: $color-grey-secondary;
+      }
 
       a {
         color: $color-grey-tertiary;

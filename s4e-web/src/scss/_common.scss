@@ -15,14 +15,12 @@
 
 .box__header {
   overflow: auto;
-  margin-bottom: $space-small;
+  background: $color-white;
 }
 
 .box__title {
   font-size: 0.75rem;
   text-transform: uppercase;
-  width: 50%;
-  float:left;
   color: $color-black;
   font-weight: 500;
 }
@@ -41,7 +39,7 @@
 
 .box__content {
   background: $color-white;
-  border-radius: $border-radius-default;
+  border-radius: 0 0 $border-radius-default;
   box-shadow: $shadow-primary;
 }
 
@@ -51,16 +49,6 @@
 .list {
   position: relative;
   padding: $space-default;
-}
-
-.list:after {
-  border-right: 1px solid $color-grey-secondary;
-  content: "";
-  height: 100%;
-  position: absolute;
-  top: 0;
-  right: 54px;
-
 }
 
 .list__item {

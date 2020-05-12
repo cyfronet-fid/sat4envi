@@ -1,21 +1,23 @@
 @import "../../../../../scss/variables";
 
+:host {
+.products {
+  background: $color-white;
+}
+}
+
 .icon__visibility {
   margin-left: auto;
+  font-size: 0.875rem;
 }
 
 .list > .list__item {
   i.fas.fa-star {
-    color: yellow;
+    color: $color-yellow;
   }
 
   i.far.fa-star {
     color: lightgray;
-  }
-
-  i {
-    font-size: 19px;
-    margin: 4px auto 9px auto;
   }
 
   .active.list__name {
