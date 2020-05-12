@@ -11,6 +11,7 @@ import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction} from '@datorama/akita';
 import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -27,10 +28,9 @@ export class ProductService {
   get() {
     this.sceneStore.setLoading(true);
     this.store.setLoading(true);
-    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products`).subscribe(
-      data => this.store.set(data),
-      error => this.store.setError(error)
-    );
+    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products`)
+      .pipe(catchErrorAndHandleStore(this.store))
+      .subscribe(data => this.store.set(data));
   }
 
   setActive(productId: number | null) {
@@ -58,31 +58,15 @@ export class ProductService {
   }
 
   toggleFavourite(ID: number, isFavourite: boolean) {
-    if (isFavourite) {
-      this.http
-        .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {
-          headers: {'Content-Type': 'application/json'}
-        })
-        .pipe(
-          catchError(error => {
-            this.store.setError(error);
-            return throwError(error);
-          })
-        )
-        .subscribe(() => this.store.setLoading(false));
-    } else {
-      this.http
-        .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {
-          headers: {'Content-Type': 'application/json'}
-        })
-        .pipe(
-          catchError(error => {
-            this.store.setError(error);
-            return throwError(error);
-          })
-        )
-        .subscribe(() => this.store.setLoading(false));
-    }
+    (
+      isFavourite
+        ? this.http
+          .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {})
+        : this.http
+          .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`)
+    )
+      .pipe(catchErrorAndHandleStore(this.store))
+      .subscribe(() => this.store.setLoading(false));
   }
 
   fetchAvailableDays(dateF: string) {

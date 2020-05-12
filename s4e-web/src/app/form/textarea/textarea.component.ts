@@ -1,6 +1,8 @@
 import {
   Component, ElementRef, forwardRef, Input, Optional, ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import {ControlContainer, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
@@ -28,14 +30,15 @@ export class TextareaComponent extends GeneralInput {
     super(cc, extForm);
   }
 
-  focus(): void {
-    this.inputRef.nativeElement.focus();
+  ngOnInit(): void {
+    super.ngOnInit();
+    this.fc.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe(val => this.onChange(null, val));
   }
 
-  protected onSetLabel(value: string) {
-    if (!this._placeholder) {
-      this._placeholder = value;
-    }
+  focus(): void {
+    this.inputRef.nativeElement.focus();
   }
 
   writeValue(value: any): void {
@@ -45,8 +48,9 @@ export class TextareaComponent extends GeneralInput {
     }
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.fc.valueChanges.pipe(untilDestroyed(this)).subscribe(val => this.onChange(null, val));
+  protected onSetLabel(value: string) {
+    if (!this._placeholder) {
+      this._placeholder = value;
+    }
   }
 }

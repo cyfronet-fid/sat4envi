@@ -2,12 +2,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ConfigurationStore} from './configuration.store';
 import {Configuration, ConfigurationState, ShareConfigurationRequest} from './configuration.model';
-import {catchError, finalize, map, shareReplay} from 'rxjs/operators';
+import {finalize, map, shareReplay, catchError} from 'rxjs/operators';
 import {ConfigurationQuery} from './configuration.query';
 import {S4eConfig} from '../../../../../utils/initializer/config.service';
 import {Dao} from '../../../../../common/dao.service';
 import {Observable, of} from 'rxjs';
 import {NotificationService} from 'notifications';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class ConfigurationService extends Dao<Configuration, ConfigurationState, ConfigurationStore> {
@@ -29,7 +30,8 @@ export class ConfigurationService extends Dao<Configuration, ConfigurationState,
             content: `Link został wysłany na adres ${conf.emails.join(', ')}`
           });
           return true;
-        }), catchError(error => {
+        }),
+        catchError(error => {
           this.store.setError(error);
           return of(false);
         }),

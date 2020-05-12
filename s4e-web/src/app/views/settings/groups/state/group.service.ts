@@ -9,6 +9,7 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Group, GroupForm} from './group.model';
 import {combineLatest, forkJoin, Observable, of, throwError} from 'rxjs';
 import {Person} from '../../people/state/person.model';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class GroupService {
@@ -23,11 +24,11 @@ export class GroupService {
     this.store.setLoading(true);
     this.store.setError(null);
     this.http.get<IPageableResponse<Institution>>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups`)
-      .pipe(finalize(() => this.store.setLoading(false)))
-      .subscribe(
-        pageable => this.store.set(pageable.content),
-        error => this.store.setError(error)
-      );
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setLoading(false))
+      )
+      .subscribe(pageable => this.store.set(pageable.content));
   }
 
   update$(instSlug: string, groupSlug: string, value: GroupForm) {
@@ -36,11 +37,8 @@ export class GroupService {
       ...value,
       membersEmails: value.membersEmails._
     }).pipe(
-      finalize(() => this.store.setLoading(false)),
-      catchError(error => {
-        this.store.setError(error);
-        return throwError(error);
-      })
+      catchErrorAndHandleStore(this.store),
+      finalize(() => this.store.setLoading(false))
     );
   }
 
@@ -51,10 +49,7 @@ export class GroupService {
       membersEmails: value.membersEmails._
     }).pipe(
       finalize(() => this.store.setLoading(false)),
-      catchError(error => {
-        this.store.setError(error);
-        return throwError(error);
-      })
+      catchErrorAndHandleStore(this.store)
     );
   }
 
@@ -65,10 +60,7 @@ export class GroupService {
       this.http.get<{members: Person[]}>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}/members`)
     ]).pipe(
         finalize(() => this.store.setLoading(false)),
-        catchError(e => {
-          this.store.setError(e);
-          return throwError(e);
-        }),
+        catchErrorAndHandleStore(this.store),
       map(([group, users]) => ({
         name: group.name,
         description: '',

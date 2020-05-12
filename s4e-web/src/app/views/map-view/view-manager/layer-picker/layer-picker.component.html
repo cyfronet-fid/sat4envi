@@ -7,9 +7,8 @@
 <section class="box__content">
   <ul class="list">
     <li class="list__item" [ngClass]="{active: item.active}" role="menuitem" *ngFor="let item of items">
-      <button *ngIf="hasFavourite" (click)="isFavouriteSelected.emit({ID: item.cid, isFavourite: !item.favourite}); item.favourite = !item.favourite">
-        <i *ngIf="!item.favourite" class="far fa-star e2e-non-favourite-btn"></i>
-        <i *ngIf="item.favourite" class="fas fa-star e2e-favourite-btn"></i>
+      <button *ngIf="hasFavourite" (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
+        <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}"></i>
       </button>
       <button class="list__icon" (click)="itemSelected.emit(item.cid)">
         <img src="../../../../../assets/images/ico_product_default.png" alt="Default product icon" i18n-alt />

@@ -30,14 +30,15 @@ describe('ModalQuery', () => {
   it('should modalClosed$ work', (done) => {
     const uuid = '1f176345b9';
     spyOn(akita, 'guid').and.returnValue(uuid);
-    query.modalClosed$(DUMMY_MODAL_ID).subscribe(modal => {
-      expect(modal).toEqual({
-        id: DUMMY_MODAL_ID,
-        size: 'md',
-        uuid: uuid
+    query.modalClosed$(DUMMY_MODAL_ID)
+      .subscribe(modal => {
+        expect(modal).toEqual({
+          id: DUMMY_MODAL_ID,
+          size: 'md',
+          uuid: uuid
+        });
+        done();
       });
-      done();
-    });
 
     service.show(createModal({id: DUMMY_MODAL_ID}));
     service.hide(DUMMY_MODAL_ID, true);

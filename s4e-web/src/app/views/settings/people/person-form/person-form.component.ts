@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormControl, FormGroup} from '@ng-stack/forms';
 import {PersonForm} from '../state/person.model';
 import {Observable} from 'rxjs';
@@ -49,25 +49,29 @@ export class PersonFormComponent extends GenericFormComponent<PersonQuery, Perso
     this.groups$ = this.groupQuery.selectAllWithoutDefault().pipe(map(groups => groups.map(gr => ({value: gr.slug, caption: gr.name}))));
     this.groupsLoading$ = this.groupQuery.selectLoading();
 
-    this.institutionService.connectInstitutionToQuery$(this.route).pipe(untilDestroyed(this)).subscribe(
-      instSlug => {
-        this.groupService.fetchAll(instSlug);
-        this.instSlug = instSlug;
-      }
-    );
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        instSlug => {
+          this.groupService.fetchAll(instSlug);
+          this.instSlug = instSlug;
+        }
+      );
 
     super.ngOnInit();
   }
 
   saveAndNext() {
-    console.log(this.form.value);
-    this.personService.create$(this.instSlug, this.form.value).subscribe(() => this.form.reset());
+    this.personService.create$(this.instSlug, this.form.value)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this.form.reset());
   }
 
   saveAndBack() {
-    console.log(this.form.value);
-    this.personService.create$(this.instSlug, this.form.value).subscribe(() =>
-      this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'})
-    );
+    this.personService.create$(this.instSlug, this.form.value)
+      .pipe(untilDestroyed(this))
+      .subscribe(() =>
+        this.router.navigate(['..'], {relativeTo: this.route, queryParamsHandling: 'preserve'})
+      );
   }
 }

@@ -57,9 +57,7 @@ export class SessionService {
         tap(data => this.setToken(data.token, data.email)),
         switchMap(data => this.profileService.get$()),
         finalize(() => this.sessionStore.setLoading(false))
-      ).subscribe(data => {
-      this.router.navigate(['/']);
-    });
+      ).subscribe(data => {this.router.navigate(['/']);});
   }
 
   @action('logout')

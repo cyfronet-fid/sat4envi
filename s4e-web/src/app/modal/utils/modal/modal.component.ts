@@ -1,3 +1,4 @@
+import { OnInit, OnDestroy } from '@angular/core';
 import {ModalService} from '../../state/modal.service';
 import {FormGroup} from '@ng-stack/forms';
 import {environment} from '../../../../environments/environment';
@@ -17,7 +18,7 @@ export class ModalComponent<ReturnType=void> {
   constructor(protected modalService: ModalService, public registeredId?: string) {}
 }
 
-export abstract class FormModalComponent<FormKey extends keyof FormState, ReturnType=void> extends ModalComponent<ReturnType> {
+export abstract class FormModalComponent<FormKey extends keyof FormState, ReturnType=void> extends ModalComponent<ReturnType> implements OnInit, OnDestroy{
   abstract makeForm(): FormGroup<FormState[FormKey]>;
   formKey: FormKey;
   form: FormGroup<FormState[FormKey]>;
@@ -38,7 +39,8 @@ export abstract class FormModalComponent<FormKey extends keyof FormState, Return
     if (environment.hmr) {
       devRestoreFormState(this.fm.query.getValue()[this.formKey], this.form);
       this.fm.upsert(this.formKey, this.form);
-      this.modalQuery.modalClosed$(this.registeredId).pipe(untilDestroyed(this)).subscribe(() => this.fm.remove(this.formKey));
+      this.modalQuery.modalClosed$(this.registeredId)
+        .subscribe(() => this.fm.remove(this.formKey));
     }
   }
 

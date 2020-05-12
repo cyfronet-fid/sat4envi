@@ -7,6 +7,7 @@ import {TestingConfigProvider} from '../../../../../app.configuration.spec';
 import {take, toArray} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
 import {NotificationService} from 'notifications';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('ConfigurationService', () => {
   let service: ConfigurationService;

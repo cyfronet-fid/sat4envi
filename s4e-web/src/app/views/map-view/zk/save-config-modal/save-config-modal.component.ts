@@ -59,7 +59,8 @@ export class SaveConfigModalComponent extends ModalComponent implements OnInit, 
       devRestoreFormState(this.fm.query.getValue()[this.formKey], this.form);
       this.fm.upsert(this.formKey, this.form);
 
-      this.modalQuery.modalClosed$(SAVE_CONFIG_MODAL_ID).pipe(untilDestroyed(this)).subscribe(() => this.fm.remove(this.formKey));
+      this.modalQuery.modalClosed$(SAVE_CONFIG_MODAL_ID)
+        .subscribe(() => this.fm.remove(this.formKey));
     }
   }
 

@@ -5,7 +5,7 @@ import {Observable, of, pipe, throwError} from 'rxjs';
 import {Profile} from './profile.model';
 import {catchError, shareReplay, tap} from 'rxjs/operators';
 import {SessionQuery} from '../session/session.query';
-import {SessionService} from '../session/session.service';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -36,9 +36,7 @@ export class ProfileService {
   resetPassword(oldPassword: string, newPassword: string): void {
     this.store.setLoading(true);
     this.http.post('/api/v1/password-change', {oldPassword, newPassword})
-      .subscribe(() => this.store.setLoading(false), (error) => {
-        this.store.setError(error);
-        return throwError(error);
-      });
+      .pipe(catchErrorAndHandleStore(this.store))
+      .subscribe(() => this.store.setLoading(false));
   }
 }

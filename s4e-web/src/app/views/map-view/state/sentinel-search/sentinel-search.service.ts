@@ -6,6 +6,7 @@ import {createSentinelSearchResult, SentinelSearchResult} from './sentinel-searc
 import {Observable, of} from 'rxjs';
 import {SentinelSearchQuery} from './sentinel-search.query';
 import {delay, finalize} from 'rxjs/operators';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({ providedIn: 'root' })
 export class SentinelSearchService {
@@ -34,19 +35,22 @@ export class SentinelSearchService {
         size: '6.97 GB',
         url: 'http://s4e-sentinel-training.storage.cloud.cyfronet.pl/S1B_IW_GRDH_1SDV_20200210T045115_20200210T045144_020202_0263F2_0D45.SAFE.zip'
       })
-    ]).pipe(delay(1500), finalize(() => this.store.setLoading(false))).subscribe(
-      data => this.store.set(data),
-      error => this.store.setError(error)
+    ]).pipe(
+      delay(1500),
+      catchErrorAndHandleStore(this.store),
+      finalize(() => this.store.setLoading(false))
     )
+    .subscribe(data => this.store.set(data))
   }
 
   getSentinels() {
     of([
       {id: 'sentinel-1', caption: 'Sentinel #1'},
       {id: 'sentinel-2', caption: 'Sentinel #2'},
-    ]).pipe(delay(250)).subscribe(
-      data => this.store.update(state => ({...state, sentinels: data})),
-      error => this.store.setError(error)
+    ]).pipe(
+      delay(250),
+      catchErrorAndHandleStore(this.store)
     )
+    .subscribe(data => this.store.update(state => ({...state, sentinels: data})))
   }
 }

@@ -86,10 +86,12 @@ export class MapComponent implements OnInit, OnDestroy {
     combineLatest([
       this.activeScene$.pipe(distinctUntilChanged()),
       this.overlays$.pipe(distinctUntilChanged())
-    ]).pipe(untilDestroyed(this)).subscribe(([gr, overlays]) => {
-      this.overlays = overlays;
-      this.updateLayers(gr);
-    });
+    ])
+      .pipe(untilDestroyed(this))
+      .subscribe(([gr, overlays]) => {
+        this.overlays = overlays;
+        this.updateLayers(gr);
+      });
 
     this.map.on('moveend', this.onMoveEnd);
     this.activeView$.pipe(untilDestroyed(this)).subscribe(view => this.setView(view));
@@ -160,10 +162,11 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public downloadMap() {
-    this.getMapData().subscribe(mapData => {
-      this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
-      this.linkDownload.nativeElement.href = mapData.image;
-      this.linkDownload.nativeElement.click();
-    });
+    this.getMapData()
+      .subscribe(mapData => {
+        this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
+        this.linkDownload.nativeElement.href = mapData.image;
+        this.linkDownload.nativeElement.click();
+      });
   }
 }

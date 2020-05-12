@@ -1,6 +1,8 @@
 import {
   Component, ElementRef, forwardRef, Input, Optional, ViewChild,
-  ViewEncapsulation
+  ViewEncapsulation,
+  OnInit,
+  OnDestroy
 } from '@angular/core';
 import {ControlContainer, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
@@ -48,10 +50,15 @@ export class InputComponent extends GeneralInput {
 
   @Input('placeholder') public _placeholder: string;
 
-  protected onSetLabel(value: string) {
-    if (!this._placeholder) {
-      this._placeholder = value;
-    }
+  constructor(cc: ControlContainer, @Optional() extForm: ExtFormDirective, private ref: ElementRef) {
+    super(cc, extForm);
+  }
+
+  ngOnInit(): void {
+    super.ngOnInit();
+    this.fc.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe(val => this.onChange(null, val));
   }
 
   onChange(e: Event, value: any) {
@@ -68,13 +75,9 @@ export class InputComponent extends GeneralInput {
     }
   }
 
-  constructor(cc: ControlContainer, @Optional() extForm: ExtFormDirective, private ref: ElementRef) {
-    super(cc, extForm);
-  }
-
-
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.fc.valueChanges.pipe(untilDestroyed(this)).subscribe(val => this.onChange(null, val));
+  protected onSetLabel(value: string) {
+    if (!this._placeholder) {
+      this._placeholder = value;
+    }
   }
 }

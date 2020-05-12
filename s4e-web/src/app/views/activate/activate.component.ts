@@ -29,10 +29,12 @@ export class ActivateComponent implements OnInit, OnDestroy {
     this.loading$ = this.query.selectLoading();
     this.state$ = this.query.select(state => state.state);
 
-    this.route.params.pipe(untilDestroyed(this), pluck('token')).subscribe(token => {
-      this.token = token;
-      this.service.activate(token);
-    });
+    this.route.params
+      .pipe(untilDestroyed(this), pluck('token'))
+      .subscribe(token => {
+        this.token = token;
+        this.service.activate(token);
+      });
   }
 
   ngOnDestroy(): void {

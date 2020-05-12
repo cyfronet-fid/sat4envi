@@ -38,7 +38,6 @@ export function devRestoreFormState<K extends keyof FormState>(formValue: any, f
   if (environment.hmr === false || formValue == null) {
     return;
   }
-  console.log(formValue);
 
   Object.keys(form.controls).forEach(field => {
     const control = form.get(field);

@@ -47,7 +47,6 @@ export class CheckBoxListComponent<T> implements OnInit, OnDestroy, ControlValue
   writeValue(obj: any): void {
     if (obj == null) {obj = {_: []};}
     if(obj._ == null || !Array.isArray(obj._)) {
-      console.log(obj);
       throw new Error(`CheckBoxListComponent requires array as a value, value is: ${obj._}`)
     }
     obj = obj._;

@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MapViewComponent} from './map-view.component';
 import {MapModule} from './map.module';
@@ -35,7 +36,7 @@ describe('MapViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, RouterTestingModule],
+      imports: [MapModule, RouterTestingModule, HttpClientTestingModule],
       providers: [TestingConfigProvider]
     })
       .compileComponents();

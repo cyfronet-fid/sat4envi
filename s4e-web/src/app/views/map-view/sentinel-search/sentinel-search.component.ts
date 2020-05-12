@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
 import {Sentinel, SentinelSearchForm, SentinelSearchResult} from '../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
@@ -16,7 +16,7 @@ import {FormState} from '../../../state/form/form.model';
   templateUrl: './sentinel-search.component.html',
   styleUrls: ['./sentinel-search.component.scss']
 })
-export class SentinelSearchComponent extends GenericFormComponent<SentinelSearchQuery, SentinelSearchForm> implements OnInit {
+export class SentinelSearchComponent extends GenericFormComponent<SentinelSearchQuery, SentinelSearchForm> {
   searchResults$: Observable<SentinelSearchResult[]>;
   loading$: Observable<boolean>;
   sentinels$: Observable<Sentinel[]>;
@@ -39,7 +39,9 @@ export class SentinelSearchComponent extends GenericFormComponent<SentinelSearch
     });
 
     this.loading$ = this.query.selectLoading();
-    this.loading$.pipe(untilDestroyed(this)).subscribe(loading => disableEnableForm(loading, this.form));
+    this.loading$
+      .pipe(untilDestroyed(this))
+      .subscribe(loading => disableEnableForm(loading, this.form));
 
     this.sentinels$ = this.query.selectSentinels();
     this.searchResults$ = this.query.selectAll();

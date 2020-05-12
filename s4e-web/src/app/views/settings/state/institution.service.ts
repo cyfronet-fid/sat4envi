@@ -9,6 +9,7 @@ import {InstitutionQuery} from './institution.query';
 import {IPageableResponse} from '../../../state/pagable.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionService {
@@ -28,11 +29,11 @@ export class InstitutionService {
     this.store.setLoading(true);
     this.store.setError(null);
     this.http.get<IPageableResponse<Institution>>(`${this.s4EConfig.apiPrefixV1}/institutions`)
-      .pipe(finalize(() => this.store.setLoading(false)))
-      .subscribe(
-        pageable => this.store.set(pageable.content),
-        error => this.store.setError(error)
-      );
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setLoading(false))
+      )
+      .subscribe(pageable => this.store.set(pageable.content));
   }
 
   add(institution: Institution) {

@@ -6,6 +6,7 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {OverlayQuery} from './overlay.query';
 import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -25,14 +26,14 @@ export class OverlayService {
 
     this.http.get<OverlayResponse[]>(`${this.CONFIG.apiPrefixV1}/overlays/prg/`)
       .pipe(
+        catchErrorAndHandleStore(this.store),
         map(or => or.map(o => ({
           id: this.CONFIG.geoserverWorkspace + ':' + o.layerName,
           caption: o.name,
           type: 'wms' as OverlayType
         }))))
       .subscribe(
-        overlays => this.store.set(overlays),
-        error => this.store.setError(error)
+        overlays => this.store.set(overlays)
       );
   }
 
