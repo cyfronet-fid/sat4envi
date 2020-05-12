@@ -16,8 +16,4 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     this.showInstitutions$ = this.profileQuery.selectCanSeeInstitutions();
   }
-
-  logout() {
-    this.sessionService.logout();
-  }
 }

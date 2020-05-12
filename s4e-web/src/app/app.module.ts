@@ -1,3 +1,4 @@
+import { LogoutModule } from './views/logout/logout.module';
 import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
@@ -44,10 +45,11 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     RouterModule.forRoot(appRoutes, {enableTracing: false }),
     ...ShareModule.modulesForRoot(),
     LoginModule,
+    LogoutModule,
     RegisterModule,
     ActivateModule,
     ResetPasswordModule,
-    CommonStateModule.forRoot(),
+    CommonStateModule,
     MapModule,
     ProfileModule,
     InjectorModule,

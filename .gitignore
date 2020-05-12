@@ -11,6 +11,7 @@
 *.sublime-workspace
 
 # IDE - VSCode
+/s4e-web/.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -41,3 +42,4 @@ testem.log
 .DS_Store
 Thumbs.db
 /tmp
+
