@@ -9,15 +9,21 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v7.0.0]
+
+### Added
+
 - Add global error handling [#430](https://github.com/cyfronet-fid/sat4envi/issues/430)
 - UI Refactoring [#448](https://github.com/cyfronet-fid/sat4envi/issues/448)
 - Add /logout routing and clear storage on logout (inconsistent state of storage) [#445](https://github.com/cyfronet-fid/sat4envi/issues/445)
 - Synchronize scenes from S3 (s4-sync-1 dataset) [#439](https://github.com/cyfronet-fid/sat4envi/issues/439)
 - Audit selected entities [#158](https://github.com/cyfronet-fid/sat4envi/issues/158)
-
-### Changed
-
-### Fixed
 
 ### Updated
 
@@ -100,7 +106,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...HEAD
+[v7.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...v7.0.0
 [v6.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.1.0...v6.0.0
 [v5.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.0.0...v5.1.0
 [v5.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v4.0.0...v5.0.0
