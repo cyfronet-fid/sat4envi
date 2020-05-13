@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
-import { ID } from '@datorama/akita';
-import { HttpClient } from '@angular/common/http';
-import { SentinelSearchStore } from './sentinel-search.store';
-import {createSentinelSearchResult, SentinelSearchResult} from './sentinel-search.model';
-import {Observable, of} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {SentinelSearchStore} from './sentinel-search.store';
+import {createSentinelSearchResult} from './sentinel-search.model';
+import {of} from 'rxjs';
 import {SentinelSearchQuery} from './sentinel-search.query';
 import {delay, finalize} from 'rxjs/operators';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {catchErrorAndHandleStore} from '../../../../common/store.util';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class SentinelSearchService {
 
   constructor(private store: SentinelSearchStore,
@@ -40,7 +39,7 @@ export class SentinelSearchService {
       catchErrorAndHandleStore(this.store),
       finalize(() => this.store.setLoading(false))
     )
-    .subscribe(data => this.store.set(data))
+      .subscribe(data => this.store.set(data));
   }
 
   getSentinels() {
@@ -51,6 +50,6 @@ export class SentinelSearchService {
       delay(250),
       catchErrorAndHandleStore(this.store)
     )
-    .subscribe(data => this.store.update(state => ({...state, sentinels: data})))
+      .subscribe(data => this.store.update(state => ({...state, sentinels: data})));
   }
 }

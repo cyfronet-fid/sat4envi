@@ -1,0 +1,11 @@
+<div class="container">
+  <h2 class="title">{{ actualError.title }}</h2>
+  <h4 class="description">{{ actualError.description }}</h4>
+  <p>
+    <b><a routerLink="/">Return to main page</a></b>
+    <b *ngIf="!!back_link && back_link !== ''" >
+      <span>&nbsp; | &nbsp;</span>
+      <a routerLink="{{ back_link }}">Return to last page</a>
+    </b>
+  </p>
+</div>

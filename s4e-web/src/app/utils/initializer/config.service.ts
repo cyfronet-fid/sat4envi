@@ -1,8 +1,8 @@
-import {Injectable, InjectionToken, Provider} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {IConfiguration, IRemoteConfiguration} from '../../app.configuration';
 import {map, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
-import {combineLatest, of} from 'rxjs';
+import {combineLatest} from 'rxjs';
 import {ProfileService} from '../../state/profile/profile.service';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class S4eConfig implements IConfiguration {
     this.userLocalStorageKey = 'user';
     this.generalErrorKey = '__general__';
     this.maxZoom = 12;
-    this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
   loadConfiguration(): Promise<IRemoteConfiguration> {

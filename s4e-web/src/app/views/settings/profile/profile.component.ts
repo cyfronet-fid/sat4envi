@@ -1,14 +1,14 @@
-import { ProfileQuery } from './../../../state/profile/profile.query';
-import { ProfileService } from './../../../state/profile/profile.service';
-import {Component, OnInit} from '@angular/core';
+import {ProfileQuery} from '../../../state/profile/profile.query';
+import {ProfileService} from '../../../state/profile/profile.service';
+import {Component} from '@angular/core';
 import {SessionQuery} from '../../../state/session/session.query';
 import {Observable} from 'rxjs';
-import { FormGroup, FormControl, Validators } from '@ng-stack/forms';
-import { GenericFormComponent } from 'src/app/utils/miscellaneous/generic-form.component';
-import { PasswordChangeFormState } from 'src/app/state/profile/profile.model';
-import { AkitaNgFormsManager } from '@datorama/akita-ng-forms-manager';
-import { Router } from '@angular/router';
-import { FormState } from 'src/app/state/form/form.model';
+import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
+import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
+import {PasswordChangeFormState} from 'src/app/state/profile/profile.model';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {Router} from '@angular/router';
+import {FormState} from 'src/app/state/form/form.model';
 
 @Component({
   selector: 's4e-profile',
@@ -26,7 +26,6 @@ export class ProfileComponent extends GenericFormComponent<ProfileQuery, Passwor
     private _profileService: ProfileService,
     private _profileQuery: ProfileQuery,
     private _sessionQuery: SessionQuery
-
   ) {
     super(fm, router, _profileQuery, 'resetPassword');
   }

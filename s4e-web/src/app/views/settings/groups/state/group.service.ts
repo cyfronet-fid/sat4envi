@@ -3,13 +3,13 @@ import {HttpClient} from '@angular/common/http';
 import {GroupStore} from './group.store';
 import {IPageableResponse} from '../../../../state/pagable.model';
 import {Institution} from '../../state/institution.model';
-import {catchError, combineAll, finalize, map, tap} from 'rxjs/operators';
+import {finalize, map} from 'rxjs/operators';
 import {GroupQuery} from './group.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Group, GroupForm} from './group.model';
-import {combineLatest, forkJoin, Observable, of, throwError} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {Person} from '../../people/state/person.model';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {catchErrorAndHandleStore} from '../../../../common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class GroupService {
@@ -44,9 +44,10 @@ export class GroupService {
 
   create$(instSlug: string, value: GroupForm) {
     this.store.setLoading(true);
+
     return this.http.post<Group>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups`, {
       ...value,
-      membersEmails: value.membersEmails._
+      membersEmails: value.membersEmails._,
     }).pipe(
       finalize(() => this.store.setLoading(false)),
       catchErrorAndHandleStore(this.store)
@@ -57,10 +58,10 @@ export class GroupService {
     this.store.setLoading(true);
     return forkJoin([
       this.http.get<Group>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}`),
-      this.http.get<{members: Person[]}>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}/members`)
+      this.http.get<{ members: Person[] }>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}/members`)
     ]).pipe(
-        finalize(() => this.store.setLoading(false)),
-        catchErrorAndHandleStore(this.store),
+      finalize(() => this.store.setLoading(false)),
+      catchErrorAndHandleStore(this.store),
       map(([group, users]) => ({
         name: group.name,
         description: '',

@@ -1,11 +1,10 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SessionService } from './../../state/session/session.service';
-import { RouterTestingModule } from '@angular/router/testing';
-import { LogoutModule } from './logout.module';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { LogoutComponent } from './logout.component';
-import { TestingConfigProvider } from 'src/app/app.configuration.spec';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {SessionService} from '../../state/session/session.service';
+import {RouterTestingModule} from '@angular/router/testing';
+import {LogoutModule} from './logout.module';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {LogoutComponent} from './logout.component';
+import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;
@@ -20,7 +19,7 @@ describe('LogoutComponent', () => {
       ],
       providers: [TestingConfigProvider]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

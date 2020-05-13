@@ -1,4 +1,4 @@
-import { LogoutModule } from './views/logout/logout.module';
+import {LogoutModule} from './views/logout/logout.module';
 import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
@@ -28,6 +28,7 @@ import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
 import {NotificationsModule} from 'notifications';
+import {ErrorsModule} from './errors/errors.module';
 
 registerLocaleData(localePl, 'pl');
 
@@ -42,7 +43,7 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
   ],
   imports: [
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot()]),
-    RouterModule.forRoot(appRoutes, {enableTracing: false }),
+    RouterModule.forRoot(appRoutes, {enableTracing: false}),
     ...ShareModule.modulesForRoot(),
     LoginModule,
     LogoutModule,
@@ -56,7 +57,8 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     SettingsModule,
     ModalModule,
     S4EFormsModule,
-    NotificationsModule.forRoot(environment.production)
+    NotificationsModule.forRoot(environment.production),
+    ErrorsModule
   ],
   providers: [
     S4eConfig,

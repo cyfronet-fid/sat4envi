@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {OverlayStore} from './overlay.store';
 import {OverlayResponse, OverlayType} from './overlay.model';
-import {finalize, map} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {OverlayQuery} from './overlay.query';
 import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
-import { catchErrorAndHandleStore } from 'src/app/common/store.util';
+import {catchErrorAndHandleStore} from '../../../../common/store.util';
 
 /**
  * This is stub service which will be responsible for getting overlay data

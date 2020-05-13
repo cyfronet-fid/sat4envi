@@ -21,6 +21,7 @@ export class RegisterService {
    */
   register(email: string, password: string, recaptcha: string) {
     this.registerStore.setLoading(true);
+
     this.http.post(`${this.CONFIG.apiPrefixV1}/register`, {email, password}, {params: {'g-recaptcha-response': recaptcha}})
       .pipe(delay(1000), finalize(() => this.registerStore.setLoading(false)))
       .subscribe(data => {
