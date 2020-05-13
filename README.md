@@ -66,6 +66,10 @@ During bootstrap Flyway will migrate the schema based on migrations placed in `s
 In the `development` mode the DB and GeoServer are seeded by components from `pl.cyfronet.s4e.db.seed`.
 They are executed on every startup, but they can also be run by setting appropriate profiles.
 
+To bake version into the application (to be seen by the testers, etc) package application while having
+environmental variable `NG_VERSION` set to the specified string which will be shown in the application.
+For example: `NG_VERSION='1.1.1' ./mvnw package`
+
 
 #### Application profiles
 

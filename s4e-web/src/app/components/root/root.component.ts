@@ -13,6 +13,7 @@ export class RootComponent {
   PRODUCTION: boolean = environment.production;
 
   constructor(private modalService: ModalService, private notificationService: NotificationService) {
+    console.log('SOK version ' + environment.version);
   }
 
   /**
