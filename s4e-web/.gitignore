@@ -16,5 +16,5 @@
 /cypress/integration/examples/
 /cypress/screenshots
 /cypress/videos
-/dist
 /.angulardoc.json
+/src/environments/base.ts
