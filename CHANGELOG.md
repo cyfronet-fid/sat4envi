@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Include commit SHA in maven project.version and pass it to npm [#461](https://github.com/cyfronet-fid/sat4envi/issues/461)
+
 ### Changed
 
 ### Fixed

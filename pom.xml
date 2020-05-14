@@ -6,7 +6,7 @@
 
     <groupId>pl.cyfronet.s4e</groupId>
     <artifactId>s4e</artifactId>
-    <version>${revision}${changelist}</version>
+    <version>${revision}${sha1}${changelist}</version>
     <modules>
         <module>s4e-backend</module>
         <module>s4e-web</module>
@@ -25,6 +25,7 @@
     <properties>
         <revision>0.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
+        <sha1/>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>11</java.version>

@@ -7,7 +7,7 @@
   <parent>
     <artifactId>s4e</artifactId>
     <groupId>pl.cyfronet.s4e</groupId>
-    <version>${revision}${changelist}</version>
+    <version>${revision}${sha1}${changelist}</version>
   </parent>
 
   <artifactId>s4e-web</artifactId>
@@ -88,6 +88,9 @@
             </goals>
             <configuration>
               <arguments>run-script ${npm.build.run-script-arg}</arguments>
+              <environmentVariables>
+                <NG_VERSION>${project.version}</NG_VERSION>
+              </environmentVariables>
             </configuration>
           </execution>
           <execution>
