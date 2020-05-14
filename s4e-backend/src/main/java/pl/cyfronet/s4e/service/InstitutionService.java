@@ -20,7 +20,9 @@ import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -104,5 +106,9 @@ public class InstitutionService {
     @Transactional
     public void delete(String slug) {
         institutionRepository.deleteInstitutionBySlug(slug);
+    }
+
+    public <T> Set<T> getUserInstitutionsBy(String email, List<String> roles, Class<T> projection) {
+        return institutionRepository.findInstitutionByUserEmailAndRoles(email, roles, projection);
     }
 }

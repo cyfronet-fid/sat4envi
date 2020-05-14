@@ -1,17 +1,16 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.data.rest.converters.PageableAsQueryParam;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
@@ -19,9 +18,12 @@ import pl.cyfronet.s4e.controller.response.InstitutionResponse;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.InstitutionService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -57,7 +59,7 @@ public class InstitutionController {
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
-                                         @PathVariable("institution") String institutionSlug)
+                            @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
         institutionService.createChildInstitution(request, institutionSlug);
     }
@@ -68,13 +70,16 @@ public class InstitutionController {
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PageableAsQueryParam
     @GetMapping("/institutions")
-    @PreAuthorize("isAuthenticated() && isAdmin()")
-    public Page<InstitutionResponse> getAll(@Parameter(hidden = true) Pageable pageable) {
-        return institutionService.getAll(pageable, InstitutionResponse.class);
+    @PreAuthorize("isAuthenticated()")
+    public Set<InstitutionResponse> getAll() {
+        AppUserDetails appUserDetails =
+                (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),
+                List.of(AppRole.GROUP_MEMBER.name()),
+                InstitutionResponse.class);
     }
 
     @Operation(summary = "Get an institution")
@@ -103,7 +108,7 @@ public class InstitutionController {
     @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
     public void update(@RequestBody UpdateInstitutionRequest request,
-                                    @PathVariable("institution") String institutionSlug)
+                       @PathVariable("institution") String institutionSlug)
             throws NotFoundException, InstitutionUpdateException {
         institutionService.update(request, institutionSlug);
     }
