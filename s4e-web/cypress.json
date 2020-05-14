@@ -1,6 +1,6 @@
 {
   "baseUrl": "http://localhost:4200",
-  "viewportWidth": 1000,
+  "viewportWidth": 1400,
   "viewportHeight": 1000,
   "testFiles": "**/*.spec.ts"
 }

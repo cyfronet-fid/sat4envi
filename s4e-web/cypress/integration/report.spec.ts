@@ -1,29 +1,23 @@
 /// <reference types="Cypress" />
-
-import promisify from 'cypress-promise';
-import { Login } from '../page-objects/login/login.po';
-import { Map } from '../page-objects/map/map.po';
+import {Login} from '../page-objects/login/login.po';
+import {Map} from '../page-objects/map/map.po';
 
 // const downloadsFolder = require('downloads-folder');
 
 context('zkMember', () => {
-  let user: any;
-
-  beforeEach(async () => {
-    user = await promisify(cy.fixture('users/zkMember.json'));
+  beforeEach(() => {
+    cy.fixture('users/zkMember.json').as('user');
   });
 
-  beforeEach(() => {
-    Login
-      .loginAs(user);
+  beforeEach(function () {
+    Login.loginAs(this.user);
   });
 
   afterEach(() => {
-    Map
-      .logout();
+    Map.logout();
   });
 
-  it('should see ZK actions button', () => {
+  it('should see ZK actions button', function () {
     cy.get('#zk-options-button').should('be.visible');
   });
 

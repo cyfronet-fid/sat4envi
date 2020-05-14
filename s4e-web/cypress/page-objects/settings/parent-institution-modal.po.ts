@@ -5,7 +5,7 @@ export namespace ParentInstitutionModal {
     // TODO: update elements with data-e2e attributes
     static getModal = () => cy.get('s4e-generic-modal');
     static getSearchInput = () => cy.get('s4e-generic-modal .search__input');
-    static getInstitutionsRadios = () => cy.get('s4e-generic-modal label[for="institution"]');
+    static getInstitutionsRadios = () => cy.get('s4e-generic-modal label[data-e2e="institution-radio"]');
     static getSubmitBtn = () => cy.get('s4e-generic-modal .button').first();
   }
 

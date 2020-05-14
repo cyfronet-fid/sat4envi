@@ -1,17 +1,15 @@
-import { By } from '@angular/platform-browser';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { S4eConfig } from './../../../../utils/initializer/config.service';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ParentInstitutionModalComponent } from './parent-institution-modal.component';
-import { ManageInstitutionsModalModule } from '../manage-institutions.module';
-import { MODAL_DEF } from 'src/app/modal/modal.providers';
-import { createModal } from 'src/app/modal/state/modal.model';
-import { PARENT_INSTITUTION_MODAL_ID, ParentInstitutionModal } from './parent-institution-modal.model';
-import { of } from 'rxjs';
-import { DebugElement } from '@angular/core';
-import { InstitutionQuery } from '../../state/institution/institution.query';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {S4eConfig} from '../../../../utils/initializer/config.service';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ParentInstitutionModalComponent} from './parent-institution-modal.component';
+import {ManageInstitutionsModule} from '../manage-institutions.module';
+import {MODAL_DEF} from 'src/app/modal/modal.providers';
+import {createModal} from 'src/app/modal/state/modal.model';
+import {PARENT_INSTITUTION_MODAL_ID, ParentInstitutionModal} from './parent-institution-modal.model';
+import {of} from 'rxjs';
+import {DebugElement} from '@angular/core';
+import {InstitutionQuery} from '../../state/institution/institution.query';
 
 describe('ParentInstitutionModalComponent', () => {
   let component: ParentInstitutionModalComponent;
@@ -22,7 +20,7 @@ describe('ParentInstitutionModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ManageInstitutionsModalModule,
+        ManageInstitutionsModule,
         HttpClientTestingModule,
         RouterTestingModule
       ],
@@ -38,7 +36,7 @@ describe('ParentInstitutionModalComponent', () => {
         }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -55,14 +53,14 @@ describe('ParentInstitutionModalComponent', () => {
 
   it('should show all institutions on init', () => {
     const institutions = [
-      { name: 'Straz pozarna' },
-      { name: 'Pogotowie' }
+      {name: 'Straz pozarna'},
+      {name: 'Pogotowie'}
     ];
     spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
 
     fixture.detectChanges();
 
-    const institutionsLabels = de.nativeElement.querySelectorAll('ul > li > label[for=institution]');
+    const institutionsLabels = de.nativeElement.querySelectorAll('ul > li > label[data-e2e="institution-radio"]');
     expect(institutionsLabels.length).toEqual(institutions.length);
     for (let i = 0; i < institutions.length; i++) {
       expect(institutionsLabels[i].innerHTML).toContain(institutions[i].name);
@@ -73,10 +71,10 @@ describe('ParentInstitutionModalComponent', () => {
 
   it('should show search institution on input value change', () => {
     const searchValue = 'Straz';
-    const searchedInstitution = { name: 'Straz pozarna' };
+    const searchedInstitution = {name: 'Straz pozarna'};
     const institutions = [
       searchedInstitution,
-      { name: 'Pogotowie' }
+      {name: 'Pogotowie'}
     ];
     spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
 
@@ -85,7 +83,7 @@ describe('ParentInstitutionModalComponent', () => {
     component.institutionsSearch.setValue(searchValue);
     fixture.detectChanges();
 
-    const institutionsLabels = de.nativeElement.querySelectorAll('ul > li > label[for=institution]');
+    const institutionsLabels = de.nativeElement.querySelectorAll('ul > li > label[data-e2e="institution-radio"]');
     expect(institutionsLabels.length).toEqual(1);
     expect(institutionsLabels[0].innerHTML).toContain(institutions[0].name);
 
@@ -94,8 +92,8 @@ describe('ParentInstitutionModalComponent', () => {
 
   it('should enabled apply btn on institution selection', () => {
     const institutions = [
-      { name: 'Straz pozarna' },
-      { name: 'Pogotowie' }
+      {name: 'Straz pozarna'},
+      {name: 'Pogotowie'}
     ];
     spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
 
@@ -103,7 +101,7 @@ describe('ParentInstitutionModalComponent', () => {
 
     const applyBtn = de.nativeElement.querySelector('button[type=submit]');
     expect(applyBtn.getAttribute('disabled')).toEqual(null);
-    const institutionLabel = de.nativeElement.querySelector('ul > li > label[for=institution]');
+    const institutionLabel = de.nativeElement.querySelector('ul > li > label[data-e2e="institution-radio"]');
     institutionLabel.click();
 
     fixture.detectChanges();

@@ -9,7 +9,7 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Group, GroupForm} from './group.model';
 import {forkJoin, Observable} from 'rxjs';
 import {Person} from '../../people/state/person.model';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import {catchErrorAndHandleStore, httpDeleteRequest$} from '../../../../common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class GroupService {
@@ -67,5 +67,11 @@ export class GroupService {
         description: '',
         membersEmails: {_: users.members.map(user => user.email)}
       })));
+  }
+
+  delete(instSlug: string, groupSlug: string) {
+    const url = `${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}`;
+    return httpDeleteRequest$(this.http, url, this.store)
+      .subscribe(() => this.store.remove(groupSlug));
   }
 }

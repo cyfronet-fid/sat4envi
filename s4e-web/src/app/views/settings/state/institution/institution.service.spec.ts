@@ -1,15 +1,15 @@
-import { S4eConfig } from './../../../../utils/initializer/config.service';
-import { AkitaGuidService } from './../../../map-view/state/search-results/guid.service';
-import { InstitutionFactory } from './institution.factory.spec';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { InstitutionService } from './institution.service';
-import { InstitutionStore } from './institution.store';
+import {S4eConfig} from '../../../../utils/initializer/config.service';
+import {AkitaGuidService} from '../../../map-view/state/search-results/guid.service';
+import {InstitutionFactory} from './institution.factory.spec';
+import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {InstitutionService} from './institution.service';
+import {InstitutionStore} from './institution.store';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {RouterTestingModule} from '@angular/router/testing';
-import { of } from 'rxjs';
-import { httpGetRequest$, httpPutRequest$, httpPostRequest$ } from 'src/app/common/store.util';
-import { HttpClient } from '@angular/common/http';
+import {of} from 'rxjs';
+import {httpGetRequest$} from 'src/app/common/store.util';
+import {HttpClient} from '@angular/common/http';
 
 describe('InstitutionService', () => {
   let institutionService: InstitutionService;
@@ -57,7 +57,8 @@ describe('InstitutionService', () => {
         expect(spyHttp).toBeCalledWith(url);
       });
   });
-  it('should store institutions with ids', fakeAsync(() => {
+
+  it('should store institutions with ids and depth', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const id = 'test-uid';
     const spyHttp = spyOn(http, 'get').and.returnValue(of([institution]));
@@ -69,9 +70,33 @@ describe('InstitutionService', () => {
     tick();
 
     expect(spyGuidService).toHaveBeenCalled();
-    expect(spyStore).toHaveBeenCalledWith([{...institution, id}]);
+    expect(spyStore).toHaveBeenCalledWith([{...institution, id, ancestorDepth: 0}]);
     expect(spyHttp).toHaveBeenCalledWith(url);
   }));
+
+  it('should store calculated depths', fakeAsync(() => {
+    const institutions = [
+      InstitutionFactory.build({slug: 'test-1'}),
+      InstitutionFactory.build({slug: 'test-2', parentSlug: 'test-1'}),
+      InstitutionFactory.build({slug: 'test-10'}),
+      InstitutionFactory.build({slug: 'test-3', parentSlug: 'test-2'})
+    ];
+    const id = 'test-id';
+    const spyHttp = spyOn(http, 'get').and.returnValue(of(institutions));
+    const url = `${s4eConfig.apiPrefixV1}/institutions`;
+    const spyGuidService = spyOn(guidService, 'guid').and.returnValue(id);
+    const spyStore = spyOn(institutionStore, 'set');
+
+    institutionService.get();
+    tick();
+    expect(spyStore).toHaveBeenCalledWith([
+      {...institutions[0], id, ancestorDepth: 0},
+      {...institutions[1], id, ancestorDepth: 1},
+      {...institutions[3], id, ancestorDepth: 2},
+      {...institutions[2], id, ancestorDepth: 0},
+    ]);
+  }));
+
   it('should add new institution', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const url = `${s4eConfig.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
@@ -82,6 +107,7 @@ describe('InstitutionService', () => {
 
     expect(spyHttp).toHaveBeenCalledWith(url, institution);
   }));
+
   it('should update institution', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const url = `${s4eConfig.apiPrefixV1}/institutions/${institution.slug}`;

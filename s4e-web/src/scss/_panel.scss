@@ -263,6 +263,16 @@ table:not(.owl-dt-calendar-table) {
   }
 }
 
+.table-message {
+  text-align: center !important;
+}
 
+.page__content > table > thead > tr > th:last-child {
+  width: 100px;
+  text-align: right;
+}
 
+.page__content > table > tbody > tr > td:last-child {
+  text-align: right;
+}
 

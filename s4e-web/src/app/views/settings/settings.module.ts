@@ -1,6 +1,5 @@
-import { SearchModule } from './../../components/search/search.module';
-import { ModalModule } from './../../modal/modal.module';
-import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
+import {SearchModule} from '../../components/search/search.module';
+import {AdminDashboardModule} from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
@@ -9,18 +8,15 @@ import {SettingsComponent} from './settings.component';
 import {ProfileModule} from './profile/profile.module';
 import {InstitutionProfileModule} from './intitution-profile/institution-profile.module';
 import {DashboardModule} from './dashboard/dashboard.module';
-import {GroupFormComponent} from './groups/group-form/group-form.component';
-import {GroupListComponent} from './groups/group-list/group-list.component';
 import {PeopleModule} from './people/people.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
-import { ManageInstitutionsModalModule } from './manage-institutions/manage-institutions.module';
+import {ManageInstitutionsModule} from './manage-institutions/manage-institutions.module';
+import {GroupsModule} from './groups/groups.module';
 
 @NgModule({
   declarations: [
     SettingsComponent,
-    GroupListComponent,
-    GroupFormComponent,
   ],
   imports: [
     CommonModule,
@@ -31,8 +27,9 @@ import { ManageInstitutionsModalModule } from './manage-institutions/manage-inst
     DashboardModule,
     AdminDashboardModule,
     PeopleModule,
+    GroupsModule,
     RouterModule.forChild(settingsRoutes),
-    ManageInstitutionsModalModule,
+    ManageInstitutionsModule,
     SearchModule
   ]
 })

@@ -6,9 +6,11 @@ import {filter, flatMap, map} from 'rxjs/operators';
 import {InstitutionQuery} from './institution.query';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
-import { AkitaGuidService } from 'src/app/views/map-view/state/search-results/guid.service';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
-import { httpGetRequest$, httpPutRequest$, httpPostRequest$  } from 'src/app/common/store.util';
+import {AkitaGuidService} from 'src/app/views/map-view/state/search-results/guid.service';
+import {S4eConfig} from 'src/app/utils/initializer/config.service';
+import {httpDeleteRequest$, httpGetRequest$, httpPostRequest$, httpPutRequest$} from 'src/app/common/store.util';
+import {HashMap} from '@datorama/akita';
+import {toHashMap} from '../../../../utils/miscellaneous/miscellaneous';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionService {
@@ -85,9 +87,49 @@ export class InstitutionService {
   }
 
   protected _saveIn(store: InstitutionStore, institutions: Institution[], generator: AkitaGuidService) {
-    const institutionsWithIds = institutions
-      .map(institution => ({...institution, id: generator.guid()}));
-    store.set(institutionsWithIds);
+    const hash: HashMap<Institution> = toHashMap(institutions, 'slug');
+
+    interface InstitutionWithChildren extends Institution {
+      children: InstitutionWithChildren[];
+    }
+
+    function listToTree(list: Institution[]) {
+      let map = {};
+      let node: InstitutionWithChildren;
+      let roots: InstitutionWithChildren[] = [];
+      let listWithChildren: InstitutionWithChildren[] = list.map((inst, i) => {
+        map[list[i].slug] = i;
+        return {...list[i], children: []};
+      });
+
+      for (let i = 0; i < list.length; i += 1) {
+        node = listWithChildren[i];
+        if (node.parentSlug != null) {
+          // if you have dangling branches check that map[node.parentId] exists
+          listWithChildren[map[node.parentSlug]].children.push(node);
+        } else {
+          roots.push(node);
+        }
+      }
+      return roots;
+    }
+
+    function calculateDepths(institutions: InstitutionWithChildren[], currentDepth: number = 0): Institution[] {
+      const out: Institution[] = [];
+
+      institutions.forEach(inst => {
+        inst.ancestorDepth = currentDepth;
+        inst.id = generator.guid();
+        const children = inst.children;
+        delete inst['children'];
+        out.push(inst);
+        out.push(...calculateDepths(children, currentDepth+1));
+      });
+
+      return out;
+    }
+
+    store.set(calculateDepths(listToTree(institutions)));
   }
 
   protected _getInstitutionsFrom$(query: InstitutionQuery) {
@@ -134,5 +176,10 @@ export class InstitutionService {
     store.setActive(activeInstitutionSlug);
     store.setError(null);
     return activeInstitutionSlug;
+  }
+
+  delete(slug: string) {
+    return httpDeleteRequest$(this.http, `${this.s4EConfig.apiPrefixV1}/institutions/${slug}`, this.store)
+      .subscribe(() => this.store.remove(slug));
   }
 }
