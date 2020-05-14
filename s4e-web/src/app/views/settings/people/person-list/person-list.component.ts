@@ -8,6 +8,7 @@ import {PersonService} from '../state/person.service';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {ModalService} from '../../../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-people',
@@ -22,6 +23,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
   institutionsLoading$: Observable<boolean>;
 
   constructor(private personQuery: PersonQuery, private personService: PersonService,
+              private _modalService: ModalService,
               private institutionQuery: InstitutionQuery, private institutionService: InstitutionService,
               private router: Router, private route: ActivatedRoute) {
   }
@@ -33,18 +35,18 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
-
     this.institutionService.connectInstitutionToQuery$(this.route)
       .pipe(untilDestroyed(this))
-      .subscribe(
-        instSlug => this.personService.fetchAll(instSlug)
-      );
+      .subscribe(instSlug => this.personService.fetchAll(instSlug));
   }
 
   ngOnDestroy(): void {
   }
 
-  setInstitution(institutionSlug: string) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}});
+  async deleteMember(userId) {
+    if(await this._modalService.confirm('Usuń członka instytucji',
+      'Czy na pewno chcesz usunąć tę osobę z instytucji? Operacja jest nieodwracalna.')) {
+      this.personService.deleteMember(userId);
+    }
   }
 }

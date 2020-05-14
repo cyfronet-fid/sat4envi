@@ -116,3 +116,10 @@ export function resizeImage(data: Base64Image, outWidth: number, outHeight: numb
       return canvas.toDataURL('image/png');
     }));
 }
+
+export function toHashMap<T>(list: T[], key: keyof T): HashMap<T> {
+  return list.reduce((prev: HashMap<T>, curr: T) => {
+    prev[String(curr[key])] = curr;
+    return prev;
+  }, {});
+}

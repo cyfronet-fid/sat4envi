@@ -5,24 +5,26 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Observable} from 'rxjs';
 import {finalize} from 'rxjs/operators';
 import {DEFAULT_GROUP_SLUG, Person, PersonForm} from './person.model';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import {catchErrorAndHandleStore, httpPostRequest$} from '../../../../common/store.util';
+import {InstitutionQuery} from '../../state/institution/institution.query';
 
 @Injectable({providedIn: 'root'})
 export class PersonService {
 
   constructor(private store: PersonStore,
+              private _institutionQuery: InstitutionQuery,
               private http: HttpClient, private config: S4eConfig) {
   }
 
   fetchAll(institutionSlug: string) {
     this.store.setLoading(true);
     this.store.setError(null);
-    this.http.get<{ members: Person[] }>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members`)
+    this.http.get<Person[]>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members`)
       .pipe(
         finalize(() => this.store.setLoading(false)),
         catchErrorAndHandleStore(this.store)
       )
-      .subscribe(data => this.store.set(data.members));
+      .subscribe(data => this.store.set(data));
   }
 
   create$(institutionSlug: string, value: PersonForm): Observable<Person> {
@@ -35,5 +37,14 @@ export class PersonService {
       catchErrorAndHandleStore(this.store),
       finalize(() => this.store.setLoading(false))
     );
+  }
+
+  deleteMember(userId: string) {
+    const institutionSlug = this._institutionQuery.getActiveId();
+    httpPostRequest$(this.http,
+      `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members/${userId}`, {}, this.store)
+      .subscribe(
+        () => this.store.remove(userId)
+      );
   }
 }

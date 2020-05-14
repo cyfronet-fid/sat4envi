@@ -1,6 +1,7 @@
 export interface Institution {
   id: string;
 
+  ancestorDepth?: number;
   parentName: string|null;
   parentSlug: string|null;
 

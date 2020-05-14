@@ -1,23 +1,17 @@
 <div class="container">
   <nav class="navigation">
     <ul class="navigation__list">
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active" data-e2e="addInstitution">
-        <a
-          [routerLink]="['./add-institution']"
-          queryParamsHandling="merge"
-          i18n
-        >
-          Dodaj instytucję
-        </a>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
+          data-e2e="dashboard">
+        <a [routerLink]="['./dashboard']"
+           queryParamsHandling="merge"
+           i18n>Dashboard</a>
       </li>
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
-        <a
-          [routerLink]="['./dashboard']"
-          queryParamsHandling="merge"
-          i18n
-        >
-          Dashboard
-        </a>
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
+          data-e2e="institutions">
+        <a [routerLink]="['./institutions']"
+           queryParamsHandling="merge"
+           i18n>Instytucje</a>
       </li>
     </ul>
     <ul class="navigation__list institution__actions">
@@ -36,7 +30,7 @@
         >
           <ng-template #result let-result>
             <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
-            <span *ngIf="!!result.slug"  class="type">{{ result.slug }}</span>
+            <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
           </ng-template>
         </s4e-search>
       </li>

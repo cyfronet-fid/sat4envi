@@ -58,8 +58,6 @@
     placeholder="Wybierz instytucję"
     (click)="openParentInstitutionModal()"
     i18n-label
-
-    data-e2e="parent-institution-name-input"
   ></ext-input>
 
   <h4 i18n>Nazwa i dane teleadresowe</h4>
@@ -68,50 +66,39 @@
     label="Nazwa instytucji"
     placeholder="Wybierz instytucję"
     i18n-label
-
-    data-e2e="name-input"
   ></ext-input>
   <ext-input
     formControlName="address"
     label="Ulica"
     i18n-label
-
-    data-e2e="address-input"
   ></ext-input>
   <ext-input
     formControlName="postalCode"
     label="Kod pocztowy"
     placeholder="xx-xxx"
     i18n-label
-
-    data-e2e="zip-code-input"
   ></ext-input>
   <ext-input
     formControlName="city"
     label="Miejscowość"
     i18n-label
-
-    data-e2e="city-input"
   ></ext-input>
   <ext-input
     formControlName="phone"
     label="Telefon"
     placeholder="+48 xxx xxx xxx"
     i18n-label
-
-    data-e2e="phone-input"
   ></ext-input>
   <ext-input
     formControlName="secondaryPhone"
     label="Telefon dodatkowy"
     placeholder="+48 xxx xxx xxx"
     i18n-label
-
-    data-e2e="secondary-phone-input"
   ></ext-input>
 
 <!-- isSavedLogo ? 'data:application/xml;base64,' + form.controls.emblem.value :  -->
   <img
+    alt="Emblem"
     *ngIf="!!emblemImgSrc"
     [src]="emblemImgSrc"
     height="200"
@@ -145,16 +132,10 @@
     formControlName="institutionAdminEmail"
     label="E-mail administratora"
     i18n-label
-
-    data-e2e="email-input"
   ></ext-input>
 
   <div class="form-submit">
-    <button
-      type="submit"
-      data-e2e="submit-btn"
-      i18n
-    >
+    <button type="submit" data-e2e="submit-btn" i18n>
       Zapisz instytucję
     </button>
     <button type="button" (click)="resetForm()" i18n>Anuluj</button>

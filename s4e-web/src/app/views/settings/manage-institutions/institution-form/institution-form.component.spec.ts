@@ -2,7 +2,7 @@ import { InstitutionFactory } from '../../state/institution/institution.factory.
 import { InstitutionService } from '../../state/institution/institution.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ManageInstitutionsModalModule } from '../manage-institutions.module';
+import { ManageInstitutionsModule } from '../manage-institutions.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InstitutionFormComponent } from './institution-form.component';
@@ -16,7 +16,7 @@ describe('InstitutionFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ManageInstitutionsModalModule,
+        ManageInstitutionsModule,
         RouterTestingModule,
         HttpClientTestingModule
       ],
@@ -46,7 +46,7 @@ describe('InstitutionFormComponent', () => {
 
   it('should send valid form', () => {
     const spy = spyOn(institutionService, 'addInstitutionChild$');
-    const {id, ...formInstitution} = InstitutionFactory.build();
+    const {id, ...formInstitution} = InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'});
     component.form.setValue(formInstitution as undefined);
     component.updateInstitution();
     expect(spy).toHaveBeenCalled();
@@ -55,14 +55,14 @@ describe('InstitutionFormComponent', () => {
   it('should validate parent institution name', () => {
     component.form.controls.parentName .setValue('');
     expect(component.form.controls.parentName .valid).toBeFalsy();
-    component.form.controls.parentName .setValue(InstitutionFactory.build().parentName );
+    component.form.controls.parentName .setValue(InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'}).parentName);
     expect(component.form.controls.parentName .valid).toBeTruthy();
   });
 
   it('should validate parent institution slug', () => {
     component.form.controls.parentSlug.setValue('');
     expect(component.form.controls.parentSlug.valid).toBeFalsy();
-    component.form.controls.parentSlug.setValue(InstitutionFactory.build().parentSlug);
+    component.form.controls.parentSlug.setValue(InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'}).parentSlug);
     expect(component.form.controls.parentSlug.valid).toBeTruthy();
   });
 

@@ -1,16 +1,19 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
-import {PersonListComponent} from './person-list/person-list.component';
-import {PersonFormComponent} from './person-form/person-form.component';
 import {RouterModule} from '@angular/router';
 import {S4EFormsModule} from '../../../form/form.module';
 import {GenericListViewModule} from '../components/generic-list-view/generic-list-view.module';
+import {GroupListComponent} from './group-list/group-list.component';
+import {GroupFormComponent} from './group-form/group-form.component';
+import {GroupStore} from './state/group.store';
+import {GroupQuery} from './state/group.query';
+import {GroupService} from './state/group.service';
 
 @NgModule({
   declarations: [
-    PersonListComponent,
-    PersonFormComponent
+    GroupListComponent,
+    GroupFormComponent
   ],
   imports: [
     CommonModule,
@@ -20,9 +23,14 @@ import {GenericListViewModule} from '../components/generic-list-view/generic-lis
     S4EFormsModule,
   ],
   exports: [
-    PersonListComponent,
-    PersonFormComponent
+    GroupListComponent,
+    GroupFormComponent
+  ],
+  providers: [
+    GroupStore,
+    GroupQuery,
+    GroupService
   ]
 })
-export class PeopleModule {
+export class GroupsModule {
 }

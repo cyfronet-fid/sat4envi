@@ -8,6 +8,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {GroupQuery} from '../state/group.query';
 import {GroupService} from '../state/group.service';
 import {Group} from '../state/group.model';
+import {ModalService} from '../../../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-group-list',
@@ -22,6 +23,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
   institutionsLoading$: Observable<boolean>;
 
   constructor(private groupQuery: GroupQuery, private groupService: GroupService,
+              private _modalService: ModalService,
               private institutionQuery: InstitutionQuery, private institutionService: InstitutionService,
               private router: Router, private route: ActivatedRoute) { }
 
@@ -42,7 +44,10 @@ export class GroupListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  setInstitution(institutionSlug: string) {
-    this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {institution: institutionSlug}});
+  async deleteGroup(slug: string) {
+    if(await this._modalService.confirm('Usuń grupę',
+      'Czy na pewno chcesz usunąć tę grupę? Operacja jest nieodwracalna.')) {
+      this.groupService.delete(this.institutionQuery.getActiveId(), slug);
+    }
   }
 }

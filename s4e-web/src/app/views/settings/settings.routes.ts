@@ -12,6 +12,7 @@ import {GroupFormComponent} from './groups/group-form/group-form.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {IsManagerGuard} from './guards/is-manager/is-manager.guard';
 import { adminDashboardMatcher, managerDashboardMatcher } from 'src/app/utils';
+import {InstitutionListComponent} from './manage-institutions/institution-list/institution-list.component';
 
 export const settingsRoutes: Routes = [
   {
@@ -60,6 +61,11 @@ export const settingsRoutes: Routes = [
       {
         path: 'institution',
         component: InstitutionProfileComponent,
+        canActivate: [IsManagerGuard]
+      },
+      {
+        path: 'institutions',
+        component: InstitutionListComponent,
         canActivate: [IsManagerGuard]
       },
       {

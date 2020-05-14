@@ -24,6 +24,12 @@ export function httpPostRequest$<T>(http: HttpClient, url: string, object: T, st
     .pipe(handleHttpUpdateRequest(store));
 }
 
+export function httpDeleteRequest$(http: HttpClient, url: string, store: Store<any>) {
+  store.setLoading(true);
+  store.setError(null);
+  return http.delete(url).pipe(handleHttpUpdateRequest(store));
+}
+
 export function catchErrorAndHandleStore<T>(store: Store<any>): OperatorFunction<T, T> {
   return catchError(error => {
       store.setError(error);

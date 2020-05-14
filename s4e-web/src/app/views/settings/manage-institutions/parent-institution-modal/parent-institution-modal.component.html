@@ -16,21 +16,21 @@
         i18n
       />
       <button class="reset_search_button" *ngIf="!(institutionsSearch.value == '')" (click)="institutionsSearch.setValue('')">
-        <img src="../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
+        <img src="../../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
       </button>
     </section>
 
     <h3 i18n>Lista instytucji</h3>
     <ul>
-      <li *ngFor="let institution of searchedInstitutions">
+      <li *ngFor="let institution of searchedInstitutions; index as index$">
         <input
           type="radio"
-          id="institution"
+          [attr.id]="'institution' + index$"
           name="institution"
           [checked]="isSelected(institution)"
           (click)="selectedInstitution = institution"
         >
-        <label for="institution" i18n>{{ institution.name }}</label>
+        <label data-e2e="institution-radio" [attr.for]="'institution' + index$" i18n>{{ institution.name }}</label>
       </li>
     </ul>
   </div>

@@ -10,14 +10,14 @@ export namespace AddInstitutionForm {
 
     static getLogoImage = () => cy.get('[data-e2e="emblem-image"]');
 
-    static getParentNameInput = () => cy.get('[data-e2e="parent-institution-name-input"]');
-    static getNameInput = () => cy.get('[data-e2e="name-input"]');
-    static getStreetInput = () => cy.get('[data-e2e="address-input"]');
-    static getZipCodeInput = () => cy.get('[data-e2e="zip-code-input"]');
-    static getCityInput = () => cy.get('[data-e2e="city-input"]');
-    static getPhoneInput = () => cy.get('[data-e2e="phone-input"]');
+    static getParentNameInput = () => cy.get('#parentName');
+    static getNameInput = () => cy.get('#name');
+    static getStreetInput = () => cy.get('#address');
+    static getZipCodeInput = () => cy.get('#postalCode');
+    static getCityInput = () => cy.get('#city');
+    static getPhoneInput = () => cy.get('#phone');
     static getLogoInput = () => cy.get('[data-e2e="emblem-input"]');
-    static getEmailInput = () => cy.get('[data-e2e="email-input"]');
+    static getEmailInput = () => cy.get('#institutionAdminEmail');
     static getSubmitBtn = () => cy.get('[data-e2e="submit-btn"]');
   }
 

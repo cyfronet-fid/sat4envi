@@ -9,12 +9,3 @@
         (click)="devRefreshState()">
   <span class="fas fa-xs fa-redo-alt"></span>
 </button>
-
-<button *ngIf="PRODUCTION === false"
-        class="dev-notifications-button btn btn-warning btn-sm"
-        i18n-tooltip
-        tooltip="Pokaż notyfikacje (DEV MODE)"
-        placement="left"
-        (click)="devShowNotifications()">
-  <span class="fas fa-xs fa-exclamation"></span>
-</button>

@@ -1,0 +1,52 @@
+<header class="page__header">
+  <h1 i18n>
+    <ng-content select="[caption]"></ng-content>
+  </h1>
+  <p i18n>
+    <ng-content select="[description]"></ng-content>
+  </p>
+</header>
+<section class="page__content">
+  <div>
+    <input data-test-generic-list-query [formControl]="queryFc" placeholder="Wyszukaj..." i18n-placeholder="">
+  </div>
+
+  <ng-container *ngIf="error == null; else errorView">
+    <table data-e2e="generic-list-data-table">
+      <ng-container *ngIf="!loading; else tableLoading">
+        <thead>
+          <tr>
+            <th class="table-selection" *ngIf="selectable">
+              <input type="checkbox" [formControl]="selectAllFc">
+            </th>
+            <ng-content select="[table-header]"></ng-content>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of items; index as $index" data-e2e="entity-row">
+            <td *ngIf="selectable">
+              <input type="checkbox" [formControl]="itemSelectFc.controls[$index]">
+            </td>
+            <ng-container [ngTemplateOutlet]="tableRow" [ngTemplateOutletContext]="{item: item}"></ng-container>
+          </tr>
+          <tr *ngIf="items.length === 0">
+            <td colspan="100%" class="table-message">Brak Elementów</td>
+          </tr>
+        </tbody>
+      </ng-container>
+      <ng-template #tableLoading>
+        <tbody>
+        <tr>
+          <td data-test="loading" colspan="4" style="text-align: center" i18n>Ładowanie...</td>
+        </tr>
+        </tbody>
+      </ng-template>
+    </table>
+    <ng-content select="[add-button]"></ng-content>
+  </ng-container>
+  <ng-template #errorView>
+    <p i18n>Nie posiadasz uprawnień do instytucji</p>
+  </ng-template>
+</section>
+
+
