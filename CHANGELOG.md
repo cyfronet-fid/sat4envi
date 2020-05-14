@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Improve institutions endpoint to work for any signed in user [#457](https://github.com/cyfronet-fid/sat4envi/issues/457)
+
 ### Fixed
 
 ### Updated
