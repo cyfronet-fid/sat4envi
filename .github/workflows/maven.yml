@@ -61,9 +61,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cypress-
       - name: Maven package
-        run: ./mvnw clean package -DskipTests
+        run: ./mvnw clean package -DskipTests -Dsha1=-${GITHUB_SHA}
       - name: Start containers
         run: docker-compose -f docker-compose-test.yml up -d
+        env:
+          BACKEND_E2E_JAR_PATH: ./s4e-backend/target/s4e-backend-0.0.0-${{ github.sha }}-SNAPSHOT.jar
       - name: Maven test
         run: ../mvnw test
         working-directory: s4e-web

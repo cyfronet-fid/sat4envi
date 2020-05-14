@@ -52,10 +52,10 @@ To build run `./mvnw package` in directory `s4e-backend`. This will produce a ja
 started by running `java -Dspring.profiles.active=development -jar <path to jar>`.
 (For the tests to pass follow the instructions in [section about running unit tests](#backend-running-unit-tests) or skip them with `-DskipTests`.)
 
-To set the version of the built artifacts use the `revision` and `changelist` system variables, for example:
-`./mvnw package -Drevision=4.0.1 -Dchangelist=-RELEASE`.
-The values will be concatenated `${revision}${changelist}` forming the artifact version.
-By default `changelist=-SNAPSHOT`.
+To set the version of the built artifacts use the `revision`, `sha1` and `changelist` system variables, for example:
+`./mvnw package -Drevision=4.0.1 -Dsha1=<hash> -Dchangelist=-RELEASE`.
+The values will be concatenated `${revision}${sha1}${changelist}` forming the artifact version.
+By default `revision=0.0.0`, `sha1=` (empty) and `changelist=-SNAPSHOT`.
 
 Alternatively, the app can be built and run by issuing `../mvnw spring-boot:run -Dspring-boot.run.profiles=development` in directory `s4e-backend`. 
 
