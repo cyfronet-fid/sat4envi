@@ -20,6 +20,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Updated
 
+- Update springdoc-openapi to 1.3.9 and add a test openapi endpoint works [#467](https://github.com/cyfronet-fid/sat4envi/issues/467)
+
 ## [v7.0.0]
 
 ### Added
