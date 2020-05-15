@@ -15,6 +15,7 @@ services:
       - db
       - geoserver
       - minio
+      - broker
   s4e-web:
     image: nginx:alpine
     ports:
@@ -62,6 +63,16 @@ services:
       POSTGRES_DB: ${DB_POSTGRES_DB:-sat4envi}
       POSTGRES_USER: ${DB_POSTGRES_USER:-sat4envi}
       POSTGRES_PASSWORD: ${DB_POSTGRES_PASSWORD:-sat4envi}
+  broker:
+    image: rabbitmq:3.8.3-management
+    ports:
+      - ${BROKER_PORT:-5672}:5672
+      - ${BROKER_PORT_MANAGEMENT:-15672}:15672
+    networks:
+      - net
+    environment:
+      RABBITMQ_DEFAULT_USER: ${BROKER_USERNAME:-rabbit}
+      RABBITMQ_DEFAULT_PASS: ${BROKER_PASSWORD:-rabbit123}
 
 networks:
   net:

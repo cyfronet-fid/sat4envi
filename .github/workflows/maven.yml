@@ -21,7 +21,7 @@ jobs:
         run: ../mvnw clean package -DskipTests
         working-directory: s4e-backend
       - name: Start containers
-        run: docker-compose -f docker-compose-test.yml up -d db-test minio-test geoserver-test
+        run: docker-compose -f docker-compose-test.yml up -d db-test broker-test minio-test geoserver-test
       - name: Maven test and verify
         run: ../mvnw verify
         working-directory: s4e-backend

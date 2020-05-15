@@ -15,6 +15,7 @@ services:
       - db-test
       - geoserver-test
       - minio-test
+      - broker-test
   s4e-web-e2e:
     image: nginx:alpine
     ports:
@@ -62,6 +63,16 @@ services:
       POSTGRES_DB: ${DB_TEST_POSTGRES_DB:-sat4envi_test}
       POSTGRES_USER: ${DB_TEST_POSTGRES_USER:-sat4envi_test}
       POSTGRES_PASSWORD: ${DB_TEST_POSTGRES_PASSWORD:-sat4envi_test}
+  broker-test:
+    image: rabbitmq:3.8.3-management
+    ports:
+      - ${BROKER_TEST_PORT:-5673}:5672
+      - ${BROKER_TEST_PORT_MANAGEMENT:-15673}:15672
+    networks:
+      - net-test
+    environment:
+      RABBITMQ_DEFAULT_USER: ${BROKER_TEST_USERNAME:-rabbittest}
+      RABBITMQ_DEFAULT_PASS: ${BROKER_TEST_PASSWORD:-rabbittest123}
 
 networks:
   net-test:
