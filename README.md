@@ -39,9 +39,9 @@ Then, run `./mvnw test`.
 
 #### Running integration tests
 
-You will need test db, minio and geoserver for the tests to pass.
+You will need test db, minio, geoserver and broker for the tests to pass.
 
-Run them with `docker-compose -f docker-compose-test.yml up db-test geoserver-test minio-test`.
+Run them with `docker-compose -f docker-compose-test.yml up db-test geoserver-test minio-test broker-test`.
 
 Then, execute `./mvnw verify`.
 
@@ -189,6 +189,25 @@ SPRING_PROFILES_ACTIVE=development,skip-seed-products
 To control the number of scenes seeded per product for `s4e-sync-1` dataset use property
 `seed.products.s4e-sync-v1.limit`, by default the seeder loads only 100 scenes of each product.
 To load an unlimited number set its value to -1.
+
+
+#### Scene updates from AMQP queue
+
+Application can be configured to listen to notifications from an AMQP queue with S3 object updates.
+
+In profile `development` this feature is enabled, and in `production` it has to be enabled by setting
+`amqp.enabled=true` or `AMQP_ENABLED=true`.
+
+By default, the listener subscribes to queue `s4e.scenes.incoming`.
+When an error occurs during scene processing, the message is rejected with option not to requeue it.
+The queue should have a dead-letter exchange configured to keep such notifications.
+
+Related properties list and their defaults:
+- `amqp.enabled=false`,
+- `amqp.create-queues=false`: if set to true then the incoming queue is created on application startup
+  (default in profiles `development`),
+- `amqp.queues.incoming=s4e.scenes.incoming`: the name of the queue the module registers to. It must either
+  exist or be created by setting `amqp.create-queues=true`.
 
 
 #### Custom docker-compose local configurations

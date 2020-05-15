@@ -1,0 +1,42 @@
+{"Records":[
+  {
+    "eventVersion":"2.1",
+    "eventSource":"ceph:s3",
+    "awsRegion":"us-east-1",
+    "eventTime":"2019-11-22T13:47:35.124724Z",
+    "eventName":"{eventName}",
+    "userIdentity":{
+      "principalId":"tester"
+    },
+    "requestParameters":{
+      "sourceIPAddress":""
+    },
+    "responseElements":{
+      "x-amz-request-id":"503a4c37-85eb-47cd-8681-2817e80b4281.5330.903595",
+      "x-amz-id-2":"14d2-zone1-zonegroup1"
+    },
+    "s3":{
+      "s3SchemaVersion":"1.0",
+      "configurationId":"mynotif1",
+      "bucket":{
+        "name":"mybucket1",
+        "ownerIdentity":{
+          "principalId":"tester"
+        },
+        "arn":"arn:aws:s3:us-east-1::mybucket1",
+        "id":"503a4c37-85eb-47cd-8681-2817e80b4281.5332.38"
+      },
+      "object":{
+        "key":"{sceneKey}",
+        "size":"1024",
+        "eTag":"37b51d194a7513e45b56f6524f2d51f2",
+        "versionId":"",
+        "sequencer": "F7E6D75DC742D108",
+        "metadata":[],
+        "tags":[]
+      }
+    },
+    "eventId":"",
+    "opaqueData":"me@example.com"
+  }
+]}
