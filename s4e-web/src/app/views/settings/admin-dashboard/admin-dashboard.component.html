@@ -1,0 +1,23 @@
+<s4e-tiles-dashboard>
+  <h1 dashboard-title>Witamy w panelu administratora Sat4Envi</h1>
+  <p dashboard-description>
+    Jesteś superadministratorem zasobów i dostępów Sat4Envi w Kategorii Zarządzanie Kryzysowe <br />
+    Oprócz zarządzania ludźmi i grupami możesz również m. in. edytować instytucje:
+  </p>
+  <ng-container dashboard-tiles>
+    <s4e-tile>
+      <header class="panel__header" tile-title>Wybierz instytucję</header>
+      <p i18n tile-description>Wybierz instytucję aby móc nią zarządzać</p>
+      <input class="search__input" placeholder="Wpisz szukaną instytucję..."
+        i18n-placeholder footer-navigation />
+    </s4e-tile>
+
+    <s4e-tile>
+      <header class="panel__header" tile-title>Zarządzaj instytucjami</header>
+      <p i18n tile-description>Lista wszystkich instytucji. W tym miejscu możesz je edytować</p>
+      <button routerLink="../groups" class="button button--secondary" footer-navigation>
+        Zarządzaj
+      </button>
+    </s4e-tile>
+  </ng-container>
+</s4e-tiles-dashboard>

@@ -1,5 +1,5 @@
-import {LogoutModule} from './views/logout/logout.module';
-import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
+import { LogoutModule } from './views/logout/logout.module';
+import { APP_INITIALIZER, LOCALE_ID, NgModule, Injector } from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {ShareModule} from './common/share.module';
@@ -71,12 +71,15 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
   exports: [LoginComponent],
 })
 export class AppModule {
-  constructor(private sessionService: SessionService, private sessionQuery: SessionQuery) {
+  constructor(
+    private sessionService: SessionService,
+    private sessionQuery: SessionQuery
+  ) {
     akitaConfig({
       resettable: true
     });
 
-    if (environment.hmr === false && !sessionQuery.isInitialized()) {
+    if (environment.hmr === false && !this.sessionQuery.isInitialized()) {
       this.sessionService.init();
     }
   }

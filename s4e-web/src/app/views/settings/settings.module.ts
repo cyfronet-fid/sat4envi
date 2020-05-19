@@ -1,3 +1,4 @@
+import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
@@ -25,6 +26,7 @@ import {S4EFormsModule} from '../../form/form.module';
     ProfileModule,
     InstitutionProfileModule,
     DashboardModule,
+    AdminDashboardModule,
     PeopleModule,
     RouterModule.forChild(settingsRoutes)
   ],

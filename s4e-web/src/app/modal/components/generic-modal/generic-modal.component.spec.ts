@@ -1,5 +1,4 @@
-import {async, ComponentFixture, fakeAsync, flush, TestBed, tick} from '@angular/core/testing';
-import {GenericModalComponent} from './generic-modal.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ModalModule} from '../../modal.module';
 import {Component} from '@angular/core';
 import {ModalService} from '../../state/modal.service';

@@ -1,3 +1,5 @@
+import { InjectorModule } from './common/injector.module';
+import { ProfileQuery } from './state/profile/profile.query';
 import {UrlSegment} from '@angular/router';
 
 export function activateMatcher(url: UrlSegment[]) {
@@ -11,4 +13,24 @@ export function activateMatcher(url: UrlSegment[]) {
     };
   }
   return null;
+}
+
+function isDashboardUrl(url: UrlSegment[]) {
+  const lastUrlSegment = url[0];
+  const isOneSegmentUrl = url.length === 1;
+  return !!lastUrlSegment
+    && isOneSegmentUrl
+    && lastUrlSegment.path === 'dashboard';
+}
+export function adminDashboardMatcher(url: UrlSegment[]) {
+  const profileQuery: ProfileQuery = InjectorModule.Injector.get(ProfileQuery);
+  const isAdminDashboard = profileQuery.isAdmin() && isDashboardUrl(url);
+  const lastUrlSegment = url[0];
+  return isAdminDashboard ? ({consumed: [lastUrlSegment]}) : null;
+}
+export function managerDashboardMatcher(url: UrlSegment[]) {
+  const profileQuery: ProfileQuery = InjectorModule.Injector.get(ProfileQuery);
+  const isManagerDashboard = profileQuery.isManager() && !profileQuery.getValue().admin && isDashboardUrl(url);
+  const lastUrlSegment = url[0];
+  return isManagerDashboard ? ({consumed: [lastUrlSegment]}) : null;
 }
