@@ -1,6 +1,5 @@
 package pl.cyfronet.s4e.service;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import pl.cyfronet.s4e.IntegrationTest;
+import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.SldStyle;
@@ -19,7 +19,6 @@ import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.geoserver.op.SeedProductsTest;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,21 +50,13 @@ public class GeoServerServiceIntegrationTest {
     @Autowired
     private SeedProductsTest seedProductsTest;
 
+    @Autowired
+    private TestDbHelper testDbHelper;
+
     @BeforeEach
     public void beforeEach() {
-        seedProductsTest.preparedb();
-        prgOverlayRepository.deleteAll();
-        sldStyleRepository.deleteAll();
-
+        testDbHelper.clean();
         geoServerService.resetWorkspace();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        sceneRepository.deleteAll();
-        productRepository.deleteAll();
-        prgOverlayRepository.deleteAll();
-        sldStyleRepository.deleteAll();
     }
 
     @Test
@@ -93,8 +84,7 @@ public class GeoServerServiceIntegrationTest {
                 .sldStyle(sldStyle)
                 .build());
 
-        List<PRGOverlay> prgOverlays = new ArrayList<>();
-        prgOverlayRepository.findAll().forEach(prgOverlays::add);
+        List<PRGOverlay> prgOverlays = prgOverlayRepository.findAll();
 
         geoServerService.createPrgOverlays(prgOverlays);
 
@@ -104,6 +94,7 @@ public class GeoServerServiceIntegrationTest {
 
     @Test
     public void shouldAddStoreAndLayer() {
+        seedProductsTest.prepareDb();
         Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
         geoServerService.addStoreAndLayer(product);
 
@@ -124,7 +115,8 @@ public class GeoServerServiceIntegrationTest {
     }
 
     @Test
-    public void shouldCheckIfLayerExists(){
+    public void shouldCheckIfLayerExists() {
+        seedProductsTest.prepareDb();
         Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
         geoServerService.addStoreAndLayer(product);
 

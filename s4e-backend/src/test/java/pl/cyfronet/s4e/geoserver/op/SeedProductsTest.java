@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
@@ -64,9 +65,7 @@ public class SeedProductsTest {
         Duration increment = Duration.ofHours(1);
     }
 
-    public void preparedb() {
-        sceneRepository.deleteAll();
-        productRepository.deleteAll();
+    public void prepareDb() {
         seedProductsMinioDataV1();
     }
 
