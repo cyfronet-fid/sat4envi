@@ -31,7 +31,7 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
   public sceneDate: string|null = null;
   @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
 
-  makeForm(): FormGroup<FormState["report"]> {
+  makeForm(): FormGroup<FormState['report']> {
     return new FormGroup<ReportForm>({
       caption: new FormControl<string>('Przykładowy Tytuł', [Validators.maxLength(80), Validators.required]),
       notes: new FormControl<string>('', [Validators.maxLength(800)]),

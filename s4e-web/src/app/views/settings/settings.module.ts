@@ -12,6 +12,7 @@ import {GroupListComponent} from './groups/group-list/group-list.component';
 import {PeopleModule} from './people/people.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
+import { ParentInstitutionModalModule } from './manage-institutions/parent-institution-modal/parent-institution-modal.module';
 
 @NgModule({
   declarations: [
@@ -28,9 +29,9 @@ import {S4EFormsModule} from '../../form/form.module';
     DashboardModule,
     AdminDashboardModule,
     PeopleModule,
-    RouterModule.forChild(settingsRoutes)
-  ],
-  providers: []
+    RouterModule.forChild(settingsRoutes),
+    ParentInstitutionModalModule
+  ]
 })
 export class SettingsModule {
 }

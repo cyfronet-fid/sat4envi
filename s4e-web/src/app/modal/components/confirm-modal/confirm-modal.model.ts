@@ -8,5 +8,5 @@ export interface ConfirmModal extends ModalWithReturnValue<boolean> {
 }
 
 export function isConfirmModal(obj: Modal): obj is ConfirmModal {
-  return obj.id === CONFIRM_MODAL_ID
+  return obj.id === CONFIRM_MODAL_ID;
 }

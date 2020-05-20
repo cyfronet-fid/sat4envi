@@ -1,6 +1,10 @@
 <div class="container">
   <nav class="navigation">
     <ul class="navigation__list">
+      <li *ngIf="showInstitutions$ | async">
+        <a href="javascript:void(0)" (click)="openParentInstitutionModal()">Show parent institution</a>
+      </li>
+
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./dashboard']" queryParamsHandling="merge" i18n>Dashboard</a></li>
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./groups']" queryParamsHandling="merge" i18n>Grupy</a></li>
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"><a [routerLink]="['./people']" queryParamsHandling="merge" i18n>Ludzie</a></li>

@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Select parent institution modal [#471](https://github.com/cyfronet-fid/sat4envi/issues/471)
 - JS script with PoC - layers overlapping [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Scene metadata search [#422](https://github.com/cyfronet-fid/sat4envi/issues/422)
 - Listen to scene files notifications from AMQP queue [#440](https://github.com/cyfronet-fid/sat4envi/issues/440)

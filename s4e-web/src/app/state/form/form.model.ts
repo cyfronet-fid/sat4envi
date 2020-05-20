@@ -7,6 +7,7 @@ import {SaveConfigForm} from '../../views/map-view/zk/save-config-modal/save-con
 import {ReportForm} from '../../views/map-view/zk/report-modal/report-modal.model';
 import {SentinelSearchForm} from '../../views/map-view/state/sentinel-search/sentinel-search.model';
 import {ShareConfigurationForm} from '../../views/map-view/zk/configuration/state/configuration.model';
+import { ParentInstitutionForm } from 'src/app/views/settings/manage-institutions/parent-institution-modal/parent-institution-modal.model';
 
 export interface FormState {
   login: LoginFormState;

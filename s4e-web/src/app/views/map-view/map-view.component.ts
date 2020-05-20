@@ -157,7 +157,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
       this.sceneQuery.selectActive().pipe(map(s => s == null ? null : s.timestamp), take(1))
     ])
       .subscribe(([mapData, productName, sceneDate]) => this.modalService.show<ReportModal>({
-        id: REPORT_MODAL_ID, size: 'lg',
+        id: REPORT_MODAL_ID,
+        size: 'lg',
         mapHeight: mapData.height,
         mapWidth: mapData.width,
         mapImage: mapData.image,
