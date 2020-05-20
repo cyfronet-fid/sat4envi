@@ -1,0 +1,2 @@
+ALTER TABLE scene
+    ADD COLUMN scene_key VARCHAR UNIQUE NOT NULL;

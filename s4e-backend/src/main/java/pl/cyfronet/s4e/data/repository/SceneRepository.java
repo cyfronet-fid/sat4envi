@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface SceneRepository extends JpaRepository<Scene, Long>, SceneRepositoryExt {
     <T> Optional<T> findById(Long id, Class<T> projection);
 
+    Optional<Scene> findBySceneKey(String sceneKey);
+
     List<Scene> findAllByProductId(Long productId);
 
     List<Scene> findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(

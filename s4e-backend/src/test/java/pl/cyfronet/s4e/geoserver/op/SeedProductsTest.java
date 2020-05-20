@@ -134,6 +134,7 @@ public class SeedProductsTest {
 
             val scene = Scene.builder()
                     .product(product)
+                    .sceneKey(SceneTestHelper.nextUnique("path/to/%dth.scene"))
                     .timestamp(timestamp)
                     .s3Path(s3Path)
                     .granulePath(granulePath)

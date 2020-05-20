@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 public class SceneTestHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
+    private static final String SCENE_KEY_PATTERN = "path/to/%dth.scene";
     private static final String PRODUCT_NAME_PATTERN = "Great %d Product";
 
     public static String nextUnique(String format) {
@@ -28,6 +29,7 @@ public class SceneTestHelper {
     public static Scene.SceneBuilder sceneBuilder(Product product) {
         return Scene.builder()
                 .product(product)
+                .sceneKey(nextUnique(SCENE_KEY_PATTERN))
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
                 .granulePath("mailto://bucket/some/path")
