@@ -9,8 +9,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.TestGeometryHelper;
-import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -20,7 +18,8 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
@@ -29,6 +28,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static pl.cyfronet.s4e.SceneTestHelper.*;
 
 @AutoConfigureMockMvc
 @BasicTest
@@ -48,9 +48,6 @@ public class SceneControllerTest {
     @Autowired
     private TestDbHelper testDbHelper;
 
-    @Autowired
-    private TestGeometryHelper geom;
-
     @BeforeEach
     public void beforeEach() {
         resetDb();
@@ -68,30 +65,15 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnFilteredScenes() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        val defaultBuilder = Scene.builder()
-                .product(product)
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any());
-
-        val scenes = List.of(
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 1, 23, 59, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .build()
-        );
+        val scenes = Stream.of(
+                LocalDateTime.of(2019, 10, 1, 0, 0),
+                LocalDateTime.of(2019, 10, 1, 23, 59, 59),
+                LocalDateTime.of(2019, 10, 2, 0, 0)
+        )
+                .map(toScene(product))
+                .collect(Collectors.toList());
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -105,33 +87,16 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnFilteredScenesInChosenTimeZone() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        val defaultBuilder = Scene.builder()
-                .product(product)
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any());
-
-        val scenes = List.of(
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 12, 1, 22, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 12, 2, 22, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 12, 2, 23, 0))
-                        .build()
-        );
+        val scenes = Stream.of(
+                LocalDateTime.of(2019, 12, 1, 22, 59),
+                LocalDateTime.of(2019, 12, 1, 23, 0),
+                LocalDateTime.of(2019, 12, 2, 22, 59),
+                LocalDateTime.of(2019, 12, 2, 23, 0)
+        )
+                .map(toScene(product))
+                .collect(Collectors.toList());
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -146,18 +111,9 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnZuluZonedTimestampByDefault() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
-        sceneRepository.save(Scene.builder()
-                .product(product)
+        val product = productRepository.save(productBuilder().build());
+        sceneRepository.save(sceneBuilder(product)
                 .timestamp(LocalDateTime.of(2019, 10, 11, 12, 13))
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any())
                 .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -169,23 +125,11 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnZonedTimestamp() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        val scenes = List.of(
-                Scene.builder()
-                        .product(product)
-                        .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
-                        .s3Path("some/path")
-                        .granulePath("mailto://bucket/some/path")
-                        .footprint(geom.any())
-                        .build()
-        );
-        sceneRepository.saveAll(scenes);
+        sceneRepository.save(sceneBuilder(product)
+                .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
+                .build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
@@ -197,39 +141,18 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnZonedTimestampsAroundDST() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        val defaultBuilder = Scene.builder()
-                .product(product)
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any());
-
-        val scenes = List.of(
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 3, 31, 0, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 3, 31, 1, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 3, 31, 1, 1))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 27, 0, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 27, 1, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 27, 1, 1))
-                        .build()
-        );
+        val scenes = Stream.of(
+                LocalDateTime.of(2019, 3, 31, 0, 59),
+                LocalDateTime.of(2019, 3, 31, 1, 0),
+                LocalDateTime.of(2019, 3, 31, 1, 1),
+                LocalDateTime.of(2019, 10, 27, 0, 59),
+                LocalDateTime.of(2019, 10, 27, 1, 0),
+                LocalDateTime.of(2019, 10, 27, 1, 1)
+        )
+                .map(toScene(product))
+                .collect(Collectors.toList());
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
@@ -253,12 +176,7 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturn400IfZoneIncorrect() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
@@ -268,44 +186,23 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnAvailabilityDates() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
-
-        val defaultBuilder = Scene.builder()
-                .product(product)
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any());
+        val product = productRepository.save(productBuilder().build());
 
         /*
         We create data for the days marked with * and we will extract availability for October.
            Sep | Oct     | Nov
               *|**      *|*
          */
-        val scenes = List.of(
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 9, 30, 23, 59, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 31, 23, 59, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 11, 1, 0, 0))
-                        .build()
-        );
+        val scenes = Stream.of(
+                LocalDateTime.of(2019, 9, 30, 23, 59, 59),
+                LocalDateTime.of(2019, 10, 1, 0, 0),
+                LocalDateTime.of(2019, 10, 2, 0, 0),
+                LocalDateTime.of(2019, 10, 2, 1, 0),
+                LocalDateTime.of(2019, 10, 31, 23, 59, 59),
+                LocalDateTime.of(2019, 11, 1, 0, 0)
+        )
+                .map(toScene(product))
+                .collect(Collectors.toList());
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
@@ -317,41 +214,24 @@ public class SceneControllerTest {
 
     @Test
     public void shouldReturnAvailabilityDatesWithTimezone() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        val defaultBuilder = Scene.builder()
-                .product(product)
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any());
+        val defaultBuilder = sceneBuilder(product);
 
         /*
         We create data for the days marked with * and we will extract availability for October.
            Sep | Oct     | Nov
               *|**      *|*
          */
-        val scenes = List.of(
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 9, 30, 21, 59, 59))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 9, 30, 22, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 2, 0, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 2, 1, 0))
-                        .build(),
-                defaultBuilder
-                        .timestamp(LocalDateTime.of(2019, 10, 31, 21, 59, 59))
-                        .build()
-        );
+        val scenes = Stream.of(
+                LocalDateTime.of(2019, 9, 30, 21, 59, 59),
+                LocalDateTime.of(2019, 9, 30, 22, 0),
+                LocalDateTime.of(2019, 10, 2, 0, 0),
+                LocalDateTime.of(2019, 10, 2, 1, 0),
+                LocalDateTime.of(2019, 10, 31, 21, 59, 59)
+        )
+                .map(toScene(product))
+                .collect(Collectors.toList());
         sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
@@ -364,20 +244,9 @@ public class SceneControllerTest {
 
     @Test
     public void shouldRedirectToDownloadLink() throws Exception {
-        val product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("sth")
-                .layerName("108m")
-                .build());
+        val product = productRepository.save(productBuilder().build());
 
-        Scene scene = sceneRepository.save(Scene.builder()
-                .product(product)
-                .timestamp(LocalDateTime.of(2019, 10, 1, 0, 0))
-                .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
-                .footprint(geom.any())
-                .build());
+        Scene scene = sceneRepository.save(sceneBuilder(product).build());
 
         String redirectUrl = "https://domain.pl/test?sth=value";
 

@@ -12,6 +12,9 @@ public class TestDbHelper {
     private final PlaceRepository placeRepository;
     private final ProductRepository productRepository;
     private final SchemaRepository schemaRepository;
+    private final WMSOverlayRepository wmsOverlayRepository;
+    private final PRGOverlayRepository prgOverlayRepository;
+    private final SldStyleRepository sldStyleRepository;
 
     public void clean() {
         institutionRepository.deleteAll();
@@ -19,5 +22,8 @@ public class TestDbHelper {
         placeRepository.deleteAll();
         productRepository.deleteAll();
         schemaRepository.deleteAll();
+        wmsOverlayRepository.deleteAll();
+        prgOverlayRepository.deleteAll();
+        sldStyleRepository.deleteAll();
     }
 }

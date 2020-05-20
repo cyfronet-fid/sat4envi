@@ -6,10 +6,9 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
-import pl.cyfronet.s4e.TestGeometryHelper;
+import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.PRGOverlay;
 import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
@@ -18,12 +17,13 @@ import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
+import static pl.cyfronet.s4e.SceneTestHelper.sceneBuilder;
 
 @BasicTest
 class GeoServerServiceTest {
@@ -44,58 +44,45 @@ class GeoServerServiceTest {
     private GeoServerProperties geoServerProperties;
 
     @Autowired
-    private TestGeometryHelper geom;
+    private TestDbHelper testDbHelper;
 
     @Mock
     private GeoServerOperations geoServerOperations;
 
     private GeoServerService geoServerService;
     private Product product;
-    private Scene scene;
     private SldStyle sldStyle;
     private PRGOverlay prgOverlay;
 
     @BeforeEach
     public void beforeEach() {
-        sceneRepository.deleteAll();
-        productRepository.deleteAll();
-        prgOverlayRepository.deleteAll();
-        sldStyleRepository.deleteAll();
+        testDbHelper.clean();
+        prepare();
     }
 
     private void prepare() {
         geoServerService = new GeoServerService(geoServerOperations, geoServerProperties);
 
-        product = productRepository.save(
-                Product.builder()
-                        .name("productType")
-                        .displayName("productType")
-                        .layerName("test_layer_name")
-                        .build());
-        scene = sceneRepository.save(
-                Scene.builder()
-                        .product(product)
-                        .timestamp(LocalDateTime.now())
-                        .s3Path("some/s3/path.tif")
-                        .granulePath("mailto://bucket/some/s3/path.tif")
-                        .footprint(geom.any())
-                        .build());
-        sldStyle = sldStyleRepository.save(
-                SldStyle.builder()
-                        .name("styleOne")
-                        .build());
-        prgOverlay = prgOverlayRepository.save(
-                PRGOverlay.builder()
-                        .name("wojewodztwa")
-                        .featureType("wojewodztwaFeatureType")
-                        .sldStyle(sldStyle)
-                        .build());
+        product = productRepository.save(productBuilder().build());
+        sceneRepository.save(sceneBuilder(product).build());
+        sldStyle = sldStyleRepository.save(sldStyleBuilder().build());
+        prgOverlay = prgOverlayRepository.save(prgOverlayBuilder(sldStyle).build());
+    }
+
+    private SldStyle.SldStyleBuilder sldStyleBuilder() {
+        return SldStyle.builder()
+                .name("styleOne");
+    }
+
+    private PRGOverlay.PRGOverlayBuilder prgOverlayBuilder(SldStyle sldStyle) {
+        return PRGOverlay.builder()
+                .name("wojewodztwa")
+                .featureType("wojewodztwaFeatureType")
+                .sldStyle(sldStyle);
     }
 
     @Test
     public void shouldAddStyleAndSetCreatedFlag() {
-        prepare();
-
         geoServerService.addStyle(sldStyle);
 
         verify(geoServerOperations, times(1)).createStyle(geoServerProperties.getWorkspace(), sldStyle.getName());
@@ -105,7 +92,6 @@ class GeoServerServiceTest {
 
     @Test
     public void shouldCreatePrgLayers() {
-        prepare();
         sldStyle.setCreated(true);
         sldStyle = sldStyleRepository.save(sldStyle);
         when(geoServerOperations.layerExists(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType())).thenReturn(true);
@@ -121,7 +107,6 @@ class GeoServerServiceTest {
 
     @Test
     public void shouldNotCreatePrgLayersIfAnyCreated() {
-        prepare();
         prgOverlay.setCreated(true);
         prgOverlay = prgOverlayRepository.save(prgOverlay);
 
@@ -135,8 +120,6 @@ class GeoServerServiceTest {
 
     @Test
     public void shouldThrowIfSldStyleNotCreatedForPrgOverlay() {
-        prepare();
-
         List<PRGOverlay> prgOverlays = new ArrayList<>();
         prgOverlayRepository.findAll().forEach(prgOverlays::add);
 

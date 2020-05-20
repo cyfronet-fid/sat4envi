@@ -3,26 +3,20 @@ package pl.cyfronet.s4e.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.properties.GeoServerProperties;
-import pl.cyfronet.s4e.properties.S3Properties;
-import pl.cyfronet.s4e.util.GeometryUtil;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,24 +24,23 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
+import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
 
 @BasicTest
 @Slf4j
 public class SearchServiceTest {
     @Autowired
     private SceneRepository sceneRepository;
+
     @Autowired
     private ProductRepository productRepository;
+
     @Autowired
     private TestDbHelper testDbHelper;
+
     @Autowired
     private SearchService searchService;
-    @Autowired
-    private GeoServerProperties geoServerProperties;
-    @Autowired
-    private S3Properties s3Properties;
-    @Autowired
-    private GeometryUtil geom;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -55,12 +48,7 @@ public class SearchServiceTest {
     public void setUp() throws Exception {
         testDbHelper.clean();
         //add product
-        Product product = productRepository.save(Product.builder()
-                .name("108m")
-                .displayName("108m")
-                .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
-                .layerName("108m")
-                .build());
+        Product product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 10; j++) {
@@ -76,10 +64,6 @@ public class SearchServiceTest {
     }
 
     private Scene buildScene(Product product, long number) throws Exception {
-        Geometry footprint = geom.parseWKT("POLYGON((0 -10379291.247,0 0,10463673.528 0,10463673.528 -10379291.247,0 -10379291.247))", GeometryUtil.FACTORY_3857);
-        val timestamp = LocalDateTime.now().plusDays(1L);
-        val s3Path = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(timestamp) + "Merkator_Europa_ir_108_setvak.tif";
-        val granulePath = geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/" + s3Path;
         String metadataContent = "{\n" +
                 "   \"spacecraft\": \"Sentinel-1A\",\n" +
                 "   \"product_type\": \"GRDH\",\n" +
@@ -100,12 +84,7 @@ public class SearchServiceTest {
                 "   \"schema\": \"Sentinel-1.metadata.v1.json\"\n" +
                 "}";
         JsonNode jsonNode2 = objectMapper.readTree(metadataContent);
-        return Scene.builder()
-                .product(product)
-                .timestamp(timestamp)
-                .s3Path(s3Path)
-                .granulePath(granulePath)
-                .footprint(footprint)
+        return SceneTestHelper.sceneBuilder(product)
                 .metadataContent(jsonNode2)
                 .build();
     }

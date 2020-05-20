@@ -65,7 +65,7 @@ public class QueueReceiverIntegrationTest {
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectCreated:Put");
 
         await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findByProductId(productId), hasSize(greaterThan(0)));
+                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
     }
 
     private void sendMessage(String routingKey, String sceneKey, String eventName) {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.IntegrationTest;
+import pl.cyfronet.s4e.TestDbHelper;
 
 import java.util.List;
 
@@ -17,15 +18,19 @@ import static org.hamcrest.Matchers.*;
 public class GeoServerOperationsIntegrationTest {
     @Autowired
     private GeoServerOperations geoServerOperations;
+
     @Autowired
     private SeedProductsTest seedProductsTest;
 
+    @Autowired
+    private TestDbHelper testDbHelper;
+
     @BeforeEach
     public void beforeEach() {
+        testDbHelper.clean();
         for (String workspace: geoServerOperations.listWorkspaces()) {
             geoServerOperations.deleteWorkspace(workspace, true);
         }
-        seedProductsTest.preparedb();
     }
 
     @Test
@@ -75,6 +80,7 @@ public class GeoServerOperationsIntegrationTest {
 
     @Test
     public void shouldCreateS3CoverageStore() {
+        seedProductsTest.prepareDb();
         geoServerOperations.createWorkspace("test");
 
         assertThat(geoServerOperations.listCoverageStores("test"), hasSize(0));
@@ -86,6 +92,7 @@ public class GeoServerOperationsIntegrationTest {
 
     @Test
     public void shouldDeleteCoverageStore() {
+        seedProductsTest.prepareDb();
         geoServerOperations.createWorkspace("test");
         geoServerOperations.createS3CoverageStore("test", "setvak");
 
@@ -98,6 +105,7 @@ public class GeoServerOperationsIntegrationTest {
 
     @Test
     public void shouldCreateS3Coverage() {
+        seedProductsTest.prepareDb();
         geoServerOperations.createWorkspace("test");
         geoServerOperations.createS3CoverageStore("test", "setvak");
 
@@ -110,6 +118,7 @@ public class GeoServerOperationsIntegrationTest {
 
     @Test
     public void shouldDeleteCoverage() {
+        seedProductsTest.prepareDb();
         geoServerOperations.createWorkspace("test");
         geoServerOperations.createS3CoverageStore("test", "setvak");
         geoServerOperations.createS3Coverage("test", "setvak", "setvak");

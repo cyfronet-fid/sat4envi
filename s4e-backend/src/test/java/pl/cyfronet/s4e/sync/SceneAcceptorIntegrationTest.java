@@ -45,6 +45,6 @@ class SceneAcceptorIntegrationTest {
         sceneAcceptor.accept(SCENE_KEY);
 
         await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findByProductId(productId), hasSize(greaterThan(0)));
+                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
     }
 }

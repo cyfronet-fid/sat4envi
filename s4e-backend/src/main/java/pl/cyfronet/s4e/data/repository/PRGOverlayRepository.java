@@ -9,5 +9,7 @@ import java.util.List;
 
 @Transactional(readOnly = true)
 public interface PRGOverlayRepository extends CrudRepository<PRGOverlay, Long> {
+    List<PRGOverlay> findAll();
+
     List<PRGOverlayResponse> findAllByCreatedTrue();
 }
