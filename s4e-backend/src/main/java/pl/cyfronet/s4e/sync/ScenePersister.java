@@ -38,15 +38,25 @@ public class ScenePersister {
         JsonNode sceneJsonNode = convert(prototype.getSceneJson());
         JsonNode metadataJsonNode = convert(prototype.getMetadataJson());
 
-        Scene scene = sceneRepository.save(Scene.builder()
-                .product(product)
-                .timestamp(prototype.getTimestamp())
-                .s3Path(prototype.getS3Path())
-                .granulePath(granulePath)
-                .footprint(prototype.getFootprint())
-                .sceneContent(sceneJsonNode)
-                .metadataContent(metadataJsonNode)
-                .build());
+        Scene scene = sceneRepository.findBySceneKey(prototype.getSceneKey()).orElse(new Scene());
+        if (scene.getProduct() != null && !product.equals(scene.getProduct())) {
+            Long existingProductId = scene.getProduct().getId();
+            Long prototypeProductId = prototype.getProductId();
+            throw new IllegalArgumentException(String.format("Existing Scene's Product %d is not equal to the prototype Product %d", existingProductId, prototypeProductId));
+        } else {
+            scene.setProduct(product);
+        }
+        scene.setSceneKey(prototype.getSceneKey());
+        scene.setTimestamp(prototype.getTimestamp());
+        scene.setS3Path(prototype.getS3Path());
+        scene.setGranulePath(granulePath);
+        scene.setFootprint(prototype.getFootprint());
+        scene.setSceneContent(sceneJsonNode);
+        scene.setMetadataContent(metadataJsonNode);
+
+        if (scene.getId() == null) {
+            scene = sceneRepository.save(scene);
+        }
 
         return scene.getId();
     }

@@ -29,6 +29,10 @@ public class Scene extends CreationAndModificationAudited {
     @ManyToOne(optional = false)
     private Product product;
 
+    /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
+    @NotEmpty
+    private String sceneKey;
+
     @NotNull
     private LocalDateTime timestamp;
 

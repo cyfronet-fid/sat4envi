@@ -52,6 +52,7 @@ public class SeedProducts implements ApplicationRunner {
     private static final DateTimeFormatter DATE_PATTERN = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter YEAR_PATTERN = DateTimeFormatter.ofPattern("yyyy");
     private static final DateTimeFormatter TIME_PATTERN = DateTimeFormatter.ofPattern("HHmm");
+    private static final String SCENE_KEY_PATTERN = "path/to/%dth.scene";
 
     @Builder
     @Value
@@ -91,6 +92,8 @@ public class SeedProducts implements ApplicationRunner {
     private final PrefixScanner prefixScanner;
     private final SceneAcceptor sceneAcceptor;
     private final SchemaScanner schemaScanner;
+
+    private final AtomicInteger sceneKeyCounter = new AtomicInteger();
 
     @Async
     @Override
@@ -661,6 +664,7 @@ public class SeedProducts implements ApplicationRunner {
 
             val scene = Scene.builder()
                     .product(product)
+                    .sceneKey(nextUniqueSceneKey())
                     .timestamp(timestamp)
                     .s3Path(s3Path)
                     .granulePath(granulePath)
@@ -682,6 +686,10 @@ public class SeedProducts implements ApplicationRunner {
                 log.info((i + 1) + "/" + count + " scenes of product '" + product.getName() + "' processed");
             }
         }
+    }
+
+    private String nextUniqueSceneKey() {
+        return String.format(SCENE_KEY_PATTERN, sceneKeyCounter.getAndIncrement());
     }
 
     private void readScenes(String prefix) {

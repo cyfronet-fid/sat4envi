@@ -18,6 +18,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Handle Scene updates in ScenePersister [#469](https://github.com/cyfronet-fid/sat4envi/issues/469)
 - New sidebar look [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Improve institutions endpoint to work for any signed in user [#457](https://github.com/cyfronet-fid/sat4envi/issues/457)
 
