@@ -29,9 +29,9 @@ function isSearchedInstitution(institution: Institution, searchValue: string) {
   templateUrl: './parent-institution-modal.component.html',
   styleUrls: ['./parent-institution-modal.component.scss']
 })
-export class ParentInstitutionModalComponent extends ModalComponent<Institution> implements OnInit, OnDestroy {
+export class ParentInstitutionModalComponent extends ModalComponent<Partial<Institution>> implements OnInit, OnDestroy {
   public searchedInstitutions: Institution[] = [];
-  public selectedInstitution: Institution | null = null;
+  public selectedInstitution: Partial<Institution> | null = null;
   public institutionsSearch: FormControl<string> = new FormControl<string>('');
 
   constructor(
@@ -43,6 +43,8 @@ export class ParentInstitutionModalComponent extends ModalComponent<Institution>
     super(_modalService, PARENT_INSTITUTION_MODAL_ID);
 
     assertModalType(isParentInstitutionModal, modal);
+
+    this.selectedInstitution = modal.selectedInstitution;
   }
 
   ngOnInit() {
@@ -59,6 +61,11 @@ export class ParentInstitutionModalComponent extends ModalComponent<Institution>
 
     this._institutionService.get();
     this.institutionsSearch.setValue('');
+  }
+
+  isSelected(institution: Institution) {
+    return !!this.selectedInstitution
+      && this.selectedInstitution.slug === institution.slug;
   }
 
   accept() {

@@ -1,3 +1,4 @@
+import { AddInstitutionComponent } from './manage-institutions/add-institution/add-institution.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { Routes} from '@angular/router';
 import {ProfileComponent} from './profile/profile.component';
@@ -25,6 +26,11 @@ export const settingsRoutes: Routes = [
       {
         matcher: managerDashboardMatcher,
         component: DashboardComponent
+      },
+      {
+        path: 'add-institution',
+        component: AddInstitutionComponent,
+        canActivate: [IsManagerGuard]
       },
       {
         path: 'profile',

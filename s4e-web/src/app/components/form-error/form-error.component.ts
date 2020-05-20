@@ -17,4 +17,15 @@ export class FormErrorComponent implements OnInit {
   ngOnInit() {
   }
 
+  getServerErrorMessages() {
+    const errors = !!this.control && this.control.errors || this.errors;
+    const serverErrors = !!errors && !!errors.server && (
+      errors.server instanceof Array && errors.server
+      || typeof errors.server === 'string' && [errors.server]
+    )
+  || [];
+
+    return serverErrors;
+  }
+
 }

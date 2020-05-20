@@ -1,4 +1,4 @@
-context('productNavigation', () => {
+context('ErrorHandling', () => {
   beforeEach(() => {
     cy.visit('/');
   });

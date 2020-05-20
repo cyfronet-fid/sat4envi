@@ -1,5 +1,4 @@
 import { ProfileQuery } from 'src/app/state/profile/profile.query';
-import {NotificationService} from 'notifications';
 import {SessionQuery} from './session.query';
 import {ERROR_INTERCEPTOR_CODES_TO_SKIP} from '../../utils/error-interceptor/error.helper';
 import {Injectable} from '@angular/core';
@@ -11,7 +10,7 @@ import {action, resetStores} from '@datorama/akita';
 import {LoginRequestResponse} from './session.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
 import {ProfileService} from '../profile/profile.service';
-import {HTTP_502_BAD_GATEWAY, HTTP_404_BAD_REQUEST, HTTP_401_UNAUTHORIZED} from '../../errors/errors.model';
+import {HTTP_404_BAD_REQUEST, HTTP_401_UNAUTHORIZED} from '../../errors/errors.model';
 import {catchErrorAndHandleStore} from '../../common/store.util';
 
 
@@ -25,8 +24,7 @@ export class SessionService {
               private http: HttpClient,
               private router: Router,
               private profileService: ProfileService,
-              private CONFIG: S4eConfig,
-              private _notificationService: NotificationService) {
+              private CONFIG: S4eConfig) {
   }
 
   set back_link(back_link: string) {

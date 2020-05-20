@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add Institution form for superadmin [#470](https://github.com/cyfronet-fid/sat4envi/issues/470)
 - Add institution selection into super Admin and Admin settings page [#455](https://github.com/cyfronet-fid/sat4envi/issues/455)
 
 ### Changed

@@ -5,7 +5,7 @@
   <ng-container *ngSwitchCase="'mustMatch'" i18n>Hasła muszą być takie same</ng-container>
   <ng-container *ngSwitchCase="'__general__'">{{errors}}</ng-container>
   <ng-container *ngSwitchCase="'server'">
-    <ng-container *ngFor="let message of (control != null ? control.errors : errors)['server']">{{message}}<br></ng-container>
+    <ng-container *ngFor="let message of getServerErrorMessages()">{{message}}<br></ng-container>
   </ng-container>
   <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
 </li>

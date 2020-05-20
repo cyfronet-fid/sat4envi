@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {InstitutionStore} from './institution.store';
 import {Institution} from './institution.model';
-import {filter, finalize, flatMap, map, delay} from 'rxjs/operators';
+import {filter, finalize, flatMap, map, delay, shareReplay} from 'rxjs/operators';
 import {InstitutionQuery} from './institution.query';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
@@ -46,6 +46,22 @@ export class InstitutionService {
 
   add(institution: Institution) {
     this.store.add(institution);
+  }
+
+  addInstitutionChild$(institution: Institution) {
+    this.store.setLoading(true);
+    const request = this.http
+      .post<Institution>(
+        `${this.s4EConfig.apiPrefixV1}/institutions/${institution.parentInstitutionSlug}/child`,
+        institution
+      )
+      .pipe(
+        map(() => true),
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setLoading(false)),
+        shareReplay(1)
+      );
+    return request.subscribe();
   }
 
   setInstitution(route: ActivatedRoute, institutionSlug: string) {

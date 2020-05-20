@@ -7,7 +7,9 @@ export interface ParentInstitutionForm {
   searchInstitution: string;
 }
 
-export interface ParentInstitutionModal extends ModalWithReturnValue<Institution> {}
+export interface ParentInstitutionModal extends ModalWithReturnValue<Partial<Institution>> {
+  selectedInstitution: Partial<Institution>;
+}
 
 export function isParentInstitutionModal(modal: Modal): modal is ParentInstitutionModal {
   return modal.id === PARENT_INSTITUTION_MODAL_ID;
