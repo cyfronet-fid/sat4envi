@@ -14,6 +14,8 @@ $font-secondary: 'Titillium Web', sans-serif;
 
 $color-white: #fff;
 $color-black: #000;
+$color-red: #f00;
+$color-yellow: #FFC300;
 
 
 
@@ -21,6 +23,7 @@ $color-grey: #505050;
 $color-grey-primary: #F5F5F5;
 $color-grey-secondary: #D8DDE0;
 $color-grey-tertiary: #41414C;
+$color-grey-quaternary: #B4B4B4;
 $color-primary: #8AC854;
 $color-primary-darker: #67A630;
 $color-secondary: #2B74BB;
@@ -33,7 +36,7 @@ $color-error: #BA4343;
 
 
 /*==================
-PADDINGS AND MARGINS
+====== SIZES =======
 ==================*/
 
 $space-xlarge: 25px;
@@ -42,7 +45,23 @@ $space-default: 15px;
 $space-small: 10px;
 $space-xsmall: 5px;
 
+$width-sidebar: 360px;
 
+
+/*==================
+====== VARIOUS======
+==================*/
 $shadow-primary: 0 2px 4px rgba(0,0,0,0.1);
+
+
+
+
+
+/*==================
+=== dev-helpers ====
+==================*/
+$dev-border: 1px solid $color-red;
+
+
 
 

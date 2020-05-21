@@ -1,25 +1,21 @@
-<header class="box__header">
-  <span class="box__title">{{caption}}</span>
-  <span class="box__hint">
+<header>
+  <span class="products__title products__title--satellite">{{caption}}</span>
+  <span class="products__hint">
     <a href="#">{{help}}</a>
   </span>
 </header>
-<section class="box__content">
-  <ul class="list">
-    <li class="list__item" [ngClass]="{active: item.active}" role="menuitem" *ngFor="let item of items">
+<section>
+  <ul>
+    <li [ngClass]="{active: item.active}" class="products__item" role="menuitem" *ngFor="let item of items">
       <button *ngIf="hasFavourite" (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
         <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}"></i>
       </button>
-      <button class="list__icon" (click)="itemSelected.emit(item.cid)">
-        <img src="../../../../../assets/images/ico_product_default.png" alt="Default product icon" i18n-alt />
-      </button>
-      <button class="list__name" (click)="itemSelected.emit(item.cid)">
+      <button (click)="itemSelected.emit(item.cid)" class="products__name">
         {{item.caption}}
       </button>
-      <button *ngIf="item.active" class="icon__visibility" (click)="itemSelected.emit(item.cid)">
+      <button *ngIf="item.active" class="products__visibility" (click)="itemSelected.emit(item.cid)">
         <i class="far fa-eye"></i>
       </button>
     </li>
   </ul>
 </section>
-

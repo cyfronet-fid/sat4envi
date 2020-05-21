@@ -16,15 +16,17 @@
                       class="searchResults">
   </s4e-search-results>
 
-  <s4e-items-picker class="section"
-                      caption="Produkty"
-                      i18n-caption
-                      [loading]="productsLoading$ | async"
-                      [items]="products$ | async"
-                      [hasFavourite]="isLoggedIn"
-                      (itemSelected)="selectProduct($event)"
-                      (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)">
-  </s4e-items-picker>
+  <div class="products-list">
+    <s4e-items-picker class="section products"
+                        caption="Produkty"
+                        i18n-caption
+                        [loading]="productsLoading$ | async"
+                        [items]="products$ | async"
+                        [hasFavourite]="isLoggedIn"
+                        (itemSelected)="selectProduct($event)"
+                        (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)">
+    </s4e-items-picker>
+  </div>
 
   <s4e-items-picker class="section layers"
                       caption="Warstwy"

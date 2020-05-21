@@ -2,120 +2,6 @@
 //@import "~bootstrap/scss/functions";
 //@import "~bootstrap/scss/variables";
 
-
-/*=====
-1. Box
-2. List
-3. Buttons
-4. Form
-5. Various
-=======*/
-
-/* 1. Box */
-
-.box__header {
-  overflow: auto;
-  margin-bottom: $space-small;
-}
-
-.box__title {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  width: 50%;
-  float:left;
-  color: $color-black;
-  font-weight: 500;
-}
-
-.box__hint {
-  width: 45%;
-  float: right;
-  font-size: 0.625rem;
-  text-align: right;
-  color: $color-grey;
-
-  a {
-    color: $color-grey;
-  }
-}
-
-.box__content {
-  background: $color-white;
-  border-radius: $border-radius-default;
-  box-shadow: $shadow-primary;
-}
-
-
-/* 2. List */
-
-.list {
-  position: relative;
-  padding: $space-default;
-}
-
-.list:after {
-  border-right: 1px solid $color-grey-secondary;
-  content: "";
-  height: 100%;
-  position: absolute;
-  top: 0;
-  right: 54px;
-
-}
-
-.list__item {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: $space-small;
-  align-content: center;
-
-  > * {
-    align-self: center;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-
-  &.active .list__name{
-    font-weight: bold;
-  }
-}
-
-.list__name {
-  font-size: 0.875rem;
-  color: $color-grey;
-  text-align: left;
-  margin-right: 15px;
-}
-
-.list__icon {
-  margin: 0 $space-small 0 0;
-
-  img {
-    border-radius: 50%;
-  }
-}
-
-.list--inline {
-  .list__item {
-    display: inline-block;
-
-  }
-}
-
-.layers {
-  .list__item {
-    .list__icon {
-      display: none;
-    }
-  }
-}
-
-
-
-/* 3. Buttons */
-
 @mixin button {
   border-radius: $border-radius-circle;
   background: $color-grey-secondary;
@@ -180,8 +66,6 @@
   background: transparent;
   opacity: 0.8;
 }
-
-/* 4. Form content ( HINT// Change name ) */
 
 .form {
   background: $color-grey-secondary;
@@ -334,9 +218,6 @@
 
 
 
-
-
-/* 5. Various */
 
 body {
   overflow: hidden;
