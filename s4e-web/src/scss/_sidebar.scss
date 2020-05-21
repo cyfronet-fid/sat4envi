@@ -56,8 +56,6 @@
   }
 }
 
-
-
 .search {
   background: #fff;
   box-shadow: $shadow-primary;
@@ -84,7 +82,7 @@
 
     img {
       float:right;
-      margin-top: 1px;
+      margin-top: 2px;
     }
   }
 
@@ -126,12 +124,19 @@
   box-shadow: $shadow-primary;
 }
 
+.products-list {
+  margin: 0 -15px;
+  padding: 0 15px;
+  overflow-y: auto;
+}
+
+
 .products {
   display: block;
   background: $color-white;
   border-radius: 8px 8px 0 0;
   border: 1px solid $color-grey-secondary;
-
+  margin-bottom: 30px;
 
   header {
     font-size: 0.875rem;
@@ -187,6 +192,7 @@
       font-size: 0.875rem;
       padding-top: $space-xsmall;
       padding-bottom: $space-xsmall;
+      text-align: left;
     }
 
     &:last-child {

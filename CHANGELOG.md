@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- JS script with PoC - layers overlapping [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Scene metadata search [#422](https://github.com/cyfronet-fid/sat4envi/issues/422)
 - Listen to scene files notifications from AMQP queue [#440](https://github.com/cyfronet-fid/sat4envi/issues/440)
 - Add version display for provided env variable during build time [#459](https://github.com/cyfronet-fid/sat4envi/issues/459)
@@ -16,6 +17,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- New sidebar look [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Improve institutions endpoint to work for any signed in user [#457](https://github.com/cyfronet-fid/sat4envi/issues/457)
 
 ### Fixed
