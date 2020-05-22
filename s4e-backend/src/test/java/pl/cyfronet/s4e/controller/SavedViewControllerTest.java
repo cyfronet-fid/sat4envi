@@ -131,7 +131,7 @@ public class SavedViewControllerTest {
         assertThat(savedView.getCreatedAt(), is(greaterThan(LocalDateTime.now().minusSeconds(1))));
         assertThat(savedView.getOwner().getEmail(), is(equalTo("get@profile.com")));
 
-        verify(fileStorage).upload(eq(fileStorageProperties.getKeyPrefix() + savedView.getId()), any());
+        verify(fileStorage).upload(eq(fileStorageProperties.getKeyPrefixThumbnail() + savedView.getId()), any());
         verifyNoMoreInteractions(fileStorage);
     }
 
@@ -243,7 +243,7 @@ public class SavedViewControllerTest {
 
         assertThat(savedViewRepository.count(), is(equalTo(0L)));
 
-        verify(fileStorage).delete(fileStorageProperties.getKeyPrefix() + savedView.getId());
+        verify(fileStorage).delete(fileStorageProperties.getKeyPrefixThumbnail() + savedView.getId());
         verifyNoMoreInteractions(fileStorage);
     }
 

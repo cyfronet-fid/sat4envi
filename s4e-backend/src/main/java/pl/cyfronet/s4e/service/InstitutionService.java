@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppRole;
@@ -14,12 +12,16 @@ import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
+import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.S3ClientException;
+import pl.cyfronet.s4e.properties.FileStorageProperties;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,22 +30,28 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class InstitutionService {
-
     public static final String DEFAULT = "default";
     public static final String PREFIX = "__";
     public static final String SUFFIX = "__";
     private final InstitutionRepository institutionRepository;
+    private final AppUserRepository appUserRepository;
     private final GroupRepository groupRepository;
     private final UserRoleService userRoleService;
     private final SlugService slugService;
+    private final FileStorageProperties fileStorageProperties;
+    private final FileStorage fileStorage;
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
-    public void save(CreateInstitutionRequest request) throws InstitutionCreationException {
+    public void save(CreateInstitutionRequest request) throws InstitutionCreationException, NotFoundException {
+        String slug = slugService.slugify(request.getName());
         save(Institution.builder()
                 .name(request.getName())
-                .slug(slugService.slugify(request.getName()))
+                .slug(slug)
                 .parent(null)
                 .build());
+
+        addInstitutionAdmin(request.getInstitutionAdminEmail(), slug);
+        uploadEmblemIfRequested(slug, request.getEmblem());
     }
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
@@ -69,27 +77,59 @@ public class InstitutionService {
                 .parent(getInstitution(institutionSlug, Institution.class)
                         .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'")))
                 .build());
-        // add member to default group
-        userRoleService.addRole(AppRole.GROUP_MEMBER, request.getInstitutionAdminEmail(), result.getSlug(), "default");
-        // add institution_admin role for user
-        userRoleService.addRole(AppRole.INST_ADMIN, request.getInstitutionAdminEmail(), result.getSlug(), "default");
+        uploadEmblemIfRequested(slugService.slugify(request.getName()), request.getEmblem());
+        addInstitutionAdmin(request.getInstitutionAdminEmail(), result.getSlug());
+        // add all over-admins as members and admins
+        addParentInstitutionAdministrators(institutionSlug, result.getSlug());
         return result;
+    }
+
+    private void addParentInstitutionAdministrators(String institutionSlug, String leafInstitutionSlug) throws NotFoundException {
+        val institution = institutionRepository.findBySlug(institutionSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
+        if (institution.getParent() != null) {
+            Institution parent = institution.getParent();
+            addParentInstitutionAdministrators(parent.getSlug(), leafInstitutionSlug);
+        }
+        // look for institution admins and add them to leaf institution
+        Set<String> adminEmails = groupRepository.findAllMembersEmails(institutionSlug, DEFAULT, AppRole.INST_ADMIN);
+        for (String adminEmail : adminEmails) {
+            addInstitutionAdmin(adminEmail, leafInstitutionSlug);
+        }
+    }
+
+    public void addInstitutionAdmin(String adminMail, String institutionSlug) throws NotFoundException {
+        val appUser = appUserRepository.findByEmail(adminMail);
+        if (appUser.isPresent()) {
+            // add member to default group
+            userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug, "default");
+            // add institution_admin role for user
+            userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug, "default");
+        } else {
+            // TODO: invite
+        }
     }
 
     public <T> Optional<T> getInstitution(String slug, Class<T> projection) {
         return institutionRepository.findBySlug(slug, projection);
     }
 
-    public <T> Page<T> getAll(Pageable pageable, Class<T> projection) {
-        return institutionRepository.findAllBy(projection, pageable);
+    public <T> List<T> getAll(Class<T> projection) {
+        return institutionRepository.findAllBy(projection);
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
-    public void update(UpdateInstitutionRequest request, String institutionSlug) throws InstitutionUpdateException, NotFoundException {
+    public void update(UpdateInstitutionRequest request, String institutionSlug)
+            throws InstitutionUpdateException, NotFoundException, S3ClientException {
         val institution = getInstitution(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
+        String slug = slugService.slugify(request.getName());
+        if (fileStorage.exists(getEmblemKey(institutionSlug))) {
+            fileStorage.delete(getEmblemKey(institutionSlug));
+        }
+        uploadEmblemIfRequested(slug, request.getEmblem());
         institution.setName(request.getName());
-        institution.setSlug(slugService.slugify(request.getName()));
+        institution.setSlug(slug);
         update(institution);
     }
 
@@ -108,7 +148,34 @@ public class InstitutionService {
         institutionRepository.deleteInstitutionBySlug(slug);
     }
 
-    public <T> Set<T> getUserInstitutionsBy(String email, List<String> roles, Class<T> projection) {
+    public <T> List<T> getUserInstitutionsBy(String email, List<String> roles, Class<T> projection) {
         return institutionRepository.findInstitutionByUserEmailAndRoles(email, roles, projection);
+    }
+
+    public String getParentSlugBy(String childSlug) throws NotFoundException {
+        val institution = getInstitution(childSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + childSlug));
+        if (institution.getParent() != null) {
+            Institution parent = institution.getParent();
+            return parent.getSlug();
+        } else {
+            return null;
+        }
+    }
+
+    public String getEmblemPath(String slug) {
+        return String.join("/", fileStorageProperties.getBucket(), getEmblemKey(slug));
+    }
+
+    public String getEmblemKey(String slug) {
+        return fileStorageProperties.getKeyPrefixEmblem() + slug;
+    }
+
+    private void uploadEmblemIfRequested(String slug, String emblem) {
+        //upload file to s3
+        if (emblem != null) {
+            fileStorage.upload(getEmblemKey(slug),
+                    Base64.getDecoder().decode(emblem));
+        }
     }
 }

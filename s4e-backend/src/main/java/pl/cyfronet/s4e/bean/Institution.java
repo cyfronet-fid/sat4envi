@@ -24,6 +24,16 @@ public class Institution extends CreationAndModificationAudited {
     @NotEmpty
     private String name;
 
+    private String address;
+
+    private String postalCode;
+
+    private String city;
+
+    private String phone;
+
+    private String secondaryPhone;
+
     @NotEmpty
     @NaturalId(mutable = true)
     private String slug;

@@ -17,8 +17,14 @@ public class FileStorageProperties {
     private String bucket;
 
     /**
-     * A key prefix, including the trailing slash.
+     * A key prefix for thumbnails, including the trailing slash.
      */
     @NotBlank
-    private String keyPrefix;
+    private String keyPrefixThumbnail;
+
+    /**
+     * A key prefix for institutions emblem, including the trailing slash.
+     */
+    @NotBlank
+    private String keyPrefixEmblem;
 }

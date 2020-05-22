@@ -75,7 +75,7 @@ public class SavedViewService {
     }
 
     public String getThumbnailKey(UUID id) {
-        return fileStorageProperties.getKeyPrefix() + id;
+        return fileStorageProperties.getKeyPrefixThumbnail() + id;
     }
 
     private interface OwnerEmailProjection {
