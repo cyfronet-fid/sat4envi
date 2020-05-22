@@ -14,16 +14,17 @@ import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
+import pl.cyfronet.s4e.controller.response.BasicInstitutionResponse;
 import pl.cyfronet.s4e.controller.response.InstitutionResponse;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.InstitutionService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -44,8 +45,26 @@ public class InstitutionController {
     })
     @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated() && isAdmin()")
-    public void create(@RequestBody @Valid CreateInstitutionRequest request) throws InstitutionCreationException {
+    public void create(@RequestBody @Valid CreateInstitutionRequest request)
+            throws InstitutionCreationException, NotFoundException {
         institutionService.save(request);
+    }
+
+    @Operation(summary = "Update an institution")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "If institution was updated"),
+            @ApiResponse(responseCode = "400", description = "Incorrect request: not updated", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+    })
+    @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
+    @PreAuthorize("isAuthenticated() && " +
+            "(isInstitutionAdmin(#institutionSlug)||isInstitutionManager(#institutionSlug)||isAdmin())")
+    public void update(@RequestBody UpdateInstitutionRequest request,
+                       @PathVariable("institution") String institutionSlug)
+            throws NotFoundException, InstitutionUpdateException, S3ClientException {
+        institutionService.update(request, institutionSlug);
     }
 
     @Operation(summary = "Create a new child institution")
@@ -57,7 +76,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug)||isAdmin())")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                             @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
@@ -74,12 +93,15 @@ public class InstitutionController {
     @PageableAsQueryParam
     @GetMapping("/institutions")
     @PreAuthorize("isAuthenticated()")
-    public Set<InstitutionResponse> getAll() {
+    public List<BasicInstitutionResponse> getAll() {
         AppUserDetails appUserDetails =
                 (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (appUserDetails.isAdmin()) {
+            return institutionService.getAll(BasicInstitutionResponse.class);
+        }
         return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),
                 List.of(AppRole.GROUP_MEMBER.name()),
-                InstitutionResponse.class);
+                BasicInstitutionResponse.class);
     }
 
     @Operation(summary = "Get an institution")
@@ -97,22 +119,6 @@ public class InstitutionController {
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
     }
 
-    @Operation(summary = "Update an institution")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "If institution was updated"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request: not updated", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
-    })
-    @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
-    public void update(@RequestBody UpdateInstitutionRequest request,
-                       @PathVariable("institution") String institutionSlug)
-            throws NotFoundException, InstitutionUpdateException {
-        institutionService.update(request, institutionSlug);
-    }
-
     @Operation(summary = "Delete an institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If institution was deleted"),
@@ -122,7 +128,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/institutions/{institution}")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug)||isAdmin())")
     public void delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
     }

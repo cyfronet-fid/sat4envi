@@ -129,7 +129,7 @@ public class SavedViewControllerIntegrationTest {
         assertDoesNotThrow(() -> s3Client.getObject(
                 GetObjectRequest.builder()
                         .bucket(fileStorageProperties.getBucket())
-                        .key(fileStorageProperties.getKeyPrefix() + savedView.getId())
+                        .key(fileStorageProperties.getKeyPrefixThumbnail() + savedView.getId())
                         .build()).response());
     }
 
@@ -145,7 +145,7 @@ public class SavedViewControllerIntegrationTest {
         s3Client.putObject(
                 PutObjectRequest.builder()
                         .bucket(fileStorageProperties.getBucket())
-                        .key(fileStorageProperties.getKeyPrefix() + savedView.getId())
+                        .key(fileStorageProperties.getKeyPrefixThumbnail() + savedView.getId())
                         .contentType("image/jpeg")
                         .build(),
                 RequestBody.fromBytes(testResourceHelper.getAsBytes(IMAGE_PNG_PATH)));
@@ -162,7 +162,7 @@ public class SavedViewControllerIntegrationTest {
         assertThrows(NoSuchKeyException.class, () ->
                 s3Client.getObject(GetObjectRequest.builder()
                         .bucket(fileStorageProperties.getBucket())
-                        .key(fileStorageProperties.getKeyPrefix() + savedView.getId())
+                        .key(fileStorageProperties.getKeyPrefixThumbnail() + savedView.getId())
                         .build()).response());
     }
 }
