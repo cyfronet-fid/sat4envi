@@ -26,12 +26,12 @@ export class InstitutionService {
 
     this.store.setLoading(true);
     this.store.setError(null);
-    this.http.get<IPageableResponse<Institution>>(`${this.s4EConfig.apiPrefixV1}/institutions`)
+    this.http.get<Institution[]>(`${this.s4EConfig.apiPrefixV1}/institutions`)
       .pipe(
         catchErrorAndHandleStore(this.store),
         finalize(() => this.store.setLoading(false))
       )
-      .subscribe(pageable => this.store.set(pageable.content));
+      .subscribe(institutions => this.store.set(institutions));
   }
 
   add(institution: Institution) {

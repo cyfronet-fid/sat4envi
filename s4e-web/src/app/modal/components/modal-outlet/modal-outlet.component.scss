@@ -1,5 +1,11 @@
 @import "../../../../scss/variables";
 
+:host {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+}
 
 .backdrop {
   position: fixed;
