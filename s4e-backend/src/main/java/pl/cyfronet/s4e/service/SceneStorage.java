@@ -1,67 +1,45 @@
 package pl.cyfronet.s4e.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.properties.S3Properties;
-import software.amazon.awssdk.core.exception.SdkException;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Service
-@RequiredArgsConstructor
-public class SceneStorage {
+public class SceneStorage extends Storage {
+    private final S3Properties s3Properties;
+    private final S3Presigner s3Presigner;
+    private final SceneRepository sceneRepository;
+
     interface SceneProjection {
         String getS3Path();
     }
 
-    private final S3Properties s3Properties;
-    private final S3Presigner s3Presigner;
-    private final S3Client s3Client;
-    private final SceneRepository sceneRepository;
+    public SceneStorage(S3Client s3Client,
+                        S3Properties s3Properties,
+                        S3Presigner s3Presigner,
+                        SceneRepository sceneRepository) {
+        super(s3Client);
+        this.s3Properties = s3Properties;
+        this.s3Presigner = s3Presigner;
+        this.sceneRepository = sceneRepository;
+    }
 
     public String get(String key) throws NotFoundException, S3ClientException {
-        verifyKey(key);
-        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(s3Properties.getBucket())
-                .key(key)
-                .build();
-
-        try {
-            return s3Client.getObjectAsBytes(getObjectRequest)
-                    .asString(StandardCharsets.UTF_8);
-        } catch (NoSuchKeyException e) {
-            throw new NotFoundException(e);
-        } catch (SdkException e) {
-            throw new S3ClientException(e);
-        }
+        return get(key, s3Properties.getBucket());
     }
 
     public boolean exists(String key) throws S3ClientException {
-        verifyKey(key);
-        HeadObjectRequest request = HeadObjectRequest.builder()
-                .bucket(s3Properties.getBucket())
-                .key(key)
-                .build();
-        try {
-            s3Client.headObject(request);
-            return true;
-        } catch (NoSuchKeyException e) {
-            return false;
-        } catch (SdkException e) {
-            throw new S3ClientException(e);
-        }
+        return exists(key, s3Properties.getBucket());
     }
 
     public URL generatePresignedGetLink(Long id, Duration signatureDuration) throws NotFoundException {
@@ -73,10 +51,11 @@ public class SceneStorage {
                 .key(sceneProjection.getS3Path())
                 .build();
 
-        PresignedGetObjectRequest presignedGetObjectRequest = s3Presigner.presignGetObject(GetObjectPresignRequest.builder()
-                .getObjectRequest(getObjectRequest)
-                .signatureDuration(signatureDuration)
-                .build());
+        PresignedGetObjectRequest presignedGetObjectRequest =
+                s3Presigner.presignGetObject(GetObjectPresignRequest.builder()
+                        .getObjectRequest(getObjectRequest)
+                        .signatureDuration(signatureDuration)
+                        .build());
 
         if (!presignedGetObjectRequest.isBrowserExecutable()) {
             throw new IllegalStateException("The returned link must be a GET request without additional headers");
@@ -87,11 +66,5 @@ public class SceneStorage {
 
     public Duration getPresignedGetTimeout() {
         return s3Properties.getPresignedGetTimeout();
-    }
-
-    private static void verifyKey(String key) {
-        if (key.startsWith("/")) {
-            throw new IllegalArgumentException("Key must not have a leading slash");
-        }
     }
 }
