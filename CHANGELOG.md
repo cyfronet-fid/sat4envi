@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v8.0.0]
+
+### Added
+
 - Select parent institution modal [#471](https://github.com/cyfronet-fid/sat4envi/issues/471)
 - JS script with PoC - layers overlapping [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Scene metadata search [#422](https://github.com/cyfronet-fid/sat4envi/issues/422)
@@ -22,8 +32,6 @@ The most recent changes are on top, in each type of changes category.
 - Handle Scene updates in ScenePersister [#469](https://github.com/cyfronet-fid/sat4envi/issues/469)
 - New sidebar look [#454](https://github.com/cyfronet-fid/sat4envi/issues/454)
 - Improve institutions endpoint to work for any signed in user [#457](https://github.com/cyfronet-fid/sat4envi/issues/457)
-
-### Fixed
 
 ### Updated
 
@@ -121,7 +129,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...HEAD
+[v8.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...v7.0.0
 [v6.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.1.0...v6.0.0
 [v5.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.0.0...v5.1.0
