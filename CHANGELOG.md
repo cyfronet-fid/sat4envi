@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix and test refactor for /institutions endpoint [#472](https://github.com/cyfronet-fid/sat4envi/issues/472)
+
 ### Updated
 
 ## [v8.0.0]

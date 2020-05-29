@@ -133,6 +133,18 @@ public class InstitutionControllerTest {
         UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group).build();
         userRoleRepository.save(userRole);
 
+        String testInstitutionZK_MAZ = "Test Institution ZK - Mazowieckie";
+        String slugInstitutionZK_MAZ = slugService.slugify(testInstitutionZK_MAZ);
+        Institution institution2 = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK_MAZ)
+                .slug(slugInstitutionZK_MAZ)
+                .parent(institution)
+                .build());
+        Group group2 = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution2).build());
+
+        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group2).build();
+        userRoleRepository.save(userRole);
+
         String testInstitutionPAK = "Test Institution PAK";
         String slugInstitutionPAK = slugService.slugify(testInstitutionPAK);
         institution = institutionRepository.save(Institution.builder()
@@ -145,7 +157,7 @@ public class InstitutionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(2))));
+                .andExpect(jsonPath("$.length()", is(equalTo(3))));
     }
 
     @Test
