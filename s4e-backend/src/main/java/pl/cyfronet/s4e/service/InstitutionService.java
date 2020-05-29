@@ -152,6 +152,7 @@ public class InstitutionService {
         return institutionRepository.findInstitutionByUserEmailAndRoles(email, roles, projection);
     }
 
+    @Transactional
     public String getParentSlugBy(String childSlug) throws NotFoundException {
         val institution = getInstitution(childSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + childSlug));
