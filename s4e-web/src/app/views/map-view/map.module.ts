@@ -42,6 +42,7 @@ import {ShareConfigurationModalComponent} from './zk/configuration/share-configu
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {S4EFormsModule} from '../../form/form.module';
 import { CommonModule } from '@angular/common';
+import { DynamicSpaceDirective } from './view-manager/dynamic-space.directive';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { CommonModule } from '@angular/common';
     SentinelSearchComponent,
     ShareConfigurationModalComponent,
     SaveConfigModalComponent,
-    ListConfigsModalComponent
+    ListConfigsModalComponent,
+    DynamicSpaceDirective
   ],
   exports: [
     MapViewComponent,

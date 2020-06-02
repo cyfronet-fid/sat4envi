@@ -1,5 +1,5 @@
 import { SessionQuery } from './../../../state/session/session.query';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked} from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
@@ -17,9 +17,17 @@ import { LocationSearchResultsQuery } from '../state/location-search-results/loc
 @Component({
   selector: 's4e-view-manager',
   templateUrl: './view-manager.component.html',
-  styleUrls: ['./view-manager.component.scss'],
+  styleUrls: ['./view-manager.component.scss']
 })
-export class ViewManagerComponent implements OnInit, OnDestroy{
+export class ViewManagerComponent implements OnInit, OnDestroy {
+  pickerRef: ElementRef = null;
+  @ViewChild('picker', { read: ElementRef })
+  set _pickerRef(pickerRef: ElementRef) {
+    if (pickerRef) {
+      // run after current change detection cycle
+      setTimeout(() => this.pickerRef = pickerRef);
+    }
+  }
   loading$: Observable<boolean>;
   scenes: IUILayer[] = [];
   products$: Observable<IUILayer[]>;

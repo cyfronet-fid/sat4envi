@@ -18,6 +18,17 @@
     </ng-template>
   </s4e-search>
 
+  <s4e-items-picker
+    #picker
+    class="section layers"
+    caption="Warstwy"
+    i18n-caption
+    [loading]="overlaysLoading$ | async"
+    [items]="overlays$ | async"
+    (itemSelected)="selectOverlay($event)"
+  >
+  </s4e-items-picker>
+
   <div class="products-list">
     <s4e-items-picker class="section products"
                         caption="Produkty"
@@ -28,15 +39,8 @@
                         (itemSelected)="selectProduct($event)"
                         (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)">
     </s4e-items-picker>
+    <div [s4eDynamicSpace]="pickerRef"></div>
   </div>
-
-  <s4e-items-picker class="section layers"
-                      caption="Warstwy"
-                      i18n-caption
-                      [loading]="overlaysLoading$ | async"
-                      [items]="overlays$ | async"
-                      (itemSelected)="selectOverlay($event)">
-  </s4e-items-picker>
 
 </ng-container>
 <ng-template #loadingRef>

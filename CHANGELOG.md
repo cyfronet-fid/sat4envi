@@ -14,6 +14,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Refactor aside.js from sidebar [#477](https://github.com/cyfronet-fid/sat4envi/issues/477)
 - Change requirement of admin institution email
 
 ### Fixed
