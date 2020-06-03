@@ -10,10 +10,11 @@
 
 ## System Components
 
-System consists of two applications:
+System consists of three applications:
 
 * frontend (directory `s4e-web` - angular application)
-* backend (directory `s4e-backend` - JAVA Spring Boot application)
+* backend (directory `s4e-backend` - Java Spring Boot application)
+* GeoServer licensing gateway (directory `gs-gateway` - Java Spring Cloud Gateway Boot application)
 
 ### s4e-backend
 
@@ -325,6 +326,47 @@ To check for dependency updates run `../mvnw versions:display-dependency-updates
 ### s4e-web
 
 Detailed frontend description can be found [here](./s4e-web/README.md)
+
+
+### GeoServer Gateway
+
+This component must be placed in front of GeoServer to provide licensing.
+
+It reads and verifies JWT token in `Authorization` header.
+The token can contain a claim `layers`, which gives access to restricted layers and scenes.
+
+The gateway routes WMS requests to GeoServer instance.
+It assumes a safe set of allowed query params.
+
+The gateway keeps a list of OPEN and EUMETSAT layers.
+If a requested layer is OPEN, then no authorization takes place and the request is allowed.
+If a requested layer is EUMETSAT, then no authorization takes place if the requested time is more than 3h in the past.
+Otherwise, the accessed layer must be contained in the `layers` claim, otherwise the request is rejected.
+
+#### Docker image
+
+The module directory contains a Dockerfile, which can be built with `docker build .`.
+
+
+#### Running
+
+To correctly run, the module requires the following configuration:
+
+Server port. Property: `server.port` or envvar `SERVER_PORT`.
+
+JWT public key. Property: `jwt.public-key` or envvar `JWT_PUBLICKEY`.
+It is used to verify incoming JWT tokens and it must match with the one used in `s4e-backend`.
+
+GeoServer URI. Property: `gateway.geoserver-uri` or envvar `GATEWAY_GEOSERVERURI`.
+
+OPEN layers. Property: `gateway.open-layers` or envvar `GATEWAY_OPENLAYERS`.
+A comma delimited list of layers with access type OPEN.
+(Note name collision with front-end library openlayers.)
+
+EUMETSAT layers. Property: `gateway.eumetsat-layers` or envvar `GATEWAY_EUMETSATLAYERS`.
+A comma delimited list of layers with access type EUMETSAT.
+
+An example of configuration can be found in `docker-compose.yml`.
 
 
 ## Development & Docker
