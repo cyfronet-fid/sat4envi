@@ -8,6 +8,7 @@
     <artifactId>s4e</artifactId>
     <version>${revision}${sha1}${changelist}</version>
     <modules>
+        <module>gs-gateway</module>
         <module>s4e-backend</module>
         <module>s4e-web</module>
     </modules>

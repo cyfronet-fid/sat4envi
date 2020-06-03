@@ -27,8 +27,30 @@ services:
       - net-test
     depends_on:
       - s4e-backend-e2e
-      - geoserver-test
       - minio-test
+      - gs-gateway-test
+  gs-gateway-test:
+    build: ./gs-gateway
+    ports:
+      - ${GS_GATEWAY_PORT:-8091}:8090
+    networks:
+      - net-test
+    environment:
+      SERVER_PORT: 8090
+      JWT_PUBLICKEY: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAp/qwGpxzLbfgkjByYMPhukSPsFysvAPDfy0/RjEiz3cZKNYmjRQU0u87Sq7HmPjQCcZTxa+FZJn1KTx/LZU261DIlOqNzxqd8GoEsKTgkQrPh4Nq3ZZkEPLqbY1YyED1jaYzHO3+jFH55BUaVE9lbO8andlWgED9SF3qQso8Sd7z3mZZqePLdEoXgKCGQa+bG10ZyMTVwrDoAPFetXuXVSRh7TC7ft/3oWZ3MTCcfCoQiWM+7ofb+rxJGawGfnF68sbxkWEnFnnD6/Z81ihvTkoI8AKvSDBPiDO2PWyrhQZ6D7L6phZdqPSXQs9JzzIn21hKsz9fySI9RFeOGGbt3QIDAQAB
+      GATEWAY_GEOSERVERURI: http://geoserver-test:8080/
+      GATEWAY_OPENLAYERS: >
+        development:108m,
+        development:setvak,
+        development:wv_ir,
+        development:wojewodztwa,
+        development:powiaty,
+        development:gminy,
+        development:jednostki_ewidencyjne,
+        development:obreby_ewidencyjne
+      GATEWAY_EUMETSATLAYERS:
+    depends_on:
+      - geoserver-test
   minio-test:
     image: fiddev/minio-test:1.1.0
     ports:
