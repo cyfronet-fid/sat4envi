@@ -48,9 +48,13 @@ public class InstitutionService {
                 .name(request.getName())
                 .slug(slug)
                 .parent(null)
+                .address(request.getAddress())
+                .city(request.getCity())
+                .postalCode(request.getPostalCode())
+                .phone(request.getPhone())
+                .secondaryPhone(request.getSecondaryPhone())
                 .build());
-
-        addInstitutionAdmin(request.getInstitutionAdminEmail(), slug);
+        addInstitutionAdminIfRequested(request.getInstitutionAdminEmail(), slug);
         uploadEmblemIfRequested(slug, request.getEmblem());
     }
 
@@ -76,9 +80,14 @@ public class InstitutionService {
                 .slug(slugService.slugify(request.getName()))
                 .parent(getInstitution(institutionSlug, Institution.class)
                         .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'")))
+                .address(request.getAddress())
+                .city(request.getCity())
+                .postalCode(request.getPostalCode())
+                .phone(request.getPhone())
+                .secondaryPhone(request.getSecondaryPhone())
                 .build());
         uploadEmblemIfRequested(slugService.slugify(request.getName()), request.getEmblem());
-        addInstitutionAdmin(request.getInstitutionAdminEmail(), result.getSlug());
+        addInstitutionAdminIfRequested(request.getInstitutionAdminEmail(), result.getSlug());
         // add all over-admins as members and admins
         addParentInstitutionAdministrators(institutionSlug, result.getSlug());
         return result;
@@ -94,19 +103,21 @@ public class InstitutionService {
         // look for institution admins and add them to leaf institution
         Set<String> adminEmails = groupRepository.findAllMembersEmails(institutionSlug, DEFAULT, AppRole.INST_ADMIN);
         for (String adminEmail : adminEmails) {
-            addInstitutionAdmin(adminEmail, leafInstitutionSlug);
+            addInstitutionAdminIfRequested(adminEmail, leafInstitutionSlug);
         }
     }
 
-    public void addInstitutionAdmin(String adminMail, String institutionSlug) throws NotFoundException {
-        val appUser = appUserRepository.findByEmail(adminMail);
-        if (appUser.isPresent()) {
-            // add member to default group
-            userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug, "default");
-            // add institution_admin role for user
-            userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug, "default");
-        } else {
-            // TODO: invite
+    public void addInstitutionAdminIfRequested(String adminMail, String institutionSlug) throws NotFoundException {
+        if (adminMail != null) {
+            val appUser = appUserRepository.findByEmail(adminMail);
+            if (appUser.isPresent()) {
+                // add member to default group
+                userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug, "default");
+                // add institution_admin role for user
+                userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug, "default");
+            } else {
+                // TODO: invite
+            }
         }
     }
 

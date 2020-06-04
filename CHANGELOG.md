@@ -14,6 +14,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Change requirement of admin institution email
+
 ### Fixed
 
 - Fix and test refactor for /institutions endpoint [#472](https://github.com/cyfronet-fid/sat4envi/issues/472)

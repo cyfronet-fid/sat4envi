@@ -15,7 +15,7 @@ import javax.validation.constraints.NotEmpty;
 public class CreateChildInstitutionRequest {
     @NotEmpty
     private String name;
-    @NotEmpty
+
     @Email
     private String institutionAdminEmail;
 
