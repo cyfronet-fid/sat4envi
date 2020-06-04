@@ -63,7 +63,6 @@
   flex-direction: row;
   align-content: center;
   padding: ($space-small +2px) $space-default;
-  margin-bottom: $space-large;
   border-radius: 8px;
 
   .search__input {
@@ -117,9 +116,7 @@
   background: $color-white;
   border-radius: 0 0 $border-radius-default $border-radius-default;
   border-top: 1px solid $color-grey-secondary;
-  top: 102px;
   z-index: 10;
-  position: absolute;
   width: calc(100% - 30px);
   box-shadow: $shadow-primary;
 }

@@ -1,16 +1,21 @@
-import { ModalWithReturnValue } from './../../modal/state/modal.model';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+import { InstitutionService } from './state/institution/institution.service';
 import { ModalQuery } from './../../modal/state/modal.query';
-import { ParentInstitutionModal, PARENT_INSTITUTION_MODAL_ID, isParentInstitutionModal } from './manage-institutions/parent-institution-modal/parent-institution-modal.model';
+import {
+  ParentInstitutionModal,
+  PARENT_INSTITUTION_MODAL_ID,
+  isParentInstitutionModal
+} from './manage-institutions/parent-institution-modal/parent-institution-modal.model';
 import { ModalService } from './../../modal/state/modal.service';
-import { InstitutionQuery } from './state/institution.query';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {SessionService} from '../../state/session/session.service';
 import {Observable} from 'rxjs';
 import {ProfileQuery} from '../../state/profile/profile.query';
-import { InstitutionService } from './state/institution.service';
 import { map } from 'rxjs/operators';
-import { Institution } from './state/institution.model';
+import { InstitutionsSearchResultsQuery } from './state/institutions-search/institutions-search-results.query';
+import { InstitutionsSearchResultsService } from './state/institutions-search/institutions-search-results.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Institution } from './state/institution/institution.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 's4e-settings',
@@ -19,17 +24,48 @@ import { Institution } from './state/institution.model';
 })
 export class SettingsComponent implements OnInit {
   showInstitutions$: Observable<boolean>;
+  public institutions$: Observable<Institution[]>;
+  public institutionsLoading$: Observable<boolean>;
+  public areResultsOpen$: Observable<boolean>;
+
+  public searchValue: string;
+  public isInUse: boolean = false;
+
+  public hasSelectedInstitution$: Observable<boolean>;
 
   constructor(
+    private _instutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    private _institutionsSearchResultsService: InstitutionsSearchResultsService,
+    private _institutionService: InstitutionService,
     private sessionService: SessionService,
     private profileQuery: ProfileQuery,
-    private _institutionQuery: InstitutionQuery,
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
     private _modalQuery: ModalQuery
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.showInstitutions$ = this.profileQuery.selectCanSeeInstitutions();
+    this.institutions$ = this._instutionsSearchResultsQuery.selectAll()
+      .pipe(map(institutions => institutions.filter(institution => !!institution)));
+    this.institutionsLoading$ = this._instutionsSearchResultsQuery.selectLoading();
+    this.areResultsOpen$ = this._instutionsSearchResultsQuery.selectIsOpen();
+
+    this.hasSelectedInstitution$ = this._instutionsSearchResultsQuery.hasSelectedInstitutionBy$(this._activatedRoute);
+
+    // TODO: set institution from storage
+    if (environment.hmr) {
+      const searchResult = this._instutionsSearchResultsQuery.getValue().searchResult;
+      this.searchValue = !!searchResult ? searchResult.name : '';
+    }
+
+    this._institutionService.get();
+  }
+
+  searchForInstitutions(partialInstitutionName: string) {
+    this._institutionsSearchResultsService.get(partialInstitutionName);
+    this.isInUse = true;
   }
 
   openParentInstitutionModal() {
@@ -44,5 +80,32 @@ export class SettingsComponent implements OnInit {
         map(modal => isParentInstitutionModal(modal) ? modal.returnValue : null)
       )
       .subscribe(institution => console.log(institution));
+  }
+  selectFirstInstitution() {
+    const firstSearchResult = this._instutionsSearchResultsQuery.getAll()[0];
+    if(!!firstSearchResult) {
+      this.selectInstitution(firstSearchResult);
+    }
+  }
+
+  selectInstitution(institution: Institution | null) {
+    this.searchValue = !!institution && institution.name || '';
+    this.isInUse = false;
+    this._institutionsSearchResultsService.setSelectedInstitution(institution);
+
+    this._router.navigate(
+      !!institution ? [] : ['/settings'],
+      {
+        relativeTo: this._activatedRoute,
+        queryParams: {
+          institution: !!institution && institution.slug || null
+        },
+        queryParamsHandling: 'merge'
+      }
+    );
+  }
+
+  resetSearch() {
+    this.selectInstitution(null);
   }
 }

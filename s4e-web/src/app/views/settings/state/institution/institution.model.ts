@@ -1,5 +1,5 @@
 export interface Institution {
-  // unique ID
+  id: string;
   slug: string;
   name: string;
 }

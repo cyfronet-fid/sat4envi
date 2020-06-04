@@ -1,3 +1,31 @@
 @import "../../../scss/panel";
 
+.navigation__list {
+  position: relative;
+}
 
+:host ::ng-deep {
+  .searchResults {
+    width: calc(100% - 10px);
+  }
+}
+
+s4e-search {
+  & .type,
+  & .voivodeship{
+    font-style: italic;
+    color: $color-grey;
+    opacity: 0.5;
+    margin-left: $space-xsmall;
+  }
+
+  & .name {
+    margin-right: $space-small;
+  }
+}
+
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  color: gray !important;
+}

@@ -1,25 +1,16 @@
 import {EntityState} from '@datorama/akita';
 
-export interface SearchResult {
-  id: string;
-  latitude: number;
-  longitude: number;
-  name: string;
-  type: string;
-  voivodeship: string;
-}
-
-export interface SearchResultsState extends EntityState<SearchResult> {
+export interface SearchResultsState<T> extends EntityState<T> {
   isOpen: boolean;
   queryString: string;
-  selectedLocation: SearchResult|null;
+  searchResult: T | null;
 }
 
-export function createInitialState(): SearchResultsState {
+export function createInitialState<T>(): SearchResultsState<T> {
   return {
     isOpen: false,
     queryString: '',
-    selectedLocation: null
+    searchResult: null
   };
 }
 

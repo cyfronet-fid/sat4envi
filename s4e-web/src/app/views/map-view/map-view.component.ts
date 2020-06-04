@@ -10,8 +10,7 @@ import {ViewPosition} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
-import {SearchResult} from './state/search-results/search-result.model';
-import {SearchResultsQuery} from './state/search-results/search-results.query';
+import {LocationSearchResult} from './state/location-search-results/location-search-result.model';
 import {SessionService} from '../../state/session/session.service';
 import {SessionQuery} from '../../state/session/session.query';
 import {Scene} from './state/scene/scene.model';
@@ -33,6 +32,7 @@ import {map, switchMap, take} from 'rxjs/operators';
 import {ProfileQuery} from '../../state/profile/profile.query';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
+import { LocationSearchResultsQuery } from './state/location-search-results/location-search-results.query';
 
 @Component({
   selector: 's4e-map-view',
@@ -50,7 +50,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
   public userLoggedIn$: Observable<boolean>;
-  public placeSearchResults$: Observable<SearchResult[]>;
+  public placeSearchResults$: Observable<LocationSearchResult[]>;
   public placeSearchLoading$: Observable<boolean>;
   public placeSearchResultsOpen$: Observable<boolean>;
   public activeView$: Observable<ViewPosition>;
@@ -58,7 +58,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
   public showLoginOptions$: Observable<boolean>;
-  public selectedLocation$: Observable<SearchResult | null>;
+  public selectedLocation$: Observable<LocationSearchResult | null>;
   public userIsZK$: Observable<boolean>;
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
@@ -76,7 +76,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
               private sessionService: SessionService,
               private legendQuery: LegendQuery,
               private legendService: LegendService,
-              private searchResultsQuery: SearchResultsQuery,
+              private searchResultsQuery: LocationSearchResultsQuery,
               private modalService: ModalService,
               private viewConfigurationQuery: ViewConfigurationQuery,
               private profileQuery: ProfileQuery,

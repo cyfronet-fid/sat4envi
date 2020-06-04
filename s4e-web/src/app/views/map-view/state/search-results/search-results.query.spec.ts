@@ -1,11 +1,12 @@
 import {SearchResultsQuery} from './search-results.query';
-import {SearchResultsStore} from './search-results.store';
+import { EntityStore } from '@datorama/akita';
+import { SearchResultsState } from './search-result.model';
 
 describe('SearchResultsQuery', () => {
-  let query: SearchResultsQuery;
+  let query: SearchResultsQuery<any>;
 
   beforeEach(() => {
-    query = new SearchResultsQuery(new SearchResultsStore());
+    query = new SearchResultsQuery<any>(new EntityStore<SearchResultsState<any>, any>());
   });
 
   it('should create an instance', () => {

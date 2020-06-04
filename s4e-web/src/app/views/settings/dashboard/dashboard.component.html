@@ -8,7 +8,13 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Ludzie</header>
       <p i18n tile-description>Panel służy do zarządzania osobami, które są pracownikami lub współpracownikami instytucji.</p>
-      <button routerLink="../people" class="button button--secondary" footer-navigation>
+      <button
+        routerLink="../people"
+        queryParamsHandling="merge"
+        class="button button--secondary"
+        [disabled]="!(hasSelectedInstitution$ | async)"
+        footer-navigation
+      >
         Zarządzaj ludźmi
       </button>
     </s4e-tile>
@@ -16,7 +22,13 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Grupy</header>
       <p i18n tile-description>Każda osoba w systemie należy do jakiejść grupy. W tym miejscu możesz zarządzać ich uprawnieniami.</p>
-      <button routerLink="../groups" class="button button--secondary" footer-navigation>
+      <button
+        routerLink="../groups"
+        queryParamsHandling="merge"
+        class="button button--secondary"
+        [disabled]="!(hasSelectedInstitution$ | async)"
+        footer-navigation
+      >
         Zarządzaj grupami
       </button>
     </s4e-tile>
@@ -24,7 +36,13 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Profil instytucji</header>
       <p i18n tile-description>To instytucja, której jesteś administratorem. Możesz edytować tam podstawowe informacje.</p>
-      <button routerLink="../institution" class="button button--secondary" footer-navigation>
+      <button
+        routerLink="../institution"
+        queryParamsHandling="merge"
+        class="button button--secondary"
+        [disabled]="!(hasSelectedInstitution$ | async)"
+        footer-navigation
+      >
         Zobacz profil
       </button>
     </s4e-tile>

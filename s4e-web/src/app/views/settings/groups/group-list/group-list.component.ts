@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Institution} from '../../state/institution.model';
-import {InstitutionQuery} from '../../state/institution.query';
-import {InstitutionService} from '../../state/institution.service';
+import {Institution} from '../../state/institution/institution.model';
+import {InstitutionQuery} from '../../state/institution/institution.query';
+import {InstitutionService} from '../../state/institution/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {GroupQuery} from '../state/group.query';

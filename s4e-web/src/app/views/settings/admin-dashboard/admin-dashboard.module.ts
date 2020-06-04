@@ -1,3 +1,4 @@
+import { SearchModule } from './../../../components/search/search.module';
 import { TilesDashboardModule } from './../../../components/tiles-dashboard/tiles-dashboard.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,7 +12,8 @@ import {RouterModule} from '@angular/router';
   imports: [
     CommonModule,
     RouterModule,
-    TilesDashboardModule
+    TilesDashboardModule,
+    SearchModule
   ],
   exports: [
     AdminDashboardComponent

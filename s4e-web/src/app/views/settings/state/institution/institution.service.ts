@@ -2,21 +2,24 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {InstitutionStore} from './institution.store';
 import {Institution} from './institution.model';
-import {S4eConfig} from '../../../utils/initializer/config.service';
-import {filter, finalize, flatMap, map} from 'rxjs/operators';
+import {filter, finalize, flatMap, map, delay} from 'rxjs/operators';
 import {InstitutionQuery} from './institution.query';
-import {IPageableResponse} from '../../../state/pagable.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
-import {catchErrorAndHandleStore} from '../../../common/store.util';
+import { AkitaGuidService } from 'src/app/views/map-view/state/search-results/guid.service';
+import { S4eConfig } from 'src/app/utils/initializer/config.service';
+import { IPageableResponse } from 'src/app/state/pagable.model';
+import { catchErrorAndHandleStore } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionService {
+  CONFIG: any;
   constructor(private store: InstitutionStore,
               private s4EConfig: S4eConfig,
               private query: InstitutionQuery,
               private router: Router,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private guidGenerationService: AkitaGuidService) {
   }
 
   get() {
@@ -31,7 +34,14 @@ export class InstitutionService {
         catchErrorAndHandleStore(this.store),
         finalize(() => this.store.setLoading(false))
       )
-      .subscribe(institutions => this.store.set(institutions));
+      .subscribe(institutions => this.store
+        .set(institutions
+          .map(institution => ({
+            ...institution,
+            id: this.guidGenerationService.guid()
+          }))
+        )
+      );
   }
 
   add(institution: Institution) {

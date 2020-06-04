@@ -8,7 +8,6 @@ import {Observable} from 'rxjs';
   providedIn: 'root'
 })
 export class SessionQuery extends Query<Session> {
-
   constructor(protected store: SessionStore) {
     super(store);
   }

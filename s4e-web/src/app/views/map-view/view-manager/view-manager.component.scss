@@ -1,0 +1,25 @@
+@import "../../../../scss/variables";
+
+:host ::ng-deep {
+  .search {
+    margin-bottom: $space-large;
+  }
+
+  .searchResults {
+    margin-top: -22px;
+  }
+}
+
+s4e-search {
+  & .type,
+  & .voivodeship{
+    font-style: italic;
+    color: $color-grey;
+    opacity: 0.5;
+    margin-left: $space-xsmall;
+  }
+
+  & .name {
+    margin-right: $space-small;
+  }
+}

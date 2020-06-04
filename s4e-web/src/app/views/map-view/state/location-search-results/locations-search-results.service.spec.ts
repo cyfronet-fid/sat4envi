@@ -1,31 +1,31 @@
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {SearchResultsService} from './search-results.service';
-import {SearchResultsStore} from './search-results.store';
-import {SearchResultsQuery} from './search-results.query';
+import {SearchResultsService} from './locations-search-results.service';
+import {LocationSearchResultsStore} from './locations-search-results.store';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
-import {AkitaGuidService} from './guid.service';
 import {InjectorModule} from '../../../../common/injector.module';
 import {RouterTestingModule} from '@angular/router/testing';
+import { AkitaGuidService } from '../search-results/guid.service';
+import { LocationSearchResultsQuery } from './location-search-results.query';
 
 
 describe('SearchResultsService', () => {
   let searchResultsService: SearchResultsService;
-  let searchResultsStore: SearchResultsStore;
-  let searchResultsQuery: SearchResultsQuery;
+  let searchResultsStore: LocationSearchResultsStore;
+  let searchResultsQuery: LocationSearchResultsQuery;
   let http: HttpTestingController;
   let guidService: AkitaGuidService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchResultsService, SearchResultsStore, SearchResultsQuery, TestingConfigProvider, AkitaGuidService],
+      providers: [SearchResultsService, LocationSearchResultsStore, LocationSearchResultsQuery, TestingConfigProvider, AkitaGuidService],
       imports: [InjectorModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
     searchResultsService = TestBed.get(SearchResultsService);
-    searchResultsStore = TestBed.get(SearchResultsStore);
-    searchResultsQuery = TestBed.get(SearchResultsQuery);
+    searchResultsStore = TestBed.get(LocationSearchResultsStore);
+    searchResultsQuery = TestBed.get(LocationSearchResultsQuery);
     guidService = TestBed.get(AkitaGuidService);
   });
 

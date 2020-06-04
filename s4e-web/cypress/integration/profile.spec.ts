@@ -17,6 +17,7 @@ context('Profile', () => {
     // go to settings profile
     cy.get('#user-login-button').should('be.visible').click();
     cy.get('a').should('be.visible').contains('Ustawienia').click();
+    cy.get('.navigation a').contains('Twój profil').should('be.visible').click();
     cy.location('pathname').should('eq', '/settings/profile');
 
     cy.fixture('users/zkMember.json').as('zkMember')
@@ -44,6 +45,7 @@ context('Profile', () => {
     // Reset password to default
     cy.get('#user-login-button').should('be.visible').click();
     cy.get('a').should('be.visible').contains('Ustawienia').click();
+    cy.get('.navigation a').contains('Twój profil').should('be.visible').click();
     cy.location('pathname').should('eq', '/settings/profile');
 
     cy.fixture('users/zkMember.json').as('zkMember')

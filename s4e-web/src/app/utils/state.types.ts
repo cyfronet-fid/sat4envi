@@ -1,4 +1,4 @@
-import {SearchResult} from '../views/map-view/state/search-results/search-result.model';
+import {LocationSearchResult} from '../views/map-view/state/location-search-results/location-search-result.model';
 
 export interface IPaginable<T> {
   content: T[];
@@ -14,4 +14,4 @@ export interface IPaginable<T> {
   pageable: string;
 }
 
-export interface PageSearchResult extends IPaginable<SearchResult> {}
+export interface PageSearchResult extends IPaginable<LocationSearchResult> {}

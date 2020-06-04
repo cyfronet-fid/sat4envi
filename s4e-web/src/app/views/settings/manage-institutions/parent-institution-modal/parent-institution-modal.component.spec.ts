@@ -1,5 +1,4 @@
 import { By } from '@angular/platform-browser';
-import { InstitutionQuery } from './../../state/institution.query';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { S4eConfig } from './../../../../utils/initializer/config.service';
@@ -12,6 +11,7 @@ import { createModal } from 'src/app/modal/state/modal.model';
 import { PARENT_INSTITUTION_MODAL_ID, ParentInstitutionModal } from './parent-institution-modal.model';
 import { of } from 'rxjs';
 import { DebugElement } from '@angular/core';
+import { InstitutionQuery } from '../../state/institution/institution.query';
 
 describe('ParentInstitutionModalComponent', () => {
   let component: ParentInstitutionModalComponent;

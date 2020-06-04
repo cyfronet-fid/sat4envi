@@ -22,15 +22,20 @@ function isDashboardUrl(url: UrlSegment[]) {
     && isOneSegmentUrl
     && lastUrlSegment.path === 'dashboard';
 }
+function isEmptyUrl(url: UrlSegment[]) {
+  return url.length === 0;
+}
 export function adminDashboardMatcher(url: UrlSegment[]) {
   const profileQuery: ProfileQuery = InjectorModule.Injector.get(ProfileQuery);
-  const isAdminDashboard = profileQuery.isAdmin() && isDashboardUrl(url);
+  const isAdminDashboard = profileQuery.isAdmin() && (isDashboardUrl(url) || isEmptyUrl(url));
   const lastUrlSegment = url[0];
-  return isAdminDashboard ? ({consumed: [lastUrlSegment]}) : null;
+  const nextUrl = isEmptyUrl(url) && new UrlSegment('dashboard', {}) || lastUrlSegment;
+  return isAdminDashboard ? ({consumed: [nextUrl]}) : null;
 }
 export function managerDashboardMatcher(url: UrlSegment[]) {
   const profileQuery: ProfileQuery = InjectorModule.Injector.get(ProfileQuery);
-  const isManagerDashboard = profileQuery.isManager() && !profileQuery.getValue().admin && isDashboardUrl(url);
+  const isManagerDashboard = profileQuery.isManager() && !profileQuery.getValue().admin && (isDashboardUrl(url) || isEmptyUrl(url));
   const lastUrlSegment = url[0];
-  return isManagerDashboard ? ({consumed: [lastUrlSegment]}) : null;
+  const nextUrl = isEmptyUrl(url) && new UrlSegment('dashboard', {}) || lastUrlSegment;
+  return isManagerDashboard ? ({consumed: [nextUrl]}) : null;
 }

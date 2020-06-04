@@ -9,6 +9,7 @@
 }
 
 .navigation {
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   width: 360px;
@@ -24,11 +25,29 @@
   font-family: $font-secondary;
   font-weight: bold;
 
+  &__list:first-child {
+    margin-top: 150px;
+  }
+
+  &__list:nth-child(2) {
+    background-color: rgba(0, 0, 0, 0.03);
+
+    li:first-child {
+      margin: 0px;
+    }
+
+    li {
+      padding: 5px;
+      a {
+        padding-left: 15px;
+      }
+    }
+  }
+
   &__list {
     font-size: 1.25rem;
     font-weight: 700;
     margin-left: 25px;
-    margin-top: 150px;
 
     li {
       margin: $space-xlarge 0;
@@ -48,11 +67,6 @@
         }
       }
     }
-
-    li:last-child {
-      margin-top: $space-xlarge * 3;
-    }
-
   }
 
   a {
