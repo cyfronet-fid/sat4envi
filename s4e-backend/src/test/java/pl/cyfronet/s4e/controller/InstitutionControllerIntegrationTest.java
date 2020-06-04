@@ -117,6 +117,26 @@ public class InstitutionControllerIntegrationTest {
                         .build()).response());
     }
 
+    public void shouldntCreateInstitutionWithoutEmblem() throws Exception {
+        // TODO: this test should be used when emblem validation is fixed
+        CreateInstitutionRequest request = CreateInstitutionRequest.builder()
+                .name("Test Institution ZK")
+                .build();
+
+        mockMvc.perform(post(API_PREFIX_V1 + "/institutions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(request))
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().is5xxServerError());
+
+        // Expect object is not found.
+        assertThrows(NoSuchKeyException.class, () -> s3Client.getObject(
+                GetObjectRequest.builder()
+                        .bucket(fileStorageProperties.getBucket())
+                        .key(fileStorageProperties.getKeyPrefixEmblem() + "test-institution-zk")
+                        .build()).response());
+    }
+
     @Test
     public void shouldUpdateInstitutionWithEmblem() throws Exception {
         CreateInstitutionRequest request = CreateInstitutionRequest.builder()

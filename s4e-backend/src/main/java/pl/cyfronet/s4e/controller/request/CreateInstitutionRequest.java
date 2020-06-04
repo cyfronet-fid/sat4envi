@@ -32,7 +32,6 @@ public class CreateInstitutionRequest {
 
     private String secondaryPhone;
 
-    @NotEmpty
     @Email
     private String institutionAdminEmail;
 }
