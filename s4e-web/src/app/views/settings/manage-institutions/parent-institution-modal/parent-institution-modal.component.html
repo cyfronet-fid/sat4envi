@@ -1,32 +1,41 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
   <div class="s4e-modal-header" i18n>Wybierz instytucje nadrzedna</div>
   <div class="s4e-modal-body">
-    <p>
+    <p i18n>
       W tym oknie możesz określić instytucję nadrzędną.
       Wyszukiwarka pomoze zawęzić wyniki wyszukiwań w czasie rzeczywistym.
     </p>
     <section class="search">
       <input
         class="search__input"
+        type="text"
         placeholder="Wpisz szukaną miejscowość..."
         i18n-placeholder
         #searchPlacesInput
-        [formControl]="institutionsSearch"/>
+        [formControl]="institutionsSearch"
+        i18n
+      />
       <button class="reset_search_button" *ngIf="!(institutionsSearch.value == '')" (click)="institutionsSearch.setValue('')">
         <img src="../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
       </button>
     </section>
 
-    <h3>Lista instytucji</h3>
+    <h3 i18n>Lista instytucji</h3>
     <ul>
       <li *ngFor="let institution of searchedInstitutions">
-        <input type="radio" id="institution" name="institution" (click)="selectedInstitution = institution">
-        <label for="institution">{{ institution.name }}</label>
+        <input
+          type="radio"
+          id="institution"
+          name="institution"
+          [checked]="isSelected(institution)"
+          (click)="selectedInstitution = institution"
+        >
+        <label for="institution" i18n>{{ institution.name }}</label>
       </li>
     </ul>
   </div>
   <div class="s4e-modal-footer">
-    <button class="button button--primary button--small"  type="submit" [disabled]="!selectedInstitution" (click)="accept()" i18n>Przypisz do instytucji</button>
+    <button class="button button--primary button--small"  type="submit" (click)="accept()" i18n>Przypisz do instytucji</button>
     <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Anuluj</button>
   </div>
 </s4e-generic-modal>

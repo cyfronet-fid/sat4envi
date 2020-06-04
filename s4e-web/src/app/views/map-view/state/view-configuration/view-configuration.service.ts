@@ -27,7 +27,8 @@ export class ViewConfigurationService {
         map(r => true),
         catchErrorAndHandleStore(this.store),
         finalize(() => this.store.setLoading(false)),
-        shareReplay(1));
+        shareReplay(1)
+      );
     r.subscribe();
     return r;
   }

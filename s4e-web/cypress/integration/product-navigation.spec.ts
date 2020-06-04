@@ -1,5 +1,9 @@
 /// <reference types="Cypress" />
 
+import promisify from "cypress-promise";
+import { Login } from "../page-objects/login/login.po";
+import { Map } from "../page-objects/map/map.po";
+
 context('productNavigation', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -44,23 +48,13 @@ context('productNavigation', () => {
     cy.get('.search__input').should('have.value', '');
   });
 
-  it('should set favourite after login', () => {
-    // log in
-    cy.visit('/login');
-    cy.fixture('users/zkMember.json').as('zkMember')
-      .then((zkMember) => {
-        cy.get('#login-login').type(zkMember.email);
-        cy.get('#login-password').type(zkMember.password);
-        cy.get('button[type="submit"]').click();
-      });
-
-    // click first product as favourite
-    cy.location('pathname').should('eq', '/map/products');
-
-    cy.get('.e2e-favourite-btn').should('not.exist');
-    cy.get('.e2e-non-favourite-btn').should('be.visible').click({multiple: true, force: true});
-
+  it('should set favourite after login', async () => {
+    const user = await promisify(cy.fixture('users/zkMember.json'));
+    Login
+      .loginAs(user)
+      .selectAllFavorites();
     cy.visit('/');
-    cy.get('.e2e-favourite-btn').should('be.visible').should('exist').click({multiple: true, force: true});
+    Map
+      .unselectAllFavorites();
   });
 });

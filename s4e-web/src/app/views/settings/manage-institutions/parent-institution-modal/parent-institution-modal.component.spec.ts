@@ -5,7 +5,7 @@ import { S4eConfig } from './../../../../utils/initializer/config.service';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ParentInstitutionModalComponent } from './parent-institution-modal.component';
-import { ParentInstitutionModalModule } from './parent-institution-modal.module';
+import { ManageInstitutionsModalModule } from '../manage-institutions.module';
 import { MODAL_DEF } from 'src/app/modal/modal.providers';
 import { createModal } from 'src/app/modal/state/modal.model';
 import { PARENT_INSTITUTION_MODAL_ID, ParentInstitutionModal } from './parent-institution-modal.model';
@@ -22,7 +22,7 @@ describe('ParentInstitutionModalComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ParentInstitutionModalModule,
+        ManageInstitutionsModalModule,
         HttpClientTestingModule,
         RouterTestingModule
       ],
@@ -102,7 +102,7 @@ describe('ParentInstitutionModalComponent', () => {
     fixture.detectChanges();
 
     const applyBtn = de.nativeElement.querySelector('button[type=submit]');
-    expect(applyBtn.getAttribute('disabled')).toEqual('');
+    expect(applyBtn.getAttribute('disabled')).toEqual(null);
     const institutionLabel = de.nativeElement.querySelector('ul > li > label[for=institution]');
     institutionLabel.click();
 

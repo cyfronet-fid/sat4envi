@@ -1,4 +1,5 @@
 import { SearchModule } from './../../components/search/search.module';
+import { ModalModule } from './../../modal/modal.module';
 import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -13,7 +14,7 @@ import {GroupListComponent} from './groups/group-list/group-list.component';
 import {PeopleModule} from './people/people.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
-import { ParentInstitutionModalModule } from './manage-institutions/parent-institution-modal/parent-institution-modal.module';
+import { ManageInstitutionsModalModule } from './manage-institutions/manage-institutions.module';
 
 @NgModule({
   declarations: [
@@ -31,10 +32,9 @@ import { ParentInstitutionModalModule } from './manage-institutions/parent-insti
     AdminDashboardModule,
     PeopleModule,
     RouterModule.forChild(settingsRoutes),
-    ParentInstitutionModalModule,
+    ManageInstitutionsModalModule,
     SearchModule
-  ],
-  providers: []
+  ]
 })
 export class SettingsModule {
 }

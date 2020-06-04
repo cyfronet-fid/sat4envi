@@ -1,0 +1,22 @@
+form {
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+label[for=emblem] {
+  cursor: pointer;
+  padding: 20px;
+  background-color: white;
+}
+
+button {
+  margin: 5px;
+  background-color: white;
+  padding: 20px;
+}
+
+.special__error, .alert-danger {
+  color: red;
+  background-color: whitesmoke;
+  padding: 5px;
+}
