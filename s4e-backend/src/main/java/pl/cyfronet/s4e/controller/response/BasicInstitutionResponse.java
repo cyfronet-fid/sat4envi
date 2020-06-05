@@ -9,4 +9,7 @@ public interface BasicInstitutionResponse {
 
     @Value("#{@institutionService.getParentSlugBy(target.slug)}")
     String getParentSlug();
+
+    @Value("#{@institutionService.getParentNameBy(target.slug)}")
+    String getParentName();
 }

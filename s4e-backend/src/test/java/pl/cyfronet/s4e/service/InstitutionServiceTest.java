@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.service;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,8 @@ import java.util.Set;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
 @BasicTest
 @Slf4j
@@ -103,7 +105,7 @@ public class InstitutionServiceTest {
         userRoleRepository.save(userRole);
     }
 
-    //    @AfterEach
+    @AfterEach
     public void tearDown() {
         testDbHelper.clean();
     }
@@ -145,5 +147,25 @@ public class InstitutionServiceTest {
         result = groupService.getMembers("child-institution", DEFAULT, AppUserResponse.class);
         // new inst_admin and two from parent
         assertThat(result, hasSize(3));
+    }
+
+    @Test
+    public void shouldReturnParentSlug() throws NotFoundException {
+        assertThat(institutionService.getParentSlugBy(slugInstitution2), is(equalTo(slugInstitution)));
+    }
+
+    @Test
+    public void shouldntReturnParentSlugForRoot() throws NotFoundException {
+        assertThat(institutionService.getParentSlugBy(slugInstitution), nullValue());
+    }
+
+    @Test
+    public void shouldReturnParentNameByInstitutionSlug() throws NotFoundException {
+        assertThat(institutionService.getParentNameBy(slugInstitution2), is(equalTo(testInstitution)));
+    }
+
+    @Test
+    public void shouldntReturnParentNameForRoot() throws NotFoundException {
+        assertThat(institutionService.getParentNameBy(slugInstitution), nullValue());
     }
 }
