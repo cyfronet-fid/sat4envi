@@ -175,6 +175,18 @@ public class InstitutionService {
         }
     }
 
+    @Transactional
+    public String getParentNameBy(String childSlug) throws NotFoundException {
+        val institution = getInstitution(childSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + childSlug));
+        if (institution.getParent() != null) {
+            Institution parent = institution.getParent();
+            return parent.getName();
+        } else {
+            return null;
+        }
+    }
+
     public String getEmblemPath(String slug) {
         return String.join("/", fileStorageProperties.getBucket(), getEmblemKey(slug));
     }
