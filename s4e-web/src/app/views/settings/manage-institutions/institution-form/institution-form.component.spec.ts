@@ -1,16 +1,16 @@
 import { InstitutionFactory } from '../../state/institution/institution.factory.spec';
-import { InstitutionService } from './../../state/institution/institution.service';
+import { InstitutionService } from '../../state/institution/institution.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ManageInstitutionsModalModule } from './../manage-institutions.module';
+import { ManageInstitutionsModalModule } from '../manage-institutions.module';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddInstitutionComponent } from './add-institution.component';
+import { InstitutionFormComponent } from './institution-form.component';
 import { S4eConfig } from 'src/app/utils/initializer/config.service';
 
-describe('AddInstitutionComponent', () => {
-  let component: AddInstitutionComponent;
-  let fixture: ComponentFixture<AddInstitutionComponent>;
+describe('InstitutionFormComponent', () => {
+  let component: InstitutionFormComponent;
+  let fixture: ComponentFixture<InstitutionFormComponent>;
   let institutionService: InstitutionService;
 
   beforeEach(async(() => {
@@ -28,7 +28,7 @@ describe('AddInstitutionComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AddInstitutionComponent);
+    fixture = TestBed.createComponent(InstitutionFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     institutionService = TestBed.get(InstitutionService);
@@ -40,30 +40,30 @@ describe('AddInstitutionComponent', () => {
 
   it('should not send non valid form', () => {
     const spy = spyOn(institutionService, 'addInstitutionChild$');
-    component.addInstitution();
+    component.updateInstitution();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
     const spy = spyOn(institutionService, 'addInstitutionChild$');
-    const {id, slug, ...formInstitution} = InstitutionFactory.build();
+    const {id, ...formInstitution} = InstitutionFactory.build();
     component.form.setValue(formInstitution as undefined);
-    component.addInstitution();
+    component.updateInstitution();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should validate parent institution name', () => {
-    component.form.controls.parentInstitutionName.setValue('');
-    expect(component.form.controls.parentInstitutionName.valid).toBeFalsy();
-    component.form.controls.parentInstitutionName.setValue(InstitutionFactory.build().parentInstitutionName);
-    expect(component.form.controls.parentInstitutionName.valid).toBeTruthy();
+    component.form.controls.parentName .setValue('');
+    expect(component.form.controls.parentName .valid).toBeFalsy();
+    component.form.controls.parentName .setValue(InstitutionFactory.build().parentName );
+    expect(component.form.controls.parentName .valid).toBeTruthy();
   });
 
   it('should validate parent institution slug', () => {
-    component.form.controls.parentInstitutionSlug.setValue('');
-    expect(component.form.controls.parentInstitutionSlug.valid).toBeFalsy();
-    component.form.controls.parentInstitutionSlug.setValue(InstitutionFactory.build().parentInstitutionSlug);
-    expect(component.form.controls.parentInstitutionSlug.valid).toBeTruthy();
+    component.form.controls.parentSlug.setValue('');
+    expect(component.form.controls.parentSlug.valid).toBeFalsy();
+    component.form.controls.parentSlug.setValue(InstitutionFactory.build().parentSlug);
+    expect(component.form.controls.parentSlug.valid).toBeTruthy();
   });
 
   it('should validate name', () => {
@@ -117,7 +117,7 @@ describe('AddInstitutionComponent', () => {
 
   it('should validate institution admin email', () => {
     component.form.controls.institutionAdminEmail.setValue('');
-    expect(component.form.controls.institutionAdminEmail.valid).toBeFalsy();
+    expect(component.form.controls.institutionAdminEmail.valid).toBeTruthy();
 
     component.form.controls.institutionAdminEmail.setValue(InstitutionFactory.build().institutionAdminEmail.split('@').shift());
     expect(component.form.controls.institutionAdminEmail.valid).toBeFalsy();

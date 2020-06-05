@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Edit institution [#494](https://github.com/cyfronet-fid/sat4envi/issues/494)
 - GeoServer Gateway [#479](https://github.com/cyfronet-fid/sat4envi/issues/479)
 - Add parentName to basic institution response
 - Add Institution form for superadmin [#470](https://github.com/cyfronet-fid/sat4envi/issues/470)

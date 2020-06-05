@@ -5,13 +5,31 @@
     To instytucja, której jesteś administratorem. Możesz tu edytować podstawowe informacje.  </p>
 </header>
 <section class="page__content">
+  <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" />
   <div class="institution__box">
-    <span class="button button--default">Edytuj dane</span>
-    <h2>Urząd miasta</h2>
-    <ul>
-      <li>ul. Rzemieślnicza 12-14</li>
-      <li>31-598 Zawodniczki</li>
-      <li>email: um@zawodniczki.um.pl</li>
-    </ul>
+    <span
+      class="button button--default"
+      [routerLink]="['/settings/edit-institution']"
+      queryParamsHandling="merge"
+      i18n
+    >
+      Edytuj dane
+    </span>
+    <ng-container *ngIf="!!activeInstitution">
+      <h2 id="institution-title">{{ activeInstitution.name }}</h2>
+      <ul>
+        <li id="institution-address">{{ activeInstitution.address }}</li>
+        <li id="institution-postal-code">{{ activeInstitution.postalCode }} {{ activeInstitution.city }}</li>
+        <li *ngIf="!!activeInstitution.institutionAdminEmail" id="institution-email">
+          email: {{ activeInstitution.institutionAdminEmail }}
+        </li>
+        <li *ngIf="!!activeInstitution.phone" id="institution-phone">
+          phone: {{ activeInstitution.phone }}
+        </li>
+        <li *ngIf="!!activeInstitution.secondaryPhone" id="institution-second-phone">
+          second phone: {{ activeInstitution.secondaryPhone }}
+        </li>
+      </ul>
+    </ng-container>
   </div>
 </section>
