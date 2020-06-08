@@ -17,7 +17,6 @@ import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
 import pl.cyfronet.s4e.controller.response.BasicInstitutionResponse;
 import pl.cyfronet.s4e.controller.response.InstitutionResponse;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
-import pl.cyfronet.s4e.ex.InstitutionUpdateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.security.AppUserDetails;
@@ -63,7 +62,7 @@ public class InstitutionController {
             "(isInstitutionAdmin(#institutionSlug)||isInstitutionManager(#institutionSlug)||isAdmin())")
     public void update(@RequestBody UpdateInstitutionRequest request,
                        @PathVariable("institution") String institutionSlug)
-            throws NotFoundException, InstitutionUpdateException, S3ClientException {
+            throws NotFoundException, S3ClientException {
         institutionService.update(request, institutionSlug);
     }
 
