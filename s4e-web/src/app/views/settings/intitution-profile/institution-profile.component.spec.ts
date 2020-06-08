@@ -14,6 +14,7 @@ import { InstitutionService } from '../state/institution/institution.service';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
+  snapshot = {};
 
   constructor() {
     this.queryParamMap.next(convertToParamMap({}));
@@ -65,7 +66,7 @@ describe('InstitutionProfileComponent', () => {
     expect(spyFindBy).toHaveBeenCalledWith(institution.slug);
     expect(component.activeInstitution).toEqual(institution);
 
-    const image = de.query(By.css('.page__content img'));
+    const image = de.query(By.css('.profile__image img'));
     expect(image).toBeTruthy();
 
     const title = de.query(By.css('#institution-title'));
@@ -81,9 +82,9 @@ describe('InstitutionProfileComponent', () => {
     expect(institutionAdminEmail.nativeElement.innerHTML).toContain('email: ' + institution.institutionAdminEmail);
 
     const phone = de.query(By.css('#institution-phone'));
-    expect(phone.nativeElement.innerHTML).toContain('phone: ' + institution.phone);
+    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);
 
     const secondaryPhone = de.query(By.css('#institution-second-phone'));
-    expect(secondaryPhone.nativeElement.innerHTML).toContain('second phone: ' + institution.secondaryPhone);
+    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.secondaryPhone);
   }));
 });

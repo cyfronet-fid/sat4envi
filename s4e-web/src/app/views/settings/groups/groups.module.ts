@@ -35,6 +35,9 @@ import { ModalModule } from 'src/app/modal/modal.module';
     GroupQuery,
     GroupService,
     makeModalProvider(GROUP_FORM_MODAL_ID, GroupFormComponent)
+  ],
+  entryComponents: [
+    GroupFormComponent
   ]
 })
 export class GroupsModule {

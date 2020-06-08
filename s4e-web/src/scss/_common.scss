@@ -5,7 +5,7 @@
 @mixin button {
   border-radius: $border-radius-circle;
   background: $color-grey-secondary;
-  padding: $space-small 1.5*$space-xlarge;
+  padding: ($space-small - 2px) 1.5*$space-xlarge;
   font-weight: 700;
   text-transform: uppercase;
   font-family: $font-secondary;
@@ -15,57 +15,71 @@
   }
 }
 
-.button--default {
-  @include button;
+.button {
+  &--default {
+    @include button;
+  }
+
+  &--primary {
+    @include button;
+    background: $color-primary;
+    color: $color-white;
+    font-size: 0.875rem;
+  }
+
+  &--secondary {
+    @include button;
+    background: $color-secondary;
+    color: $color-white;
+  }
+
+  &--large {
+    padding: $space-small $space-xlarge * 2 !important;
+  }
+
+  &--small {
+    font-size: 0.825rem !important;
+    padding: $space-xsmall $space-xlarge !important;
+  }
+
+  &--borderWhite {
+    @include button;
+    background: transparent;
+    border: 1px solid $color-white;
+    color: $color-white;
+  }
+
+  &--borderBlack {
+    @include button;
+    border: 1px solid $color-black;
+    background: transparent;
+  }
+
+  &--borderPrimary {
+    @include button;
+    border: 1px solid $color-primary;
+    color: $color-primary;
+    background: transparent;
+  }
+
+  &--cancel {
+    @include button;
+    border: 1px solid $color-grey;
+    border-color: $color-grey;
+    background: transparent;
+    opacity: 0.8;
+  }
+
+  & + & {
+    margin-left: $space-xsmall;
+  }
+
+  fa-icon {
+    margin-right: 5px;
+  }
 }
 
-.button--primary {
-  @include button;
-  background: $color-primary;
-  color: $color-white;
-  font-size: 0.875rem;
-}
 
-.button--secondary {
-  @include button;
-  background: $color-secondary;
-  color: $color-white;
-}
-
-.button--large {
-  padding: $space-small $space-xlarge * 2;
-}
-
-.button--small {
-  padding: $space-xsmall;
-  font-size: 0.825rem;
-}
-
-.button--borderWhite {
-  @include button;
-  background: transparent;
-  border: 1px solid $color-white;
-  color: $color-white;
-}
-
-.button--borderBlack {
-  border: 1px solid $color-black
-}
-
-.button--borderPrimary {
-  @include button;
-  border: 1px solid $color-primary;
-  color: $color-primary;
-  background: transparent;
-}
-
-.button--cancel {
-  @include button;
-  border: 1px solid $color-grey;
-  border-color: $color-grey;
-  background: transparent;
-  opacity: 0.8;
-}
 
 .form {
   background: $color-grey-secondary;
@@ -214,7 +228,7 @@
 }
 
 body {
-  overflow: hidden;
+  //overflow: hidden;
 }
 
 a {
@@ -243,6 +257,42 @@ button > fa-icon.spinner {
 ext-button + ext-button {
   margin-left: 5px;
 }
+
+.box-list {
+  &__element {
+    margin-bottom: 3px;
+    position: relative;
+
+    &--radio {
+      input[type=radio] {
+        position: absolute;
+        right: 0;
+        top: 0;
+        visibility: hidden;
+      }
+
+      label {
+        display: block;
+        cursor: pointer;
+        background: url("/../assets/images/ico_check.svg") $color-white no-repeat center;
+        background-position-x: calc(100% - 15px);
+        background-size: 22px;
+        padding: $space-default;
+      }
+
+      input[type=radio]:checked ~ label {
+        background-color: $color-hover-secondary;
+        background-image: url("/../assets/images/ico_checked.svg");
+      }
+
+    }
+
+  }
+
+
+}
+
+
 
 
 

@@ -21,8 +21,8 @@
     </section>
 
     <h3 i18n>Lista instytucji</h3>
-    <ul>
-      <li *ngFor="let institution of searchedInstitutions; index as index$">
+    <ul class="box-list">
+      <li *ngFor="let institution of searchedInstitutions; index as index$" class="box-list__element box-list__element--radio">
         <input
           type="radio"
           [attr.id]="'institution' + index$"

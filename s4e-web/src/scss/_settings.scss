@@ -1,0 +1,563 @@
+@import "variables";
+
+s4e-settings {
+.settings {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  background: $color-tertiary;
+}
+
+  .alerts {
+    margin-bottom: $space-xlarge;
+    color: $color-error;
+    font-size: 0.875rem;
+  }
+
+.navigation {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  padding: 0 $space-default;
+  padding-top: 120px;
+  color: $color-black;
+  height: 100%;
+  background: $color-white 40px 40px no-repeat;
+  background-image:  url("/../assets/images/logo_s4e_color.png");
+  background-size: 115px;
+  position: absolute;
+  z-index: 1;
+  font-family: $font-secondary;
+  font-weight: bold;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: $space-small;
+    padding-left: $space-default;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-black;
+    align-items: center;
+
+    img {
+      margin-right: $space-small;
+    }
+
+    span {
+      display: block;
+    }
+  }
+
+  &__list {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-left: 10px;
+
+    &:first-child {
+      margin-bottom: $space-xlarge*2;
+    }
+
+    li {
+      margin: $space-xlarge 0;
+      display: block;
+
+      &.active:after {
+        background: url("/../assets/images/ico_arrow_right.svg") right no-repeat;
+        background-size: 15px;
+        padding-right: $space-xlarge;
+        content: " ";
+        margin-left: $space-xlarge;
+      }
+
+      &:hover {
+        a {
+          color: $color-grey;
+        }
+      }
+    }
+
+    &--institution {
+      background-color: $color-grey-primary;
+      margin: 0 -15px 40px -15px;
+      padding: 10px 20px 5px 25px;
+
+
+
+      li {
+        &:first-child {
+          padding-left: 0;
+          list-style-type: none;
+          margin-top: 0;
+        }
+        font-size: 1rem;
+      }
+    }
+
+  }
+
+  a {
+    color: $color-black;
+    font-weight: 500;
+  }
+
+  .login {
+    position: fixed;
+    bottom: 30px;
+    align-self: center;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 0.875rem;
+
+    button.button {
+      font-size: 0.875rem;
+      margin-bottom: $space-default;
+      border-radius: $border-radius-circle;
+    }
+
+    a {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-family: $font-base;
+      color: $color-grey;
+    }
+  }
+} // end navigation
+
+
+
+p {
+  line-height: 1.25rem;
+}
+
+.dashboard {
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  margin-top: -100px;
+
+  .page__header {
+    margin-bottom: $space-xlarge * 3;
+    text-align: center;
+  }
+
+} // end dashboard
+
+.panel {
+  flex-direction: row;
+
+  &__item {
+    margin: $space-xsmall;
+    background: $color-white;
+    padding: $space-xlarge;
+    display: flex;
+    flex-direction: column;
+
+    p {
+      margin-bottom: $space-xlarge;
+    }
+  }
+
+  &__header {
+    font-weight: 700;
+    margin-bottom: $space-small;
+    font-size: 1.25rem;
+  }
+
+  &__footer {
+    margin-top: auto;
+
+    button {
+      font-size: 0.875rem;
+    }
+  }
+} // end panel
+
+.content {
+  padding: $space-xlarge;
+  margin-left: 400px;
+  margin-right: 40px;
+  color: $color-grey-tertiary;
+  height: 100%;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: $space-large;
+
+  &__image {
+    width: 600px;
+    height: 600px;
+    opacity: .15;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: fixed;
+    bottom: -50px;
+    right: -300px;
+    filter: invert(94%) sepia(36%) saturate(214%) hue-rotate(146deg) brightness(107%) contrast(93%);
+
+    &--profile {
+      background-image: url("/../assets/images/ico_user.svg");
+    }
+
+    &--people {
+      background-image: url("/../assets/images/ico_people.svg");
+    }
+
+    &--institution {
+      background-image: url("/../assets/images/ico_institution.svg");
+    }
+  }
+
+  &__header {
+    margin-bottom: $space-xlarge;
+    position: relative;
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: $space-default;
+      font-family: $font-secondary;
+    }
+
+    p {
+      width: 60%;
+      font-family: $font-secondary;
+      font-size: 0.875rem;
+    }
+
+    .button {
+      position: absolute;
+      right: 0;
+      top: 15px;
+    }
+  }
+
+  &__details {
+    background: $color-white;
+    padding: $space-xlarge;
+    margin-bottom: $space-default;
+
+    &--50 {
+      width: 50%;
+    }
+
+    &--75 {
+      width: 75%;
+    }
+
+
+    h2{
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    a {
+      color: $color-secondary !important;
+    }
+
+    .search {
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.25);
+      margin-bottom: $space-default;
+      width: 50%;
+      position: relative;
+      margin-left: 130px;
+
+      span {
+        display: inline-block;
+        position: absolute;
+        left: -130px;
+        font-size: 0.875rem;
+      }
+
+      input {
+        width: 100%;
+      }
+    }
+
+  }
+
+  &__form {
+    color: $color-text;
+
+    h2 {
+      font-size: 1rem;
+      margin-bottom: $space-large;
+    }
+
+    p {
+      font-size: 0.875rem;
+      margin-bottom: $space-default;
+    }
+
+    .hint {
+      opacity: .4;
+    }
+
+    section {
+      margin-bottom: $space-xlarge + 10px;
+    }
+
+    footer {
+      margin-top: $space-xlarge*2;
+      padding-top: $space-xlarge;
+      border-top: 1px solid $color-grey-secondary;
+    }
+
+    .special__error,
+    .error
+      {
+      color: $color-error;
+      margin-top: $space-small;
+      display: block;
+      font-size: 0.875rem;
+
+      &:empty {
+        display: none;
+      }
+    }
+
+    .actions {
+      margin-bottom: 0;
+      margin-top: $space-large;
+      padding-top: $space-large;
+      border-top: 1px solid $color-grey-secondary;
+
+      & > * {
+        margin-right: $space-small;
+      }
+
+      a {
+        color: $color-grey;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+    }
+
+    label{
+      display: block;
+      font-weight: 500;
+      margin-bottom: $space-small;
+      font-size: 0.875rem;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=string],
+    input[type=password],
+    textarea {
+      background: $color-white;
+      font-size: 0.875rem;
+      padding: $space-small+3px $space-small;
+      border-radius: $border-radius-default;
+      border: 1px solid $color-grey-secondary;
+      width: calc(100% - 20px);
+    }
+
+    textarea {
+      min-height: 250px;
+    }
+
+    .button {
+      padding: $space-small 1.5*$space-xlarge;
+      font-weight: 700;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .alaselect {
+      position: relative;
+      z-index: 1;
+
+      &:before {
+        position: absolute;
+        right: 0;
+        top: 0;
+        content: " ";
+        //background: url("/../assets/images/ico_chevron.svg") no-repeat;
+        width: 10px;
+        height: 10px;
+        border: $dev-border;
+        z-index: 2;
+        display: block;
+      }
+    }
+  } // end content form
+
+
+
+
+
+} // end settings content
+
+
+.list__checkbox {
+  margin: $space-default 0;
+
+  li {
+    margin-bottom: $space-small;
+  }
+}
+
+.table {
+  margin-bottom: $space-xlarge;
+  float: none;
+  border-radius: $border-radius-default;
+  width: 99%;
+
+  thead {
+    border: 1px solid $color-tertiary-darken;
+    border-radius: 2px 0 0 2px;
+    font-size: 0.875rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: $space-default $space-large;
+    vertical-align: middle;
+  }
+
+  th {
+    background: $color-tertiary;
+    color: $color-grey;
+    padding: ($space-default - 5px) ($space-large - 3px);
+  }
+
+  tbody {
+    tr {
+      border: 1px solid $color-grey-secondary;
+    }
+  }
+
+  thead + tbody {
+    tr:first-child {
+      border-top: none;
+    }
+  }
+
+  td {
+    position: relative;
+    color: #3c3c3c;
+    span {
+      margin-right: $space-small;
+    }
+    img {
+      margin: 0 $space-small;
+    }
+  }
+
+  th:last-child,
+  td:last-child {
+    text-align: center;
+  }
+
+
+  tr:hover {
+    background: $color-hover;
+  }
+
+  i {
+    opacity: 0.5;
+    margin-right: $space-default;
+  }
+
+  &__actions {
+    width: 110px;
+  }
+
+} // table
+
+.breadcrumb {
+  font-size: 0.75rem;
+  margin-bottom: $space-xlarge;
+
+  li {
+    display: inline-block;
+    position: relative;
+    padding-right: 10px;
+    margin-right: 3px;
+
+    a {
+      color: $color-secondary;
+    }
+
+    &:after {
+      content: " ";
+      background: url("/../assets/images/ico_chevron.svg") no-repeat;
+      background-size: contain;
+      width: 5px;
+      height: 4px;
+      display: block;
+      right: 0;
+      top: 4px;
+      position: absolute;
+      transform: rotate(-90deg);
+      opacity: .9;
+    }
+
+    &:last-child,
+    &:first-child {
+      &:after {
+        display: none;
+      }
+    }
+
+    &:first-child {
+      padding-right: 0;
+    }
+  }
+} // end breadcrumb
+
+
+.profile {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  h2 {
+    margin-bottom: $space-xlarge;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: $space-xlarge;
+  }
+
+  &__content {
+    flex: 3;
+
+    li {
+      font-size: 1rem;
+      margin-bottom: $space-small;
+    }
+
+    a {
+      display: block;
+    }
+  }
+  &__image {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  footer {
+    width: 100%;
+    margin: $space-xlarge (0 - $space-xlarge);
+    margin-bottom: 0;
+    padding: $space-xlarge;
+    padding-bottom: 0;
+    border-top: 1px solid $color-grey-primary;
+  }
+}
+} //end s4e-settings
+
+
+

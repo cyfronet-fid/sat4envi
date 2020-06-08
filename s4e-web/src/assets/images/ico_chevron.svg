@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="7px" viewBox="0 0 12 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>icon / chevron / down</title>
+    <defs>
+        <path d="M9.56130967,0.395748813 C9.92106413,0.036058255 10.5042736,0.036058255 10.864028,0.395748813 C11.2237517,0.755536338 11.2236999,1.33862783 10.864028,1.69823578 L10.864028,1.69823578 L6.30451374,6.25694018 C6.11879304,6.44262789 5.87352007,6.53245563 5.63018171,6.5264234 C5.38716953,6.53270122 5.14147946,6.44288191 4.95550469,6.25694018 L0.395990394,1.69823578 C0.0363185487,1.33862783 0.0362667571,0.755536338 0.395874714,0.395864493 C0.755744855,0.0360582549 1.3389543,0.0360582549 1.69870877,0.395748813 L5.63,4.326 Z" id="path-1"></path>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="form-/-CMS-/-select" transform="translate(-404.000000, -40.000000)">
+            <g id="icon-/-chevron-/-down" transform="translate(402.000000, 35.000000)">
+                <g id="color-/-yellow" transform="translate(2.432000, 5.376000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Mask" fill="#000000" transform="translate(5.630009, 3.326347) scale(1, -1) rotate(-180.000000) translate(-5.630009, -3.326347) " xlink:href="#path-1"></use>
+                    <g id="color-/-black" mask="url(#mask-2)" fill="#000000">
+                        <g transform="translate(-2.432000, -5.376000)" id="Rectangle">
+                            <rect x="0" y="0" width="17.664" height="16"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

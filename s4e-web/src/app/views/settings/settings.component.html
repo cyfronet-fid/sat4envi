@@ -1,20 +1,25 @@
-<div class="container">
+<div class="settings">
   <nav class="navigation">
     <ul class="navigation__list">
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
           data-e2e="dashboard">
         <a [routerLink]="['./dashboard']"
            queryParamsHandling="merge"
-           i18n>Dashboard</a>
+           i18n>Start</a>
       </li>
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
           data-e2e="institutions">
         <a [routerLink]="['./institutions']"
            queryParamsHandling="merge"
-           i18n>Instytucje</a>
+           i18n>Zarządzaj instytucjami</a>
       </li>
     </ul>
-    <ul class="navigation__list institution__actions">
+
+    <header>
+      <img src="assets/images/ico_cog.svg" alt="Institution setting icon"/>
+      <span>Panel zarządzania instytucją</span>
+    </header>
+    <ul class="navigation__list navigation__list--institution">
       <li *ngIf="showInstitutions$ | async">
         <s4e-search
           placeholder="Wpisz szukaną instytucję..."

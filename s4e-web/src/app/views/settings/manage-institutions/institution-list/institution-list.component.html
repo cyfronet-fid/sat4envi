@@ -3,29 +3,31 @@
                        [error]="error$ | async"
                        [searchable]="true">
   <ng-container add-button>
-    <button class="button button--secondary button--large" data-e2e="addInstitution"
+    <button class="button button--secondary button--small" data-e2e="addInstitution"
             routerLink="../add-institution"
-            queryParamsHandling="preserve" i18n>Nowa Instytucja</button>
+            queryParamsHandling="preserve" i18n>Dodaj nową instytucję</button>
   </ng-container>
-  <ng-container description>
-    [TODO] Tu możesz zarządzać instytucjami...
-  </ng-container>
+  <ng-container description></ng-container>
   <ng-container caption i18n>Zarządzanie instytucjami</ng-container>
+  <ng-container search-label i18n>Szukaj instytucji:</ng-container>
   <ng-container table-header>
     <th i18n>Nazwa instytucji</th>
-    <th i18n>Akcje</th>
+    <th i18n class="table__actions">Akcje</th>
   </ng-container>
   <ng-template let-inst="item">
     <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
       <a routerLink="../institution" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
-    <td>
-      <a href="javascript:void(0)"
-         data-e2e="delete"
-         (click)="deleteInstitution(inst.slug)"><i class="fas fa-trash"></i></a>
+    <td >
       <a routerLink="../institution" queryParamsHandling="merge"
          data-e2e="edit"
-         [queryParams]="{institution: inst.slug}"><i class="fas fa-user-edit"></i>
+         [queryParams]="{institution: inst.slug}">
+        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+      </a>
+      <a href="javascript:void(0)"
+         data-e2e="delete"
+         (click)="deleteInstitution(inst.slug)">
+        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
       </a>
     </td>
   </ng-template>
