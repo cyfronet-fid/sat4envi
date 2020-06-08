@@ -22,6 +22,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix PUT endpoint for Institutions [#500](https://github.com/cyfronet-fid/sat4envi/issues/500)
 - Fix and test refactor for /institutions endpoint [#472](https://github.com/cyfronet-fid/sat4envi/issues/472)
 
 ### Updated

@@ -131,7 +131,7 @@ public class InstitutionService {
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
     public void update(UpdateInstitutionRequest request, String institutionSlug)
-            throws InstitutionUpdateException, NotFoundException, S3ClientException {
+            throws NotFoundException, S3ClientException {
         val institution = getInstitution(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
         String slug = slugService.slugify(request.getName());
@@ -139,19 +139,14 @@ public class InstitutionService {
             fileStorage.delete(getEmblemKey(institutionSlug));
         }
         uploadEmblemIfRequested(slug, request.getEmblem());
+
         institution.setName(request.getName());
         institution.setSlug(slug);
-        update(institution);
-    }
-
-    @Transactional(rollbackFor = InstitutionUpdateException.class)
-    public void update(Institution institution) throws InstitutionUpdateException {
-        try {
-            institutionRepository.save(institution);
-        } catch (DataIntegrityViolationException e) {
-            log.info("Cannot create Institution with name '" + institution.getName() + "'", e);
-            throw new InstitutionUpdateException("Cannot update Institution", e);
-        }
+        institution.setAddress(request.getAddress());
+        institution.setCity(request.getCity());
+        institution.setPostalCode(request.getPostalCode());
+        institution.setPhone(request.getPhone());
+        institution.setSecondaryPhone(request.getSecondaryPhone());
     }
 
     @Transactional
