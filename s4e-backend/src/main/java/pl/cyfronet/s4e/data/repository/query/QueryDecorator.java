@@ -7,6 +7,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class QueryDecorator implements QueryBuilder {
+    public static final String DATE_FORMAT = "YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"";
     private final QueryBuilder queryBuilder;
 
     protected abstract void doPrepareQueryAndParameters(Map<String, Object> params,
