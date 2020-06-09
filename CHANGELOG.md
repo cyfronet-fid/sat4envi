@@ -18,6 +18,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Improve search scenes endpoint
 - Make s4e-backend use spring-boot BOM [#479](https://github.com/cyfronet-fid/sat4envi/issues/479)
 - Refactor aside.js from sidebar [#477](https://github.com/cyfronet-fid/sat4envi/issues/477)
 - Change requirement of admin institution email

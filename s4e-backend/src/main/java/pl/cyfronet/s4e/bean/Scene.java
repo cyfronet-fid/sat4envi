@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 public class Scene extends CreationAndModificationAudited {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_PRODUCT_ID = "product_id";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

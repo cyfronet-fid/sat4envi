@@ -10,6 +10,9 @@ public class QueryBuilderImpl implements QueryBuilder{
     public void prepareQueryAndParameters(Map<String, Object> params,
                                           List<Object> parameters,
                                           StringBuilder resultQuery) {
-        resultQuery.append("SELECT " + Scene.COLUMN_ID + "," + Scene.COLUMN_PRODUCT_ID + "  FROM Scene WHERE true ");
+        resultQuery.append("SELECT " +
+                Scene.COLUMN_ID + "," +
+                Scene.COLUMN_PRODUCT_ID + "," +
+                Scene.COLUMN_TIMESTAMP+ "  FROM Scene WHERE true ");
     }
 }

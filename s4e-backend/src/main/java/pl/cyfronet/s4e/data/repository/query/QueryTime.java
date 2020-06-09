@@ -1,10 +1,13 @@
 package pl.cyfronet.s4e.data.repository.query;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
 public class QueryTime extends QueryDecorator {
-    public static final String dateFormat = "YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"";
 
     public QueryTime(QueryBuilder queryBuilder) {
         super(queryBuilder);
@@ -24,11 +27,11 @@ public class QueryTime extends QueryDecorator {
         // [TIMESTAMP] sensingFrom / sensingTo -> sensing_time
         if (params.containsKey("sensingFrom")) {
             resultQuery.append(" AND " + getMetadataTime("sensing_time") + " >= ? ");
-            parameters.add(params.get("sensingFrom"));
+            parameters.add(parseDateToServerLocalDate(params.get("sensingFrom")));
         }
         if (params.containsKey("sensingTo")) {
             resultQuery.append(" AND " + getMetadataTime("sensing_time") + " <= ? ");
-            parameters.add(params.get("sensingTo"));
+            parameters.add(parseDateToServerLocalDate(params.get("sensingTo")));
         }
     }
 
@@ -38,15 +41,23 @@ public class QueryTime extends QueryDecorator {
         // [TIMESTAMP] ingestionFrom / ingestionTo -> ingestion_time
         if (params.containsKey("ingestionFrom")) {
             resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " >= ? ");
-            parameters.add(params.get("ingestionFrom"));
+            parameters.add(parseDateToServerLocalDate(params.get("ingestionFrom")));
         }
         if (params.containsKey("ingestionTo")) {
             resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " <= ? ");
-            parameters.add(params.get("ingestionTo"));
+            parameters.add(parseDateToServerLocalDate(params.get("ingestionTo")));
         }
     }
 
     private String getMetadataTime(String timeParameter) {
-        return "to_timestamp(metadata_content->>'" + timeParameter + "', '" + dateFormat + "')";
+        return "to_timestamp(metadata_content->>'" + timeParameter + "', '" + DATE_FORMAT + "')";
+    }
+
+    private LocalDateTime parseDateToServerLocalDate(Object date) {
+        // change date to server zone
+        DateTimeFormatter dateTimeFormat = DateTimeFormatter.ISO_DATE_TIME;
+        ZonedDateTime clientTime = ZonedDateTime.parse(String.valueOf(date), dateTimeFormat);
+        return clientTime.withZoneSameInstant(ZoneId.of("UTC"))
+                .toLocalDateTime();
     }
 }

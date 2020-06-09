@@ -62,7 +62,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handle(BadRequestException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
     @ExceptionHandler(InstitutionCreationException.class)

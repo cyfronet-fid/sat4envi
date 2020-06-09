@@ -16,7 +16,6 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,47 +63,27 @@ public class SearchServiceTest {
     }
 
     private Scene buildScene(Product product, long number) throws Exception {
-        String metadataContent = "{\n" +
-                "   \"spacecraft\": \"Sentinel-1A\",\n" +
-                "   \"product_type\": \"GRDH\",\n" +
-                "   \"sensor_mode\": \"IW\",\n" +
-                "   \"collection\": \"S1B_24AU\",\n" +
-                "   \"timeliness\": \"Near Real Time\",\n" +
-                "   \"instrument\": \"OLCI\",\n" +
-                "   \"product_level\": \"L2\",\n" +
-                "   \"processing_level\": \"" + number + "LC\",\n" +
-                "   \"cloud_cover\": 0." + number + ",\n" +
-                "   \"polarisation\": \"Dual VV/VH\",\n" +
-                "   \"sensing_time\": \"2019-11-10T05:07:42.047432+00:00\",\n" +
-                "   \"ingestion_time\": \"2019-11-10T05:34:27.000000+00:00\",\n" +
-                "   \"relative_orbit_number\": \"" + number + "\",\n" +
-                "   \"absolute_orbit_number\": \"0" + number + "\",\n" +
-                "   \"polygon\": \"55.975475,19.579060 56.395580,15.414984 57.887905,15.835841 57.462494,20.167494\",\n" +
-                "   \"format\": \"GeoTiff" + number + "\",\n" +
-                "   \"schema\": \"Sentinel-1.metadata.v1.json\"\n" +
-                "}";
-        JsonNode jsonNode2 = objectMapper.readTree(metadataContent);
-        return SceneTestHelper.sceneBuilder(product)
-                .metadataContent(jsonNode2)
+        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
+        return SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
                 .build();
     }
 
     @Test
     public void testQueryBySensingTime() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("sensingFrom", LocalDate.of(2019, 11, 9));
-        params.put("sensingTo", LocalDate.of(2019, 11, 12));
+        params.put("sensingFrom", "2019-11-05T00:00:00.000000+00:00");
+        params.put("sensingTo", "2019-11-10T00:00:00.000000+00:00");
         List<Scene> scenes = searchService.getScenesBy(params);
-        assertThat(scenes, hasSize(10));
+        assertThat(scenes, hasSize(5));
     }
 
     @Test
     public void testQueryByIngestionTime() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("ingestionFrom", LocalDate.of(2019, 11, 9));
-        params.put("ingestionTo", LocalDate.of(2019, 11, 12));
+        params.put("ingestionFrom", "2019-11-09T00:00:00.000000+00:00");
+        params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
         List<Scene> scenes = searchService.getScenesBy(params);
-        assertThat(scenes, hasSize(10));
+        assertThat(scenes, hasSize(1));
     }
 
     @Test
@@ -176,7 +155,7 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("productLevel", "L2");
         List<Scene> scenes = searchService.getScenesBy(params);
-        assertThat(scenes, hasSize(10));
+        assertThat(scenes, hasSize(1));
     }
 
     @Test
@@ -227,12 +206,12 @@ public class SearchServiceTest {
         params.put("polarisation", "Dual VV/VH");
         params.put("productType", "GRDH");
         params.put("satellitePlatform", "Sentinel-1A");
-        params.put("sensingFrom", LocalDate.of(2019, 11, 9));
-        params.put("sensingTo", LocalDate.of(2019, 11, 12));
-        params.put("ingestionFrom", LocalDate.of(2019, 11, 9));
-        params.put("ingestionTo", LocalDate.of(2019, 11, 12));
-        params.put("orderBy", "DESC");
-        params.put("sortBy", "id");
+        params.put("sensingFrom", "2019-11-01T00:00:00.000000+00:00");
+        params.put("sensingTo", "2019-11-12T00:00:00.000000+00:00");
+        params.put("ingestionFrom", "2019-11-01T00:00:00.000000+00:00");
+        params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
+        params.put("order", "DESC");
+        params.put("sortBy", "sensingTime");
         params.put("limit", 15);
         List<Scene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
@@ -243,8 +222,8 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("relativeOrbitNumber", 2);
         params.put("polarisation", "Dual VV/VH\'UNION SELECT username, password FROM users--");
-        params.put("orderBy", "DESC");
-        params.put("sortBy", "id");
+        params.put("order", "DESC");
+        params.put("sortBy", "ingestionTime");
         params.put("limit", 15);
         params.put("offset", 1);
         List<Scene> scenes = searchService.getScenesBy(params);
