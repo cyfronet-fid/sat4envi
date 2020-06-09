@@ -10,7 +10,6 @@
         <version>${revision}${sha1}${changelist}</version>
     </parent>
 
-    <groupId>pl.cyfronet.s4e</groupId>
     <artifactId>gs-gateway</artifactId>
     <packaging>jar</packaging>
 
@@ -18,7 +17,7 @@
     <description>GeoServer Gateway</description>
 
     <properties>
-        <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -133,5 +132,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

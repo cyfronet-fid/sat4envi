@@ -27,6 +27,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Updated
 
+- 2020.06 backend dependencies update
+
 ## [v8.0.0]
 
 ### Added
