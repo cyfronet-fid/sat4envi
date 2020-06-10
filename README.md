@@ -109,6 +109,10 @@ the `RestTemplate`'s timeout.
 There are currently 3 data sets which the backend is capable of seeding: `minio-data-v1`, `s4e-demo` and `s4e-demo-2`.
 The default is `minio-data-v1`, but another one can be set with the property `seed.products.data-set`.
 
+The gs-gateway layer lists have to be updated so that seeded layers remain accessible.
+There are env files available for each dataset in the root of the project named `gsg-dataset-<name>.env`.
+Docker-compose can be pointed at them by setting `GS_GATEWAY_DATASET_ENV_PATH`.
+
 `minio-data-v1` contains a single day of data for three products.
 It uses local minio for S3 storage.
 

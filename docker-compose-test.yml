@@ -33,6 +33,7 @@ services:
     build: ./gs-gateway
     env_file:
       - ${GS_GATEWAY_TEST_ENV_PATH:-gsg-test.env}
+      - ${GS_GATEWAY_TEST_DATASET_ENV_PATH:-gsg-dataset-minio-data-v1.env}
     ports:
       - ${GS_GATEWAY_TEST_PORT:-8091}:8090
     networks:
