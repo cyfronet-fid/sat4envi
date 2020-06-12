@@ -1,3 +1,6 @@
+import { ModalQuery } from './../../../../modal/state/modal.query';
+import { PersonFormModal, PERSON_FORM_MODAL_ID } from './../person-form/person-form-modal.model';
+import { ModalService } from './../../../../modal/state/modal.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Person} from '../state/person.model';
@@ -8,7 +11,6 @@ import {PersonService} from '../state/person.service';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {ModalService} from '../../../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-people',
@@ -22,11 +24,16 @@ export class PersonListComponent implements OnInit, OnDestroy {
   institutions$: Observable<Institution[]>;
   institutionsLoading$: Observable<boolean>;
 
-  constructor(private personQuery: PersonQuery, private personService: PersonService,
-              private _modalService: ModalService,
-              private institutionQuery: InstitutionQuery, private institutionService: InstitutionService,
-              private router: Router, private route: ActivatedRoute) {
-  }
+  constructor(
+    private personQuery: PersonQuery,
+    private personService: PersonService,
+    private institutionQuery: InstitutionQuery,
+    private institutionService: InstitutionService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _modalService: ModalService,
+    private _modalQuery: ModalQuery
+  ) {}
 
   ngOnInit() {
     this.error$ = this.personQuery.selectError();
@@ -35,9 +42,23 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
-    this.institutionService.connectInstitutionToQuery$(this.route)
+    this._loadPersons();
+  }
+
+  openPersonForm(person: Person) {
+    this._modalService.show<PersonFormModal>({
+      id: PERSON_FORM_MODAL_ID,
+      size: 'lg',
+      person: !!person && person || null
+    });
+
+    this._modalQuery.modalClosed$(PERSON_FORM_MODAL_ID)
       .pipe(untilDestroyed(this))
-      .subscribe(instSlug => this.personService.fetchAll(instSlug));
+      .subscribe(() => this._loadPersons());
+  }
+
+  delete(person: Person) {
+    // TODO: Group member remove
   }
 
   ngOnDestroy(): void {
@@ -48,5 +69,13 @@ export class PersonListComponent implements OnInit, OnDestroy {
       'Czy na pewno chcesz usunąć tę osobę z instytucji? Operacja jest nieodwracalna.')) {
       this.personService.deleteMember(userId);
     }
+  }
+
+  protected _loadPersons() {
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        instSlug => this.personService.fetchAll(instSlug)
+      );
   }
 }

@@ -179,7 +179,6 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
         (imgBase64) => {
           form.controls.emblem.setValue(imgBase64);
           this.emblemImgSrc = 'data:image/png;base64,' + this.form.controls.emblem.value;
-          console.log(imgBase64);
         },
         (error) => console.log('Error while image converting: ', error)
       );

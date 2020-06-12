@@ -1,4 +1,5 @@
 export interface Group {
+  id: string;
   slug: string;
   name: string;
 }

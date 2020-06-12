@@ -1,34 +1,37 @@
-<header class="page__header">
-  <h1 i18n>Dodaj nową osobę</h1>
-</header>
 
-<section class="page__content">
-  <form [formGroup]="form" class="page__form">
-    <ul>
-      <li>
-        <label for="name" i18n>Imię</label>
-        <input id="name" type=text formControlName="name">
-      </li>
-      <li>
-        <label for="surname" i18n>Nazwisko</label>
-        <input id="surname" type=text formControlName="surname">
-      </li>
-      <li>
-        <label for="email" i18n>Email</label>
-        <input id="email" type="email" formControlName="email">
-      </li>
-      <li>
-        <strong i18n>Grupy</strong>
-        <s4e-check-box-list [items]="groups$ | async" formControlName="groupSlugs"></s4e-check-box-list>
-        <ng-template #groupsLoading>
-          Ładowanie...
-        </ng-template>
-      </li>
-      <li class="actions">
-        <button type="submit" (click)="saveAndNext()" [disabled]="loading$ | async" class="button button--primary" i18n>Zapisz i dodaj kolejną osobę</button>
-        <button type="submit" (click)="saveAndBack()" [disabled]="loading$ | async" class="button button--primary" i18n>Zapisz i zamknij stronę</button>
-        <a routerLink=".." queryParamsHandling="preserve" i18n>Anuluj</a>
-      </li>
-    </ul>
-  </form>
-</section>
+
+<s4e-generic-modal [buttonX]="true" [modalId]="modalId">
+  <div class="s4e-modal-header" i18n>{{ !!person ? 'Edytuj' : 'Dodaj' }} użytkownika</div>
+  <div class="s4e-modal-body">
+    <section class="page__content">
+      <form [formGroup]="form" class="page__form">
+        <ul>
+          <li>
+            <ext-input formControlName="name" label="Imię" i18n></ext-input>
+          </li>
+          <li>
+            <ext-input formControlName="surname" label="Nazwisko" i18n></ext-input>
+          </li>
+          <li>
+            <ext-input type="email" formControlName="email" label="Email" i18n></ext-input>
+          </li>
+          <li>
+            <strong i18n>Grupy</strong>
+            <s4e-check-box-list [items]="groups$ | async" formControlName="groupSlugs"></s4e-check-box-list>
+            <ng-template #groupsLoading i18n>
+              Ładowanie...
+            </ng-template>
+          </li>
+        </ul>
+      </form>
+    </section>
+  </div>
+  <div class="s4e-modal-footer">
+    <button type="submit" class="button button--primary" (click)="save()" data-test="save" i18n>
+      Zapisz
+    </button>
+    <button class="button button--secondary" (click)="dismiss()" i18n>
+      Anuluj
+    </button>
+  </div>
+</s4e-generic-modal>
