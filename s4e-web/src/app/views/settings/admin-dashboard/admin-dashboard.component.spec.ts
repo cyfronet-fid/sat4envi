@@ -77,7 +77,7 @@ describe('AdminDashboardComponent', () => {
   });
 
   it('should enable buttons on known institution', fakeAsync( () => {
-    activatedRoute.queryParamMap.next(convertToParamMap({ institution: 'test '}));
+    activatedRoute.queryParamMap.next(convertToParamMap({ institution: 'test'}));
     tick();
     fixture.detectChanges();
 

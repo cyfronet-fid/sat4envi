@@ -4,11 +4,11 @@ import * as Factory from 'factory.ts';
 export const InstitutionFactory = Factory.makeFactory<Institution>({
   id: Factory.each(i => `institution:${i}`),
 
-  parentInstitutionName: 'test#2',
-  parentInstitutionSlug: 'test-2',
+  parentName : Factory.each(i => `parent #${i}`),
+  parentSlug: Factory.each(i => `parent-${i}`),
 
   name: Factory.each(i => `test #${i}`),
-  slug: 'test-1',
+  slug: Factory.each(i => `test-${i}`),
   address: 'address',
   postalCode: '00-000',
   city: 'city',

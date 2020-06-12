@@ -1,3 +1,4 @@
+import { map } from 'rxjs/operators';
 import { InstitutionService } from './../state/institution/institution.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -13,11 +14,13 @@ export class DashboardComponent implements OnInit {
   public hasSelectedInstitution$: Observable<boolean>;
 
   constructor(
-    private _instutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.hasSelectedInstitution$ = this._instutionsSearchResultsQuery.hasSelectedInstitutionBy$(this._activatedRoute);
+    this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
+      .getSelectedInstitutionSlugBy$(this._activatedRoute)
+      .pipe(map(slug => !!slug));
   }
 }

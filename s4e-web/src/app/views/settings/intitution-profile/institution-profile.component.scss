@@ -5,8 +5,6 @@
 }
 
 .institution__box {
-  background: url("/../../../../assets/images/logo_um.png") no-repeat left;
-  padding-left: 150px;
   background-size: 110px;
   min-height: 120px;
   position: relative;
@@ -21,6 +19,7 @@
 
   .button {
     position: absolute;
+    cursor: pointer;
     right: 20px;
     top: 35px;
   }

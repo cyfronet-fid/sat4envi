@@ -1,3 +1,5 @@
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {InstitutionProfileComponent} from './institution-profile.component';
@@ -7,7 +9,8 @@ import {InstitutionProfileComponent} from './institution-profile.component';
     InstitutionProfileComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    RouterModule
   ],
   exports: [
     InstitutionProfileComponent

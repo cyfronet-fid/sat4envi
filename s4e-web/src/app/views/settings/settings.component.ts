@@ -34,7 +34,7 @@ export class SettingsComponent implements OnInit {
   public hasSelectedInstitution$: Observable<boolean>;
 
   constructor(
-    private _instutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
     private _institutionService: InstitutionService,
     private sessionService: SessionService,
@@ -47,16 +47,18 @@ export class SettingsComponent implements OnInit {
 
   ngOnInit() {
     this.showInstitutions$ = this.profileQuery.selectCanSeeInstitutions();
-    this.institutions$ = this._instutionsSearchResultsQuery.selectAll()
+    this.institutions$ = this._institutionsSearchResultsQuery.selectAll()
       .pipe(map(institutions => institutions.filter(institution => !!institution)));
-    this.institutionsLoading$ = this._instutionsSearchResultsQuery.selectLoading();
-    this.areResultsOpen$ = this._instutionsSearchResultsQuery.selectIsOpen();
+    this.institutionsLoading$ = this._institutionsSearchResultsQuery.selectLoading();
+    this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
 
-    this.hasSelectedInstitution$ = this._instutionsSearchResultsQuery.hasSelectedInstitutionBy$(this._activatedRoute);
+    this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
+      .getSelectedInstitutionSlugBy$(this._activatedRoute)
+      .pipe(map(slug => !!slug));
 
     // TODO: set institution from storage
     if (environment.hmr) {
-      const searchResult = this._instutionsSearchResultsQuery.getValue().searchResult;
+      const searchResult = this._institutionsSearchResultsQuery.getValue().searchResult;
       this.searchValue = !!searchResult ? searchResult.name : '';
     }
 
@@ -82,7 +84,7 @@ export class SettingsComponent implements OnInit {
       .subscribe(institution => console.log(institution));
   }
   selectFirstInstitution() {
-    const firstSearchResult = this._instutionsSearchResultsQuery.getAll()[0];
+    const firstSearchResult = this._institutionsSearchResultsQuery.getAll()[0];
     if(!!firstSearchResult) {
       this.selectInstitution(firstSearchResult);
     }

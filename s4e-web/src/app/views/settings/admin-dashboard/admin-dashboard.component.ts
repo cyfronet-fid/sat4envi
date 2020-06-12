@@ -23,22 +23,24 @@ export class AdminDashboardComponent implements OnInit {
   public isInUse: boolean = false;
 
   constructor(
-    private _instutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
     private _router: Router,
     private _activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
-    this.institutions$ = this._instutionsSearchResultsQuery.selectAll()
+    this.institutions$ = this._institutionsSearchResultsQuery.selectAll()
       .pipe(map(institutions => institutions.filter(institution => !!institution)));;
-    this.institutionsLoading$ = this._instutionsSearchResultsQuery.selectLoading();
-    this.areResultsOpen$ = this._instutionsSearchResultsQuery.selectIsOpen();
+    this.institutionsLoading$ = this._institutionsSearchResultsQuery.selectLoading();
+    this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
 
-    this.hasSelectedInstitution$ = this._instutionsSearchResultsQuery.hasSelectedInstitutionBy$(this._activatedRoute);
+    this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
+      .getSelectedInstitutionSlugBy$(this._activatedRoute)
+      .pipe(map(slug => !!slug));
 
     if (environment.hmr) {
-      const searchResult = this._instutionsSearchResultsQuery.getValue().searchResult;
+      const searchResult = this._institutionsSearchResultsQuery.getValue().searchResult;
       this.searchValue = !!searchResult ? searchResult.name : '';
     }
   }
@@ -49,7 +51,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   selectFirstInstitution() {
-    const firstSearchResult = this._instutionsSearchResultsQuery.getAll()[0];
+    const firstSearchResult = this._institutionsSearchResultsQuery.getAll()[0];
     if(!!firstSearchResult) {
       this.selectInstitution(firstSearchResult);
     }

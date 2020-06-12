@@ -11,5 +11,4 @@ export class InstitutionQuery extends QueryEntity<InstitutionState, Institution>
   constructor(protected store: InstitutionStore) {
     super(store);
   }
-
 }

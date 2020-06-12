@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TileComponent } from './../../../components/tiles-dashboard/tile/tile.component';
 import { DashboardModule } from './dashboard.module';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
@@ -9,6 +10,7 @@ import { Router, convertToParamMap, ParamMap, ActivatedRoute, ActivatedRouteSnap
 import { By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Subject, ReplaySubject } from 'rxjs';
+import { S4eConfig } from 'src/app/utils/initializer/config.service';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -31,10 +33,13 @@ describe('DashboardComponent', () => {
       imports: [
         CommonModule,
         RouterTestingModule.withRoutes([]),
-        DashboardModule
+        DashboardModule,
+        HttpClientTestingModule,
+        RouterTestingModule
       ],
       providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
+        {provide: ActivatedRoute, useClass: ActivatedRouteStub},
+        S4eConfig
       ]
     })
     .compileComponents();

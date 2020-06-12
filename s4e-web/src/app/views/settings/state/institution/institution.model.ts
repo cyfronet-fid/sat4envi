@@ -1,8 +1,8 @@
 export interface Institution {
   id: string;
 
-  parentInstitutionName?: string;
-  parentInstitutionSlug?: string;
+  parentName: string|null;
+  parentSlug: string|null;
 
   slug: string;
   name: string;
