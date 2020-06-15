@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import java.util.List;
 import java.util.Map;
 
+import static pl.cyfronet.s4e.search.SearchQueryParams.ORDER;
+import static pl.cyfronet.s4e.search.SearchQueryParams.SORT_BY;
+
 public class QueryEnding extends QueryDecorator {
     private final SpringDataWebProperties properties;
 
@@ -25,7 +28,7 @@ public class QueryEnding extends QueryDecorator {
     }
 
     private String getOrderByField(Map<String, Object> params) {
-        switch (String.valueOf(params.getOrDefault("sortBy", "id"))) {
+        switch (String.valueOf(params.getOrDefault(SORT_BY, "id"))) {
             case "ingestionTime":
                 return "to_timestamp(metadata_content->>'ingestion_time', '" + DATE_FORMAT + "')";
             case "sensingTime":
@@ -36,7 +39,7 @@ public class QueryEnding extends QueryDecorator {
     }
 
     private String getOrder(Map<String, Object> params) {
-        return params.getOrDefault("order", "DESC").equals("ASC") ? "ASC" : "DESC";
+        return params.getOrDefault(ORDER, "DESC").equals("ASC") ? "ASC" : "DESC";
     }
 
     private int getLimit(Map<String, Object> params) {

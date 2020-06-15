@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.controller.response.ConfigResponse;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.search.SentinelSearchConfig;
+import pl.cyfronet.s4e.search.SentinelSearchConfigSupplier;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -21,6 +23,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "config", description = "The Config API")
 public class ConfigController {
     private final GeoServerProperties geoServerProperties;
+    private final SentinelSearchConfigSupplier sentinelSearchConfigSupplier;
 
     @Value("${recaptcha.validation.siteKey}")
     private String recaptchaSiteKey;
@@ -36,5 +39,14 @@ public class ConfigController {
                 .geoserverWorkspace(geoServerProperties.getWorkspace())
                 .recaptchaSiteKey(recaptchaSiteKey)
                 .build();
+    }
+
+    @Operation(summary = "Get the front-end Sentinel search configuration")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK")
+    })
+    @GetMapping("/config/sentinel-search")
+    public SentinelSearchConfig sentinelSearchConfig() {
+        return sentinelSearchConfigSupplier.get();
     }
 }
