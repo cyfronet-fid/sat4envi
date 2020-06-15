@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import static pl.cyfronet.s4e.search.SearchQueryParams.*;
+
 public class QueryTime extends QueryDecorator {
 
     public QueryTime(QueryBuilder queryBuilder) {
@@ -25,13 +27,13 @@ public class QueryTime extends QueryDecorator {
                                     List<Object> parameters,
                                     StringBuilder resultQuery) {
         // [TIMESTAMP] sensingFrom / sensingTo -> sensing_time
-        if (params.containsKey("sensingFrom")) {
+        if (params.containsKey(SENSING_FROM)) {
             resultQuery.append(" AND " + getMetadataTime("sensing_time") + " >= ? ");
-            parameters.add(parseDateToServerLocalDate(params.get("sensingFrom")));
+            parameters.add(parseDateToServerLocalDate(params.get(SENSING_FROM)));
         }
-        if (params.containsKey("sensingTo")) {
+        if (params.containsKey(SENSING_TO)) {
             resultQuery.append(" AND " + getMetadataTime("sensing_time") + " <= ? ");
-            parameters.add(parseDateToServerLocalDate(params.get("sensingTo")));
+            parameters.add(parseDateToServerLocalDate(params.get(SENSING_TO)));
         }
     }
 
@@ -39,13 +41,13 @@ public class QueryTime extends QueryDecorator {
                                       List<Object> parameters,
                                       StringBuilder resultQuery) {
         // [TIMESTAMP] ingestionFrom / ingestionTo -> ingestion_time
-        if (params.containsKey("ingestionFrom")) {
+        if (params.containsKey(INGESTION_FROM)) {
             resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " >= ? ");
-            parameters.add(parseDateToServerLocalDate(params.get("ingestionFrom")));
+            parameters.add(parseDateToServerLocalDate(params.get(INGESTION_FROM)));
         }
-        if (params.containsKey("ingestionTo")) {
+        if (params.containsKey(INGESTION_TO)) {
             resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " <= ? ");
-            parameters.add(parseDateToServerLocalDate(params.get("ingestionTo")));
+            parameters.add(parseDateToServerLocalDate(params.get(INGESTION_TO)));
         }
     }
 

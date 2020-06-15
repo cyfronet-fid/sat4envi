@@ -32,4 +32,10 @@ public class ConfigControllerTest {
                 .andExpect(jsonPath("$.geoserverUrl").value(geoServerProperties.getOutsideBaseUrl()))
                 .andExpect(jsonPath("$.recaptchaSiteKey").value(recaptchaSiteKey));
     }
+
+    @Test
+    public void shouldReturnSentinelSearchConfiguration() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/config/sentinel-search"))
+                .andExpect(status().isOk());
+    }
 }
