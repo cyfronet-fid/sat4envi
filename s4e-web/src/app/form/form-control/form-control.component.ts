@@ -59,23 +59,20 @@ export class FormControlComponent implements OnInit {
   }
 
   isError(): boolean {
-    if(this._options.control == null)
-      return false;
-    return this._options.control.invalid && this._options.control.touched;
+    return this._options.control && this._options.control.invalid && this._options.control.touched;
   }
 
   getErrors(): string[] {
-    if(this._options.control.untouched)
+    if (!this._options.control || this._options.control.untouched) {
       return [];
-    if(this._options.errors.length > 0)
-      return this._options.errors;
-    if(this._options.control == null)
-      return [];
-    return this._options.control.errors as string[];
+    }
+    return this._options.errors.length > 0
+      ? this._options.errors
+      : this._options.control.errors as string[];
   }
 
   get visualType(): VisualType {
-    return this._options.visualType || FormControlComponent.DEFAULT_VISUAL_TYPE
+    return this._options.visualType || FormControlComponent.DEFAULT_VISUAL_TYPE;
   }
 
   public getLabelSize(): number {
