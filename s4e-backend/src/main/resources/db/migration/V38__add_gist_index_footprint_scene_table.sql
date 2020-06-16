@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_footprint ON scene using gist (footprint);

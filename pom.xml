@@ -33,6 +33,7 @@
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>23.1</geotools.version>
         <greenmail.version>1.5.14</greenmail.version>
+        <guava.version>29.0-jre</guava.version>
         <jjwt.version>0.11.2</jjwt.version>
         <hibernate-types.version>2.9.12</hibernate-types.version>
         <poiooxml.version>4.1.2</poiooxml.version>

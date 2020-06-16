@@ -18,6 +18,7 @@ import java.util.Arrays;
 @Slf4j
 public class GeometryUtil {
     public static GeometryFactory FACTORY_3857 = new GeometryFactory(new PrecisionModel(), 3857);
+    public static GeometryFactory FACTORY_4326 = new GeometryFactory(new PrecisionModel(), 4326);
 
     public Geometry parseWKT(String wkt, GeometryFactory factory) throws ParseException {
         WKTReader reader = new WKTReader(factory);

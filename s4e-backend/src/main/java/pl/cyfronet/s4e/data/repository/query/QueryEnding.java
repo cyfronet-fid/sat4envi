@@ -39,7 +39,8 @@ public class QueryEnding extends QueryDecorator {
     }
 
     private String getOrder(Map<String, Object> params) {
-        return params.getOrDefault(ORDER, "DESC").equals("ASC") ? "ASC" : "DESC";
+        String param = String.valueOf(params.getOrDefault(ORDER, "DESC"));
+        return param.toUpperCase().equals("ASC") ? "ASC" : "DESC";
     }
 
     private int getLimit(Map<String, Object> params) {
