@@ -58,8 +58,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && " +
-            "(isInstitutionAdmin(#institutionSlug)||isInstitutionManager(#institutionSlug)||isAdmin())")
+    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void update(@RequestBody UpdateInstitutionRequest request,
                        @PathVariable("institution") String institutionSlug)
             throws NotFoundException, S3ClientException {
@@ -75,7 +74,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug)||isAdmin())")
+    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                             @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
@@ -127,7 +126,7 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/institutions/{institution}")
-    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug)||isAdmin())")
+    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
     }

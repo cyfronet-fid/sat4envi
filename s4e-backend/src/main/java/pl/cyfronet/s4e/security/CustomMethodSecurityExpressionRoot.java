@@ -5,9 +5,9 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pl.cyfronet.s4e.bean.AppRole;
+import pl.cyfronet.s4e.service.InstitutionService;
 
 public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
-
     public CustomMethodSecurityExpressionRoot(Authentication authentication) {
         super(authentication);
     }
@@ -37,24 +37,15 @@ public class CustomMethodSecurityExpressionRoot extends SecurityExpressionRoot i
         return null;
     }
 
-    public boolean isGroupMember(String institutionSlug, String groupSlug) {
-        return hasRole(institutionSlug, groupSlug, AppRole.GROUP_MEMBER.name());
+    public boolean isInstitutionAdmin(String institutionSlug) {
+        return
+                hasRole(institutionSlug, InstitutionService.DEFAULT, AppRole.INST_ADMIN.name())
+                        ||
+                hasRole(institutionSlug, InstitutionService.DEFAULT, AppRole.INST_MANAGER.name());
     }
 
     public boolean isInstitutionMember(String institutionSlug) {
-        return hasRole(institutionSlug, "default", AppRole.GROUP_MEMBER.name());
-    }
-
-    public boolean isGroupManager(String institutionSlug, String groupSlug) {
-        return hasRole(institutionSlug, groupSlug, AppRole.GROUP_MANAGER.name());
-    }
-
-    public boolean isInstitutionManager(String institutionSlug) {
-        return hasRole(institutionSlug, "default", AppRole.INST_MANAGER.name());
-    }
-
-    public boolean isInstitutionAdmin(String institutionSlug) {
-        return hasRole(institutionSlug, "default", AppRole.INST_ADMIN.name());
+        return hasRole(institutionSlug, InstitutionService.DEFAULT, AppRole.GROUP_MEMBER.name());
     }
 
     private boolean hasRole(String institutionSlug, String groupSlug, String role) {
