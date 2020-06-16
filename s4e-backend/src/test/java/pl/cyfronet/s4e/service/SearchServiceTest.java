@@ -105,7 +105,7 @@ public class SearchServiceTest {
     @Test
     public void testQueryByPolarisation() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("polarisation", "Dual VV/VH");
+        params.put("polarisation", "VV VH");
         List<Scene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
@@ -203,7 +203,7 @@ public class SearchServiceTest {
         params.put("relativeOrbitNumber", 2);
         params.put("processingLevel", "2LC");
         params.put("cloudCover", 0.5f);
-        params.put("polarisation", "Dual VV/VH");
+        params.put("polarisation", "VV VH");
         params.put("productType", "GRDH");
         params.put("satellitePlatform", "Sentinel-1A");
         params.put("sensingFrom", "2019-11-01T00:00:00.000000+00:00");
@@ -221,7 +221,7 @@ public class SearchServiceTest {
     public void testSqlInjection() throws SQLException {
         Map<String, Object> params = new HashMap<>();
         params.put("relativeOrbitNumber", 2);
-        params.put("polarisation", "Dual VV/VH\'UNION SELECT username, password FROM users--");
+        params.put("polarisation", "Dual VV VH\'UNION SELECT username, password FROM users--");
         params.put("order", "DESC");
         params.put("sortBy", "ingestionTime");
         params.put("limit", 15);

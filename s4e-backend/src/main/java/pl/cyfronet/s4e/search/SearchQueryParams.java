@@ -16,6 +16,14 @@ public class SearchQueryParams {
     public static final String POLARISATION = "polarisation";
     public static final String SENSOR_MODE = "sensorMode";
     public static final String RELATIVE_ORBIT_NUMBER = "relativeOrbitNumber";
+    public static final String ABSOLUTE_ORBIT_NUMBER = "absoluteOrbitNumber";
+    public static final String COLLECTION = "collection";
+    public static final String TIMELINESS = "timeliness";
+    public static final String INSTRUMENT = "instrument";
+    public static final String FOOTPRINT = "footprint";
+    public static final String PRODUCT_LEVEL = "productLevel";
 
     public static final String CLOUD_COVER = "cloudCover";
+
+
 }

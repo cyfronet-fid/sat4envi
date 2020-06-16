@@ -106,6 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )).permitAll()
 
                 .mvcMatchers(GET, prefix("/search")).permitAll()
+                .mvcMatchers(GET, prefix("/dhus/**")).authenticated()
 
                 .mvcMatchers(GET, prefix("/overlays/prg", "/overlays/wms")).permitAll()
 

@@ -23,7 +23,9 @@ public class QueryConfig {
         return new QueryEnding(
                 new QueryNumber(
                         new QueryText(
-                                new QueryTime(new QueryBuilderImpl())
+                                new QueryGeometry(
+                                        new QueryTime(new QueryBuilderImpl())
+                                )
                         )
                 ), springDataWebProperties
         );

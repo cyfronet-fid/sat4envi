@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
@@ -22,6 +23,8 @@ public class SceneStorage extends Storage {
 
     interface SceneProjection {
         String getS3Path();
+
+        JsonNode getSceneContent();
     }
 
     public SceneStorage(S3Client s3Client,
@@ -43,12 +46,15 @@ public class SceneStorage extends Storage {
     }
 
     public URL generatePresignedGetLink(Long id, Duration signatureDuration) throws NotFoundException {
+        return generatePresignedGetLinkWithFileType(id, signatureDuration, null);
+    }
+
+    public URL generatePresignedGetLinkWithFileType(Long id, Duration signatureDuration, String type) throws NotFoundException {
         SceneProjection sceneProjection = sceneRepository.findById(id, SceneProjection.class)
                 .orElseThrow(() -> new NotFoundException("Scene with id '" + id + "' not found"));
-
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(s3Properties.getBucket())
-                .key(sceneProjection.getS3Path())
+                .key(getKey(sceneProjection, type))
                 .build();
 
         PresignedGetObjectRequest presignedGetObjectRequest =
@@ -62,6 +68,13 @@ public class SceneStorage extends Storage {
         }
 
         return presignedGetObjectRequest.url();
+    }
+
+    public String getKey(SceneProjection sceneProjection, String type) {
+        if (type != null) {
+            return sceneProjection.getSceneContent().get("artifacts").get(type).asText().substring(1);
+        }
+        return sceneProjection.getS3Path();
     }
 
     public Duration getPresignedGetTimeout() {

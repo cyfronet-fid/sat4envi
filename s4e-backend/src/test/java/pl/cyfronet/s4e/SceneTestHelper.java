@@ -70,6 +70,19 @@ public class SceneTestHelper {
                 "}";
     }
 
+    public static String getSceneContent(){
+        return " {\"schema\": \"Sentinel-1.scene.v1.json\"," +
+                " \"artifacts\": " +
+                "{\"RGB_16b\": \"/Sentinel-1/GRDH_Products/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.RGB.tif\"," +
+                " \"RGBs_8b\": \"/Sentinel-1/GRDH_Products/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.RGBs.tif\"," +
+                " \"checksum\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.SAFE.md5\", " +
+                "\"manifest\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.manifest.xml\"," +
+                " \"metadata\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.metadata\", " +
+                "\"quicklook\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.qlf.tif\"," +
+                " \"product_archive\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.SAFE.zip\"}, " +
+                "\"product_type\": \"Sentinel-1-GRDH\"} ";
+    }
+
     public static Function<LocalDateTime, Scene> toScene(Product product) {
         return timestamp -> sceneBuilder(product).timestamp(timestamp).build();
     }

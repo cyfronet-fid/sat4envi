@@ -146,7 +146,7 @@ public class SearchControllerTest {
     @Test
     public void shouldGetSceneByPolarisation() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("polarisation",  "Dual VV/VH")
+                .param("polarisation", "VV VH")
                 .param("limit", "30"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(30))))
