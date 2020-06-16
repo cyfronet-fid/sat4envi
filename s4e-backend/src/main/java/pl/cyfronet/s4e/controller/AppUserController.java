@@ -119,7 +119,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionManager(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
         appUserService.createFromRequest(request, institutionSlug);
@@ -135,7 +135,7 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() &&  isInstitutionManager(#institutionSlug)")
+    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
