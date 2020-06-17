@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.controller.validation;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -33,6 +34,15 @@ class ImageDimensionsValidatorTest {
                 Arguments.of(95,  95,  false),
                 Arguments.of(10,  10,  false)
         );
+    }
+
+    @Test
+    public void shouldAllowNullValue() {
+        ImageDimensionsValidator validator = new ImageDimensionsValidator();
+        ImageDimensions annotation = mock(ImageDimensions.class);
+        validator.initialize(annotation);
+
+        assertThat(validator.isValid(null, null), is(true));
     }
 
 }
