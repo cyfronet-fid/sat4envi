@@ -75,14 +75,14 @@ describe('InstitutionFormComponent', () => {
 
   it('should validate address', () => {
     component.form.controls.address.setValue('');
-    expect(component.form.controls.address.valid).toBeFalsy();
+    expect(component.form.controls.address.valid).toBeTruthy();
     component.form.controls.address.setValue(InstitutionFactory.build().address);
     expect(component.form.controls.address.valid).toBeTruthy();
   });
 
-  it('should validate zip code', () => {
+  it('should validate postal code', () => {
     component.form.controls.postalCode.setValue('');
-    expect(component.form.controls.postalCode.valid).toBeFalsy();
+    expect(component.form.controls.postalCode.valid).toBeTruthy();
     component.form.controls.postalCode.setValue(InstitutionFactory.build().postalCode);
     expect(component.form.controls.postalCode.valid).toBeTruthy();
   });
@@ -96,14 +96,14 @@ describe('InstitutionFormComponent', () => {
 
   it('should validate phone', () => {
     component.form.controls.phone.setValue('');
-    expect(component.form.controls.phone.valid).toBeFalsy();
+    expect(component.form.controls.phone.valid).toBeTruthy();
     component.form.controls.phone.setValue(InstitutionFactory.build().phone);
     expect(component.form.controls.phone.valid).toBeTruthy();
   });
 
   it('should validate emblem', () => {
     component.form.controls.emblem.setValue('');
-    expect(component.form.controls.emblem.valid).toBeFalsy();
+    expect(component.form.controls.emblem.valid).toBeTruthy();
     component.form.controls.emblem.setValue(InstitutionFactory.build().emblem);
     expect(component.form.controls.emblem.valid).toBeTruthy();
   });
@@ -118,10 +118,6 @@ describe('InstitutionFormComponent', () => {
   it('should validate institution admin email', () => {
     component.form.controls.institutionAdminEmail.setValue('');
     expect(component.form.controls.institutionAdminEmail.valid).toBeTruthy();
-
-    component.form.controls.institutionAdminEmail.setValue(InstitutionFactory.build().institutionAdminEmail.split('@').shift());
-    expect(component.form.controls.institutionAdminEmail.valid).toBeFalsy();
-
     component.form.controls.institutionAdminEmail.setValue(InstitutionFactory.build().institutionAdminEmail);
     expect(component.form.controls.institutionAdminEmail.valid).toBeTruthy();
   });

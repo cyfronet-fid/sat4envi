@@ -9,9 +9,11 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Create separate change password page [#511](https://github.com/cyfronet-fid/sat4envi/issues/511)
 - Add generic list view, overhoul institution list view [#456](https://github.com/cyfronet-fid/sat4envi/issues/456)
 - Add Sentinel search config endpoint [#485](https://github.com/cyfronet-fid/sat4envi/issues/485)
 - Preset gs-gateway configurations per dataset
+- Add Sentinel search config endpoint [#485](https://github.com/cyfronet-fid/sat4envi/issues/485)
 - Edit institution [#494](https://github.com/cyfronet-fid/sat4envi/issues/494)
 - GeoServer Gateway [#479](https://github.com/cyfronet-fid/sat4envi/issues/479)
 - Add parentName to basic institution response

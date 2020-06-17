@@ -56,6 +56,7 @@
     formControlName="parentName"
     label="Klikając w poniższe pole można zmienić dla nowo tworzonej instytucji jednostkę narzędną."
     placeholder="Wybierz instytucję"
+    [required]="true"
     (click)="openParentInstitutionModal()"
     i18n-label
   ></ext-input>
@@ -65,34 +66,40 @@
     formControlName="name"
     label="Nazwa instytucji"
     placeholder="Wybierz instytucję"
+    [required]="true"
     i18n-label
   ></ext-input>
   <ext-input
     formControlName="address"
     label="Ulica"
+    [required]="false"
     i18n-label
   ></ext-input>
   <ext-input
     formControlName="postalCode"
     label="Kod pocztowy"
     placeholder="xx-xxx"
+    [required]="false"
     i18n-label
   ></ext-input>
   <ext-input
     formControlName="city"
     label="Miejscowość"
+    [required]="true"
     i18n-label
   ></ext-input>
   <ext-input
     formControlName="phone"
     label="Telefon"
     placeholder="+48 xxx xxx xxx"
+    [required]="false"
     i18n-label
   ></ext-input>
   <ext-input
     formControlName="secondaryPhone"
     label="Telefon dodatkowy"
     placeholder="+48 xxx xxx xxx"
+    [required]="false"
     i18n-label
   ></ext-input>
 
@@ -131,6 +138,7 @@
     type="email"
     formControlName="institutionAdminEmail"
     label="E-mail administratora"
+    [required]="false"
     i18n-label
   ></ext-input>
 

@@ -51,32 +51,4 @@ describe('ProfileComponent', () => {
     fixture.detectChanges();
     expect(fixture.debugElement.nativeElement.textContent).toContain('Email: email@domain');
   });
-
-  it('should not send non valid form', () => {
-    const spy = spyOn(profileService, 'resetPassword');
-    component.submitPasswordChange();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('should send valid form', () => {
-    const spy = spyOn(profileService, 'resetPassword');
-    component.form
-      .setValue({oldPassword: 'zkMember', newPassword: 'ZKMEMBER'});
-    component.submitPasswordChange();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('should validate old password', () => {
-    component.form.controls.oldPassword.setValue('');
-    expect(component.form.controls.oldPassword.valid).toBeFalsy();
-    component.form.controls.oldPassword.setValue('pass');
-    expect(component.form.controls.oldPassword.valid).toBeTruthy();
-  });
-
-  it('should validate new password', () => {
-    component.form.controls.newPassword.setValue('');
-    expect(component.form.controls.newPassword.valid).toBeFalsy();
-    component.form.controls.newPassword.setValue('pass');
-    expect(component.form.controls.newPassword.valid).toBeTruthy();
-  });
 });

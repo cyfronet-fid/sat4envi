@@ -1,13 +1,16 @@
 import {
   Component, ElementRef, forwardRef, Input, Optional, ViewChild,
-  ViewEncapsulation,
-  OnInit,
-  OnDestroy
+  ViewEncapsulation
 } from '@angular/core';
-import {ControlContainer, NG_VALUE_ACCESSOR} from '@angular/forms';
+import {ControlContainer, NG_VALUE_ACCESSOR, AbstractControl} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+
+const SPECIAL_TO_REGULAR_TYPES = {
+  date: 'text',
+  percent: 'number'
+};
 
 @Component({
   selector: 'ext-input',
@@ -36,16 +39,7 @@ export class InputComponent extends GeneralInput {
   @Input('type')
   set type(type: string) {
     this.inputType = type;
-
-    if (type === 'date') {
-      this.controlType = 'text';
-    }
-    else if (type === 'percent') {
-      this.controlType = 'number';
-    }
-    else {
-      this.controlType = type;
-    }
+    this.controlType = !!SPECIAL_TO_REGULAR_TYPES[type] && SPECIAL_TO_REGULAR_TYPES[type] || type;
   }
 
   @Input('placeholder') public _placeholder: string;
@@ -63,15 +57,15 @@ export class InputComponent extends GeneralInput {
 
   onChange(e: Event, value: any) {
     if(this.controlType === 'number') {
-      return super.onChange(e, value == null ? undefined : Number(value));
+      return super.onChange(e, !value ? undefined : Number(value));
     }
     return super.onChange(e, value);
   }
 
   writeValue(value: any): void {
-    if (value !== undefined) {
+    if (!!value) {
       this.currentValue = value;
-      this.fc.setValue(value)
+      this.fc.setValue(value);
     }
   }
 

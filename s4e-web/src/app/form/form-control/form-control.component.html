@@ -43,7 +43,7 @@
   <label [attr.for]="_options.controlId" *ngIf="visualType === 'standard'"
          class="col-md-{{getLabelSize()}} control-label">
     {{ _options.label }}
-    <span *ngIf="_options.required === true" class="required">* </span>
+    <span *ngIf="_options.required" class="required">* </span>
     <span *ngIf="_options.tooltip" [attr.title]="_options.tooltip" class="fa fa-info-circle"></span>
     <span *ngIf="_options.help">{{_options.help}}</span>
   </label>

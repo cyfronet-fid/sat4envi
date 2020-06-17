@@ -1,3 +1,4 @@
+import { ChangePasswordComponent } from './profile/change-password/change-password.component';
 import { InstitutionFormComponent } from './manage-institutions/institution-form/institution-form.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { Routes} from '@angular/router';
@@ -46,7 +47,11 @@ export const settingsRoutes: Routes = [
       },
       {
         path: 'profile',
-        component: ProfileComponent,
+        component: ProfileComponent
+      },
+      {
+        path: 'change-password',
+        component: ChangePasswordComponent
       },
       {
         path: 'groups',

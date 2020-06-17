@@ -157,13 +157,13 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
       slug: new FormControl<string>(),
       name: new FormControl<string>(null, Validators.required),
-      address: new FormControl<string>(null, Validators.required),
-      postalCode: new FormControl<string>(null, Validators.required),
+      address: new FormControl<string>(),
+      postalCode: new FormControl<string>(),
       city: new FormControl<string>(null, Validators.required),
-      phone: new FormControl<string>(null, Validators.required),
-      emblem: new FormControl<string>(null, Validators.required),
+      phone: new FormControl<string>(),
+      emblem: new FormControl<string>(),
       secondaryPhone: new FormControl<string>(),
-      institutionAdminEmail: new FormControl<string>(null, Validators.email)
+      institutionAdminEmail: new FormControl<string>()
     });
   }
 

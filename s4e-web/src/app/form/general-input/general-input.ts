@@ -10,95 +10,19 @@ import {ExtFormDirective} from '../form-directive/ext-form.directive';
 
 export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, AfterContentInit {
   public fc: FormControl = new FormControl();
+  public currentValue: any;
+  public control: FormControlName;
+  public formControlOptions: Partial<IFormControlOptions>;
+
+  public _disabled: boolean = false;
+  public elementId: string = '';
+
+  @HostBinding('class.input-sm') inputSm: boolean = false;
+  @ViewChild('input') inputRef: ElementRef;
 
   get size(): ControlSize {
     return this.formControlOptions.size;
   }
-
-  public focus() {
-    this.inputRef.nativeElement.focus();
-  }
-
-  @Input() set size(value: ControlSize) {
-    this.formControlOptions = {...this.formControlOptions, size: value};
-  }
-  public currentValue: any;
-
-  @HostBinding('class.input-sm') inputSm: boolean = false;
-
-
-  @Input()
-  public set required(value: boolean) {
-    this.formControlOptions = {...this.formControlOptions, required: value} as IFormControlOptions;
-  }
-
-  @Input()
-  public set tooltipText(value: string) {
-    this.formControlOptions = {...this.formControlOptions, tooltip: value} as IFormControlOptions;
-  }
-
-  @Input() public formGroupClass: string = 'form-group-sm';
-  @Input() public inputClass: string = '';
-
-  control: FormControlName;
-
-  _disabled: boolean = false;
-
-  @Input() set disabled(value) {
-    if(value) {
-      this.fc.disable();
-    } else {
-      this.fc.enable();
-    }
-    this._disabled = value;
-  }
-
-  setDisabledState(isDisabled: boolean) {
-    this.disabled = isDisabled;
-  }
-
-  @Input() public controlId: string;
-
-  @Input() set visualType(newValue: VisualType) {
-    this.formControlOptions = {...this.formControlOptions, visualType: newValue} as IFormControlOptions;
-  }
-
-  @Input() set showErrorMessages(newValue: boolean) {
-    this.formControlOptions = {...this.formControlOptions, showErrorMessages: newValue} as IFormControlOptions;
-  }
-
-  @Input() set labelSize(value: number) {
-    this.formControlOptions = {...this.formControlOptions, labelSize: value} as IFormControlOptions;
-  }
-
-  protected _label: string = '';
-
-  protected onSetLabel(newValue: string) {
-  }
-
-
-  @Input() public set label(newValue: string) {
-    this._label = newValue;
-    this.formControlOptions = {...this.formControlOptions, label: newValue} as IFormControlOptions;
-    this.onSetLabel(newValue);
-  }
-
-  public get label() {
-    return this._label;
-  }
-
-  @Input('help') public set _help(val: string) {
-    this.formControlOptions = {...this.formControlOptions, help: val} as IFormControlOptions;
-  }
-  formControlOptions: Partial<IFormControlOptions>;
-
-  // propagate changes into the custom form control
-  protected propagateChange: Function = (_: any) => {
-  };
-
-  // get reference to the input element
-  @ViewChild('input') inputRef: ElementRef;
-
   get idPrefix(): string {
     if (this.extForm && this.extForm.controlIdPrefix !== '') {
       return this.extForm.controlIdPrefix + '_';
@@ -106,33 +30,84 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
     return '';
   }
 
-  constructor(@Optional() @Host() @SkipSelf() protected cc: ControlContainer,
+  get label() {
+    return this._label;
+  }
+  @Input() set size(value: ControlSize) {
+    this.formControlOptions = {...this.formControlOptions, size: value};
+  }
+  @Input() controlId: string;
+  @Input()
+  set required(value: boolean) {
+    this.formControlOptions = {...this.formControlOptions, required: value} as IFormControlOptions;
+  }
+  @Input()
+  set tooltipText(value: string) {
+    this.formControlOptions = {...this.formControlOptions, tooltip: value} as IFormControlOptions;
+  }
+  @Input() formGroupClass: string = 'form-group-sm';
+  @Input() inputClass: string = '';
+  @Input() set disabled(value) {
+    value ? this.fc.disable() : this.fc.enable();
+    this._disabled = value;
+  }
+
+  setDisabledState(isDisabled: boolean) {
+    this.disabled = isDisabled;
+  }
+  @Input() set visualType(newValue: VisualType) {
+    this.formControlOptions = {...this.formControlOptions, visualType: newValue} as IFormControlOptions;
+  }
+  @Input() set showErrorMessages(newValue: boolean) {
+    this.formControlOptions = {...this.formControlOptions, showErrorMessages: newValue} as IFormControlOptions;
+  }
+  @Input() set labelSize(value: number) {
+    this.formControlOptions = {...this.formControlOptions, labelSize: value} as IFormControlOptions;
+  }
+  @Input() set label(newValue: string) {
+    this._label = newValue;
+    this.formControlOptions = {...this.formControlOptions, label: newValue} as IFormControlOptions;
+    this.onSetLabel(newValue);
+  }
+  @Input('help') set _help(val: string) {
+    this.formControlOptions = {...this.formControlOptions, help: val} as IFormControlOptions;
+  }
+
+  // propagate changes into the custom form control
+  protected propagateChange: Function = (_: any) => {};
+  protected _label = '';
+  protected onSetLabel(newValue: string) {}
+
+  constructor(@Optional() @Host() @SkipSelf() protected controlContainer: ControlContainer,
               @Optional() protected extForm: ExtFormDirective) {
   }
 
+  public focus() {
+    this.inputRef.nativeElement.focus();
+  }
+
   public getErrors(): Array<string> {
-    if (typeof(this.cc) === 'undefined')
+    if (!this.controlContainer) {
       return [];
-    if(this.control != null && Array.isArray(this.control.errors))
-      return this.control.errors as string[];
-    return this.cc.getError(this.controlId) || [];
+    }
+
+    return !!this.control && Array.isArray(this.control.errors) && this.control.errors as string[]
+      || this.controlContainer.getError(this.controlId)
+      || [];
   }
 
   public hasErrors(): boolean {
-    if (this.cc === null)
+    if (!this.controlContainer || !!this.control && !this.control.touched) {
       return false;
-    if(this.control != null && Array.isArray(this.control.errors))
-      return this.control.errors.length > 0;
-    if(this.control != null && !this.control.touched)
-      return false;
-    return this.cc.hasError(this.controlId) || false;
+    }
+    return !!this.control && Array.isArray(this.control.errors) && this.control.errors.length > 0
+      || this.controlContainer.hasError(this.controlId)
+      || false;
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   ngAfterContentInit(): void {
     /**
@@ -140,19 +115,20 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
      * to angular control, only ControlContainer. So in order to get FormControl a dirty one liner is required
      * @type {FormControl}
      */
-    if (this.cc != null && (this.cc as any).directives)
-      this.control = ((this.cc as any).directives as FormControlName[]).find(fc => {
-        return fc.valueAccessor === this;
-      });
+    const formControlNames = !!this.controlContainer && (this.controlContainer as any).directives as FormControlName[] || null;
+    if (!!formControlNames) {
+      this.control = formControlNames.find(fc => fc.valueAccessor === this);
+    }
 
-    if (this.controlId == null && this.control == null)
+    if (!this.controlId && !this.control) {
       throw Error(`controlId not specified on input (label: ${this.label}) (and formControlName is not set)`);
+    }
 
     this.calculateElementId();
   }
 
   writeValue(value: any): void {
-    if (value !== undefined) {
+    if (!!value) {
       this.currentValue = value;
       this.inputRef.nativeElement.value = value;
     }
@@ -175,21 +151,15 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
     this.propagateChange(this.currentValue);
   }
 
-  elementId: string = '';
-
   calculateElementId() {
-    let id = '';
-    if (this.controlId)
-      id = this.controlId;
-    if (this.control)
-      id = this.control.name;
-
+    const id = !!this.controlId && this.controlId
+      || !!this.control && this.control.name;
     this.elementId = this.idPrefix + id;
 
     this.formControlOptions = {
       ...this.formControlOptions,
       controlId: this.elementId,
-      control: this.control != null ? this.control.control : undefined
+      control: !!this.control ? this.control.control : undefined
     } as IFormControlOptions;
   }
 }

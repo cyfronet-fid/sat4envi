@@ -10,22 +10,9 @@
     Zaloguj się by zobaczyć swój profil
   </p>
   <ng-template #userDetails>
-    <p i18n>Email: {{(userEmail$ | async) //ex. email@domain.com}}</p>
-
-    <br><br>
-    <p i18n><b>Zmiana hasła</b></p>
-    <form (ngSubmit)="submitPasswordChange()" [formGroup]="form" autocomplete="off">
-      <label for="old-password" i18n>Stare hasło: </label>
-      <input class="form-control" formControlName="oldPassword" id="old-password" type="password">
-
-      <br><br>
-      <label for="new-password" i18n>Nowe hasło: </label>
-      <input class="form-control" formControlName="newPassword" id="new-password" type="password">
-
-      <br><br>
-      <button class="button button--primary" type="submit" [disabled]="form.invalid">
-        Zmień hasło
-      </button>
-    </form>
+    <p i18n>Email: {{ userEmail$ | async }}</p>
+    <button class="button button--primary" routerLink="/settings/change-password" queryParamsHandling="merge">
+      Zmień hasło
+    </button>
   </ng-template>
 </section>
