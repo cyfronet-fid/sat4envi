@@ -19,14 +19,18 @@ public class ImageDimensionsValidator implements ConstraintValidator<ImageDimens
     }
 
     public boolean isValid(String encoded, ConstraintValidatorContext context) {
-       try {
-           byte[] bytes = Base64.getDecoder().decode(encoded);
-           BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-           return image.getWidth() <= maxWidth && image.getHeight() <= maxHeight;
-       } catch (IllegalArgumentException e) {
-           return false;
-       } catch (IOException e) {
-           return false;
-       }
+        if (encoded == null) {
+            return true;
+        }
+
+        try {
+            byte[] bytes = Base64.getDecoder().decode(encoded);
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
+            return image.getWidth() <= maxWidth && image.getHeight() <= maxHeight;
+        } catch (IllegalArgumentException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }

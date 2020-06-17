@@ -31,6 +31,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Handle nulls in custom Validators [#491](https://github.com/cyfronet-fid/sat4envi/issues/491)
 - Fix PUT endpoint for Institutions [#500](https://github.com/cyfronet-fid/sat4envi/issues/500)
 - Fix and test refactor for /institutions endpoint [#472](https://github.com/cyfronet-fid/sat4envi/issues/472)
 

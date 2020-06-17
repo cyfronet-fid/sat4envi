@@ -17,14 +17,18 @@ public class ContentTypeValidator implements ConstraintValidator<ContentType, St
     }
 
     public boolean isValid(String encoded, ConstraintValidatorContext context) {
-       try {
-           byte[] bytes = Base64.getDecoder().decode(encoded);
-           String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes));
-           return pattern.matcher(contentType).matches();
-       } catch (IllegalArgumentException e) {
-           return false;
-       } catch (IOException e) {
-           return false;
-       }
+        if (encoded == null) {
+            return true;
+        }
+
+        try {
+            byte[] bytes = Base64.getDecoder().decode(encoded);
+            String contentType = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(bytes));
+            return pattern.matcher(contentType).matches();
+        } catch (IllegalArgumentException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
     }
 }
