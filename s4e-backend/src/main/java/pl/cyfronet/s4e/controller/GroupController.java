@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.CreateGroupRequest;
 import pl.cyfronet.s4e.controller.request.UpdateGroupRequest;
@@ -47,7 +46,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/groups", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void create(@RequestBody @Valid CreateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug)
             throws GroupCreationException, NotFoundException {
@@ -63,7 +61,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/groups/{group}/members", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void addMember(@RequestBody String email,
                                        @PathVariable("institution") String institutionSlug,
                                        @PathVariable("group") String groupSlug)
@@ -81,7 +78,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping("/institutions/{institution}/groups/{group}/members/{email}")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void removeMember(@PathVariable("institution") String institutionSlug,
                                           @PathVariable("group") String groupSlug,
                                           @PathVariable String email)
@@ -100,7 +96,6 @@ public class GroupController {
     })
     @PageableAsQueryParam
     @GetMapping("/institutions/{institution}/groups")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public Page<GroupResponse> getAllByInstitutionName(@PathVariable("institution") String institutionSlug,
                                                        @Parameter(hidden = true) Pageable pageable) {
         return groupService.getAllByInstitution(institutionSlug, pageable, GroupResponse.class);
@@ -115,7 +110,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/institutions/{institution}/groups/{group}")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public GroupResponse get(@PathVariable("institution") String institutionSlug,
                              @PathVariable("group") String groupSlug)
             throws NotFoundException {
@@ -132,7 +126,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/institutions/{institution}/groups/{group}/members")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public Set<AppUserResponse> getMembers(@PathVariable("institution") String institutionSlug,
                                            @PathVariable("group") String groupSlug) {
         return groupService.getMembers(institutionSlug, groupSlug, AppUserResponse.class);
@@ -147,7 +140,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}/groups/{group}", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void update(@RequestBody @Valid UpdateGroupRequest request,
                                     @PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
@@ -164,7 +156,6 @@ public class GroupController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/institutions/{institution}/groups/{group}")
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void delete(@PathVariable("institution") String institutionSlug,
                                     @PathVariable("group") String groupSlug)
             throws NotFoundException {

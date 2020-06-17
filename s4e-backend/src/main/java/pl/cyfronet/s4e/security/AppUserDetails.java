@@ -2,36 +2,30 @@ package pl.cyfronet.s4e.security;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
 import java.util.Set;
 
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
     @Getter
     private final String email;
+
     @Getter
     private final String name;
+
     @Getter
     private final String surname;
+
     @Getter
-    private final Set<SimpleGrantedAuthority> roles;
+    private final Set<SimpleGrantedAuthority> authorities;
+
     @Getter
     private final String password;
+
     @Getter
     private final boolean enabled;
-    @Getter
-    private final boolean memberZK;
-    @Getter
-    private final boolean admin;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
-    }
 
     @Override
     public String getUsername() {

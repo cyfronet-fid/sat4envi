@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.CreateSchemaRequest;
 import pl.cyfronet.s4e.controller.response.SchemaResponse;
@@ -38,7 +37,6 @@ public class SchemaController {
             @ApiResponse(responseCode = "404", description = "Previous Schema doesn't exist", content = @Content)
     })
     @PostMapping(value = "/schema", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isAdmin()")
     public SchemaResponse create(@RequestBody @Valid CreateSchemaRequest request)
             throws NotFoundException, SchemaCreationException {
         schemaService.create(SchemaService.Create.builder()
@@ -78,7 +76,6 @@ public class SchemaController {
             @ApiResponse(responseCode = "404", description = "Schema doesn't exist", content = @Content)
     })
     @DeleteMapping("/schema/{name}")
-    @PreAuthorize("isAuthenticated() && isAdmin()")
     public void delete(@PathVariable String name) throws SchemaDeletionException, NotFoundException {
         schemaService.deleteByName(name);
     }

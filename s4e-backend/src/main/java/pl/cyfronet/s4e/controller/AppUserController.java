@@ -15,8 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
@@ -32,6 +30,7 @@ import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.GroupService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -119,7 +118,6 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
                                                   @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
         appUserService.createFromRequest(request, institutionSlug);
@@ -135,7 +133,6 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isInstitutionAdmin(#institutionSlug)")
     public void updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
                                                            @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
@@ -152,9 +149,8 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/users/me")
-    @PreAuthorize("isAuthenticated()")
     public AppUserResponse getMe() throws NotFoundException {
-        AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
         return appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), AppUserResponse.class)
                 .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
     }

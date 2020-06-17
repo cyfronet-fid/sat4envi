@@ -8,8 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.PasswordChangeRequest;
 import pl.cyfronet.s4e.controller.request.PasswordResetRequest;
@@ -20,6 +18,7 @@ import pl.cyfronet.s4e.ex.PasswordResetTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.PasswordService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -82,9 +81,8 @@ public class PasswordController {
             @ApiResponse(responseCode = "404", description = "The user was not found", content = @Content)
     })
     @PostMapping(value = "/password-change", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated()")
     public void changePassword(@RequestBody @Valid PasswordChangeRequest request) throws NotFoundException, BadRequestException {
-        AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
         passwordService.changePassword(request, appUserDetails.getUsername());
     }
 }

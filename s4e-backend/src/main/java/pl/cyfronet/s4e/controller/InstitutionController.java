@@ -7,8 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
@@ -21,6 +19,7 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.InstitutionService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -43,7 +42,6 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isAdmin()")
     public void create(@RequestBody @Valid CreateInstitutionRequest request)
             throws InstitutionCreationException, NotFoundException {
         institutionService.save(request);
@@ -58,7 +56,6 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void update(@RequestBody UpdateInstitutionRequest request,
                        @PathVariable("institution") String institutionSlug)
             throws NotFoundException, S3ClientException {
@@ -74,7 +71,6 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                             @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
@@ -90,11 +86,9 @@ public class InstitutionController {
     })
     @PageableAsQueryParam
     @GetMapping("/institutions")
-    @PreAuthorize("isAuthenticated()")
     public List<BasicInstitutionResponse> getAll() {
-        AppUserDetails appUserDetails =
-                (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (appUserDetails.isAdmin()) {
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+        if (appUserDetails != null && appUserDetails.getAuthorities().contains("ROLE_ADMIN")) {
             return institutionService.getAll(BasicInstitutionResponse.class);
         }
         return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),
@@ -111,7 +105,6 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/institutions/{institution}")
-    @PreAuthorize("isAuthenticated() && isInstitutionMember(#institutionSlug)")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
         return institutionService.getInstitution(institutionSlug, InstitutionResponse.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
@@ -126,7 +119,6 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/institutions/{institution}")
-    @PreAuthorize("isAuthenticated() && (isInstitutionAdmin(#institutionSlug) || isAdmin())")
     public void delete(@PathVariable("institution") String institutionSlug) {
         institutionService.delete(institutionSlug);
     }

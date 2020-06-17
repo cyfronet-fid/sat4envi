@@ -1,7 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
@@ -29,7 +27,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @BasicTest
-@Slf4j
 @AutoConfigureMockMvc
 public class InstitutionControllerTest {
     public static final String PROFILE_EMAIL = "get@profile.com";
@@ -161,24 +158,9 @@ public class InstitutionControllerTest {
     }
 
     @Test
-    @WithAnonymousUser
-    public void shouldReturn403() throws Exception {
+    public void shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/institutions")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void shouldReturn401() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/institutions")
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(AppUser.builder()
-                        .email("profile2@mail.pl")
-                        .name("Get")
-                        .surname("Profile")
-                        .password(passwordEncoder.encode("password"))
-                        .enabled(true)
-                        .build(), objectMapper)))
                 .andExpect(status().isUnauthorized());
     }
 }

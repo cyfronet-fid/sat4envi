@@ -7,7 +7,6 @@ import pl.cyfronet.s4e.data.repository.query.*;
 
 @Configuration
 public class QueryConfig {
-
     final SpringDataWebProperties springDataWebProperties;
 
     public QueryConfig(SpringDataWebProperties springDataWebProperties) {

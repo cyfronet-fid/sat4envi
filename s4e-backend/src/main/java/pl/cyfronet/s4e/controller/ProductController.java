@@ -6,14 +6,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.response.BasicProductResponse;
 import pl.cyfronet.s4e.controller.response.ProductResponse;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.ProductService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import java.util.List;
 
@@ -53,10 +52,9 @@ public class ProductController {
             @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
-    @PreAuthorize("isAuthenticated()")
     @PutMapping("/products/{id}/favourite")
     public void addFavourite(@PathVariable Long id) throws NotFoundException {
-        AppUserDetails userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
         productService.addFavourite(id, userDetails.getUsername());
     }
 
@@ -66,10 +64,9 @@ public class ProductController {
             @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
-    @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/products/{id}/favourite")
     public void deleteFavourite(@PathVariable Long id) throws NotFoundException {
-        AppUserDetails userDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
         productService.deleteFavourite(id, userDetails.getUsername());
     }
 }

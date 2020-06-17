@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.security.AppUserDetails;
 
 import java.time.LocalDateTime;
 
@@ -112,10 +114,16 @@ public class AuditingTest {
                 .build();
     }
 
-    private void authenticateAs(String name) {
-        Authentication auth = mock(Authentication.class);
-        when(auth.isAuthenticated()).thenReturn(true);
-        when(auth.getName()).thenReturn(name);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+    private void authenticateAs(String email) {
+        AppUserDetails appUserDetails = mock(AppUserDetails.class);
+        when(appUserDetails.getUsername()).thenReturn(email);
+
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getDetails()).thenReturn(appUserDetails);
+
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(context);
     }
 }
