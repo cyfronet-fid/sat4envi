@@ -1,12 +1,7 @@
 import { InstitutionService } from './state/institution/institution.service';
 import { ModalQuery } from './../../modal/state/modal.query';
-import {
-  ParentInstitutionModal,
-  PARENT_INSTITUTION_MODAL_ID,
-  isParentInstitutionModal
-} from './manage-institutions/parent-institution-modal/parent-institution-modal.model';
 import { ModalService } from './../../modal/state/modal.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {SessionService} from '../../state/session/session.service';
 import {Observable} from 'rxjs';
 import {ProfileQuery} from '../../state/profile/profile.query';
@@ -68,20 +63,6 @@ export class SettingsComponent implements OnInit {
   searchForInstitutions(partialInstitutionName: string) {
     this._institutionsSearchResultsService.get(partialInstitutionName);
     this.isInUse = true;
-  }
-
-  openParentInstitutionModal() {
-    this._modalService.show<ParentInstitutionModal>({
-      id: PARENT_INSTITUTION_MODAL_ID,
-      size: 'lg',
-      hasReturnValue: true
-    });
-
-    this._modalQuery.modalClosed$(PARENT_INSTITUTION_MODAL_ID)
-      .pipe(
-        map(modal => isParentInstitutionModal(modal) ? modal.returnValue : null)
-      )
-      .subscribe(institution => console.log(institution));
   }
   selectFirstInstitution() {
     const firstSearchResult = this._institutionsSearchResultsQuery.getAll()[0];

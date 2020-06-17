@@ -79,11 +79,6 @@ export const settingsRoutes: Routes = [
         canActivate: [IsManagerGuard]
       },
       {
-        path: 'people/add',
-        component: PersonFormComponent,
-        canActivate: [IsManagerGuard]
-      },
-      {
         path: 'people/:email',
         component: PersonFormComponent,
         canActivate: [IsManagerGuard]

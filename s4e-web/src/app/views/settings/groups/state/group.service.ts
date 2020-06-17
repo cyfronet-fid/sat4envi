@@ -1,3 +1,4 @@
+import { AkitaGuidService } from 'src/app/views/map-view/state/search-results/guid.service';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {GroupStore} from './group.store';
@@ -9,56 +10,52 @@ import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Group, GroupForm} from './group.model';
 import {forkJoin, Observable} from 'rxjs';
 import {Person} from '../../people/state/person.model';
-import {catchErrorAndHandleStore, httpDeleteRequest$} from '../../../../common/store.util';
+import {catchErrorAndHandleStore, httpPutRequest$, httpGetRequest$, httpPostRequest$, httpDeleteRequest$} from '../../../../common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class GroupService {
 
-  constructor(private store: GroupStore,
-              private query: GroupQuery,
-              private config: S4eConfig,
-              private http: HttpClient) {
-  }
+  constructor(
+    private store: GroupStore,
+    private query: GroupQuery,
+    private config: S4eConfig,
+    private http: HttpClient,
+    private _akitaGuidService: AkitaGuidService
+  ) {}
 
   fetchAll(institutionSlug: string) {
-    this.store.setLoading(true);
-    this.store.setError(null);
-    this.http.get<IPageableResponse<Institution>>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups`)
-      .pipe(
-        catchErrorAndHandleStore(this.store),
-        finalize(() => this.store.setLoading(false))
-      )
-      .subscribe(pageable => this.store.set(pageable.content));
+    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups`;
+    return httpGetRequest$<IPageableResponse<Partial<Group>>>(this.http, url, this.store)
+      .subscribe(pageable => {
+        const groups = pageable.content
+          .map(group => ({...group, id: this._akitaGuidService.guid()})) as Group[];
+        this.store.set(groups);
+      });
   }
 
-  update$(instSlug: string, groupSlug: string, value: GroupForm) {
-    this.store.setLoading(true);
-    return this.http.put<Group>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}`, {
-      ...value,
-      membersEmails: value.membersEmails._
-    }).pipe(
-      catchErrorAndHandleStore(this.store),
-      finalize(() => this.store.setLoading(false))
-    );
+  update$(institutionSlug: string, groupSlug: string, value: GroupForm) {
+    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${groupSlug}`;
+    const membersEmails = value.membersEmails._;
+    return httpPutRequest$(this.http, url, {...value, membersEmails}, this.store);
   }
 
-  create$(instSlug: string, value: GroupForm) {
-    this.store.setLoading(true);
-
-    return this.http.post<Group>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups`, {
-      ...value,
-      membersEmails: value.membersEmails._,
-    }).pipe(
-      finalize(() => this.store.setLoading(false)),
-      catchErrorAndHandleStore(this.store)
-    );
+  create$(institutionSlug: string, value: GroupForm) {
+    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups`;
+    const membersEmails = value.membersEmails._;
+    return httpPostRequest$(this.http, url, {...value, membersEmails}, this.store);
   }
 
-  fetchForm$(instSlug: string, groupSlug: string): Observable<GroupForm> {
+  delete$(institutionSlug: string, group: Group) {
+    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${group.slug}`;
+    return httpDeleteRequest$(this.http, url, this.store)
+      .pipe(finalize(() => this.store.remove(group.id)));
+  }
+
+  fetchForm$(institutionSlug: string, groupSlug: string): Observable<GroupForm> {
     this.store.setLoading(true);
     return forkJoin([
-      this.http.get<Group>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}`),
-      this.http.get<{ members: Person[] }>(`${this.config.apiPrefixV1}/institutions/${instSlug}/groups/${groupSlug}/members`)
+      this.http.get<Group>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${groupSlug}`),
+      this.http.get<{ members: Person[] }>(`${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${groupSlug}/members`)
     ]).pipe(
       finalize(() => this.store.setLoading(false)),
       catchErrorAndHandleStore(this.store),

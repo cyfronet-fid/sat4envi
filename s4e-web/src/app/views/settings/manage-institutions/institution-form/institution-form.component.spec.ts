@@ -1,3 +1,5 @@
+import { InstitutionProfileModule } from './../../intitution-profile/institution-profile.module';
+import { ReplaySubject, Subject } from 'rxjs';
 import { InstitutionFactory } from '../../state/institution/institution.factory.spec';
 import { InstitutionService } from '../../state/institution/institution.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -7,6 +9,19 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InstitutionFormComponent } from './institution-form.component';
 import { S4eConfig } from 'src/app/utils/initializer/config.service';
+import { Data, ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
+import { InstitutionProfileComponent } from '../../intitution-profile/institution-profile.component';
+
+class ActivatedRouteStub {
+  queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
+  data: Subject<Data> = new ReplaySubject(1);
+  snapshot = {};
+
+  constructor() {
+    this.queryParamMap.next(convertToParamMap({ institution: 'test#1' }));
+    this.data.next({ isEditMode: false });
+  }
+}
 
 describe('InstitutionFormComponent', () => {
   let component: InstitutionFormComponent;
@@ -17,10 +32,15 @@ describe('InstitutionFormComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         ManageInstitutionsModule,
-        RouterTestingModule,
+        InstitutionProfileModule,
+        RouterTestingModule
+          .withRoutes([
+            { path: 'settings/institution', component: InstitutionProfileComponent }
+          ]),
         HttpClientTestingModule
       ],
       providers: [
+        {provide: ActivatedRoute, useClass: ActivatedRouteStub},
         S4eConfig
       ]
     })

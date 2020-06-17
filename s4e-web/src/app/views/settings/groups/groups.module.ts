@@ -9,6 +9,9 @@ import {GroupFormComponent} from './group-form/group-form.component';
 import {GroupStore} from './state/group.store';
 import {GroupQuery} from './state/group.query';
 import {GroupService} from './state/group.service';
+import { makeModalProvider } from 'src/app/modal/modal.providers';
+import { GROUP_FORM_MODAL_ID } from './group-form/group-form-modal.model';
+import { ModalModule } from 'src/app/modal/modal.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +24,7 @@ import {GroupService} from './state/group.service';
     RouterModule,
     GenericListViewModule,
     S4EFormsModule,
+    ModalModule
   ],
   exports: [
     GroupListComponent,
@@ -29,7 +33,8 @@ import {GroupService} from './state/group.service';
   providers: [
     GroupStore,
     GroupQuery,
-    GroupService
+    GroupService,
+    makeModalProvider(GROUP_FORM_MODAL_ID, GroupFormComponent)
   ]
 })
 export class GroupsModule {

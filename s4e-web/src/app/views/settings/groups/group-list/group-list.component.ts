@@ -1,3 +1,5 @@
+import { ModalQuery } from 'src/app/modal/state/modal.query';
+import { GROUP_FORM_MODAL_ID, GroupFormModal } from './../group-form/group-form-modal.model';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Institution} from '../../state/institution/institution.model';
@@ -21,11 +23,18 @@ export class GroupListComponent implements OnInit, OnDestroy {
   loading$: Observable<boolean>;
   institutions$: Observable<Institution[]>;
   institutionsLoading$: Observable<boolean>;
+  institutionSlug: string | null = null;
 
-  constructor(private groupQuery: GroupQuery, private groupService: GroupService,
-              private _modalService: ModalService,
-              private institutionQuery: InstitutionQuery, private institutionService: InstitutionService,
-              private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private groupQuery: GroupQuery,
+    private groupService: GroupService,
+    private institutionQuery: InstitutionQuery,
+    private institutionService: InstitutionService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _modalService: ModalService,
+    private _modalQuery: ModalQuery
+  ) {}
 
   ngOnInit() {
     this.error$ = this.groupQuery.selectError();
@@ -34,14 +43,25 @@ export class GroupListComponent implements OnInit, OnDestroy {
     this.institutions$ = this.institutionQuery.selectAll();
     this.institutionsLoading$ = this.institutionQuery.selectLoading();
 
-    this.institutionService.connectInstitutionToQuery$(this.route)
-      .pipe(untilDestroyed(this))
-      .subscribe(
-        instSlug => this.groupService.fetchAll(instSlug)
-      );
+    this._loadGroups();
   }
 
-  ngOnDestroy(): void {
+  remove(group: Group) {
+    this.groupService.delete$(this.institutionSlug, group)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this._loadGroups());
+  }
+
+  openModal(group: Group) {
+    this._modalService.show<GroupFormModal>({
+      id: GROUP_FORM_MODAL_ID,
+      size: 'lg',
+      group: !!group && group || null
+    });
+
+    this._modalQuery.modalClosed$(GROUP_FORM_MODAL_ID)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this._loadGroups());
   }
 
   async deleteGroup(slug: string) {
@@ -49,5 +69,16 @@ export class GroupListComponent implements OnInit, OnDestroy {
       'Czy na pewno chcesz usunąć tę grupę? Operacja jest nieodwracalna.')) {
       this.groupService.delete(this.institutionQuery.getActiveId(), slug);
     }
+  }
+
+  ngOnDestroy(): void {}
+
+  protected _loadGroups() {
+    this.institutionService.connectInstitutionToQuery$(this.route)
+      .pipe(untilDestroyed(this))
+      .subscribe(institutionSlug => {
+        this.groupService.fetchAll(institutionSlug);
+        this.institutionSlug = institutionSlug;
+      });
   }
 }

@@ -1,5 +1,8 @@
-import {SearchModule} from '../../components/search/search.module';
-import {AdminDashboardModule} from './admin-dashboard/admin-dashboard.module';
+
+import { ModalModule } from './../../modal/modal.module';
+import { GROUP_FORM_MODAL_ID } from './groups/group-form/group-form-modal.model';
+import { SearchModule } from './../../components/search/search.module';
+import { AdminDashboardModule } from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
@@ -16,7 +19,7 @@ import {GroupsModule} from './groups/groups.module';
 
 @NgModule({
   declarations: [
-    SettingsComponent,
+    SettingsComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +33,8 @@ import {GroupsModule} from './groups/groups.module';
     GroupsModule,
     RouterModule.forChild(settingsRoutes),
     ManageInstitutionsModule,
-    SearchModule
+    SearchModule,
+    ModalModule
   ]
 })
 export class SettingsModule {

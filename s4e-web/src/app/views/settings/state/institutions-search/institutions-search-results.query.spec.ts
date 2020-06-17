@@ -1,3 +1,4 @@
+import { InstitutionProfileComponent } from './../../intitution-profile/institution-profile.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { InstitutionFactory } from './../institution/institution.factory.spec';

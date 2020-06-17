@@ -1,7 +1,9 @@
-<s4e-generic-list-view [loading]="loading$ | async"
-                       [items]="groups$ | async"
-                       [error]="error$ | async"
-                       [selectable]="false">
+<s4e-generic-list-view
+  [loading]="loading$ | async"
+  [items]="groups$ | async"
+  [error]="error$ | async"
+  [selectable]="false"
+>
   <ng-container add-button>
     <button class="button button--secondary button--large" routerLink="../groups/add" queryParamsHandling="preserve">Dodaj nową Grupę</button>
   </ng-container>
