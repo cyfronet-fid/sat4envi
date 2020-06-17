@@ -52,7 +52,7 @@ export class GroupListComponent implements OnInit, OnDestroy {
       .subscribe(() => this._loadGroups());
   }
 
-  openModal(group: Group) {
+  openModal(group: Group | null) {
     this._modalService.show<GroupFormModal>({
       id: GROUP_FORM_MODAL_ID,
       size: 'lg',

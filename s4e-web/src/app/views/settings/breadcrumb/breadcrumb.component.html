@@ -1,0 +1,15 @@
+<div class="breadcrumb">
+  <span i18n>Tutaj jesteś: </span>
+  <span>
+    <ng-container *ngFor="let breadcrumb of breadcrumbs; last as isLast">
+      <ng-container *ngIf="isLast; else parent">
+        {{ breadcrumb.label }}
+      </ng-container>
+      <ng-template #parent>
+        <a [routerLink]="breadcrumb.url" queryParamsHandling="preserve">{{ breadcrumb.label }}</a> >
+      </ng-template>
+    </ng-container>
+  </span>
+</div>
+
+

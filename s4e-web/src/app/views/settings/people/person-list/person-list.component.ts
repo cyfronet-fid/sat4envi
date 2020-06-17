@@ -45,7 +45,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this._loadPersons();
   }
 
-  openPersonForm(person: Person) {
+  openPersonForm(person: Person | null) {
     this._modalService.show<PersonFormModal>({
       id: PERSON_FORM_MODAL_ID,
       size: 'lg',
