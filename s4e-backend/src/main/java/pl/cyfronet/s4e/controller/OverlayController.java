@@ -30,7 +30,7 @@ public class OverlayController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
-    @GetMapping("/overlays/prg/")
+    @GetMapping("/overlays/prg")
     public List<PRGOverlayResponse> getPRGOverlays() {
         return prgOverlayService.getCreatedPRGOverlays();
     }
@@ -39,7 +39,7 @@ public class OverlayController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
     })
-    @GetMapping("/overlays/wms/")
+    @GetMapping("/overlays/wms")
     public List<WMSOverlayResponse> getWMSOverlays() {
         return wmsOverlayService.getWMSOverlays();
     }

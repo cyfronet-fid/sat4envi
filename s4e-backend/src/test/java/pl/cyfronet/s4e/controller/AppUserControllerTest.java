@@ -21,12 +21,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.GreenMailSupplier;
-import pl.cyfronet.s4e.properties.MailProperties;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
@@ -37,6 +35,7 @@ import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
+import pl.cyfronet.s4e.properties.MailProperties;
 import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.SlugService;
 
@@ -502,10 +501,9 @@ public class AppUserControllerTest {
 
 
     @Test
-    @WithAnonymousUser
-    public void shouldReturnForbiddenCode403() throws Exception {
+    public void shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

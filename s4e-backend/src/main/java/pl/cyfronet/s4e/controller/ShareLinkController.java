@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.controller.request.ShareLinkRequest;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
 import java.util.Base64;
@@ -42,9 +41,8 @@ public class ShareLinkController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/share-link", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated() && isZKMember()")
     public void shareLink(@RequestBody @Valid ShareLinkRequest request) {
-        String requesterEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String requesterEmail = AppUserDetailsSupplier.get().getEmail();
         val shareRequest = OnShareLinkEvent.Request.builder()
                 .caption(request.getCaption())
                 .description(request.getDescription())

@@ -13,14 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.CreateSavedViewRequest;
 import pl.cyfronet.s4e.controller.response.SavedViewResponse;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.SavedViewService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -50,14 +49,13 @@ public class SavedViewController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/saved-views", consumes = APPLICATION_JSON_VALUE)
-    @PreAuthorize("isAuthenticated()")
     public SavedViewResponse create(@RequestBody @Valid CreateSavedViewRequest request) throws NotFoundException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
         UUID id = savedViewService.create(SavedViewService.Create.builder()
                 .caption(request.getCaption())
                 .thumbnail(Base64.getDecoder().decode(request.getThumbnail()))
                 .configuration(request.getConfiguration())
-                .ownerEmail(authentication.getName())
+                .ownerEmail(userDetails.getEmail())
                 .createdAt(LocalDateTime.now())
                 .build());
         return savedViewService.findById(id, SavedViewResponse.class)
@@ -72,12 +70,11 @@ public class SavedViewController {
     })
     @PageableAsQueryParam
     @GetMapping("/saved-views")
-    @PreAuthorize("isAuthenticated()")
     public Page<SavedViewResponse> list(
             @Parameter(hidden = true) @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return savedViewService.listByAppUser(authentication.getName(), pageable);
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
+        return savedViewService.listByAppUser(userDetails.getEmail(), pageable);
     }
 
     @Operation(summary = "Delete a SavedView")
@@ -88,7 +85,6 @@ public class SavedViewController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @DeleteMapping("/saved-views/{uuid}")
-    @PreAuthorize("isAuthenticated() && @savedViewService.canDelete(#uuid, authentication)")
     public void delete(@PathVariable @Parameter(schema = @Schema(format = "uuid")) UUID uuid) {
         savedViewService.delete(uuid);
     }

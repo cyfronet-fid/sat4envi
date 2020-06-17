@@ -166,7 +166,8 @@ public class SavedViewControllerTest {
 
         mockMvc.perform(post(API_PREFIX_V1 + "/saved-views")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(request)))
+                .content(objectMapper.writeValueAsBytes(request))
+                .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.thumbnail", hasSize(3)));
 

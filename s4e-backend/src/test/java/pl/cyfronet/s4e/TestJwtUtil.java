@@ -4,13 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
+import lombok.val;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.properties.JwtProperties;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.security.LoadKeyPair;
 
-import java.security.*;
+import java.security.KeyPair;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
@@ -45,15 +47,20 @@ public class TestJwtUtil {
     }
 
     private static AppUserDetails createAppUserDetails(AppUser user) {
+        val authorities = new HashSet<SimpleGrantedAuthority>();
+        if (user.isAdmin()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+        if (user.isMemberZK()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER_ZK"));
+        }
         return new AppUserDetails(
                 user.getEmail(),
                 user.getName(),
                 user.getSurname(),
-                new HashSet<>(),
+                authorities,
                 user.getPassword(),
-                user.isEnabled(),
-                user.isMemberZK(),
-                user.isAdmin());
+                user.isEnabled());
     }
 
     private static String createToken(AppUserDetails appUserDetails, ObjectMapper objectMapper, KeyPair jwtKeyPair) {

@@ -23,6 +23,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Move authorization to WebSecurity [#481](https://github.com/cyfronet-fid/sat4envi/issues/481)
 - Remove dependence on Groups in PreAuthorized methods [#522](https://github.com/cyfronet-fid/sat4envi/issues/522)
 - Improve search scenes endpoint
 - Make s4e-backend use spring-boot BOM [#479](https://github.com/cyfronet-fid/sat4envi/issues/479)

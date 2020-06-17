@@ -10,7 +10,7 @@ import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.security.AppUserDetails;
-import pl.cyfronet.s4e.util.SecurityHelper;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,14 +20,13 @@ import java.util.Optional;
 public class ProductService {
     private final ProductRepository productRepository;
     private final AppUserRepository appUserRepository;
-    private final SecurityHelper securityHelper;
 
     public List<BasicProductResponse> getProducts() {
         return productRepository.findAllBy(BasicProductResponse.class);
     }
 
     public boolean isFavourite(Long productId) {
-        AppUserDetails userDetails = securityHelper.getUserDetailsIfAvailable();
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
         if (userDetails != null) {
             return productRepository.isFavouriteByEmailAndProductId(userDetails.getUsername(), productId);
         }

@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.controller.request.CreateUserRoleRequest;
 import pl.cyfronet.s4e.controller.request.DeleteUserRoleRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 
@@ -82,31 +80,11 @@ public class SecurityTest {
     }
 
     // 403
-    // Anonymous authentication from out perspective is a case served with 403.
-    // We want users with no authentication or with proper authentication.
-    // In test we do this test for future reference how our system should work.
-    // Do not refactor it @jswk.
-    @Test
-    @WithAnonymousUser
-    public void shouldReturn403ForAnonymousUser() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
-                .andExpect(status().isForbidden());
-    }
-
-    // 403
     @Test
     public void shouldReturn403ForAuthenticatedWithoutAuthorization() throws Exception {
-        CreateUserRoleRequest userRoleRequest = CreateUserRoleRequest.builder()
-                .email("profile@email")
-                .groupSlug("default")
-                .institutionSlug("slugInstitution")
-                .role(AppRole.INST_ADMIN)
-                .build();
-
         mockMvc.perform(post(API_PREFIX_V1 + "/user-role")
                 .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(securityAppUser, objectMapper))
-                .content(objectMapper.writeValueAsBytes(userRoleRequest)))
+                .with(jwtBearerToken(securityAppUser, objectMapper)))
                 .andExpect(status().isForbidden());
     }
 

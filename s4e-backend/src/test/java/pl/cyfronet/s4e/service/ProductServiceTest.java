@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -14,7 +16,6 @@ import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.security.AppUserDetails;
-import pl.cyfronet.s4e.util.SecurityHelper;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,21 +32,22 @@ import static org.mockito.Mockito.when;
 public class ProductServiceTest {
     @Autowired
     private AppUserRepository appUserRepository;
+
     @Autowired
     private ProductRepository repository;
+
     @Autowired
     private TestDbHelper testDbHelper;
-    @Mock
-    private SecurityHelper securityHelper;
 
     private ProductService productService;
 
     private AppUser appUser;
+
     private Long productId;
 
     @BeforeEach
     public void beforeEach() {
-        productService = new ProductService(repository, appUserRepository, securityHelper);
+        productService = new ProductService(repository, appUserRepository);
         resetDb();
 
         appUser = appUserRepository.save(AppUser.builder()
@@ -95,6 +97,7 @@ public class ProductServiceTest {
     @AfterEach
     public void afterEach() {
         resetDb();
+        SecurityContextHolder.clearContext();
     }
 
     private void resetDb() {
@@ -103,9 +106,7 @@ public class ProductServiceTest {
 
     @Test
     public void shouldReturnFalseForIsFavourite() {
-        AppUserDetails appUserDetails = mock(AppUserDetails.class);
-        when(securityHelper.getUserDetailsIfAvailable()).thenReturn(appUserDetails);
-        when(appUserDetails.getUsername()).thenReturn(appUser.getEmail());
+        authenticateAs(appUser.getEmail());
 
         assertThat(productService.isFavourite(productId), is(false));
     }
@@ -116,10 +117,21 @@ public class ProductServiceTest {
         product.setFavourites(new HashSet<>(Arrays.asList(appUser)));
         repository.save(product);
 
-        AppUserDetails appUserDetails = mock(AppUserDetails.class);
-        when(securityHelper.getUserDetailsIfAvailable()).thenReturn(appUserDetails);
-        when(appUserDetails.getUsername()).thenReturn(appUser.getEmail());
+        authenticateAs(appUser.getEmail());
 
         assertThat(productService.isFavourite(productId), is(true));
+    }
+
+    private void authenticateAs(String email) {
+        AppUserDetails appUserDetails = mock(AppUserDetails.class);
+        when(appUserDetails.getUsername()).thenReturn(email);
+
+        Authentication authentication = mock(Authentication.class);
+        when(authentication.isAuthenticated()).thenReturn(true);
+        when(authentication.getDetails()).thenReturn(appUserDetails);
+
+        SecurityContext context = mock(SecurityContext.class);
+        when(context.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(context);
     }
 }
