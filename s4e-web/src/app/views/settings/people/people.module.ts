@@ -29,6 +29,9 @@ import { ModalModule } from 'src/app/modal/modal.module';
   ],
   providers: [
     makeModalProvider(PERSON_FORM_MODAL_ID, PersonFormComponent)
+  ],
+  entryComponents: [
+    PersonFormComponent
   ]
 })
 export class PeopleModule {

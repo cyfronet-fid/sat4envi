@@ -3,7 +3,7 @@
                        [error]="error$ | async"
                        [selectable]="false">
   <ng-container add-button>
-    <button class="button button--secondary button--large" routerLink="../people/add" queryParamsHandling="preserve">Dodaj nową osobę</button>
+    <button class="button button--secondary button--large" (click)="openPersonForm()">Dodaj nową osobę</button>
   </ng-container>
   <ng-container caption i18n>Zarządzaj ludźmi</ng-container>
   <ng-container description>
@@ -20,7 +20,7 @@
     <td>{{user.email}}</td>
     <td>
       <a href="javascript:void(0)" (click)="deleteMember(user.email)"><i class="fas fa-trash"></i></a>
-      <a [routerLink]="user.email" queryParamsHandling="preserve"><i class="fas fa-user-edit"></i></a>
+      <a href="javascript:void(0)" (click)="openPersonForm(user)"><i class="fas fa-user-edit"></i></a>
     </td>
   </ng-template>
 </s4e-generic-list-view>

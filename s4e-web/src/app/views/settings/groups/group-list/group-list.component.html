@@ -5,7 +5,7 @@
   [selectable]="false"
 >
   <ng-container add-button>
-    <button class="button button--secondary button--large" routerLink="../groups/add" queryParamsHandling="preserve">Dodaj nową Grupę</button>
+    <button class="button button--secondary button--large" (click)="openModal()">Dodaj nową Grupę</button>
   </ng-container>
   <ng-container caption i18n>Zarządzaj Grupami</ng-container>
   <ng-container description>
@@ -20,7 +20,7 @@
     <td>{{group.name}}</td>
     <td>
       <a href="javascript:void(0)" (click)="deleteGroup(group.slug)"><i class="fas fa-trash"></i></a>
-      <a [routerLink]="[group.slug]" queryParamsHandling="preserve"><i class="fas fa-edit"></i></a>
+      <a href="javascript:void(0)" (click)="openModal(group)"><i class="fas fa-edit"></i></a>
     </td>
   </ng-template>
 </s4e-generic-list-view>
