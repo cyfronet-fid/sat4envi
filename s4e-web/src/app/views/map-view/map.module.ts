@@ -41,8 +41,8 @@ import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {S4EFormsModule} from '../../form/form.module';
-import { CommonModule } from '@angular/common';
 import { DynamicSpaceDirective } from './view-manager/dynamic-space.directive';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 @NgModule({
   declarations: [
