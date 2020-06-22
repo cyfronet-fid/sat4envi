@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Generic loader for HTTP requests, navigation events and `open layer` map loading on `/map/products` site [#217](https://github.com/cyfronet-fid/sat4envi/issues/217)
 - Institutions and groups improvement HTML/CSS [#493](https://github.com/cyfronet-fid/sat4envi/issues/493)
 - Change add group and add person to modal [#508](https://github.com/cyfronet-fid/sat4envi/issues/508)
 - Create separate change password page [#511](https://github.com/cyfronet-fid/sat4envi/issues/511)

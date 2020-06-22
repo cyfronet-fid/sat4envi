@@ -16,6 +16,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
 import {ManageInstitutionsModule} from './manage-institutions/manage-institutions.module';
 import {GroupsModule} from './groups/groups.module';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 @NgModule({
   declarations: [

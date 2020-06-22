@@ -1,3 +1,4 @@
+
 <div class="section sidebar" style="z-index: 5; position: absolute;">
   <ul class="switch">
     <li [class.active]="isLinkActive('products')"><a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a></li>
@@ -34,8 +35,6 @@
          (viewChanged)="viewChanged($event)"
 >
 </s4e-map>
-
-
 
 <button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown_button dropdown_button--login">
 </button>
