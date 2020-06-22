@@ -35,13 +35,12 @@
 
 .close {
   background: url(/../../../../assets/images/ico_close.svg) transparent no-repeat center;
-  fill: #000;
   height: 35px;
   width: 35px;
+  background-size: 15px;
   position: absolute;
   right: $space-default;
   top: $space-default;
-  filter: brightness(0);
 }
 
 

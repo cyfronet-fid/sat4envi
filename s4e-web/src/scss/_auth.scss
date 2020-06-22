@@ -13,6 +13,7 @@ body, html {
   flex-direction: row;
   height: 100vh;
   width:100%;
+  overflow-x: hidden;
 
 
   .intro {
@@ -101,7 +102,7 @@ body, html {
         box-shadow: none;
         border: 1px solid $color-grey-secondary;
         padding: $space-default;
-        width: 100%;
+        width: calc(100% - 30px);
         z-index: 2;
         position: relative;
       }
@@ -230,6 +231,7 @@ body, html {
 
       p {
         margin-right: 10px;
+        margin-bottom: 0;
       }
 
       a {

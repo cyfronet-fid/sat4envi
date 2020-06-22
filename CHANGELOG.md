@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Institutions and groups improvement HTML/CSS [#493](https://github.com/cyfronet-fid/sat4envi/issues/493)
 - Change add group and add person to modal [#508](https://github.com/cyfronet-fid/sat4envi/issues/508)
 - Create separate change password page [#511](https://github.com/cyfronet-fid/sat4envi/issues/511)
 - Add generic list view, overhoul institution list view [#456](https://github.com/cyfronet-fid/sat4envi/issues/456)

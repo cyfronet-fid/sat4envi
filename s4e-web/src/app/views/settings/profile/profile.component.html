@@ -1,18 +1,38 @@
-<header class="page__header">
+<ul class="breadcrumb">
+  <li i18n>
+    Tutaj jesteś:
+  </li>
+  <li>
+    <a routerLink="/settings" i18n>Start</a>
+  </li>
+  <li i18n>
+    Twój profil
+  </li>
+</ul>
+
+
+<header class="content__header">
   <h1 i18n>Twój profil</h1>
-  <p i18n>
-    Twoje dane które podałeś podczas rejestracji.
-  </p>
 </header>
 
-<section class="page__content">
-  <p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
-    Zaloguj się by zobaczyć swój profil
-  </p>
-  <ng-template #userDetails>
-    <p i18n>Email: {{ userEmail$ | async }}</p>
-    <button class="button button--primary" routerLink="/settings/change-password" queryParamsHandling="merge">
+<section class="content__details content__details--50 profile">
+  <div class="profile__content">
+    <p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
+      Zaloguj się by zobaczyć swój profil
+    </p>
+    <ng-template #userDetails>
+      <h2>Jan Kowalski</h2>
+      <p i18n>Email: {{ userEmail$ | async }}</p>
+      <p>
+        Jesteś administratorem instytucji <a href="#">Ochotnicza Straż Pożarna, Kraków i 5 innych</a>
+      </p>
+    </ng-template>
+
+  </div>
+  <footer>
+    <button class="button button--secondary button--small" routerLink="/settings/change-password" queryParamsHandling="merge">
       Zmień hasło
     </button>
-  </ng-template>
+  </footer>
 </section>
+<div class="content__image content__image--profile"></div>

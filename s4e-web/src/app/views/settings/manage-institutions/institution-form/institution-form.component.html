@@ -1,15 +1,15 @@
-<div class="breadcrumb">
-  <span i18n>Tutaj jesteś: </span>
-  <span>
+<ul class="breadcrumb">
+  <li i18n>Tutaj jesteś: </li>
+  <li>
     <a
       routerLink="/settings"
       queryParamsHandling="merge"
       i18n
     >
       Start
-    </a> >
-  </span>
-  <span>
+    </a>
+  </li>
+  <li>
     <a
       *ngIf="!activeInstitution"
       routerLink="manage-institutions"
@@ -25,127 +25,150 @@
       i18n
     >
       Profil instytucji
-    </a> >
-  </span>
+    </a>
+  </li>
   <span i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</span>
-</div>
+</ul>
 
-<br><br>
-<h1 i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</h1>
-<br><br>
+<header class="content__header">
+  <h1 i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</h1>
+</header>
 
-<form class="form informational-form" [formGroup]="form" (ngSubmit)="updateInstitution()">
-  <div class="alert alert-danger" *ngIf="error$ | async" data-e2e="alert-message">
-    <ng-container [ngSwitch]="(error$ | async).status">
-      <ng-container *ngSwitchCase="400" i18n>Niepoprawnie wypełniony formularz</ng-container>
-      <ng-container *ngSwitchCase="500" i18n>Wystąpił błąd serwera</ng-container>
-      <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
-    </ng-container>
-  </div>
-
-  <div class="alert alert-danger" *ngIf="form.errors" data-e2e="alert-message-details">
-    <ul>
-      <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
+<section class="content__details content__details--50">
+  <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="updateInstitution()">
+    <section class="alert alert-danger" *ngIf="error$ | async" data-e2e="alert-message">
+      <ng-container [ngSwitch]="(error$ | async).status">
+        <ng-container *ngSwitchCase="400" i18n>Niepoprawnie wypełniony formularz</ng-container>
+        <ng-container *ngSwitchCase="500" i18n>Wystąpił błąd serwera</ng-container>
         <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
-      </li>
-    </ul>
-  </div>
+      </ng-container>
+    </section>
 
-  <p i18n><b>Instytucja nadrzędna (rodzic)</b></p>
-  <ext-input
-    formControlName="parentName"
-    label="Klikając w poniższe pole można zmienić dla nowo tworzonej instytucji jednostkę narzędną."
-    placeholder="Wybierz instytucję"
-    [required]="true"
-    (click)="openParentInstitutionModal()"
-    i18n-label
-  ></ext-input>
+    <section class="alert alert-danger" *ngIf="form.errors" data-e2e="alert-message-details">
+      <ul>
+        <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
+          <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
+        </li>
+      </ul>
+    </section>
 
-  <h4 i18n>Nazwa i dane teleadresowe</h4>
-  <ext-input
-    formControlName="name"
-    label="Nazwa instytucji"
-    placeholder="Wybierz instytucję"
-    [required]="true"
-    i18n-label
-  ></ext-input>
-  <ext-input
-    formControlName="address"
-    label="Ulica"
-    [required]="false"
-    i18n-label
-  ></ext-input>
-  <ext-input
-    formControlName="postalCode"
-    label="Kod pocztowy"
-    placeholder="xx-xxx"
-    [required]="false"
-    i18n-label
-  ></ext-input>
-  <ext-input
-    formControlName="city"
-    label="Miejscowość"
-    [required]="true"
-    i18n-label
-  ></ext-input>
-  <ext-input
-    formControlName="phone"
-    label="Telefon"
-    placeholder="+48 xxx xxx xxx"
-    [required]="false"
-    i18n-label
-  ></ext-input>
-  <ext-input
-    formControlName="secondaryPhone"
-    label="Telefon dodatkowy"
-    placeholder="+48 xxx xxx xxx"
-    [required]="false"
-    i18n-label
-  ></ext-input>
+    <section>
+      <h2 i18n><b>Instytucja nadrzędna (rodzic)</b></h2>
+      <ext-input
+        formControlName="parentName"
+        label="Klikając w poniższe pole można zmienić dla nowo tworzonej instytucji jednostkę narzędną."
+        placeholder="Wybierz instytucję"
+        [required]="true"
+        (click)="openParentInstitutionModal()"
+        i18n-label
+      ></ext-input>
+    </section>
 
-<!-- isSavedLogo ? 'data:application/xml;base64,' + form.controls.emblem.value :  -->
-  <img
-    alt="Emblem"
-    *ngIf="!!emblemImgSrc"
-    [src]="emblemImgSrc"
-    height="200"
+    <section>
+      <h2 i18n>Nazwa i dane teleadresowe</h2>
+      <ul>
+        <li>
+          <ext-input
+            formControlName="name"
+            label="Nazwa instytucji"
+            placeholder="Wybierz instytucję"
+            [required]="true"
+            i18n-label
+          ></ext-input>
+        </li>
+        <li>
+          <ext-input
+            formControlName="address"
+            label="Ulica"
+            [required]="false"
+            i18n-label
+          ></ext-input>
+        </li>
+        <li>
+          <ext-input
+            formControlName="postalCode"
+            label="Kod pocztowy"
+            placeholder="xx-xxx"
+            [required]="false"
+            i18n-label
+          ></ext-input>
+        </li>
+        <li>
+          <ext-input
+            formControlName="city"
+            label="Miejscowość"
+            [required]="true"
+            i18n-label
+          ></ext-input>
+        </li>
+        <li>
+          <ext-input
+            formControlName="phone"
+            label="Telefon"
+            placeholder="+48 xxx xxx xxx"
+            [required]="false"
+            i18n-label
+          ></ext-input>
+        </li>
+        <li>
+          <ext-input
+            formControlName="secondaryPhone"
+            label="Telefon dodatkowy"
+            placeholder="+48 xxx xxx xxx"
+            [required]="false"
+            i18n-label
+          ></ext-input>
+        </li>
+      </ul>
+    </section>
+  <!-- isSavedLogo ? 'data:application/xml;base64,' + form.controls.emblem.value :  -->
+    <section>
+      <h2 i18n>
+        Logo / Herb instytucji
+        <span>(png, jpg) min. 130x130px</span>
+      </h2>
+      <img
+        alt="Emblem"
+        *ngIf="!!emblemImgSrc"
+        [src]="emblemImgSrc"
+        height="200"
 
-    data-e2e="emblem-image"
-  />
-  <p i18n>
-    Logo / Herb instytucji
-    <span>(png, jpg) min. 130x130px</span>
-  </p>
-  <label for="emblem" i18n>Wybierz zdjęcie</label>
-  <input
-    hidden="true"
-    type="file"
-    accept="image/*"
-    id="emblem"
-    name="emblem"
-    data-e2e="emblem-input"
-    (change)="loadLogo($event)"
-  />
-  <ul s4e-form-error [control]="form.controls.emblem"></ul>
+        data-e2e="emblem-image"
+      />
+      <label for="emblem" i18n>Wybierz zdjęcie</label>
+      <input
+        hidden="true"
+        type="file"
+        accept="image/*"
+        id="emblem"
+        name="emblem"
+        data-e2e="emblem-input"
+        (change)="loadLogo($event)"
+      />
+      <ul s4e-form-error [control]="form.controls.emblem"></ul>
+    </section>
+    <section>
+      <h2 i18n>Administrator instytucji</h2>
+      <p i18n>
+        W tym miejscu możesz dodać osobę, która będzie zarządzać instytucją.
+        Wpisz e-mail tej osoby. Możesz jednocześnie wysłać jej powiadomienie o nadaniu
+        uprawnień. Takiej osobie możesz nadać uprawnienia później.
+      </p>
+      <ext-input
+        type="email"
+        formControlName="institutionAdminEmail"
+        label="E-mail administratora"
+        [required]="false"
+        i18n-label
+      ></ext-input>
+    </section>
 
-  <h4 i18n>Administrator instytucji</h4>
-  <p i18n>
-    W tym miejscu możesz dodać osobę, która będzie zarządzać instytucją.
-    Wpisz e-mail tej osoby. Możesz jednocześnie wysłać jej powiadomienie o nadaniu
-    uprawnień. Takiej osobie możesz nadać uprawnienia później.
-  </p>
-  <ext-input
-    type="email"
-    formControlName="institutionAdminEmail"
-    label="E-mail administratora"
-    [required]="false"
-    i18n-label
-  ></ext-input>
-
-  <div class="form-submit">
-    <button type="submit" data-e2e="submit-btn" i18n>
-      Zapisz instytucję
-    </button>
-    <button type="button" (click)="resetForm()" i18n>Anuluj</button>
-  </div>
-</form>
+    <footer class="form-submit">
+      <button type="submit" data-e2e="submit-btn" class="button button--secondary button--small" i18n>
+        Zapisz instytucję
+      </button>
+      <button type="button" (click)="resetForm()" class="button button--small button--borderBlack" i18n>Anuluj</button>
+    </footer>
+  </form>
+</section>
+<div class="content__image content__image--institution"></div>

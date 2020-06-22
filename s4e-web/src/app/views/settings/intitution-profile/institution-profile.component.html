@@ -1,21 +1,22 @@
+<ul class="breadcrumb">
+  <li i18n>
+    Tutaj jesteś:
+  </li>
+  <li>
+    <a routerLink="\/settings" i18n>Start</a>
+  </li>
+  <li i18n>
+    Twój profil
+  </li>
+</ul>
 
-<header class="page__header">
+
+<header class="content__header">
   <h1 i18n>Profil instytucji</h1>
-  <p i18n>
-    To instytucja, której jesteś administratorem. Możesz tu edytować podstawowe informacje.  </p>
 </header>
-<section class="page__content">
-  <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" />
-  <div class="institution__box">
-    <span
-      class="button button--default"
-      [routerLink]="['/settings/edit-institution']"
-      queryParamsHandling="merge"
-      i18n
-    >
-      Edytuj dane
-    </span>
-    <ng-container *ngIf="!!activeInstitution">
+<section class="content__details content__details--75 profile">
+  <ng-container *ngIf="!!activeInstitution">
+    <div class="profile__content">
       <h2 id="institution-title">{{ activeInstitution.name }}</h2>
       <ul>
         <li id="institution-address">{{ activeInstitution.address }}</li>
@@ -24,12 +25,59 @@
           email: {{ activeInstitution.institutionAdminEmail }}
         </li>
         <li *ngIf="!!activeInstitution.phone" id="institution-phone">
-          phone: {{ activeInstitution.phone }}
+          Telefon: {{ activeInstitution.phone }}
         </li>
         <li *ngIf="!!activeInstitution.secondaryPhone" id="institution-second-phone">
-          second phone: {{ activeInstitution.secondaryPhone }}
+          Telefon: {{ activeInstitution.secondaryPhone }}
         </li>
       </ul>
-    </ng-container>
-  </div>
+    </div>
+    <aside class="profile__image">
+      <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" />
+    </aside>
+  </ng-container>
+  <footer>
+    <button
+      class="button button--default button--small"
+      [routerLink]="['/settings/edit-institution']"
+      queryParamsHandling="merge"
+      i18n
+    >
+      Edytuj dane
+    </button>
+    <button
+      class="button button--secondary button--small"
+      i18n
+    >
+      Dodaj jednostkę podrzędną
+    </button>
+  </footer>
 </section>
+
+<section class="content__details content__details--75 profile">
+  <h3>Jednostki podległe</h3>
+  <table class="table">
+    <tr>
+      <td>
+        Komenda Powiatowa PSP w Chodzieży, <span>Chodzież</span>
+      </td>
+      <td class="actions">
+        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Komenda Powiatowa PSP w Chodzieży, <span>Chodzież</span>
+      </td>
+      <td class="actions">
+        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+      </td>
+    </tr>
+
+    </table>
+
+</section>
+<div class="content__image content__image--institution"></div>
+

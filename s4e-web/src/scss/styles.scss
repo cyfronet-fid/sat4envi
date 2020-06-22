@@ -3,6 +3,7 @@
 @import "fonts";
 @import "variables";
 @import "common";
+@import "auth";
 @import "sidebar";
 //@import "~bootstrap/scss/bootstrap";
 @import "~ng-pick-datetime/assets/style/picker.min.css";
@@ -10,11 +11,12 @@
 @import "modal";
 @import "loading";
 @import "../../projects/notifications/src/scss/notifications";
-@import "panel";
+@import "settings";
 
 :root, body {
   font-size: 16px;
   font-family: $font-base, sans-serif;
+  color: $color-text;
 }
 
 .main {

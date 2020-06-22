@@ -35,12 +35,14 @@
     background: url(/../assets/images/ico_bolt.svg) $color-white no-repeat center;
     top: 12px;
     right: 150px;
+    background-size: 16px;
   }
 
   &--login {
     background: url(/../assets/images/ico_lock.svg) $color-white no-repeat center;
     top: 12px;
     right: 70px;
+    background-size: 20px;
   }
 }
 
@@ -86,6 +88,7 @@
     right: 1px;
     border-radius: $border-radius-circle;
     cursor: pointer;
+    background-size: 12px;
   }
 
   ul {

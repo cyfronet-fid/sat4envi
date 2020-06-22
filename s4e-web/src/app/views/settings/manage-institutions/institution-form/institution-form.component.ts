@@ -142,7 +142,11 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       : this.form.reset();
 
     this._router.navigate(
-      ['/settings/institution'],
+      [
+        !!this.activeInstitution
+          ? '/settings/institution'
+          : '/settings/institutions'
+      ],
       {
         relativeTo: this._activatedRoute,
         queryParamsHandling: 'merge'

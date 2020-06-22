@@ -3,9 +3,10 @@
                        [error]="error$ | async"
                        [selectable]="false">
   <ng-container add-button>
-    <button class="button button--secondary button--large" routerLink="../people/add" queryParamsHandling="preserve">Dodaj nową osobę</button>
+    <button class="button button--secondary button--small" (click)="openPersonForm(null)">Dodaj nową osobę</button>
   </ng-container>
   <ng-container caption i18n>Zarządzaj ludźmi</ng-container>
+  <ng-container search-label i18n>Szukaj ludzi:</ng-container>
   <ng-container description>
     W tym miejscu masz możliwość edytowania, dodawania i usuwania osób,
     które mają dostęp do zasobów ustalonych dla Urzędu Miasta Kraków
@@ -19,8 +20,12 @@
     <td i18n>{{user.name}} {{user.surname}}</td>
     <td>{{user.email}}</td>
     <td>
-      <a href="javascript:void(0)" (click)="deleteMember(user.email)"><i class="fas fa-trash"></i></a>
-      <a [routerLink]="user.email" queryParamsHandling="preserve"><i class="fas fa-user-edit"></i></a>
+      <a href="javascript:void(0)" (click)="openPersonForm(user)">
+        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+      </a>
+      <a href="javascript:void(0)" (click)="deleteMember(user.email)">
+        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+      </a>
     </td>
   </ng-template>
 </s4e-generic-list-view>

@@ -1,18 +1,22 @@
-<header class="page__header">
+<header class="content__header">
   <h1 i18n>
     <ng-content select="[caption]"></ng-content>
   </h1>
   <p i18n>
     <ng-content select="[description]"></ng-content>
   </p>
+  <ng-content select="[add-button]"></ng-content>
 </header>
-<section class="page__content">
-  <div>
-    <input data-test-generic-list-query [formControl]="queryFc" placeholder="Wyszukaj..." i18n-placeholder="">
+<section class="content__details">
+  <div class="search">
+    <span>
+      <ng-content select="[search-label]"></ng-content>
+    </span>
+    <input data-test-generic-list-query [formControl]="queryFc" placeholder="Zacznij wpisywać szukaną nazwę a my zawęzimy wyniki" i18n-placeholder="">
   </div>
 
   <ng-container *ngIf="error == null; else errorView">
-    <table data-e2e="generic-list-data-table">
+    <table data-e2e="generic-list-data-table" class="table">
       <ng-container *ngIf="!loading; else tableLoading">
         <thead>
           <tr>
@@ -30,7 +34,7 @@
             <ng-container [ngTemplateOutlet]="tableRow" [ngTemplateOutletContext]="{item: item}"></ng-container>
           </tr>
           <tr *ngIf="items.length === 0">
-            <td colspan="100%" class="table-message">Brak Elementów</td>
+            <td colspan="100%" class="table-message">Brak pasujących elementów</td>
           </tr>
         </tbody>
       </ng-container>
@@ -42,10 +46,9 @@
         </tbody>
       </ng-template>
     </table>
-    <ng-content select="[add-button]"></ng-content>
   </ng-container>
   <ng-template #errorView>
-    <p i18n>Nie posiadasz uprawnień do instytucji</p>
+    <p i18n>Nie posiadasz uprawnień do przeglądania instytucji</p>
   </ng-template>
 </section>
 
