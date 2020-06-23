@@ -1,5 +1,6 @@
 import { NotificationService } from './../../../../../projects/notifications/src/lib/state/notification.service';
 import { ImageWmsLoader, IMAGE_WMS_LAYER } from './../state/utils/layers-loader.util';
+import { SessionQuery } from './../../../state/session/session.query';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -15,7 +16,8 @@ import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
-
+import { getImageXhr, ImageBase64 } from '../../settings/manage-institutions/institution-form/files.utils';
+import ImageWrapper from 'ol/Image';
 
 @Component({
   selector: 's4e-map',
@@ -52,7 +54,8 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(
     private CONFIG: S4eConfig,
     private _loaderService: NgxUiLoaderService,
-    private _notificationService: NotificationService
+    private _notificationService: NotificationService,
+    private _sessionQuery: SessionQuery
   ) {}
 
   @Input()
@@ -154,6 +157,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
       const image = new Image({ source });
       mapLayers.push(image);
+      source.setImageLoadFunction(this._getImageLoaderWith('Bearer ' + this._sessionQuery.getToken()));
+      mapLayers.push(new Image({ source }));
     }
 
     for (const overlay of this.overlays.filter(ol => ol.active)) {
@@ -194,5 +199,14 @@ export class MapComponent implements OnInit, OnDestroy {
       type: 'error',
       content: 'Wczytanie sceny nie powiodło się'
     });
+  }
+  private _getImageLoaderWith(bearer: string) {
+    return function (tile: ImageWrapper, src: string) {
+      const xhr = getImageXhr(src, bearer);
+      xhr.onload = () => ((tile.getImage() as HTMLImageElement).src = ImageBase64.getFromXhr(xhr));
+      xhr.send();
+
+      return xhr;
+    };
   }
 }

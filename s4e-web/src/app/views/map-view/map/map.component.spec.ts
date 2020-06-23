@@ -4,6 +4,8 @@ import {TestingConfigProvider} from '../../../app.configuration.spec';
 import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
 import {take} from 'rxjs/operators';
+import { getImageXhr } from '../../settings/manage-institutions/institution-form/files.utils';
+import ImageWrapper from 'ol/Image';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -83,4 +85,26 @@ describe('MapComponent', () => {
     expect(component.viewChanged.emit).toHaveBeenCalledWith(expectedView);
   });
 
+  it('should add authorization code into image wms request', () => {
+    const spyOpen = spyOn(XMLHttpRequest.prototype, 'open').and.callThrough();
+    const spySend = spyOn(XMLHttpRequest.prototype, 'send');
+
+    const bearer = '<bearer>';
+    const load = (component as any)._getImageLoaderWith(bearer);
+
+    const tile = {
+      getImage: () => ({src: ''})
+    } as any as ImageWrapper;
+    const src = '<srcUrl>';
+
+    XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
+      this.headers = !!this.headers && this.headers || {};
+      this.headers[header] = value;
+    };
+    const xhr = load(tile, src);
+
+    expect(spyOpen).toHaveBeenCalled();
+    expect(spySend).toHaveBeenCalled();
+    expect(xhr.headers).toEqual({ Authorization: '<bearer>' });
+  });
 });
