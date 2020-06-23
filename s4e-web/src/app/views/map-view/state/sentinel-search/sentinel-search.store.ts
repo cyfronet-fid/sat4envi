@@ -5,13 +5,31 @@ import {SentinelSearchResult, SentinelSearchState} from './sentinel-search.model
 @Injectable({ providedIn: 'root' })
 @StoreConfig({ name: 'SentinelSearchResult' })
 export class SentinelSearchStore extends EntityStore<SentinelSearchState, SentinelSearchResult> {
-
   constructor() {
     super({
-      sentinels: [],
-      loading: false
+      loading: false,
+      loaded: false,
+      metadataLoading: false,
+      metadataLoaded: false,
+      metadata: {
+        common: {
+          params: []
+        },
+        sections: []
+      }
     });
   }
 
+  setMetadataLoading(loading: boolean = true) {
+    this.update({metadataLoading: loading});
+  }
+
+  setMetadataLoaded(loaded: boolean = true) {
+    this.update({metadataLoading: false, metadataLoaded: loaded});
+  }
+
+  setLoaded(loaded: boolean = true) {
+    this.update({loaded})
+  }
 }
 
