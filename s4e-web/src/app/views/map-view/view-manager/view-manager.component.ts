@@ -3,7 +3,7 @@ import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, Afte
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
-import {map} from 'rxjs/operators';
+import { map, filter } from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 import {ProductQuery} from '../state/product/product.query';
 import {OverlayQuery} from '../state/overlay/overlay.query';
@@ -37,8 +37,10 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   searchResults$: Observable<LocationSearchResult[]>;
   searchResultsLoading$: Observable<boolean>;
   searchResultsOpen$: Observable<boolean>;
-
+  isFavouriteFiltration: boolean = false;
   searchValue: string;
+
+  favouriteProductsCount$: Observable<number>;
 
   constructor(
               private productQuery: ProductQuery,
@@ -54,12 +56,16 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.overlaysLoading$ = this.overlayQuery.selectLoading();
-    this.products$ = this.productQuery.selectAllAsUILayer();
+    this.products$ = this.productQuery.selectAllFilteredAsUILayer();
+    this.favouriteProductsCount$ = this.productQuery.selectFavouritesCount();
     this.productsLoading$ = this.productQuery.selectLoading();
     this.searchResultsLoading$ = this.searchResultsQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.searchResults$ = this.searchResultsQuery.selectAll();
     this.searchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
+
+    this.productQuery.selectIsFavouriteMode().subscribe(isFavourite => this.isFavouriteFiltration = isFavourite);
+
     this.loading$ = combineLatest([
       this.overlaysLoading$,
       this.productsLoading$
@@ -86,7 +92,6 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     this.overlayService.setActive(overlayId);
   }
 
-
   isFavouriteProduct = (ID: number, isFavourite: boolean): boolean => {
     this.productService.toggleFavourite(ID, isFavourite);
     return false;
@@ -111,5 +116,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   resetSearch() {
     this.searchValue = '';
     this.searchResultsService.setSelectedPlace(null);
+  }
+
+  setViewModeToFavourite(favourite: boolean) {
+    this.productService.setFavouriteMode(favourite)
   }
 }

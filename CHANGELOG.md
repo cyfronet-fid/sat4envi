@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Favourites Tab in products navigation, loading spinners for products [539](https://github.com/cyfronet-fid/sat4envi/issues/539)
 - Connect sentinel search to backend + add forms [#532](https://github.com/cyfronet-fid/sat4envi/issues/532)
 - Generic loader for HTTP requests, navigation events and `open layer` map loading on `/map/products` site [#217](https://github.com/cyfronet-fid/sat4envi/issues/217)
 - Institutions and groups improvement HTML/CSS [#493](https://github.com/cyfronet-fid/sat4envi/issues/493)

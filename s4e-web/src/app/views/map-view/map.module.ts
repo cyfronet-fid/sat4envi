@@ -1,5 +1,5 @@
+import {NgModule} from '@angular/core';
 import {SearchModule} from './../../components/search/search.module';
-import {ModuleWithProviders, NgModule} from '@angular/core';
 import {MapViewComponent} from './map-view.component';
 import {ViewManagerComponent} from './view-manager/view-manager.component';
 import {ShareModule} from '../../common/share.module';
@@ -34,8 +34,6 @@ import {SAVE_CONFIG_MODAL_ID} from './zk/save-config-modal/save-config-modal.mod
 import {ListConfigsModalComponent} from './zk/list-configs-modal/list-configs-modal.component';
 import {LIST_CONFIGS_MODAL_ID} from './zk/list-configs-modal/list-configs-modal.model';
 import {RouterModule} from '@angular/router';
-import {environment} from '../../../environments/environment';
-import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
 import {SentinelSearchComponent} from './sentinel-search/sentinel-search.component';
 import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
@@ -46,6 +44,7 @@ import {SentinelFormComponent} from './sentinel-search/sentinel-form/sentinel-fo
 import {SentinelSectionComponent} from './sentinel-search/sentinel-section/sentinel-section.component';
 import {FormsModule} from '@angular/forms';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
+import {routes} from './map.routes.module';
 
 @NgModule({
   declarations: [
@@ -76,28 +75,7 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
     ModalModule,
-    RouterModule.forChild([
-      {
-        path: 'map',
-        component: MapViewComponent,
-        canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
-        children: [
-          {
-            path: 'products',
-            component: ViewManagerComponent
-          },
-          {
-            path: 'sentinel-search',
-            component: SentinelSearchComponent
-          },
-          {
-            path: '',
-            pathMatch: 'prefix',
-            redirectTo: '/map/products'
-          },
-        ]
-      }
-    ]),
+    RouterModule.forChild(routes),
     S4EFormsModule,
     SearchModule
     // OwlNativeDateTimeModule
@@ -132,26 +110,4 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
   ]
 })
 export class MapModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: MapModule,
-      providers: [
-        MapQuery,
-        MapService,
-        MapStore,
-        ProductQuery,
-        ProductService,
-        ProductStore,
-        SceneQuery,
-        SceneService,
-        SceneStore,
-        OverlayQuery,
-        OverlayService,
-        OverlayStore,
-        LegendQuery,
-        LegendService,
-        AkitaGuidService
-      ]
-    };
-  }
 }

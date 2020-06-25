@@ -44,6 +44,8 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, activ
       })
     }),
     cid: overlay.id,
-    active: active
+    active: active,
+    isLoading: false,
+    isFavouriteLoading: false
   };
 }

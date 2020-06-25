@@ -1,13 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import { ConfigurationService } from './configuration.service';
-import { ConfigurationStore } from './configuration.store';
+import {ConfigurationService} from './configuration.service';
+import {ConfigurationStore} from './configuration.store';
 import {ConfigurationQuery} from './configuration.query';
 import {TestingConfigProvider} from '../../../../../app.configuration.spec';
 import {take, toArray} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
 import {NotificationService} from 'notifications';
-import { HttpErrorResponse } from '@angular/common/http';
 import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ConfigurationService', () => {
@@ -19,7 +18,7 @@ describe('ConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ MapModule, HttpClientTestingModule, RouterTestingModule ],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [TestingConfigProvider]
     });
 
@@ -52,7 +51,7 @@ describe('ConfigurationService', () => {
       expect(req.request.body).toEqual(body);
       expect(await r).toBeTruthy();
       expect(await query.selectLoading().pipe(take(1)).toPromise()).toBeFalsy();
-      expect(notifications.addGeneral).toHaveBeenCalledWith({"content": "Link został wysłany na adres a@a", "type": "success"});
+      expect(notifications.addGeneral).toHaveBeenCalledWith({'content': 'Link został wysłany na adres a@a', 'type': 'success'});
     });
 
     it('should return set store error and return false if http errored', async () => {

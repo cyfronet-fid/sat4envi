@@ -2,7 +2,6 @@ import {MapStore} from './map.store';
 import {TestBed} from '@angular/core/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
-import {InjectorModule} from '../../../../common/injector.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 

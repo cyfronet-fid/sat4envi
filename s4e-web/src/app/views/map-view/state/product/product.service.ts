@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
-import {Product} from './product.model';
+import {Product, PRODUCT_MODE_FAVOURITE, PRODUCT_MODE_QUERY_KEY} from './product.model';
 import {catchError, finalize, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
@@ -13,6 +13,7 @@ import {applyTransaction} from '@datorama/akita';
 import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
 import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
+import {Router} from '@angular/router';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -23,7 +24,8 @@ export class ProductService {
               private http: HttpClient,
               private legendService: LegendService,
               private query: ProductQuery,
-              private sceneService: SceneService) {
+              private sceneService: SceneService,
+              private router: Router) {
   }
 
   get() {
@@ -35,15 +37,20 @@ export class ProductService {
   }
 
   setActive(productId: number | null) {
+    this.store.ui.update({isLoading: false});
+
     if (productId != null) {
+      this.store.ui.update(productId, {isLoading: true});
       const product = this.query.getEntity(productId);
-      this.getSingle$(product).subscribe((product) => {
-        applyTransaction(() => {
-          this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
-          this.store.setActive(productId);
+      this.getSingle$(product)
+        .pipe(finalize(() => this.store.ui.update(productId, {isLoading: false})))
+        .subscribe((product) => {
+          applyTransaction(() => {
+            this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
+            this.store.setActive(productId);
+          });
+          this.getAvailableDays();
         });
-        this.getAvailableDays();
-      });
     } else {
       applyTransaction(() => {
         this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
@@ -59,6 +66,8 @@ export class ProductService {
   }
 
   toggleFavourite(ID: number, isFavourite: boolean) {
+    this.store.ui.update(ID, {isFavouriteLoading: true});
+
     (
       isFavourite
         ? this.http
@@ -66,8 +75,13 @@ export class ProductService {
         : this.http
           .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
     )
-      .pipe(catchErrorAndHandleStore(this.store))
-      .subscribe(() => this.store.setLoading(false));
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.ui.update(ID, {isFavouriteLoading: false}))
+      )
+      .subscribe(() => {
+        this.store.update(ID, {favourite: isFavourite});
+      });
   }
 
   fetchAvailableDays(dateF: string) {
@@ -135,6 +149,13 @@ export class ProductService {
     } else {
       this.setActive(productId);
     }
+  }
+
+  setFavouriteMode(favourite: boolean) {
+    this.router.navigate([], {
+      queryParamsHandling: 'merge',
+      queryParams: {[PRODUCT_MODE_QUERY_KEY]: favourite ? PRODUCT_MODE_FAVOURITE : ''}
+    });
   }
 
   private getSingle$(product: Product): Observable<any> {
