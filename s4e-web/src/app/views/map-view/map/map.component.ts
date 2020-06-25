@@ -1,3 +1,5 @@
+import { NotificationService } from './../../../../../projects/notifications/src/lib/state/notification.service';
+import { ImageWmsLoader, IMAGE_WMS_LAYER } from './../state/utils/layers-loader.util';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -12,6 +14,7 @@ import {S4eConfig} from '../../../utils/initializer/config.service';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
 
 
 @Component({
@@ -46,8 +49,11 @@ export class MapComponent implements OnInit, OnDestroy {
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
   });
 
-  constructor(private CONFIG: S4eConfig) {
-  }
+  constructor(
+    private CONFIG: S4eConfig,
+    private _loaderService: NgxUiLoaderService,
+    private _notificationService: NotificationService
+  ) {}
 
   @Input()
   public set activeScene(gr: Scene | null | undefined) {
@@ -74,9 +80,8 @@ export class MapComponent implements OnInit, OnDestroy {
       }),
     });
 
-    this.baseLayer = new Tile({
-      source: new OSM({url: '/osm/{z}/{x}/{y}.png', crossOrigin: 'Anonymous'}),
-    });
+    const source = new OSM({url: '/osm/{z}/{x}/{y}.png', crossOrigin: 'Anonymous'});
+    this.baseLayer = new Tile({source});
 
     this.map.getLayers().push(this.baseLayer);
     for (const overlay of this.overlays) {
@@ -125,17 +130,30 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.push(this.baseLayer);
 
     if (scene != null) {
-      mapLayers.push(new Image({
-        source: new ImageWMS({
-          crossOrigin: 'Anonymous',
-          url: this.CONFIG.geoserverUrl,
-          serverType: 'geoserver',
-          params: {
-            'LAYERS': this.CONFIG.geoserverWorkspace + ':' + scene.layerName,
-            'TIME': moment(scene.timestamp).utc().toISOString(),
-          },
-        }),
-      }));
+      const source = new ImageWMS({
+        crossOrigin: 'Anonymous',
+        url: this.CONFIG.geoserverUrl,
+        serverType: 'geoserver',
+        params: {
+          'LAYERS': this.CONFIG.geoserverWorkspace + ':' + scene.layerName,
+          'TIME': moment(scene.timestamp).utc().toISOString(),
+        },
+      });
+
+      const imageWmsLoader = new ImageWmsLoader(source);
+      imageWmsLoader.start$
+        .then(
+          () => this._loaderService.startBackground(),
+          () => this._handleLoadError()
+        );
+      imageWmsLoader.end$
+        .then(
+          () => this._loaderService.stopBackground(),
+          () => this._handleLoadError()
+        );
+
+      const image = new Image({ source });
+      mapLayers.push(image);
     }
 
     for (const overlay of this.overlays.filter(ol => ol.active)) {
@@ -168,5 +186,13 @@ export class MapComponent implements OnInit, OnDestroy {
         this.linkDownload.nativeElement.href = mapData.image;
         this.linkDownload.nativeElement.click();
       });
+  }
+
+  protected _handleLoadError() {
+    this._loaderService.stopBackground();
+    this._notificationService.addGeneral({
+      type: 'error',
+      content: 'Wczytanie sceny nie powiodło się'
+    });
   }
 }

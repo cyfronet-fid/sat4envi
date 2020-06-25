@@ -29,6 +29,7 @@ import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
 import {NotificationsModule} from 'notifications';
 import {ErrorsModule} from './errors/errors.module';
+import { NgxUiLoaderModule, POSITION, SPINNER, PB_DIRECTION, NgxUiLoaderConfig, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
 
 registerLocaleData(localePl, 'pl');
 
@@ -36,6 +37,18 @@ registerLocaleData(localePl, 'pl');
 export function initializeApp(configService: S4eConfig): () => Promise<any> {
   return () => configService.loadConfiguration();
 }
+
+const ngxUiLoaderConfig: NgxUiLoaderConfig = {
+  bgsColor: 'red',
+  pbColor: 'red',
+  bgsOpacity: 1,
+  bgsPosition: POSITION.centerCenter,
+  bgsSize: 120,
+  bgsType: SPINNER.ballSpinClockwise,
+  pbDirection: PB_DIRECTION.leftToRight,
+  pbThickness: 5,
+  hasProgressBar: true
+};
 
 @NgModule({
   declarations: [
@@ -58,7 +71,8 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
     ModalModule,
     S4EFormsModule,
     NotificationsModule.forRoot(environment.production),
-    ErrorsModule
+    ErrorsModule,
+    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
   providers: [
     S4eConfig,
