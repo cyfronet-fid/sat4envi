@@ -1,3 +1,4 @@
+import { RegisterFactory } from '../register.factory.spec';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {RegisterService} from './register.service';
@@ -30,16 +31,15 @@ describe('RegisterService', () => {
   });
 
   describe('register', () => {
-    const data = {
-      email: 'email',
-      password: 'password'
-    };
 
-    it('should correctly pass email, password and captcha', () => {
-      registerService.register(data.email, data.password, 'captcha');
-      const req = http.expectOne('api/v1/register?g-recaptcha-response=captcha');
+    it('should correctly pass userRegister', () => {
+      const userRegister = RegisterFactory.build();
+      registerService.register(userRegister);
+      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${userRegister.recaptcha}`);
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(data);
+
+      const {recaptcha, passwordRepeat, ...userData} = userRegister;
+      expect(req.request.body).toEqual(userData);
       req.flush({});
       http.verify();
     });
@@ -48,8 +48,9 @@ describe('RegisterService', () => {
       const router = TestBed.get(Router);
       const spy = spyOn(router, 'navigate').and.stub();
 
-      registerService.register(data.email, data.password, 'captcha');
-      const req = http.expectOne('api/v1/register?g-recaptcha-response=captcha');
+      const userRegister = RegisterFactory.build();
+      registerService.register(userRegister);
+      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush({});
 
       tick(1000);
@@ -58,8 +59,9 @@ describe('RegisterService', () => {
     }));
 
     it('should handle error 400', (done) => {
-      registerService.register(data.email, data.password, 'captcha');
-      const req = http.expectOne('api/v1/register?g-recaptcha-response=captcha');
+      const userRegister = RegisterFactory.build();
+      registerService.register(userRegister);
+      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush({email: ['Invalid email']}, {status: 400, statusText: 'Bad Request'});
 
       registerQuery.selectError().subscribe(error => {
@@ -71,8 +73,9 @@ describe('RegisterService', () => {
     });
 
     it('should handle other errors', (done) => {
-      registerService.register(data.email, data.password, 'captcha');
-      const req = http.expectOne('api/v1/register?g-recaptcha-response=captcha');
+      const userRegister = RegisterFactory.build();
+      registerService.register(userRegister);
+      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush('Server Failed', {status: 500, statusText: 'Server Error'});
 
       registerQuery.selectError().subscribe(error => {
