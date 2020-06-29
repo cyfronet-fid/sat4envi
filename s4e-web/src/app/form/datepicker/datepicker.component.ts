@@ -10,6 +10,7 @@ import {GeneralInput} from '../general-input/general-input';
 import {DateUtilsService} from '../../utils/s4e-date/date-utils.service';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
 import {S4eConfig} from '../../utils/initializer/config.service';
+import {disableEnableForm} from '../../utils/miscellaneous/miscellaneous';
 
 @Component({
   selector: 'ext-datepicker',
@@ -58,5 +59,11 @@ export class DatepickerComponent extends GeneralInput {
   writeValue(value: any): void {
     this.currentValue = value;
     this.inputFormControl.setValue(value);
+  }
+
+
+  setDisabledState(isDisabled: boolean) {
+    super.setDisabledState(isDisabled);
+    disableEnableForm(isDisabled, this.inputFormControl);
   }
 }

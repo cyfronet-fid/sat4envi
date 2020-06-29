@@ -10,6 +10,8 @@ import {MapModule} from '../../map.module';
 import {By} from '@angular/platform-browser';
 import {ViewConfiguration, ViewConfigurationEx} from '../../state/view-configuration/view-configuration.model';
 import {of} from 'rxjs';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('SaveConfigModalComponent', () => {
   let component: SaveConfigModalComponent;
@@ -33,12 +35,9 @@ describe('SaveConfigModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         TestingConfigProvider,
-        ViewConfigurationService,
-        ViewConfigurationQuery,
-        ModalQuery,
         {
           provide: MODAL_DEF, useValue: {
             id: SAVE_CONFIG_MODAL_ID,

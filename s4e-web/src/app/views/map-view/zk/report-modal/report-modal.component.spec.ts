@@ -5,6 +5,8 @@ import {REPORT_MODAL_ID} from './report-modal.model';
 import {By} from '@angular/platform-browser';
 import {MapModule} from '../../map.module';
 import {filter, take} from 'rxjs/operators';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ReportModalComponent', () => {
   let component: ReportModalComponent;
@@ -12,7 +14,7 @@ describe('ReportModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         {
           provide: MODAL_DEF, useValue: {

@@ -1,55 +1,99 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SentinelSearchStore} from './sentinel-search.store';
-import {createSentinelSearchResult} from './sentinel-search.model';
-import {of} from 'rxjs';
+import {
+  createSentinelSearchResult,
+  SENTINEL_SELECTED_QUERY_KEY,
+  SENTINEL_VISIBLE_QUERY_KEY,
+  SentinelSearchResultResponse,
+} from './sentinel-search.model';
 import {SentinelSearchQuery} from './sentinel-search.query';
-import {delay, finalize} from 'rxjs/operators';
+import {delay, finalize, map, shareReplay} from 'rxjs/operators';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import {S4eConfig} from '../../../../utils/initializer/config.service';
+import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
+import {Router} from '@angular/router';
+import {HashMap} from '@datorama/akita';
+import {NotificationService} from 'notifications';
 
 @Injectable({providedIn: 'root'})
 export class SentinelSearchService {
 
   constructor(private store: SentinelSearchStore,
               private query: SentinelSearchQuery,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private router: Router,
+              private notificationService: NotificationService,
+              private CONFIG: S4eConfig) {
   }
 
-  search() {
+  setSentinelVisibility(sentinelId: string, visible: boolean) {
+    this.router.navigate([], {
+      queryParamsHandling: 'merge',
+      queryParams: {
+        [SENTINEL_VISIBLE_QUERY_KEY]: visible ? sentinelId : '',
+        [SENTINEL_SELECTED_QUERY_KEY]: visible ? sentinelId : '',
+      }, replaceUrl: true
+    });
+  }
+
+  toggleSentinelVisibility(sentinelId: string) {
+    this.setSentinelVisibility(sentinelId, !this.query.isSentinelVisible(sentinelId));
+  }
+
+  search(params: HashMap<string>) {
+    this.store.set([]);
     this.store.setLoading(true);
-    of([
-      createSentinelSearchResult({
-        image: null,
-        mission: 'Sentinel-1',
-        instrument: 'SAR-C',
-        sensingDate: '2019-12-05T18:27:29',
-        size: '6.97 GB',
-        url: 'http://s4e-sentinel-training.storage.cloud.cyfronet.pl/S1B_IW_GRDH_1SDV_20200210T045115_20200210T045144_020202_0263F2_0D45.SAFE.zip'
-      }),
-      createSentinelSearchResult({
-        image: null,
-        mission: 'Sentinel-1',
-        instrument: 'SAR-C',
-        sensingDate: '2019-12-05T18:27:29',
-        size: '6.97 GB',
-        url: 'http://s4e-sentinel-training.storage.cloud.cyfronet.pl/S1B_IW_GRDH_1SDV_20200210T045115_20200210T045144_020202_0263F2_0D45.SAFE.zip'
+    const r = this.http.get<SentinelSearchResultResponse[]>(
+      `${this.CONFIG.apiPrefixV1}/search`, {params}
+      ).pipe(
+        delay(250),
+        catchErrorAndHandleStore(this.store),
+        map(data => data.map(product => createSentinelSearchResult(product, this.CONFIG.apiPrefixV1))),
+        finalize(() => this.store.setLoading(false)),
+        shareReplay(1)
+      );
+
+    r.subscribe(
+      data => {
+        this.store.set(data);
+        this.store.setLoaded(true);
+      },
+      error => this.notificationService.addGeneral({
+        type: 'error',
+        content: 'Wystąpił błąd podczas wyszukiwaniania'
       })
-    ]).pipe(
-      delay(1500),
-      catchErrorAndHandleStore(this.store),
-      finalize(() => this.store.setLoading(false))
-    )
-      .subscribe(data => this.store.set(data));
+    );
+
+    return r;
   }
 
   getSentinels() {
-    of([
-      {id: 'sentinel-1', caption: 'Sentinel #1'},
-      {id: 'sentinel-2', caption: 'Sentinel #2'},
-    ]).pipe(
-      delay(250),
-      catchErrorAndHandleStore(this.store)
-    )
-      .subscribe(data => this.store.update(state => ({...state, sentinels: data})));
+    if (this.query.isMetadataLoaded()) {
+      return;
+    }
+
+    this.store.setMetadataLoading();
+
+    const r = this.http.get<SentinelSearchMetadata>(`${this.CONFIG.apiPrefixV1}/config/sentinel-search`)
+      .pipe(
+        catchErrorAndHandleStore(this.store),
+        finalize(() => this.store.setMetadataLoading(false)),
+        shareReplay(1)
+      );
+
+    r.subscribe(
+      data => this.store.update({metadata: data, metadataLoaded: true}),
+      error => this.notificationService.addGeneral({
+        type: 'error',
+        content: 'Wystąpił błąd podczas pobierania metadanych'
+      })
+    );
+
+    return r;
+  }
+
+  setLoaded(loaded: boolean) {
+    this.store.setLoaded(loaded);
   }
 }

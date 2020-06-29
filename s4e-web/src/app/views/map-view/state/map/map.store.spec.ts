@@ -3,14 +3,16 @@ import {TestBed} from '@angular/core/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
 import {InjectorModule} from '../../../../common/injector.module';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('MapStore', () => {
   let store: MapStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TestingConfigProvider],
-      imports: [MapModule]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [TestingConfigProvider]
     });
 
     store = TestBed.get(MapStore);

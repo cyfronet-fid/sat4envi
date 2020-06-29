@@ -128,7 +128,7 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
   }
 
   writeValue(value: any): void {
-    if (!!value) {
+    if (value !== undefined) {
       this.currentValue = value;
       this.inputRef.nativeElement.value = value;
     }

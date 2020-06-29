@@ -8,6 +8,8 @@ import {By} from '@angular/platform-browser';
 import {FormControl} from '@ng-stack/forms';
 import {ConfigurationService} from '../state/configuration.service';
 import {of} from 'rxjs';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ShareConfigurationModalComponent', () => {
   let component: ShareConfigurationModalComponent;
@@ -18,7 +20,7 @@ describe('ShareConfigurationModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
         TestingConfigProvider,
         {

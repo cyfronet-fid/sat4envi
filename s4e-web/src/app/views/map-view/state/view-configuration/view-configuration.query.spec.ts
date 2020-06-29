@@ -8,6 +8,8 @@ import {SceneQuery} from '../scene/scene.query.service';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ViewConfiguration, ViewConfigurationEx} from './view-configuration.model';
 import {MapModule} from '../../map.module';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('ViewConfigurationQuery', () => {
   let query: ViewConfigurationQuery;
@@ -19,8 +21,8 @@ describe('ViewConfigurationQuery', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ViewConfigurationStore, MapQuery, SceneQuery, OverlayQuery, ProductQuery, ViewConfigurationQuery, TestingConfigProvider],
-      imports: [MapModule]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [TestingConfigProvider]
     });
 
     query = TestBed.get(ViewConfigurationQuery);
@@ -127,6 +129,7 @@ describe('ViewConfigurationQuery', () => {
     mapSpy.mockReturnValueOnce(
       {
         zkOptionsOpened: false,
+        loginOptionsOpened: false,
         view: {
           zoomLevel: 9,
           centerCoordinates: [56, 67]
