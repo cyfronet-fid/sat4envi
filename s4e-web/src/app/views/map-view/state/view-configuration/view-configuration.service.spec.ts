@@ -7,7 +7,6 @@ import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {ViewConfigurationQuery} from './view-configuration.query';
 import {ViewConfiguration} from './view-configuration.model';
 import {MapModule} from '../../map.module';
-import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ViewConfigurationService', () => {
   let service: ViewConfigurationService;
@@ -17,8 +16,8 @@ describe('ViewConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      providers: [ViewConfigurationService, ViewConfigurationStore, ViewConfigurationQuery, TestingConfigProvider],
+      imports: [HttpClientTestingModule, MapModule]
     });
 
     service = TestBed.get(ViewConfigurationService);

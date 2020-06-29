@@ -4,8 +4,6 @@
     <ng-container *ngSwitchCase="'mustMatch'" i18n>Hasła muszą być takie same</ng-container>
     <ng-container *ngSwitchCase="'maxlength'" i18n>Maksymalna liczba znaków: {{error.value.requiredLength}}</ng-container>
     <ng-container *ngSwitchCase="'minlength'" i18n>Minimalna liczba znaków: {{error.value.requiredLength}}</ng-container>
-    <ng-container *ngSwitchCase="'min'" i18n>Wymagana minimalna wartość {{error.value.min}}</ng-container>
-    <ng-container *ngSwitchCase="'max'" i18n>Wymagana maksymalna wartość {{error.value.max}}</ng-container>
     <ng-container *ngSwitchCase="'__general__'">{{error.value}}</ng-container>
     <ng-container *ngSwitchCase="'server'">
       <ng-container [ngSwitch]="error.value">

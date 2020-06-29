@@ -2,20 +2,16 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ErrorKeysPipe} from './error-keys/error-keys.pipe';
 import { S4EDatePipe } from './s4e-date/s4e-date.pipe';
-import { GroupArrayPipe } from './group-array/group-array.pipe';
 
 @NgModule({
   declarations: [
     ErrorKeysPipe,
-    S4EDatePipe,
-    GroupArrayPipe
+    S4EDatePipe
   ],
   imports: [
     CommonModule
-  ],
-  exports: [
-    ErrorKeysPipe,
-    GroupArrayPipe
+  ], exports: [
+    ErrorKeysPipe
   ]
 })
 export class UtilsModule {

@@ -1,4 +1,4 @@
-import {SearchModule} from './../../components/search/search.module';
+import { SearchModule } from './../../components/search/search.module';
 import {ModuleWithProviders, NgModule} from '@angular/core';
 import {MapViewComponent} from './map-view.component';
 import {ViewManagerComponent} from './view-manager/view-manager.component';
@@ -41,11 +41,8 @@ import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {S4EFormsModule} from '../../form/form.module';
-import {DynamicSpaceDirective} from './view-manager/dynamic-space.directive';
-import {SentinelFormComponent} from './sentinel-search/sentinel-form/sentinel-form.component';
-import {SentinelSectionComponent} from './sentinel-search/sentinel-section/sentinel-section.component';
-import {FormsModule} from '@angular/forms';
-import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
+import { DynamicSpaceDirective } from './view-manager/dynamic-space.directive';
+import { NgxUiLoaderModule } from 'ngx-ui-loader';
 
 @NgModule({
   declarations: [
@@ -60,48 +57,44 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
     ShareConfigurationModalComponent,
     SaveConfigModalComponent,
     ListConfigsModalComponent,
-    DynamicSpaceDirective,
-    SentinelFormComponent,
-    SentinelSectionComponent
+    DynamicSpaceDirective
   ],
   exports: [
     MapViewComponent,
   ],
-  imports: [
-    InjectorModule,
-    ShareModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    AkitaNgRouterStoreModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
-    ModalModule,
-    RouterModule.forChild([
-      {
-        path: 'map',
-        component: MapViewComponent,
-        canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
-        children: [
-          {
-            path: 'products',
-            component: ViewManagerComponent
-          },
-          {
-            path: 'sentinel-search',
-            component: SentinelSearchComponent
-          },
-          {
-            path: '',
-            pathMatch: 'prefix',
-            redirectTo: '/map/products'
-          },
-        ]
-      }
-    ]),
-    S4EFormsModule,
-    SearchModule
-    // OwlNativeDateTimeModule
-  ],
+    imports: [
+        InjectorModule,
+        ShareModule,
+        BrowserAnimationsModule,
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
+        ModalModule,
+        RouterModule.forChild([
+            {
+                path: 'map',
+                component: MapViewComponent,
+                canActivate: environment.inviteOnly ? [IsLoggedIn] : [],
+                children: [
+                    {
+                        path: 'products',
+                        component: ViewManagerComponent
+                    },
+                    {
+                        path: 'sentinel-search',
+                        component: SentinelSearchComponent
+                    },
+                    {
+                        path: '',
+                        pathMatch: 'prefix',
+                        redirectTo: '/map/products'
+                    },
+                ]
+            }
+        ]),
+        S4EFormsModule,
+        SearchModule
+        // OwlNativeDateTimeModule
+    ],
   providers: [
     MapQuery,
     MapService,

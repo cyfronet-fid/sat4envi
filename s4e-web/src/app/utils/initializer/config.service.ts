@@ -28,7 +28,7 @@ export class S4eConfig implements IConfiguration {
     this.geoserverWorkspace = config.geoserverWorkspace;
     this.recaptchaSiteKey = config.recaptchaSiteKey;
 
-    this.backendDateFormat = 'YYYY-MM-DDTHH:mm:ss[Z]';
+    this.backendDateFormat = 'YYYY-MM-DDTHH:mm:ssZ';
     this.projection = {toProjection: 'EPSG:3857', coordinates: [19, 52]};
     this.apiPrefixV1 = 'api/v1';
     this.userLocalStorageKey = 'user';

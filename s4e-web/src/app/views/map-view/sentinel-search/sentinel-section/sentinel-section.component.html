@@ -1,8 +1,0 @@
-<div class="section">
-  <div class="header" (click)="toggleVisibility()" data-test="sentinel-section-header">
-    <input style="width: 18px;" type="checkbox" [formControl]="selectedFc"> <span>{{sentinel.name}}</span>
-  </div>
-  <div [hidden]="!(visible$ | async)" class="content" data-test="sentinel-section-content">
-    <s4e-sentinel-form [formControl]="form" [paramsDef]="sentinel.params"></s4e-sentinel-form>
-  </div>
-</div>

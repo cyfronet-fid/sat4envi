@@ -1,5 +1,5 @@
-import {LogoutModule} from './views/logout/logout.module';
-import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
+import { LogoutModule } from './views/logout/logout.module';
+import { APP_INITIALIZER, LOCALE_ID, NgModule, Injector } from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {ShareModule} from './common/share.module';
@@ -29,8 +29,7 @@ import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
 import {NotificationsModule} from 'notifications';
 import {ErrorsModule} from './errors/errors.module';
-import {NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
-import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
+import { NgxUiLoaderModule, POSITION, SPINNER, PB_DIRECTION, NgxUiLoaderConfig, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
 
 registerLocaleData(localePl, 'pl');
 
@@ -56,7 +55,6 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     RootComponent
   ],
   imports: [
-    AkitaNgRouterStoreModule,
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot()]),
     RouterModule.forRoot(appRoutes, {enableTracing: false}),
     ...ShareModule.modulesForRoot(),

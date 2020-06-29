@@ -8,7 +8,6 @@ import {take, toArray} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
 import {NotificationService} from 'notifications';
 import { HttpErrorResponse } from '@angular/common/http';
-import {RouterTestingModule} from '@angular/router/testing';
 
 describe('ConfigurationService', () => {
   let service: ConfigurationService;
@@ -19,8 +18,8 @@ describe('ConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [ MapModule, HttpClientTestingModule, RouterTestingModule ],
-      providers: [TestingConfigProvider]
+      providers: [TestingConfigProvider],
+      imports: [ MapModule, HttpClientTestingModule ]
     });
 
     notifications = TestBed.get(NotificationService);

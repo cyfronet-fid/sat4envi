@@ -1,27 +1,43 @@
-<div class="form form--sentinel" *ngIf="!(loadingMetadata$ | async); else metadataLoadingRef">
+<div class="form form--sentinel">
   <form [formGroup]="form">
     <ul>
       <li>
-        <s4e-sentinel-form [paramsDef]="(sentinels$ | async)?.common.params" [formControl]="form.get('common')"></s4e-sentinel-form>
+        <ext-select formControlName="sentinelId" label="Satelita">
+          <option value="" i18n>Wybierz satelitę</option>
+          <option *ngFor="let sentinel of (sentinels$ | async)" [value]="sentinel.id">{{sentinel.caption}}</option>
+        </ext-select>
       </li>
-      <li *ngFor="let sentinel of (sentinels$ | async)?.sections">
-        <s4e-sentinel-section [sentinel]="sentinel" [formControlName]="sentinel.name"></s4e-sentinel-section>
+      <li>
+        <label i18n>Data skanowania</label>
+        <div class="two__columns">
+          <div class="column">
+            <ext-datepicker formControlName="dateStart" visualType="blank"></ext-datepicker>
+          </div>
+          <div class="column">
+            <ext-datepicker formControlName="dateEnd" visualType="blank"></ext-datepicker>
+          </div>
+        </div>
+      </li>
+      <li class="half__column">
+        <ext-input formControlName="clouds"
+                   type="percent"
+                   label="Poziom zachmurzenia"
+                   placeholder="00.0"></ext-input>
       </li>
     </ul>
-    <button class="button button--primary" (click)="search()" [disabled]="(disableSearchBtn$ | async) || form.invalid">
+    <button class="button button--primary" (click)="search()" [disabled]="loading$ | async">
       <fa-icon class="spinner" [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
       <ng-container i18n>Szukaj</ng-container>
     </button>
   </form>
-</div>
 
-<ng-template #metadataLoadingRef>
-  <ng-container i18n>Metadata loading... [UI - Style it]</ng-container>
-</ng-template>
+</div>
 
 <section class="section" *ngIf="!(loading$ | async); else loadingRef">
   <header class="box__header" *ngIf="(searchResults$ | async).length > 0">
-    <span class="box__title" i18n>Wyniki</span>
+    <span class="box__title">
+      Wyniki
+    </span>
   </header>
   <ul class="search__result">
     <li *ngFor="let result of (searchResults$ | async)">
@@ -32,12 +48,11 @@
       <ul>
         <li><strong i18n>Mission:</strong> {{result.mission}}</li>
         <li><strong i18n>Instrument:</strong>  {{result.instrument}}</li>
-        <li><strong i18n>Sensing Date:</strong>  {{result.timestamp}}</li>
+        <li><strong i18n>Sensing Date:</strong>  {{result.sensingDate}}</li>
         <li><strong i18n>Size:</strong>  {{result.size}}</li>
       </ul>
       <a [attr.href]="result.url" target="_blank" class="download-link">Pobierz</a>
     </li>
-    <li *ngIf="showNoResults$ | async" i18n>Brak wyników</li>
   </ul>
 </section>
 

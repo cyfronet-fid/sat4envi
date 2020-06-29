@@ -1,5 +1,4 @@
 import {FormControl, FormGroup} from '@ng-stack/forms';
-import {FormControl as AngularFormControl, FormGroup as AngularFormGroup} from '@angular/forms';
 import {FormState} from '../../state/form/form.model';
 import {environment} from '../../../environments/environment';
 import {HashMap} from '@datorama/akita';
@@ -12,7 +11,7 @@ import {DOCUMENT} from '@angular/common';
 
 export type ServerApiError = HashMap<string[]> | { __exception__: string, __stacktrace__: string, __general__: string[] }
 
-export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormControl<any> | AngularFormGroup | AngularFormControl) {
+export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormControl<any>) {
   if (disable) {
     form.disable();
   } else {
@@ -123,18 +122,4 @@ export function toHashMap<T>(list: T[], key: keyof T): HashMap<T> {
     prev[String(curr[key])] = curr;
     return prev;
   }, {});
-}
-
-export function isEmptyObject(obj: object): boolean {
-  return Object.keys(obj).length === 0 && obj.constructor === Object;
-}
-
-export function stripNulls(obj: object): object {
-  const r = {};
-
-  Object.entries(obj).filter(([k, v]) => v != null).forEach(([k, v]) => {
-    r[k] = v
-  });
-
-  return r;
 }
