@@ -60,6 +60,7 @@ body, html {
     min-height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;
+    position: relative;
 
     &__formContainer {
       display: table-cell;
@@ -227,6 +228,29 @@ body, html {
         position: absolute;
         top: 50px;
         right: 50px;
+      }
+
+      &--left {
+        position: absolute;
+        bottom: 50px;
+        left: 50px;
+
+        a {
+          color: $color-black;
+          padding-left: 30px;
+          position: relative;
+
+          &:before {
+            content: " ";
+            position: absolute;
+            left: 0;
+            top: -2px;
+            background: url(/../assets/images/ico_arrow_right.svg) no-repeat;
+            transform: rotate(180deg);
+            width: 20px;
+            height: 20px;
+          }
+        }
       }
 
       p {

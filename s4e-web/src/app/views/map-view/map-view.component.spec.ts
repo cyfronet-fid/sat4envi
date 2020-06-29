@@ -91,7 +91,7 @@ describe('MapViewComponent', () => {
       fixture.detectChanges();
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.dropdown_button--zk'))).toBeTruthy();
+      expect(fixture.debugElement.query(By.css('.dropdown__button--zk'))).toBeTruthy();
     });
 
     it('clicking .zk__dropdown__close should toggleZKOptions(false)', () => {
@@ -101,7 +101,7 @@ describe('MapViewComponent', () => {
       fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
       fixture.detectChanges();
       const spy = spyOn(component, 'toggleZKOptions');
-      fixture.debugElement.query(By.css('.dropdown_close')).nativeElement.click();
+      fixture.debugElement.query(By.css('.dropdown__close')).nativeElement.click();
       expect(spy).toHaveBeenCalledWith(false);
     });
 

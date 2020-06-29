@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add static product info box for selected product [#545](https://github.com/cyfronet-fid/sat4envi/issues/545)
+- Add option to unselect selected product
 - Create dynamic breadcrumbs and add general breadcrumb in /settings [#503](https://github.com/cyfronet-fid/sat4envi/issues/503)
 - Add authorization token to image wms layer requests [#534](https://github.com/cyfronet-fid/sat4envi/issues/534)
 - Favourites Tab in products navigation, loading spinners for products [539](https://github.com/cyfronet-fid/sat4envi/issues/539)

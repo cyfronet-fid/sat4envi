@@ -1,23 +1,24 @@
 @import "../../../../scss/variables";
 
 :host {
-  display: block;
   position: absolute;
-  background-color: white;
   right: 10px;
-  top: 80px;
+  bottom: 80px;
   z-index: 10;
-  width: 60px;
   height: calc(100% - 170px);
+  width: 331px;
 }
-
-
 
 
 .legend__chart {
   height: 100%;
-  display: flex;
-  flex-direction: row;
+  width: 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: url(/../../../../assets/images/gfx_temp_legend.svg) no-repeat;
+  background-size: cover;
+  cursor: pointer;
 
   ul {
     position: relative;
@@ -32,17 +33,15 @@
 .legend__description {
   width: 300px;
   height: 100%;
-  right: 80px;
   position: absolute;
+  right: 31px;
+  top: 0;
   background-color: white;
-  padding: 15px;
+  padding: 0 $space-small;
 }
 
 .legend__image {
   height: 100%;
-  width: 100%;
-  object-fit: cover;
-  position:absolute;
 }
 
 .chart__label {
