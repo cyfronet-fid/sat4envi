@@ -1,3 +1,5 @@
+import { settingsRoutes } from './settings.routes';
+import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
 import { InstitutionService } from './state/institution/institution.service';
 import { ModalQuery } from './../../modal/state/modal.query';
 import { ModalService } from './../../modal/state/modal.service';

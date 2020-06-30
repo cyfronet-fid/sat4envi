@@ -7,7 +7,8 @@ import {InstitutionProfile} from './institution-profile.po';
 export namespace InstitutionList {
   export class PageObject {
     static getNewBtn = () => cy.get('[data-e2e="addInstitution"]');
-    static getNthListEntry = (i: number) => cy.get(`table[data-e2e="generic-list-data-table"] > tbody > tr[data-e2e="entity-row"]:nth-child(${i + 1})`);
+    static getNthListEntry = (i: number) => cy
+      .get(`table[data-e2e="generic-list-data-table"] > tbody > tr[data-e2e="entity-row"]:nth-child(${i + 1})`);
     static getAllListEntries = () => cy.get(`table[data-e2e="generic-list-data-table"] > tbody > tr`);
   }
 
@@ -36,6 +37,6 @@ export namespace InstitutionList {
     PageObject.getNthListEntry(index).find('a[data-e2e="edit"]').click();
     cy.location('pathname').should('eq', '/settings/institution');
     cy.location('search').should('contain', 'institution=zarzadzenie-kryzysowe-pl');
-    return InstitutionProfile
+    return InstitutionProfile;
   }
 }

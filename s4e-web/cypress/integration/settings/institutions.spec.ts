@@ -15,11 +15,6 @@ context('Institutions', () => {
   });
 
   context('Add institution form', () => {
-    let spy: any;
-    Cypress.on('window:before:load', (win) => {
-      spy = cy.spy(win.console, 'error');
-    });
-
     it('Should add new institution', () => {
       InstitutionList
         .goToAddInstitution()
@@ -30,10 +25,6 @@ context('Institutions', () => {
         .submit()
         .getSideNav()
         .logout();
-
-      // TODO: IMPORTANT!!! Uncomment this after institution backend add child will appear
-      // await promisify(cy.wait(100));
-      // expect(spy).not.to.be.called;
     });
   });
 
