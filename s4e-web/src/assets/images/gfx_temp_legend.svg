@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="570px" viewBox="0 0 20 570" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Legenda - pasek</title>
+    <defs>
+        <rect id="path-1" x="0" y="15" width="20" height="539.999986" rx="1.79999995"></rect>
+    </defs>
+    <g id="Product" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mapa-/--scena-/-v2-legenda-/-zwiniete-Copy" transform="translate(-1542.000000, -290.000000)">
+            <g id="Legenda---pasek" transform="translate(1542.000000, 290.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#F9FCFE" xlink:href="#path-1"></use>
+                <g id="Group" transform="translate(0.000000, 0.000000)">
+                    <rect id="Rectangle" fill="#EB311F" x="-2.38418579e-07" y="0.789473684" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy" fill="#D6A541" x="-2.38418579e-07" y="36.5789474" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-2" fill="#631F35" x="-2.38418579e-07" y="71.3157895" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-3" fill="#62A33F" x="-2.38418579e-07" y="107.105263" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-4" fill="#EAA87C" x="-2.38418579e-07" y="142.894737" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-5" fill="#EAF681" x="-2.38418579e-07" y="178.684211" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-6" fill="#64A48C" x="-2.38418579e-07" y="213.421053" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-7" fill="#C27FC0" x="-2.38418579e-07" y="249.210526" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-8" fill="#E2F8C3" x="-2.38418579e-07" y="285" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-9" fill="#8B7DC0" x="-2.38418579e-07" y="320.789474" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-10" fill="#8BA8C0" x="-2.38418579e-07" y="355.526316" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-11" fill="#0734CF" x="-2.38418579e-07" y="391.315789" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-12" fill="#455CF8" x="-2.38418579e-07" y="427.105263" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-13" fill="#49FDFE" x="-2.38418579e-07" y="462.894737" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-15" fill="#65F591" x="-2.38418579e-07" y="497.631579" width="20" height="35.7894737"></rect>
+                    <rect id="Rectangle-Copy-14" fill="#FB3892" x="-2.38418579e-07" y="533.421053" width="20" height="35.7894737"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

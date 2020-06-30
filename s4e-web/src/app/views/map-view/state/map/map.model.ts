@@ -15,6 +15,8 @@ export interface MapData {
 export interface MapState {
   zkOptionsOpened: boolean;
   loginOptionsOpened: boolean;
+  productDescriptionOpened: boolean;
+
   view: ViewPosition;
 }
 
@@ -22,6 +24,7 @@ export function createInitialState(): MapState {
   return {
     zkOptionsOpened: false,
     loginOptionsOpened: false,
+    productDescriptionOpened: false,
     view: {
       centerCoordinates: InjectorModule.Injector.get(S4eConfig).projection.coordinates,
       zoomLevel: 10

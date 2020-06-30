@@ -40,6 +40,10 @@ export class MapService {
     this.store.update({loginOptionsOpened: open});
   }
 
+  toggleProductDescription(open: boolean = true) {
+    this.store.update({productDescriptionOpened: open});
+  }
+
   setWorking($event: boolean) {
     this.store.setLoading($event);
   }

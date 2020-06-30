@@ -40,12 +40,12 @@
 >
 </s4e-map>
 
-<button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown_button dropdown_button--login">
+<button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown__button dropdown__button--login">
 </button>
 <ng-container *ngIf="showLoginOptions$ | async">
-  <div class="dropdown_content dropdown_content--login">
-    <span class="dropdown_header">Twoje Sat4Envi</span>
-    <div class="dropdown_close" (click)="toggleLoginOptions(false)"></div>
+  <div class="dropdown__content dropdown__content--login">
+    <span class="dropdown__header">Twoje Sat4Envi</span>
+    <div class="dropdown__close" (click)="toggleLoginOptions(false)"></div>
     <ul>
       <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
         <li>
@@ -66,15 +66,13 @@
     </ul>
   </div>
 </ng-container>
-
-
 <ng-container *ngIf="userIsZK$ | async">
-  <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown_button dropdown_button--zk">
+  <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown__button dropdown__button--zk">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
-    <div class="dropdown_content dropdown_content--zk">
-      <span class="dropdown_header">Zarządzanie kryzysowe</span>
-      <div class="dropdown_close dropdown" (click)="toggleZKOptions(false)"></div>
+    <div class="dropdown__content dropdown__content--zk">
+      <span class="dropdown__header">Zarządzanie kryzysowe</span>
+      <div class="dropdown__close dropdown" (click)="toggleZKOptions(false)"></div>
       <ul>
         <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj Raport</a></li>
         <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
@@ -85,4 +83,22 @@
       </ul>
     </div>
   </ng-container>
+</ng-container>
+
+<button *ngIf="activeProducts$ | async"
+        (click)="toggleProductDescription()"
+        id="product-description-button"
+        class="dropdown__button dropdown__button--product">
+</button>
+<ng-container *ngIf="showProductDescription$ | async">
+  <div class="dropdown__content dropdown__content--product">
+    <span class="dropdown__header">Opis produktu</span>
+    <div class="dropdown__close dropdown" (click)="toggleProductDescription(false)"></div>
+    <h2>Setvak i chmurki</h2>
+    <div class="dropdown__description">
+      <p>
+        Miejsce na opis prodktu. W tym momencie jest statyczne.
+      </p>
+    </div>
+  </div>
 </ng-container>

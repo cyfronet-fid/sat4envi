@@ -58,6 +58,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public availableDates$: Observable<string[]>;
   public showZKOptions$: Observable<boolean>;
   public showLoginOptions$: Observable<boolean>;
+  public showProductDescription$: Observable<boolean>;
   public selectedLocation$: Observable<LocationSearchResult | null>;
   public userIsZK$: Observable<boolean>;
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
@@ -92,7 +93,18 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.scenesAreLoading$ = this.sceneQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
     this.activeProducts$ = this.productQuery.selectActive();
-    this.legend$ = this.legendQuery.selectLegend();
+    // TODO - uncomment it when the legends are properly seeded
+    // this.legend$ = this.legendQuery.selectLegend();
+    // For now we use the stub with static legend to get user's feedback
+    this.legend$ = this.activeProducts$.pipe(map(product => product == null ? null : {
+      type: 'gradient',
+      url: '',
+      bottomMetric: {},
+      leftDescription: {},
+      rightDescription: {},
+      topMetric: {}
+    } as Legend));
+    
     this.legendState$ = this.legendQuery.select();
     this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
     this.placeSearchResults$ = this.searchResultsQuery.selectAll();
@@ -101,6 +113,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.availableDates$ = this.productQuery.selectAvailableDates();
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
     this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
+    this.showProductDescription$ = this.mapQuery.select('productDescriptionOpened');
+
     this.productService.get();
     this.overlayService.get();
     this.activeView$ = this.mapQuery.select('view');
@@ -143,6 +157,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   toggleLoginOptions(show: boolean = true) {
     this.mapService.toggleLoginOptions(show);
+  }
+
+  toggleProductDescription(show: boolean = true) {
+    this.mapService.toggleProductDescription(show);
   }
 
   downloadMapImage() {

@@ -84,7 +84,11 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
-  selectProduct(productId: number | null) {
+  selectProduct(productId: number) {
+    if(this.productQuery.getActiveId() === productId) {
+      productId = null;
+    }
+
     this.productService.setActive(productId);
   }
 
