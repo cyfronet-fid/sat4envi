@@ -2,6 +2,9 @@ import {OverlayQuery} from './overlay.query';
 import {OverlayStore} from './overlay.store';
 import {async, TestBed} from '@angular/core/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
+import {MapModule} from '../../map.module';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('OverlayQuery', () => {
   let query: OverlayQuery;
@@ -9,8 +12,8 @@ describe('OverlayQuery', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [OverlayStore,
-        TestingConfigProvider]
+      providers: [TestingConfigProvider],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     query = TestBed.get(OverlayQuery);
@@ -38,7 +41,9 @@ describe('OverlayQuery', () => {
             type: 'wms',
             cid: 'test-overlay-id',
             active: false,
-            favourite: false
+            favourite: false,
+            isFavouriteLoading: false,
+            isLoading: false
           }
         ]);
         done();

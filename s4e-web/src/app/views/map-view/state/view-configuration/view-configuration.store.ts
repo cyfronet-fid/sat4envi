@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityState, EntityStore, StoreConfig } from '@datorama/akita';
 import {createViewConfiguration, ViewConfiguration} from './view-configuration.model';
-import {createProduct} from '../product/product.store';
+import {createProductState} from '../product/product.model';
 
 export interface ViewConfigurationState extends EntityState<ViewConfiguration> {}
 

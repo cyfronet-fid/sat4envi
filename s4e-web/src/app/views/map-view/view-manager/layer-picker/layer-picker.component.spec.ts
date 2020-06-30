@@ -2,6 +2,9 @@ import { By } from '@angular/platform-browser';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ItemsPickerComponent } from './layer-picker.component';
+import {MapModule} from '../../map.module';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 fdescribe('ItemsPickerComponent', () => {
   let component: ItemsPickerComponent;
@@ -9,7 +12,7 @@ fdescribe('ItemsPickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ItemsPickerComponent ]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
   }));
@@ -26,7 +29,7 @@ fdescribe('ItemsPickerComponent', () => {
 
   it('should have star on enabled', () => {
     component.hasFavourite = true;
-    component.items = [{cid: 0, caption: '', active: true, favourite: false}];
+    component.items = [{cid: 0, caption: '', active: true, favourite: false, isLoading: false, isFavouriteLoading: false}];
     spyOn(component.isFavouriteSelected, 'emit');
     fixture.detectChanges();
 

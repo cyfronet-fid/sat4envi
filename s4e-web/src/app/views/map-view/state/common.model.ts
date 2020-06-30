@@ -5,4 +5,6 @@ export interface IUILayer {
   caption: string;
   active: boolean;
   favourite: boolean;
+  isLoading: boolean;
+  isFavouriteLoading: boolean;
 }

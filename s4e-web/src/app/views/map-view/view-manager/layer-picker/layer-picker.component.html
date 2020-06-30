@@ -7,15 +7,29 @@
 <section>
   <ul>
     <li [ngClass]="{active: item.active}" class="products__item" role="menuitem" *ngFor="let item of items">
-      <button *ngIf="hasFavourite" (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
-        <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}"></i>
-      </button>
+      <ng-container *ngIf="hasFavourite">
+        <button *ngIf="!item.isFavouriteLoading; else itemFavLoading"
+                (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
+          <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}"></i>
+        </button>
+        <ng-template #itemFavLoading>
+          <fa-icon class="item-fav-spinner" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        </ng-template>
+      </ng-container>
       <button (click)="itemSelected.emit(item.cid)" class="products__name">
         {{item.caption}}
       </button>
-      <button *ngIf="item.active" class="products__visibility" (click)="itemSelected.emit(item.cid)">
-        <i class="far fa-eye"></i>
-      </button>
+      <ng-container *ngIf="item.isLoading; else visibility">
+        <span class="products__visibility__spinner">
+          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        </span>
+      </ng-container>
+
+      <ng-template #visibility>
+        <button *ngIf="item.active" class="products__visibility" (click)="itemSelected.emit(item.cid)">
+          <i class="far fa-eye"></i>
+        </button>
+      </ng-template>
     </li>
   </ul>
 </section>

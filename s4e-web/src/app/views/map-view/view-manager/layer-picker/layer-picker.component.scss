@@ -11,6 +11,12 @@
   font-size: 0.875rem;
 }
 
+.products__visibility__spinner {
+  margin-left: auto;
+  font-size: 0.875rem;
+  padding: 5px 6px 4px !important;
+}
+
 .list > .list__item {
   i.fas.fa-star {
     color: $color-yellow;
@@ -23,4 +29,8 @@
   .active.list__name {
     font-weight: bold;
   }
+}
+
+.item-fav-spinner {
+  padding: 5px 6px 4px !important;
 }

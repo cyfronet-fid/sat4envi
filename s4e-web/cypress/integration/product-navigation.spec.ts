@@ -48,13 +48,41 @@ context('productNavigation', () => {
     cy.get('.search__input').should('have.value', '');
   });
 
-  it('should set favourite after login', async () => {
-    const user = await promisify(cy.fixture('users/zkMember.json'));
-    Login
-      .loginAs(user)
-      .selectAllFavorites();
-    cy.visit('/');
-    Map
-      .unselectAllFavorites();
+  describe('as logged in user', () => {
+    beforeEach(function () {
+      cy.fixture('users/zkMember.json').as('user');
+    });
+
+    beforeEach(function () {
+      Login
+        .loginAs(this.user)
+    });
+
+    it('should set favourite after login', () => {
+      Map.selectAllFavorites()
+      cy.visit('/');
+      Map.unselectAllFavorites();
+    });
+
+    it('favourites tab should work', async () => {
+      Map.PageObject.getFavouriteCount().should('have.text', '0');
+      Map.selectFirstAsFavorite()
+      const firstProductText = await promisify(Map.PageObject.getProducts().first().invoke('text'));
+
+      Map.PageObject.getFavouriteCount().should('have.text', '1');
+      Map.goToFavourites()
+
+      Map.PageObject.getProducts().should('have.length', 1);
+
+      Map.PageObject.getProducts().first().should('have.text', firstProductText);
+
+      Map.unselectAllFavorites();
+
+      Map.PageObject.getProductList().should('contain', 'Nie posiadasz ulubionych produktów');
+
+      cy.reload();
+
+      Map.isFavouriteActive();
+    });
   });
 });

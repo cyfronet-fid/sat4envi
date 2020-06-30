@@ -13,6 +13,11 @@ export namespace Map {
     // sidebar -> products
     static getNonFavoritesBtns = () => cy.get('.e2e-non-favourite-btn');
     static getFavoritesBtns = () => cy.get('.e2e-favourite-btn');
+    static getFavouriteTab = () => cy.get('[data-e2e="favourite-list"]')
+    static getProductsTab = () => cy.get('[data-e2e="product-list"]')
+    static getFavouriteCount = () => cy.get('[data-e2e="favourite-count"]')
+    static getProducts = () => cy.get('.products-list .products__item')
+    static getProductList = () => cy.get('.products-list')
   }
 
   export function logout() {
@@ -53,5 +58,21 @@ export namespace Map {
       .getFavoritesBtns()
       .should('exist')
       .click({multiple: true, force: true});
+  }
+
+  export function selectFirstAsFavorite() {
+    return PageObject
+      .getNonFavoritesBtns().first()
+      .should('exist')
+      .click({force: true});
+  }
+
+  export function goToFavourites() {
+    PageObject.getFavouriteTab().click({force: true});
+    return Map;
+  }
+
+  export function isFavouriteActive() {
+    PageObject.getFavouriteTab().should('have.class', 'active');
   }
 }

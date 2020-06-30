@@ -23,3 +23,33 @@ s4e-search {
     margin-right: $space-small;
   }
 }
+
+.products-filtration {
+  padding: 10px;
+  a {
+    max-width: 49%;
+    display: inline-block;
+    color: lightgray;
+    cursor: pointer;
+
+    &.active {
+      color: black;
+
+      .badge {
+        background-color: orangered;
+      }
+    }
+
+    &:last-child {
+      float: right;
+    }
+
+    .badge {
+      background-color: lightsalmon;
+      padding: 2px 7px;
+      border-radius: 50%;
+      margin-right: 5px;
+      color: white
+    }
+  }
+}
