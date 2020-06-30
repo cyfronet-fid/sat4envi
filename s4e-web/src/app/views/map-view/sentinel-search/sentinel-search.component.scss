@@ -1,11 +1,5 @@
 @import "../../../../scss/variables";
 
-.form {
-  &--sentinel {
-    margin-bottom: 40px;
-  }
-}
-
 .search__result {
   & > li {
     background: $color-white;
@@ -42,8 +36,8 @@
     .quick__look {
       border: 1px solid $color-grey-secondary;
       border-radius: $border-radius-default;
-      width: 60px;
-      height: 60px;
+      width: 45px;
+      height: 45px;
       display: flex;
       justify-content: center;
       background: url("../../../../assets/images/logo_s4e_blank.png") center no-repeat;

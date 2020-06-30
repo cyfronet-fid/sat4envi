@@ -6,16 +6,18 @@ import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBLE_QUERY_KEY} from './sentinel-search.model';
+import {createSentinelSearchResult, SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBLE_QUERY_KEY} from './sentinel-search.model';
 import {ReplaySubject, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
+import {SentinelSearchFactory, SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
+import {S4eConfig} from '../../../../utils/initializer/config.service';
 
 describe('SentinelSearchResultQuery', () => {
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
   let routerQuery: RouterQuery;
   let queryParams$: Subject<string>;
+  let apiPrefixV1: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,6 +29,7 @@ describe('SentinelSearchResultQuery', () => {
     store = TestBed.get(SentinelSearchStore);
     routerQuery = TestBed.get(RouterQuery);
     queryParams$ = new ReplaySubject<string>(1);
+    apiPrefixV1 = (TestBed.get(S4eConfig) as S4eConfig).apiPrefixV1
     spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
   });
 
@@ -125,5 +128,25 @@ describe('SentinelSearchResultQuery', () => {
     const spy = spyOn(query, 'getVisibleSentinels').and.returnValue(['sentinel1', 'sentinel2']);
     expect(query.isSentinelVisible('sentinel1')).toBeTruthy();
     expect(query.isSentinelVisible('sentinel3')).toBeFalsy();
+  });
+
+  it('selectIsActiveFirst', async () => {
+    const apiURL = '/api/v1'
+    const results = SentinelSearchFactory.buildList(3).map(result => createSentinelSearchResult(result, apiPrefixV1));
+    store.set(results);
+    store.setActive(results[1].id);
+    expect(await query.selectIsActiveFirst().pipe(take(1)).toPromise()).toBeFalsy();
+    store.setActive(results[0].id);
+    expect(await query.selectIsActiveFirst().pipe(take(1)).toPromise()).toBeTruthy();
+  });
+
+  it('selectIsActiveLast', async () => {
+    const apiURL = '/api/v1'
+    const results = SentinelSearchFactory.buildList(3).map(result => createSentinelSearchResult(result, apiPrefixV1));
+    store.set(results);
+    store.setActive(results[1].id);
+    expect(await query.selectIsActiveLast().pipe(take(1)).toPromise()).toBeFalsy();
+    store.setActive(results[2].id);
+    expect(await query.selectIsActiveLast().pipe(take(1)).toPromise()).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {SearchModule} from './../../components/search/search.module';
+import {SearchModule} from '../../components/search/search.module';
 import {MapViewComponent} from './map-view.component';
 import {ViewManagerComponent} from './view-manager/view-manager.component';
 import {ShareModule} from '../../common/share.module';
@@ -45,6 +45,8 @@ import {SentinelSectionComponent} from './sentinel-search/sentinel-section/senti
 import {FormsModule} from '@angular/forms';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {routes} from './map.routes.module';
+import {SearchResultModalComponent} from './sentinel-search/search-result-modal/search-result-modal.component';
+import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
 
 @NgModule({
   declarations: [
@@ -61,7 +63,8 @@ import {routes} from './map.routes.module';
     ListConfigsModalComponent,
     DynamicSpaceDirective,
     SentinelFormComponent,
-    SentinelSectionComponent
+    SentinelSectionComponent,
+    SearchResultModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -100,13 +103,15 @@ import {routes} from './map.routes.module';
     makeModalProvider(REPORT_MODAL_ID, ReportModalComponent),
     makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent),
     makeModalProvider(SAVE_CONFIG_MODAL_ID, SaveConfigModalComponent),
-    makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent)
+    makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent),
+    makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
     ShareConfigurationModalComponent,
     SaveConfigModalComponent,
-    ListConfigsModalComponent
+    ListConfigsModalComponent,
+    SearchResultModalComponent
   ]
 })
 export class MapModule {

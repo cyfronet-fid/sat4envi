@@ -13,6 +13,7 @@ import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.m
 import {HashMap} from '@datorama/akita';
 import {delay, map} from 'rxjs/operators';
 import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
+import {ModalService} from '../../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-sentinel-search',
@@ -36,7 +37,8 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   constructor(private fm: AkitaNgFormsManager<FormState>,
               private router: Router,
               private query: SentinelSearchQuery,
-              private service: SentinelSearchService) {
+              private service: SentinelSearchService,
+              private modalService: ModalService) {
   }
 
   ngOnInit() {
@@ -66,7 +68,7 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
         this.form = new AngularFormGroup({
           common: new AngularFormControl({})
         });
-        metadata.sections.forEach(sentinel => this.form.setControl(sentinel.name, new AngularFormControl({})))
+        metadata.sections.forEach(sentinel => this.form.setControl(sentinel.name, new AngularFormControl({})));
       }
     );
     this.service.getSentinels();
@@ -83,5 +85,9 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
     const query: HashMap<any> = Object.values(this.form.value).reduce((prev, current) => Object.assign(prev, current), {});
     this.service.search(query);
+  }
+
+  openSearchResultModal(result: SentinelSearchResult) {
+    this.service.openModalForResult(result.id);
   }
 }

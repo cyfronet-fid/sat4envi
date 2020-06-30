@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Static Modal For Search Result Details [#549](https://github.com/cyfronet-fid/sat4envi/issues/549)
 - Add static product info box for selected product [#545](https://github.com/cyfronet-fid/sat4envi/issues/545)
 - Add option to unselect selected product
 - Create dynamic breadcrumbs and add general breadcrumb in /settings [#503](https://github.com/cyfronet-fid/sat4envi/issues/503)

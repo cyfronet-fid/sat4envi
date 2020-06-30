@@ -7,7 +7,7 @@ import {
   SentinelSearchResult,
   SentinelSearchState,
 } from './sentinel-search.model';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {map} from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
@@ -68,5 +68,23 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
 
   isSentinelVisible(sentinelId: string): boolean {
     return this.getVisibleSentinels().indexOf(sentinelId) >= 0;
+  }
+
+  selectIsActiveFirst() {
+    return combineLatest(
+      this.selectAll(),
+      this.selectActive()
+    ).pipe(
+      map(([results, active]) => results.indexOf(active) === 0)
+    );
+  }
+
+  selectIsActiveLast() {
+    return combineLatest(
+      this.selectAll(),
+      this.selectActive()
+    ).pipe(
+      map(([results, active]) => results.indexOf(active) === results.length - 1)
+    );
   }
 }
