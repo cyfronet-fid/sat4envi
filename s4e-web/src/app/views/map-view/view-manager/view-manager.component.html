@@ -38,7 +38,17 @@
       </a>
     </div>
     <ng-container *ngIf="isLoggedIn && isFavouriteFiltration && (favouriteProductsCount$ | async) === 0; else products">
-      <p i18n>Nie posiadasz ulubionych produktów</p>
+      <div class="products products--favourite">
+        <header>
+          <span class="products__title products__title--favourite">Ulubione</span>
+        </header>
+        <section>
+          <div class="empty">
+            <p i18n>Jeszcze nie zostały dodane żadne ulubione produkty.</p>
+            <p i18n>Może to zrobić klikając gwiazdkę na lisćie produktów</p>
+          </div>
+        </section>
+      </div>
     </ng-container>
     <ng-template #products>
       <s4e-items-picker

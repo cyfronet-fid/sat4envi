@@ -31,12 +31,13 @@ s4e-search {
     display: inline-block;
     color: lightgray;
     cursor: pointer;
+    font-size: 0.875rem;
 
     &.active {
       color: black;
 
       .badge {
-        background-color: orangered;
+        background-color: $color-yellow;
       }
     }
 
@@ -45,8 +46,9 @@ s4e-search {
     }
 
     .badge {
-      background-color: lightsalmon;
+      background-color: $color-yellow;
       padding: 2px 7px;
+      display: inline-block;
       border-radius: 50%;
       margin-right: 5px;
       color: white

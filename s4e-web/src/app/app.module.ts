@@ -40,15 +40,16 @@ export function initializeApp(configService: S4eConfig): () => Promise<any> {
 }
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  bgsColor: 'red',
-  pbColor: 'red',
+  bgsColor: 'white',
+  pbColor: 'white',
   bgsOpacity: 1,
   bgsPosition: POSITION.centerCenter,
   bgsSize: 120,
-  bgsType: SPINNER.ballSpinClockwise,
+  bgsType: SPINNER.threeBounce,
   pbDirection: PB_DIRECTION.leftToRight,
   pbThickness: 5,
-  hasProgressBar: true
+  hasProgressBar: true,
+  fgsSize: 80
 };
 
 @NgModule({

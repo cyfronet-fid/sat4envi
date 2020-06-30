@@ -15,6 +15,8 @@ import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {HashMap} from '@datorama/akita';
 import {NotificationService} from 'notifications';
+import {ModalService} from '../../../../modal/state/modal.service';
+import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 
 @Injectable({providedIn: 'root'})
 export class SentinelSearchService {
@@ -24,7 +26,8 @@ export class SentinelSearchService {
               private http: HttpClient,
               private router: Router,
               private notificationService: NotificationService,
-              private CONFIG: S4eConfig) {
+              private CONFIG: S4eConfig,
+              private modalService: ModalService) {
   }
 
   setSentinelVisibility(sentinelId: string, visible: boolean) {
@@ -46,13 +49,13 @@ export class SentinelSearchService {
     this.store.setLoading(true);
     const r = this.http.get<SentinelSearchResultResponse[]>(
       `${this.CONFIG.apiPrefixV1}/search`, {params}
-      ).pipe(
-        delay(250),
-        catchErrorAndHandleStore(this.store),
-        map(data => data.map(product => createSentinelSearchResult(product, this.CONFIG.apiPrefixV1))),
-        finalize(() => this.store.setLoading(false)),
-        shareReplay(1)
-      );
+    ).pipe(
+      delay(250),
+      catchErrorAndHandleStore(this.store),
+      map(data => data.map(product => createSentinelSearchResult(product, this.CONFIG.apiPrefixV1))),
+      finalize(() => this.store.setLoading(false)),
+      shareReplay(1)
+    );
 
     r.subscribe(
       data => {
@@ -95,5 +98,33 @@ export class SentinelSearchService {
 
   setLoaded(loaded: boolean) {
     this.store.setLoaded(loaded);
+  }
+
+  openModalForResult(resultId: string) {
+    this.store.setActive(resultId);
+    this.modalService.show({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+  }
+
+  nextActive() {
+    this._advanceActive(1);
+  }
+
+  previousActive() {
+    this._advanceActive(-1);
+  }
+
+  protected _advanceActive(direction: -1 | 1) {
+    if (this.query.getActive() == null) {
+      return;
+    }
+
+    const results = this.query.getAll();
+    const nextIndex = results.indexOf(this.query.getActive()) + direction;
+
+    if (nextIndex === -1 || nextIndex === results.length) {
+      return;
+    }
+
+    this.store.setActive(results[nextIndex].id);
   }
 }

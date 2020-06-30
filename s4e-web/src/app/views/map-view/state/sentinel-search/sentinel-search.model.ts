@@ -1,4 +1,4 @@
-import {EntityState} from '@datorama/akita';
+import {ActiveState, EntityState} from '@datorama/akita';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 
 export const SENTINEL_VISIBLE_QUERY_KEY = 'visible_sent';
@@ -36,7 +36,7 @@ export function createSentinelSearchResult(params: SentinelSearchResultResponse,
   } as SentinelSearchResult;
 }
 
-export interface SentinelSearchState extends EntityState<SentinelSearchResult> {
+export interface SentinelSearchState extends EntityState<SentinelSearchResult>, ActiveState {
   metadata: SentinelSearchMetadata;
   metadataLoading: boolean;
   metadataLoaded: boolean;

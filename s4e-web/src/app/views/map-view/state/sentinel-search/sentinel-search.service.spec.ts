@@ -1,4 +1,4 @@
-import {fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {SentinelSearchService} from './sentinel-search.service';
 import {SentinelSearchStore} from './sentinel-search.store';
@@ -11,12 +11,15 @@ import {createSentinelSearchResult, SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBL
 import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
+import {ModalService} from '../../../../modal/state/modal.service';
+import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 
 describe('SentinelSearchResultService', () => {
   let service: SentinelSearchService;
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
   let http: HttpTestingController;
+  let modalService: ModalService;
   let apiPrefixV1: string;
 
   beforeEach(() => {
@@ -29,6 +32,7 @@ describe('SentinelSearchResultService', () => {
     query = TestBed.get(SentinelSearchQuery);
     store = TestBed.get(SentinelSearchStore);
     http = TestBed.get(HttpTestingController);
+    modalService = TestBed.get(ModalService);
     apiPrefixV1 = (TestBed.get(S4eConfig) as S4eConfig).apiPrefixV1
   });
 
@@ -134,5 +138,40 @@ describe('SentinelSearchResultService', () => {
       service.search({});
       expect(query.getAll().length).toBe(0);
     });
+  });
+
+  it('openModalForResult', () => {
+    const spy = spyOn(modalService, 'show');
+    const result = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
+    store.set([result]);
+    service.openModalForResult(result.id);
+    expect(query.getActiveId()).toEqual(result.id);
+    expect(spy).toHaveBeenCalledWith({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+  });
+
+  it('nextActive', () => {
+    const first = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
+    const second = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
+    store.set([first, second]);
+    service.nextActive();
+    expect(query.getActive()).toBeFalsy();
+    store.setActive(first.id);
+    service.nextActive();
+    expect(query.getActive()).toEqual(second);
+    service.nextActive();
+    expect(query.getActive()).toEqual(second);
+  });
+
+  it('previousActive', () => {
+    const first = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
+    const second = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
+    store.set([first, second]);
+    service.previousActive();
+    expect(query.getActive()).toBeFalsy();
+    store.setActive(second.id);
+    service.previousActive();
+    expect(query.getActive()).toEqual(first);
+    service.previousActive();
+    expect(query.getActive()).toEqual(first);
   });
 });

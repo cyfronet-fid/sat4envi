@@ -1,0 +1,46 @@
+<button [disabled]="isFirst$ | async" (click)="previousResult()" class="modal__prev"><i class="fa fa-chevron-left"></i></button>
+<button [disabled]="isLast$ | async" (click)="nextResult()" class="modal__next"><i class="fa fa-chevron-right"></i></button>
+<s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+  <div class="s4e-modal-header">
+    {{(searchResult$ | async)?.id}}
+  </div>
+  <div class="s4e-modal-body report">
+    <aside>
+      <strong i18n>Footprint</strong>
+      <div class="report-template">
+        <img src="assets/images/gfx_temp_footprint.png" width="180"/>
+      </div>
+      <strong i18n>Quicklook</strong>
+      <div class="report-template">
+        <img src="assets/images/gfx_temp_quicklook.png" width="180"/>
+      </div>
+
+    </aside>
+    <div class="form">
+      <h3>Summary</h3>
+      <table class="modal__table">
+        <tr>
+          <td>
+            Date
+          </td>
+          <td>
+            Znajdą się tutaj wszystkie metadane z paczki
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Filename
+          </td>
+          <td>
+            {{(searchResult$ | async)?.id}}
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="s4e-modal-footer">
+    <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Zamknij</button>
+    <a [attr.href]="(searchResult$ | async)?.url" target="_blank" (click)="dismiss()"
+       class="button button--secondary button--small" type="button" i18n>Pobierz Plik</a>
+  </div>
+</s4e-generic-modal>

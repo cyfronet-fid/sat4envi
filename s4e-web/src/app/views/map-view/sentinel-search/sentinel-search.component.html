@@ -1,5 +1,5 @@
-<div class="form form--sentinel" *ngIf="!(loadingMetadata$ | async); else metadataLoadingRef">
-  <form [formGroup]="form">
+<div *ngIf="!(loadingMetadata$ | async); else metadataLoadingRef">
+  <form [formGroup]="form" class="form form--sentinel">
     <ul>
       <li>
         <s4e-sentinel-form [paramsDef]="(sentinels$ | async)?.common.params" [formControl]="form.get('common')"></s4e-sentinel-form>
@@ -19,20 +19,19 @@
   <ng-container i18n>Metadata loading... [UI - Style it]</ng-container>
 </ng-template>
 
-<section class="section" *ngIf="!(loading$ | async); else loadingRef">
-  <header class="box__header" *ngIf="(searchResults$ | async).length > 0">
-    <span class="box__title" i18n>Wyniki</span>
+<section class="sentinel" *ngIf="!(loading$ | async); else loadingRef">
+  <header *ngIf="(searchResults$ | async).length > 0">
+    <span i18n>Wyniki</span>
   </header>
   <ul class="search__result">
     <li *ngFor="let result of (searchResults$ | async)">
-      <div class="quick__look">
+      <div class="quick__look" (click)="openSearchResultModal(result)">
         <img *ngIf="result.image" [attr.src]="result.image">
         <!-- miejsce na obrazek (miniaturke) quick look jak jest -->
       </div>
       <ul>
         <li><strong i18n>Mission:</strong> {{result.mission}}</li>
         <li><strong i18n>Instrument:</strong>  {{result.instrument}}</li>
-        <li><strong i18n>Sensing Date:</strong>  {{result.timestamp}}</li>
         <li><strong i18n>Size:</strong>  {{result.size}}</li>
       </ul>
       <a [attr.href]="result.url" target="_blank" class="download-link">Pobierz</a>

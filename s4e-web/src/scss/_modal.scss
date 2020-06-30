@@ -86,6 +86,21 @@ h3 {
   font-size: 1rem;
 }
 
+.modal__prev,
+.modal__next {
+  font-size: 3rem;
+  color: $color-white;
+  display: inline-block;
+  left: -50px;
+  float: left;
+  height: 100%;
+  margin-top: 200px;
+}
+
+.modal__next {
+  float: right;
+}
+
 
 
 
