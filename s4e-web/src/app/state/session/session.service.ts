@@ -12,6 +12,8 @@ import {S4eConfig} from '../../utils/initializer/config.service';
 import {ProfileService} from '../profile/profile.service';
 import {HTTP_404_BAD_REQUEST, HTTP_401_UNAUTHORIZED} from '../../errors/errors.model';
 import {catchErrorAndHandleStore} from '../../common/store.util';
+import ImageWrapper from 'ol/Image';
+import { getImageXhr, ImageBase64 } from 'src/app/views/settings/manage-institutions/institution-form/files.utils';
 
 
 @Injectable({providedIn: 'root'})

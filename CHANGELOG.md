@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add authorization token to image wms layer requests [#534](https://github.com/cyfronet-fid/sat4envi/issues/534)
 - Favourites Tab in products navigation, loading spinners for products [539](https://github.com/cyfronet-fid/sat4envi/issues/539)
 - Connect sentinel search to backend + add forms [#532](https://github.com/cyfronet-fid/sat4envi/issues/532)
 - Generic loader for HTTP requests, navigation events and `open layer` map loading on `/map/products` site [#217](https://github.com/cyfronet-fid/sat4envi/issues/217)
@@ -103,13 +104,13 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
-- Favorites products [#420] (https://github.com/cyfronet-fid/sat4envi/issues/420)
+- Favorites products [#420](https://github.com/cyfronet-fid/sat4envi/issues/420)
 - Favourite Products [#403](https://github.com/cyfronet-fid/sat4envi/issues/403)
 - Forms module [#370](https://github.com/cyfronet-fid/sat4envi/issues/370)
 
 ### Changed
 
-- Overflow for map, sidebar, modals [#359](https://github.com/cyfronet-fid/sat4envi/issues/359) 
+- Overflow for map, sidebar, modals [#359](https://github.com/cyfronet-fid/sat4envi/issues/359)
 - Run e2e and integration tests in gh-actions and modify docker-compose files [#401](https://github.com/cyfronet-fid/sat4envi/issues/401)
 - Add more seeds for tests [#411](https://github.com/cyfronet-fid/sat4envi/issues/411)
 - Update handlebars version to 4.6.0

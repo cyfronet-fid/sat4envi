@@ -7,6 +7,15 @@ export namespace File {
   }
 }
 
+export function getImageXhr(src: string, bearer: string): XMLHttpRequest {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', src);
+  xhr.responseType = 'arraybuffer';
+  xhr.setRequestHeader('Authorization', bearer);
+
+  return xhr;
+}
+
 export namespace ImageBase64 {
   export function getFromFile$(file) {
     return new Observable((observer: Observer<string>) => {
@@ -21,6 +30,13 @@ export namespace ImageBase64 {
       };
       reader.onerror = (error) => observer.error(error);
     });
+  }
+
+  export function getFromXhr(imageXhr: XMLHttpRequest): string {
+    const arrayBufferView = new Uint8Array(imageXhr.response);
+    const blob = new Blob([arrayBufferView], { type: 'image/png' });
+    const urlCreator = (window as any).URL || (window as any).webkitURL;
+    return urlCreator.createObjectURL(blob);
   }
 
   export function getFromUrl$(url: string) {
