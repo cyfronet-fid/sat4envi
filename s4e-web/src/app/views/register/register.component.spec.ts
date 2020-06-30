@@ -8,6 +8,7 @@ import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {By} from '@angular/platform-browser';
 import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
 import {TestingConfigProvider} from '../../app.configuration.spec';
+import { RegisterFactory } from './register.factory.spec';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -41,13 +42,6 @@ describe('RegisterComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should send valid form', () => {
-    const spy = spyOn(registerService, 'register');
-    component.form.setValue({email: 'user@domain', password: 'pass', passwordRepeat: 'pass', recaptcha: 'captcha'});
-    component.register();
-    expect(spy).toHaveBeenCalled();
-  });
-
   it('should validate password', () => {
     component.form.controls.password.setValue('');
     expect(component.form.controls.password.valid).toBeFalsy();
@@ -74,33 +68,33 @@ describe('RegisterComponent', () => {
 
   it('clicking submit button should call register', () => {
     const spy = spyOn(component, 'register');
-    fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
+    fixture.debugElement
+      .query(By.css('button[type="submit"]'))
+      .nativeElement
+      .click();
     expect(spy).toBeCalledWith();
   });
 
   it('should call RegisterService.register on submit', () => {
-    component.form.controls.email.setValue('user@domain');
-    component.form.controls.password.setValue('password1234');
-    component.form.controls.passwordRepeat.setValue('password1234');
-    component.form.controls.recaptcha.setValue('test-recaptcha');
-
     const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
 
+    const userRegister = RegisterFactory.build();
+    component.form.setValue(userRegister);
     component.register();
 
-    expect(spy).toBeCalledWith('user@domain', 'password1234', 'test-recaptcha');
+    expect(spy).toHaveBeenCalledWith(userRegister);
   });
 
   it('should not call RegisterService.register on submit if form is not valid', () => {
-    component.form.controls.email.setValue('invalid');
-    component.form.controls.password.setValue('password1234');
-    component.form.controls.passwordRepeat.setValue('password1234');
-    component.form.controls.recaptcha.setValue('recaptcha');
+    const userRegister = RegisterFactory.build();
+    userRegister.email = 'invalid';
+    component.form.setValue(userRegister);
+    component.register();
 
     const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
 
     component.register();
 
-    expect(spy).not.toBeCalledWith('invalid', 'password1234', 'recaptcha');
+    expect(spy).not.toHaveBeenCalledWith(userRegister);
   });
 });

@@ -39,6 +39,18 @@
           </li>
 
           <li class="form__element">
+            <label for="registration-name" i18n>Imie</label>
+            <input class="form-control" formControlName="name" id="registration-name" type="text">
+            <ul s4e-form-error [control]="form.controls.name"></ul>
+          </li>
+
+          <li class="form__element">
+            <label for="registration-surname" i18n>Nazwisko</label>
+            <input class="form-control" formControlName="surname" id="registration-surname" type="text">
+            <ul s4e-form-error [control]="form.controls.surname"></ul>
+          </li>
+
+          <li class="form__element">
             <label for="registration-password" i18n>Hasło</label>
             <input class="form-control" formControlName="password" id="registration-password" type="password"
                    autocomplete="new-password">

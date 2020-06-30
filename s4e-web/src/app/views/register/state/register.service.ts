@@ -1,9 +1,11 @@
+import { httpPostRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {RegisterStore} from './register.store';
-import {delay, finalize} from 'rxjs/operators';
+import {delay, finalize, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {S4eConfig} from '../../../utils/initializer/config.service';
+import { RegisterFormState } from './register.model';
 
 @Injectable({providedIn: 'root'})
 export class RegisterService {
@@ -14,19 +16,12 @@ export class RegisterService {
               private CONFIG: S4eConfig) {
   }
 
-  /**
-   * @param email
-   * @param password
-   * @param recaptcha
-   */
-  register(email: string, password: string, recaptcha: string) {
-    this.registerStore.setLoading(true);
-
-    this.http.post(`${this.CONFIG.apiPrefixV1}/register`, {email, password}, {params: {'g-recaptcha-response': recaptcha}})
-      .pipe(delay(1000), finalize(() => this.registerStore.setLoading(false)))
-      .subscribe(data => {
-        this.router.navigate(['/']);
-      }, errorResponse => {
+  register(user: RegisterFormState) {
+    const {recaptcha, passwordRepeat, ...userData} = user;
+    const url = `${this.CONFIG.apiPrefixV1}/register?g-recaptcha-response=${recaptcha}`;
+    httpPostRequest$(this.http, url, userData, this.registerStore)
+      .pipe(tap(() => this.router.navigate(['/'])))
+      .subscribe(() => {}, errorResponse => {
         if (errorResponse.status === 400) {
           this.registerStore.setError(errorResponse.error);
         } else {

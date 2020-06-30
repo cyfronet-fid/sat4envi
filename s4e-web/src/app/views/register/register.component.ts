@@ -47,6 +47,8 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
   ngOnInit() {
     this.form = new FormGroup<RegisterFormState>({
       email: new FormControl('', [Validators.required, Validators.email]),
+      name: new FormControl('', [Validators.required]),
+      surname: new FormControl('', Validators.required),
       password: new FormControl('', [Validators.required]),
       passwordRepeat: new FormControl('', [Validators.required]),
       recaptcha: new FormControl('', [Validators.required])
@@ -62,6 +64,6 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
       return;
     }
 
-    this.registerService.register(this.form.controls.email.value, this.form.controls.password.value, this.form.controls.recaptcha.value);
+    this.registerService.register(this.form.value);
   }
 }
