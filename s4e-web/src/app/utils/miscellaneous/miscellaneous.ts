@@ -129,10 +129,10 @@ export function isEmptyObject(obj: object): boolean {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
 }
 
-export function stripNulls(obj: object): object {
+export function stripEmpty(obj: object): object {
   const r = {};
 
-  Object.entries(obj).filter(([k, v]) => v != null).forEach(([k, v]) => {
+  Object.entries(obj).filter(([k, v]) => v != null && v != '').forEach(([k, v]) => {
     r[k] = v
   });
 

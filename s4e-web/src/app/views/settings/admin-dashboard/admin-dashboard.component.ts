@@ -46,7 +46,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   searchForInstitutions(partialInstitutionName: string) {
-    this._institutionsSearchResultsService.get(partialInstitutionName);
+    this._institutionsSearchResultsService.get(partialInstitutionName || '');
     this.isInUse = true;
   }
 

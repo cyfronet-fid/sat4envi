@@ -59,7 +59,6 @@ export function convertSentinelParam2FormControl(formControlDef: SentinelParam):
   if (isSentinelSelectParam(formControlDef)) {
     // set value to the first option from the available select options
     fc.setValue(formControlDef.values[0]);
-    fc.setValidators([Validators.required])
   } else if (isSentinelFloatParam(formControlDef)) {
     const validators = [];
     if(formControlDef.min != null) {

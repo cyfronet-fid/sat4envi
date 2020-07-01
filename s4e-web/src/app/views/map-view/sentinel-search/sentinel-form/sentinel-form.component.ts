@@ -15,7 +15,7 @@ import {
   Validator,
   Validators
 } from '@angular/forms';
-import {disableEnableForm, stripNulls} from '../../../../utils/miscellaneous/miscellaneous';
+import {disableEnableForm, stripEmpty} from '../../../../utils/miscellaneous/miscellaneous';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -86,7 +86,7 @@ export class SentinelFormComponent implements ControlValueAccessor, Validator {
   protected isDisabled: boolean = false;
 
   onChange(val) {
-    this.propagateChange(stripNulls(val));
+    this.propagateChange(stripEmpty(val));
   }
 
   registerOnChange(fn: any): void {
