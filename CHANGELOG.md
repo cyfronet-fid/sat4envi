@@ -41,6 +41,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix institution loading in search box
 - Fix registration form payload [#537](https://github.com/cyfronet-fid/sat4envi/pull/538)
 - Handle nulls in custom Validators [#491](https://github.com/cyfronet-fid/sat4envi/issues/491)
 - Fix PUT endpoint for Institutions [#500](https://github.com/cyfronet-fid/sat4envi/issues/500)

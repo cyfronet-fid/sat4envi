@@ -16,7 +16,7 @@ describe('convertSentinelParam2FormControl', () => {
 
     expect(fc).toBeInstanceOf(FormControl);
     fc.setValue(null);
-    expect(fc.invalid).toBeTruthy();
+    expect(fc.valid).toBeTruthy();
     fc.setValue('Sentinel-1A');
     expect(fc.valid).toBeTruthy();
   });

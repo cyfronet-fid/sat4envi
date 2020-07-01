@@ -25,7 +25,6 @@ export class ProfileQuery extends Query<ProfileState> {
     return this.getValue().admin;
   }
   isManager() {
-    console.log(this.getValue().roles);
     return hasAnyManagerRole(this.getValue().roles);
   }
   hasOnlyGroupMemberRole() {
