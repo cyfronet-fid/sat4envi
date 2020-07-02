@@ -36,8 +36,7 @@ export class AdminDashboardComponent implements OnInit {
     this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
 
     this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
-      .getSelectedInstitutionSlugBy$(this._activatedRoute)
-      .pipe(map(slug => !!slug));
+      .hasInstitutionSlugIn$(this._activatedRoute);
 
     if (environment.hmr) {
       const searchResult = this._institutionsSearchResultsQuery.getValue().searchResult;

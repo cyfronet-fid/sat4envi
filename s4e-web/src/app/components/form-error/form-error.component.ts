@@ -19,13 +19,18 @@ export class FormErrorComponent implements OnInit {
 
   getServerErrorMessages() {
     const errors = !!this.control && this.control.errors || this.errors;
-    const serverErrors = !!errors && !!errors.server && (
-      errors.server instanceof Array && errors.server
-      || typeof errors.server === 'string' && [errors.server]
-    )
-  || [];
+    const hasServerErrors = !!errors && !!errors.server;
+    const singleServerError = hasServerErrors
+      && typeof errors.server === 'string'
+      && [errors.server];
+    const serverErrors = hasServerErrors
+      && errors.server instanceof Array
+      && errors.server;
 
-    return serverErrors;
+    return serverErrors || singleServerError || [];
   }
 
+  getErrors() {
+    return this.control != null ? this.control.errors : this.errors;
+  }
 }

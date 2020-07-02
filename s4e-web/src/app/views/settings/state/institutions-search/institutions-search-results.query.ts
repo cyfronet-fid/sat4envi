@@ -15,21 +15,33 @@ export class InstitutionsSearchResultsQuery extends SearchResultsQuery<Instituti
     super(store);
   }
 
-  getSelectedInstitutionSlugBy$(activatedRoute: ActivatedRoute): Observable<string | null> {
-    return activatedRoute.queryParamMap
-      .pipe(
-        map((params: ParamMap) => !!params.keys.filter(queryName => queryName === 'institution')
-          && !!params.get('institution') && params.get('institution') || null
-        )
-      );
+  addChild$(activatedRoute: ActivatedRoute) {
+    return this._routeToParam$(activatedRoute, 'addChild');
   }
 
-  getSelectedInstitutionBy$(activatedRoute: ActivatedRoute) {
-    return this.getSelectedInstitutionSlugBy$(activatedRoute)
+  getInstitutionSlugFrom$(activatedRoute: ActivatedRoute) {
+    return this._routeToParam$(activatedRoute, 'institution');
+  }
+
+  hasInstitutionSlugIn$(activatedRoute: ActivatedRoute) {
+    return this.getInstitutionSlugFrom$(activatedRoute)
+      .pipe(map(slug => !!slug));
+  }
+
+  getInstitutionFrom$(activatedRoute: ActivatedRoute) {
+    return this._slugToInstitution$(this.getInstitutionSlugFrom$(activatedRoute));
+  }
+
+  protected _slugToInstitution$(slug$) {
+    return slug$
       .pipe(
-        filter((activeInstitutionSlug: string | null) => !!activeInstitutionSlug && activeInstitutionSlug !== ''),
-        switchMap((activeInstitutionSlug: string) => this._institutionService.findBy(activeInstitutionSlug)),
-        filter((activeInstitution: Institution | null) => !!activeInstitution)
+        filter((institutionSlug: string | null) => !!institutionSlug && institutionSlug !== ''),
+        switchMap((institutionSlug: string) => this._institutionService.findBy(institutionSlug)),
+        filter((institution: Institution | null) => !!institution)
       );
+  }
+  protected _routeToParam$(activatedRoute: ActivatedRoute, name: string): Observable<string | null> {
+    return activatedRoute.queryParamMap
+      .pipe(map((params: ParamMap) => params.has(name) && params.get(name) || null));
   }
 }

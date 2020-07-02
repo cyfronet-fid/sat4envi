@@ -50,8 +50,7 @@ export class SettingsComponent implements OnInit {
     this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
 
     this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
-      .getSelectedInstitutionSlugBy$(this._activatedRoute)
-      .pipe(map(slug => !!slug));
+      .hasInstitutionSlugIn$(this._activatedRoute);
 
     // TODO: set institution from storage
     if (environment.hmr) {

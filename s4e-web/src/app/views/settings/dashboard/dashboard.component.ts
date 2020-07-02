@@ -20,7 +20,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
-      .getSelectedInstitutionSlugBy$(this._activatedRoute)
-      .pipe(map(slug => !!slug));
+      .hasInstitutionSlugIn$(this._activatedRoute);
   }
 }

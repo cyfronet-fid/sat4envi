@@ -19,7 +19,7 @@ export class InstitutionProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._institutionsSearchResultsQuery
-      .getSelectedInstitutionBy$(this._activatedRoute)
+      .getInstitutionFrom$(this._activatedRoute)
       .pipe(untilDestroyed(this))
       .subscribe(institution => this.activeInstitution = institution);
   }
