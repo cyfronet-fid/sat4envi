@@ -1,35 +1,3 @@
-<ul class="breadcrumb">
-  <li i18n>Tutaj jesteś: </li>
-  <li>
-    <a
-      routerLink="/settings"
-      queryParamsHandling="merge"
-      i18n
-    >
-      Start
-    </a>
-  </li>
-  <li>
-    <a
-      *ngIf="!activeInstitution"
-      routerLink="manage-institutions"
-      queryParamsHandling="merge"
-      i18n
-    >
-      Zarzadzaj instytucjami
-    </a>
-    <a
-      *ngIf="!!activeInstitution"
-      routerLink="/settings/institution"
-      queryParamsHandling="merge"
-      i18n
-    >
-      Profil instytucji
-    </a>
-  </li>
-  <span i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</span>
-</ul>
-
 <header class="content__header">
   <h1 i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</h1>
 </header>

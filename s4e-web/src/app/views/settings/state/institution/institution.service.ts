@@ -60,7 +60,10 @@ export class InstitutionService {
 
     const cache$ = this.query.selectHasCache().pipe(filter(cache => !!cache));
     const combinedActiveWithInstitutions$ = cache$
-      .pipe(flatMap(() => combineLatest([this._getInstitutionsFrom$(this.query), this._getInstitutionSlugFrom$(route)])));
+      .pipe(flatMap(() => combineLatest([
+        this._getInstitutionsFrom$(this.query),
+        this._getInstitutionSlugFrom$(route)
+      ])));
     const activeInstitutionSlug$ = combinedActiveWithInstitutions$
       .pipe(
         map((params) => this._initiateActiveSlugOnEmpty(route, params)),
@@ -84,6 +87,10 @@ export class InstitutionService {
           queryParams: {institution: institutionSlug}
         }
       );
+  }
+  protected _getInstitutionSlugFrom$(route: ActivatedRoute) {
+    return route.queryParamMap
+      .pipe(map(params => params.get('institution')));
   }
 
   protected _saveIn(store: InstitutionStore, institutions: Institution[], generator: AkitaGuidService) {
@@ -143,11 +150,6 @@ export class InstitutionService {
           return institutions.length > 0;
         })
       );
-  }
-
-  protected _getInstitutionSlugFrom$(route: ActivatedRoute) {
-    return route.queryParamMap
-      .pipe(map(params => params.get('institution')));
   }
 
   protected _initiateActiveSlugOnEmpty(route: ActivatedRoute, params) {

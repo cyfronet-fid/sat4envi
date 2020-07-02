@@ -49,7 +49,7 @@ describe('InstitutionSearchResultsQuery', () => {
   it('should get selected institution slug', () => {
     const institution = InstitutionFactory.build();
     activatedRoute.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
-    query.getSelectedInstitutionSlugBy$(activatedRoute as undefined)
+    query.getInstitutionSlugFrom$(activatedRoute as undefined)
       .subscribe(activeInstitutionSlug => expect(activeInstitutionSlug).toEqual(institution.slug));
   });
 
@@ -58,7 +58,7 @@ describe('InstitutionSearchResultsQuery', () => {
     const institutionServiceSpy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
     activatedRoute.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
     activatedRoute.data.next({ isEditMode: true });
-    query.getSelectedInstitutionBy$(activatedRoute as undefined)
+    query.getInstitutionFrom$(activatedRoute as undefined)
       .subscribe((activeInstitution) => {
         expect(activeInstitution).toEqual(institution);
         expect(institutionServiceSpy).toHaveBeenCalledWith(institution.slug);

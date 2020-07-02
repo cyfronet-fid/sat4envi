@@ -54,14 +54,14 @@ describe('ChangePasswordComponent', () => {
   it('should validate old password', () => {
     component.form.controls.oldPassword.setValue('');
     expect(component.form.controls.oldPassword.valid).toBeFalsy();
-    component.form.controls.oldPassword.setValue('pass');
+    component.form.controls.oldPassword.setValue('password');
     expect(component.form.controls.oldPassword.valid).toBeTruthy();
   });
 
   it('should validate new password', () => {
     component.form.controls.newPassword.setValue('');
     expect(component.form.controls.newPassword.valid).toBeFalsy();
-    component.form.controls.newPassword.setValue('pass');
+    component.form.controls.newPassword.setValue('password');
     expect(component.form.controls.newPassword.valid).toBeTruthy();
   });
 });

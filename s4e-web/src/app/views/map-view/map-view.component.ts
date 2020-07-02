@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, HostListener} from '@angular/core';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
@@ -33,6 +33,7 @@ import {ProfileQuery} from '../../state/profile/profile.query';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import { LocationSearchResultsQuery } from './state/location-search-results/location-search-results.query';
+import { hasBeenClickedOutside } from 'src/app/utils';
 
 @Component({
   selector: 's4e-map-view',
@@ -40,8 +41,6 @@ import { LocationSearchResultsQuery } from './state/location-search-results/loca
   styleUrls: ['./map-view.component.scss'],
 })
 export class MapViewComponent implements OnInit, OnDestroy {
-  overlays$: Observable<UIOverlay[]>;
-
   public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
   public activeProducts$: Observable<Product | null>;
@@ -60,8 +59,23 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public showLoginOptions$: Observable<boolean>;
   public showProductDescription$: Observable<boolean>;
   public selectedLocation$: Observable<LocationSearchResult | null>;
+  public overlays$: Observable<UIOverlay[]>;
   public userIsZK$: Observable<boolean>;
+
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
+  @ViewChild('loginOptions') loginOptions;
+  @ViewChild('zkOptions') zkOptions;
+  @HostListener('document:click', ['$event.target'])
+  onClick(target) {
+    if (!!this.loginOptions && hasBeenClickedOutside(this.loginOptions, target)) {
+      this.toggleLoginOptions(false);
+    }
+
+    if (!!this.zkOptions && hasBeenClickedOutside(this.zkOptions, target)) {
+      this.toggleZKOptions(false);
+    }
+  }
+
 
   constructor(public mapService: MapService,
               private router: Router,
@@ -104,7 +118,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
       rightDescription: {},
       topMetric: {}
     } as Legend));
-    
+
     this.legendState$ = this.legendQuery.select();
     this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
     this.placeSearchResults$ = this.searchResultsQuery.selectAll();

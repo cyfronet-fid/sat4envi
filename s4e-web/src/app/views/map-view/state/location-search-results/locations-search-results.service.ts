@@ -41,6 +41,9 @@ export class SearchResultsService {
     ).subscribe(data => this.store.set(data));
   }
 
+  toggleSearchResults(show = true) {
+    this.store.update({isOpen: show});
+  }
 
   private getZoomLevel(type: string): number | null {
     const ZOOM_LEVELS = {

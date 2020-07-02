@@ -5,7 +5,8 @@
   <ng-container add-button>
     <button class="button button--secondary button--small" data-e2e="addInstitution"
             routerLink="../add-institution"
-            queryParamsHandling="preserve" i18n>Dodaj nową instytucję</button>
+            [queryParams]="{'addChild': null}"
+            queryParamsHandling="merge" i18n>Dodaj nową instytucję</button>
   </ng-container>
   <ng-container description></ng-container>
   <ng-container caption i18n>Zarządzanie instytucjami</ng-container>
