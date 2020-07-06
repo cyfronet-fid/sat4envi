@@ -1,8 +1,10 @@
 package pl.cyfronet.s4e.bean;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Geometry;
 import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
  * There is ON CASCADE DELETE on Product
  */
 @Entity
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+
 @Data
 @Builder
 @NoArgsConstructor
