@@ -26,20 +26,20 @@
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
 
-        <spring-boot.version>2.3.0.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.1.RELEASE</spring-boot.version>
 
-        <awssdk.version>2.13.31</awssdk.version>
+        <awssdk.version>2.13.51</awssdk.version>
         <commonmark.version>0.15.1</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>23.1</geotools.version>
-        <greenmail.version>1.5.13</greenmail.version>
-        <jjwt.version>0.11.1</jjwt.version>
-        <hibernate-types.version>2.9.11</hibernate-types.version>
+        <greenmail.version>1.5.14</greenmail.version>
+        <jjwt.version>0.11.2</jjwt.version>
+        <hibernate-types.version>2.9.12</hibernate-types.version>
         <poiooxml.version>4.1.2</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.4</slugify.version>
-        <springdoc-openapi.version>1.4.0</springdoc-openapi.version>
-        <unirest.version>3.7.02</unirest.version>
+        <springdoc-openapi.version>1.4.3</springdoc-openapi.version>
+        <unirest.version>3.8.06</unirest.version>
     </properties>
 
     <build>

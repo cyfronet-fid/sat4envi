@@ -1,10 +1,12 @@
 package pl.cyfronet.s4e.bean;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @Entity
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+
 @Data
 @Builder
 @NoArgsConstructor

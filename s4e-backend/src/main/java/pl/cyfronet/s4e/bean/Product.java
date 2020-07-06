@@ -1,7 +1,9 @@
 package pl.cyfronet.s4e.bean;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import java.util.Set;
  * If you delete Product, you will also delete all Scene entries
  */
 @Entity
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+
 @Data
 @Builder
 @NoArgsConstructor
