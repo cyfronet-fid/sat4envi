@@ -3,7 +3,7 @@ import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
 import { InstitutionService } from './state/institution/institution.service';
 import { ModalQuery } from './../../modal/state/modal.query';
 import { ModalService } from './../../modal/state/modal.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import {SessionService} from '../../state/session/session.service';
 import {Observable} from 'rxjs';
 import {ProfileQuery} from '../../state/profile/profile.query';
@@ -13,6 +13,7 @@ import { InstitutionsSearchResultsService } from './state/institutions-search/in
 import { Router, ActivatedRoute } from '@angular/router';
 import { Institution } from './state/institution/institution.model';
 import { environment } from 'src/environments/environment';
+import { hasBeenClickedOutside } from 'src/app/utils';
 
 @Component({
   selector: 's4e-settings',
@@ -29,6 +30,14 @@ export class SettingsComponent implements OnInit {
   public isInUse: boolean = false;
 
   public hasSelectedInstitution$: Observable<boolean>;
+
+  @ViewChild('search') search;
+  @HostListener('document:click', ['$event.target'])
+  onClick(target) {
+    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
+      this.isInUse = false;
+    }
+  }
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,

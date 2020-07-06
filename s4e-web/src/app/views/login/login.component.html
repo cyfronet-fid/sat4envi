@@ -51,6 +51,10 @@
             <input class="form-control" formControlName="password" id="login-password" type="password">
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
+
+          <li class="form__element">
+            <re-captcha formControlName="recaptcha" [siteKey]="CONFIG.recaptchaSiteKey"></re-captcha>
+          </li>
           <!-- TODO update feature of `Remember me` -->
           <!-- <li class="form__element form__checkbox">
             <input type="checkbox" class="form-check-input" id="login-remember-me">

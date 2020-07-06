@@ -7,7 +7,7 @@ import {SessionStore} from './session.store';
 import {finalize, switchMap, tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import {action, resetStores} from '@datorama/akita';
-import {LoginRequestResponse} from './session.model';
+import {LoginRequestResponse, LoginFormState} from './session.model';
 import {S4eConfig} from '../../utils/initializer/config.service';
 import {ProfileService} from '../profile/profile.service';
 import {HTTP_404_BAD_REQUEST, HTTP_401_UNAUTHORIZED} from '../../errors/errors.model';
@@ -60,9 +60,11 @@ export class SessionService {
   }
 
   @action('login')
-  login(email: string, password: string) {
+  login(formState: LoginFormState) {
     this.sessionStore.setLoading(true);
-    this.http.post<LoginRequestResponse>(`${this.CONFIG.apiPrefixV1}/login`, {email, password},
+    const {login: email, password, recaptcha, ...x} = formState;
+    const url = `${this.CONFIG.apiPrefixV1}/login?g-recaptcha-response=${recaptcha}`;
+    this.http.post<LoginRequestResponse>(url, {email, password},
       {headers: {[ERROR_INTERCEPTOR_CODES_TO_SKIP]: `${HTTP_404_BAD_REQUEST},${HTTP_401_UNAUTHORIZED}`} })
       .pipe(
         catchErrorAndHandleStore(this.sessionStore),

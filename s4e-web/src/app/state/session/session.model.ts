@@ -2,6 +2,7 @@ export interface LoginFormState {
   login: string;
   password: string;
   rememberMe: boolean;
+  recaptcha: string;
 }
 
 export interface Role {
