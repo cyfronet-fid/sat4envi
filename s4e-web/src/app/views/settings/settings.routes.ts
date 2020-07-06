@@ -19,6 +19,9 @@ export const userSettingsRoutes: Routes = [
 ];
 
 export const SETTINGS_PATH = 'settings';
+export const ADD_INSTITUTION_PATH = 'add-institution';
+export const INSTITUTIONS_LIST_PATH = 'institutions';
+export const INSTITUTION_PROFILE_PATH = 'institution';
 export const settingsRoutes: Routes = [
   {
     path: SETTINGS_PATH,
@@ -53,19 +56,19 @@ export const settingsRoutes: Routes = [
       },
 
       {
-        path: 'institutions',
+        path: INSTITUTIONS_LIST_PATH,
         component: InstitutionListComponent,
         canActivate: [IsManagerGuard],
         data: {
           breadcrumbs: [
             {
-              label: 'Instytucje'
+              label: 'Lista instytucji'
             }
           ]
         }
       },
       {
-        path: 'institution',
+        path: INSTITUTION_PROFILE_PATH,
         component: InstitutionProfileComponent,
         canActivate: [IsManagerGuard],
         data: {
@@ -78,7 +81,7 @@ export const settingsRoutes: Routes = [
       },
 
       {
-        path: 'add-institution',
+        path: ADD_INSTITUTION_PATH,
         component: InstitutionFormComponent,
         canActivate: [IsManagerGuard],
         data: {
@@ -86,7 +89,7 @@ export const settingsRoutes: Routes = [
           breadcrumbs: [
             {
               label: 'Lista instytucji',
-              url: 'institutions'
+              url: INSTITUTIONS_LIST_PATH
             },
             {
               label: 'Dodaj instytucję'
@@ -103,7 +106,7 @@ export const settingsRoutes: Routes = [
           breadcrumbs: [
             {
               label: 'Profil instytucji',
-              url: 'institution'
+              url: INSTITUTION_PROFILE_PATH
             },
             {
               label: 'Edytuj instytucję',

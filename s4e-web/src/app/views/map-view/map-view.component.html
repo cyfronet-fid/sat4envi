@@ -39,34 +39,36 @@
          (viewChanged)="viewChanged($event)"
 >
 </s4e-map>
+<div #loginOptions>
+  <button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown__button dropdown__button--login">
+  </button>
+  <ng-container *ngIf="showLoginOptions$ | async">
+    <div class="dropdown__content dropdown__content--login">
+      <span class="dropdown__header">Twoje Sat4Envi</span>
+      <div class="dropdown__close" (click)="toggleLoginOptions(false)"></div>
+      <ul>
+        <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
+          <li>
+            <a routerLink="/login" i18n>Zaloguj</a>
+          </li>
+          <li>
+            <a routerLink="/register" i18n>Zarejestruj</a>
+          </li>
+        </ng-container>
+        <ng-template #logoutLink>
+          <li>
+            <a routerLink="/settings" i18n>Ustawienia</a>
+          </li>
+          <li>
+            <a routerLink="/logout" i18n>Wyloguj</a>
+          </li>
+        </ng-template>
+      </ul>
+    </div>
+  </ng-container>
+</div>
 
-<button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown__button dropdown__button--login">
-</button>
-<ng-container *ngIf="showLoginOptions$ | async">
-  <div class="dropdown__content dropdown__content--login">
-    <span class="dropdown__header">Twoje Sat4Envi</span>
-    <div class="dropdown__close" (click)="toggleLoginOptions(false)"></div>
-    <ul>
-      <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
-        <li>
-          <a routerLink="/login" i18n>Zaloguj</a>
-        </li>
-        <li>
-          <a routerLink="/register" i18n>Zarejestruj</a>
-        </li>
-      </ng-container>
-      <ng-template #logoutLink>
-        <li>
-          <a routerLink="/settings" i18n>Ustawienia</a>
-        </li>
-        <li>
-          <a routerLink="/logout" i18n>Wyloguj</a>
-        </li>
-      </ng-template>
-    </ul>
-  </div>
-</ng-container>
-<ng-container *ngIf="userIsZK$ | async">
+<div #zkOptions *ngIf="userIsZK$ | async">
   <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown__button dropdown__button--zk">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
@@ -83,7 +85,7 @@
       </ul>
     </div>
   </ng-container>
-</ng-container>
+</div>
 
 <button *ngIf="activeProducts$ | async"
         (click)="toggleProductDescription()"

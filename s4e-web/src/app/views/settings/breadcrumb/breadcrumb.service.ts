@@ -1,7 +1,7 @@
 import { map, switchMap } from 'rxjs/operators';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { IBreadcrumb } from './breadcrumb.model';
-import { Routes, Route, ActivatedRoute, Router } from '@angular/router';
+import { Routes, Route, ActivatedRoute } from '@angular/router';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -27,6 +27,11 @@ export class BreadcrumbService {
   loadFrom(activatedRoute: ActivatedRoute) {
     return this._getBreadcrumbsFrom(this._getActualRouteFrom(activatedRoute))
       .subscribe((breadcrumbs: IBreadcrumb[]) => this._breadcrumbSubject$.next(breadcrumbs));
+  }
+  replaceWith(breadcrumbs: IBreadcrumb[]) {
+    if (this._breadcrumbSubject$.value !== breadcrumbs) {
+      this._breadcrumbSubject$.next(breadcrumbs);
+    }
   }
 
   protected _getBreadcrumbsFrom(childRoute: ActivatedRoute, breadcrumbs: IBreadcrumb[] = [], depth = 0): Observable<IBreadcrumb[]> {

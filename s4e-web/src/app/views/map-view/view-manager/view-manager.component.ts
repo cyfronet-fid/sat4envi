@@ -1,5 +1,5 @@
 import { SessionQuery } from './../../../state/session/session.query';
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked, HostListener} from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
@@ -13,6 +13,7 @@ import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
 import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
+import { hasBeenClickedOutside } from 'src/app/utils';
 
 @Component({
   selector: 's4e-view-manager',
@@ -41,6 +42,14 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   searchValue: string;
 
   favouriteProductsCount$: Observable<number>;
+
+  @ViewChild('search') search;
+  @HostListener('document:click', ['$event.target'])
+  onClick(target) {
+    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
+      this.searchResultsService.toggleSearchResults(false);
+    }
+  }
 
   constructor(
               private productQuery: ProductQuery,

@@ -8,24 +8,25 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Wybierz instytucję</header>
       <p i18n tile-description>Wybierz instytucję aby móc nią zarządzać</p>
-      <s4e-search
-        placeholder="Wpisz szukaną instytucję..."
-        [searchResults]="institutions$ | async"
-        [isSearchLoading]="institutionsLoading$ | async"
-        [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
-        [value]="searchValue"
+      <div #search footer-navigation>
+        <s4e-search
+          placeholder="Wpisz szukaną instytucję..."
+          [searchResults]="institutions$ | async"
+          [isSearchLoading]="institutionsLoading$ | async"
+          [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
+          [value]="searchValue"
 
-        (selectResult)="selectInstitution($event)"
-        (refreshResults)="searchForInstitutions($event)"
-        (selectFirstResult)="selectFirstInstitution()"
-        (resetSearch)="resetSearch()"
-        footer-navigation
-      >
-        <ng-template #result let-result>
-          <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
-          <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
-        </ng-template>
-      </s4e-search>
+          (selectResult)="selectInstitution($event)"
+          (refreshResults)="searchForInstitutions($event)"
+          (selectFirstResult)="selectFirstInstitution()"
+          (resetSearch)="resetSearch()"
+        >
+          <ng-template #result let-result>
+            <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
+            <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
+          </ng-template>
+        </s4e-search>
+      </div>
     </s4e-tile>
 
     <s4e-tile>

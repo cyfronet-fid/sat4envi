@@ -20,7 +20,7 @@
       <span>Panel zarządzania instytucją</span>
     </header>
     <ul class="navigation__list navigation__list--institution" *ngIf="showInstitutions$ | async">
-      <li>
+      <li #search>
         <s4e-search
           placeholder="Wpisz szukaną instytucję..."
           [searchResults]="institutions$ | async"

@@ -3,10 +3,11 @@ import { InstitutionsSearchResultsQuery } from './../state/institutions-search/i
 import { InstitutionsSearchResultsService } from './../state/institutions-search/institutions-search-results.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
 import { Institution } from '../state/institution/institution.model';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
+import { hasBeenClickedOutside } from 'src/app/utils';
 
 @Component({
   selector: 's4e-dashboard',
@@ -22,6 +23,14 @@ export class AdminDashboardComponent implements OnInit {
   public searchValue: string = '';
   public isInUse: boolean = false;
 
+  @ViewChild('search') search;
+  @HostListener('document:click', ['$event.target'])
+  onClick(target) {
+    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
+      this.isInUse = false;
+    }
+  }
+
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
@@ -36,8 +45,7 @@ export class AdminDashboardComponent implements OnInit {
     this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
 
     this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
-      .getSelectedInstitutionSlugBy$(this._activatedRoute)
-      .pipe(map(slug => !!slug));
+      .hasInstitutionSlugIn$(this._activatedRoute);
 
     if (environment.hmr) {
       const searchResult = this._institutionsSearchResultsQuery.getValue().searchResult;

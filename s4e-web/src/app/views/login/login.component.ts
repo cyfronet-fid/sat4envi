@@ -8,6 +8,7 @@ import {SessionService} from '../../state/session/session.service';
 import {LoginFormState} from '../../state/session/session.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
+import { S4eConfig } from 'src/app/utils/initializer/config.service';
 
 @Component({
   selector: 's4e-login',
@@ -18,6 +19,7 @@ import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.compo
 export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> {
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
+              public CONFIG: S4eConfig,
               private sessionService: SessionService,
               private sessionQuery: SessionQuery,
               private _activatedRoute: ActivatedRoute
@@ -47,6 +49,6 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
       return;
     }
 
-    this.sessionService.login(this.form.controls.login.value, this.form.controls.password.value);
+    this.sessionService.login(this.form.value);
   }
 }
