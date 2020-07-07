@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -518,7 +519,7 @@ public class SeedProducts implements ApplicationRunner {
         log.info("Seeding Products: s4e-sync-1");
         List<Schema> schemasList;
         try {
-            schemasList = schemaScanner.scan("classpath:schema/s4e-sync-1");
+            schemasList = schemaScanner.scan("classpath:schema/s4e-sync-1/*.json");
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -704,13 +705,17 @@ public class SeedProducts implements ApplicationRunner {
             log.info(String.format("Scanning prefix: '%s'. Total: %d", prefix, allSceneKeys.size()));
             List<String> sceneKeysToSync = optionallyTruncateToLimit(allSceneKeys, seedProperties.getS4eSyncV1().getLimit());
             AtomicInteger count = new AtomicInteger(0);
-            es.submit(() -> sceneKeysToSync.stream()
-                    .parallel()
-                    .forEach(sceneKey -> {
+            List<? extends Future<?>> futures = sceneKeysToSync.stream()
+                    .map(sceneKey -> (Runnable) () -> {
                         sceneAcceptor.accept(sceneKey);
                         int i = count.addAndGet(1);
                         log.info(String.format("%d/%d. scene key: '%s'", i, sceneKeysToSync.size(), sceneKey));
-                    })).get();
+                    })
+                    .map(es::submit)
+                    .collect(Collectors.toList());
+            for (Future future : futures) {
+                future.get();
+            }
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);
         } catch (ExecutionException e) {
