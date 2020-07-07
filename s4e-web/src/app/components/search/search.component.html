@@ -1,6 +1,6 @@
 <section class="section search">
   <input
-    #searchPlacesInput
+    #search
     class="search__input"
     placeholder="{{ placeholder}}"
     i18n-placeholder
@@ -8,6 +8,7 @@
     (focus)="refreshResults.emit(searchFormControl.value)"
   />
   <button
+    *ngIf="!!search.value.trim()"
     class="reset_search_button"
     (click)="resetSearchValue()"
   >

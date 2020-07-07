@@ -1,5 +1,5 @@
 import { SessionQuery } from './../../../state/session/session.query';
-import {Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked, HostListener} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked, HostListener, Renderer2 } from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
@@ -14,6 +14,7 @@ import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
 import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
 import { hasBeenClickedOutside } from 'src/app/utils';
+import { ResizeEvent } from 'angular-resizable-element';
 
 @Component({
   selector: 's4e-view-manager',
@@ -52,16 +53,17 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-              private productQuery: ProductQuery,
-              private overlayQuery: OverlayQuery,
-              private mapQuery: MapQuery,
-              private sceneQuery: SceneQuery,
-              private searchResultsQuery: LocationSearchResultsQuery,
-              private productService: ProductService,
-              private overlayService: OverlayService,
-              private searchResultsService: SearchResultsService,
-              private sessionQuery: SessionQuery) {
-  }
+    private productQuery: ProductQuery,
+    private overlayQuery: OverlayQuery,
+    private mapQuery: MapQuery,
+    private sceneQuery: SceneQuery,
+    private searchResultsQuery: LocationSearchResultsQuery,
+    private productService: ProductService,
+    private overlayService: OverlayService,
+    private searchResultsService: SearchResultsService,
+    private sessionQuery: SessionQuery,
+    private _renderer: Renderer2
+  ) {}
 
   ngOnInit(): void {
     this.overlaysLoading$ = this.overlayQuery.selectLoading();
@@ -133,5 +135,19 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
 
   setViewModeToFavourite(favourite: boolean) {
     this.productService.setFavouriteMode(favourite)
+  }
+
+  onResizeEnd(event: ResizeEvent) {
+    const MAX_HEIGHT = 450;
+    const MIN_HEIGHT = 0;
+    const OFFSET = -30;
+    const sign = Math.sign(event.edges.top as number);
+    const calculatedHeight = this.pickerRef.nativeElement.offsetHeight - (event.edges.top as number) + sign * OFFSET;
+
+    let height = calculatedHeight > MIN_HEIGHT && calculatedHeight < MAX_HEIGHT ? calculatedHeight : MIN_HEIGHT;
+    height = calculatedHeight < MIN_HEIGHT ? MIN_HEIGHT : height;
+    height = calculatedHeight > MAX_HEIGHT ? MAX_HEIGHT : height;
+
+    this._renderer.setStyle(this.pickerRef.nativeElement, 'height', `${height as number}px`);
   }
 }

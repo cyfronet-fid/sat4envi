@@ -90,6 +90,8 @@ describe('SearchComponent', () => {
   it('should emit reset on reset button click', () => {
     component.searchValue = 'example';
 
+    fixture.detectChanges();
+
     const resetSpy = spyOn(component, 'resetSearch');
     const resetBtn = searchDe.query(By.css('.reset_search_button')).nativeElement;
     resetBtn.click();

@@ -20,6 +20,12 @@
 
   <s4e-items-picker
     #picker
+
+    mwlResizable
+    resizeCursorPrecision="10"
+    [resizeEdges]="{ top: true }"
+    (resizeEnd)="onResizeEnd($event)"
+
     class="section layers"
     caption="Warstwy"
     i18n-caption

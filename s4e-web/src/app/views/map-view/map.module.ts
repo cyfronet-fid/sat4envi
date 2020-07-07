@@ -1,3 +1,4 @@
+import { FormErrorModule } from 'src/app/components/form-error/form-error.module';
 import {NgModule} from '@angular/core';
 import {SearchModule} from '../../components/search/search.module';
 import {MapViewComponent} from './map-view.component';
@@ -47,6 +48,7 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {routes} from './map.routes.module';
 import {SearchResultModalComponent} from './sentinel-search/search-result-modal/search-result-modal.component';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
+import { ResizableModule } from 'angular-resizable-element';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,9 @@ import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-m
     ModalModule,
     RouterModule.forChild(routes),
     S4EFormsModule,
-    SearchModule
+    SearchModule,
+    FormErrorModule,
+    ResizableModule
     // OwlNativeDateTimeModule
   ],
   providers: [
