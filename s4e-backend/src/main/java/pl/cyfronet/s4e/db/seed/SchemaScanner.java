@@ -3,7 +3,7 @@ package pl.cyfronet.s4e.db.seed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.util.ResourceReader;
@@ -12,7 +12,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,18 +21,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 class SchemaScanner {
-    private final ResourceLoader resourceLoader;
+    private final ResourcePatternResolver resourcePatternResolver;
 
-    public List<Schema> scan(String path) throws IOException {
-        log.trace(String.format("Scanning: '%s'", path));
-        Resource resource = resourceLoader.getResource(path);
-        File file = resource.getFile();
+    public List<Schema> scan(String schemasPattern) throws IOException {
+        log.trace(String.format("Scanning: '%s'", schemasPattern));
         List<Schema> schemas = new ArrayList<>();
-        if (file.isDirectory()) {
-            for (String child : file.list()) {
-                schemas.addAll(scan(path + "/" + child));
-            }
-        } else {
+        for (Resource resource : resourcePatternResolver.getResources(schemasPattern)) {
             String content = ResourceReader.asString(resource);
             schemas.add(loadSchema(content));
         }
