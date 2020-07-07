@@ -41,16 +41,6 @@
       </li>
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
         <a
-          [routerLink]="['./groups']"
-          queryParamsHandling="merge"
-          [class.disabled]="!(hasSelectedInstitution$ | async)"
-          i18n
-        >
-          Grupy
-        </a>
-      </li>
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
-        <a
           [routerLink]="['./people']"
           queryParamsHandling="merge"
           [class.disabled]="!(hasSelectedInstitution$ | async)"
