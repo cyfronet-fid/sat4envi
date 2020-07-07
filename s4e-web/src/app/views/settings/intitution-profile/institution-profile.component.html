@@ -44,30 +44,32 @@
   </footer>
 </section>
 
-<section class="content__details content__details--75 profile">
-  <h3>Jednostki podległe</h3>
-  <table class="table">
-    <tr>
-      <td>
-        Komenda Powiatowa PSP w Chodzieży, <span>Chodzież</span>
-      </td>
-      <td class="actions">
+<s4e-generic-list-view [loading]="isLoading$ | async"
+                       [items]="institutions$ | async"
+                       [error]="error$ | async"
+                       [searchable]="true">
+  <ng-container description></ng-container>
+  <ng-container caption i18n>Jednostki podległe</ng-container>
+  <ng-container search-label i18n>Szukaj instytucji:</ng-container>
+  <ng-container table-header>
+    <th i18n>Nazwa instytucji</th>
+    <th i18n class="table__actions">Akcje</th>
+  </ng-container>
+  <ng-template let-inst="item">
+    <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
+      <a routerLink="../institution" queryParamsHandling="merge"
+         [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
+    <td >
+      <a routerLink="../institution" queryParamsHandling="merge"
+         data-e2e="edit"
+         [queryParams]="{institution: inst.slug}">
         <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+      </a>
+      <a href="javascript:void(0)"
+         data-e2e="delete"
+         (click)="deleteInstitution(inst.slug)">
         <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        Komenda Powiatowa PSP w Chodzieży, <span>Chodzież</span>
-      </td>
-      <td class="actions">
-        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
-        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
-      </td>
-    </tr>
-
-    </table>
-
-</section>
-<div class="content__image content__image--institution"></div>
-
+      </a>
+    </td>
+  </ng-template>
+</s4e-generic-list-view>

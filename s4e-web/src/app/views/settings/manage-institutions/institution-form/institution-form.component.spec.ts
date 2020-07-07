@@ -59,13 +59,13 @@ describe('InstitutionFormComponent', () => {
   });
 
   it('should not send non valid form', () => {
-    const spy = spyOn(institutionService, 'addInstitutionChild$');
+    const spy = spyOn(institutionService, 'createInstitutionChild$');
     component.updateInstitution();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(institutionService, 'addInstitutionChild$');
+    const spy = spyOn(institutionService, 'createInstitutionChild$');
     const {id, ...formInstitution} = InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'});
     component.form.setValue(formInstitution as undefined);
     component.updateInstitution();

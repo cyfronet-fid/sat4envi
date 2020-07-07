@@ -118,7 +118,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
     this.activeInstitution
       ? this._institutionService.updateInstitution$(this.form.value)
-      : this._institutionService.addInstitutionChild$(this.form.value);
+      : this._institutionService.createInstitutionChild$(this.form.value);
 
     !!this.activeInstitution
       ? this.activeInstitution = this.form.value
