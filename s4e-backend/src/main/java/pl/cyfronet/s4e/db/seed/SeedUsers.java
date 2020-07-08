@@ -243,6 +243,7 @@ public class SeedUsers implements ApplicationRunner {
             Institution institution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
+                    .city("Warszawa")
                     .build());
             groupService.addMember(institution.getSlug(), "default", "zkMember@mail.pl");
             groupService.addMember(institution.getSlug(), "default", "zkAdmin@mail.pl");
@@ -261,6 +262,7 @@ public class SeedUsers implements ApplicationRunner {
             Institution childInstitution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
+                    .city("Warszawa")
                     .parent(institution)
                     .build());
             groupService.addMember(childInstitution.getSlug(), "default", "zkMazMember@mail.pl");
@@ -274,6 +276,7 @@ public class SeedUsers implements ApplicationRunner {
             Institution child2RowInstitution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
+                    .city("Warszawa")
                     .parent(childInstitution)
                     .build());
             groupService.addMember(child2RowInstitution.getSlug(), "default", "zkWawMember@mail.pl");
@@ -287,6 +290,7 @@ public class SeedUsers implements ApplicationRunner {
             childInstitution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
+                    .city("Kraków")
                     .parent(institution)
                     .build());
             groupService.addMember(childInstitution.getSlug(), "default", "zkMalMember@mail.pl");
@@ -300,6 +304,7 @@ public class SeedUsers implements ApplicationRunner {
             child2RowInstitution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
+                    .city("Kraków")
                     .parent(childInstitution)
                     .build());
             groupService.addMember(child2RowInstitution.getSlug(), "default", "zkKrMember@mail.pl");
