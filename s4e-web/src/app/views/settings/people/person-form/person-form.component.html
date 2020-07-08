@@ -1,36 +1,32 @@
-
-
 <s4e-generic-modal [buttonX]="true" [modalId]="modalId">
   <div class="s4e-modal-header" i18n>{{ !!person ? 'Edytuj' : 'Dodaj' }} użytkownika</div>
   <div class="s4e-modal-body">
-    <section class="page__content">
-      <form [formGroup]="form" class="page__form">
-        <ul>
-          <li>
-            <ext-input formControlName="name" label="Imię" i18n></ext-input>
-          </li>
-          <li>
-            <ext-input formControlName="surname" label="Nazwisko" i18n></ext-input>
-          </li>
-          <li>
-            <ext-input type="email" formControlName="email" label="Email" i18n></ext-input>
-          </li>
-          <li>
-            <strong i18n>Grupy</strong>
-            <s4e-check-box-list [items]="groups$ | async" formControlName="groupSlugs"></s4e-check-box-list>
-            <ng-template #groupsLoading i18n>
-              Ładowanie...
-            </ng-template>
-          </li>
-        </ul>
-      </form>
-    </section>
+    <form [formGroup]="form" class="form">
+      <ul>
+        <li>
+          <ext-input formControlName="name" label="Imię" i18n></ext-input>
+        </li>
+        <li>
+          <ext-input formControlName="surname" label="Nazwisko" i18n></ext-input>
+        </li>
+        <li>
+          <ext-input type="email" formControlName="email" label="Email" i18n></ext-input>
+        </li>
+        <li>
+          <strong i18n>Grupy</strong>
+          <s4e-check-box-list [items]="groups$ | async" formControlName="groupSlugs"></s4e-check-box-list>
+          <ng-template #groupsLoading i18n>
+            Ładowanie...
+          </ng-template>
+        </li>
+      </ul>
+    </form>
   </div>
   <div class="s4e-modal-footer">
-    <button type="submit" class="button button--primary" (click)="save()" data-test="save" i18n>
+    <button type="submit" class="button button--secondary" (click)="save()" data-test="save" i18n>
       Zapisz
     </button>
-    <button class="button button--secondary" (click)="dismiss()" i18n>
+    <button class="button button--borderBlack" (click)="dismiss()" i18n>
       Anuluj
     </button>
   </div>

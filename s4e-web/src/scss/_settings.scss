@@ -300,6 +300,10 @@ p {
 
     section {
       margin-bottom: $space-xlarge + 10px;
+
+      & > ul > li {
+        margin-bottom: $space-default;
+      }
     }
 
     footer {
@@ -389,6 +393,13 @@ p {
     }
   } // end content form
 
+.institution {
+  &__logo {
+    width: 200px;
+    min-height: 100px;
+    margin-bottom: $space-xsmall;
+  }
+}
 
 
 

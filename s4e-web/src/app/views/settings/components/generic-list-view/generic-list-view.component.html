@@ -8,14 +8,13 @@
   <ng-content select="[add-button]"></ng-content>
 </header>
 <section class="content__details">
-  <div class="search">
-    <span>
-      <ng-content select="[search-label]"></ng-content>
-    </span>
-    <input data-test-generic-list-query [formControl]="queryFc" placeholder="Zacznij wpisywać szukaną nazwę a my zawęzimy wyniki" i18n-placeholder="">
-  </div>
-
   <ng-container *ngIf="error == null; else errorView">
+    <div class="search">
+      <span>
+        <ng-content select="[search-label]"></ng-content>
+      </span>
+      <input data-test-generic-list-query [formControl]="queryFc" placeholder="Zacznij wpisywać szukaną nazwę a my zawęzimy wyniki" i18n-placeholder="">
+    </div>
     <table data-e2e="generic-list-data-table" class="table">
       <ng-container *ngIf="!loading; else tableLoading">
         <thead>
@@ -48,7 +47,7 @@
     </table>
   </ng-container>
   <ng-template #errorView>
-    <p i18n>Nie posiadasz uprawnień do przeglądania instytucji</p>
+    <p i18n class="">Nie posiadasz uprawnień do przeglądania instytucji</p>
   </ng-template>
 </section>
 

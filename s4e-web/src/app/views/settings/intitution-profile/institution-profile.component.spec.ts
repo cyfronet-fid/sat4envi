@@ -66,7 +66,7 @@ describe('InstitutionProfileComponent', () => {
     expect(spyFindBy).toHaveBeenCalledWith(institution.slug);
     expect(component.activeInstitution).toEqual(institution);
 
-    const image = de.query(By.css('.profile__image img'));
+    const image = de.query(By.css('.institution__logo img'));
     expect(image).toBeTruthy();
 
     const title = de.query(By.css('#institution-title'));
