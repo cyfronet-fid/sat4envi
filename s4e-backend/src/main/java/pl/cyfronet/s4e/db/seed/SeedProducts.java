@@ -530,34 +530,8 @@ public class SeedProducts implements ApplicationRunner {
                 "default", "quicklook",
                 "COG", "RGBs_8b"
         );
+
         List<Product> products = List.of(
-                Product.builder()
-                        .name("Setvak_Eu")
-                        .layerName("setvak_eu")
-                        .displayName("Chmury konwekcyjne")
-                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
-                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
-                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
-                        .granuleArtifactRule(granuleArtifactRuleMSG)
-                        .build(),
-                Product.builder()
-                        .name("Setvak_PL")
-                        .layerName("setvak_pl")
-                        .displayName("Chmury konwekcyjne (PL)")
-                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
-                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
-                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
-                        .granuleArtifactRule(granuleArtifactRuleMSG)
-                        .build(),
-                Product.builder()
-                        .name("OST")
-                        .layerName("ost")
-                        .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
-                        .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
-                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
-                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
-                        .granuleArtifactRule(granuleArtifactRuleMSG)
-                        .build(),
                 Product.builder()
                         .name("Sentinel-1-GRDH")
                         .layerName("sentinel_1_grdh")
@@ -584,6 +558,105 @@ public class SeedProducts implements ApplicationRunner {
                         .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                         .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                         .granuleArtifactRule(granuleArtifactRuleSentinel)
+                        .build(),
+                Product.builder()
+                        .name("108m")
+                        .layerName("108m")
+                        .displayName("Zachmurzenie (108m)")
+                        .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Airmass")
+                        .layerName("airmass")
+                        .displayName("Airmass")
+                        .description("Airmass")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Dust")
+                        .layerName("dust")
+                        .displayName("Pył w atmosferze")
+                        .description("Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("NatCol")
+                        .layerName("natcol")
+                        .displayName("Detekcja chmur lodowych i śniegu")
+                        .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Polsafi")
+                        .layerName("polsafi")
+                        .displayName("Polsafi, wyładowania atmosferyczne")
+                        .description("Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("RGB24_micro")
+                        .layerName("rgb24_micro")
+                        .displayName("Mikrofizyka chmur")
+                        .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Setvak_Eu")
+                        .layerName("setvak_eu")
+                        .displayName("Chmury konwekcyjne")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Setvak_PL")
+                        .layerName("setvak_pl")
+                        .displayName("Chmury konwekcyjne (PL)")
+                        .description("Obraz satelitarny IR z dedykowaną paletą barwną")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Opad_H03")
+                        .layerName("opad_h03")
+                        .displayName("Intensywność opadu")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia intensywność opadu w mm/h.")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("Opad_H05")
+                        .layerName("opad_h05")
+                        .displayName("Suma opadu")
+                        .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
+                        .build(),
+                Product.builder()
+                        .name("OST")
+                        .layerName("ost")
+                        .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
+                        .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
+                        .sceneSchema(schemas.get("MSG.scene.v1.json"))
+                        .metadataSchema(schemas.get("MSG.metadata.v1.json"))
+                        .granuleArtifactRule(granuleArtifactRuleMSG)
                         .build()
         );
 
@@ -594,8 +667,16 @@ public class SeedProducts implements ApplicationRunner {
                 "Sentinel-1/GRDH/",
                 "Sentinel-1/GRDM/",
                 "Sentinel-1/SLC_/",
+                "MSG_Products_WM/108m",
+                "MSG_Products_WM/Airmass",
+                "MSG_Products_WM/Dust",
+                "MSG_Products_WM/NatColor",
+                "MSG_Products_WM/Polsafi",
+                "MSG_Products_WM/RGB24_micro",
                 "MSG_Products_WM/Setvak_Eu/",
                 "MSG_Products_WM/Setvak_PL/",
+                "MSG_Products_WM/Opad_H03",
+                "MSG_Products_WM/Opad_H05",
                 "MSG_Products_WM/OST/"
         ).forEach(this::readScenes);
     }

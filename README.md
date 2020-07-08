@@ -129,8 +129,9 @@ Like in the case of the base dataset, the data is stored in the Cyfronet CEPH in
 You have to observe the steps for `s4e-demo` with updated dataset and bucket names.
 
 `s4e-sync-1` is the first dataset which scenes are loaded based on their scene files.
-It consists of 6 products: OST, Setvak_Eu, Setvak_PL, Sentinel-1-GRDH, Sentinel-1-GRDM and Sentinel-1-SLC_.
-See the separate section for info on loading it.
+It consists of 12 products: Airmass, Opad_H03, Opad_H05, Polsafi, 108m, Dust, OST, Setvak_Eu, Setvak_PL,
+Sentinel-1-GRDH, Sentinel-1-GRDM and Sentinel-1-SLC_.
+See the following section for info on loading it.
 
 
 #### Seeding with s4e-demo data
