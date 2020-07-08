@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add required field to institutions seeds [#496](https://github.com/cyfronet-fid/sat4envi/issues/496)
 - Sentinel API for OpenSearch and OData download [#67](https://github.com/cyfronet-fid/sat4envi/issues/67)
 - Static Modal For Search Result Details [#549](https://github.com/cyfronet-fid/sat4envi/issues/549)
 - Add static product info box for selected product [#545](https://github.com/cyfronet-fid/sat4envi/issues/545)
@@ -41,6 +42,7 @@ The most recent changes are on top, in each type of changes category.
 - Change requirement of admin institution email
 
 ### Fixed
+
 - Visual bugfixes [#576](https://github.com/cyfronet-fid/sat4envi/issues/576)
 - Fix schema scanning and parallel seeding when running from a jar [#570](https://github.com/cyfronet-fid/sat4envi/pull/570)
 - Fix Institution edition, registration form, add child institution and cancel password change [#558](https://github.com/cyfronet-fid/sat4envi/pull/558)
