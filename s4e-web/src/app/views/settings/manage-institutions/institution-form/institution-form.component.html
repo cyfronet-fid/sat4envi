@@ -93,17 +93,22 @@
     <section>
       <h2 i18n>
         Logo / Herb instytucji
-        <span>(png, jpg) min. 130x130px</span>
       </h2>
-      <img
-        alt="Emblem"
-        *ngIf="!!emblemImgSrc"
-        [src]="emblemImgSrc"
-        height="200"
+      <p>
+        Plik jpg/png powinien mieć minimalną rozdzielczość 130x130px.
+      </p>
+      <div class="institution__logo" *ngIf="emblemImgSrc">
+        <img
+          alt="Logo instytucji"
+          *ngIf="!!emblemImgSrc"
+          [src]="emblemImgSrc"
+          height="200"
 
-        data-e2e="emblem-image"
-      />
-      <label for="emblem" i18n>Wybierz zdjęcie</label>
+          data-e2e="emblem-image"
+        />
+      </div>
+
+      <label for="emblem" i18n class="button button--default button--small">Dodaj logo/herb</label>
       <input
         hidden="true"
         type="file"

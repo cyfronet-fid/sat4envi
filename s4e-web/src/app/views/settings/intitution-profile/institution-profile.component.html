@@ -19,8 +19,8 @@
         </li>
       </ul>
     </div>
-    <aside class="profile__image">
-      <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" />
+    <aside class="institution__logo">
+      <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" alt="Logo instytucji" />
     </aside>
   </ng-container>
   <footer>
