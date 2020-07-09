@@ -63,6 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
+import static pl.cyfronet.s4e.TestJwtUtil.jwtCookieToken;
 
 @BasicTest
 @Slf4j
@@ -73,8 +74,10 @@ public class AppUserControllerTest {
 
     @Autowired
     private InstitutionRepository institutionRepository;
+
     @Autowired
     private GroupRepository groupRepository;
+
     @Autowired
     private UserRoleRepository userRoleRepository;
 
@@ -510,6 +513,13 @@ public class AppUserControllerTest {
     public void shouldReturnProfile() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
                 .with(jwtBearerToken(securityAppUser, objectMapper)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldReturnProfileWithTokenCookie() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
+                .with(jwtCookieToken(securityAppUser, objectMapper)))
                 .andExpect(status().isOk());
     }
 

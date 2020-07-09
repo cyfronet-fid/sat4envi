@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import lombok.val;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -13,6 +14,7 @@ import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.security.LoadKeyPair;
 import pl.cyfronet.s4e.security.SecurityConstants;
 
+import javax.servlet.http.Cookie;
 import java.security.KeyPair;
 import java.util.Date;
 import java.util.HashSet;
@@ -43,6 +45,20 @@ public class TestJwtUtil {
     public static RequestPostProcessor jwtBearerToken(AppUser user, ObjectMapper objectMapper, KeyPair jwtKeyPair) {
         return mockRequest -> {
             mockRequest.addHeader(SecurityConstants.HEADER_NAME, "Bearer " + createToken(createAppUserDetails(user), objectMapper, jwtKeyPair));
+
+            return mockRequest;
+        };
+    }
+
+    public static RequestPostProcessor jwtCookieToken(AppUser user, ObjectMapper objectMapper) {
+        return mockRequest -> {
+            String token = createToken(createAppUserDetails(user), objectMapper, JWT_KEY_PAIR);
+            Cookie cookie = new Cookie(SecurityConstants.COOKIE_NAME, token);
+
+            Cookie[] cookies = mockRequest.getCookies();
+            Cookie[] updatedCookies = ArrayUtils.add(cookies, cookie);
+            mockRequest.setCookies(updatedCookies);
+
             return mockRequest;
         };
     }

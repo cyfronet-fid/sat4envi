@@ -58,7 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private void authorizeRequests(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry authorize) {
         authorize
-                .mvcMatchers(POST, prefix("/login")).permitAll()
+                .mvcMatchers(POST, prefix(
+                        "/token",
+                        "/login",
+                        "/logout"
+                )).permitAll()
 
                 .mvcMatchers(GET, prefix("/users/me")).authenticated()
                 .mvcMatchers(POST, prefix(
