@@ -9,6 +9,7 @@ import lombok.val;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -23,6 +24,7 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String LICENSED_LAYERS_ATTR = "Licensed-Layers";
     public static final String LAYERS_CLAIM = "layers";
+    public static final String TOKEN_COOKIE = "token";
 
     private final JwtParser jwtParser;
 
@@ -34,20 +36,36 @@ public class JwtGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        Set<String> licensedLayers = getLicensedLayers(exchange);
-        if (licensedLayers != null) {
-            exchange.getAttributes().put(LICENSED_LAYERS_ATTR, licensedLayers);
+        String token = getToken(exchange);
+        if (token == null) {
+            return chain.filter(exchange);
         }
+
+        Set<String> licensedLayers = getLicensedLayers(token);
+        if (licensedLayers == null) {
+            return chain.filter(exchange);
+        }
+
+        exchange.getAttributes().put(LICENSED_LAYERS_ATTR, licensedLayers);
         return chain.filter(exchange);
     }
 
-    private Set<String> getLicensedLayers(ServerWebExchange exchange) {
+    private String getToken(ServerWebExchange exchange) {
         val request = exchange.getRequest();
-        String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-        if (authorization == null || !authorization.startsWith(TOKEN_PREFIX)) {
-            return null;
+
+        String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {
+            return authHeader.substring(TOKEN_PREFIX.length());
         }
-        String token = authorization.substring(TOKEN_PREFIX.length());
+
+        HttpCookie authCookie = request.getCookies().getFirst(TOKEN_COOKIE);
+        if (authCookie != null) {
+            return authCookie.getValue();
+        }
+        return null;
+    }
+
+    private Set<String> getLicensedLayers(String token) {
         Jws<Claims> jws;
         try {
             jws = jwtParser.parseClaimsJws(token);

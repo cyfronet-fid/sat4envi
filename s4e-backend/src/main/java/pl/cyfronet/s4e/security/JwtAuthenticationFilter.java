@@ -13,12 +13,18 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static org.apache.tomcat.websocket.Constants.AUTHORIZATION_HEADER_NAME;
-
+/**
+ * Extracts Authorization from request.
+ * Supports header and cookie.
+ *
+ * <p>
+ * Authorization header takes precedence over token cookie.
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -30,26 +36,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(SecurityConstants.HEADER_NAME);
+        String token = getTokenFromHeader(request);
+        if (token == null) {
+            token = getTokenFromCookie(request);
+        }
 
-        if (header != null && header.startsWith(TOKEN_PREFIX)) {
-            val authentication = getAuthentication(request);
+        if (token != null) {
+            val authentication = getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(SecurityConstants.HEADER_NAME);
+    private String getTokenFromHeader(HttpServletRequest request) {
+        String header = request.getHeader(SecurityConstants.HEADER_NAME);
 
-        if (token == null) {
+        if (header != null && header.startsWith(TOKEN_PREFIX)) {
+            return header.substring(TOKEN_PREFIX.length());
+        } else {
             return null;
         }
+    }
 
+    private String getTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie != null && SecurityConstants.COOKIE_NAME.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         final String subject;
         try {
-            subject = jwtTokenService.parseClaimsJws(token.substring(TOKEN_PREFIX.length()))
+            subject = jwtTokenService.parseClaimsJws(token)
                 .getBody().getSubject();
         } catch (JwtException e) {
             log.debug("JWS verification failed", e);

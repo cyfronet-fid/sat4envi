@@ -63,7 +63,7 @@ export class SessionService {
   login(formState: LoginFormState) {
     this.sessionStore.setLoading(true);
     const {login: email, password, ...x} = formState;
-    const url = `${this.CONFIG.apiPrefixV1}/login`;
+    const url = `${this.CONFIG.apiPrefixV1}/token`;
     this.http.post<LoginRequestResponse>(url, {email, password},
       {headers: {[ERROR_INTERCEPTOR_CODES_TO_SKIP]: `${HTTP_404_BAD_REQUEST},${HTTP_401_UNAUTHORIZED}`} })
       .pipe(

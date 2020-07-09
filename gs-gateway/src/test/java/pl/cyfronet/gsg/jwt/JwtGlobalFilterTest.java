@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
@@ -86,6 +87,33 @@ class JwtGlobalFilterTest {
     }
 
     public static Stream<Arguments> shouldParseLayersFromAuthorizationHeader() {
+        return Stream.of(
+                Arguments.of(null, Set.of()),
+                Arguments.of(Set.of(), Set.of()),
+                Arguments.of(Set.of("layer_1"), Set.of("layer_1")),
+                Arguments.of(Set.of("layer_1", "layer_2"), Set.of("layer_1", "layer_2")),
+                Arguments.of("Some other type than Collection", Set.of()),
+                Arguments.of(SKIP_LAYERS_CLAIM, Set.of())
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void shouldParseLayersFromAuthorizationCookie(Object layersClaim, Set<String> expectedLayers) {
+        GlobalFilter filter = new JwtGlobalFilter(JWT_PARSER);
+        MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost")
+                .cookie(new HttpCookie("token", jwt(layersClaim)))
+                .build();
+        ServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        filter.filter(exchange, filterChain);
+
+        assertThat(exchange.getAttribute(JwtGlobalFilter.LICENSED_LAYERS_ATTR), is(equalTo(expectedLayers)));
+        verify(filterChain).filter(exchange);
+        verifyNoMoreInteractions(filterChain);
+    }
+
+    public static Stream<Arguments> shouldParseLayersFromAuthorizationCookie() {
         return Stream.of(
                 Arguments.of(null, Set.of()),
                 Arguments.of(Set.of(), Set.of()),
