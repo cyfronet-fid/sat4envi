@@ -1,8 +1,8 @@
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {InstitutionProfileComponent} from './institution-profile.component';
+import { GenericListViewModule } from '../components/generic-list-view/generic-list-view.module';
 
 @NgModule({
   declarations: [
@@ -10,7 +10,8 @@ import {InstitutionProfileComponent} from './institution-profile.component';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    GenericListViewModule
   ],
   exports: [
     InstitutionProfileComponent

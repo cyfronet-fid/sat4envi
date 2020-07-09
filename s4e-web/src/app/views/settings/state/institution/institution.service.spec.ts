@@ -102,7 +102,7 @@ describe('InstitutionService', () => {
     const url = `${s4eConfig.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
     const spyHttp = spyOn(http, 'post').and.returnValue(of(null));
 
-    institutionService.addInstitutionChild$(institution);
+    institutionService.createInstitutionChild$(institution);
     tick();
 
     expect(spyHttp).toHaveBeenCalledWith(url, institution);

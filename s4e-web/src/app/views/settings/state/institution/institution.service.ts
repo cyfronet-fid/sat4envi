@@ -43,12 +43,12 @@ export class InstitutionService {
 
   updateInstitution$(institution: Institution) {
     const url = `${this.s4EConfig.apiPrefixV1}/institutions/${institution.slug}`;
-    return  httpPutRequest$(this.http, url, institution, this.store).subscribe();
+    return  httpPutRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
   }
 
-  addInstitutionChild$(institution: Institution) {
+  createInstitutionChild$(institution: Institution) {
     const url = `${this.s4EConfig.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
-    return  httpPostRequest$(this.http, url, institution, this.store).subscribe();
+    return  httpPostRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
   }
 
   setActive(slug: string) {

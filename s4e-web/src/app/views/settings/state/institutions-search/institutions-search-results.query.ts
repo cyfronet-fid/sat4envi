@@ -28,7 +28,7 @@ export class InstitutionsSearchResultsQuery extends SearchResultsQuery<Instituti
       .pipe(map(slug => !!slug));
   }
 
-  getInstitutionFrom$(activatedRoute: ActivatedRoute) {
+  getInstitutionFrom$(activatedRoute: ActivatedRoute): Observable<Institution | null> {
     return this._slugToInstitution$(this.getInstitutionSlugFrom$(activatedRoute));
   }
 
