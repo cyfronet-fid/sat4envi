@@ -1,6 +1,11 @@
 <div class="panel__item">
-  <ng-content select="[tile-title]"></ng-content>
-  <ng-content select="[tile-description]"></ng-content>
+  <aside>
+    <ng-content select="[tile-image]"></ng-content>
+  </aside>
+  <section class="panel__content">
+    <ng-content select="[tile-title]"></ng-content>
+    <ng-content select="[tile-description]"></ng-content>
+  </section>
   <footer class="panel__footer">
     <ng-content select="[footer-navigation]"></ng-content>
   </footer>
