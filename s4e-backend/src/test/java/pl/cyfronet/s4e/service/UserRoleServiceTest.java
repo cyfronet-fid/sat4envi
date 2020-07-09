@@ -5,7 +5,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppRole;
@@ -43,9 +42,6 @@ public class UserRoleServiceTest {
     private TestDbHelper testDbHelper;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private SlugService slugService;
 
     private String slugInstitution;
@@ -57,7 +53,7 @@ public class UserRoleServiceTest {
                 .email(PROFILE_EMAIL)
                 .name("Get")
                 .surname("Profile")
-                .password(passwordEncoder.encode("password"))
+                .password("{noop}password")
                 .enabled(true)
                 .build());
 
