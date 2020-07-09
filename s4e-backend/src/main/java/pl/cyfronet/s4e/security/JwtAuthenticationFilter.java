@@ -17,11 +17,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static org.apache.tomcat.websocket.Constants.AUTHORIZATION_HEADER_NAME;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
 
     private final UserDetailsService userDetailsService;
@@ -29,7 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String header = request.getHeader(AUTHORIZATION_HEADER_NAME);
+        String header = request.getHeader(SecurityConstants.HEADER_NAME);
 
         if (header != null && header.startsWith(TOKEN_PREFIX)) {
             val authentication = getAuthentication(request);
@@ -40,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(AUTHORIZATION_HEADER_NAME);
+        String token = request.getHeader(SecurityConstants.HEADER_NAME);
 
         if (token == null) {
             return null;
