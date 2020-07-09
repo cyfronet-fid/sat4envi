@@ -54,7 +54,7 @@ export class ShareConfigurationModalComponent extends FormModalComponent<'config
   makeForm(): FormGroup<ShareConfigurationForm> {
     return new FormGroup<ShareConfigurationForm>({
       caption: new FormControl<string>('', Validators.required),
-      description: new FormControl<string>('[UX PERSON - ENTER TEMPLATE CONTENT HERE]', Validators.required),
+      description: new FormControl<string>(null, Validators.required),
       emails: new FormControl<string>('', [Validators.required, EmailListValidator]),
     });
   }

@@ -1,3 +1,4 @@
+import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import {Component, ElementRef, Inject, ViewChild, OnInit, OnDestroy} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
@@ -33,8 +34,8 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
 
   makeForm(): FormGroup<FormState['report']> {
     return new FormGroup<ReportForm>({
-      caption: new FormControl<string>('Przykładowy Tytuł', [Validators.maxLength(80), Validators.required]),
-      notes: new FormControl<string>('', [Validators.maxLength(800)]),
+      caption: new FormControl<string>(null, [Validators.maxLength(80), Validators.required]),
+      notes: new FormControl<string>(null, [Validators.maxLength(800), Validators.required]),
     });
   }
 
@@ -67,6 +68,8 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
   }
 
   accept() {
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
+
     if (this.form.invalid) {
       return;
     }

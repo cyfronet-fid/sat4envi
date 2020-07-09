@@ -62,7 +62,8 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       return;
     }
 
-    ImageBase64.getFromFile$(emblem)
+    ImageBase64
+      .getFromFile$(emblem)
       .subscribe(
         (imageBase64) => {
           if (imageBase64 === '') {
@@ -74,10 +75,12 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
           this.form.controls.emblem.setValue(imageBase64);
           this.emblemImgSrc = 'data:image/png;base64,' + this.form.controls.emblem.value;
+          this.form.controls.emblem.setErrors(null);
         },
         (error) => {
-          console.log('Error while image loading: ', error);
-          this.form.controls.emblem.setErrors({'incorrect': true});
+          console.error('Error while image loading: ', error);
+          $event.target.value = '';
+          this.form.controls.emblem.setErrors({'niewłaściwy format zdjęcia': true});
           this.emblemImgSrc = null;
         }
       );
@@ -231,8 +234,13 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
         (imgBase64) => {
           form.controls.emblem.setValue(imgBase64);
           this.emblemImgSrc = 'data:image/png;base64,' + this.form.controls.emblem.value;
+          this.form.controls.emblem.setErrors(null);
         },
-        (error) => console.log('Error while image converting: ', error)
+        (error) => {
+          console.log('Error while image converting: ', error);
+          this.form.controls.emblem.setErrors({'niewłaściwy format zdjęcia': true});
+          this.emblemImgSrc = null;
+        }
       );
   }
 }

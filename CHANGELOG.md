@@ -43,6 +43,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- resize `Warstwy` segment in `/map` sidebar, [Fix] Update UI messages [#566](https://github.com/cyfronet-fid/sat4envi/pull/566)
 - Visual bugfixes [#576](https://github.com/cyfronet-fid/sat4envi/issues/576)
 - Fix schema scanning and parallel seeding when running from a jar [#570](https://github.com/cyfronet-fid/sat4envi/pull/570)
 - Fix Institution edition, registration form, add child institution and cancel password change [#558](https://github.com/cyfronet-fid/sat4envi/pull/558)
