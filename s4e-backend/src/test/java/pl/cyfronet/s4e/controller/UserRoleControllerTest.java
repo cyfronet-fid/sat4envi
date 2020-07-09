@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
@@ -51,9 +50,6 @@ public class UserRoleControllerTest {
     private InstitutionRepository institutionRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -74,7 +70,7 @@ public class UserRoleControllerTest {
                 .email(PROFILE_EMAIL)
                 .name("Get")
                 .surname("Profile")
-                .password(passwordEncoder.encode("password"))
+                .password("{noop}password")
                 .enabled(true)
                 .admin(true)
                 .build());
