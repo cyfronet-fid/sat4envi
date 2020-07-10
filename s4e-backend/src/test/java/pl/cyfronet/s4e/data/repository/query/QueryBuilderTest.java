@@ -19,6 +19,7 @@ import static org.hamcrest.Matchers.is;
 public class QueryBuilderTest {
     @Autowired
     private QueryBuilder queryBuilder;
+
     @Test
     public void shouldReturnWholeQuery() {
         List<Object> parameters = new ArrayList<>();
@@ -34,17 +35,20 @@ public class QueryBuilderTest {
         params.put("ingestionFrom", "2019-11-09T00:00:00.000000+00:00");
         params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
         StringBuilder resultQuery = new StringBuilder();
-        String query = "SELECT id,product_id,timestamp  FROM Scene WHERE true  " +
-                "AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  " +
-                "AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  " +
-                "AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  " +
-                "AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  " +
-                "AND metadata_content->>'spacecraft' = ?  AND metadata_content->>'product_type' = ?  " +
-                "AND metadata_content->>'polarisation' = ?  AND metadata_content->>'processing_level' = ?  " +
-                "AND metadata_content->>'relative_orbit_number' = ?  " +
-                "AND (metadata_content ->> 'cloud_cover')::float <= ?  ORDER BY id DESC LIMIT ?  OFFSET ? ;";
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT id,product_id,ST_AsText(ST_Transform(footprint,4326)) AS footprint,");
+        query.append("metadata_content,scene_content,timestamp ");
+        query.append("FROM Scene WHERE true  ");
+        query.append("AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  ");
+        query.append("AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  ");
+        query.append("AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  ");
+        query.append("AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  ");
+        query.append("AND metadata_content->>'spacecraft' = ?  AND metadata_content->>'product_type' = ?  ");
+        query.append("AND metadata_content->>'polarisation' = ?  AND metadata_content->>'processing_level' = ?  ");
+        query.append("AND metadata_content->>'relative_orbit_number' = ?  ");
+        query.append("AND (metadata_content ->> 'cloud_cover')::float <= ?  ORDER BY id DESC LIMIT ?  OFFSET ? ;");
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery);
-        assertThat(resultQuery.toString(), is(equalTo(query)));
+        assertThat(resultQuery.toString(), is(equalTo(query.toString())));
     }
 
     @Test
@@ -52,8 +56,13 @@ public class QueryBuilderTest {
         List<Object> parameters = new ArrayList<>();
         Map<String, Object> params = new HashMap<>();
         StringBuilder resultQuery = new StringBuilder();
-        String query = "SELECT id,product_id,timestamp  FROM Scene WHERE true  ORDER BY id DESC LIMIT ?  OFFSET ? ;";
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT id,product_id,");
+        query.append("ST_AsText(ST_Transform(footprint,4326)) AS footprint,");
+        query.append("metadata_content,scene_content,timestamp ");
+        query.append("FROM Scene ");
+        query.append("WHERE true  ORDER BY id DESC LIMIT ?  OFFSET ? ;");
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery);
-        assertThat(resultQuery.toString(), is(equalTo(query)));
+        assertThat(resultQuery.toString(), is(equalTo(query.toString())));
     }
 }

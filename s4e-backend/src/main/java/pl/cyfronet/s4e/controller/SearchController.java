@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cyfronet.s4e.api.ResponseExtender;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
 import pl.cyfronet.s4e.ex.BadRequestException;
 import pl.cyfronet.s4e.service.SearchService;
-import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -31,7 +31,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "search", description = "The Scene API")
 public class SearchController {
     private final SearchService searchService;
-    private final TimeHelper timeHelper;
+    private final ResponseExtender responseExtender;
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
@@ -41,10 +41,10 @@ public class SearchController {
     @GetMapping("/search")
     public List<SearchResponse> getScenes(@RequestParam Map<String, Object> params)
             throws BadRequestException, SQLException {
-        ZoneId timeZone = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
+        ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
         try {
             return searchService.getScenesBy(params).stream()
-                    .map(scene -> SearchResponse.of(scene, timeZone, timeHelper))
+                    .map(scene -> responseExtender.map(scene, zoneId))
                     .collect(Collectors.toList());
         } catch (DateTimeParseException e) {
             throw new BadRequestException("Cannot parse date: " + e.getParsedString());

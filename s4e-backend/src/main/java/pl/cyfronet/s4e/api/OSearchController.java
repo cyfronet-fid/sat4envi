@@ -15,7 +15,6 @@ import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
 import pl.cyfronet.s4e.ex.BadRequestException;
 import pl.cyfronet.s4e.service.SearchService;
-import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
@@ -32,7 +31,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "api", description = "The Open Search API for scenes")
 public class OSearchController {
     private final SearchService searchService;
-    private final TimeHelper timeHelper;
+    private final ResponseExtender responseExtender;
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
@@ -51,7 +50,7 @@ public class OSearchController {
         // TODO: format
         try {
             return searchService.getScenesBy(searchService.parseToParamMap(rowsSize, rowStart, orderby, query)).stream()
-                    .map(scene -> SearchResponse.of(scene, timeZone.getZoneId(), timeHelper))
+                    .map(scene -> responseExtender.map(scene, timeZone.getZoneId()))
                     .collect(Collectors.toList());
         } catch (DateTimeParseException e) {
             throw new BadRequestException("Cannot parse date: " + e.getParsedString());
