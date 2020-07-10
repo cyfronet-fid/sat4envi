@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
+import pl.cyfronet.s4e.api.MappedScene;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
@@ -64,8 +65,10 @@ public class SearchServiceTest {
 
     private Scene buildScene(Product product, long number) throws Exception {
         JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        return SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
                 .build();
+        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+        return scene;
     }
 
     @Test
@@ -73,7 +76,7 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("sensingFrom", "2019-11-05T00:00:00.000000+00:00");
         params.put("sensingTo", "2019-11-10T00:00:00.000000+00:00");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(5));
     }
 
@@ -82,7 +85,7 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("ingestionFrom", "2019-11-09T00:00:00.000000+00:00");
         params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
     }
 
@@ -90,7 +93,7 @@ public class SearchServiceTest {
     public void testQueryBySatellitePlatform() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("satellitePlatform", "Sentinel-1A");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -98,7 +101,7 @@ public class SearchServiceTest {
     public void testQueryByProductType() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("productType", "GRDH");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -106,7 +109,7 @@ public class SearchServiceTest {
     public void testQueryByPolarisation() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("polarisation", "VV VH");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -114,7 +117,7 @@ public class SearchServiceTest {
     public void testQueryBySensorMode() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("sensorMode", "IW");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -122,7 +125,7 @@ public class SearchServiceTest {
     public void testQueryByCollection() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("collection", "S1B_24AU");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -130,7 +133,7 @@ public class SearchServiceTest {
     public void testQueryByCloudCover() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("cloudCover", 0.4f);
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(5));
     }
 
@@ -138,7 +141,7 @@ public class SearchServiceTest {
     public void testQueryByTimeliness() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("timeliness", "Near Real Time");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -146,7 +149,7 @@ public class SearchServiceTest {
     public void testQueryByInstrument() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("instrument", "OLCI");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
 
@@ -154,7 +157,7 @@ public class SearchServiceTest {
     public void testQueryByProductLevel() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("productLevel", "L2");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
     }
 
@@ -162,7 +165,7 @@ public class SearchServiceTest {
     public void testQueryByProcessingLevel() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("processingLevel", "2LC");
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
     }
 
@@ -170,7 +173,7 @@ public class SearchServiceTest {
     public void testQueryByRelativeOrbitNumber() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("relativeOrbitNumber", 9);
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
 
         params = new HashMap<>();
@@ -188,7 +191,7 @@ public class SearchServiceTest {
     public void testQueryByAbsoluteOrbitNumber() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("absoluteOrbitNumber", 9);
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(0));
 
         params = new HashMap<>();
@@ -213,7 +216,7 @@ public class SearchServiceTest {
         params.put("order", "DESC");
         params.put("sortBy", "sensingTime");
         params.put("limit", 15);
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(1));
     }
 
@@ -226,7 +229,7 @@ public class SearchServiceTest {
         params.put("sortBy", "ingestionTime");
         params.put("limit", 15);
         params.put("offset", 1);
-        List<Scene> scenes = searchService.getScenesBy(params);
+        List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(0));
     }
 }

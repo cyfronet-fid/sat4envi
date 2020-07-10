@@ -38,7 +38,7 @@ public class GeometryUtil {
     }
 
     public Coordinate[] closeCoords(Coordinate[] coords) {
-        if (coords == null || coords.length < 3 || coords[0].equals(coords[coords.length-1])) {
+        if (coords == null || coords.length < 3 || coords[0].equals(coords[coords.length - 1])) {
             return coords;
         }
         Coordinate[] corrected = Arrays.copyOf(coords, coords.length + 1);

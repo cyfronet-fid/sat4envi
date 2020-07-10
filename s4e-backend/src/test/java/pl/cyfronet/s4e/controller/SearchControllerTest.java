@@ -22,8 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,12 +43,13 @@ public class SearchControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
+    Product product;
 
     @BeforeEach
     public void setUp() throws Exception {
         testDbHelper.clean();
         //add product
-        Product product = productRepository.save(productBuilder().build());
+        product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 30; j++) {
@@ -66,8 +66,10 @@ public class SearchControllerTest {
 
     private Scene buildScene(Product product, long number) throws Exception {
         JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        return SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
                 .build();
+        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+        return scene;
     }
 
     @Test
@@ -78,9 +80,32 @@ public class SearchControllerTest {
         // default limit is 20
         int limit = 20;
         mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC"))
+                .param("timeZone", "UTC")
+                .param("limit", String.valueOf(limit)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(limit))));
+                .andExpect(jsonPath("$.length()", is(equalTo(limit))))
+                .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder(
+                        "RGB_16b", "RGBs_8b", "checksum", "manifest", "metadata", "quicklook", "product_archive"
+                )))
+        ;
+    }
+
+    @Test
+    public void shouldGetSceneBySearchEndpointWithNoSceneContent() throws Exception {
+        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(30));
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
+                .build();
+        sceneRepository.save(scene);
+        Map<String, Object> params = new HashMap<>();
+        params.put("timeZone", "UTC");
+
+        // default limit is 20
+        int limit = 40;
+        mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                .param("timeZone", "UTC")
+                .param("limit", String.valueOf(limit)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(31))));
     }
 
     @Test

@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add footprint, artifacts and metadata to search response [#581](https://github.com/cyfronet-fid/sat4envi/issues/581)
 - Cookie based authorization [#583](https://github.com/cyfronet-fid/sat4envi/issues/583)
 - Add required field to institutions seeds [#496](https://github.com/cyfronet-fid/sat4envi/issues/496)
 - Sentinel API for OpenSearch and OData download [#67](https://github.com/cyfronet-fid/sat4envi/issues/67)
