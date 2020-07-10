@@ -15,14 +15,13 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static pl.cyfronet.s4e.TestJwtUtil.JWT_KEY_PAIR;
-import static pl.cyfronet.s4e.security.JwtTokenService.AUTHORITIES_KEY;
 
 class JwtTokenServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void shouldGenerateClaims() {
-        JwtTokenService service = new JwtTokenService(objectMapper, JWT_KEY_PAIR);
+        JwtTokenService service = new JwtTokenService(10000L, objectMapper, JWT_KEY_PAIR);
 
         String[] authorities = new String[]{
                 "ROLE_1",
@@ -40,7 +39,7 @@ class JwtTokenServiceTest {
 
         assertThat(jwsClaims.getBody().getSubject(), is("test"));
         assertThat(jwsClaims.getBody().getExpiration(), greaterThan(new Date()));
-        List<String> jwsAuthorities = jwsClaims.getBody().get(AUTHORITIES_KEY, List.class);
+        List<String> jwsAuthorities = jwsClaims.getBody().get(SecurityConstants.JWT_AUTHORITIES_CLAIM, List.class);
         assertThat(jwsAuthorities, contains("ROLE_1", "OP_CREATE_STH"));
     }
 

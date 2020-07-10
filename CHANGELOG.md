@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Cookie based authorization [#583](https://github.com/cyfronet-fid/sat4envi/issues/583)
 - Add required field to institutions seeds [#496](https://github.com/cyfronet-fid/sat4envi/issues/496)
 - Sentinel API for OpenSearch and OData download [#67](https://github.com/cyfronet-fid/sat4envi/issues/67)
 - Static Modal For Search Result Details [#549](https://github.com/cyfronet-fid/sat4envi/issues/549)
@@ -34,6 +35,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Update dataset s4e-sync-1 [#578](https://github.com/cyfronet-fid/sat4envi/issues/578)
 - Move authorization to WebSecurity [#481](https://github.com/cyfronet-fid/sat4envi/issues/481)
 - Remove dependence on Groups in PreAuthorized methods [#522](https://github.com/cyfronet-fid/sat4envi/issues/522)
 - Improve search scenes endpoint

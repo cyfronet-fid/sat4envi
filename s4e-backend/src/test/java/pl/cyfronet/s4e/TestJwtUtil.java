@@ -5,19 +5,22 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import lombok.val;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.properties.JwtProperties;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.security.LoadKeyPair;
+import pl.cyfronet.s4e.security.SecurityConstants;
 
+import javax.servlet.http.Cookie;
 import java.security.KeyPair;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.stream.Collectors;
 
-import static pl.cyfronet.s4e.security.JwtTokenService.AUTHORITIES_KEY;
+import static pl.cyfronet.s4e.security.SecurityConstants.JWT_AUTHORITIES_CLAIM;
 
 public class TestJwtUtil {
     public static final KeyPair JWT_KEY_PAIR;
@@ -41,7 +44,21 @@ public class TestJwtUtil {
 
     public static RequestPostProcessor jwtBearerToken(AppUser user, ObjectMapper objectMapper, KeyPair jwtKeyPair) {
         return mockRequest -> {
-            mockRequest.addHeader("Authorization", "Bearer " + createToken(createAppUserDetails(user), objectMapper, jwtKeyPair));
+            mockRequest.addHeader(SecurityConstants.HEADER_NAME, "Bearer " + createToken(createAppUserDetails(user), objectMapper, jwtKeyPair));
+
+            return mockRequest;
+        };
+    }
+
+    public static RequestPostProcessor jwtCookieToken(AppUser user, ObjectMapper objectMapper) {
+        return mockRequest -> {
+            String token = createToken(createAppUserDetails(user), objectMapper, JWT_KEY_PAIR);
+            Cookie cookie = new Cookie(SecurityConstants.COOKIE_NAME, token);
+
+            Cookie[] cookies = mockRequest.getCookies();
+            Cookie[] updatedCookies = ArrayUtils.add(cookies, cookie);
+            mockRequest.setCookies(updatedCookies);
+
             return mockRequest;
         };
     }
@@ -67,7 +84,7 @@ public class TestJwtUtil {
         Claims claims = Jwts.claims()
                 .setSubject(appUserDetails.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + 10000L));
-        claims.put(AUTHORITIES_KEY, appUserDetails.getAuthorities().stream()
+        claims.put(JWT_AUTHORITIES_CLAIM, appUserDetails.getAuthorities().stream()
                 .map(ga -> ga.getAuthority())
                 .collect(Collectors.toList()));
         return Jwts.builder()
