@@ -125,7 +125,7 @@ class AuthControllerTest {
                 .andExpect(cookie().value(cookieName, startsWith(JWT_ALG_PREFIX)))
                 .andExpect(cookie().httpOnly(cookieName, true))
                 .andExpect(cookie().path(cookieName, "/"))
-                .andExpect(cookie().secure(cookieName, false))
+                .andExpect(cookie().secure(cookieName, true))
                 .andExpect(cookie().maxAge(cookieName, greaterThan(0)))
                 .andExpect(content().string(is(emptyOrNullString())));
     }
@@ -183,7 +183,7 @@ class AuthControllerTest {
                 .andExpect(cookie().value(cookieName, is(emptyOrNullString())))
                 .andExpect(cookie().httpOnly(cookieName, true))
                 .andExpect(cookie().path(cookieName, "/"))
-                .andExpect(cookie().secure(cookieName, false))
+                .andExpect(cookie().secure(cookieName, true))
                 .andExpect(cookie().maxAge(cookieName, 0)) // resets cookie
                 .andExpect(content().string(is(emptyOrNullString())));
     }

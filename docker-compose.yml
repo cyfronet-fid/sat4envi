@@ -19,10 +19,11 @@ services:
   s4e-web:
     image: nginx:alpine
     ports:
-      - ${WEB_PORT:-4200}:80
+      - ${WEB_PORT:-4200}:443
     volumes:
       - ./s4e-web/target/webapp:/usr/share/nginx/html
       - ${WEB_CONF_PATH:-./s4e-web/nginx.conf}:/etc/nginx/nginx.conf
+      - ${WEB_CERTS_PATH:-./s4e-web/.angular-ssl}:/etc/nginx/certs
     networks:
       - net
     depends_on:

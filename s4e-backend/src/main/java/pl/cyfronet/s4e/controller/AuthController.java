@@ -101,6 +101,7 @@ public class AuthController {
         authCookie.setMaxAge(maxAge());
         authCookie.setHttpOnly(true);
         authCookie.setPath("/");
+        authCookie.setSecure(true);
         return authCookie;
     }
 
