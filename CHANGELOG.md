@@ -36,6 +36,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Set secure flag in token cookie and configure nginx certificate [#589](https://github.com/cyfronet-fid/sat4envi/issues/589)
 - Update dataset s4e-sync-1 [#578](https://github.com/cyfronet-fid/sat4envi/issues/578)
 - Move authorization to WebSecurity [#481](https://github.com/cyfronet-fid/sat4envi/issues/481)
 - Remove dependence on Groups in PreAuthorized methods [#522](https://github.com/cyfronet-fid/sat4envi/issues/522)
