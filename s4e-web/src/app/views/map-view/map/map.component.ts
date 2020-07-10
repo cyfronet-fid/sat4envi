@@ -1,6 +1,6 @@
-import { NotificationService } from './../../../../../projects/notifications/src/lib/state/notification.service';
-import { ImageWmsLoader, IMAGE_WMS_LAYER } from './../state/utils/layers-loader.util';
-import { SessionQuery } from './../../../state/session/session.query';
+import {NotificationService} from '../../../../../projects/notifications/src/lib/state/notification.service';
+import {ImageWmsLoader} from '../state/utils/layers-loader.util';
+import {SessionQuery} from '../../../state/session/session.query';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -15,9 +15,9 @@ import {S4eConfig} from '../../../utils/initializer/config.service';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import { getImageXhr, ImageBase64 } from '../../settings/manage-institutions/institution-form/files.utils';
+import {NgxUiLoaderService} from 'ngx-ui-loader';
 import ImageWrapper from 'ol/Image';
+import {getImageXhr, ImageBase64} from '../../settings/manage-institutions/institution-form/files.utils';
 
 @Component({
   selector: 's4e-map',
@@ -26,6 +26,28 @@ import ImageWrapper from 'ol/Image';
 })
 export class MapComponent implements OnInit, OnDestroy {
   static readonly DEFAULT_ZOOM_LEVEL = 10;
+  @Output() viewChanged = new EventEmitter<ViewPosition>();
+  @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
+  @Input() isWorking: boolean = false;
+  @Output() working = new EventEmitter<boolean>();
+  activeView$ = new BehaviorSubject<ViewPosition>({
+    centerCoordinates: this.CONFIG.projection.coordinates,
+    zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
+  });
+  private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
+  private baseLayer: Layer;
+  private map: Map;
+  private activeScene$ = new ReplaySubject<Scene | null>(1);
+
+  constructor(
+    private CONFIG: S4eConfig,
+    private _loaderService: NgxUiLoaderService,
+    private _notificationService: NotificationService,
+    private _sessionQuery: SessionQuery
+  ) {
+  }
+
+  private _overlays: UIOverlay[] = [];
 
   get overlays(): UIOverlay[] {
     return this._overlays;
@@ -35,28 +57,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this._overlays = value;
     this.overlays$.next(value);
   }
-
-  private _overlays: UIOverlay[] = [];
-
-  private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
-  @Output() viewChanged = new EventEmitter<ViewPosition>();
-  private baseLayer: Layer;
-  private map: Map;
-  private activeScene$ = new ReplaySubject<Scene | null>(1);
-  @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
-  @Input() isWorking: boolean = false;
-  @Output() working = new EventEmitter<boolean>();
-  activeView$ = new BehaviorSubject<ViewPosition>({
-    centerCoordinates: this.CONFIG.projection.coordinates,
-    zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
-  });
-
-  constructor(
-    private CONFIG: S4eConfig,
-    private _loaderService: NgxUiLoaderService,
-    private _notificationService: NotificationService,
-    private _sessionQuery: SessionQuery
-  ) {}
 
   @Input()
   public set activeScene(gr: Scene | null | undefined) {
@@ -118,6 +118,41 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   };
 
+  public getMapData(): Observable<MapData> {
+    this.working.emit(true);
+    const mapCanvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
+
+    const r = new ReplaySubject<MapData>(1);
+
+    // :IMPORTANT this will work only on new browsers!
+    this.map.once('rendercomplete', () => {
+      const data = mapCanvas.toDataURL('image/png');
+      r.next({image: data, width: mapCanvas.width, height: mapCanvas.height});
+      this.working.emit(false);
+      r.complete();
+    });
+    this.map.renderSync();
+
+    return r;
+  }
+
+  public downloadMap() {
+    this.getMapData()
+      .subscribe(mapData => {
+        this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
+        this.linkDownload.nativeElement.href = mapData.image;
+        this.linkDownload.nativeElement.click();
+      });
+  }
+
+  protected _handleLoadError() {
+    this._loaderService.stopBackground();
+    this._notificationService.addGeneral({
+      type: 'error',
+      content: 'Wczytanie sceny nie powiodło się'
+    });
+  }
+
   private setView(view: ViewPosition): void {
     if (view.centerCoordinates != null) {
       this.map.getView().setCenter(view.centerCoordinates);
@@ -155,9 +190,11 @@ export class MapComponent implements OnInit, OnDestroy {
           () => this._handleLoadError()
         );
 
+      // Event though header based authentication is not used this custom XHRrequest is required
+      // because default OpenLayer image loading does not send cookies when used on SAFARI browser
       const image = new Image({ source });
       mapLayers.push(image);
-      source.setImageLoadFunction(this._getImageLoaderWith('Bearer ' + this._sessionQuery.getToken()));
+      source.setImageLoadFunction(this._getImageLoaderWith());
       mapLayers.push(new Image({ source }));
     }
 
@@ -166,43 +203,9 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getMapData(): Observable<MapData> {
-    this.working.emit(true);
-    const canvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
-
-    const r = new ReplaySubject<MapData>(1);
-
-    // this will work only on new browsers!
-    this.map.once('rendercomplete', () => {
-      const data = canvas.toDataURL('image/png');
-      r.next({image: data, width: canvas.width, height: canvas.height});
-      this.working.emit(false);
-      r.complete();
-    });
-    this.map.renderSync();
-
-    return r;
-  }
-
-  public downloadMap() {
-    this.getMapData()
-      .subscribe(mapData => {
-        this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
-        this.linkDownload.nativeElement.href = mapData.image;
-        this.linkDownload.nativeElement.click();
-      });
-  }
-
-  protected _handleLoadError() {
-    this._loaderService.stopBackground();
-    this._notificationService.addGeneral({
-      type: 'error',
-      content: 'Wczytanie sceny nie powiodło się'
-    });
-  }
-  private _getImageLoaderWith(bearer: string) {
+  private _getImageLoaderWith() {
     return function (tile: ImageWrapper, src: string) {
-      const xhr = getImageXhr(src, bearer);
+      const xhr = getImageXhr(src);
       xhr.onload = () => ((tile.getImage() as HTMLImageElement).src = ImageBase64.getFromXhr(xhr));
       xhr.send();
 

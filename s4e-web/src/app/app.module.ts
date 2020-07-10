@@ -6,13 +6,10 @@ import {ShareModule} from './common/share.module';
 import {MapModule} from './views/map-view/map.module';
 import {ProfileModule} from './views/settings/profile/profile.module';
 import {RootComponent} from './components/root/root.component';
-import {AuthInterceptor} from './utils/auth-interceptor/auth.interceptor';
 import {ErrorInterceptor} from './utils/error-interceptor/error.interceptor';
 import {appRoutes} from './app.routes';
 import {environment} from '../environments/environment';
 import {akitaConfig} from '@datorama/akita';
-import {SessionQuery} from './state/session/session.query';
-import {SessionService} from './state/session/session.service';
 import {CommonStateModule} from './state/common-state.module';
 import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
@@ -80,7 +77,6 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   providers: [
     S4eConfig,
     {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [S4eConfig], multi: true},
-    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'}
   ],
@@ -88,16 +84,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   exports: [LoginComponent],
 })
 export class AppModule {
-  constructor(
-    private sessionService: SessionService,
-    private sessionQuery: SessionQuery
-  ) {
-    akitaConfig({
-      resettable: true
-    });
-
-    if (environment.hmr === false && !this.sessionQuery.isInitialized()) {
-      this.sessionService.init();
-    }
+  constructor() {
+    akitaConfig({resettable: true});
   }
 }

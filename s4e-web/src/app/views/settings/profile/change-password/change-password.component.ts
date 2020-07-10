@@ -1,31 +1,29 @@
-import { ProfileStore } from './../../../../state/profile/profile.store';
-import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
-import { Component } from '@angular/core';
-import { GenericFormComponent } from 'src/app/utils/miscellaneous/generic-form.component';
-import { ProfileQuery } from 'src/app/state/profile/profile.query';
-import { PasswordChangeFormState } from 'src/app/state/profile/profile.model';
-import { AkitaNgFormsManager } from '@datorama/akita-ng-forms-manager';
-import { FormState } from 'src/app/state/form/form.model';
-import { Router } from '@angular/router';
-import { ProfileService } from 'src/app/state/profile/profile.service';
-import { FormGroup, Validators, FormControl } from '@ng-stack/forms';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+import {NotificationService} from '../../../../../../projects/notifications/src/lib/state/notification.service';
+import {Component} from '@angular/core';
+import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {FormState} from 'src/app/state/form/form.model';
+import {Router} from '@angular/router';
+import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {SessionQuery} from '../../../../state/session/session.query';
+import {PasswordChangeFormState} from '../../../../state/session/session.model';
+import {SessionService} from '../../../../state/session/session.service';
 
 @Component({
   selector: 's4e-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
-export class ChangePasswordComponent extends GenericFormComponent<ProfileQuery, PasswordChangeFormState> {
+export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, PasswordChangeFormState> {
   constructor(
     fm: AkitaNgFormsManager<FormState>,
     router: Router,
-    private _profileService: ProfileService,
-    private _profileQuery: ProfileQuery,
-    private _profileStore: ProfileStore,
+    _sessionQuery: SessionQuery,
+    private _sessionService: SessionService,
     private _notificationService: NotificationService
   ) {
-    super(fm, router, _profileQuery, 'resetPassword');
+    super(fm, router, _sessionQuery, 'resetPassword');
   }
 
   ngOnInit(): void {
@@ -38,7 +36,7 @@ export class ChangePasswordComponent extends GenericFormComponent<ProfileQuery, 
 
   submitPasswordChange() {
     if (this.form.valid) {
-      this._profileService
+      this._sessionService
         .resetPassword(
           this.form.controls.oldPassword.value,
           this.form.controls.newPassword.value
@@ -56,6 +54,6 @@ export class ChangePasswordComponent extends GenericFormComponent<ProfileQuery, 
 
   reset() {
     this.form.reset();
-    this._profileStore.setError(null);
+    this._sessionService.clearError();
   }
 }

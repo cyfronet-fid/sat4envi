@@ -7,12 +7,10 @@ export namespace File {
   }
 }
 
-export function getImageXhr(src: string, bearer: string): XMLHttpRequest {
+export function getImageXhr(src: string): XMLHttpRequest {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', src);
   xhr.responseType = 'arraybuffer';
-  xhr.setRequestHeader('Authorization', bearer);
-
   return xhr;
 }
 

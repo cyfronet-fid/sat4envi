@@ -1,8 +1,19 @@
 import {Injectable} from '@angular/core';
 import {Query} from '@datorama/akita';
 import {SessionStore} from './session.store';
-import {Session} from './session.model';
+import {Role, Session} from './session.model';
 import {Observable} from 'rxjs';
+import {map} from 'rxjs/operators';
+
+const ROLE_INSTANCE_ADMIN = 'INST_ADMIN';
+const ROLE_INSTANCE_MANAGER = 'INST_MANAGER';
+const ROLE_GROUP_MANAGER = 'GROUP_MANAGER';
+
+const MANAGER_ROLES = [ROLE_INSTANCE_ADMIN, ROLE_INSTANCE_MANAGER, ROLE_GROUP_MANAGER];
+
+function hasAnyManagerRole(roles: Role[]) {
+  return !!roles.find(role => MANAGER_ROLES.includes(role.role));
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,18 +24,29 @@ export class SessionQuery extends Query<Session> {
   }
 
   isLoggedIn(): boolean {
-    return localStorage.getItem('token') != null;
+    return this.getValue().email != null;
   }
 
   isLoggedIn$(): Observable<boolean> {
-    return this.select(state => state.token != null);
+    return this.select('email').pipe(map(email => email != null));
   }
 
-  getToken(): string|null {
-    return localStorage.getItem('token');
+  isAdmin() {
+    return this.getValue().admin;
+  }
+  isManager() {
+    return hasAnyManagerRole(this.getValue().roles);
+  }
+  hasOnlyGroupMemberRole() {
+    const roles = this.getValue().roles;
+    return roles.length === 1 && roles.some((role) => role.role === ROLE_GROUP_MANAGER);
   }
 
-  isInitialized() {
-    return this.getValue().initialized;
+  public selectMemberZK(): Observable<boolean> {
+    return this.select('memberZK');
+  }
+
+  public selectCanSeeInstitutions(): Observable<boolean> {
+    return this.select().pipe(map(state => state.admin || hasAnyManagerRole(state.roles)));
   }
 }
