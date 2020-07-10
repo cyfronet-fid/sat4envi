@@ -1,16 +1,15 @@
-import { of } from 'rxjs';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ProfileModule } from './../profile.module';
-import { ProfileService } from 'src/app/state/profile/profile.service';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ChangePasswordComponent } from './change-password.component';
+import {of} from 'rxjs';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ChangePasswordComponent} from './change-password.component';
+import {SessionService} from '../../../../state/session/session.service';
+import {ProfileModule} from '../profile.module';
 
 describe('ChangePasswordComponent', () => {
   let component: ChangePasswordComponent;
   let fixture: ComponentFixture<ChangePasswordComponent>;
-  let profileService: ProfileService;
+  let sessionService: SessionService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -20,9 +19,9 @@ describe('ChangePasswordComponent', () => {
         HttpClientTestingModule
       ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    profileService = TestBed.get(ProfileService);
+    sessionService = TestBed.get(SessionService);
   }));
 
   beforeEach(() => {
@@ -36,13 +35,13 @@ describe('ChangePasswordComponent', () => {
   });
 
   it('should not send non valid form', () => {
-    const spy = spyOn(profileService, 'resetPassword');
+    const spy = spyOn(sessionService, 'resetPassword');
     component.submitPasswordChange();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(profileService, 'resetPassword').and.returnValue(of(1));
+    const spy = spyOn(sessionService, 'resetPassword').and.returnValue(of(1));
     const oldPassword = 'zkMember';
     const newPassword = 'ZKMEMBER';
     component.form

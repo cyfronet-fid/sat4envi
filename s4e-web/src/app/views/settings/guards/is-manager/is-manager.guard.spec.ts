@@ -3,9 +3,9 @@ import {IsManagerGuard} from './is-manager.guard';
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {ProfileQuery} from '../../../../state/profile/profile.query';
-import {ProfileStore} from '../../../../state/profile/profile.store';
 import {of} from 'rxjs';
+import {SessionQuery} from '../../../../state/session/session.query';
+import {SessionStore} from '../../../../state/session/session.store';
 
 @Component({selector: 'neutral', template: ''})
 class NeutralComponent {
@@ -17,8 +17,8 @@ class RestrictedComponent {
 
 describe('IsManagerGuard', () => {
   let router: Router;
-  let query: ProfileQuery;
-  let store: ProfileStore;
+  let query: SessionQuery;
+  let store: SessionStore;
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [NeutralComponent, RestrictedComponent],
@@ -28,11 +28,11 @@ describe('IsManagerGuard', () => {
           {path: 'restricted', canActivate: [IsManagerGuard], component: RestrictedComponent}
         ]
       )],
-      providers: [IsManagerGuard, ProfileQuery, ProfileStore],
+      providers: [IsManagerGuard, SessionQuery, SessionStore],
     });
     router = TestBed.get(Router);
-    store = TestBed.get(ProfileStore);
-    query = TestBed.get(ProfileQuery);
+    store = TestBed.get(SessionStore);
+    query = TestBed.get(SessionQuery);
   });
 
   it('should create', () => {

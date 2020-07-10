@@ -29,9 +29,9 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
 
   ngOnInit() {
     this._activatedRoute.queryParamMap
-      .subscribe((queryParams) => {
-        this.sessionService.back_link = queryParams.get('back_link');
-      });
+      .subscribe(
+        (queryParams) => this.sessionService.setBackLink(queryParams.get('back_link'))
+      );
 
     this.form = new FormGroup<LoginFormState>({
       login: new FormControl('', [Validators.required, Validators.email]),

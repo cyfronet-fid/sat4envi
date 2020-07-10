@@ -15,6 +15,7 @@ export class BreadcrumbService {
 
   public breadcrumbs$: Observable<IBreadcrumb[]>;
   protected _breadcrumbSubject$: BehaviorSubject<IBreadcrumb[]> = new BehaviorSubject<IBreadcrumb[]>([]);
+  private _mainRoutes: Routes = [];
 
   constructor() {
     this.breadcrumbs$ = this._breadcrumbSubject$.asObservable();
@@ -105,5 +106,13 @@ export class BreadcrumbService {
   }
   protected _isMaxDepth(depth) {
     return depth >= BreadcrumbService._MAX_DEPTH;
+  }
+
+  setMainRoutes(settingsRoutes: Routes) {
+    this._mainRoutes = settingsRoutes;
+  }
+
+  getMainRoutes(): Routes {
+    return this._mainRoutes;
   }
 }

@@ -89,22 +89,16 @@ describe('MapComponent', () => {
     const spyOpen = spyOn(XMLHttpRequest.prototype, 'open').and.callThrough();
     const spySend = spyOn(XMLHttpRequest.prototype, 'send');
 
-    const bearer = '<bearer>';
-    const load = (component as any)._getImageLoaderWith(bearer);
+    const load = (component as any)._getImageLoaderWith();
 
     const tile = {
       getImage: () => ({src: ''})
     } as any as ImageWrapper;
     const src = '<srcUrl>';
 
-    XMLHttpRequest.prototype.setRequestHeader = function(header, value) {
-      this.headers = !!this.headers && this.headers || {};
-      this.headers[header] = value;
-    };
     const xhr = load(tile, src);
 
     expect(spyOpen).toHaveBeenCalled();
     expect(spySend).toHaveBeenCalled();
-    expect(xhr.headers).toEqual({ Authorization: '<bearer>' });
   });
 });

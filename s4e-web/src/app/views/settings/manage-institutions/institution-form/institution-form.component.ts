@@ -1,28 +1,28 @@
-import { IBreadcrumb } from './../../breadcrumb/breadcrumb.model';
-import { BreadcrumbService } from './../../breadcrumb/breadcrumb.service';
-import { InstitutionsSearchResultsQuery } from './../../state/institutions-search/institutions-search-results.query';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AkitaNgFormsManager } from '@datorama/akita-ng-forms-manager';
-import { Component } from '@angular/core';
-import { ModalService } from 'src/app/modal/state/modal.service';
-import { ModalQuery } from 'src/app/modal/state/modal.query';
+import {IBreadcrumb} from '../../breadcrumb/breadcrumb.model';
+import {BreadcrumbService} from '../../breadcrumb/breadcrumb.service';
+import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
+import {ActivatedRoute, Router} from '@angular/router';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {Component} from '@angular/core';
+import {ModalService} from 'src/app/modal/state/modal.service';
+import {ModalQuery} from 'src/app/modal/state/modal.query';
 import {
-  ParentInstitutionModal,
+  isParentInstitutionModal,
   PARENT_INSTITUTION_MODAL_ID,
-  isParentInstitutionModal
+  ParentInstitutionModal
 } from '../parent-institution-modal/parent-institution-modal.model';
-import { untilDestroyed } from 'ngx-take-until-destroy';
-import { map, filter, switchMap, tap } from 'rxjs/operators';
-import { FormGroup, FormControl, Validators } from '@ng-stack/forms';
-import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
-import { GenericFormComponent } from 'src/app/utils/miscellaneous/generic-form.component';
-import { FormState } from 'src/app/state/form/form.model';
-import { InstitutionQuery } from '../../state/institution/institution.query';
-import { Institution } from '../../state/institution/institution.model';
-import { InstitutionService } from '../../state/institution/institution.service';
-import { File, ImageBase64 } from './files.utils';
-import { combineLatest } from 'rxjs';
-import { settingsRoutes, ADD_INSTITUTION_PATH, INSTITUTIONS_LIST_PATH, INSTITUTION_PROFILE_PATH } from '../../settings.routes';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {filter, map} from 'rxjs/operators';
+import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
+import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
+import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
+import {FormState} from 'src/app/state/form/form.model';
+import {InstitutionQuery} from '../../state/institution/institution.query';
+import {Institution} from '../../state/institution/institution.model';
+import {InstitutionService} from '../../state/institution/institution.service';
+import {File, ImageBase64} from './files.utils';
+import {combineLatest} from 'rxjs';
+import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
 
 @Component({
   selector: 's4e-add-institution',
@@ -96,7 +96,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       id: PARENT_INSTITUTION_MODAL_ID,
       size: 'lg',
       hasReturnValue: true,
-      selectedInstitution: !!this.form.value.parentName  && {name, slug} || null
+      selectedInstitution: !!this.form.value.parentName && {name, slug} || null
     });
 
     this._modalQuery.modalClosed$(PARENT_INSTITUTION_MODAL_ID)
@@ -185,7 +185,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   protected _updateBreadcrumbsWithInstitutionProfile(breadcrumbs: IBreadcrumb[]) {
     const mainRouteIndex = 0;
-    const institutionListBreadcrumbIndex = settingsRoutes[mainRouteIndex].children
+    const institutionListBreadcrumbIndex = this._breadcrumbService.getMainRoutes()[mainRouteIndex].children
       .find(route => route.path === ADD_INSTITUTION_PATH)
       .data
       .breadcrumbs

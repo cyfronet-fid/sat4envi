@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {IConfiguration, IRemoteConfiguration} from '../../app.configuration';
-import {map, tap} from 'rxjs/operators';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
-import {combineLatest} from 'rxjs';
-import {ProfileService} from '../../state/profile/profile.service';
+import {SessionService} from '../../state/session/session.service';
 
 @Injectable()
 export class S4eConfig implements IConfiguration {
-
   backendDateFormat: string;
   geoserverUrl: string;
   geoserverWorkspace: string;
@@ -20,7 +18,7 @@ export class S4eConfig implements IConfiguration {
   generalErrorKey: string;
   maxZoom: number;
 
-  constructor(private http: HttpClient, private profileService: ProfileService) {
+  constructor(private http: HttpClient, private sessionService: SessionService) {
   }
 
   init(config: IRemoteConfiguration) {
@@ -35,14 +33,16 @@ export class S4eConfig implements IConfiguration {
     this.generalErrorKey = '__general__';
     this.maxZoom = 12;
     this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    this.sessionService.init(this);
   }
 
-  loadConfiguration(): Promise<IRemoteConfiguration> {
-    return combineLatest([
-      this.http.get<IRemoteConfiguration>(`api/v1/config`).pipe(tap(config => this.init(config))),
-      this.profileService.get$()
-    ]).pipe(
-      map(([configuration, profile]) => configuration)
-    ).toPromise();
+  loadConfiguration(): Promise<S4eConfig> {
+    return this.http.get<IRemoteConfiguration>(`api/v1/config`)
+      .pipe(
+        tap(config => this.init(config)),
+        switchMap(() => this.sessionService.getProfile$()),
+        map(() => this)
+      ).toPromise();
   }
 }

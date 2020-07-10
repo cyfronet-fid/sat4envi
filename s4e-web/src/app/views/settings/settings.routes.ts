@@ -1,27 +1,19 @@
-import { GroupListComponent } from './groups/group-list/group-list.component';
-import { InstitutionFormComponent } from './manage-institutions/institution-form/institution-form.component';
-import { ChangePasswordComponent } from './profile/change-password/change-password.component';
-import { IBreadcrumb } from './breadcrumb/breadcrumb.model';
-import { Routes} from '@angular/router';
+import {GroupListComponent} from './groups/group-list/group-list.component';
+import {InstitutionFormComponent} from './manage-institutions/institution-form/institution-form.component';
+import {ChangePasswordComponent} from './profile/change-password/change-password.component';
+import {Routes} from '@angular/router';
 import {ProfileComponent} from './profile/profile.component';
 import {SettingsComponent} from './settings.component';
 import {IsLoggedIn} from '../../utils/auth-guard/auth-guard.service';
-import { adminDashboardMatcher, managerDashboardMatcher } from './dashboards.routes';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { PersonListComponent } from './people/person-list/person-list.component';
-import { IsManagerGuard } from './guards/is-manager/is-manager.guard';
-import { InstitutionListComponent } from './manage-institutions/institution-list/institution-list.component';
-import { InstitutionProfileComponent } from './intitution-profile/institution-profile.component';
+import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {PersonListComponent} from './people/person-list/person-list.component';
+import {IsManagerGuard} from './guards/is-manager/is-manager.guard';
+import {InstitutionListComponent} from './manage-institutions/institution-list/institution-list.component';
+import {InstitutionProfileComponent} from './intitution-profile/institution-profile.component';
+import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH, SETTINGS_PATH} from './settings.breadcrumbs';
+import {adminDashboardMatcher, managerDashboardMatcher} from './dashboards.routes';
 
-export const userSettingsRoutes: Routes = [
-
-];
-
-export const SETTINGS_PATH = 'settings';
-export const ADD_INSTITUTION_PATH = 'add-institution';
-export const INSTITUTIONS_LIST_PATH = 'institutions';
-export const INSTITUTION_PROFILE_PATH = 'institution';
 export const settingsRoutes: Routes = [
   {
     path: SETTINGS_PATH,

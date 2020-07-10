@@ -1,5 +1,5 @@
-import {ModuleWithProviders, NgModule} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {SessionQuery} from './session/session.query';
 import {SessionService} from './session/session.service';
 
@@ -13,4 +13,5 @@ import {SessionService} from './session/session.service';
     SessionService,
   ]
 })
-export class CommonStateModule {}
+export class CommonStateModule {
+}

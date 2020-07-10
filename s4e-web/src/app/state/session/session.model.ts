@@ -11,25 +11,29 @@ export interface Role {
 }
 
 export interface Session {
-  initialized: boolean;
-  token: string|null;
-  email: string|null;
+  email: string;
+  name: string;
+  surname: string;
   roles: Role[];
+  memberZK: boolean;
+  admin: boolean;
 }
 
-export interface LoginRequestResponse {
-  email: string;
-  token?: string;
+export interface PasswordChangeFormState {
+  oldPassword: string;
+  newPassword: string;
 }
 
 /**
  * A factory function that creates Session
  */
-export function createSession(params: Partial<Session>) {
+export function createSession(params: Partial<Session>): Session {
   return {
-    initialized: false,
-    token: params.token || null,
     email: params.email || null,
     roles: params.roles || [],
-  } as Session;
+    name: '',
+    surname: '',
+    memberZK: false,
+    admin: false
+  };
 }

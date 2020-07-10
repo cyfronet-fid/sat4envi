@@ -1,19 +1,17 @@
-import { settingsRoutes } from './settings.routes';
-import { BreadcrumbService } from './breadcrumb/breadcrumb.service';
-import { InstitutionService } from './state/institution/institution.service';
-import { ModalQuery } from './../../modal/state/modal.query';
-import { ModalService } from './../../modal/state/modal.service';
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import {InstitutionService} from './state/institution/institution.service';
+import {ModalQuery} from '../../modal/state/modal.query';
+import {ModalService} from '../../modal/state/modal.service';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {SessionService} from '../../state/session/session.service';
 import {Observable} from 'rxjs';
-import {ProfileQuery} from '../../state/profile/profile.query';
-import { map } from 'rxjs/operators';
-import { InstitutionsSearchResultsQuery } from './state/institutions-search/institutions-search-results.query';
-import { InstitutionsSearchResultsService } from './state/institutions-search/institutions-search-results.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Institution } from './state/institution/institution.model';
-import { environment } from 'src/environments/environment';
-import { hasBeenClickedOutside } from 'src/app/utils';
+import {map} from 'rxjs/operators';
+import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
+import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Institution} from './state/institution/institution.model';
+import {environment} from 'src/environments/environment';
+import {hasBeenClickedOutside} from 'src/app/utils';
+import {SessionQuery} from '../../state/session/session.query';
 
 @Component({
   selector: 's4e-settings',
@@ -32,6 +30,20 @@ export class SettingsComponent implements OnInit {
   public hasSelectedInstitution$: Observable<boolean>;
 
   @ViewChild('search') search;
+
+  constructor(
+    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    private _institutionsSearchResultsService: InstitutionsSearchResultsService,
+    private _institutionService: InstitutionService,
+    private sessionService: SessionService,
+    private _sessionQuery: SessionQuery,
+    private _router: Router,
+    private _activatedRoute: ActivatedRoute,
+    private _modalService: ModalService,
+    private _modalQuery: ModalQuery
+  ) {
+  }
+
   @HostListener('document:click', ['$event.target'])
   onClick(target) {
     if (!!this.search && hasBeenClickedOutside(this.search, target)) {
@@ -39,20 +51,8 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  constructor(
-    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
-    private _institutionsSearchResultsService: InstitutionsSearchResultsService,
-    private _institutionService: InstitutionService,
-    private sessionService: SessionService,
-    private profileQuery: ProfileQuery,
-    private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _modalService: ModalService,
-    private _modalQuery: ModalQuery
-  ) {}
-
   ngOnInit() {
-    this.showInstitutions$ = this.profileQuery.selectCanSeeInstitutions();
+    this.showInstitutions$ = this._sessionQuery.selectCanSeeInstitutions();
     this.institutions$ = this._institutionsSearchResultsQuery.selectAll()
       .pipe(map(institutions => institutions.filter(institution => !!institution)));
     this.institutionsLoading$ = this._institutionsSearchResultsQuery.selectLoading();
@@ -74,9 +74,10 @@ export class SettingsComponent implements OnInit {
     this._institutionsSearchResultsService.get(partialInstitutionName || '');
     this.isInUse = true;
   }
+
   selectFirstInstitution() {
     const firstSearchResult = this._institutionsSearchResultsQuery.getAll()[0];
-    if(!!firstSearchResult) {
+    if (!!firstSearchResult) {
       this.selectInstitution(firstSearchResult);
     }
   }
