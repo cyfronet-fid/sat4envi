@@ -20,20 +20,6 @@
     </s4e-tile>
 
     <s4e-tile>
-      <header class="panel__header" tile-title>Grupy</header>
-      <p i18n tile-description>Każda osoba w systemie należy do jakiejść grupy. W tym miejscu możesz zarządzać ich uprawnieniami.</p>
-      <button
-        routerLink="../groups"
-        queryParamsHandling="merge"
-        class="button button--secondary"
-        [disabled]="!(hasSelectedInstitution$ | async)"
-        footer-navigation
-      >
-        Zarządzaj grupami
-      </button>
-    </s4e-tile>
-
-    <s4e-tile>
       <header class="panel__header" tile-title>Profil instytucji</header>
       <p i18n tile-description>To instytucja, której jesteś administratorem. Możesz edytować tam podstawowe informacje.</p>
       <button

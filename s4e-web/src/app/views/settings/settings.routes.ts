@@ -116,19 +116,6 @@ export const settingsRoutes: Routes = [
       },
 
       {
-        path: 'groups',
-        component: GroupListComponent,
-        canActivate: [IsManagerGuard],
-        data: {
-          breadcrumbs: [
-            {
-              label: 'Grupy'
-            }
-          ]
-        }
-      },
-
-      {
         path: 'people',
         component: PersonListComponent,
         canActivate: [IsManagerGuard],
