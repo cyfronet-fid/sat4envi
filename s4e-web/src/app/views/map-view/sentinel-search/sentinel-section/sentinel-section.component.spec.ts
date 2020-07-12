@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import { SentinelSectionComponent } from './sentinel-section.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -120,4 +120,15 @@ describe('SentinelSectionComponent', () => {
     fixture.detectChanges();
     expect(de.query(By.css('[data-test="sentinel-section-content"][hidden=""]'))).toBeTruthy();
   });
+
+  it('should callOnChange when visibility or value changes', fakeAsync(() => {
+    const spy = jest.fn();
+    component.registerOnChange(spy);
+    component.form.setValue({productType: '', satellitePlatform: 'Sentinel-1A'})
+    expect(spy).toHaveBeenNthCalledWith(4, {satellitePlatform: 'Sentinel-1A'});
+    visibleSentinels$.next([]);
+    expect(spy).toHaveBeenNthCalledWith(6, {});
+    visibleSentinels$.next([component.sentinel.name]);
+    expect(spy).toHaveBeenNthCalledWith(7, {satellitePlatform: 'Sentinel-1A'});
+  }));
 });
