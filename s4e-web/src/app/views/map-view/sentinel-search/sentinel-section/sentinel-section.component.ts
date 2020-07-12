@@ -4,7 +4,7 @@ import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search
 import {FormControl} from '@ng-stack/forms';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
-import {Observable} from 'rxjs';
+import {combineLatest, Observable} from 'rxjs';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -53,14 +53,18 @@ export class SentinelSectionComponent implements OnInit, OnDestroy, ControlValue
 
   ngOnInit(): void {
     this.visible$ = this._sentinelSearchQuery.selectVisibleSentinels()
-      .pipe(untilDestroyed(this), map(sentinels => sentinels.includes(this.sentinel.name)));
+      .pipe(
+        untilDestroyed(this),
+        map(sentinels => sentinels.includes(this.sentinel.name))
+      );
 
-    this.visible$.subscribe(visible => {
-      this.selectedFc.setValue(visible);
-      this.propagateChange(visible ? this.form.value : {});
-    });
+    this.visible$.subscribe(visible => this.selectedFc.setValue(visible));
 
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe(val => this.propagateChange(val));
+    combineLatest([this.form.valueChanges, this.visible$])
+      .pipe(untilDestroyed(this))
+      .subscribe(([formValue, visible]) => {
+        this.propagateChange(visible ? formValue : {})
+      });
   }
 
   ngOnDestroy(): void {}
@@ -88,7 +92,7 @@ export class SentinelSectionComponent implements OnInit, OnDestroy, ControlValue
 
   registerOnChange(fn: any): void {
     this.propagateChange = fn;
-    this.propagateChange(this.selectedFc.value ? this.form.value : {});
+    this.propagateChange(this.selectedFc.value ? this.form.value : {})
   }
 
   registerOnTouched(fn: any): void {

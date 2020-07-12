@@ -46,6 +46,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Sentinel Search Query [#568](https://github.com/cyfronet-fid/sat4envi/issues/568)
 - [Fix] Hide `/settings` groups and it's functionalities [#571](https://github.com/cyfronet-fid/sat4envi/pull/571)
 - resize `Warstwy` segment in `/map` sidebar, [Fix] Update UI messages [#566](https://github.com/cyfronet-fid/sat4envi/pull/566)
 - Visual bugfixes [#576](https://github.com/cyfronet-fid/sat4envi/issues/576)
