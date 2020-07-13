@@ -1,13 +1,12 @@
 <header class="content__header">
-  <h1 i18n>
-    <ng-content select="[caption]"></ng-content>
-  </h1>
+  <ng-content select="[caption]"></ng-content>
   <p i18n>
     <ng-content select="[description]"></ng-content>
   </p>
   <ng-content select="[add-button]"></ng-content>
 </header>
 <section class="content__details">
+  <ng-content select="[caption-inside]"></ng-content>
   <ng-container *ngIf="error == null; else errorView">
     <div class="search">
       <span>

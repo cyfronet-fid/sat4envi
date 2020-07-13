@@ -49,7 +49,9 @@
                        [error]="error$ | async"
                        [searchable]="true">
   <ng-container description></ng-container>
-  <ng-container caption i18n>Jednostki podległe</ng-container>
+  <h3 caption-inside i18n>
+    <ng-container>Jednostki podległe</ng-container>
+  </h3>>
   <ng-container search-label i18n>Szukaj instytucji:</ng-container>
   <ng-container table-header>
     <th i18n>Nazwa instytucji</th>

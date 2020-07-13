@@ -11,7 +11,16 @@
           data-e2e="institutions">
         <a [routerLink]="['./institutions']"
            queryParamsHandling="merge"
-           i18n>Zarządzaj instytucjami</a>
+           i18n>Lista instytucji</a>
+      </li>
+      <li routerLinkActive="active" data-e2e="profile">
+        <a
+          [routerLink]="['./profile']"
+          queryParamsHandling="merge"
+          i18n
+        >
+          Twój profil
+        </a>
       </li>
     </ul>
 
@@ -57,17 +66,6 @@
           i18n
         >
           Profil Instytucji
-        </a>
-      </li>
-    </ul>
-    <ul class="navigation__list">
-      <li routerLinkActive="active" data-e2e="profile">
-        <a
-          [routerLink]="['./profile']"
-          queryParamsHandling="merge"
-          i18n
-        >
-          Twój profil
         </a>
       </li>
     </ul>

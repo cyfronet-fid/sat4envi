@@ -45,10 +45,10 @@ describe('TilesDashboardComponent', () => {
   });
 
   it('should display', () => {
-    const headerTitle = de.nativeElement.querySelector('.page__header h1');
+    const headerTitle = de.nativeElement.querySelector('.content__header h1');
     expect(headerTitle.innerHTML).toEqual('Witamy w panelu administratora Sat4Envi');
 
-    const headerDescription = de.nativeElement.querySelector('.page__header p');
+    const headerDescription = de.nativeElement.querySelector('.content__header p');
     expect(headerDescription.innerHTML).toEqual('Jesteś superadministratorem');
 
     const tilesItem = de.nativeElement.querySelector('.panel p');

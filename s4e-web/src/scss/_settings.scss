@@ -142,27 +142,49 @@ p {
   justify-content: center;
   margin-top: -100px;
 
-  .page__header {
+  .content__header {
     margin-bottom: $space-xlarge * 3;
     text-align: center;
+
+    p {
+      width: 100%;
+    }
   }
 
 } // end dashboard
 
 .panel {
   flex-direction: row;
+  display: flex;
 
   &__item {
     margin: $space-xsmall;
     background: $color-white;
     padding: $space-xlarge;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     p {
       margin-bottom: $space-xlarge;
     }
+
+    aside {
+      flex: 1;
+      text-align: center;
+      margin-right: $space-large * 2;
+      height: 100%;
+
+      img {
+        width: 80px;
+      }
+    }
   }
+
+  &__content {
+    flex: 3;
+  }
+
 
   &__header {
     font-weight: 700;
@@ -172,6 +194,8 @@ p {
 
   &__footer {
     margin-top: auto;
+    width: 100%;
+    text-align: center;
 
     button {
       font-size: 0.875rem;
@@ -254,6 +278,10 @@ p {
     h2{
       font-size: 1.5rem;
       font-weight: 600;
+    }
+
+    h3 {
+      margin-bottom: $space-xlarge;
     }
 
     a {
