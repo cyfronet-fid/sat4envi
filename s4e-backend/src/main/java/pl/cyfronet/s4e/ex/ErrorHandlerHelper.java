@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import pl.cyfronet.s4e.ex.product.ProductValidationException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,11 +33,21 @@ public class ErrorHandlerHelper {
     }
 
     public Map<String, Object> toResponseMap(MethodArgumentNotValidException e) {
-        return getStringObjectMap(e, e.getBindingResult());
+        val out = getStringObjectMap(e.getBindingResult());
+        optionallyAddDevelopmentInformation(out, e);
+        return out;
     }
 
     public Map<String, Object> toResponseMap(QueryException e) {
-        return getStringObjectMap(e, e.getBindingResult());
+        val out = getStringObjectMap(e.getBindingResult());
+        optionallyAddDevelopmentInformation(out, e);
+        return out;
+    }
+
+    public Map<String, Object> toResponseMap(ProductValidationException e) {
+        val out = getStringObjectMap(e.getBindingResult());
+        optionallyAddDevelopmentInformation(out, e);
+        return out;
     }
 
     public Map<String, Object> toResponseMap(RecaptchaException e) {
@@ -51,7 +62,7 @@ public class ErrorHandlerHelper {
         return map;
     }
 
-    private LinkedHashMap<String, Object> getStringObjectMap(Exception e, BindingResult bindingResult) {
+    private LinkedHashMap<String, Object> getStringObjectMap(BindingResult bindingResult) {
         val map = new LinkedHashMap<String, Object>();
 
         // populate general errors
@@ -68,7 +79,6 @@ public class ErrorHandlerHelper {
                     getMessage(fieldError));
         }
 
-        optionallyAddDevelopmentInformation(map, e);
         return map;
     }
 

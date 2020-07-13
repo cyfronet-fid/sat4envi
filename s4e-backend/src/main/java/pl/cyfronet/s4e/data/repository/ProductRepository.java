@@ -13,19 +13,28 @@ import java.util.Optional;
 public interface ProductRepository extends CrudRepository<Product, Long> {
     <T> List<T> findAllBy(Class<T> projection);
 
-    @Query("SELECT CASE WHEN COUNT(p)> 0 THEN 'true' ELSE 'false' END FROM Product p " +
-            "JOIN p.favourites f " +
-            "WHERE p.id = :productId AND f.email = :email")
-    boolean isFavouriteByEmailAndProductId(String email, Long productId);
+    @Query("SELECT p FROM Product p")
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
+    <T> List<T> findAllFetchSchemas(Class<T> projection);
 
     <T> Optional<T> findById(Long id, Class<T> projection);
 
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
+    <T> Optional<T> findByIdFetchSchemas(Long id, Class<T> projection);
+
     Optional<Product> findByNameContainingIgnoreCase(String name);
 
-    @EntityGraph(attributePaths={ "sceneSchema", "metadataSchema" })
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
     <T> Optional<T> findByName(String name, Class<T> projection);
 
     boolean existsBySceneSchemaId(Long id);
 
     boolean existsByMetadataSchemaId(Long id);
+
+    @Query("SELECT CASE WHEN COUNT(p)> 0 THEN 'true' ELSE 'false' END " +
+            "FROM Product p " +
+            "JOIN p.favourites f " +
+            "WHERE p.id = :productId AND f.email = :email")
+    boolean isFavouriteByEmailAndProductId(String email, Long productId);
 }

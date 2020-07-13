@@ -81,10 +81,6 @@ public class Product extends CreationAndModificationAudited {
     @ToString.Exclude
     private Map<String, String> granuleArtifactRule;
 
-    @Type(type = "jsonb")
-    @ToString.Exclude
-    private Map<String, Object> searchableMetadata;
-
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE

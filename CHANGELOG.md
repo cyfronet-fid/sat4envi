@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Admin endpoints for Schema and Product management [#579](https://github.com/cyfronet-fid/sat4envi/issues/579)
 - Query param handling in search endpoint [#512](https://github.com/cyfronet-fid/sat4envi/issues/512)
 - Add keys handling for search [#556](https://github.com/cyfronet-fid/sat4envi/issues/556)
 

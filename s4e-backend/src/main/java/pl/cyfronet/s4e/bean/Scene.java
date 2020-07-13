@@ -30,6 +30,7 @@ public class Scene extends CreationAndModificationAudited {
     public static final String COLUMN_FOOTPRINT = "footprint";
     public static final String COLUMN_METADATA = "metadata_content";
     public static final String COLUMN_CONTENT = "scene_content";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

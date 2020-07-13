@@ -32,7 +32,7 @@ public class ProductController {
     })
     @GetMapping("/products")
     public List<BasicProductResponse> getProducts() {
-        return productService.getProducts();
+        return productService.findAll(BasicProductResponse.class);
     }
 
     @Operation(summary = "View product info")
@@ -42,7 +42,7 @@ public class ProductController {
     })
     @GetMapping("/products/{id}")
     public ProductResponse getProduct(@PathVariable Long id) throws NotFoundException {
-        return productService.getProduct(id)
+        return productService.findById(id, ProductResponse.class)
                 .orElseThrow(() -> new NotFoundException("Product not found for id '" + id));
     }
 
