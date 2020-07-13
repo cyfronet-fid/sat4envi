@@ -29,24 +29,24 @@
       <span>Panel zarządzania instytucją</span>
     </header>
     <ul class="navigation__list navigation__list--institution" *ngIf="showInstitutions$ | async">
-      <li #search>
-        <s4e-search
-          placeholder="Wpisz szukaną instytucję..."
-          [searchResults]="institutions$ | async"
-          [isSearchLoading]="institutionsLoading$ | async"
-          [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
-          [value]="searchValue"
+      <li>
+          <s4e-search
+            placeholder="Wpisz szukaną instytucję..."
+            [searchResults]="institutions$ | async"
+            [isSearchLoading]="institutionsLoading$ | async"
+            [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
+            [value]="searchValue"
 
-          (selectResult)="selectInstitution($event)"
-          (refreshResults)="searchForInstitutions($event)"
-          (selectFirstResult)="selectFirstInstitution()"
-          (resetSearch)="resetSearch()"
-        >
-          <ng-template #result let-result>
-            <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
-            <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
-          </ng-template>
-        </s4e-search>
+            (selectResult)="selectInstitution($event)"
+            (refreshResults)="searchForInstitutions($event)"
+            (selectFirstResult)="selectFirstInstitution()"
+            (resetSearch)="resetSearch()"
+          >
+            <ng-template #result let-result>
+              <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
+              <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
+            </ng-template>
+          </s4e-search>
       </li>
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
         <a

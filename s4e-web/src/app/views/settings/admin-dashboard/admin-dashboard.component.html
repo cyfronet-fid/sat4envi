@@ -8,7 +8,6 @@
     <s4e-tile>
       <header class="panel__header" tile-title>Wybierz instytucję</header>
       <p i18n tile-description>Wybierz instytucję aby móc nią zarządzać</p>
-      <div #search footer-navigation>
         <s4e-search
           placeholder="Wpisz szukaną instytucję..."
           [searchResults]="institutions$ | async"
@@ -26,7 +25,6 @@
             <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
           </ng-template>
         </s4e-search>
-      </div>
     </s4e-tile>
 
     <s4e-tile>

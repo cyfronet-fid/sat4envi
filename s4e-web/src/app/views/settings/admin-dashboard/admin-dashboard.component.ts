@@ -7,7 +7,6 @@ import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/
 import { Institution } from '../state/institution/institution.model';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
-import { hasBeenClickedOutside } from 'src/app/utils';
 
 @Component({
   selector: 's4e-dashboard',
@@ -22,14 +21,6 @@ export class AdminDashboardComponent implements OnInit {
   public hasSelectedInstitution$: Observable<boolean>;
   public searchValue: string = '';
   public isInUse: boolean = false;
-
-  @ViewChild('search') search;
-  @HostListener('document:click', ['$event.target'])
-  onClick(target) {
-    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
-      this.isInUse = false;
-    }
-  }
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,

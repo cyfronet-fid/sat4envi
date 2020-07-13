@@ -15,21 +15,8 @@ import { SearchResultsService } from 'src/app/views/map-view/state/location-sear
 export class RootComponent {
   PRODUCTION: boolean = environment.production;
 
-  constructor(
-    private notificationService: NotificationService,
-    private _router: Router,
-    private _mapService: MapService,
-    private _locationSearchResultsService: SearchResultsService
-  ) {
+  constructor(private notificationService: NotificationService) {
     console.log('SOK version ' + environment.version);
-
-    this._router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this._mapService.toggleLoginOptions(false);
-        this._mapService.toggleProductDescription(false);
-        this._locationSearchResultsService.toggleSearchResults(false);
-      });
   }
 
   /**

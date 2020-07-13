@@ -1,54 +1,61 @@
-<section class="section search">
-  <input
-    #search
-    class="search__input"
-    placeholder="{{ placeholder}}"
-    i18n-placeholder
-    [formControl]="searchFormControl"
-    (focus)="refreshResults.emit(searchFormControl.value)"
-  />
-  <button
-    *ngIf="!!search.value.trim()"
-    class="reset_search_button"
-    (click)="resetSearchValue()"
-  >
-    <i class="fas fa-times"></i>
-  </button>
-  <button
-    class="search__button"
-    (click)="selectFirstResult.emit()"
-    [disabled]="!canSearchFirstResult"
-  >
-    <i class="fas fa-search"></i>
-  </button>
-</section>
+<div
+  s4eEvents
+  (insideClick)="isSearchOpen = true"
+  (outsideClick)="isSearchOpen = false"
+  (routerChange)="isSearchOpen = false"
+>
+  <section class="section search">
+    <input
+      #search
+      class="search__input"
+      placeholder="{{ placeholder}}"
+      i18n-placeholder
+      [formControl]="searchFormControl"
+      (focus)="refreshResults.emit(searchFormControl.value)"
+    />
+    <button
+      *ngIf="!!search.value.trim()"
+      class="reset_search_button"
+      (click)="resetSearchValue()"
+    >
+      <i class="fas fa-times"></i>
+    </button>
+    <button
+      class="search__button"
+      (click)="selectFirstResult.emit()"
+      [disabled]="!canSearchFirstResult"
+    >
+      <i class="fas fa-search"></i>
+    </button>
+  </section>
 
-<ng-container *ngIf="isSearchOpen">
-  <div *ngIf="!isSearchLoading; else emptyResultSet" class="searchResults">
-    <div class="searchresult__container">
-      <div *ngIf="!hasResults">
-        <span class="search__notfound"i18n>
-          Nie znaleziono wynikow
-        </span>
-      </div>
-      <ul>
-        <li class="searchResult__item"
-          *ngFor="let result of searchResults"
-          (click)="this.select(result)"
-        >
-          <ng-container
-            *ngTemplateOutlet="resultTemplate, context: { $implicit: result }"
+  <div *ngIf="isSearchOpen">
+    <div *ngIf="!isSearchLoading; else emptyResultSet" class="searchResults">
+      <div class="searchresult__container">
+        <div *ngIf="!hasResults">
+          <span class="search__notfound"i18n>
+            Nie znaleziono wynikow
+          </span>
+        </div>
+        <ul>
+          <li class="searchResult__item"
+            *ngFor="let result of searchResults"
+            (click)="this.select(result)"
           >
-        </ng-container>
-        </li>
-      </ul>
-    </div>
-
-    <ng-template #emptyResultSet>
-      <div class="searchResult__loader">
-        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-        <span class="search__loading" i18n>Wczytywanie wyników</span>
+            <ng-container
+              *ngTemplateOutlet="resultTemplate, context: { $implicit: result }"
+            >
+          </ng-container>
+          </li>
+        </ul>
       </div>
-    </ng-template>
+
+      <ng-template #emptyResultSet>
+        <div class="searchResult__loader">
+          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+          <span class="search__loading" i18n>Wczytywanie wyników</span>
+        </div>
+      </ng-template>
+    </div>
   </div>
-</ng-container>
+</div>

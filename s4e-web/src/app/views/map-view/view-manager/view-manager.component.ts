@@ -13,8 +13,8 @@ import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
 import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
-import { hasBeenClickedOutside } from 'src/app/utils';
 import { ResizeEvent } from 'angular-resizable-element';
+import { InjectorModule } from 'src/app/common/injector.module';
 
 @Component({
   selector: 's4e-view-manager',
@@ -43,14 +43,6 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   searchValue: string;
 
   favouriteProductsCount$: Observable<number>;
-
-  @ViewChild('search') search;
-  @HostListener('document:click', ['$event.target'])
-  onClick(target) {
-    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
-      this.searchResultsService.toggleSearchResults(false);
-    }
-  }
 
   constructor(
     private productQuery: ProductQuery,
@@ -93,6 +85,10 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+  }
+
+  toggleSearchResult(show: boolean) {
+    InjectorModule.Injector.get(SearchResultsService).toggleSearchResults(show);
   }
 
   selectProduct(productId: number) {

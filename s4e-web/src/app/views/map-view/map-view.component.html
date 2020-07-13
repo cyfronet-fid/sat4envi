@@ -39,8 +39,16 @@
          (viewChanged)="viewChanged($event)"
 >
 </s4e-map>
-<div #loginOptions>
-  <button (click)="toggleLoginOptions()" id="user-login-button" class="dropdown__button dropdown__button--login">
+<div
+  s4eEvents
+  (outsideClick)="toggleLoginOptions(false)"
+  (routerChange)="toggleLoginOptions(false)"
+>
+  <button
+    (click)="toggleLoginOptions()"
+    id="user-login-button"
+    class="dropdown__button dropdown__button--login"
+  >
   </button>
   <ng-container *ngIf="showLoginOptions$ | async">
     <div class="dropdown__content dropdown__content--login">
@@ -67,8 +75,12 @@
     </div>
   </ng-container>
 </div>
-
-<div #zkOptions *ngIf="userIsZK$ | async">
+<div
+  s4eEvents
+  *ngIf="userIsZK$ | async"
+  (outsideClick)="toggleZKOptions(false)"
+  (routerChange)="toggleZKOptions(false)"
+>
   <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown__button dropdown__button--zk">
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
