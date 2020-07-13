@@ -118,7 +118,6 @@ public class SchemaService {
         schemaRepository.deleteById(schemaId);
     }
 
-
     private NotFoundException constructNFE(String name) {
         return new NotFoundException("Schema not found for name '" + name + "'");
     }

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.cyfronet.s4e.ex.product.ProductException;
+import pl.cyfronet.s4e.ex.product.ProductValidationException;
 import pl.cyfronet.s4e.ex.schema.SchemaException;
 
 @ControllerAdvice("pl.cyfronet.s4e")
@@ -93,6 +95,16 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(QueryException.class)
     public ResponseEntity<?> handle(QueryException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
+    }
+
+    @ExceptionHandler(ProductValidationException.class)
+    public ResponseEntity<?> handle(ProductValidationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
+    }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<?> handle(ProductException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 

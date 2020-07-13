@@ -33,7 +33,7 @@ public class SceneTestHelper {
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
+                .granulePath("mailto://s4e-test-1/some/path")
                 .footprint(TestGeometryHelper.ANY_POLYGON);
     }
 
@@ -43,7 +43,7 @@ public class SceneTestHelper {
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
-                .granulePath("mailto://bucket/some/path")
+                .granulePath("mailto://s4e-test-1/some/path")
                 .metadataContent(jsonNode)
                 .footprint(TestGeometryHelper.ANY_POLYGON);
     }
