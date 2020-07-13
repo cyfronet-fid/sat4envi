@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add keys handling for search [#556](https://github.com/cyfronet-fid/sat4envi/issues/556)
+
 ### Changed
 
 ### Fixed

@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {AdminDashboardComponent} from './admin-dashboard.component';
 import {RouterModule} from '@angular/router';
-import { EventsModule } from 'src/app/utils/dropdown/events.module';
+import { EventsModule } from 'src/app/utils/search/events.module';
 
 @NgModule({
   declarations: [

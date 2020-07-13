@@ -1,24 +1,36 @@
+import { QueryEntity, EntityStore, StoreConfig } from '@datorama/akita';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SearchComponent } from './search.component';
 import { SearchModule } from './search.module';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Component, DebugElement, Directive } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { of } from 'rxjs';
+
+const SEARCH_RESULTS = [
+  {
+    name: 'example#1'
+  },
+  {
+    name: 'example#2'
+  }
+];
+
+@StoreConfig({name: 'Mock'})
+class StoreMock extends EntityStore<any> {}
 
 @Component({
   selector: 's4e-tile-mock-component',
   template: `
     <s4e-search
       placeholder="Wpisz szukaną ... ..."
-      [searchResults]="searchResults"
-      [isSearchLoading]="isSearchLoading"
-      [isSearchOpen]="isSearchOpen"
+      [query]="query"
+      [store]="store"
+
       [value]="searchValue"
+      (valueChange)="refreshResults($event)"
 
       (selectResult)="selectResult($event)"
-      (refreshResults)="refreshResults($event)"
-      (resetSearch)="resetSearch()"
-      (selectFirstResult)="selectFirstResult()"
     >
       <ng-template #result let-result>
         <span class="name">{{ result.name }}</span>
@@ -27,22 +39,17 @@ import { By } from '@angular/platform-browser';
   `
 })
 export class SearchMockComponent {
-  searchResults = [
-    {
-      name: 'example#1'
-    },
-    {
-      name: 'example#2'
-    }
-  ];
-  isSearchLoading = false;
-  isSearchOpen = false;
   searchValue = '';
+  store = new StoreMock();
+  query = new QueryEntity<any, any>(this.store);
+
+  constructor() {
+    this.store.set(SEARCH_RESULTS);
+    this.store.setLoading(false);
+  }
 
   selectResult(result: any) {}
   refreshResults(value: string) {}
-  resetSearch() {}
-  selectFirstResult() {}
 }
 
 describe('SearchComponent', () => {
@@ -80,7 +87,6 @@ describe('SearchComponent', () => {
   });
 
   it('should display search results', () => {
-    const refreshResultsSpy = spyOn(component, 'refreshResults');
     const valueToSearch = 'example';
     sendInput(valueToSearch)
       .then(() => {
@@ -89,38 +95,34 @@ describe('SearchComponent', () => {
       });
   });
 
-  it('should emit reset on reset button click', () => {
+  it('should emit empty string on reset button click', () => {
     component.searchValue = 'example';
 
     fixture.detectChanges();
 
-    const resetSpy = spyOn(component, 'resetSearch');
+    const refreshResultsSpy = spyOn(component, 'refreshResults');
     const resetBtn = searchDe.query(By.css('.reset_search_button')).nativeElement;
     resetBtn.click();
 
     fixture.detectChanges();
 
-    expect(resetSpy).toHaveBeenCalled();
+    expect(refreshResultsSpy).toHaveBeenCalledWith('');
   });
 
-  it('should select first on search button click', () => {
-    const selectFirstResultSpy = spyOn(component, 'selectFirstResult');
+  it('should select active result on search button click', () => {
+    const selectResultSpy = spyOn(component, 'selectResult');
+    const valueToSearch = 'example';
+    sendInput(valueToSearch)
+      .then(() => {
+        const selectActiveResultBtn = searchDe.query(By.css('.search__button')).nativeElement;
+        selectActiveResultBtn.click();
+        fixture.detectChanges();
 
-    component.searchValue = 'example';
-    component.isSearchOpen = true;
-
-    fixture.detectChanges();
-
-    const selectFirstResultBtn = searchDe.query(By.css('.search__button')).nativeElement;
-    selectFirstResultBtn.click();
-
-    fixture.detectChanges();
-
-    expect(selectFirstResultSpy).toHaveBeenCalled();
+        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
+      });
   });
 
   it('should emit result on select result click', () => {
-    const refreshResultsSpy = spyOn(component, 'refreshResults');
     const selectResultSpy = spyOn(component, 'selectResult');
     const valueToSearch = 'example';
     sendInput(valueToSearch)
@@ -133,15 +135,64 @@ describe('SearchComponent', () => {
 
         fixture.detectChanges();
 
-        expect(selectResultSpy).toHaveBeenCalledWith(component.searchResults.shift());
+        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
+      });
+  });
+
+  it('should emit result on `enter` `key press`', () => {
+    const selectResultSpy = spyOn(component, 'selectResult');
+    const valueToSearch = 'example';
+    sendInput(valueToSearch)
+      .then(() => {
+        const results = de.queryAll(By.css('.name'));
+        expect(results.length).toEqual(2);
+
+        const ENTER = 13;
+        keyPress(ENTER);
+
+        fixture.detectChanges();
+
+        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
+      });
+  });
+
+  it('should emit second result on `arrow down`', () => {
+    const selectResultSpy = spyOn(component, 'selectResult');
+    const valueToSearch = 'example';
+    sendInput(valueToSearch)
+      .then(() => {
+        const results = de.queryAll(By.css('.name'));
+        expect(results.length).toEqual(2);
+
+        const ARROW_DOWN = 40;
+        keyPress(ARROW_DOWN);
+
+        fixture.detectChanges();
+
+        const ENTER = 13;
+        keyPress(ENTER);
+
+        fixture.detectChanges();
+
+        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[1]);
       });
   });
 
   function sendInput(text: string) {
+    searchInput.click();
+    fixture.detectChanges();
+
     searchInput.value = text;
     searchInput.dispatchEvent(new Event('input'));
-    component.isSearchOpen = true;
     fixture.detectChanges();
     return fixture.whenStable();
+  }
+
+  function keyPress(key) {
+    const event = document.createEvent('Event');
+    event.keyCode = key;
+    event.key = key;
+    event.initEvent('keydown');
+    document.dispatchEvent(event);
   }
 });

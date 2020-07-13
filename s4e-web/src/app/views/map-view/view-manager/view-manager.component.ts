@@ -1,3 +1,4 @@
+import { LocationSearchResultsStore } from './../state/location-search-results/locations-search-results.store';
 import { SessionQuery } from './../../../state/session/session.query';
 import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked, HostListener, Renderer2 } from '@angular/core';
 import {IUILayer} from '../state/common.model';
@@ -38,7 +39,6 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   overlaysLoading$: Observable<boolean>;
   searchResults$: Observable<LocationSearchResult[]>;
   searchResultsLoading$: Observable<boolean>;
-  searchResultsOpen$: Observable<boolean>;
   isFavouriteFiltration: boolean = false;
   searchValue: string;
 
@@ -49,12 +49,14 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     private overlayQuery: OverlayQuery,
     private mapQuery: MapQuery,
     private sceneQuery: SceneQuery,
-    private searchResultsQuery: LocationSearchResultsQuery,
     private productService: ProductService,
     private overlayService: OverlayService,
     private searchResultsService: SearchResultsService,
     private sessionQuery: SessionQuery,
-    private _renderer: Renderer2
+    private _renderer: Renderer2,
+
+    public searchResultsQuery: LocationSearchResultsQuery,
+    public searchResultsStore: LocationSearchResultsStore
   ) {}
 
   ngOnInit(): void {
@@ -62,10 +64,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     this.products$ = this.productQuery.selectAllFilteredAsUILayer();
     this.favouriteProductsCount$ = this.productQuery.selectFavouritesCount();
     this.productsLoading$ = this.productQuery.selectLoading();
-    this.searchResultsLoading$ = this.searchResultsQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
-    this.searchResults$ = this.searchResultsQuery.selectAll();
-    this.searchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
 
     this.productQuery.selectIsFavouriteMode().subscribe(isFavourite => this.isFavouriteFiltration = isFavourite);
 
@@ -84,15 +83,14 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     return this.sessionQuery.isLoggedIn();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   toggleSearchResult(show: boolean) {
     InjectorModule.Injector.get(SearchResultsService).toggleSearchResults(show);
   }
 
   selectProduct(productId: number) {
-    if(this.productQuery.getActiveId() === productId) {
+    if (this.productQuery.getActiveId() === productId) {
       productId = null;
     }
 
@@ -109,6 +107,12 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   }
 
   searchForPlaces(place: string) {
+    if (!place || place === '') {
+      this.searchResultsService.setSelectedPlace(null);
+      this.searchResultsService.get('a');
+      return;
+    }
+
     this.searchResultsService.get(place);
   }
 
@@ -117,20 +121,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     this.searchValue = place.name;
   }
 
-  selectFirstResult() {
-    const firstSearchResult = this.searchResultsQuery.getAll()[0];
-    if(!!firstSearchResult) {
-      this.navigateToPlace(firstSearchResult);
-    }
-  }
-
-  resetSearch() {
-    this.searchValue = '';
-    this.searchResultsService.setSelectedPlace(null);
-  }
-
   setViewModeToFavourite(favourite: boolean) {
-    this.productService.setFavouriteMode(favourite)
+    this.productService.setFavouriteMode(favourite);
   }
 
   onResizeEnd(event: ResizeEvent) {

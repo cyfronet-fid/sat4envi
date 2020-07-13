@@ -6,6 +6,8 @@ import {Observable} from 'rxjs';
 import {SentinelSearchResult} from '../../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
 import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search.service';
+import { SentinelSearchStore } from '../../state/sentinel-search/sentinel-search.store';
+import { ActivatedQueue } from 'src/app/utils/search/activated-queue.utils';
 
 @Component({
   selector: 's4e-search-result-modal',
@@ -13,23 +15,22 @@ import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search
   styleUrls: ['./search-result-modal.component.scss']
 })
 export class SearchResultModalComponent extends ModalComponent implements OnInit, OnDestroy {
-  searchResult$: Observable<SentinelSearchResult>
-  isFirst$: Observable<boolean>
-  isLast$: Observable<boolean>
+  searchResult$: Observable<SentinelSearchResult>;
+  isFirst$: Observable<boolean>;
+  isLast$: Observable<boolean>;
 
-  constructor(modalService: ModalService,
-              private sentinelSearchService: SentinelSearchService,
-              private sentinelSearchQuery: SentinelSearchQuery) {
+  constructor(
+    modalService: ModalService,
+    private _sentinelSearchService: SentinelSearchService,
+    private _sentinelSearchQuery: SentinelSearchQuery
+  ) {
     super(modalService, SENTINEL_SEARCH_RESULT_MODAL_ID);
   }
 
-  ngOnDestroy(): void {
-  }
-
   ngOnInit(): void {
-    this.searchResult$ = this.sentinelSearchQuery.selectActive();
-    this.isFirst$ = this.sentinelSearchQuery.selectIsActiveFirst();
-    this.isLast$ = this.sentinelSearchQuery.selectIsActiveLast();
+    this.searchResult$ = this._sentinelSearchQuery.selectActive();
+    this.isFirst$ = this._sentinelSearchQuery.selectIsActiveFirst();
+    this.isLast$ = this._sentinelSearchQuery.selectIsActiveLast();
   }
 
   download() {
@@ -37,10 +38,12 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   }
 
   previousResult() {
-    this.sentinelSearchService.previousActive();
+    this._sentinelSearchService.previousActive();
   }
 
   nextResult() {
-    this.sentinelSearchService.nextActive();
+    this._sentinelSearchService.nextActive();
   }
+
+  ngOnDestroy(): void {}
 }

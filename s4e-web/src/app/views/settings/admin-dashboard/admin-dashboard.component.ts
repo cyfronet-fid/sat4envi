@@ -7,6 +7,7 @@ import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/
 import { Institution } from '../state/institution/institution.model';
 import { environment } from 'src/environments/environment';
 import { map } from 'rxjs/operators';
+import { InstitutionsSearchResultsStore } from '../state/institutions-search/institutions-search-results.store';
 
 @Component({
   selector: 's4e-dashboard',
@@ -14,51 +15,38 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  public institutions$: Observable<Institution[]>;
-  public institutionsLoading$: Observable<boolean>;
-  public areResultsOpen$: Observable<boolean>;
-
   public hasSelectedInstitution$: Observable<boolean>;
   public searchValue: string = '';
-  public isInUse: boolean = false;
 
   constructor(
-    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
     private _router: Router,
-    private _activatedRoute: ActivatedRoute
+    private _activatedRoute: ActivatedRoute,
+
+    public institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
+    public institutionSearchResultsStore: InstitutionsSearchResultsStore
   ) {}
 
   ngOnInit() {
-    this.institutions$ = this._institutionsSearchResultsQuery.selectAll()
-      .pipe(map(institutions => institutions.filter(institution => !!institution)));;
-    this.institutionsLoading$ = this._institutionsSearchResultsQuery.selectLoading();
-    this.areResultsOpen$ = this._institutionsSearchResultsQuery.selectIsOpen();
-
-    this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
+    this.hasSelectedInstitution$ = this.institutionsSearchResultsQuery
       .hasInstitutionSlugIn$(this._activatedRoute);
 
     if (environment.hmr) {
-      const searchResult = this._institutionsSearchResultsQuery.getValue().searchResult;
+      const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;
       this.searchValue = !!searchResult ? searchResult.name : '';
     }
   }
 
   searchForInstitutions(partialInstitutionName: string) {
-    this._institutionsSearchResultsService.get(partialInstitutionName || '');
-    this.isInUse = true;
-  }
-
-  selectFirstInstitution() {
-    const firstSearchResult = this._institutionsSearchResultsQuery.getAll()[0];
-    if(!!firstSearchResult) {
-      this.selectInstitution(firstSearchResult);
+    if (!partialInstitutionName || partialInstitutionName === '') {
+      this.selectInstitution(null);
     }
+
+    this._institutionsSearchResultsService.get(partialInstitutionName || '');
   }
 
   selectInstitution(institution: Institution | null) {
     this.searchValue = !!institution && institution.name || '';
-    this.isInUse = false;
     this._institutionsSearchResultsService.setSelectedInstitution(institution);
 
     this._router.navigate(
@@ -71,9 +59,5 @@ export class AdminDashboardComponent implements OnInit {
         queryParamsHandling: 'merge'
       }
     );
-  }
-
-  resetSearch() {
-    this.selectInstitution(null);
   }
 }
