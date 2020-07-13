@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.controller.request;
+package pl.cyfronet.s4e.admin.schema;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
-public class CreateSchemaRequest {
+class AdminCreateSchemaRequest {
     @NotEmpty
     @Schema(description = "The Schema name", required = true, example = "MSG.scene.v2.json")
     private String name;
