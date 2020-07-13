@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.cyfronet.s4e.ex.schema.SchemaException;
 
 @ControllerAdvice("pl.cyfronet.s4e")
 @RequiredArgsConstructor
@@ -85,13 +86,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
-    @ExceptionHandler(SchemaCreationException.class)
-    public ResponseEntity<?> handle(SchemaCreationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
-    }
-
-    @ExceptionHandler(SchemaDeletionException.class)
-    public ResponseEntity<?> handle(SchemaDeletionException e) {
+    @ExceptionHandler(SchemaException.class)
+    public ResponseEntity<?> handle(SchemaException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 

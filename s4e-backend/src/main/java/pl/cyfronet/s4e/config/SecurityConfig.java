@@ -96,9 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(POST, prefix("/share-link")).hasRole("MEMBER_ZK")
 
-                .mvcMatchers(GET, prefix("/schema", "/schema/{name}")).permitAll()
-                .mvcMatchers(POST, prefix("/schema")).hasRole("ADMIN")
-                .mvcMatchers(DELETE, prefix("/schema/{name}")).hasRole("ADMIN")
+                .mvcMatchers(GET, prefix("/schemas", "/schemas/{name}")).permitAll()
 
                 .mvcMatchers(GET, prefix("/products", "/products/{id}")).permitAll()
                 .mvcMatchers(PUT, prefix("/products/{id}/favourite")).authenticated()

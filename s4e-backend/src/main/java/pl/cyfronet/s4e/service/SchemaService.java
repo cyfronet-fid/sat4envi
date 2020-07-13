@@ -1,8 +1,8 @@
 package pl.cyfronet.s4e.service;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.val;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -11,17 +11,16 @@ import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SchemaRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.ex.SchemaCreationException;
-import pl.cyfronet.s4e.ex.SchemaDeletionException;
+import pl.cyfronet.s4e.ex.schema.*;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SchemaService {
-    @Value
+    @Data
     @Builder
-    public static class Create {
+    public static class DTO {
         private String name;
         private Schema.Type type;
         private String content;
@@ -49,26 +48,54 @@ public class SchemaService {
     }
 
     @Transactional
-    public Long create(Create params) throws NotFoundException, SchemaCreationException {
+    public Long create(DTO dto) throws NotFoundException, SchemaTypeException {
         Schema.SchemaBuilder schemaBuilder = Schema.builder()
-                .name(params.getName())
-                .type(params.getType())
-                .content(params.getContent());
+                .name(dto.getName())
+                .type(dto.getType())
+                .content(dto.getContent());
 
-        if (params.getPrevious() != null) {
-            String previousName = params.getPrevious();
-            Schema previous = schemaRepository.findByName(previousName)
-                    .orElseThrow(() -> constructNFE(previousName));
-
-            if (previous.getType() != params.getType()) {
-                throw new SchemaCreationException("Type of created schema must be the same as the previous");
-            }
-
-            schemaBuilder.previous(previous);
+        if (dto.getPrevious() != null) {
+            schemaBuilder.previous(getValidatedPreviousSchema(dto.getType(), dto.getPrevious()));
         }
 
         Schema schema = schemaRepository.save(schemaBuilder.build());
         return schema.getId();
+    }
+
+    @Transactional
+    public Long update(DTO dto) throws NotFoundException, SchemaTypeException {
+        String name = dto.getName();
+        Schema schema = schemaRepository.findByName(name)
+                .orElseThrow(() -> constructNFE(name));
+
+        if (dto.getType() != null) {
+            schema.setType(dto.getType());
+        }
+        if (dto.getContent() != null) {
+            schema.setContent(dto.getContent());
+        }
+
+        if (dto.getPrevious() != null) {
+            String previousName = dto.getPrevious();
+            if (previousName.isEmpty()) {
+                schema.setPrevious(null);
+            } else {
+                schema.setPrevious(getValidatedPreviousSchema(schema.getType(), previousName));
+            }
+        }
+
+        return schema.getId();
+    }
+
+    private Schema getValidatedPreviousSchema(Schema.Type expectedType, String previousName) throws NotFoundException, SchemaTypeException {
+        Schema previous = schemaRepository.findByName(previousName)
+                .orElseThrow(() -> constructNFE(previousName));
+
+        if (previous.getType() != expectedType) {
+            throw new SchemaTypeException("Type of schema must be the same as the previous");
+        }
+
+        return previous;
     }
 
     private interface DeleteProjection {

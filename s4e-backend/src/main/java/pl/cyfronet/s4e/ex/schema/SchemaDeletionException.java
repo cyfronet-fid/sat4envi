@@ -1,6 +1,6 @@
-package pl.cyfronet.s4e.ex;
+package pl.cyfronet.s4e.ex.schema;
 
-public class SchemaDeletionException extends Exception {
+public class SchemaDeletionException extends SchemaException {
     public SchemaDeletionException() {
     }
 
