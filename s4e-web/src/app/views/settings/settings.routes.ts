@@ -1,4 +1,3 @@
-import {GroupListComponent} from './groups/group-list/group-list.component';
 import {InstitutionFormComponent} from './manage-institutions/institution-form/institution-form.component';
 import {ChangePasswordComponent} from './profile/change-password/change-password.component';
 import {Routes} from '@angular/router';

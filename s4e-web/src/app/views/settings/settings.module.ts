@@ -15,7 +15,6 @@ import {PeopleModule} from './people/people.module';
 import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
 import {ManageInstitutionsModule} from './manage-institutions/manage-institutions.module';
-import {GroupsModule} from './groups/groups.module';
 import {SETTINGS_PATH} from './settings.breadcrumbs';
 import { EventsModule } from 'src/app/utils/search/events.module';
 
@@ -32,7 +31,6 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     DashboardModule,
     AdminDashboardModule,
     PeopleModule,
-    GroupsModule,
     RouterModule.forChild(settingsRoutes),
     ManageInstitutionsModule,
     SearchModule,

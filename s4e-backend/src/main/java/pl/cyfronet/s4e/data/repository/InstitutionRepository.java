@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface InstitutionRepository extends CrudRepository<Institution, Long> {
+    <T> Optional<T> findById(Long id, Class<T> projection);
+
     <T> List<T> findAllBy(Class<T> projection);
 
     <T> Optional<T> findBySlug(String slug, Class<T> projection);

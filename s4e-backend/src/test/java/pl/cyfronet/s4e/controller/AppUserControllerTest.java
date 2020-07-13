@@ -524,49 +524,6 @@ public class AppUserControllerTest {
     }
 
     @Test
-    public void shouldCreateUserAndAddToGroups() throws Exception {
-        groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
-
-        Map<String, Set<AppRole>> groupsWithRoles = new HashMap<>();
-        groupsWithRoles.put("default", Set.of(AppRole.GROUP_MEMBER, AppRole.GROUP_MANAGER));
-        groupsWithRoles.put("grupa-wladzy", Set.of(AppRole.GROUP_MEMBER, AppRole.GROUP_MANAGER));
-        CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
-                .name("Name")
-                .surname("Surname")
-                .email("email@test.pl")
-                .groupsWithRoles(groupsWithRoles)
-                .build();
-
-        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(securityAppUser, objectMapper))
-                .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
-                .andExpect(status().isOk());
-
-        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
-        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(2));
-        assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
-    }
-
-    @Test
-    public void shouldCreateUserWithoutAddingtoGroup() throws Exception {
-        CreateUserWithGroupsRequest createUserWithGroupsRequest = CreateUserWithGroupsRequest.builder()
-                .name("Name")
-                .surname("Surname")
-                .email("email@test.pl")
-                .build();
-
-        mockMvc.perform(post(API_PREFIX_V1 + "/institutions/{institution}/users", slugInstitution)
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(securityAppUser, objectMapper))
-                .content(objectMapper.writeValueAsBytes(createUserWithGroupsRequest)))
-                .andExpect(status().isOk());
-
-        assertThat(appUserRepository.findByEmail("email@test.pl"), isPresent());
-        assertThat(groupService.getMembers(slugInstitution, "default", AppUserResponse.class), hasSize(1));
-    }
-
-    @Test
     public void shouldUpdateUserGroupsInInstitution() throws Exception {
         groupService.save(Group.builder().name("Grupa wladzy").slug("grupa-wladzy").institution(institution).build());
 

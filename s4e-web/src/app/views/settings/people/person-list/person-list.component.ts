@@ -1,5 +1,6 @@
+import { Modal } from './../../../../modal/state/modal.model';
 import { ModalQuery } from './../../../../modal/state/modal.query';
-import { PersonFormModal, PERSON_FORM_MODAL_ID } from './../person-form/person-form-modal.model';
+import { INVITATION_FORM_MODAL_ID } from '../invitation-form/invitation-form-modal.model';
 import { ModalService } from './../../../../modal/state/modal.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
@@ -46,13 +47,12 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   openPersonForm(person: Person | null) {
-    this._modalService.show<PersonFormModal>({
-      id: PERSON_FORM_MODAL_ID,
-      size: 'lg',
-      person: !!person && person || null
+    this._modalService.show<Modal>({
+      id: INVITATION_FORM_MODAL_ID,
+      size: 'lg'
     });
 
-    this._modalQuery.modalClosed$(PERSON_FORM_MODAL_ID)
+    this._modalQuery.modalClosed$(INVITATION_FORM_MODAL_ID)
       .pipe(untilDestroyed(this))
       .subscribe(() => this._loadPersons());
   }

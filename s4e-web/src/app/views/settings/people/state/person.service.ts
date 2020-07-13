@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {PersonStore} from './person.store';
 import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Observable} from 'rxjs';
-import {DEFAULT_GROUP_SLUG, Person, PersonForm} from './person.model';
+import {DEFAULT_GROUP_SLUG, Person } from './person.model';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
 import {InstitutionQuery} from '../../state/institution/institution.query';
 
@@ -20,20 +20,6 @@ export class PersonService {
     const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members`;
     httpGetRequest$<Person[]>(this.http, url, this.store)
       .subscribe(data => this.store.set(data));
-  }
-
-  create$(institutionSlug: string, value: PersonForm): Observable<boolean> {
-    const groupSlugs = [...value.groupSlugs._, 'default'];
-    const person = {...value, groupSlugs} as undefined as Person;
-    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/users`;
-    return httpPostRequest$(this.http, url, person, this.store);
-  }
-
-  update$(institutionSlug: string, value: PersonForm) {
-    const groupSlugs = [...value.groupSlugs._, 'default'];
-    const person = {...value, groupSlugs} as undefined as Person;
-    const url = `${this.config.apiPrefixV1}/institutions/${institutionSlug}/users`;
-    return httpPutRequest$(this.http, url, person, this.store);
   }
 
   deleteMember(userId: string) {

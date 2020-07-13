@@ -52,33 +52,6 @@ public class AppUserService {
                 .build());
     }
 
-    @Transactional(rollbackFor = {AppUserCreationException.class, NotFoundException.class})
-    public void createFromRequest(CreateUserWithGroupsRequest request, String institutionSlug)
-            throws AppUserCreationException, NotFoundException {
-        AppUser appUser = createUserWithRoles(AppUser.builder()
-                .name(request.getName())
-                .surname(request.getSurname())
-                .email(request.getEmail())
-                // TODO: FIXME
-                .password(passwordEncoder.encode("passTemporary"))
-                .enabled(false)
-                .build(), request.getGroupsWithRoles(), institutionSlug);
-    }
-
-    @Transactional(rollbackFor = {AppUserCreationException.class, NotFoundException.class})
-    public AppUser createUserWithRoles(AppUser appUser, Map<String, Set<AppRole>> groupsWithRoles, String institutionSlug)
-            throws AppUserCreationException, NotFoundException {
-        save(appUser);
-        if (groupsWithRoles != null) {
-            for (Map.Entry<String, Set<AppRole>> entry : groupsWithRoles.entrySet()) {
-                for (AppRole role : entry.getValue()) {
-                    userRoleService.addRole(role, appUser.getEmail(), institutionSlug, entry.getKey());
-                }
-            }
-        }
-        return appUser;
-    }
-
     @Transactional(rollbackFor = {NotFoundException.class, RegistrationTokenExpiredException.class})
     public EmailVerification confirmEmail(String token) throws NotFoundException, RegistrationTokenExpiredException {
         val verificationToken = emailVerificationService.findByToken(token)

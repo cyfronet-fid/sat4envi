@@ -1,0 +1,7 @@
+Dzień dobry!
+
+Zostałeś zaproszony do instytucji '[( ${institutionName} )]'.
+Potwierdź klikając 'Dołącz', a następnie zaloguj się lub zarejestruj.
+
+Pozdrawiamy,
+Zespół sat4envi

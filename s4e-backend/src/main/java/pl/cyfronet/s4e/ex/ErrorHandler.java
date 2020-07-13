@@ -108,6 +108,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
+    @ExceptionHandler(InvitationCreationException.class)
+    public ResponseEntity<?> handle(InvitationCreationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
         BindingResult bindingResult = e.getBindingResult();

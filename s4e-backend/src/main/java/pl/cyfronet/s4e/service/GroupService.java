@@ -47,7 +47,7 @@ public class GroupService {
     @Transactional(rollbackFor = {GroupCreationException.class, NotFoundException.class})
     public void createFromRequest(CreateGroupRequest request, String institutionSlug)
             throws GroupCreationException, NotFoundException {
-        val institution = institutionService.getInstitution(institutionSlug, Institution.class)
+        val institution = institutionService.findBySlug(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
         Group group = Group.builder()
                 .name(request.getName())

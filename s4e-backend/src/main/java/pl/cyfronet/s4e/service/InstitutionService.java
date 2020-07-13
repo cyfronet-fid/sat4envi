@@ -12,6 +12,7 @@ import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
+import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
@@ -78,7 +79,7 @@ public class InstitutionService {
         Institution result = save(Institution.builder()
                 .name(request.getName())
                 .slug(slugService.slugify(request.getName()))
-                .parent(getInstitution(institutionSlug, Institution.class)
+                .parent(findBySlug(institutionSlug, Institution.class)
                         .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'")))
                 .address(request.getAddress())
                 .city(request.getCity())
@@ -121,18 +122,18 @@ public class InstitutionService {
         }
     }
 
-    public <T> Optional<T> getInstitution(String slug, Class<T> projection) {
-        return institutionRepository.findBySlug(slug, projection);
-    }
-
     public <T> List<T> getAll(Class<T> projection) {
         return institutionRepository.findAllBy(projection);
+    }
+
+    public <T> Optional<T> findBySlug(String slug, Class<T> projection) {
+        return institutionRepository.findBySlug(slug, projection);
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
     public void update(UpdateInstitutionRequest request, String institutionSlug)
             throws NotFoundException, S3ClientException {
-        val institution = getInstitution(institutionSlug, Institution.class)
+        val institution = findBySlug(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
         String slug = slugService.slugify(request.getName());
         if (fileStorage.exists(getEmblemKey(institutionSlug))) {
@@ -160,7 +161,7 @@ public class InstitutionService {
 
     @Transactional
     public String getParentSlugBy(String childSlug) throws NotFoundException {
-        val institution = getInstitution(childSlug, Institution.class)
+        val institution = findBySlug(childSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + childSlug));
         if (institution.getParent() != null) {
             Institution parent = institution.getParent();
@@ -172,7 +173,7 @@ public class InstitutionService {
 
     @Transactional
     public String getParentNameBy(String childSlug) throws NotFoundException {
-        val institution = getInstitution(childSlug, Institution.class)
+        val institution = findBySlug(childSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + childSlug));
         if (institution.getParent() != null) {
             Institution parent = institution.getParent();
