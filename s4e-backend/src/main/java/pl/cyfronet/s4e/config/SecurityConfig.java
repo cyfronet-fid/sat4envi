@@ -22,6 +22,7 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 import static org.springframework.http.HttpMethod.*;
+import static pl.cyfronet.s4e.Constants.ADMIN_PREFIX;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @Configuration
@@ -47,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .mvcMatcher(API_PREFIX_V1 + "/**")
+                .mvcMatcher("/api/**")
                 .anonymous(anonymous -> {})
                 .exceptionHandling(handling -> handling
                                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -115,6 +116,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, prefix("/overlays/prg", "/overlays/wms")).permitAll()
 
                 .mvcMatchers(GET, prefix("/places")).permitAll()
+
+                .mvcMatchers(ADMIN_PREFIX + "/**").hasRole("ADMIN")
 
                 .anyRequest().denyAll();
     }
