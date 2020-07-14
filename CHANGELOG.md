@@ -9,6 +9,20 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+
+### Changed
+
+
+### Fixed
+
+
+### Updated
+
+
+## [v9.0.0]
+
+### Added
+
 - Add footprint, artifacts and metadata to search response [#581](https://github.com/cyfronet-fid/sat4envi/issues/581)
 - Cookie based authorization [#583](https://github.com/cyfronet-fid/sat4envi/issues/583)
 - Add required field to institutions seeds [#496](https://github.com/cyfronet-fid/sat4envi/issues/496)
@@ -179,7 +193,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...HEAD
+[v9.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...v7.0.0
 [v6.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v5.1.0...v6.0.0
