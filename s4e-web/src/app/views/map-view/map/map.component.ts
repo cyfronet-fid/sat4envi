@@ -168,13 +168,20 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.push(this.baseLayer);
 
     if (scene != null) {
+      const utcTime = moment(scene.timestamp).utc();
+
+      // IMPORTANT!!!
+      // Due to change in geo-server we need floor timestamp to seconds
+      // If not, it will not respond correctly
+      const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
+
       const source = new ImageWMS({
         crossOrigin: 'Anonymous',
         url: this.CONFIG.geoserverUrl,
         serverType: 'geoserver',
         params: {
           'LAYERS': this.CONFIG.geoserverWorkspace + ':' + scene.layerName,
-          'TIME': moment(scene.timestamp).utc().toISOString(),
+          'TIME': isoTimeWithoutMs,
         },
       });
 
