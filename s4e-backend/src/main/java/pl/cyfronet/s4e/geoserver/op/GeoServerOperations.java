@@ -150,7 +150,7 @@ public class GeoServerOperations {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
         String mosaic = "Name=" + coverageStore + "\n" +
                 "TypeName=scene_" + coverageStore + "\n" +
-                "Levels=5000,5000\n" +
+                "Levels=1,1\n" +
                 "LevelsNum=1\n";
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
