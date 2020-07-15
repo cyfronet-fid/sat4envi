@@ -40,7 +40,8 @@
       "<rootDir>/node_modules/",
       "<rootDir>/src/app/app.constants.spec.ts",
       "<rootDir>/src/app/app.configuration.spec.ts",
-      "\\.factory.spec.ts$"
+      "\\.factory.spec.ts$",
+      "\\.utils.spec.ts$"
     ],
     "transform": {
       "(?!<rootDir>/node_modules)/.*\\.js$": "babel-jest"
