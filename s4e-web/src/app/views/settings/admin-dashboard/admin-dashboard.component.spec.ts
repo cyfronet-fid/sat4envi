@@ -27,7 +27,8 @@ describe('AdminDashboardComponent', () => {
   let fixture: ComponentFixture<AdminDashboardComponent>;
   let de: DebugElement;
   const router = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
+    events: new ReplaySubject(1)
   };
   let activatedRoute: ActivatedRouteStub;
 

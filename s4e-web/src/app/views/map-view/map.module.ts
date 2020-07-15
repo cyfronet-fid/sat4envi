@@ -49,6 +49,7 @@ import {routes} from './map.routes.module';
 import {SearchResultModalComponent} from './sentinel-search/search-result-modal/search-result-modal.component';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
 import { ResizableModule } from 'angular-resizable-element';
+import { EventsModule } from 'src/app/utils/dropdown/events.module';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { ResizableModule } from 'angular-resizable-element';
     S4EFormsModule,
     SearchModule,
     FormErrorModule,
-    ResizableModule
+    ResizableModule,
+    EventsModule
     // OwlNativeDateTimeModule
   ],
   providers: [

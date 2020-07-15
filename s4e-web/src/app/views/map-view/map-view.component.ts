@@ -32,7 +32,7 @@ import {map, switchMap, take} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
-import {hasBeenClickedOutside} from 'src/app/utils';
+import { InjectorModule } from 'src/app/common/injector.module';
 
 @Component({
   selector: 's4e-map-view',
@@ -62,8 +62,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public userIsZK$: Observable<boolean>;
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
-  @ViewChild('loginOptions') loginOptions;
-  @ViewChild('zkOptions') zkOptions;
 
   constructor(public mapService: MapService,
               private router: Router,
@@ -83,17 +81,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
               private modalService: ModalService,
               private viewConfigurationQuery: ViewConfigurationQuery,
               private CONFIG: S4eConfig) {
-  }
-
-  @HostListener('document:click', ['$event.target'])
-  onClick(target) {
-    if (!!this.loginOptions && hasBeenClickedOutside(this.loginOptions, target)) {
-      this.toggleLoginOptions(false);
-    }
-
-    if (!!this.zkOptions && hasBeenClickedOutside(this.zkOptions, target)) {
-      this.toggleZKOptions(false);
-    }
   }
 
   ngOnInit(): void {
@@ -136,7 +123,13 @@ export class MapViewComponent implements OnInit, OnDestroy {
       zoomLevel: 6
     });
 
-    this.mapService.connectRouterToStore(this.route).pipe(untilDestroyed(this), switchMap(() => this.mapService.connectStoreToRouter())).subscribe();
+    this.mapService
+      .connectRouterToStore(this.route)
+      .pipe(
+        untilDestroyed(this),
+        switchMap(() => this.mapService.connectStoreToRouter())
+      )
+      .subscribe();
 
     this.productService.get();
     this.overlayService.get();
@@ -216,10 +209,18 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openShareViewModal() {
-    combineLatest([
-      this.mapComponent.getMapData().pipe(switchMap(data => resizeImage(data.image, 400, 247))),
-      this.mapQuery.selectQueryParamsFromStore().pipe(take(1), map(query => this.router.serializeUrl(this.router.createUrlTree([], {queryParams: query}))))
-    ])
+    const createUrl = (query) => this.router.createUrlTree([], {queryParams: query});
+    const serializeUrl = (query) => this.router.serializeUrl(createUrl(query));
+    const mapData$ = this.mapComponent
+      .getMapData()
+      .pipe(switchMap(data => resizeImage(data.image, 400, 247)));
+    const path$ = this.mapQuery
+      .selectQueryParamsFromStore()
+      .pipe(
+        take(1),
+        map(query => serializeUrl(query))
+      );
+    combineLatest(mapData$, path$)
       .subscribe(([mapData, path]) => this.modalService.show<ConfigurationModal>({
         id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
         mapImage: mapData,

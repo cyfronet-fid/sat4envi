@@ -1,3 +1,4 @@
+import { RouterTestingModule } from '@angular/router/testing';
 import { SearchComponent } from './search.component';
 import { SearchModule } from './search.module';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
@@ -54,7 +55,8 @@ describe('SearchComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
-        SearchModule
+        SearchModule,
+        RouterTestingModule
       ],
       declarations: [
         SearchMockComponent

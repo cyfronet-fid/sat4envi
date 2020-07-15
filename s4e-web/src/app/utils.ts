@@ -12,7 +12,3 @@ export function activateMatcher(url: UrlSegment[]) {
   }
   return null;
 }
-
-export function hasBeenClickedOutside(source, target): boolean {
-  return !source.nativeElement.contains(target);
-}

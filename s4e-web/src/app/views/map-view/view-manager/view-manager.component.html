@@ -1,5 +1,4 @@
 <ng-container *ngIf="!(loading$ | async); else loadingRef">
-  <div #search>
     <s4e-search
       placeholder="Wpisz szukaną miejscowość..."
       [searchResults]="searchResults$ | async"
@@ -16,7 +15,6 @@
         <span class="voivodeship">{{ result.voivodeship}}</span>
       </ng-template>
     </s4e-search>
-  </div>
 
   <s4e-items-picker
     #picker

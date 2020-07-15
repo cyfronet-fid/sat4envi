@@ -1,8 +1,5 @@
 import {InstitutionService} from './state/institution/institution.service';
-import {ModalQuery} from '../../modal/state/modal.query';
-import {ModalService} from '../../modal/state/modal.service';
-import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
-import {SessionService} from '../../state/session/session.service';
+import {Component, OnInit} from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
@@ -10,7 +7,6 @@ import {InstitutionsSearchResultsService} from './state/institutions-search/inst
 import {ActivatedRoute, Router} from '@angular/router';
 import {Institution} from './state/institution/institution.model';
 import {environment} from 'src/environments/environment';
-import {hasBeenClickedOutside} from 'src/app/utils';
 import {SessionQuery} from '../../state/session/session.query';
 
 @Component({
@@ -29,27 +25,14 @@ export class SettingsComponent implements OnInit {
 
   public hasSelectedInstitution$: Observable<boolean>;
 
-  @ViewChild('search') search;
-
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
     private _institutionService: InstitutionService,
-    private sessionService: SessionService,
     private _sessionQuery: SessionQuery,
     private _router: Router,
-    private _activatedRoute: ActivatedRoute,
-    private _modalService: ModalService,
-    private _modalQuery: ModalQuery
-  ) {
-  }
-
-  @HostListener('document:click', ['$event.target'])
-  onClick(target) {
-    if (!!this.search && hasBeenClickedOutside(this.search, target)) {
-      this.isInUse = false;
-    }
-  }
+    private _activatedRoute: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.showInstitutions$ = this._sessionQuery.selectCanSeeInstitutions();
