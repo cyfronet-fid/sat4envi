@@ -8,10 +8,12 @@ The most recent changes are on top, in each type of changes category.
 ## [Unreleased]
 
 ### Added
+
 - Create events directive [#592](https://github.com/cyfronet-fid/sat4envi/issues/592)
 
 ### Changed
 
+- Set GeoServer mosaic levels and heterogeneous properties [#603](https://github.com/cyfronet-fid/sat4envi/issues/603)
 
 ### Fixed
 
