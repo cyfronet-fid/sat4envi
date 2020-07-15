@@ -1,6 +1,7 @@
 import {SentinelFloatParam, SentinelSearchMetadata, SentinelSection} from './sentinel-search.metadata.model';
 import * as Factory from 'factory.ts';
-import {SentinelSearchResultResponse} from './sentinel-search.model';
+import {createSentinelSearchResult, SentinelSearchResultResponse} from './sentinel-search.model';
+import {RecPartial} from 'factory.ts';
 
 export const SentinelFloatParamFactory = Factory.makeFactory<SentinelFloatParam>({
   queryParam: Factory.each(i => `floatParam${i}`),
@@ -84,8 +85,22 @@ export const SentinelSearchMetadataFactory = Factory.makeFactory<SentinelSearchM
   ]
 });
 
-export const SentinelSearchFactory = Factory.makeFactory<SentinelSearchResultResponse>({
-  id: Factory.each(i => `scene-${i}`),
-  productId: Factory.each(i => i),
-  timestamp: '2020-06-25T22:45:26.576Z'
-});
+class _SentinelSearchFactory extends Factory.Factory<SentinelSearchResultResponse> {
+  buildListSearchResult(count: number, apiPrefix: string, item?: RecPartial<SentinelSearchResultResponse>) {
+    return this.buildList(count, item).map(item => createSentinelSearchResult(item, apiPrefix));
+  }
+
+  buildSearchResult(apiPrefix: string, item?: RecPartial<SentinelSearchResultResponse>) {
+    return createSentinelSearchResult(this.build(item), apiPrefix);
+  }
+
+  constructor() {
+    super({
+      id: Factory.each(i => `scene-${i}`),
+      productId: Factory.each(i => i),
+      timestamp: '2020-06-25T22:45:26.576Z'
+    }, undefined);
+  }
+}
+
+export const SentinelSearchFactory = new _SentinelSearchFactory();
