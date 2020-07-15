@@ -50,13 +50,12 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
     this.loadingMetadata$ = this.query.selectMetadataLoading().pipe(delay(150));
     this.sentinels$ = this.query.selectSentinels();
-    this.searchResults$ = this.query.selectAll();
-
     this.showNoResults$ = combineLatest([
       this.sentinels$.pipe(map(sentinels => sentinels.sections.length > 0)),
-      this.searchResults$.pipe(map(results => results.length === 0)),
       this.query.selectLoaded()
     ]).pipe(mapAllTrue());
+
+    this.searchResults$ = this.query.selectAll();
 
     this.disableSearchBtn$ = combineLatest([
       this.loading$,
