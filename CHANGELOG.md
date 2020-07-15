@@ -16,6 +16,7 @@ The most recent changes are on top, in each type of changes category.
 - Set GeoServer mosaic levels and heterogeneous properties [#603](https://github.com/cyfronet-fid/sat4envi/issues/603)
 
 ### Fixed
+- Fix no search results info [#601](https://github.com/cyfronet-fid/sat4envi/issues/601)
 
 
 ### Updated
