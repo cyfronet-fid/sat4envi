@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v9.1.0]
+
+### Added
+
 - Create events directive [#592](https://github.com/cyfronet-fid/sat4envi/issues/592)
 
 ### Changed
@@ -16,11 +26,8 @@ The most recent changes are on top, in each type of changes category.
 - Set GeoServer mosaic levels and heterogeneous properties [#603](https://github.com/cyfronet-fid/sat4envi/issues/603)
 
 ### Fixed
+
 - Fix no search results info [#601](https://github.com/cyfronet-fid/sat4envi/issues/601)
-
-
-### Updated
-
 
 ## [v9.0.0]
 
@@ -196,7 +203,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v9.1.0...HEAD
+[v9.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...v9.1.0
 [v9.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...v8.0.0
 [v7.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v6.0.0...v7.0.0
