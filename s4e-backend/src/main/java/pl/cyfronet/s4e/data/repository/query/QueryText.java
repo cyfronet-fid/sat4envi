@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.data.repository.query;
 
+import org.springframework.validation.Errors;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,8 @@ public class QueryText extends QueryDecorator {
     @Override
     public void doPrepareQueryAndParameters(Map<String, Object> params,
                                             List<Object> parameters,
-                                            StringBuilder resultQuery) {
+                                            StringBuilder resultQuery,
+                                            Errors errors) {
         paramsToDBField.entrySet().forEach(entry -> queryBy(entry, params, parameters, resultQuery));
     }
 

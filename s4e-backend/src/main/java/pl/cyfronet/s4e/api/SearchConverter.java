@@ -113,7 +113,7 @@ public class SearchConverter {
                 case "DAY":
                 case "DAYS":
                     return localTime.minusDays(Long.parseLong(times[1].replaceAll("[^0-9]", "")))
-                             .format(dateTimeFormat);
+                            .format(dateTimeFormat);
                 case "MONTH":
                 case "MONTHS":
                     return localTime.minusMonths(Long.parseLong(times[1].replaceAll("[^0-9]", "")))
@@ -153,8 +153,7 @@ public class SearchConverter {
 
     private void setPercentageParam(Map<String, String> queryParamMap, Map<String, Object> result, String paramName) {
         if (queryParamMap.containsKey(paramName)) {
-            Float percentage = Float.parseFloat(queryParamMap.get(paramName)) / 100.0f;
-            result.put(getQueryParam(paramName), percentage);
+            result.put(getQueryParam(paramName), Float.parseFloat(queryParamMap.get(paramName)));
         }
     }
 }

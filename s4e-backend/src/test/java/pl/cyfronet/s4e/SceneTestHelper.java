@@ -58,7 +58,7 @@ public class SceneTestHelper {
                 "   \"instrument\": \"OLCI\",\n" +
                 "   \"product_level\": \"L" + number%10 + "\",\n" +
                 "   \"processing_level\": \"" + number%10 + "LC\",\n" +
-                "   \"cloud_cover\": 0." + number + ",\n" +
+                "   \"cloud_cover\": " + number + ",\n" +
                 "   \"polarisation\": \"Dual VV/VH\",\n" +
                 "   \"sensing_time\": \"2019-11-0" + number%10 + "T05:07:42.047432+00:00\",\n" +
                 "   \"ingestion_time\": \"2019-11-0" + number%10 + "T05:34:27.000000+00:00\",\n" +

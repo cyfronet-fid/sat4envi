@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
 import pl.cyfronet.s4e.ex.BadRequestException;
+import pl.cyfronet.s4e.ex.QueryException;
 import pl.cyfronet.s4e.service.SearchService;
 
 import java.sql.SQLException;
@@ -46,7 +47,7 @@ public class OSearchController {
             @RequestParam(value = "format", defaultValue = "") String format,//json/xml?
             @RequestParam(value = "orderby", required = false) String orderby,//beginposition/ingestiondate asc/desc q=?
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
-    ) throws BadRequestException, SQLException {
+    ) throws BadRequestException, SQLException, QueryException {
         // TODO: format
         try {
             return searchService.getScenesBy(searchService.parseToParamMap(rowsSize, rowStart, orderby, query)).stream()

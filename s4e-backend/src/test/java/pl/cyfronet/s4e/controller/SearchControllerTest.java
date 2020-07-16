@@ -6,6 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,10 +20,8 @@ import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
+import static pl.cyfronet.s4e.search.SearchQueryParams.*;
 
 @AutoConfigureMockMvc
 @BasicTest
@@ -86,8 +88,38 @@ public class SearchControllerTest {
                 .andExpect(jsonPath("$.length()", is(equalTo(limit))))
                 .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder(
                         "RGB_16b", "RGBs_8b", "checksum", "manifest", "metadata", "quicklook", "product_archive"
-                )))
-        ;
+                )));
+    }
+
+    @Test
+    public void shouldntReturnErrorByTooLargeLimit() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                .param("limit", "1000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(30))));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void shouldReturnErrorsForParam(String param, String value, String text) throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                .param(param, value))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$." + param, is(Arrays.asList(text))));
+    }
+
+    private static Stream<Arguments> shouldReturnErrorsForParam() {
+        return Stream.of(
+                Arguments.of(LIMIT, "abc", "Limit musi być liczbą dodatnią"),
+                Arguments.of(LIMIT, "-1", "Limit musi być liczbą dodatnią"),
+                Arguments.of(OFFSET, "abc", "Offset musi być liczbą dodatnią"),
+                Arguments.of(OFFSET, "-1", "Offset musi być liczbą dodatnią"),
+                Arguments.of(CLOUD_COVER, "abc", "Cloud cover musi być liczbą z zakresu [0 - 100]"),
+                Arguments.of(CLOUD_COVER, "-1", "Cloud cover musi być liczbą z zakresu [0 - 100]"),
+                Arguments.of(CLOUD_COVER, "1000", "Cloud cover musi być liczbą z zakresu [0 - 100]"),
+                Arguments.of(INGESTION_FROM, "2019-11-08", "Zły format daty: `2019-11-08`"),
+                Arguments.of(INGESTION_FROM, "Hakuna matata", "Zły format daty: `Hakuna matata`")
+        );
     }
 
     @Test
@@ -125,7 +157,8 @@ public class SearchControllerTest {
                 .param("sensingFrom", "2019-11-08")
                 .param("sensingTo", "2019-11-12"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.__general__", is("Cannot parse date: 2019-11-08")));
+                .andExpect(jsonPath("$.sensingTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                .andExpect(jsonPath("$.sensingFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
     }
 
     @Test
@@ -145,7 +178,8 @@ public class SearchControllerTest {
                 .param("ingestionFrom", "2019-11-08")
                 .param("ingestionTo", "2019-11-12"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.__general__", is("Cannot parse date: 2019-11-08")));
+                .andExpect(jsonPath("$.ingestionTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                .andExpect(jsonPath("$.ingestionFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
     }
 
     @Test
@@ -203,7 +237,7 @@ public class SearchControllerTest {
                 .param("cloudCover", "0.4f")
                 .param("limit", "30"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(25))));
+                .andExpect(jsonPath("$.length()", is(equalTo(1))));
     }
 
     @Test

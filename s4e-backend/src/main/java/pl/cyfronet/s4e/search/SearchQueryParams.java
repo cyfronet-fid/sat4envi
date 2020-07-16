@@ -3,6 +3,8 @@ package pl.cyfronet.s4e.search;
 public class SearchQueryParams {
     public static final String SORT_BY = "sortBy";
     public static final String ORDER = "order";
+    public static final String LIMIT = "limit";
+    public static final String OFFSET = "offset";
 
     public static final String SENSING_FROM = "sensingFrom";
     public static final String SENSING_TO = "sensingTo";
