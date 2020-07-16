@@ -32,24 +32,11 @@ public class ErrorHandlerHelper {
     }
 
     public Map<String, Object> toResponseMap(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        val map = new LinkedHashMap<String, Object>();
+        return getStringObjectMap(e, e.getBindingResult());
+    }
 
-        // populate general errors
-        if (bindingResult.hasGlobalErrors()) {
-            map.put("__general__", bindingResult.getGlobalErrors().stream()
-                    .map(objectError -> getMessage(objectError))
-                    .collect(Collectors.toUnmodifiableList()));
-        }
-
-        // populate field errors
-        for (FieldError fieldError: bindingResult.getFieldErrors()) {
-            map.putIfAbsent(fieldError.getField(), new ArrayList<>());
-            ((List) map.get(fieldError.getField())).add(getMessage(fieldError));
-        }
-
-        optionallyAddDevelopmentInformation(map, e);
-        return map;
+    public Map<String, Object> toResponseMap(QueryException e) {
+        return getStringObjectMap(e, e.getBindingResult());
     }
 
     public Map<String, Object> toResponseMap(RecaptchaException e) {
@@ -64,18 +51,39 @@ public class ErrorHandlerHelper {
         return map;
     }
 
-    public String getMessage(DefaultMessageSourceResolvable error) {
+    private LinkedHashMap<String, Object> getStringObjectMap(Exception e, BindingResult bindingResult) {
+        val map = new LinkedHashMap<String, Object>();
+
+        // populate general errors
+        if (bindingResult.hasGlobalErrors()) {
+            map.put("__general__", bindingResult.getGlobalErrors().stream()
+                    .map(objectError -> getMessage(objectError))
+                    .collect(Collectors.toUnmodifiableList()));
+        }
+
+        // populate field errors
+        for (FieldError fieldError : bindingResult.getFieldErrors()) {
+            map.putIfAbsent(fieldError.getField(), new ArrayList<>());
+            ((List) map.get(fieldError.getField())).add(
+                    getMessage(fieldError));
+        }
+
+        optionallyAddDevelopmentInformation(map, e);
+        return map;
+    }
+
+    private String getMessage(DefaultMessageSourceResolvable error) {
         return messageSource.getMessage(error, LocaleContextHolder.getLocale());
     }
 
-    public void optionallyAddDevelopmentInformation(Map<String, Object> map, Exception e) {
+    private void optionallyAddDevelopmentInformation(Map<String, Object> map, Exception e) {
         if (Arrays.stream(env.getActiveProfiles()).anyMatch("development"::equals)) {
             map.put("__exception__", e.getClass().getName());
             map.put("__stacktrace__", getStacktraceString(e));
         }
     }
 
-    public static String getStacktraceString(Exception e) {
+    private static String getStacktraceString(Exception e) {
         val sw = new StringWriter();
         val pw = new PrintWriter(sw);
         e.printStackTrace(pw);

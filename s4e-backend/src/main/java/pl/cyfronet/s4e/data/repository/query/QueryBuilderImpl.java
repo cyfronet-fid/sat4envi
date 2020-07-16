@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.data.repository.query;
 
+import org.springframework.validation.Errors;
 import pl.cyfronet.s4e.bean.Scene;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class QueryBuilderImpl implements QueryBuilder {
     @Override
     public void prepareQueryAndParameters(Map<String, Object> params,
                                           List<Object> parameters,
-                                          StringBuilder resultQuery) {
+                                          StringBuilder resultQuery,
+                                          Errors errors) {
         resultQuery.append("SELECT ");
         resultQuery.append(String.join(",", columns));
         resultQuery.append(" FROM Scene WHERE true ");

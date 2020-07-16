@@ -1,13 +1,18 @@
 package pl.cyfronet.s4e.data.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.validation.MapBindingResult;
+import org.springframework.validation.ObjectError;
 import pl.cyfronet.s4e.api.MappedScene;
 import pl.cyfronet.s4e.data.repository.query.PreparedStatementBuilder;
+import pl.cyfronet.s4e.ex.QueryException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,11 +55,19 @@ public class SceneRepositoryImpl implements SceneRepositoryExt {
         this.connection = jdbcTemplate.getDataSource().getConnection();
     }
 
-    public List<MappedScene> findAllByParamsMap(Map<String, Object> params) {
-        return jdbcTemplate.query(connection -> prepareQuery(params), new SceneRowMapper());
+    public List<MappedScene> findAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException {
+        PreparedStatement preparedStatement = prepareQuery(params);
+        try {
+            return jdbcTemplate.query(connection -> preparedStatement, new SceneRowMapper());
+        } catch (DataAccessException e) {
+            MapBindingResult mapBindingResult = new MapBindingResult(new HashMap<>(), "params");
+            mapBindingResult.addError(
+                    new ObjectError("params", "Cannot execute query" + e.getMessage()));
+            throw new QueryException(mapBindingResult);
+        }
     }
 
-    private PreparedStatement prepareQuery(Map<String, Object> params) throws SQLException {
+    private PreparedStatement prepareQuery(Map<String, Object> params) throws SQLException, QueryException {
         PreparedStatement ps = preparedStatementBuilder.preparedStatement(connection, params);
         log.trace(ps.toString());
         return ps;

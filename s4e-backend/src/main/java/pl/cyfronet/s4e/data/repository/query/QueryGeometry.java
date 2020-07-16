@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.data.repository.query;
 
+import org.springframework.validation.Errors;
 import pl.cyfronet.s4e.util.GeometryUtil;
 
 import java.util.List;
@@ -15,7 +16,8 @@ public class QueryGeometry extends QueryDecorator {
     @Override
     protected void doPrepareQueryAndParameters(Map<String, Object> params,
                                                List<Object> parameters,
-                                               StringBuilder resultQuery) {
+                                               StringBuilder resultQuery,
+                                               Errors errors) {
         queryByPolygon(params, parameters, resultQuery);
     }
 

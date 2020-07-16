@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.data.repository.query;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 import java.util.Map;
@@ -11,14 +12,16 @@ public abstract class QueryDecorator implements QueryBuilder {
     private final QueryBuilder queryBuilder;
 
     protected abstract void doPrepareQueryAndParameters(Map<String, Object> params,
-                                                     List<Object> parameters,
-                                                     StringBuilder resultQuery);
+                                                        List<Object> parameters,
+                                                        StringBuilder resultQuery,
+                                                        Errors errors);
 
     @Override
     public final void prepareQueryAndParameters(Map<String, Object> params,
                                                 List<Object> parameters,
-                                                StringBuilder resultQuery) {
-        queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery);
-        doPrepareQueryAndParameters(params, parameters, resultQuery);
+                                                StringBuilder resultQuery,
+                                                Errors errors) {
+        queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery, errors);
+        doPrepareQueryAndParameters(params, parameters, resultQuery, errors);
     }
 }

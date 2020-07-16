@@ -405,10 +405,10 @@ public class OSearchControllerTest {
     public void shouldReturnScenesDhusQueryCloudCoverage() throws Exception {
         // TODO: key:[80 TO 90]
         mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                .param("q", "cloudcoveragepercentage:20")
+                .param("q", "cloudcoveragepercentage:15")
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(14))));
+                .andExpect(jsonPath("$.length()", is(equalTo(16))));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
                 .param("q", "cloudcoveragepercentage:0")

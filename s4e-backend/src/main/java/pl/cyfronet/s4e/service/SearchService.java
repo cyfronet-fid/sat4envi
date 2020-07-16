@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.api.MappedScene;
 import pl.cyfronet.s4e.api.SearchConverter;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.ex.QueryException;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -17,7 +18,7 @@ public class SearchService {
     private final SceneRepository repository;
     private final SearchConverter converter;
 
-    public List<MappedScene> getScenesBy(Map<String, Object> params) throws SQLException {
+    public List<MappedScene> getScenesBy(Map<String, Object> params) throws SQLException, QueryException {
         return repository.findAllByParamsMap(params);
     }
 

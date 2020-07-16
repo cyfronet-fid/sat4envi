@@ -12,12 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.api.ResponseExtender;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
-import pl.cyfronet.s4e.ex.BadRequestException;
+import pl.cyfronet.s4e.ex.QueryException;
 import pl.cyfronet.s4e.service.SearchService;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,14 +39,10 @@ public class SearchController {
     })
     @GetMapping("/search")
     public List<SearchResponse> getScenes(@RequestParam Map<String, Object> params)
-            throws BadRequestException, SQLException {
+            throws SQLException, QueryException {
         ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
-        try {
             return searchService.getScenesBy(params).stream()
                     .map(scene -> responseExtender.map(scene, zoneId))
                     .collect(Collectors.toList());
-        } catch (DateTimeParseException e) {
-            throw new BadRequestException("Cannot parse date: " + e.getParsedString());
-        }
     }
 }

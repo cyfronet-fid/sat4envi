@@ -16,7 +16,6 @@ import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -134,7 +133,7 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("cloudCover", 0.4f);
         List<MappedScene> scenes = searchService.getScenesBy(params);
-        assertThat(scenes, hasSize(5));
+        assertThat(scenes, hasSize(1));
     }
 
     @Test
@@ -205,7 +204,7 @@ public class SearchServiceTest {
         Map<String, Object> params = new HashMap<>();
         params.put("relativeOrbitNumber", 2);
         params.put("processingLevel", "2LC");
-        params.put("cloudCover", 0.5f);
+        params.put("cloudCover", 20);
         params.put("polarisation", "VV VH");
         params.put("productType", "GRDH");
         params.put("satellitePlatform", "Sentinel-1A");
@@ -221,7 +220,7 @@ public class SearchServiceTest {
     }
 
     @Test
-    public void testSqlInjection() throws SQLException {
+    public void testSqlInjection() throws Exception {
         Map<String, Object> params = new HashMap<>();
         params.put("relativeOrbitNumber", 2);
         params.put("polarisation", "Dual VV VH\'UNION SELECT username, password FROM users--");
