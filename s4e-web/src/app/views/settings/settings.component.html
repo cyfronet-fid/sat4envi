@@ -32,15 +32,11 @@
       <li>
           <s4e-search
             placeholder="Wpisz szukaną instytucję..."
-            [searchResults]="institutions$ | async"
-            [isSearchLoading]="institutionsLoading$ | async"
-            [isSearchOpen]="isInUse && (areResultsOpen$ | async)"
+            [query]="institutionsSearchResultsQuery"
+            [store]="institutionsSearchResultsStore"
             [value]="searchValue"
-
+            (valueChange)="searchForInstitutions($event)"
             (selectResult)="selectInstitution($event)"
-            (refreshResults)="searchForInstitutions($event)"
-            (selectFirstResult)="selectFirstInstitution()"
-            (resetSearch)="resetSearch()"
           >
             <ng-template #result let-result>
               <span *ngIf="!!result.name" class="name">{{ result.name }}</span>

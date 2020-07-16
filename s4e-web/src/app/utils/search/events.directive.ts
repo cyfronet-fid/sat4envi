@@ -3,8 +3,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { filter } from 'rxjs/operators';
 
-function hasBeenClickedOutside(source, target): boolean {
-  return !source.nativeElement.contains(target);
+export function hasBeenClickedInside(source, target): boolean {
+  return source.nativeElement.contains(target);
 }
 
 @Directive({
@@ -18,9 +18,9 @@ export class EventsDirective implements OnInit, OnDestroy {
   @HostListener('document:click', ['$event.target'])
   onClick(target) {
     if (!!this._elementRef) {
-      hasBeenClickedOutside(this._elementRef, target)
-        ? this.outsideClick.emit()
-        : this.insideClick.emit();
+      hasBeenClickedInside(this._elementRef, target)
+        ? this.insideClick.emit()
+        : this.outsideClick.emit();
     }
   }
 

@@ -154,12 +154,12 @@ describe('SentinelSearchResultService', () => {
     const second = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
     store.set([first, second]);
     service.nextActive();
-    expect(query.getActive()).toBeFalsy();
+    expect(query.getActive()).toEqual(first);
     store.setActive(first.id);
     service.nextActive();
     expect(query.getActive()).toEqual(second);
     service.nextActive();
-    expect(query.getActive()).toEqual(second);
+    expect(query.getActive()).toEqual(first);
   });
 
   it('previousActive', () => {
@@ -167,11 +167,11 @@ describe('SentinelSearchResultService', () => {
     const second = createSentinelSearchResult(SentinelSearchFactory.build(), apiPrefixV1);
     store.set([first, second]);
     service.previousActive();
-    expect(query.getActive()).toBeFalsy();
+    expect(query.getActive()).toEqual(first);
     store.setActive(second.id);
     service.previousActive();
     expect(query.getActive()).toEqual(first);
     service.previousActive();
-    expect(query.getActive()).toEqual(first);
+    expect(query.getActive()).toEqual(second);
   });
 });

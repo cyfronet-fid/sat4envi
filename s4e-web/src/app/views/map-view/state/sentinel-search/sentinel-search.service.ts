@@ -17,17 +17,22 @@ import {HashMap} from '@datorama/akita';
 import {NotificationService} from 'notifications';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
+import { ActivatedQueue } from 'src/app/utils/search/activated-queue.utils';
 
 @Injectable({providedIn: 'root'})
 export class SentinelSearchService {
+  protected _activatedQueue: ActivatedQueue;
 
-  constructor(private store: SentinelSearchStore,
-              private query: SentinelSearchQuery,
-              private http: HttpClient,
-              private router: Router,
-              private notificationService: NotificationService,
-              private CONFIG: S4eConfig,
-              private modalService: ModalService) {
+  constructor(
+    private store: SentinelSearchStore,
+    private query: SentinelSearchQuery,
+    private http: HttpClient,
+    private router: Router,
+    private notificationService: NotificationService,
+    private CONFIG: S4eConfig,
+    private modalService: ModalService
+  ) {
+    this._activatedQueue = new ActivatedQueue(this.query, this.store);
   }
 
   setSentinelVisibility(sentinelId: string, visible: boolean) {
@@ -106,25 +111,10 @@ export class SentinelSearchService {
   }
 
   nextActive() {
-    this._advanceActive(1);
+    this._activatedQueue.next();
   }
 
   previousActive() {
-    this._advanceActive(-1);
-  }
-
-  protected _advanceActive(direction: -1 | 1) {
-    if (this.query.getActive() == null) {
-      return;
-    }
-
-    const results = this.query.getAll();
-    const nextIndex = results.indexOf(this.query.getActive()) + direction;
-
-    if (nextIndex === -1 || nextIndex === results.length) {
-      return;
-    }
-
-    this.store.setActive(results[nextIndex].id);
+    this._activatedQueue.previous();
   }
 }

@@ -1,14 +1,12 @@
 <ng-container *ngIf="!(loading$ | async); else loadingRef">
     <s4e-search
       placeholder="Wpisz szukaną miejscowość..."
-      [searchResults]="searchResults$ | async"
-      [isSearchLoading]="searchResultsLoading$ | async"
-      [isSearchOpen]="searchResultsOpen$ | async"
+      [query]="searchResultsQuery"
+      [store]="searchResultsStore"
       [value]="searchValue"
+      (valueChange)="searchForPlaces($event)"
       (selectResult)="navigateToPlace($event)"
-      (refreshResults)="searchForPlaces($event)"
-      (resetSearch)="resetSearch()"
-      (selectFirstResult)="selectFirstResult()">
+    >
       <ng-template #result let-result>
         <span class="name">{{ result.name }}</span>
         <span class="type">{{ result.type }}</span>

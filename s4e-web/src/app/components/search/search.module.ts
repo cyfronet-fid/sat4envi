@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { S4EFormsModule } from 'src/app/form/form.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EventsModule } from 'src/app/utils/dropdown/events.module';
+import { EventsModule } from 'src/app/utils/search/events.module';
 
 @NgModule({
   declarations: [

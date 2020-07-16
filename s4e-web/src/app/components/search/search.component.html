@@ -1,17 +1,21 @@
 <div
   s4eEvents
-  (insideClick)="isSearchOpen = true"
-  (outsideClick)="isSearchOpen = false"
-  (routerChange)="isSearchOpen = false"
+  (insideClick)="areResultsOpen = true"
+  (outsideClick)="areResultsOpen = false"
+  (routerChange)="areResultsOpen = false"
 >
   <section class="section search">
     <input
+      (keydown.enter)="select(query.getActive())"
+      (keydown.arrowup)="activatePreviousResult()"
+      (keydown.arrowdown)="activateNextResult()"
+
       #search
       class="search__input"
       placeholder="{{ placeholder}}"
       i18n-placeholder
       [formControl]="searchFormControl"
-      (focus)="refreshResults.emit(searchFormControl.value)"
+      (focus)="valueChange.emit(searchFormControl.value)"
     />
     <button
       *ngIf="!!search.value.trim()"
@@ -22,15 +26,15 @@
     </button>
     <button
       class="search__button"
-      (click)="selectFirstResult.emit()"
-      [disabled]="!canSearchFirstResult"
+      (click)="select(query.getActive())"
+      [disabled]="!canSelectActiveResult"
     >
       <i class="fas fa-search"></i>
     </button>
   </section>
 
-  <div *ngIf="isSearchOpen">
-    <div *ngIf="!isSearchLoading; else emptyResultSet" class="searchResults">
+  <div *ngIf="areResultsOpen">
+    <div *ngIf="!isLoading; else emptyResultSet" class="searchResults">
       <div class="searchresult__container">
         <div *ngIf="!hasResults">
           <span class="search__notfound"i18n>
@@ -39,8 +43,10 @@
         </div>
         <ul>
           <li class="searchResult__item"
-            *ngFor="let result of searchResults"
-            (click)="this.select(result)"
+            *ngFor="let result of results"
+            [ngClass]="{'active': isActive(result)}"
+            (click)="select(result); store.setActive(result)"
+            (focus)="store.setActive(result)"
           >
             <ng-container
               *ngTemplateOutlet="resultTemplate, context: { $implicit: result }"

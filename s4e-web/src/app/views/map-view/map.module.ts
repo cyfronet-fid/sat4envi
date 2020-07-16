@@ -49,7 +49,7 @@ import {routes} from './map.routes.module';
 import {SearchResultModalComponent} from './sentinel-search/search-result-modal/search-result-modal.component';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
 import { ResizableModule } from 'angular-resizable-element';
-import { EventsModule } from 'src/app/utils/dropdown/events.module';
+import { EventsModule } from 'src/app/utils/search/events.module';
 
 @NgModule({
   declarations: [
