@@ -11,8 +11,8 @@ import {Router} from '@angular/router';
 import {FormState} from '../../../state/form/form.model';
 import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.metadata.model';
 import {HashMap} from '@datorama/akita';
-import {delay, map} from 'rxjs/operators';
-import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
+import {debounceTime, delay, filter, map} from 'rxjs/operators';
+import {logIt, mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
 
 @Component({
@@ -32,6 +32,8 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   });
 
   loadingMetadata$: Observable<boolean>;
+  showSearchResults$: Observable<boolean> = this.query.selectShowSearchResults();
+  error$: Observable<any>;
 
 
   constructor(private fm: AkitaNgFormsManager<FormState>,
@@ -43,11 +45,7 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading$ = this.query.selectLoading();
-
-    this.loading$
-      .pipe(untilDestroyed(this))
-      .subscribe(loading => disableEnableForm(loading, this.form));
-
+    this.error$ = this.query.selectError();
     this.loadingMetadata$ = this.query.selectMetadataLoading().pipe(delay(150));
     this.sentinels$ = this.query.selectSentinels();
     this.searchResults$ = this.query.selectAll();
@@ -64,14 +62,20 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
       this.query.selectSelectedSentinels().pipe(map(sentinels => sentinels.length === 0))
     ]).pipe(mapAnyTrue());
 
-    this.sentinels$.subscribe(
-      metadata => {
+    combineLatest([
+      this.loading$,
+      this.sentinels$.pipe(map(metadata => {
         this.form = new AngularFormGroup({
           common: new AngularFormControl({})
         });
         metadata.sections.forEach(sentinel => this.form.setControl(sentinel.name, new AngularFormControl({})));
-      }
-    );
+        return this.form;
+      }))
+    ]).pipe(debounceTime(50), untilDestroyed(this))
+      .subscribe(
+      ([loading, form]) => disableEnableForm(loading, form)
+    )
+
     this.service.getSentinels();
   }
 
@@ -90,5 +94,9 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
   openSearchResultModal(result: SentinelSearchResult) {
     this.service.openModalForResult(result.id);
+  }
+
+  clearResults() {
+    this.service.clearResults();
   }
 }

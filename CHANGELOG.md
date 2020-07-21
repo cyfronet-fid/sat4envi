@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add new sentinel search results UI [#613](https://github.com/cyfronet-fid/sat4envi/issues/613)
 - Enable actuator endpoints [#689](https://github.com/cyfronet-fid/sat4envi/issues/689)
 - Added full (basic) functionality to the timeline [#653](https://github.com/cyfronet-fid/sat4envi/issues/653)
 - Categories in sidebar [#599](https://github.com/cyfronet-fid/sat4envi/issues/599)

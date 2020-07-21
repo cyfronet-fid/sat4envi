@@ -87,4 +87,8 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
       map(([results, active]) => results.indexOf(active) === results.length - 1)
     );
   }
+
+  selectShowSearchResults() {
+    return this.select('showSearchResults');
+  }
 }

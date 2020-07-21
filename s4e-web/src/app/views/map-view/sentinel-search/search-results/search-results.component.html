@@ -1,0 +1,68 @@
+<div class="contents">
+  <header>
+    <button type="button"
+            data-test="back-button"
+            class="back"
+            aria-hidden="true"
+            (click)="close.emit()"></button>
+
+    <span class="title" i18n>Powrót do formularza</span>
+
+    <button type="button"
+            data-test="close-button"
+            class="close"
+            aria-hidden="true"
+            (click)="close.emit()"></button>
+  </header>
+
+  <section class="sentinel" *ngIf="!isLoading; else loadingRef">
+    <ng-container *ngIf="!error; else errorRef">
+    <span i18n>Wyniki wyszukiwania</span>
+    <ul class="search-result">
+      <li *ngFor="let result of searchResults" data-test="search-result-entry">
+        <div class="search-result__package">
+          <span class="sentinel-type">{{result.instrument}}</span>
+          <strong class="package-name">S1A_IW_GRDH_1SDV_20200518T052552_20200518T052617_032615_03C710_C6F8</strong>
+        </div>
+        <section class="search-result__content">
+          <div class="search-result__quicklook" (click)="showDetails.emit(result)">
+            <img *ngIf="result.image" [attr.src]="result.image">
+            <strong>Brak podglądu</strong>
+          </div>
+          <div class="search-result__details">
+            <span class="search-result__timestamp">{{result.timestamp}}</span>
+            <ul class="search-result__spec">
+              <li>
+                <span i18n>Mission:</span>
+                <strong>{{result.mission}}</strong>
+              </li>
+              <li>
+                <span i18n>Instrument:</span>
+                <strong>{{result.instrument}}</strong>
+              </li>
+              <li>
+                <span i18n>Size:</span>
+                <strong>{{result.size}}</strong>
+              </li>
+            </ul>
+          </div>
+          <div class="search-result__actions">
+            <button data-test="show-details-button" class="show-details" (click)="showDetails.emit(result)"></button>
+            <a [attr.href]="result.url" target="_blank" class="download-link download"></a>
+          </div>
+        </section>
+      </li>
+      <li *ngIf="searchResults.length === 0" data-test="no-results" i18n>Brak wyników</li>
+    </ul>
+    </ng-container>
+    <ng-template #errorRef>
+      <div class="error" data-test="error-container" i18n>Wystąpił błąd podczas pobierania wyników, <a href="javascript:void" data-test="reload" (click)="reload.emit()">kliknij by ponówić próbę</a></div>
+    </ng-template>
+  </section>
+
+  <ng-template #loadingRef>
+    <div class="loading loading--results"></div>
+    <div class="loading loading--results"></div>
+    <div class="loading loading--results"></div>
+  </ng-template>
+</div>

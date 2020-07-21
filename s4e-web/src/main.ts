@@ -12,7 +12,7 @@ if (environment.production) {
 
 const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
-if (environment.hmr) {
+if (environment.hmr && environment.hmrPersist) {
   persistState({
     exclude: ['router'], key: 's4eStore',
   });

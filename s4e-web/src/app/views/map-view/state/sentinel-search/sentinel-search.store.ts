@@ -11,6 +11,7 @@ export class SentinelSearchStore extends EntityStore<SentinelSearchState, Sentin
       loaded: false,
       metadataLoading: false,
       metadataLoaded: false,
+      showSearchResults: false,
       metadata: {
         common: {
           params: []

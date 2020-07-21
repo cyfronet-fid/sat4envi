@@ -105,6 +105,7 @@ describe('SentinelSearchResultService', () => {
       const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search?param1=abc`});
       r.flush(searchResults);
       await promise;
+      expect(query.getValue().showSearchResults).toBeTruthy();
       expect(query.getValue().loaded).toBeTruthy();
       expect(query.getValue().loading).toBeFalsy();
       expect(query.getAll()).toEqual(searchResults.map(el => createSentinelSearchResult(el)));
@@ -169,5 +170,13 @@ describe('SentinelSearchResultService', () => {
     expect(query.getActive()).toEqual(first);
     service.previousActive();
     expect(query.getActive()).toEqual(second);
+  });
+
+  it('clearResults', () => {
+    store.set(SentinelSearchFactory.buildListSearchResult(2));
+    store.update({showSearchResults: true});
+    service.clearResults();
+    expect(query.getValue().showSearchResults).toBeFalsy();
+    expect(query.getAll().length).toBe(0);
   });
 });

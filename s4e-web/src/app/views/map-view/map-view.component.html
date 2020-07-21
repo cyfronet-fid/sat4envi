@@ -1,4 +1,3 @@
-
 <div class="section sidebar" style="z-index: 5; position: absolute;">
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
@@ -8,7 +7,9 @@
       <a [routerLink]="['./sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a>
     </li>
   </ul>
-  <router-outlet></router-outlet>
+  <div class="sidebar-content">
+    <router-outlet></router-outlet>
+  </div>
 </div>
 
 <s4e-legend *ngIf="legend$ | async"

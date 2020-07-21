@@ -11,8 +11,8 @@ export const environment = {
   ...sharedEnvironment,
   production: false,
   hmr: true,
-  hmrPersist: true,
-  inviteOnly: true,
+  hmrPersist: false,
+  inviteOnly: false,
   uiDevelopment: true
 };
 

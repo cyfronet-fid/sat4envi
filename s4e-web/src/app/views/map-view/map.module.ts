@@ -51,6 +51,7 @@ import { ResizableModule } from 'angular-resizable-element';
 import { EventsModule } from 'src/app/utils/search/events.module';
 import {OVERLAY_LIST_MODAL_ID} from './view-manager/overlay-list-modal/overlay-list-modal.model';
 import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overlay-list-modal.component';
+import {SearchResultsComponent} from './sentinel-search/search-results/search-results.component';
 
 @NgModule({
   declarations: [
@@ -68,8 +69,10 @@ import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overl
     DynamicSpaceDirective,
     SentinelFormComponent,
     SentinelSectionComponent,
+    SearchResultsComponent,
     SearchResultModalComponent,
-    OverlayListModalComponent
+    OverlayListModalComponent,
+    SearchResultsComponent
   ],
   exports: [
     MapViewComponent,

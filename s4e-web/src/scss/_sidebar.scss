@@ -1,22 +1,24 @@
+@import "../scss/variables";
+
 .sidebar {
   background: $color-grey-primary;
   -webkit-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
-  width: $width-sidebar;
+  width: #{$width-sidebar + 30px};
   height: 100%;
   display: flex;
   flex-direction: column;
   z-index: 2;
-  padding: 0 15px;
+  //padding: 0 15px;
   box-sizing: padding-box;
-  scrollbar-width: thin;
+  //scrollbar-width: thin;
   flex: 1 1 auto;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 
   .switch {
-    margin: 0 -15px 15px -15px;
+    margin: 0 -15px 0 -15px;
     display: flex;
     flex-direction: row;
 
