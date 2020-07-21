@@ -84,6 +84,14 @@
                 }
               ]
             },
+            "hmr-no-persist": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hmr-no-persist.ts"
+                }
+              ]
+            },
             "en": {
               "aot": true,
               "outputPath": "dist/s4e-angular-en",
@@ -115,6 +123,10 @@
             "hmr.private": {
               "hmr": true,
               "browserTarget": "s4e-angular:build:hmr.private"
+            },
+            "hmr-no-persist": {
+              "hmr": true,
+              "browserTarget": "s4e-angular:build:hmr-no-persist"
             },
             "en": {
               "browserTarget": "s4e-angular:build:en"

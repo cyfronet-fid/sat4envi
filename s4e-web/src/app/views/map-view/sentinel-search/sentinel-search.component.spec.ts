@@ -65,7 +65,7 @@ describe('SentinelSearchComponent', () => {
       });
 
       it('showNoResults$ should be false if length > 0', async () => {
-        store.set(SentinelSearchFactory.buildListSearchResult(1, environment.apiPrefixV1));
+        store.set(SentinelSearchFactory.buildListSearchResult(1));
         expect(await toTestPromise(component.showNoResults$)).toBeFalsy();
       });
     });

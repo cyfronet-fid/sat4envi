@@ -1,5 +1,5 @@
-import { handleHttpRequest$ } from 'src/app/common/store.util';
-import { environment } from './../../../../../environments/environment';
+import {handleHttpRequest$} from 'src/app/common/store.util';
+import {environment} from './../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SentinelSearchStore} from './sentinel-search.store';
@@ -10,14 +10,15 @@ import {
   SentinelSearchResultResponse,
 } from './sentinel-search.model';
 import {SentinelSearchQuery} from './sentinel-search.query';
-import { delay, finalize, map, shareReplay, tap } from 'rxjs/operators';
+import {delay, map, shareReplay, tap} from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {HashMap} from '@datorama/akita';
 import {NotificationService} from 'notifications';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
-import { ActivatedQueue } from 'src/app/utils/search/activated-queue.utils';
+import {ActivatedQueue} from 'src/app/utils/search/activated-queue.utils';
+import {logIt} from '../../../../utils/rxjs/observable';
 
 @Injectable({providedIn: 'root'})
 export class SentinelSearchService {
@@ -50,6 +51,7 @@ export class SentinelSearchService {
 
   search(params: HashMap<string>) {
     this.store.set([]);
+    this.store.update({showSearchResults: true});
     const url = `${environment.apiPrefixV1}/search`;
     const get$ = this.http.get<SentinelSearchResultResponse[]>(url, {params})
       .pipe(
@@ -58,7 +60,7 @@ export class SentinelSearchService {
         map(data => data.map(product => createSentinelSearchResult(product))),
         shareReplay(1)
       );
-      get$
+    get$
       .subscribe(
         (data) => {
           this.store.set(data);
@@ -77,20 +79,24 @@ export class SentinelSearchService {
       return;
     }
 
+    this.store.setError(null);
     this.store.setMetadataLoading();
     const url = `${environment.apiPrefixV1}/config/sentinel-search`;
     const get$ = this.http.get<SentinelSearchMetadata>(url)
       .pipe(
-        handleHttpRequest$(this.store),
         tap(() => this.store.setMetadataLoading(false)),
         tap(data => this.store.update({metadata: data, metadataLoaded: true}))
       );
-      get$.subscribe(
-      () => {},
-      error => this.notificationService.addGeneral({
-        type: 'error',
-        content: 'Wystąpił błąd podczas pobierania metadanych'
-      })
+    get$.subscribe(
+      () => {
+      },
+      error => {
+        this.store.setError(error);
+        this.notificationService.addGeneral({
+          type: 'error',
+          content: 'Wystąpił błąd podczas pobierania metadanych'
+        });
+      }
     );
 
     return get$;
@@ -111,5 +117,10 @@ export class SentinelSearchService {
 
   previousActive() {
     this._activatedQueue.previous();
+  }
+
+  clearResults() {
+    this.store.set([]);
+    this.store.update({showSearchResults: false});
   }
 }

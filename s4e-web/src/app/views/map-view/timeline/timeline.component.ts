@@ -54,7 +54,7 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   currentDate: string = '';
   startAt = null;
   @Input() activeScene: Scene | null = null;
-  @Input() startTime: moment.Moment;
+  @Input() startTime: string;
   hourmarks: string[] = [];
 
 

@@ -1,0 +1,183 @@
+@import "../../../../../scss/variables";
+
+.contents {
+  display: block;
+  position: absolute;
+  background: $color-grey-primary;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: 0 0 20px -10px black;
+  overflow-y: auto;
+
+  header {
+    display: block;
+    font-size: 0.75rem;
+    background: $color-white;
+    height: 40px;
+    text-transform: uppercase;
+    font-weight: 500;
+
+
+    .close {
+      background: url(/../../../../../assets/images/ico_close.svg) transparent no-repeat center;
+      height: 13px;
+      width: 13px;
+      background-size: contain;
+      position: absolute;
+      right: $space-default;
+      top: 14px;
+    }
+
+    .back {
+      background: url(/../../../../../assets/images/ico_chevron.svg) transparent no-repeat center;
+      transform: rotate(90deg);
+      height: 7px;
+      width: 7px;
+      background-size: contain;
+      position: absolute;
+      left: $space-default;
+      top: 17px;
+    }
+
+    .title {
+      top: 15px;
+      left: 36px;
+      position: absolute;
+    }
+  }
+
+  .sentinel {
+    padding: $space-default;
+  }
+}
+
+
+
+
+.search-result {
+  margin-top: 10px;
+
+  & > li {
+    background: $color-white;
+    padding: $space-small;
+    border-radius: $border-radius-default;
+    margin-bottom: $space-xsmall;
+    font-size: 0.65rem;
+  }
+
+  &__package {
+    margin: 5px 0 10px 0;
+
+    * {
+      margin-right: 3px;
+    }
+    .sentinel-type {
+      background: $color-secondary;
+      color: $color-white;
+      font-weight: 700;
+      padding: 0 3px;
+    }
+  }
+
+  &__content {
+    display: flex;
+  }
+
+  &__quicklook {
+    width: 80px;
+    height: 50px;
+    background: $color-grey-secondary;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $color-grey;
+    text-align: center;
+    text-transform: uppercase;
+    margin-right: $space-small;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-right: 30px;
+  }
+
+
+  &__spec {
+    display: flex;
+    justify-content: space-between;
+    span {
+      display: block;
+      opacity: .5;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      font-weight: 500;
+    }
+
+    strong {
+      font-size: 0.75rem;
+    }
+  }
+
+  &__timestamp {
+    font-size: 0.875rem;
+    margin: 4px 0 5px 0;
+    font-weight: 600;
+    display: block;
+  }
+
+  &__actions {
+    position: relative;
+    padding-left: 20px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    &:before {
+      content: " ";
+      width: 1px;
+      background: $color-grey-secondary;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+    }
+
+    button,
+    a.download {
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin: 0 5px;
+    }
+
+    .download {
+      background-image: url(/../../../../../assets/images/ico_download.svg);
+    }
+    .show-details {
+      background-image: url(/../../../../../assets/images/ico_edit.svg);
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.error {
+  font-size: 0.875rem;
+  color: $color-error;
+  z-index: 99;
+  margin: $space-default 0;
+  background-color: lighten($color-error, 40%);
+  padding: $space-default;
+  position:relative;
+  border-radius: $border-radius-default;
+
+  a {
+    color: darken($color-error, 20);
+    text-decoration: underline;
+  }
+}

@@ -19,21 +19,9 @@
     <div class="form">
       <h3>Summary</h3>
       <table class="modal__table">
-        <tr>
-          <td>
-            Date
-          </td>
-          <td>
-            Znajdą się tutaj wszystkie metadane z paczki
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Filename
-          </td>
-          <td>
-            {{(searchResult$ | async)?.id}}
-          </td>
+        <tr *ngFor="let entry of ((searchResult$ | async)?.metadataContent | keyvalue)">
+          <td>{{entry.key}}</td>
+          <td>{{entry.value}}</td>
         </tr>
       </table>
     </div>

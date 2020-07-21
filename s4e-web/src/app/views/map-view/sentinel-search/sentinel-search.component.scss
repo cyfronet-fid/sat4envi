@@ -1,52 +1,18 @@
 @import "../../../../scss/variables";
 
-.search__result {
-  & > li {
-    background: $color-white;
-    padding: 15px 10px;
-    border-radius: $border-radius-default;
-    font-size: 0.875rem;
-    margin-bottom: $space-xsmall;
-    display: flex;
-    flex-direction: row;
-    position: relative;
 
-    &:hover .download-link {
-      display: flex;
-    }
 
-    .download-link {
-      height: 100%;
-      width: 23%;
-      background: rgba(255,255,255, 0.85);
-      font-weight: 500;
-      font-size: 0.75rem;
-      color: $color-grey;
-      border-left: 2px solid $color-grey-primary;
-      position: absolute;
-      right: 0;
-      top: 0;
-      display: none;
-      justify-content: space-around;
-      align-items: center;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
 
-    .quick__look {
-      border: 1px solid $color-grey-secondary;
-      border-radius: $border-radius-default;
-      width: 45px;
-      height: 45px;
-      display: flex;
-      justify-content: center;
-      background: url("../../../../assets/images/logo_s4e_blank.png") center no-repeat;
-      margin-right: $space-large;
-    }
+.search-results {
+  //position: absolute;
+  display: block;
+  z-index: 1000;
 
-    li {
-      margin-bottom: 3px;
-    }
-  }
+  width: 550px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  //z-index: 1000;
 }
-

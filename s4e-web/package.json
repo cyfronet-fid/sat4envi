@@ -9,6 +9,8 @@
     "build-libraries": "ng build notifications",
     "prestart": "npm run make-requirements",
     "start": "ng serve --proxy-config proxy.conf.json --configuration hmr",
+    "prestart-no-persistance": "npm run make-requirements",
+    "start-no-persistance": "ng serve --configuration hmr-no-persist --proxy-config proxy.conf.json",
     "prestart-private": "npm run make-requirements",
     "start-private": "ng serve --proxy-config proxy.conf.json --configuration hmr.private",
     "prestart-production": "npm run make-requirements",

@@ -35,3 +35,11 @@ export function filterNull<T>() {
 export function filterNotNull<T>() {
   return (input$: Observable<T>) => input$.pipe(filter(obj => obj != null));
 }
+
+export function logIt<T>(identifier?: string): (source: Observable<T>) => Observable<T> {
+  return function (source: Observable<T>) {
+    return source.pipe(
+      tap(val => identifier ? console.log(identifier, val) : console.log(val))
+    )
+  }
+}

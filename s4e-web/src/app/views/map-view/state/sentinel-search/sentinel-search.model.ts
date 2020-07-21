@@ -1,9 +1,24 @@
 import { environment } from './../../../../../environments/environment';
-import {ActiveState, EntityState} from '@datorama/akita';
+import {ActiveState, EntityState, HashMap} from '@datorama/akita';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 
 export const SENTINEL_VISIBLE_QUERY_KEY = 'visible_sent';
 export const SENTINEL_SELECTED_QUERY_KEY = 'selected_sent';
+
+export interface SentinelSearchResultMetadata {
+  [key: string]: string;
+  format: string;
+  ingestion_time: string;
+  polarisation: string;
+  polygon: string;
+  processing_level: string;
+  product_type: string;
+  relative_orbit_number: string;
+  schema: string;
+  sensing_time: string;
+  sensor_mode: string;
+  spacecraft: string;
+}
 
 /**
  * This is result returned from the server
@@ -12,6 +27,9 @@ export interface SentinelSearchResultResponse {
   id: string;
   productId: number;
   timestamp: string;
+  artifacts: string[];
+  footprint: string;
+  metadataContent: SentinelSearchResultMetadata;
 }
 
 export interface SentinelSearchResult extends SentinelSearchResultResponse {
@@ -19,6 +37,7 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
   mission: string;
   instrument: string;
   size: string;
+  timestamp: string;
   // this should be calculated from the response
   url: string;
 }
@@ -33,6 +52,9 @@ export function createSentinelSearchResult(params: SentinelSearchResultResponse)
     instrument: 'SAR-C',
     size: '6.97 GB',
     url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.productId}')/$value`,
+    metadataContent: {},
+    artifacts: [],
+    footprint: '',
     ...params
   } as SentinelSearchResult;
 }
@@ -42,4 +64,5 @@ export interface SentinelSearchState extends EntityState<SentinelSearchResult>, 
   metadataLoading: boolean;
   metadataLoaded: boolean;
   loaded: boolean;
+  showSearchResults: boolean;
 }

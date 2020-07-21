@@ -275,10 +275,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   increaseResolution() {
-    this.productService.moveResolution(1);
+    this.productService.moveResolution(-1);
   }
 
   decreaseResolution() {
-    this.productService.moveResolution(-1);
+    this.productService.moveResolution(1);
   }
 }
