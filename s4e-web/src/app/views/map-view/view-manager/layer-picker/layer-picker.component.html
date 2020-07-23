@@ -1,5 +1,7 @@
 <header>
-  <span class="products__title products__title--satellite">{{caption}}</span>
+  <span class="products__title products__title--satellite">
+    <ng-content select="[s4e-caption]"></ng-content>
+  </span>
   <span class="products__hint">
     <a href="#">{{help}}</a>
   </span>

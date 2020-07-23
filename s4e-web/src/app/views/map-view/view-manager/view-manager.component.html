@@ -16,19 +16,19 @@
 
   <s4e-items-picker
     #picker
-
     mwlResizable
     resizeCursorPrecision="10"
     [resizeEdges]="{ top: true }"
     (resizeEnd)="onResizeEnd($event)"
-
     class="section layers"
-    caption="Warstwy"
-    i18n-caption
     [loading]="overlaysLoading$ | async"
     [items]="overlays$ | async"
     (itemSelected)="selectOverlay($event)"
   >
+    <div s4e-caption i18n>
+      <span>Warstwy</span>
+      <button *ngIf="isLoggedIn" (click)="showOverlayListModal()">Zarządzaj</button>
+    </div>
   </s4e-items-picker>
 
   <div class="products-list">
@@ -57,14 +57,13 @@
     <ng-template #products>
       <s4e-items-picker
         class="section products"
-        caption="Produkty"
-        i18n-caption
         [loading]="productsLoading$ | async"
         [items]="products$ | async"
         [hasFavourite]="isLoggedIn"
         (itemSelected)="selectProduct($event)"
         (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)"
       >
+        <ng-container s4e-caption i18n>Produkty</ng-container>
       </s4e-items-picker>
     </ng-template>
     <div [s4eDynamicSpace]="pickerRef"></div>

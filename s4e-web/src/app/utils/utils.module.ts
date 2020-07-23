@@ -13,10 +13,11 @@ import { GroupArrayPipe } from './group-array/group-array.pipe';
   imports: [
     CommonModule
   ],
-  exports: [
-    ErrorKeysPipe,
-    GroupArrayPipe
-  ]
+    exports: [
+        ErrorKeysPipe,
+        GroupArrayPipe,
+        S4EDatePipe
+    ]
 })
 export class UtilsModule {
 }

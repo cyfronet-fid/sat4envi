@@ -19,7 +19,7 @@ export namespace Map {
     static getProducts = () => cy.get(".products-list .products__item");
     static getProductList = () => cy.get(".products-list");
     static getProductsBtns = () =>
-      cy.get('s4e-items-picker[caption="Produkty"] .products__name');
+      cy.get('s4e-items-picker.section.products .products__name');
 
     // Date selection
     static getDateChangeBtn = () => cy.get(".timeline__changedate");
