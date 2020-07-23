@@ -49,6 +49,8 @@ import {SearchResultModalComponent} from './sentinel-search/search-result-modal/
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
 import { ResizableModule } from 'angular-resizable-element';
 import { EventsModule } from 'src/app/utils/search/events.module';
+import {OVERLAY_LIST_MODAL_ID} from './view-manager/overlay-list-modal/overlay-list-modal.model';
+import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overlay-list-modal.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,8 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     DynamicSpaceDirective,
     SentinelFormComponent,
     SentinelSectionComponent,
-    SearchResultModalComponent
+    SearchResultModalComponent,
+    OverlayListModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -108,14 +111,16 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent),
     makeModalProvider(SAVE_CONFIG_MODAL_ID, SaveConfigModalComponent),
     makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent),
-    makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent)
+    makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent),
+    makeModalProvider(OVERLAY_LIST_MODAL_ID, OverlayListModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
     ShareConfigurationModalComponent,
     SaveConfigModalComponent,
     ListConfigsModalComponent,
-    SearchResultModalComponent
+    SearchResultModalComponent,
+    OverlayListModalComponent
   ]
 })
 export class MapModule {

@@ -95,7 +95,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
       ));
     this.scenes$ = this.sceneQuery.selectAll();
     this.scenesAreLoading$ = this.sceneQuery.selectLoading();
-    this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
+    this.overlays$ = this.overlayQuery.selectVisibleAsUIOverlays();
     this.activeProducts$ = this.productQuery.selectActive();
     // TODO - uncomment it when the legends are properly seeded
     // this.legend$ = this.legendQuery.selectLegend();

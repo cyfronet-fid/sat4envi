@@ -1,10 +1,20 @@
-import { LocationSearchResultsStore } from './../state/location-search-results/locations-search-results.store';
-import { SessionQuery } from './../../../state/session/session.query';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterContentChecked, HostListener, Renderer2 } from '@angular/core';
+import {LocationSearchResultsStore} from './../state/location-search-results/locations-search-results.store';
+import {SessionQuery} from './../../../state/session/session.query';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  AfterContentChecked,
+  HostListener,
+  Renderer2
+} from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
-import { map, filter } from 'rxjs/operators';
+import {map, filter} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 import {ProductQuery} from '../state/product/product.query';
 import {OverlayQuery} from '../state/overlay/overlay.query';
@@ -13,8 +23,11 @@ import {SceneQuery} from '../state/scene/scene.query.service';
 import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
-import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
-import { ResizeEvent } from 'angular-resizable-element';
+import {LocationSearchResultsQuery} from '../state/location-search-results/location-search-results.query';
+import {ResizeEvent} from 'angular-resizable-element';
+import {InjectorModule} from 'src/app/common/injector.module';
+import {ModalService} from '../../../modal/state/modal.service';
+import {OVERLAY_LIST_MODAL_ID} from './overlay-list-modal/overlay-list-modal.model';
 
 @Component({
   selector: 's4e-view-manager',
@@ -23,13 +36,15 @@ import { ResizeEvent } from 'angular-resizable-element';
 })
 export class ViewManagerComponent implements OnInit, OnDestroy {
   pickerRef: ElementRef = null;
-  @ViewChild('picker', { read: ElementRef })
+
+  @ViewChild('picker', {read: ElementRef})
   set _pickerRef(pickerRef: ElementRef) {
     if (pickerRef) {
       // run after current change detection cycle
       setTimeout(() => this.pickerRef = pickerRef);
     }
   }
+
   loading$: Observable<boolean>;
   scenes: IUILayer[] = [];
   products$: Observable<IUILayer[]>;
@@ -53,17 +68,18 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     private searchResultsService: SearchResultsService,
     private sessionQuery: SessionQuery,
     private _renderer: Renderer2,
-
     public searchResultsQuery: LocationSearchResultsQuery,
+    private _modalService: ModalService,
     public searchResultsStore: LocationSearchResultsStore
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.overlaysLoading$ = this.overlayQuery.selectLoading();
     this.products$ = this.productQuery.selectAllFilteredAsUILayer();
     this.favouriteProductsCount$ = this.productQuery.selectFavouritesCount();
     this.productsLoading$ = this.productQuery.selectLoading();
-    this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
+    this.overlays$ = this.overlayQuery.selectVisibleAsUIOverlays();
 
     this.productQuery.selectIsFavouriteMode().subscribe(isFavourite => this.isFavouriteFiltration = isFavourite);
 
@@ -82,7 +98,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     return this.sessionQuery.isLoggedIn();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
 
   toggleSearchResult(show: boolean) {
     this.searchResultsService.toggleSearchResults(show);
@@ -103,7 +120,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   isFavouriteProduct = (ID: number, isFavourite: boolean): boolean => {
     this.productService.toggleFavourite(ID, isFavourite);
     return false;
-  }
+  };
 
   searchForPlaces(place: string) {
     if (!place || place === '') {
@@ -136,5 +153,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     height = calculatedHeight > MAX_HEIGHT ? MAX_HEIGHT : height;
 
     this._renderer.setStyle(this.pickerRef.nativeElement, 'height', `${height as number}px`);
+  }
+
+  showOverlayListModal() {
+    this._modalService.show({id: OVERLAY_LIST_MODAL_ID, size: 'lg'});
   }
 }
