@@ -3,25 +3,30 @@ package pl.cyfronet.s4e.controller.response;
 import lombok.Builder;
 import lombok.Data;
 import pl.cyfronet.s4e.bean.Legend;
-import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.util.TimeHelper;
 
-import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.function.Function;
 
 @Data
 @Builder
 public class SceneResponse {
+    public interface Projection {
+        Long getId();
+        LocalDateTime getTimestamp();
+        Legend getLegend();
+    }
+
     private Long id;
     private Long productId;
     private ZonedDateTime timestamp;
     private Legend legend;
 
-    public static SceneResponse of(Scene scene, ZoneId zoneId, TimeHelper timeHelper) {
+    public static SceneResponse of(Long productId, Projection scene, Function<LocalDateTime, ZonedDateTime> timestampConverter) {
         return SceneResponse.builder()
                 .id(scene.getId())
-                .productId(scene.getProduct().getId())
-                .timestamp(timeHelper.getZonedDateTime(scene.getTimestamp(), zoneId))
+                .productId(productId)
+                .timestamp(timestampConverter.apply(scene.getTimestamp()))
                 .legend(scene.getLegend())
                 .build();
     }

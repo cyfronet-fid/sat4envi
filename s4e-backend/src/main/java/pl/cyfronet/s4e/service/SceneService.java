@@ -3,8 +3,11 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Scene;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.*;
@@ -15,15 +18,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SceneService {
     private final SceneRepository sceneRepository;
+    private final ProductRepository productRepository;
     private final TimeHelper timeHelper;
 
-    public List<Scene> getScenes(Long productId, LocalDateTime start, LocalDateTime end) {
+    public <T> List<T> list(Long productId, LocalDateTime start, LocalDateTime end, Class<T> projection) throws NotFoundException {
+        if (!productRepository.existsById(productId)) {
+            throw constructNFE("Product", productId);
+        }
         return sceneRepository.findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
-                productId, start, end
+                productId, start, end, projection
         );
     }
 
-    public void saveScene(Scene scene) {
+    public void save(Scene scene) {
         sceneRepository.save(scene);
     }
 
@@ -46,5 +53,9 @@ public class SceneService {
         }
 
         return dates;
+    }
+
+    private NotFoundException constructNFE(String name, Long id) {
+        return new NotFoundException(name + " with id '" + id + "' not found");
     }
 }

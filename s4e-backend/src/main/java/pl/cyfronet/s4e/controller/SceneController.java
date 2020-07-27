@@ -24,9 +24,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.*;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @RestController
@@ -40,19 +41,22 @@ public class SceneController {
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
     })
     @GetMapping("/products/{id}/scenes")
     public List<SceneResponse> getScenes(
             @PathVariable(name = "id") Long productId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
-    ) {
+    ) throws NotFoundException {
         ZonedDateTime zdtStart = ZonedDateTime.of(date, LocalTime.MIDNIGHT, timeZone.getZoneId());
         LocalDateTime start = timeHelper.getLocalDateTimeInBaseZone(zdtStart);
         LocalDateTime end = timeHelper.getLocalDateTimeInBaseZone(zdtStart.plusDays(1));
-        return sceneService.getScenes(productId, start, end).stream()
-                .map(s -> SceneResponse.of(s, timeZone.getZoneId(), timeHelper))
+        Function<LocalDateTime, ZonedDateTime> timeConverter = (timestamp) ->
+                timeHelper.getZonedDateTime(timestamp, timeZone.getZoneId());
+        return sceneService.list(productId, start, end, SceneResponse.Projection.class).stream()
+                .map(s -> SceneResponse.of(productId, s, timeConverter))
                 .collect(Collectors.toList());
     }
 

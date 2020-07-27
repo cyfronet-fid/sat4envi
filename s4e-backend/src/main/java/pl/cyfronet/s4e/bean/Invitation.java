@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Invitation extends CreationAndModificationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
