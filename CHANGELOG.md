@@ -15,6 +15,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Trigger creation of views for GeoServer on DB level [#622](https://github.com/cyfronet-fid/sat4envi/issues/622)
+
 ### Fixed
 
 - Improve scene time filtering performance [#610](https://github.com/cyfronet-fid/sat4envi/issues/610)

@@ -10,7 +10,6 @@ import org.locationtech.jts.io.ParseException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.*;
@@ -87,8 +86,6 @@ public class SeedProducts implements ApplicationRunner {
     private final SceneStorage sceneStorage;
 
     private final GeometryUtil geom;
-
-    private final JdbcTemplate jdbcTemplate;
 
     private final PrefixScanner prefixScanner;
     private final SceneAcceptor sceneAcceptor;
@@ -168,7 +165,6 @@ public class SeedProducts implements ApplicationRunner {
                         .build(),
         });
         productRepository.saveAll(products);
-        createViews(products);
 
         LocalDateTime startInclusive = LocalDateTime.of(2018, 10, 4, 0, 0);
         LocalDateTime endExclusive = startInclusive.plusDays(1);
@@ -251,7 +247,6 @@ public class SeedProducts implements ApplicationRunner {
                         .build(),
         });
         productRepository.saveAll(products);
-        createViews(products);
 
         try {
             val productParams = Map.of(
@@ -505,7 +500,6 @@ public class SeedProducts implements ApplicationRunner {
             prods.stream()
                     .map(ProductParamsPair::getProduct)
                     .forEach(productRepository::save);
-            createViews(prods.stream().map(ProductParamsPair::getProduct).collect(Collectors.toList()));
 
             for (val pair : prods) {
                 seedScenes(pair.getProduct(), pair.getParams());
@@ -661,7 +655,6 @@ public class SeedProducts implements ApplicationRunner {
         );
 
         productRepository.saveAll(products);
-        createViews(products);
 
         Stream.of(
                 "Sentinel-1/GRDH/",
@@ -679,18 +672,6 @@ public class SeedProducts implements ApplicationRunner {
                 "MSG_Products_WM/Opad_H05",
                 "MSG_Products_WM/OST/"
         ).forEach(this::readScenes);
-    }
-
-    private void createViews(List<Product> products) {
-        for (val product: products) {
-            String id = product.getId().toString();
-            String name = product.getLayerName();
-            jdbcTemplate.execute("DROP VIEW IF EXISTS scene_" + name);
-            jdbcTemplate.execute("CREATE VIEW scene_" + name + " AS " +
-                    "SELECT  s.id, s.footprint, s.timestamp, s.granule_path " +
-                    "FROM scene s " +
-                    "WHERE s.product_id = " + id);
-        }
     }
 
     private void seedOverlays() {
