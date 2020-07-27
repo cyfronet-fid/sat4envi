@@ -1,9 +1,6 @@
 package pl.cyfronet.s4e.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.cyfronet.s4e.bean.audit.CreationAudited;
 
 import javax.persistence.*;
@@ -15,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Schema extends CreationAudited {
     public enum Type {
         SCENE, METADATA;

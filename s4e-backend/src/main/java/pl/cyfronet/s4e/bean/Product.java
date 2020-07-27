@@ -24,7 +24,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Product extends CreationAndModificationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

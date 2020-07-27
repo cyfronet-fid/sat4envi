@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Table(name = "user_role", uniqueConstraints = @UniqueConstraint(columnNames = {"role", "app_user_id", "inst_group_id"}))
 public class UserRole extends CreationAudited {
     @Id

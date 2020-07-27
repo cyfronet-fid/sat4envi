@@ -16,8 +16,8 @@ public interface SceneRepository extends JpaRepository<Scene, Long>, SceneReposi
 
     List<Scene> findAllByProductId(Long productId);
 
-    List<Scene> findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
-            Long productId, LocalDateTime start, LocalDateTime end
+    <T> List<T> findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
+            Long productId, LocalDateTime start, LocalDateTime end, Class<T> projection
     );
 
     int countAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThan(

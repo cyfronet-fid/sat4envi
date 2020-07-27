@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class Scene extends CreationAndModificationAudited {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_PRODUCT_ID = "product_id";

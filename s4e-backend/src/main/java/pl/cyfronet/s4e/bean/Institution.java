@@ -15,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 @Table(name = "institution", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
 public class Institution extends CreationAndModificationAudited {
     @Id
