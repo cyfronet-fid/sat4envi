@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v10.0.0]
+
+### Added
+
 - Basic institution invitation endpoint [#608](https://github.com/cyfronet-fid/sat4envi/issues/608)
 - Admin endpoints for Schema and Product management [#579](https://github.com/cyfronet-fid/sat4envi/issues/579)
 - Query param handling in search endpoint [#512](https://github.com/cyfronet-fid/sat4envi/issues/512)
@@ -212,7 +222,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v9.1.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v10.0.0...HEAD
+[v10.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.1.0...v10.0.0
 [v9.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...v9.1.0
 [v9.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...v9.0.0
 [v8.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v7.0.0...v8.0.0
