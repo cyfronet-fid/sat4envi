@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Admin scenes sync trigger endpoint  [#621](https://github.com/cyfronet-fid/sat4envi/issues/621)
+
 ### Changed
 
 ### Fixed
