@@ -106,7 +106,7 @@ public class InstitutionController {
     })
     @GetMapping("/institutions/{institution}")
     public InstitutionResponse get(@PathVariable("institution") String institutionSlug) throws NotFoundException {
-        return institutionService.getInstitution(institutionSlug, InstitutionResponse.class)
+        return institutionService.findBySlug(institutionSlug, InstitutionResponse.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
     }
 

@@ -10,13 +10,6 @@ export interface Person {
   // createDate: string
 }
 
-export interface PersonForm {
-  name: string;
-  surname: string;
-  email: string;
-  groupSlugs: any;
-}
-
 /**
  * A factory function that creates Person
  */

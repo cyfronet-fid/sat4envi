@@ -121,7 +121,7 @@ public class InstitutionServiceTest {
         institutionService.delete("instytucja-15");
 
         val groupDB = groupService.getGroup("instytucja-15", "group-15", Group.class);
-        val institutionDB = institutionService.getInstitution("instytucja-15", Institution.class);
+        val institutionDB = institutionService.findBySlug("instytucja-15", Institution.class);
 
         assertThat(groupDB, isEmpty());
         assertThat(institutionDB, isEmpty());

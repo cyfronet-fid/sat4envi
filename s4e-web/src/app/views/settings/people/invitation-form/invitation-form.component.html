@@ -1,0 +1,20 @@
+<s4e-generic-modal [buttonX]="true" [modalId]="modalId">
+  <div class="s4e-modal-header" i18n>Wyślij zaproszenie do instytucji {{ institution?.name }}</div>
+  <div class="s4e-modal-body">
+    <form [formGroup]="form" class="form">
+      <ul>
+        <li>
+          <ext-input type="email" formControlName="email" label="Email" i18n></ext-input>
+        </li>
+      </ul>
+    </form>
+  </div>
+  <div class="s4e-modal-footer">
+    <button type="submit" class="button button--secondary" (click)="create()" data-test="save" i18n>
+      Wyślij
+    </button>
+    <button class="button button--borderBlack" (click)="dismiss()" i18n>
+      Anuluj
+    </button>
+  </div>
+</s4e-generic-modal>

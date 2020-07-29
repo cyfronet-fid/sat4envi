@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
@@ -107,21 +106,6 @@ public class AppUserController {
         Long emailVerificationId = appUserService.confirmEmail(token).getId();
         String requesterEmail = appUserService.getRequesterEmailBy(token);
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(requesterEmail, emailVerificationId, LocaleContextHolder.getLocale()));
-    }
-
-    @Operation(summary = "Add user to an institution")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User was added"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
-    })
-    @PostMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    public void addUserToInstitution(@RequestBody @Valid CreateUserWithGroupsRequest request,
-                                                  @PathVariable("institution") String institutionSlug) throws AppUserCreationException, NotFoundException {
-        appUserService.createFromRequest(request, institutionSlug);
-//        eventPublisher.publishEvent(new OnRegistrationViaInstitutionCompleteEvent(appUser, LocaleContextHolder.getLocale()));
     }
 
     @Operation(summary = "Update user groups in an institution")

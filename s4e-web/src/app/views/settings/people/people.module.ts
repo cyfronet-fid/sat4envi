@@ -1,9 +1,9 @@
-import { PERSON_FORM_MODAL_ID } from './person-form/person-form-modal.model';
+import { INVITATION_FORM_MODAL_ID } from './invitation-form/invitation-form-modal.model';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ReactiveFormsModule} from '@angular/forms';
 import {PersonListComponent} from './person-list/person-list.component';
-import {PersonFormComponent} from './person-form/person-form.component';
+import {InvitationFormComponent} from './invitation-form/invitation-form.component';
 import {RouterModule} from '@angular/router';
 import {S4EFormsModule} from '../../../form/form.module';
 import {GenericListViewModule} from '../components/generic-list-view/generic-list-view.module';
@@ -13,7 +13,7 @@ import { ModalModule } from 'src/app/modal/modal.module';
 @NgModule({
   declarations: [
     PersonListComponent,
-    PersonFormComponent
+    InvitationFormComponent
   ],
   imports: [
     CommonModule,
@@ -25,13 +25,13 @@ import { ModalModule } from 'src/app/modal/modal.module';
   ],
   exports: [
     PersonListComponent,
-    PersonFormComponent
+    InvitationFormComponent
   ],
   providers: [
-    makeModalProvider(PERSON_FORM_MODAL_ID, PersonFormComponent)
+    makeModalProvider(INVITATION_FORM_MODAL_ID, InvitationFormComponent)
   ],
   entryComponents: [
-    PersonFormComponent
+    InvitationFormComponent
   ]
 })
 export class PeopleModule {

@@ -3,7 +3,7 @@
                        [error]="error$ | async"
                        [selectable]="false">
   <ng-container add-button>
-    <button class="button button--secondary button--small" (click)="openPersonForm(null)">Dodaj nową osobę</button>
+    <button class="button button--secondary button--small" (click)="openPersonForm(null)">Wyślij zaproszenie</button>
   </ng-container>
   <ng-container caption i18n>Zarządzaj ludźmi</ng-container>
   <ng-container search-label i18n>Szukaj ludzi:</ng-container>
@@ -20,9 +20,10 @@
     <td i18n>{{user.name}} {{user.surname}}</td>
     <td>{{user.email}}</td>
     <td>
-      <a href="javascript:void(0)" (click)="openPersonForm(user)">
+      <!-- TODO: Resend on email change -->
+      <!-- <a href="javascript:void(0)" (click)="openPersonForm(user)">
         <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
-      </a>
+      </a> -->
       <a href="javascript:void(0)" (click)="deleteMember(user.email)">
         <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
       </a>

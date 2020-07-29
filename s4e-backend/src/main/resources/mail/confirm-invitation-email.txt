@@ -1,0 +1,7 @@
+Dzień dobry!
+
+Zostałeś dodany do instytucji '[( ${institutionName} )]'.
+Zaloguj się i przejdź do ustawień w celu korzystania z uprawnień instytucji.
+
+Pozdrawiamy,
+Zespół sat4envi

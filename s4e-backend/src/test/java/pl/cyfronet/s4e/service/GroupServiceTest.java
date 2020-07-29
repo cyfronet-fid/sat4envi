@@ -72,7 +72,7 @@ public class GroupServiceTest {
 
         assertThat(groupService.getGroup("instytucja-12", "group-13", Group.class), isEmpty());
         assertThat(groupService.getGroup("instytucja-12", "group-14", Group.class), isPresent());
-        assertThat(institutionService.getInstitution("instytucja-12", Institution.class), isPresent());
+        assertThat(institutionService.findBySlug("instytucja-12", Institution.class), isPresent());
     }
 
     @Test

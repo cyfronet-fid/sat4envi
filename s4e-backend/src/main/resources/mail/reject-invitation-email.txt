@@ -1,0 +1,7 @@
+Dzień dobry!
+
+Zostałeś usunięty z listy zaproszeń do instytucji '[( ${institutionName} )]'.
+Jeśli chcesz uzyskać ponowne zaproszenie skontaktuj się z administratorem instytucji.
+
+Pozdrawiamy,
+Zespół sat4envi
