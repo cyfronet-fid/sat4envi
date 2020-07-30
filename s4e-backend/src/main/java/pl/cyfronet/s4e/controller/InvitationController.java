@@ -60,7 +60,7 @@ public class InvitationController {
     public BasicInstitutionResponse confirm(@PathVariable String token) throws NotFoundException {
         invitationService.confirmInvitation(token);
         val institution = invitationService.findInstitutionBy(token, BasicInstitutionResponse.class)
-                .orElseThrow(() -> new NotFoundException("Institution couldn't be found"));;
+                .orElseThrow(() -> new NotFoundException("Institution couldn't be found"));
         val confirmInvitationEvent = new OnConfirmInvitationEvent(token, LocaleContextHolder.getLocale());
         eventPublisher.publishEvent(confirmInvitationEvent);
 

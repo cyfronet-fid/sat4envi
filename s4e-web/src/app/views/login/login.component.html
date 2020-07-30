@@ -44,22 +44,14 @@
         <ul class="form__list">
           <li class="form__element">
             <label for="login-login" i18n>Email</label>
-            <input class="form-control" formControlName="login" id="login-login" type="text">
-            <ul s4e-form-error [control]="form.controls.login"></ul>
+            <input class="form-control" formControlName="email" id="login-login" type="text">
+            <ul s4e-form-error [control]="form.controls.email"></ul>
           </li>
           <li class="form__element">
             <label for="login-password" i18n>Hasło</label>
             <input class="form-control" formControlName="password" id="login-password" type="password">
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
-          <!-- TODO update feature of `Remember me` -->
-          <!-- <li class="form__element form__checkbox">
-            <input type="checkbox" class="form-check-input" id="login-remember-me">
-            <label class="form-check-label" for="login-remember-me" i18n>
-              <span class="ui"></span>
-              Zapamiętaj mnie
-            </label>
-          </li> -->
           <li class="form__element">
             <button class="button button--primary" type="submit" [disabled]="form.invalid">
               <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>

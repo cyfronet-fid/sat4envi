@@ -66,7 +66,7 @@ public class InvitationListener {
         ctx.setVariable("institutionName", invitation.getInstitution().getName());
 
         String confirmUrl = mailHelper.prefixWithDomain("/login?token=" + invitation.getToken());
-        String rejectUrl = mailHelper.prefixWithDomain("/login?reject=''&token=" + invitation.getToken());
+        String rejectUrl = mailHelper.prefixWithDomain("/login?reject=true&token=" + invitation.getToken());
         ctx.setVariable("confirmUrl", confirmUrl);
         ctx.setVariable("rejectUrl", rejectUrl);
 

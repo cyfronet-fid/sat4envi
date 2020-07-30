@@ -6,51 +6,43 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core
 
 import { InstitutionProfileComponent } from './institution-profile.component';
 import { InstitutionProfileModule } from './institution-profile.module';
-import { convertToParamMap, ParamMap, ActivatedRoute } from '@angular/router';
+import { convertToParamMap, ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, of } from 'rxjs';
 import { DebugElement } from '@angular/core';
 import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { InstitutionService } from '../state/institution/institution.service';
-
-class ActivatedRouteStub {
-  queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
-  snapshot = {};
-
-  constructor() {
-    this.queryParamMap.next(convertToParamMap({}));
-  }
-}
+import { InjectorModule } from 'src/app/common/injector.module';
 
 describe('InstitutionProfileComponent', () => {
   let component: InstitutionProfileComponent;
   let fixture: ComponentFixture<InstitutionProfileComponent>;
-  let activatedRoute: ActivatedRouteStub;
   let institutionService: InstitutionService;
+  let route: ActivatedRoute;
+  let router: Router;
   let de: DebugElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        InjectorModule,
         InstitutionProfileModule,
         HttpClientTestingModule,
         RouterTestingModule
       ],
       providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub},
         S4eConfig
       ]
     })
     .compileComponents();
-  }));
 
-  beforeEach(() => {
     fixture = TestBed.createComponent(InstitutionProfileComponent);
     component = fixture.componentInstance;
-    activatedRoute = <ActivatedRouteStub>TestBed.get(ActivatedRoute);
+    route = TestBed.get(ActivatedRoute);
+    router = TestBed.get(Router);
     institutionService = TestBed.get(InstitutionService);
     de = fixture.debugElement;
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -59,7 +51,15 @@ describe('InstitutionProfileComponent', () => {
   it('Should display institution on init', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
-    activatedRoute.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
+    router.navigate(
+      [],
+      {
+        relativeTo: route,
+        queryParams: { institution: institution.slug },
+        queryParamsHandling: 'merge',
+        skipLocationChange: true
+      }
+    );
     tick();
     fixture.detectChanges();
 

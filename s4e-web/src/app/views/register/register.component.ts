@@ -59,11 +59,11 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
 
   register() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
-
     if (!this.form.valid) {
       return;
     }
 
-    this.registerService.register(this.form.value);
+    const {recaptcha, passwordRepeat, ...request} = this.form.value;
+    this.registerService.register(request, recaptcha);
   }
 }

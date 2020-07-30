@@ -48,7 +48,7 @@
         <a
           [routerLink]="['./people']"
           queryParamsHandling="merge"
-          [class.disabled]="!(hasSelectedInstitution$ | async)"
+          [class.disabled]="!(isInstitutionActive$ | async)"
           i18n
         >
           Ludzie
@@ -58,7 +58,7 @@
         <a
           [routerLink]="['./institution']"
           queryParamsHandling="merge"
-          [class.disabled]="!(hasSelectedInstitution$ | async)"
+          [class.disabled]="!(isInstitutionActive$ | async)"
           i18n
         >
           Profil Instytucji
@@ -68,7 +68,7 @@
     <section class="login">
       <ul>
         <li>
-          <button [routerLink]="['/']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
+          <button [routerLink]="['/map/products']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
         </li>
         <li>
           <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>

@@ -1,9 +1,10 @@
+import { InjectorModule } from 'src/app/common/injector.module';
 import { Validators } from '@angular/forms';
 import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
 import { InvitationService } from './../state/invitation.service';
 import { Institution } from './../../state/institution/institution.model';
 import { Modal } from '../../../../modal/state/modal.model';
-import { INVITATION_FORM_MODAL_ID, isInvitationFormModal } from './invitation-form-modal.model';
+import { INVITATION_FORM_MODAL_ID, isInvitationFormModal, InvitationFormModal } from './invitation-form-modal.model';
 import { ModalQuery } from 'src/app/modal/state/modal.query';
 import { ModalService } from 'src/app/modal/state/modal.service';
 import {Component, Inject} from '@angular/core';
@@ -28,7 +29,7 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
   form: FormGroup<InvitationForm>;
   modalId = INVITATION_FORM_MODAL_ID;
 
-  institution: Institution = null;
+  institution: Institution;
 
   constructor(
     fm: AkitaNgFormsManager<FormState>,
@@ -36,14 +37,15 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _invitationService: InvitationService,
     private _route: ActivatedRoute,
-    private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
     private _modalQuery: ModalQuery,
     private _notificationService: NotificationService,
-    @Inject(MODAL_DEF) modal: Modal
+    @Inject(MODAL_DEF) modal: InvitationFormModal
   ) {
     super(fm, _modalService, _modalQuery, INVITATION_FORM_MODAL_ID, 'invitation');
     assertModalType(isInvitationFormModal, modal);
+
+    this.institution = modal.institution;
   }
 
   makeForm(): FormGroup<InvitationForm> {
@@ -52,21 +54,16 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     });
   }
 
-  ngOnInit() {
-    this._institutionsSearchResultsQuery
-      .getInstitutionFrom$(this._activatedRoute)
-      .pipe(untilDestroyed(this))
-      .subscribe(institution => this.institution = institution);
-
-    super.ngOnInit();
-  }
-
   create() {
     if (!this.institution) {
       this._notificationService.addGeneral({
-        content: 'Please select institution before inviting someone',
+        content: `
+          Institution isn't selected,
+          please refresh page or contact admins if error still occurs
+        `,
         type: 'error'
       });
+      return;
     }
 
     validateAllFormFields(this.form);
