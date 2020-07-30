@@ -84,7 +84,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, prefix("/invitations/{token}/confirm")).authenticated()
                 .mvcMatchers(PUT, prefix("/invitations/{token}/reject")).permitAll()
 
-                .mvcMatchers(GET, prefix("/institutions/{institution}")).access("@ish.isMember(#institution)")
+                .mvcMatchers(GET, prefix("/institutions/{institution}"))
+                    .access("hasRole('ADMIN') || @ish.isMember(#institution)")
                 .mvcMatchers(prefix("/institutions/{institution}", "/institutions/{institution}/**"))
                     .access("hasRole('ADMIN') || @ish.isAdmin(#institution)")
                 .mvcMatchers(GET, prefix("/institutions")).authenticated()

@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Super admin security issues [#551](https://github.com/cyfronet-fid/sat4envi/issues/551)
+
 ### Updated
 
 ## [v10.0.0]
