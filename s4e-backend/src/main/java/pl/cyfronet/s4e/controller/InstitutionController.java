@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
@@ -88,7 +89,8 @@ public class InstitutionController {
     @GetMapping("/institutions")
     public List<BasicInstitutionResponse> getAll() {
         AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
-        if (appUserDetails != null && appUserDetails.getAuthorities().contains("ROLE_ADMIN")) {
+        if (appUserDetails != null &&
+                appUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             return institutionService.getAll(BasicInstitutionResponse.class);
         }
         return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),

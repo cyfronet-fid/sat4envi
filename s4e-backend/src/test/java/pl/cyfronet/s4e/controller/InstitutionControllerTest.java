@@ -29,6 +29,7 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @AutoConfigureMockMvc
 public class InstitutionControllerTest {
     public static final String PROFILE_EMAIL = "get@profile.com";
+    public static final String ADMIN_EMAIL = "admin@profile.com";
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -55,6 +56,7 @@ public class InstitutionControllerTest {
     private MockMvc mockMvc;
 
     private AppUser appUser;
+    private AppUser admin;
 
     private String testInstitution = "Test Institution";
     private String slugInstitution;
@@ -68,6 +70,15 @@ public class InstitutionControllerTest {
                 .surname("Profile")
                 .password("{noop}password")
                 .enabled(true)
+                .build());
+
+        admin = appUserRepository.save(AppUser.builder()
+                .email(ADMIN_EMAIL)
+                .name("Get")
+                .surname("Profile")
+                .password("{noop}password")
+                .enabled(true)
+                .admin(true)
                 .build());
 
         slugInstitution = slugService.slugify(testInstitution);
@@ -114,7 +125,7 @@ public class InstitutionControllerTest {
     }
 
     @Test
-    public void shouldGetAllUsersInstitutions() throws Exception {
+    public void shouldGetAllInstitutionsForUser() throws Exception {
         String testInstitutionZK = "Test Institution ZK";
         String slugInstitutionZK = slugService.slugify(testInstitutionZK);
         Institution institution = institutionRepository.save(Institution.builder()
@@ -154,9 +165,109 @@ public class InstitutionControllerTest {
     }
 
     @Test
-    public void shouldReturnUnauthorized() throws Exception {
+    public void shouldGetAllInstitutionsForAdmin() throws Exception {
+        String testInstitutionZK = "Test Institution ZK";
+        String slugInstitutionZK = slugService.slugify(testInstitutionZK);
+        Institution institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK)
+                .slug(slugInstitutionZK)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        String testInstitutionZK_MAZ = "Test Institution ZK - Mazowieckie";
+        String slugInstitutionZK_MAZ = slugService.slugify(testInstitutionZK_MAZ);
+        Institution institution2 = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK_MAZ)
+                .slug(slugInstitutionZK_MAZ)
+                .parent(institution)
+                .build());
+        Group group2 = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution2).build());
+
+        String testInstitutionPAK = "Test Institution PAK";
+        String slugInstitutionPAK = slugService.slugify(testInstitutionPAK);
+        institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionPAK)
+                .slug(slugInstitutionPAK)
+                .build());
+        groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions")
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(admin, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(4))));
+    }
+
+    @Test
+    public void shouldGetInstitutionForAdmin() throws Exception {
+        String testInstitutionZK = "Test Institution ZK";
+        String slugInstitutionZK = slugService.slugify(testInstitutionZK);
+        Institution institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK)
+                .slug(slugInstitutionZK)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitutionZK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(admin, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(10))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugInstitutionZK))));
+    }
+
+    @Test
+    public void shouldGetInstitutionForMember() throws Exception {
+        String testInstitutionZK = "Test Institution ZK";
+        String slugInstitutionZK = slugService.slugify(testInstitutionZK);
+        Institution institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK)
+                .slug(slugInstitutionZK)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitutionZK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(admin, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(10))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugInstitutionZK))));
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedForInstitution() throws Exception {
+        String testInstitutionZK = "Test Institution ZK";
+        String slugInstitutionZK = slugService.slugify(testInstitutionZK);
+        Institution institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK)
+                .slug(slugInstitutionZK)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{intitution}", slugInstitutionZK)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnUnauthorizedForInstitutions() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/institutions")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void shouldReturnForbiddenForInstitution() throws Exception {
+        String testInstitutionZK = "Test Institution ZK";
+        String slugInstitutionZK = slugService.slugify(testInstitutionZK);
+        Institution institution = institutionRepository.save(Institution.builder()
+                .name(testInstitutionZK)
+                .slug(slugInstitutionZK)
+                .build());
+        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{intitution}", slugInstitutionZK)
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isForbidden());
     }
 }
