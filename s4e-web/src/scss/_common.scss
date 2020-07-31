@@ -212,24 +212,6 @@
     }
   }
 
-  .modal__table {
-    background: $color-white-50;
-    width: 100%;
-    border-radius: $border-radius-default;
-    margin-bottom: $space-large;
-
-    td {
-      border: 1px solid $color-grey-secondary;
-      padding: 12px 15px;
-
-      &:first-child {
-        font-weight: bold;
-        width: 30%;
-      }
-    }
-  }
-
-
   &--sentinel {
     margin-bottom: 40px;
     padding-bottom: 40px;
@@ -330,12 +312,128 @@ ext-button + ext-button {
     }
 
   }
-
-
 }
 
 .center-center {
   transform: translate(calc(-50% + 200px),-50%) !important;
+}
+
+
+.fancycheckbox {
+  position: relative;
+  display: block;
+  width: 65px;
+  height: 24px;
+}
+
+.fancycheckbox input.checkbox-slide {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: $color-grey-secondary;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 34px;
+  text-transform: uppercase;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 10px;
+  width: 10px;
+  left: 10px;
+  bottom: 7px;
+  background-color: $color-white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input.checkbox-slide:checked + .slider {
+  background-color: $color-secondary;
+}
+
+input.checkbox-slide:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(35px);
+}
+
+/*------ ADDED CSS ---------*/
+.slider:after
+{
+  content:'Nie';
+  color: $color-grey;
+  display: block;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  right: 3px;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+  font-weight: bold;
+}
+
+input.checkbox-slide:checked + .slider:after
+{
+  content:'Tak';
+  left: 40%;
+  color: $color-white;
+}
+
+
+.infobox {
+  background: $color-tertiary;
+  padding: $space-small $space-large;
+  margin-bottom: $space-default;
+  border-radius: $border-radius-default;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+
+  p {
+    margin: 0;
+    font-size: 0.9375rem;
+
+    a {
+      color: $color-secondary;
+      opacity: .9;
+      font-weight: 500;
+    }
+  }
+
+  &--emptylayers {
+    &:before {
+      display: block;
+      content: " ";
+      background: url(/../assets/images/ico_stack.svg) no-repeat;
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+      opacity: .05;
+    }
+  }
+
+  &--addlayer {
+    display: block;
+    margin-top: $space-small;
+
+    table {
+      margin: $space-default 0;
+    }
+  }
+
+  & + .s4e-modal-table {
+    font-size: 0.875rem;
+  }
 }
 
 
