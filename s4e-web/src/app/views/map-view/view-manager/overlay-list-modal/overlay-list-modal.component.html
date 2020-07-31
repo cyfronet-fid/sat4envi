@@ -2,16 +2,44 @@
   <div class="s4e-modal-header" i18n>Wczytaj konfiguracje</div>
   <div class="s4e-modal-body">
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
-      <div *ngIf="!(hasCustomOverlays$ | async)">
-        Nie masz jeszcze żadnej swojej nakładki (Lorem Ipsum, Etc)
-
+      <div *ngIf="!(hasCustomOverlays$ | async)" class="infobox infobox--emptylayers">
+        <p>
+          Nie masz jeszcze żadnej swojej nakładki. <a href="#">Sprawdź czym są nadkładki.</a>
+        </p>
         <button [disabled]="showOverlayForm$ | async"
                 class="button button--secondary button--small"
-                type="button" (click)="showOverlayForm(true)" i18n>Dodaj Nakładkę</button>
+                type="button" (click)="showOverlayForm(true)" i18n>Dodaj Nakładkę
+        </button>
       </div>
 
+      <ng-container *ngIf="showOverlayForm$ | async">
+        <form [formGroup]="newOverlayForm" class="form">
+          <div class="infobox infobox--addlayer">
+            <strong>
+              Formularz dodawania własnej nakładki
+            </strong>
+            <table [ngClass]="{disabled: addingNewLayer$ | async}" width="100%">
+              <tbody>
+              <tr>
+                <td><ext-input formControlName="layerName" label="Nazwa" i18n-label placeholder="Moja nakładka 1" i18n-placeholder></ext-input></td>
+                <td><ext-input formControlName="url" label="URL" i18n-label placeholder="https://my-wms-server.com/..."></ext-input></td>
+                <td><ext-input formControlName="layer" label="Warstwa" i18n-label placeholder="LAYER_W_1"></ext-input></td>
+              </tr>
+              </tbody>
+            </table>
+            <ng-container *ngIf="!(addingNewLayer$ | async); else createLoadingRef">
+              <button [disabled]="addingNewLayer$ | async" (click)="addNewOverlay()" class="button button--secondary button--small">Dodaj</button>
+              <button [disabled]="addingNewLayer$ | async" (click)="showOverlayForm(false)" class="button button--cancel button--small">Anuluj</button>
+            </ng-container>
+            <ng-template #createLoadingRef>
+              <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            </ng-template>
+          </div>
+        </form>
+      </ng-container>
+
       <div class="s4e-modal-table" *ngIf="(overlays$ | async).length > 0; else noConfigurations">
-        <table style="width: 100%">
+        <table class="modal__table modal__table--white">
           <thead>
             <tr>
               <th i18n>Nazwa</th>
@@ -28,9 +56,13 @@
               <td>{{overlay.caption}}</td>
               <td>{{overlay.url}}</td>
               <td>{{overlay.layerName}}</td>
-              <td>
-                <input *ngIf="!overlay.loadingVisible; else loadingVisibleRef" type="checkbox"
-                       [formControl]="visibilityFCList[$index]">
+              <td i18n align="center">
+                <label class="fancycheckbox">
+                  <input *ngIf="!overlay.loadingVisible; else loadingVisibleRef" type="checkbox"
+                         [formControl]="visibilityFCList[$index]" class="checkbox-slide">
+                  <div class="slider round"></div>
+                </label>
+
                 <ng-template #loadingVisibleRef>
                   <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
                 </ng-template>
@@ -39,7 +71,7 @@
               <td>{{overlay.created | S4EDate}}</td>
               <td>
                 <button *ngIf="overlay.mine" [disabled]="overlay.loadingDelete" (click)="removeOverlay(overlay.id)">
-                  <span *ngIf="!overlay.loadingDelete; else deleteLoadingRef" class="fa fa-trash"></span>
+                  <img *ngIf="!overlay.loadingDelete; else deleteLoadingRef" src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
                   <ng-template #deleteLoadingRef>
                     <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
                   </ng-template>
@@ -59,31 +91,6 @@
         <button *ngIf="!(showOverlayForm$ | async)"
                 class="button button--secondary button--small"
                 type="button" (click)="showOverlayForm(true)" i18n>Dodaj Nakładkę</button>
-      </ng-container>
-      <ng-container *ngIf="showOverlayForm$ | async">
-        <form [formGroup]="newOverlayForm">
-          <table style="width: 100%" [ngClass]="{disabled: addingNewLayer$ | async}">
-            <tbody>
-              <tr>
-                <td><ext-input formControlName="layerName" label="Nazwa" i18n-label placeholder="Moja nakładka 1" i18n-placeholder></ext-input></td>
-                <td><ext-input formControlName="url" label="URL" i18n-label placeholder="https://my-wms-server.com/..."></ext-input></td>
-                <td><ext-input formControlName="layer" label="Warstwa" i18n-label placeholder="LAYER_W_1"></ext-input></td>
-                <td>
-                  <ng-container *ngIf="!(addingNewLayer$ | async); else createLoadingRef">
-                    <button [disabled]="addingNewLayer$ | async" (click)="addNewOverlay()">賛</button>
-                    <button [disabled]="addingNewLayer$ | async" (click)="showOverlayForm(false)">x</button>
-                  </ng-container>
-                  <ng-template #createLoadingRef>
-                    <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-                  </ng-template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <div>
-
-          </div>
-        </form>
       </ng-container>
     </ng-container>
     <ng-template #loadingRef>

@@ -274,8 +274,6 @@
   }
 }
 
-
-
 .layers {
   background: $color-grey;
   position: fixed;
@@ -312,12 +310,37 @@
 
   }
 
+  &__manager {
+    float: right;
+    color: $color-white;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    opacity: .8;
+    margin-top: -1px;
+    padding-left: 23px;
+    position: relative;
+
+    &:before {
+      position: absolute;
+      content: " ";
+      background: url(../assets/images/ico_cog.svg) no-repeat;
+      width: 17px;
+      height: 17px;
+      background-size: contain;
+      left: 0;
+      top: -2px;
+      filter: grayscale(1);
+
+    }
+  }
+
   .products {
     &__title {
       padding-left: 0;
       color: $color-white;
       font-size: 0.8rem;
       text-transform: uppercase;
+      display: block;
 
       &:before {
         display: none;

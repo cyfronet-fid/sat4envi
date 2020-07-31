@@ -279,13 +279,21 @@ body, html {
       margin-top: 30px;
     }
 
-    .special__error {
+    .special__error:not(:empty) {
       font-size: 0.875rem;
       color: $color-error;
       z-index: 99;
-      margin: -1px 1px 0 1px;
-      padding-top: $space-xsmall;
+      margin: $space-default 0;
+      background-color: lighten($color-error, 40%);
+      padding: $space-default;
       position:relative;
+      border-radius: $border-radius-default;
+      animation: fadein 2s;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
   }
 

@@ -102,5 +102,40 @@ h3 {
 }
 
 
+.modal__table {
+  th {
+    background: $color-tertiary;
+    color: $color-grey;
+    padding: ($space-default) ($space-large - 3px);
+  }
+
+  background: $color-white-50;
+  width: 100%;
+  border-radius: $border-radius-default;
+  margin-bottom: $space-large;
+
+  td {
+    border: 1px solid $color-grey-secondary;
+    padding: 10px;
+    vertical-align: middle;
+
+    &:first-child {
+      font-weight: bold;
+      width: 30%;
+    }
+  }
+
+  &--white {
+    td {
+      background: $color-white;
+      &:first-child {
+        font-weight: normal;
+        width: unset;
+      }
+    }
+  }
+}
+
+
 
 
