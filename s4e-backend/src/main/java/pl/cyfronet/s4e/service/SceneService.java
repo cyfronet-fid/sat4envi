@@ -2,6 +2,8 @@ package pl.cyfronet.s4e.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Scene;
@@ -13,6 +15,7 @@ import pl.cyfronet.s4e.util.TimeHelper;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +33,39 @@ public class SceneService {
         );
     }
 
+    public <T> Page<T> list(Pageable pageable, Class<T> projection) {
+        return sceneRepository.findAllBy(pageable, projection);
+    }
+
+    public <T> Page<T> listByProduct(Long productId, Pageable pageable, Class<T> projection) throws NotFoundException {
+        if (!productRepository.existsById(productId)) {
+            throw constructNFE("Product", productId);
+        }
+        return sceneRepository.findAllByProductId(productId, pageable, projection);
+    }
+
+    public <T> Optional<T> findById(Long id, Class<T> projection) {
+        return sceneRepository.findById(id, projection);
+    }
+
     public void save(Scene scene) {
         sceneRepository.save(scene);
+    }
+
+    @Transactional
+    public void delete(Long id) throws NotFoundException {
+        if (!sceneRepository.existsById(id)) {
+            throw constructNFE("Scene", id);
+        }
+        sceneRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteProductScenes(Long productId) throws NotFoundException {
+        if (!productRepository.existsById(productId)) {
+            throw constructNFE("Product", productId);
+        }
+        sceneRepository.deleteAllByProductId(productId);
     }
 
     public List<LocalDate> getAvailabilityDates(Long productId, YearMonth yearMonth, ZoneId tz) {

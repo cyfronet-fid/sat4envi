@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Admin endpoints for Scenes management [#620](https://github.com/cyfronet-fid/sat4envi/issues/620)
 - Confirm or reject invitation with email URLs [#625](https://github.com/cyfronet-fid/sat4envi/issues/625)
 
 ### Changed
@@ -35,8 +36,6 @@ The most recent changes are on top, in each type of changes category.
 ### Fixed
 
 - Improve scene time filtering performance [#610](https://github.com/cyfronet-fid/sat4envi/issues/610)
-
-### Updated
 
 ## [v9.1.0]
 

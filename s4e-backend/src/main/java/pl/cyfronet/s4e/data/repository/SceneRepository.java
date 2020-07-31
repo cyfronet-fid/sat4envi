@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.data.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Scene;
@@ -20,7 +22,14 @@ public interface SceneRepository extends JpaRepository<Scene, Long>, SceneReposi
             Long productId, LocalDateTime start, LocalDateTime end, Class<T> projection
     );
 
+    <T> Page<T> findAllBy(Pageable pageable, Class<T> projection);
+
+    <T> Page<T> findAllByProductId(Long productId, Pageable pageable, Class<T> projection);
+
     int countAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThan(
             Long productId, LocalDateTime start, LocalDateTime end
     );
+
+    @Transactional
+    void deleteAllByProductId(Long productId);
 }

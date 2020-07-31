@@ -1,6 +1,9 @@
 package pl.cyfronet.s4e;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
+import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 
@@ -27,14 +30,22 @@ public class SceneTestHelper {
                 .layerName(name.toLowerCase());
     }
 
+    @SneakyThrows
     public static Scene.SceneBuilder sceneBuilder(Product product) {
+        JsonNode sceneContent = new ObjectMapper().readTree("{\"key\":\"value\"}");
+        JsonNode metadataContent = new ObjectMapper().readTree("{\"key\":\"value\"}");
         return Scene.builder()
                 .product(product)
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
                 .timestamp(LocalDateTime.now())
                 .s3Path("some/path")
                 .granulePath("mailto://s4e-test-1/some/path")
-                .footprint(TestGeometryHelper.ANY_POLYGON);
+                .footprint(TestGeometryHelper.ANY_POLYGON)
+                .legend(Legend.builder()
+                        .type("some_type")
+                        .build())
+                .sceneContent(sceneContent)
+                .metadataContent(metadataContent);
     }
 
     public static Scene.SceneBuilder sceneWithMetadataBuilder(Product product, JsonNode jsonNode) {
@@ -45,7 +56,10 @@ public class SceneTestHelper {
                 .s3Path("some/path")
                 .granulePath("mailto://s4e-test-1/some/path")
                 .metadataContent(jsonNode)
-                .footprint(TestGeometryHelper.ANY_POLYGON);
+                .footprint(TestGeometryHelper.ANY_POLYGON)
+                .legend(Legend.builder()
+                        .type("some_type")
+                        .build());
     }
 
     public static String getMetaDataWithNumber(long number) {

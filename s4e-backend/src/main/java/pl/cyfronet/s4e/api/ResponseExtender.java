@@ -18,6 +18,8 @@ import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
+
 @Mapper(config = MapStructCentralConfig.class)
 @Slf4j
 public abstract class ResponseExtender {
@@ -40,7 +42,7 @@ public abstract class ResponseExtender {
         }
 
         try {
-            JsonNode artifactsNode = objectMapper.readTree(sceneContent).get("artifacts");
+            JsonNode artifactsNode = objectMapper.readTree(sceneContent).get(SCENE_SCHEMA_ARTIFACTS_KEY);
             return getKeys(artifactsNode);
         } catch (JsonProcessingException e) {
             log.warn("Cannot parse scene content", e);
