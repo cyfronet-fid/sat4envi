@@ -16,12 +16,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
 import static pl.cyfronet.s4e.sync.Error.*;
 
 @Builder
 public class VerifyAllArtifactsExist<T extends BaseContext> implements Step<T, Error> {
-    public static final String SCENE_ARTIFACTS_PROPERTY = "artifacts";
-
     private final Supplier<SceneStorage> sceneStorage;
 
     private final Function<T, JsonObject> sceneJson;
@@ -36,7 +35,7 @@ public class VerifyAllArtifactsExist<T extends BaseContext> implements Step<T, E
 
         val artifacts = new HashMap<String, String>();
 
-        JsonObject artifactsObject = sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY);
+        JsonObject artifactsObject = sceneJson.getJsonObject(SCENE_SCHEMA_ARTIFACTS_KEY);
         Map<String, String> notFound = new LinkedHashMap<>();
         for (val entry : artifactsObject.entrySet()) {
             String name = entry.getKey();

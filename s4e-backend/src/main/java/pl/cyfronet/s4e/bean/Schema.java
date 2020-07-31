@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Schema extends CreationAudited {
+    public static final String SCENE_SCHEMA_ARTIFACTS_KEY = "artifacts";
+
     public enum Type {
         SCENE, METADATA;
     }

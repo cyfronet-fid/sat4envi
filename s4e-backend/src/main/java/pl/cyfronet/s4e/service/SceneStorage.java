@@ -15,6 +15,8 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 import java.net.URL;
 import java.time.Duration;
 
+import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
+
 @Service
 public class SceneStorage extends Storage {
     private final S3Properties s3Properties;
@@ -72,7 +74,7 @@ public class SceneStorage extends Storage {
 
     public String getKey(SceneProjection sceneProjection, String type) {
         if (type != null) {
-            return sceneProjection.getSceneContent().get("artifacts").get(type).asText().substring(1);
+            return sceneProjection.getSceneContent().get(SCENE_SCHEMA_ARTIFACTS_KEY).get(type).asText().substring(1);
         }
         return sceneProjection.getS3Path();
     }

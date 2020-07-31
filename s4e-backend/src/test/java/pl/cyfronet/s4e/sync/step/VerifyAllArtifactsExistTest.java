@@ -19,8 +19,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
 import static pl.cyfronet.s4e.sync.Error.*;
-import static pl.cyfronet.s4e.sync.step.VerifyAllArtifactsExist.SCENE_ARTIFACTS_PROPERTY;
 
 class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
     @Mock
@@ -53,7 +53,7 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
                 "key_2", new TestJsonString("/path_2")
         );
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
-        when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
+        when(sceneJson.getJsonObject(SCENE_SCHEMA_ARTIFACTS_KEY)).thenReturn(artifactsJsonObject);
 
         when(sceneStorage.exists("path_1")).thenReturn(true);
         when(sceneStorage.exists("path_2")).thenReturn(true);
@@ -73,7 +73,7 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
                 "key_2", new TestJsonString("/path_2")
         );
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
-        when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
+        when(sceneJson.getJsonObject(SCENE_SCHEMA_ARTIFACTS_KEY)).thenReturn(artifactsJsonObject);
 
         Error error = step.apply(context);
 
@@ -92,7 +92,7 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
                 "key_3", new TestJsonString("/path_3")
         );
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
-        when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
+        when(sceneJson.getJsonObject(SCENE_SCHEMA_ARTIFACTS_KEY)).thenReturn(artifactsJsonObject);
 
         when(sceneStorage.exists("path_1")).thenReturn(false);
         when(sceneStorage.exists("path_2")).thenReturn(true);
@@ -116,7 +116,7 @@ class VerifyAllArtifactsExistTest extends BaseStepTest<BaseContext> {
                 "key_1", new TestJsonString("/path_1")
         );
         when(artifactsJsonObject.entrySet()).thenReturn(artifacts.entrySet());
-        when(sceneJson.getJsonObject(SCENE_ARTIFACTS_PROPERTY)).thenReturn(artifactsJsonObject);
+        when(sceneJson.getJsonObject(SCENE_SCHEMA_ARTIFACTS_KEY)).thenReturn(artifactsJsonObject);
 
         when(sceneStorage.exists("path_1")).thenThrow(S3ClientException.class);
 

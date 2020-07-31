@@ -10,6 +10,8 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 
 import java.util.Map;
 
+import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
+
 @Service
 @RequiredArgsConstructor
 public class SceneFileStorageService {
@@ -25,7 +27,7 @@ public class SceneFileStorageService {
         SceneProjection sceneProjection = sceneRepository.findById(id, SceneProjection.class)
                 .orElseThrow(() -> new NotFoundException("Scene with id '" + id + "' not found"));
         return  objectMapper.convertValue(
-                sceneProjection.getSceneContent().get("artifacts"),
+                sceneProjection.getSceneContent().get(SCENE_SCHEMA_ARTIFACTS_KEY),
                 new TypeReference<>() {});
     }
 }
