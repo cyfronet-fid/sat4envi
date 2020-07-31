@@ -42,7 +42,7 @@ public class SearchController {
             throws SQLException, QueryException {
         ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
             return searchService.getScenesBy(params).stream()
-                    .map(scene -> responseExtender.map(scene, zoneId))
+                    .map(scene -> responseExtender.toResponse(scene, zoneId))
                     .collect(Collectors.toList());
     }
 }

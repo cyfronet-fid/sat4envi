@@ -51,7 +51,7 @@ public class OSearchController {
         // TODO: format
         try {
             return searchService.getScenesBy(searchService.parseToParamMap(rowsSize, rowStart, orderby, query)).stream()
-                    .map(scene -> responseExtender.map(scene, timeZone.getZoneId()))
+                    .map(scene -> responseExtender.toResponse(scene, timeZone.getZoneId()))
                     .collect(Collectors.toList());
         } catch (DateTimeParseException e) {
             throw new BadRequestException("Cannot parse date: " + e.getParsedString());

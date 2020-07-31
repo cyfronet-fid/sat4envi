@@ -63,6 +63,8 @@ public class ProductService {
 
     private final ObjectMapper objectMapper;
 
+    private final ProductMapper productMapper;
+
     public <T> List<T> findAll(Class<T> projection) {
         return productRepository.findAllBy(projection);
     }
@@ -81,13 +83,7 @@ public class ProductService {
 
     @Transactional
     public Long create(DTO dto) throws ProductException {
-        val productBuilder = Product.builder()
-                .name(dto.getName())
-                .displayName(dto.getDisplayName())
-                .description(dto.getDescription())
-                .legend(dto.getLegend())
-                .layerName(dto.getLayerName())
-                .granuleArtifactRule(dto.getGranuleArtifactRule());
+        val productBuilder = Product.builder();
 
         BindingResult bindingResult = new MapBindingResult(objectMapper.convertValue(dto, Map.class), "productCreateRequest");
         productBuilder.sceneSchema(findAndValidateSchema(
@@ -102,6 +98,7 @@ public class ProductService {
             throw new ProductValidationException(bindingResult);
         }
 
+        productMapper.create(dto, productBuilder);
         return productRepository.save(productBuilder.build()).getId();
     }
 
@@ -127,25 +124,7 @@ public class ProductService {
             throw new ProductValidationException(bindingResult);
         }
 
-        if (dto.getName() != null) {
-            product.setName(dto.getName());
-        }
-
-        if (dto.getDisplayName() != null) {
-            product.setDisplayName(dto.getDisplayName());
-        }
-
-        if (dto.getDescription() != null) {
-            product.setDescription(dto.getDescription());
-        }
-
-        if (dto.getLegend() != null) {
-            product.setLegend(dto.getLegend());
-        }
-
-        if (dto.getLayerName() != null) {
-            product.setLayerName(dto.getLayerName());
-        }
+        productMapper.update(dto, product);
 
         if (sceneSchema != null) {
             product.setSceneSchema(sceneSchema);
@@ -153,10 +132,6 @@ public class ProductService {
 
         if (metadataSchema != null) {
             product.setMetadataSchema(metadataSchema);
-        }
-
-        if (dto.getGranuleArtifactRule() != null) {
-            product.setGranuleArtifactRule(dto.getGranuleArtifactRule());
         }
     }
 

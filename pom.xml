@@ -34,8 +34,9 @@
         <geotools.version>23.1</geotools.version>
         <greenmail.version>1.5.14</greenmail.version>
         <guava.version>29.0-jre</guava.version>
-        <jjwt.version>0.11.2</jjwt.version>
         <hibernate-types.version>2.9.12</hibernate-types.version>
+        <jjwt.version>0.11.2</jjwt.version>
+        <mapstruct.version>1.4.0.Beta3</mapstruct.version>
         <poiooxml.version>4.1.2</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.4</slugify.version>
