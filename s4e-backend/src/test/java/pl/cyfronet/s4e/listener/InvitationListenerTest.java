@@ -11,12 +11,12 @@ import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.InvitationHelper;
 import pl.cyfronet.s4e.bean.Invitation;
 import pl.cyfronet.s4e.event.OnConfirmInvitationEvent;
+import pl.cyfronet.s4e.event.OnDeleteInvitationEvent;
 import pl.cyfronet.s4e.event.OnRejectInvitationEvent;
 import pl.cyfronet.s4e.event.OnSendInvitationEvent;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.InvitationService;
 import pl.cyfronet.s4e.service.MailService;
-
-import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.util.MailHelper;
 
 import java.util.Optional;
@@ -48,7 +48,8 @@ public class InvitationListenerTest {
         val invitation = InvitationHelper
                 .invitationBuilder(InvitationHelper.institutionBuilder().build())
                 .build();
-        when(invitationService.findByToken(invitation.getToken(), Invitation.class)).thenReturn(Optional.of(invitation));
+        when(invitationService.findByToken(invitation.getToken(), Invitation.class))
+                .thenReturn(Optional.of(invitation));
 
         listener.handle(new OnSendInvitationEvent(invitation.getToken(), null));
 
@@ -67,7 +68,7 @@ public class InvitationListenerTest {
         listener.handle(new OnConfirmInvitationEvent(invitation.getToken(), null));
 
         verify(mailService).sendEmail(eq(invitation.getEmail()), any(), any(), any());
-        verify(invitationService).remove(eq(invitation.getToken()));
+        verify(invitationService).deleteBy(eq(invitation.getToken()));
     }
 
     @Test
@@ -82,5 +83,19 @@ public class InvitationListenerTest {
         listener.handle(new OnRejectInvitationEvent(invitation.getToken(), null));
         
         verify(mailService).sendEmail(eq(invitation.getEmail()), any(), any(), any());
+    }
+
+    @Test
+    public void shouldSendEmailOnDeletionAndRemoveInvitation() throws NotFoundException {
+        val invitation = InvitationHelper
+                .invitationBuilder(InvitationHelper.institutionBuilder().build())
+                .build();
+        when(invitationService.findByToken(invitation.getToken(), Invitation.class))
+                .thenReturn(Optional.of(invitation));
+
+        listener.handle(new OnDeleteInvitationEvent(invitation.getToken(), null));
+
+        verify(mailService).sendEmail(eq(invitation.getEmail()), any(), any(), any());
+        verify(invitationService).deleteBy(eq(invitation.getToken()));
     }
 }
