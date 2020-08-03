@@ -6,7 +6,7 @@ export interface Person {
   email: string;
   name: string;
   surname: string;
-  roles: any[],
+  roles: any[];
   // createDate: string
 }
 

@@ -21,7 +21,7 @@ import {InstitutionQuery} from '../../state/institution/institution.query';
 import {Institution} from '../../state/institution/institution.model';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
-import {combineLatest} from 'rxjs';
+import {combineLatest, of} from 'rxjs';
 import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
 
 @Component({
@@ -156,8 +156,8 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   protected _updateFormState() {
     combineLatest(
-      this._institutionsSearchResultsQuery.getInstitutionFrom$(this._activatedRoute),
-      this._institutionsSearchResultsQuery.addChild$(this._activatedRoute),
+      this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute),
+      this._institutionsSearchResultsQuery.isChildAddition$(this._activatedRoute),
       this._breadcrumbService.breadcrumbs$,
       this._activatedRoute.data
     )

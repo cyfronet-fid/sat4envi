@@ -1,14 +1,20 @@
+import { NotificationService } from './../../../../projects/notifications/src/lib/state/notification.service';
+import {
+  InvitationService,
+  REJECTION_QUERY_PARAMETER,
+  TOKEN_QUERY_PARAMETER
+} from './../settings/people/state/invitation/invitation.service';
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
 import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {SessionQuery} from '../../state/session/session.query';
-import {SessionService} from '../../state/session/session.service';
+import {SessionService, BACK_LINK_QUERY_PARAM} from '../../state/session/session.service';
 import {LoginFormState} from '../../state/session/session.model';
-import {ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 's4e-login',
@@ -17,26 +23,43 @@ import { S4eConfig } from 'src/app/utils/initializer/config.service';
   encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent extends GenericFormComponent<SessionQuery, LoginFormState> {
-  constructor(fm: AkitaNgFormsManager<FormState>,
-              router: Router,
-              public CONFIG: S4eConfig,
-              private sessionService: SessionService,
-              private sessionQuery: SessionQuery,
-              private _activatedRoute: ActivatedRoute
+  constructor(
+    fm: AkitaNgFormsManager<FormState>,
+    private _router: Router,
+    private _sessionService: SessionService,
+    private _sessionQuery: SessionQuery,
+    private _activatedRoute: ActivatedRoute,
+    private _invitationService: InvitationService,
+    private _notificationService: NotificationService
   ) {
-    super(fm, router, sessionQuery, 'login');
+    super(fm, _router, _sessionQuery, 'login');
   }
 
   ngOnInit() {
     this._activatedRoute.queryParamMap
-      .subscribe(
-        (queryParams) => this.sessionService.setBackLink(queryParams.get('back_link'))
-      );
+      .pipe(
+        filter((params) => params.has(BACK_LINK_QUERY_PARAM)),
+        map((params) => params.get(BACK_LINK_QUERY_PARAM))
+      )
+      .subscribe((backLink) => !!backLink ? this._sessionService.setBackLink(backLink) : null);
+
+    this._activatedRoute.queryParamMap
+      .pipe(filter((params) => params.has(TOKEN_QUERY_PARAMETER)))
+      .subscribe((params) => {
+        if (params.has(REJECTION_QUERY_PARAMETER)) {
+          const token = params.get(TOKEN_QUERY_PARAMETER);
+          this._invitationService.reject(token);
+        }
+
+        this._notificationService.addGeneral({
+          content: 'Zaloguj się lub zarejestruj, żeby dołączyć do instytucji',
+          type: 'info'
+        });
+      });
 
     this.form = new FormGroup<LoginFormState>({
-      login: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required]),
-      rememberMe: new FormControl(false)
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required])
     });
 
     super.ngOnInit();
@@ -44,11 +67,10 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
 
   login() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
-
     if (!this.form.valid) {
       return;
     }
 
-    this.sessionService.login(this.form.value);
+    this._sessionService.login(this.form.value, this._activatedRoute);
   }
 }

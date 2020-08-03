@@ -70,14 +70,7 @@ public class InvitationService {
         invitation.setStatus(InvitationStatus.REJECTED);
     }
 
-    @Transactional(rollbackFor = NotFoundException.class)
-    public void remove(String token) throws NotFoundException {
-        val invitation = invitationRepository.findByToken(token, Invitation.class)
-                .orElseThrow(() -> constructNFE("token: " + token));
-        invitationRepository.delete(invitation);
-    }
-
-    public <T> Set<T> getAllBy(String institutionSlug, Class<T> projection) {
+    public <T> Set<T> findAllBy(String institutionSlug, Class<T> projection) {
         return invitationRepository.findAllByInstitutionSlug(institutionSlug, projection);
     }
 
@@ -90,6 +83,13 @@ public class InvitationService {
 
     public <T> Optional<T> findByToken(String token, Class<T> projection) {
         return invitationRepository.findByToken(token, projection);
+    }
+
+    public void deleteBy(String token) {
+        val invitation = invitationRepository.findByToken(token, Invitation.class);
+        if (invitation.isPresent()) {
+            invitationRepository.delete(invitation.get());
+        }
     }
 
     private void addMemberToDefaultGroup(AppUser user, Institution institution) throws NotFoundException {

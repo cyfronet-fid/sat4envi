@@ -1,3 +1,4 @@
+import { InstitutionQuery } from './state/institution/institution.query';
 import { InstitutionsSearchResultsStore } from './state/institutions-search/institutions-search-results.store';
 import {InstitutionService} from './state/institution/institution.service';
 import {Component, OnInit} from '@angular/core';
@@ -20,11 +21,12 @@ export class SettingsComponent implements OnInit {
 
   public searchValue: string;
 
-  public hasSelectedInstitution$: Observable<boolean>;
+  public isInstitutionActive$: Observable<boolean>;
 
   constructor(
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
     private _institutionService: InstitutionService,
+    private _institutionQuery: InstitutionQuery,
     private _sessionQuery: SessionQuery,
     private _router: Router,
     private _activatedRoute: ActivatedRoute,
@@ -36,8 +38,8 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     this.showInstitutions$ = this._sessionQuery.selectCanSeeInstitutions();
 
-    this.hasSelectedInstitution$ = this.institutionsSearchResultsQuery
-      .hasInstitutionSlugIn$(this._activatedRoute);
+    this.isInstitutionActive$ = this.institutionsSearchResultsQuery
+      .isAnyInstitutionActive$(this._activatedRoute);
 
     // TODO: set institution from storage
     if (environment.hmr) {

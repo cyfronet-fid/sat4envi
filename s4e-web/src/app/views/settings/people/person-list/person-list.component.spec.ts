@@ -1,8 +1,6 @@
 import { InstitutionService } from './../../state/institution/institution.service';
-import { PersonService } from './../state/person.service';
-import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
-import { PersonQuery } from './../state/person.query';
+import { PersonService } from './../state/person/person.service';
+import { PersonQuery } from './../state/person/person.query';
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';

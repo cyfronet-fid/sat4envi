@@ -8,8 +8,9 @@ import { Person } from './person.model';
 })
 export class PersonQuery extends QueryEntity<PersonState, Person> {
 
-  constructor(protected store: PersonStore) {
-    super(store);
-  }
+  constructor(protected store: PersonStore) { super(store); }
 
+  selectAllWithInvitations$() {
+
+  }
 }

@@ -1,9 +1,9 @@
+import { InjectorModule } from 'src/app/common/injector.module';
 import { Validators } from '@angular/forms';
 import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
-import { InvitationService } from './../state/invitation.service';
 import { Institution } from './../../state/institution/institution.model';
 import { Modal } from '../../../../modal/state/modal.model';
-import { INVITATION_FORM_MODAL_ID, isInvitationFormModal } from './invitation-form-modal.model';
+import { INVITATION_FORM_MODAL_ID, isInvitationFormModal, InvitationFormModal } from './invitation-form-modal.model';
 import { ModalQuery } from 'src/app/modal/state/modal.query';
 import { ModalService } from 'src/app/modal/state/modal.service';
 import {Component, Inject} from '@angular/core';
@@ -19,6 +19,8 @@ import { MODAL_DEF } from 'src/app/modal/modal.providers';
 import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
 import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { InvitationForm } from './invitation-form.model';
+import { Invitation } from '../state/invitation/invitation.model';
+import { InvitationService } from '../state/invitation/invitation.service';
 
 @Component({
   templateUrl: './invitation-form.component.html',
@@ -28,45 +30,43 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
   form: FormGroup<InvitationForm>;
   modalId = INVITATION_FORM_MODAL_ID;
 
-  institution: Institution = null;
+  institution: Institution;
+  invitation: Invitation | null;
 
   constructor(
     fm: AkitaNgFormsManager<FormState>,
-    private _institutionService: InstitutionService,
-    private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _invitationService: InvitationService,
-    private _route: ActivatedRoute,
-    private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
     private _modalQuery: ModalQuery,
     private _notificationService: NotificationService,
-    @Inject(MODAL_DEF) modal: Modal
+    @Inject(MODAL_DEF) modal: InvitationFormModal
   ) {
     super(fm, _modalService, _modalQuery, INVITATION_FORM_MODAL_ID, 'invitation');
     assertModalType(isInvitationFormModal, modal);
+
+    this.institution = modal.institution;
+    this.invitation = modal.invitation;
   }
 
   makeForm(): FormGroup<InvitationForm> {
     return new FormGroup<InvitationForm>({
-      email: new FormControl<string>(null, Validators.required)
+      email: new FormControl<string>(
+        !!this.invitation ? this.invitation.email : null,
+        Validators.required
+      )
     });
   }
 
-  ngOnInit() {
-    this._institutionsSearchResultsQuery
-      .getInstitutionFrom$(this._activatedRoute)
-      .pipe(untilDestroyed(this))
-      .subscribe(institution => this.institution = institution);
-
-    super.ngOnInit();
-  }
-
-  create() {
+  send() {
     if (!this.institution) {
       this._notificationService.addGeneral({
-        content: 'Please select institution before inviting someone',
+        content: `
+          Institution isn't selected,
+          please refresh page or contact admins if error still occurs
+        `,
         type: 'error'
       });
+      return;
     }
 
     validateAllFormFields(this.form);
@@ -75,7 +75,9 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     }
 
     const email = this.form.controls.email.value;
-    this._invitationService.create(this.institution.slug, email);
+    !!this.invitation
+      ? this._invitationService.resend(this.invitation, this.institution)
+      : this._invitationService.create(this.institution.slug, email);
     this.dismiss();
   }
 }

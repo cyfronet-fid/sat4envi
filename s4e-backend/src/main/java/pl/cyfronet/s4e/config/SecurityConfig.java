@@ -81,6 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(GET, prefix("/jwt/pubkey")).permitAll()
 
+                .mvcMatchers(DELETE, prefix("/invitation/{token}"))
+                    .access("hasRole('ADMIN') || @ish.isMember(#institution)")
                 .mvcMatchers(POST, prefix("/invitations/{token}/confirm")).authenticated()
                 .mvcMatchers(PUT, prefix("/invitations/{token}/reject")).permitAll()
 

@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
 
   it('should send valid form', () => {
     const spy = spyOn(sessionService, 'login');
-    component.form.setValue({rememberMe: false, login: 'user@domain', password: 'pass'});
+    component.form.setValue({email: 'user@domain', password: 'pass'});
     component.login();
     expect(spy).toHaveBeenCalled();
   });
@@ -52,12 +52,12 @@ describe('LoginComponent', () => {
     expect(component.form.controls.password.valid).toBeTruthy();
   });
 
-  it('should validate login', () => {
-    component.form.controls.login.setValue('');
-    expect(component.form.controls.login.valid).toBeFalsy();
-    component.form.controls.login.setValue('user');
-    expect(component.form.controls.login.valid).toBeFalsy();
-    component.form.controls.login.setValue('user@domain');
-    expect(component.form.controls.login.valid).toBeTruthy();
+  it('should validate email', () => {
+    component.form.controls.email.setValue('');
+    expect(component.form.controls.email.valid).toBeFalsy();
+    component.form.controls.email.setValue('user');
+    expect(component.form.controls.email.valid).toBeFalsy();
+    component.form.controls.email.setValue('user@domain');
+    expect(component.form.controls.email.valid).toBeTruthy();
   });
 });

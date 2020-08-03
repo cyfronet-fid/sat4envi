@@ -4,6 +4,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {SessionQuery} from '../../state/session/session.query';
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 @Component({selector: 'neutral', template: ''})
 class NeutralComponent {}
@@ -20,13 +21,16 @@ describe('IsLoggedIn & IsNotLoggedIn', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SubComponent, LoginComponent, NeutralComponent],
-      imports: [RouterTestingModule.withRoutes(
-        [
-          {path: 'map/products', component: NeutralComponent},
-          {path: 'login', canActivate: [IsNotLoggedIn], component: LoginComponent},
-          {path: 'sub', canActivate: [IsLoggedIn], component: SubComponent}
-        ]
-      )],
+      imports: [
+        RouterTestingModule.withRoutes(
+          [
+            {path: 'map/products', component: NeutralComponent},
+            {path: 'login', canActivate: [IsNotLoggedIn], component: LoginComponent},
+            {path: 'sub', canActivate: [IsLoggedIn], component: SubComponent}
+          ]
+        ),
+        HttpClientTestingModule
+      ],
       providers: [IsLoggedIn, IsNotLoggedIn, SessionQuery],
     });
     router = TestBed.get(Router);

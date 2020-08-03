@@ -82,7 +82,8 @@ describe('RegisterComponent', () => {
     component.form.setValue(userRegister);
     component.register();
 
-    expect(spy).toHaveBeenCalledWith(userRegister);
+    const {recaptcha, passwordRepeat, ...request} = userRegister;
+    expect(spy).toHaveBeenCalledWith(request, recaptcha);
   });
 
   it('should not call RegisterService.register on submit if form is not valid', () => {
@@ -95,6 +96,7 @@ describe('RegisterComponent', () => {
 
     component.register();
 
-    expect(spy).not.toHaveBeenCalledWith(userRegister);
+    const {recaptcha, passwordRepeat, ...request} = userRegister;
+    expect(spy).not.toHaveBeenCalledWith(request, recaptcha);
   });
 });

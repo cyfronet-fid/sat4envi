@@ -16,12 +16,13 @@ import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.service.SlugService;
 
+import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
@@ -86,8 +87,37 @@ public class InvitationControllerTest {
     }
 
     @Test
+    public void getShouldBeSecured() throws Exception {
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
+        mockMvc.perform(get(URL, institution.getSlug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(member, objectMapper))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldGet() throws Exception {
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
+        mockMvc.perform(get(URL, institution.getSlug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(institutionAdmin, objectMapper))
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(0))));
+
+        invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        mockMvc.perform(get(URL, institution.getSlug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(institutionAdmin, objectMapper))
+        )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(1))));
+    }
+
+    @Test
     public void createShouldBeSecured() throws Exception {
-        val request = InvitationHelper.createInvitationRequestBuilder().build();
+        val request = InvitationHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +129,7 @@ public class InvitationControllerTest {
     @Test
     public void createShouldHandleNFE() throws Exception {
         val institution = InvitationHelper.institutionBuilder().build();
-        val request = InvitationHelper.createInvitationRequestBuilder().build();
+        val request = InvitationHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +140,7 @@ public class InvitationControllerTest {
 
     @Test
     public void shouldCreate() throws Exception {
-        val request = InvitationHelper.createInvitationRequestBuilder().build();
+        val request = InvitationHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                     .contentType(MediaType.APPLICATION_JSON)
@@ -124,6 +154,44 @@ public class InvitationControllerTest {
                         institution.getSlug(),
                         Invitation.class
                 );
+        assertThat(dbInvitation, isPresent());
+        assertEquals(dbInvitation.get().getStatus(), InvitationStatus.WAITING);
+    }
+
+    @Test
+    public void resendShouldBeSecured() throws Exception {
+        val request = InvitationHelper.invitationRequestBuilder().build();
+        val invitation = invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        val URL = API_PREFIX_V1 + "/invitation/{token}";
+        mockMvc.perform(put(URL, invitation.getToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(member, objectMapper))
+                .content(objectMapper.writeValueAsBytes(request))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void shouldResend() throws Exception {
+        val request = InvitationHelper.invitationRequestBuilder().build();
+        val invitation = invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitation/{token}";
+        mockMvc.perform(put(URL, institution.getSlug(), invitation.getToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(institutionAdmin, objectMapper))
+                .content(objectMapper.writeValueAsBytes(request))
+        ).andExpect(status().isOk());
+
+        val removedInvitation = invitationRepository
+                .findByToken(invitation.getToken(), Invitation.class);
+        val dbInvitation = invitationRepository
+                .findByEmailAndInstitutionSlug(
+                        request.getEmail(),
+                        institution.getSlug(),
+                        Invitation.class
+                );
+        assertThat(removedInvitation, isEmpty());
         assertThat(dbInvitation, isPresent());
         assertEquals(dbInvitation.get().getStatus(), InvitationStatus.WAITING);
     }
@@ -171,6 +239,17 @@ public class InvitationControllerTest {
         val invitationAfterReject = invitationRepository.findByToken(invitation.getToken(), Invitation.class);
         assertThat(invitationAfterReject, isPresent());
         assertEquals(invitationAfterReject.get().getStatus(), InvitationStatus.REJECTED);
+    }
+
+    @Test
+    public void deleteShouldBeSecured() throws Exception {
+        val invitation = invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        val URL = API_PREFIX_V1 + "/invitation/{token}";
+        mockMvc.perform(delete(URL, invitation.getToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(member, objectMapper))
+        ).andExpect(status().isForbidden());
     }
 
     private void reset() {

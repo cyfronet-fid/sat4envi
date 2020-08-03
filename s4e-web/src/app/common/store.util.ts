@@ -14,31 +14,21 @@ export function httpPutRequest$<T>(http: HttpClient, url: string, object: T, sto
   store.setLoading(true);
   store.setError(null);
   return http.put<T>(url, object)
-    .pipe(handleHttpUpdateRequest(store));
+    .pipe(handleHttpGetRequest(store));
 }
 
 export function httpDeleteRequest$(http: HttpClient, url: string, store: Store<any>) {
   store.setLoading(true);
   store.setError(null);
   return http.delete(url)
-    .pipe(handleHttpUpdateRequest(store));
+    .pipe(handleHttpGetRequest(store));
 }
 
 export function httpPostRequest$<T>(http: HttpClient, url: string, object: T, store: Store<any>) {
   store.setLoading(true);
   store.setError(null);
   return http.post<T>(url, object)
-    .pipe(handleHttpUpdateRequest(store));
-}
-
-export function handleHttpUpdateRequest(store: Store<any>) {
-  return function<T>(source: Observable<T>) {
-    return source
-      .pipe(
-        map(() => true),
-        handleHttpGetRequest(store)
-      );
-  };
+    .pipe(handleHttpGetRequest(store));
 }
 
 export function handleHttpGetRequest(store: Store<any>) {
