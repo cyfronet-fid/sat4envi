@@ -7,8 +7,8 @@ import {RegisterService} from './state/register.service';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {By} from '@angular/platform-browser';
 import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import { RegisterFactory } from './register.factory.spec';
+import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -17,9 +17,15 @@ describe('RegisterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, ShareModule, FormErrorModule, RecaptchaModule, RecaptchaFormsModule],
+      imports: [
+        RouterTestingModule,
+        ShareModule,
+        FormErrorModule,
+        RecaptchaModule,
+        RecaptchaFormsModule
+      ],
       declarations: [RegisterComponent],
-      providers: [TestingConfigProvider]
+      providers: [RemoteConfigurationTestingProvider]
     })
       .compileComponents();
   }));

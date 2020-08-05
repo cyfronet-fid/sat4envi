@@ -1,5 +1,4 @@
-import {S4eConfig} from '../../../../utils/initializer/config.service';
-import {InjectorModule} from '../../../../common/injector.module';
+import environment from 'src/environments/environment';
 
 export interface ViewPosition {
   centerCoordinates: [number, number];
@@ -26,7 +25,7 @@ export function createInitialState(): MapState {
     loginOptionsOpened: false,
     productDescriptionOpened: false,
     view: {
-      centerCoordinates: InjectorModule.Injector.get(S4eConfig).projection.coordinates,
+      centerCoordinates: environment.projection.coordinates,
       zoomLevel: 10
     }
   };

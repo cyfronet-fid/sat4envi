@@ -1,3 +1,4 @@
+import { environment } from './../../../../../environments/environment';
 import {ActiveState, EntityState} from '@datorama/akita';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 
@@ -25,13 +26,13 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
 /**
  * A factory function that creates SentinelSearchResult
  */
-export function createSentinelSearchResult(params: SentinelSearchResultResponse, apiUrl: string) {
+export function createSentinelSearchResult(params: SentinelSearchResultResponse) {
   return {
     image: null,
     mission: 'Sentinel-1',
     instrument: 'SAR-C',
     size: '6.97 GB',
-    url: `${apiUrl}/dhus/odata/v1/Products('${params.productId}')/$value`,
+    url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.productId}')/$value`,
     ...params
   } as SentinelSearchResult;
 }

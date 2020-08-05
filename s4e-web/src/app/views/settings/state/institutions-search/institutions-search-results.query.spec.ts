@@ -8,8 +8,6 @@ import { InstitutionService } from '../institution/institution.service';
 import { Subject, ReplaySubject, of } from 'rxjs';
 import { ParamMap, convertToParamMap, ActivatedRoute, Data, Router } from '@angular/router';
 import { TestBed, async } from '@angular/core/testing';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
-import { InjectorModule } from 'src/app/common/injector.module';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -30,13 +28,11 @@ describe('InstitutionSearchResultsQuery', () => {
   beforeEach(async (() => {
     TestBed.configureTestingModule({
       imports: [
-        InjectorModule,
         HttpClientTestingModule,
         RouterTestingModule
       ],
       providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub},
-        S4eConfig
+        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
       ]
     });
 

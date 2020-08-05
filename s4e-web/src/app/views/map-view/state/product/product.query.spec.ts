@@ -1,7 +1,6 @@
 import {ProductQuery} from './product.query';
 import {ProductStore} from './product.store';
 import {TestBed} from '@angular/core/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -19,9 +18,6 @@ describe('ProductQuery', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TestingConfigProvider,
-      ],
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 

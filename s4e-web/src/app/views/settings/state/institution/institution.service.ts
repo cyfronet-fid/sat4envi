@@ -7,16 +7,15 @@ import {InstitutionQuery} from './institution.query';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
 import {AkitaGuidService} from 'src/app/views/map-view/state/search-results/guid.service';
-import {S4eConfig} from 'src/app/utils/initializer/config.service';
 import {httpDeleteRequest$, httpGetRequest$, httpPostRequest$, httpPutRequest$} from 'src/app/common/store.util';
 import {HashMap} from '@datorama/akita';
 import {toHashMap} from '../../../../utils/miscellaneous/miscellaneous';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionService {
   CONFIG: any;
   constructor(private store: InstitutionStore,
-              private s4EConfig: S4eConfig,
               private query: InstitutionQuery,
               private router: Router,
               private http: HttpClient,
@@ -24,7 +23,7 @@ export class InstitutionService {
   }
 
   findBy(slug: string): Observable<Institution | null> {
-    const url = !!slug && slug !== '' && `${this.s4EConfig.apiPrefixV1}/institutions/${slug}` || null;
+    const url = !!slug && slug !== '' && `${environment.apiPrefixV1}/institutions/${slug}` || null;
     return httpGetRequest$<Institution>(this.http, url, this.store);
   }
 
@@ -32,7 +31,7 @@ export class InstitutionService {
     if (this.query.getHasCache()) {
       return;
     }
-    const url = `${this.s4EConfig.apiPrefixV1}/institutions`;
+    const url = `${environment.apiPrefixV1}/institutions`;
     httpGetRequest$<Institution[]>(this.http, url, this.store)
       .subscribe(institutions => this._saveIn(this.store, institutions, this.guidGenerationService));
   }
@@ -42,12 +41,12 @@ export class InstitutionService {
   }
 
   updateInstitution$(institution: Institution) {
-    const url = `${this.s4EConfig.apiPrefixV1}/institutions/${institution.slug}`;
+    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}`;
     return  httpPutRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
   }
 
   createInstitutionChild$(institution: Institution) {
-    const url = `${this.s4EConfig.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
+    const url = `${environment.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
     return  httpPostRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
   }
 
@@ -181,7 +180,7 @@ export class InstitutionService {
   }
 
   delete(slug: string) {
-    return httpDeleteRequest$(this.http, `${this.s4EConfig.apiPrefixV1}/institutions/${slug}`, this.store)
+    return httpDeleteRequest$(this.http, `${environment.apiPrefixV1}/institutions/${slug}`, this.store)
       .subscribe(() => this.store.remove(slug));
   }
 }

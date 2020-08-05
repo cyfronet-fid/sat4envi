@@ -1,3 +1,5 @@
+import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
+import { environment } from './../../../../environments/environment';
 import {NotificationService} from '../../../../../projects/notifications/src/lib/state/notification.service';
 import {ImageWmsLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
@@ -11,7 +13,6 @@ import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {S4eConfig} from '../../../utils/initializer/config.service';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
@@ -31,7 +32,7 @@ export class MapComponent implements OnInit, OnDestroy {
   @Input() isWorking: boolean = false;
   @Output() working = new EventEmitter<boolean>();
   activeView$ = new BehaviorSubject<ViewPosition>({
-    centerCoordinates: this.CONFIG.projection.coordinates,
+    centerCoordinates: environment.projection.coordinates,
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
   });
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
@@ -40,7 +41,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private activeScene$ = new ReplaySubject<Scene | null>(1);
 
   constructor(
-    private CONFIG: S4eConfig,
+    private _remoteConfiguration: RemoteConfiguration,
     private _loaderService: NgxUiLoaderService,
     private _notificationService: NotificationService,
     private _sessionQuery: SessionQuery
@@ -70,7 +71,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const centerOfPolandWebMercator = proj4(
-      this.CONFIG.projection.toProjection,
+      environment.projection.toProjection,
       this.activeView$.getValue().centerCoordinates
     );
     this.map = new Map({
@@ -79,7 +80,7 @@ export class MapComponent implements OnInit, OnDestroy {
       view: new View({
         center: centerOfPolandWebMercator,
         zoom: this.activeView$.getValue().zoomLevel,
-        maxZoom: this.CONFIG.maxZoom
+        maxZoom: environment.maxZoom
       }),
     });
 
@@ -177,10 +178,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
       const source = new ImageWMS({
         crossOrigin: 'Anonymous',
-        url: this.CONFIG.geoserverUrl,
+        url: this._remoteConfiguration.get().geoserverUrl,
         serverType: 'geoserver',
         params: {
-          'LAYERS': this.CONFIG.geoserverWorkspace + ':' + scene.layerName,
+          'LAYERS': this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
           'TIME': isoTimeWithoutMs,
         },
       });

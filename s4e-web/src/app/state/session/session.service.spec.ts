@@ -3,7 +3,6 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {SessionService} from './session.service';
 import {SessionStore} from './session.store';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('SessionService', () => {
   let sessionService: SessionService;
@@ -14,8 +13,7 @@ describe('SessionService', () => {
       providers: [
         SessionService,
         SessionStore,
-        HttpClientTestingModule,
-        TestingConfigProvider
+        HttpClientTestingModule
       ],
       imports: [
         HttpClientTestingModule,

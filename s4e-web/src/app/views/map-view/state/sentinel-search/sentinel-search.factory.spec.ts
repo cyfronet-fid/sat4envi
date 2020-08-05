@@ -87,11 +87,11 @@ export const SentinelSearchMetadataFactory = Factory.makeFactory<SentinelSearchM
 
 class _SentinelSearchFactory extends Factory.Factory<SentinelSearchResultResponse> {
   buildListSearchResult(count: number, apiPrefix: string, item?: RecPartial<SentinelSearchResultResponse>) {
-    return this.buildList(count, item).map(item => createSentinelSearchResult(item, apiPrefix));
+    return this.buildList(count, item).map(item => createSentinelSearchResult(item));
   }
 
   buildSearchResult(apiPrefix: string, item?: RecPartial<SentinelSearchResultResponse>) {
-    return createSentinelSearchResult(this.build(item), apiPrefix);
+    return createSentinelSearchResult(this.build(item));
   }
 
   constructor() {

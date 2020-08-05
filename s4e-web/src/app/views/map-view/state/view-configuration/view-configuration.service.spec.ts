@@ -3,11 +3,11 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {ViewConfigurationService} from './view-configuration.service';
 import {ViewConfigurationStore} from './view-configuration.store';
 import {take, toArray} from 'rxjs/operators';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {ViewConfigurationQuery} from './view-configuration.query';
 import {ViewConfiguration} from './view-configuration.model';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
+import environment from 'src/environments/environment';
 
 describe('ViewConfigurationService', () => {
   let service: ViewConfigurationService;
@@ -17,8 +17,7 @@ describe('ViewConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     service = TestBed.get(ViewConfigurationService);
@@ -42,13 +41,13 @@ describe('ViewConfigurationService', () => {
 
       service.get();
 
-      const r = http.expectOne('api/v1/saved-views');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({content: []});
     });
 
     it('should call http endpoint', () => {
       service.get();
-      const r = http.expectOne('api/v1/saved-views');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({content: []});
       expect(r.request.method).toBe('GET');
     });
@@ -67,7 +66,7 @@ describe('ViewConfigurationService', () => {
         thumbnail: 'base64string'
       };
 
-      const r = http.expectOne('api/v1/saved-views');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({content: [sampleView]});
       expect(query.getAll()).toEqual([sampleView]);
     });
@@ -84,13 +83,13 @@ describe('ViewConfigurationService', () => {
 
       service.delete('uuid');
 
-      const r = http.expectOne('api/v1/saved-views/uuid');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views/uuid`);
       r.flush({});
     });
 
     it('should call http endpoint', () => {
       service.delete('uuid');
-      const r = http.expectOne('api/v1/saved-views/uuid');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views/uuid`);
       r.flush({});
       expect(r.request.method).toBe('DELETE');
     });
@@ -98,7 +97,7 @@ describe('ViewConfigurationService', () => {
     it('should remove from store', () => {
       service.delete('uuid');
       let storeSpy = jest.spyOn(store, 'remove');
-      const r = http.expectOne('api/v1/saved-views/uuid');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views/uuid`);
       r.flush({});
       expect(storeSpy).toHaveBeenCalledWith('uuid');
     });
@@ -119,7 +118,7 @@ describe('ViewConfigurationService', () => {
         thumbnail: ''
       }).subscribe();
 
-      const r = http.expectOne('api/v1/saved-views');
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({});
     });
 
@@ -132,7 +131,7 @@ describe('ViewConfigurationService', () => {
         thumbnail: ''
       };
       service.add$(viewConf).subscribe();
-      const r = http.expectOne('api/v1/saved-views' );
+      const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({});
       expect(r.request.method).toBe('POST');
       expect(r.request.body).toBe(viewConf);

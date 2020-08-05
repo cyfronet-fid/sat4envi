@@ -36,7 +36,6 @@ import {ListConfigsModalComponent} from './zk/list-configs-modal/list-configs-mo
 import {LIST_CONFIGS_MODAL_ID} from './zk/list-configs-modal/list-configs-modal.model';
 import {RouterModule} from '@angular/router';
 import {SentinelSearchComponent} from './sentinel-search/sentinel-search.component';
-import {InjectorModule} from '../../common/injector.module';
 import {ShareConfigurationModalComponent} from './zk/configuration/share-configuration-modal/share-configuration-modal.component';
 import {SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {S4EFormsModule} from '../../form/form.module';
@@ -73,7 +72,6 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     MapViewComponent,
   ],
   imports: [
-    InjectorModule,
     ShareModule,
     FormsModule,
     BrowserAnimationsModule,

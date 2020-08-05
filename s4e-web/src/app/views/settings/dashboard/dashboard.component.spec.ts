@@ -10,7 +10,6 @@ import { Router, convertToParamMap, ParamMap, ActivatedRoute, ActivatedRouteSnap
 import { By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { Subject, ReplaySubject } from 'rxjs';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -38,8 +37,7 @@ describe('DashboardComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub},
-        S4eConfig
+        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
       ]
     })
     .compileComponents();

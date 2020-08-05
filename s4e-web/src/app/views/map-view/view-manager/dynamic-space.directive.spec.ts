@@ -1,6 +1,5 @@
 import { DynamicSpaceDirective } from './dynamic-space.directive';
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
-import { TestingConfigProvider } from 'src/app/app.configuration.spec';
 import { Component, ViewChild, ElementRef, DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 
@@ -32,9 +31,6 @@ describe('DynamicSpaceDirective', () => {
       declarations: [
         DynamicSpaceMockComponent,
         DynamicSpaceDirective
-      ],
-      providers: [
-        TestingConfigProvider
       ]
     })
       .compileComponents();

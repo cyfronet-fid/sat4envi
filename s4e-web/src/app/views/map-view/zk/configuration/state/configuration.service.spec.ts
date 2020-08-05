@@ -3,11 +3,12 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {ConfigurationService} from './configuration.service';
 import {ConfigurationStore} from './configuration.store';
 import {ConfigurationQuery} from './configuration.query';
-import {TestingConfigProvider} from '../../../../../app.configuration.spec';
-import {take, toArray} from 'rxjs/operators';
+import {take, toArray, catchError} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
 import {NotificationService} from 'notifications';
 import {RouterTestingModule} from '@angular/router/testing';
+import environment from 'src/environments/environment';
+import { of } from 'rxjs';
 
 describe('ConfigurationService', () => {
   let service: ConfigurationService;
@@ -18,8 +19,7 @@ describe('ConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     notifications = TestBed.get(NotificationService);
@@ -45,7 +45,7 @@ describe('ConfigurationService', () => {
     it('should call http, pass data and return true if ok', async () => {
       spyOn(notifications, 'addGeneral').and.stub();
       const r = service.shareConfiguration(body).toPromise();
-      const req = http.expectOne({method: 'POST', url: 'api/v1/share-link'});
+      const req = http.expectOne({method: 'POST', url: `${environment.apiPrefixV1}/share-link`});
       req.flush({});
 
       expect(req.request.body).toEqual(body);
@@ -56,13 +56,14 @@ describe('ConfigurationService', () => {
 
     it('should return set store error and return false if http errored', async () => {
       const loadings = query.selectLoading().pipe(take(3), toArray()).toPromise();
-      const r = service.shareConfiguration(body).toPromise();
-      const req = http.expectOne({method: 'POST', url: 'api/v1/share-link'});
+      const r = service.shareConfiguration(body).pipe(catchError(error => of(error))).toPromise();
+
+      const url = `${environment.apiPrefixV1}/share-link`;
+      const req = http.expectOne({method: 'POST', url});
       req.flush({}, {status: 500, statusText: 'server error'});
 
       expect(req.request.body).toEqual(body);
-      expect(await r).toBeFalsy();
-      expect((await query.selectError().pipe(take(1)).toPromise()).status).toEqual(500);
+      expect((await r).status).toEqual(500);
       expect(await loadings).toEqual([false, true, false]);
     });
 

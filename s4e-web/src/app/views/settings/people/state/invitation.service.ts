@@ -1,5 +1,4 @@
 import { Institution } from './../../state/institution/institution.model';
-import { S4eConfig } from './../../../../utils/initializer/config.service';
 import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';

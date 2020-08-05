@@ -5,14 +5,13 @@ import {SceneStore} from './scene.store.service';
 import {SceneQuery} from './scene.query.service';
 import {take, toArray} from 'rxjs/operators';
 import {SceneFactory} from './scene.factory.spec';
-import {InjectorModule} from '../../../../common/injector.module';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {LegendFactory} from '../legend/legend.factory.spec';
 import {LegendQuery} from '../legend/legend.query';
 import {LegendStore} from '../legend/legend.store';
 import {ProductQuery} from '../product/product.query';
 import {ProductStore} from '../product/product.store';
 import {ProductFactory} from '../product/product.factory.spec';
+import environment from 'src/environments/environment';
 
 describe('SceneService', () => {
   let sceneService: SceneService;
@@ -29,9 +28,8 @@ describe('SceneService', () => {
         LegendStore,
         LegendQuery,
         ProductQuery,
-        ProductStore,
-        TestingConfigProvider],
-      imports: [HttpClientTestingModule, InjectorModule]
+        ProductStore],
+      imports: [HttpClientTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
@@ -76,15 +74,19 @@ describe('SceneService', () => {
       const dateF = '2019-10-01';
       const stream = sceneQuery.selectLoading();
 
-      stream.pipe(take(2), toArray()).subscribe(data => {
-        expect(data).toEqual([true, false]);
-        done();
-      });
+      stream
+        .pipe(take(2), toArray())
+        .subscribe(data => {
+          expect(data).toEqual([true, false]);
+          done();
+        });
 
       sceneService.get(product, dateF);
 
-      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&timeZone=testTZ`);
-      r.flush([]);
+      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
+      const request = http.expectOne(url);
+      request.flush([]);
     });
 
     it('should call http endpoint', () => {
@@ -92,7 +94,10 @@ describe('SceneService', () => {
       const product = ProductFactory.build({id: productId});
       const dateF = '2019-10-01';
       sceneService.get(product, dateF);
-      http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&timeZone=testTZ`);
+
+      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
+      const request = http.expectOne(url);
     });
 
     it('should set state in store', (done) => {
@@ -103,15 +108,20 @@ describe('SceneService', () => {
       productStore.add(product);
       const scene = SceneFactory.build();
 
-      sceneQuery.selectAll().pipe(take(2), toArray()).subscribe(data => {
-        expect(data).toEqual([[], [{...scene, layerName: product.layerName}]]);
-        done();
-      });
+      sceneQuery
+        .selectAll()
+        .pipe(take(2), toArray())
+        .subscribe(data => {
+          expect(data).toEqual([[], [{...scene, layerName: product.layerName}]]);
+          done();
+        });
 
       sceneService.get(product, dateF);
 
-      const r = http.expectOne(`api/v1/products/${productId}/scenes?date=${dateF}&timeZone=testTZ`);
-      r.flush([scene]);
+      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
+      const request = http.expectOne(url);
+      request.flush([scene]);
     });
   });
 });

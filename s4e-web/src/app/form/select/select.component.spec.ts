@@ -3,7 +3,6 @@ import {SelectComponent} from './select.component';
 import {Component} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 
 @Component({
@@ -47,8 +46,7 @@ describe('SelectComponent', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestNormalSelectContainerComponent],
-        providers: [TestingConfigProvider]
+        declarations: [TestNormalSelectContainerComponent]
       })
         .compileComponents();
     }));
@@ -72,8 +70,7 @@ describe('SelectComponent', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestNormalSelectContainerComponent],
-        providers: [TestingConfigProvider]
+        declarations: [TestNormalSelectContainerComponent]
       })
         .compileComponents();
     }));
@@ -97,8 +94,7 @@ describe('SelectComponent', () => {
     beforeEach(async(() => {
       TestBed.configureTestingModule({
         imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestSelectContainerComponent],
-        providers: [TestingConfigProvider]
+        declarations: [TestSelectContainerComponent]
       })
         .compileComponents();
     }));

@@ -3,13 +3,13 @@ import {HttpClient} from '@angular/common/http';
 import {LocationSearchResultsStore} from './locations-search-results.store';
 import {LocationSearchResult} from './location-search-result.model';
 import {delay, finalize, map} from 'rxjs/operators';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {PageSearchResult} from '../../../../utils/state.types';
 import {MapService} from '../map/map.service';
 import proj4 from 'proj4';
 import {ViewPosition} from '../map/map.model';
 import { AkitaGuidService } from '../search-results/guid.service';
 import { LocationSearchResultsQuery } from './location-search-results.query';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class SearchResultsService {
@@ -18,8 +18,7 @@ export class SearchResultsService {
               private query: LocationSearchResultsQuery,
               private guidGenerationService: AkitaGuidService,
               private mapService: MapService,
-              private http: HttpClient,
-              private CONFIG: S4eConfig) {
+              private http: HttpClient) {
   }
 
 
@@ -31,7 +30,7 @@ export class SearchResultsService {
     }
 
     this.store.setLoading(true);
-    this.http.get<PageSearchResult>(`${this.CONFIG.apiPrefixV1}/places`, {params: {namePrefix: placePrefix}}).pipe(
+    this.http.get<PageSearchResult>(`${environment.apiPrefixV1}/places`, {params: {namePrefix: placePrefix}}).pipe(
       delay(100),
       map(data => data.content.map(r => ({...r, id: this.guidGenerationService.guid()}))),
       finalize(() => {
@@ -57,7 +56,7 @@ export class SearchResultsService {
     if (!!searchResult) {
       this.mapService.setView({
         centerCoordinates: proj4(
-          this.CONFIG.projection.toProjection,
+          environment.projection.toProjection,
           [searchResult.longitude, searchResult.latitude]
         ),
         zoomLevel: this.getZoomLevel(searchResult.type)

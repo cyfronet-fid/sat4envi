@@ -3,7 +3,6 @@ import {ActivateComponent} from './activate.component';
 import {ActivateService} from './state/activate.service';
 import {ActivateModule} from './activate.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('ActivateComponent', () => {
   let component: ActivateComponent;
@@ -13,8 +12,7 @@ describe('ActivateComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ActivateModule, RouterTestingModule],
-      declarations: [],
-      providers: [TestingConfigProvider]
+      declarations: []
     })
       .compileComponents();
   }));

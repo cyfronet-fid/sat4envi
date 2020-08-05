@@ -3,7 +3,6 @@ import {SentinelSearchComponent} from './sentinel-search.component';
 import {MapModule} from '../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {TestingConfigProvider} from '../../../app.configuration.spec';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
 import {SentinelSearchStore} from '../state/sentinel-search/sentinel-search.store';
@@ -11,8 +10,8 @@ import {ReplaySubject} from 'rxjs';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from '../state/sentinel-search/sentinel-search.factory.spec';
-import {S4eConfig} from '../../../utils/initializer/config.service';
 import {toTestPromise} from '../../../test.utils.spec';
+import environment from 'src/environments/environment';
 
 describe('SentinelSearchComponent', () => {
   let component: SentinelSearchComponent;
@@ -20,18 +19,15 @@ describe('SentinelSearchComponent', () => {
   let de: DebugElement;
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
-  let config: S4eConfig;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, MapModule, RouterTestingModule, HttpClientTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [NoopAnimationsModule, MapModule, RouterTestingModule, HttpClientTestingModule]
     })
       .compileComponents();
 
     query = TestBed.get(SentinelSearchQuery);
     store = TestBed.get(SentinelSearchStore);
-    config = TestBed.get(S4eConfig);
   }));
 
   beforeEach(() => {
@@ -72,7 +68,7 @@ describe('SentinelSearchComponent', () => {
       });
 
       it('showNoResults$ should be false if length > 0', async () => {
-        store.set(SentinelSearchFactory.buildListSearchResult(1, config.apiPrefixV1));
+        store.set(SentinelSearchFactory.buildListSearchResult(1, environment.apiPrefixV1));
         expect(await toTestPromise(component.showNoResults$)).toBeFalsy();
       });
     });

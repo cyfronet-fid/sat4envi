@@ -1,6 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MessagesComponent} from './messages.component';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import {S4EFormsModule} from '../form.module';
 
 describe('MessagesComponent', () => {
@@ -9,8 +8,7 @@ describe('MessagesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [S4EFormsModule],
-      providers: [TestingConfigProvider]
+      imports: [S4EFormsModule]
     })
       .compileComponents();
   }));

@@ -4,7 +4,6 @@ import { InstitutionListComponent } from './institution-list.component';
 import {ManageInstitutionsModule} from '../manage-institutions.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('InstitutionListComponent', () => {
   let component: InstitutionListComponent;
@@ -12,8 +11,7 @@ describe('InstitutionListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ManageInstitutionsModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [ManageInstitutionsModule, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
   }));

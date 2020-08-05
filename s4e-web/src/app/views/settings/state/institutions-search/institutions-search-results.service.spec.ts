@@ -2,8 +2,6 @@ import { InstitutionsSearchResultsStore } from './institutions-search-results.st
 import { InstitutionsSearchResultsQuery } from './institutions-search-results.query';
 import {TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
-import {InjectorModule} from '../../../../common/injector.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import { InstitutionsSearchResultsService } from './institutions-search-results.service';
 import { AkitaGuidService } from 'src/app/views/map-view/state/search-results/guid.service';
@@ -24,11 +22,9 @@ describe('InstitutionsSearchResultsService', () => {
         InstitutionsSearchResultsService,
         InstitutionsSearchResultsQuery,
         InstitutionsSearchResultsStore,
-        TestingConfigProvider,
         AkitaGuidService
       ],
       imports: [
-        InjectorModule,
         HttpClientTestingModule,
         RouterTestingModule
       ]

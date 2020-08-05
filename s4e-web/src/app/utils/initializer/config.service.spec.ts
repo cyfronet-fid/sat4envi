@@ -1,56 +1,45 @@
-import { RouterTestingModule } from '@angular/router/testing';
+import { environment } from 'src/environments/environment';
 import {TestBed} from '@angular/core/testing';
-import {S4eConfig} from './config.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {SessionService} from '../../state/session/session.service';
-import {SessionFactory} from '../../state/session/session.factory.spec';
-import {of} from 'rxjs';
+import { RemoteConfiguration, ConfigurationLoader } from './config.service';
+import { RemoteConfigurationFactory } from 'src/app/app.configuration.spec';
 
 describe('Configuration service', () => {
-  let configService: S4eConfig;
   let http: HttpTestingController;
-  let sessionService: SessionService;
+  let remoteConfiguration: RemoteConfiguration;
+  let configurationLoader: ConfigurationLoader;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        S4eConfig,
-        SessionService
+        ConfigurationLoader,
+        RemoteConfiguration
       ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ]
+      imports: [HttpClientTestingModule]
     });
 
-    configService = TestBed.get(S4eConfig);
-    sessionService = TestBed.get(SessionService);
+    remoteConfiguration = TestBed.get(RemoteConfiguration);
+    configurationLoader = TestBed.get(ConfigurationLoader);
     http = TestBed.get(HttpTestingController);
   });
 
   it('should be created', () => {
-    expect(configService).toBeDefined();
+    expect(remoteConfiguration).toBeDefined();
+    expect(configurationLoader).toBeDefined();
   });
 
-  it('should call endpoint', async () => {
-    const spy = spyOn(sessionService, 'getProfile$').and.returnValue(of(SessionFactory.build()));
-    const p = configService.loadConfiguration();
+  it('loader should set configuration in remoteConfiguration', async () => {
+    const spy = spyOn(remoteConfiguration, 'set');
+    const configurationLoader$ = configurationLoader.load$();
 
-    const reqConfig = http.expectOne('api/v1/config');
-    reqConfig.flush({
-      geoserverUrl: 'localhost:8080/test/wms',
-      geoserverWorkspace: 'testWorkspace',
-      recaptchaSiteKey: 'key'
-    });
-
-    await p;
-
-    expect(configService.geoserverUrl).toBe('localhost:8080/test/wms');
-    expect(configService.geoserverWorkspace).toBe('testWorkspace');
-    expect(configService.recaptchaSiteKey).toBe('key');
+    const url = `${environment.apiPrefixV1}/config`;
+    const reqConfig = http.expectOne(url);
+    const configuration = RemoteConfigurationFactory.build();
+    reqConfig.flush(configuration);
+    await configurationLoader$;
 
     http.verify();
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith(configuration);
   });
 
 });

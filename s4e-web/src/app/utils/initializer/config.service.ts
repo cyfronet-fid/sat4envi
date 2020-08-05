@@ -1,48 +1,42 @@
+import { IRemoteConfiguration } from './../../app.configuration';
 import {Injectable} from '@angular/core';
-import {IConfiguration, IRemoteConfiguration} from '../../app.configuration';
-import {map, switchMap, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
-import {SessionService} from '../../state/session/session.service';
+import environment from 'src/environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable({providedIn: 'root'})
+export class RemoteConfiguration {
+  public readonly isInitialized$: Observable<boolean>;
+  private _isInitialized$ = new BehaviorSubject<boolean>(false);
+
+  private _configuration: IRemoteConfiguration;
+
+  constructor() {
+    this.isInitialized$ = this._isInitialized$.asObservable();
+  }
+
+  get(): IRemoteConfiguration {
+    return this._configuration;
+  }
+
+  set(configuration: IRemoteConfiguration) {
+    this._configuration = configuration;
+    this._isInitialized$.next(true);
+  }
+}
 
 @Injectable()
-export class S4eConfig implements IConfiguration {
-  backendDateFormat: string;
-  geoserverUrl: string;
-  geoserverWorkspace: string;
-  recaptchaSiteKey: string;
-  timezone: string;
+export class ConfigurationLoader {
+  constructor(
+    private _http: HttpClient,
+    private _remoteConfiguration: RemoteConfiguration
+  ) {}
 
-  projection: { toProjection: string, coordinates: [number, number] };
-  apiPrefixV1: string;
-  userLocalStorageKey: string;
-  generalErrorKey: string;
-  maxZoom: number;
-
-  constructor(private http: HttpClient, private sessionService: SessionService) {
-  }
-
-  init(config: IRemoteConfiguration) {
-    this.geoserverUrl = config.geoserverUrl;
-    this.geoserverWorkspace = config.geoserverWorkspace;
-    this.recaptchaSiteKey = config.recaptchaSiteKey;
-
-    this.backendDateFormat = 'YYYY-MM-DDTHH:mm:ss[Z]';
-    this.projection = {toProjection: 'EPSG:3857', coordinates: [19, 52]};
-    this.apiPrefixV1 = 'api/v1';
-    this.userLocalStorageKey = 'user';
-    this.generalErrorKey = '__general__';
-    this.maxZoom = 12;
-    this.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    this.sessionService.init(this);
-  }
-
-  loadConfiguration(): Promise<S4eConfig> {
-    return this.http.get<IRemoteConfiguration>(`api/v1/config`)
-      .pipe(
-        tap(config => this.init(config)),
-        switchMap(() => this.sessionService.getProfile$()),
-        map(() => this)
-      ).toPromise();
+  load$(): Promise<any> {
+    const url = `${environment.apiPrefixV1}/config`;
+    return this._http.get<IRemoteConfiguration>(url)
+      .pipe(tap(configuration => this._remoteConfiguration.set(configuration)))
+      .toPromise();
   }
 }

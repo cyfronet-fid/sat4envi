@@ -2,7 +2,6 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {OverlayService} from './overlay.service';
 import {OverlayStore} from './overlay.store';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('OverlayService', () => {
   let overlayService: OverlayService;
@@ -10,7 +9,7 @@ describe('OverlayService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [OverlayService, OverlayStore, TestingConfigProvider],
+      providers: [OverlayService, OverlayStore],
       imports: [HttpClientTestingModule]
     });
 

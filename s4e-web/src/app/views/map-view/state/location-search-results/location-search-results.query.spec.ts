@@ -1,4 +1,3 @@
-import { S4eConfig } from './../../../../utils/initializer/config.service';
 import {LocationSearchResultsStore} from './locations-search-results.store';
 import { LocationSearchResultsQuery } from './location-search-results.query';
 import { TestBed } from '@angular/core/testing';

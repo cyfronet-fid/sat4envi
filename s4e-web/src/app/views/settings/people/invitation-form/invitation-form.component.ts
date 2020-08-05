@@ -1,4 +1,3 @@
-import { InjectorModule } from 'src/app/common/injector.module';
 import { Validators } from '@angular/forms';
 import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
 import { InvitationService } from './../state/invitation.service';

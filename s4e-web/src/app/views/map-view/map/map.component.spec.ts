@@ -1,6 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MapComponent} from './map.component';
-import {TestingConfigProvider} from '../../../app.configuration.spec';
 import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
 import {take} from 'rxjs/operators';
@@ -13,9 +12,6 @@ describe('MapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TestingConfigProvider,
-      ],
       imports: [
         ShareModule
       ],

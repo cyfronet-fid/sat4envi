@@ -4,7 +4,6 @@ import {SessionService} from '../../../state/session/session.service';
 import {ProfileComponent} from './profile.component';
 import {SessionQuery} from '../../../state/session/session.query';
 import {SessionStore} from '../../../state/session/session.store';
-import {TestingConfigProvider} from '../../../app.configuration.spec';
 import {ProfileModule} from './profile.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 
@@ -17,8 +16,7 @@ describe('ProfileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ProfileModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [ProfileModule, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
   }));

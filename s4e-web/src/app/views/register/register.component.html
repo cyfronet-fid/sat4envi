@@ -65,7 +65,7 @@
           </li>
 
           <li class="form__element">
-            <re-captcha formControlName="recaptcha" [siteKey]="CONFIG.recaptchaSiteKey"></re-captcha>
+            <re-captcha formControlName="recaptcha" [siteKey]="remoteConfiguration.get().recaptchaSiteKey"></re-captcha>
           </li>
 
           <li class="form__element">

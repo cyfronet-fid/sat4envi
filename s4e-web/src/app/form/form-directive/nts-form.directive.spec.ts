@@ -3,7 +3,6 @@ import {Component, DebugElement, Input} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 
 /**
@@ -31,8 +30,7 @@ describe('ExtFormDirective', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [S4EFormsModule],
-      declarations: [MockDirectiveComponent],
-      providers: [TestingConfigProvider]
+      declarations: [MockDirectiveComponent]
     });
 
     TestBed.compileComponents();

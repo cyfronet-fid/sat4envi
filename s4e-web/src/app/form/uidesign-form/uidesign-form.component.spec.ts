@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UIDesignFormComponent } from './uidesign-form.component';
 import {S4EFormsModule} from '../form.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('UIDesignFormComponent', () => {
   let component: UIDesignFormComponent;
@@ -10,8 +9,7 @@ describe('UIDesignFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [S4EFormsModule],
-      providers: [TestingConfigProvider]
+      imports: [S4EFormsModule]
     })
     .compileComponents();
   }));

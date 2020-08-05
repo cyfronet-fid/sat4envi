@@ -3,18 +3,17 @@ import {HttpClient} from '@angular/common/http';
 import {ViewConfigurationStore} from './view-configuration.store';
 import {ViewConfiguration} from './view-configuration.model';
 import {finalize, map, shareReplay} from 'rxjs/operators';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {Observable} from 'rxjs';
 import {IPageableResponse} from '../../../../state/pagable.model';
 import {ViewConfigurationQuery} from './view-configuration.query';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class ViewConfigurationService {
 
   constructor(private store: ViewConfigurationStore,
               private query: ViewConfigurationQuery,
-              private config: S4eConfig,
               private http: HttpClient) {
   }
 
@@ -22,7 +21,7 @@ export class ViewConfigurationService {
     this.store.setError(null);
     this.store.setLoading(true);
 
-    const r = this.http.post<ViewConfiguration>(`${this.config.apiPrefixV1}/saved-views`, viewConfiguration)
+    const r = this.http.post<ViewConfiguration>(`${environment.apiPrefixV1}/saved-views`, viewConfiguration)
       .pipe(
         map(r => true),
         catchErrorAndHandleStore(this.store),
@@ -36,7 +35,7 @@ export class ViewConfigurationService {
   delete(uuid: string) {
     this.store.setError(null);
     this.store.setLoading(true);
-    this.http.delete(`${this.config.apiPrefixV1}/saved-views/${uuid}`, {
+    this.http.delete(`${environment.apiPrefixV1}/saved-views/${uuid}`, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       catchErrorAndHandleStore(this.store),
@@ -48,7 +47,7 @@ export class ViewConfigurationService {
   get() {
     this.store.setError(null);
     this.store.setLoading(true);
-    this.http.get<IPageableResponse<ViewConfiguration>>(`${this.config.apiPrefixV1}/saved-views`, {
+    this.http.get<IPageableResponse<ViewConfiguration>>(`${environment.apiPrefixV1}/saved-views`, {
       headers: {'Content-Type': 'application/json'}
     }).pipe(
       finalize(() => this.store.setLoading(false)),

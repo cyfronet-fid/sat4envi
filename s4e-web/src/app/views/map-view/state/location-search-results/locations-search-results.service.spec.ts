@@ -2,11 +2,10 @@ import {fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {SearchResultsService} from './locations-search-results.service';
 import {LocationSearchResultsStore} from './locations-search-results.store';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
-import {InjectorModule} from '../../../../common/injector.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import { AkitaGuidService } from '../search-results/guid.service';
 import { LocationSearchResultsQuery } from './location-search-results.query';
+import environment from 'src/environments/environment';
 
 
 describe('SearchResultsService', () => {
@@ -18,8 +17,8 @@ describe('SearchResultsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchResultsService, LocationSearchResultsStore, LocationSearchResultsQuery, TestingConfigProvider, AkitaGuidService],
-      imports: [InjectorModule, HttpClientTestingModule, RouterTestingModule]
+      providers: [SearchResultsService, LocationSearchResultsStore, LocationSearchResultsQuery, AkitaGuidService],
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
@@ -45,7 +44,7 @@ describe('SearchResultsService', () => {
 
     it('should pass query to endpoint', () => {
       searchResultsService.get('foo');
-      const req = http.expectOne('api/v1/places?namePrefix=foo');
+      const req = http.expectOne(`${environment.apiPrefixV1}/places?namePrefix=foo`);
       expect(req.request.method).toBe('GET');
       req.flush({});
       http.verify();
@@ -55,7 +54,7 @@ describe('SearchResultsService', () => {
       const sampleId = '1234-5678';
       jest.spyOn(guidService, 'guid').mockReturnValueOnce(sampleId);
       searchResultsService.get('k');
-      const req = http.expectOne('api/v1/places?namePrefix=k');
+      const req = http.expectOne(`${environment.apiPrefixV1}/places?namePrefix=k`);
       expect(req.request.method).toBe('GET');
 
       const sampleResult = {

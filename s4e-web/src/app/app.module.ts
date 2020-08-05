@@ -1,3 +1,4 @@
+import { ConfigurationLoader } from './utils/initializer/config.service';
 import {LogoutModule} from './views/logout/logout.module';
 import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
@@ -20,7 +21,6 @@ import {RegisterModule} from './views/register/register.module';
 import {ResetPasswordModule} from './views/reset-password/reset-password.module';
 import {ActivateModule} from './views/activate/activate.module';
 import {InjectorModule} from './common/injector.module';
-import {S4eConfig} from './utils/initializer/config.service';
 import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
@@ -32,8 +32,8 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 registerLocaleData(localePl, 'pl');
 
 
-export function initializeApp(configService: S4eConfig): () => Promise<any> {
-  return () => configService.loadConfiguration();
+export function initializeConfiguration(loader: ConfigurationLoader): () => Promise<any> {
+  return () => loader.load$();
 }
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
@@ -75,8 +75,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
   ],
   providers: [
-    S4eConfig,
-    {provide: APP_INITIALIZER, useFactory: initializeApp, deps: [S4eConfig], multi: true},
+    ConfigurationLoader,
+    {provide: APP_INITIALIZER, useFactory: initializeConfiguration, deps: [ConfigurationLoader], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'}
   ],

@@ -1,8 +1,8 @@
+import { environment } from 'src/environments/environment';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MapViewComponent} from './map-view.component';
 import {MapModule} from './map.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import {RouterTestingModule} from '@angular/router/testing';
 import {By} from '@angular/platform-browser';
 import {MapService} from './state/map/map.service';
@@ -11,7 +11,6 @@ import {take} from 'rxjs/operators';
 import {MapStore} from './state/map/map.store';
 import {SceneStore} from './state/scene/scene.store.service';
 import {SceneFactory} from './state/scene/scene.factory.spec';
-import {S4eConfig} from '../../utils/initializer/config.service';
 import {SessionStore} from '../../state/session/session.store';
 
 describe('MapViewComponent', () => {
@@ -36,8 +35,7 @@ describe('MapViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     })
       .compileComponents();
     sessionStore = TestBed.get(SessionStore);
@@ -127,13 +125,14 @@ describe('MapViewComponent', () => {
       sessionStore.update({memberZK: true});
       mapStore.update({zkOptionsOpened: true});
       const scene = SceneFactory.build();
-      const config: S4eConfig = TestBed.get(S4eConfig);
       sceneStore.add(scene);
       sceneStore.setActive(scene.id);
       fixture.detectChanges();
       const link = fixture.debugElement.query(By.css('[data-test-download-original=\'\']:not(.disabled)'));
       expect(link).toBeTruthy();
-      expect((link.nativeElement as HTMLLinkElement).getAttribute('href')).toEqual(`${config.apiPrefixV1}/scenes/${scene.id}/download`);
+      expect((link.nativeElement as HTMLLinkElement)
+        .getAttribute('href'))
+        .toEqual(`${environment.apiPrefixV1}/scenes/${scene.id}/download`);
     });
   });
 });

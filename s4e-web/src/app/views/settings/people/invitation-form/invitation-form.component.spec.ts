@@ -6,13 +6,9 @@ import { ActivatedRoute, ParamMap, convertToParamMap } from '@angular/router';
 import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
 import { InvitationFormComponent } from './invitation-form.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { MODAL_DEF } from 'src/app/modal/modal.providers';
 import { INVITATION_FORM_MODAL_ID, InvitationFormModal } from './invitation-form-modal.model';
 import { Subject, ReplaySubject, of } from 'rxjs';
-import { InstitutionsSearchResultsStore } from '../../state/institutions-search/institutions-search-results.store';
-import { InstitutionService } from '../../state/institution/institution.service';
-import { InjectorModule } from 'src/app/common/injector.module';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap>;
@@ -32,7 +28,6 @@ describe('InvitationFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        InjectorModule,
         PeopleModule,
         HttpClientTestingModule,
         RouterTestingModule,
@@ -46,8 +41,7 @@ describe('InvitationFormComponent', () => {
               size: 'lg',
               institution: {name: 'test', slug: 'test'}
             } as InvitationFormModal
-        },
-        S4eConfig
+        }
       ]
     });
     invitationService = TestBed.get(InvitationService);
