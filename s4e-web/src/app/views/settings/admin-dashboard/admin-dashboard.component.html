@@ -30,7 +30,7 @@
         routerLink="../groups"
         queryParamsHandling="merge"
         class="button button--secondary button--small"
-        [disabled]="!(hasSelectedInstitution$ | async)"
+        [disabled]="!(isInstitutionActive$ | async)"
         footer-navigation
       >
         Zarządzaj

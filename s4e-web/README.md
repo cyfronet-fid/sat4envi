@@ -33,7 +33,7 @@ So to start application for development run:
 npm start
 ```
 
-**NOTICE**: Local web server will be available on http://localhost:4200/, and it will start with `/api` route proxied to `http://localhost:4201`, where backend should be present.
+**NOTICE**: Local web server will be available on https://localhost:4200/, and it will start with `/api` route proxied to `http://localhost:4201`, where backend should be present.
 
 #### Other important information
 

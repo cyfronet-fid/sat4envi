@@ -2,6 +2,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ActivatedRoute} from '@angular/router';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_502_BAD_GATEWAY} from './errors.model';
+import { BACK_LINK_QUERY_PARAM } from '../state/session/session.service';
 
 @Component({
   selector: 's4e-errors',
@@ -10,7 +11,7 @@ import {HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_502_BAD_GATEWAY
 })
 export class ErrorsComponent implements OnInit, OnDestroy {
   public actualError = ErrorsComponent._getErrorBy(null);
-  public back_link?: string;
+  public backLink?: string;
 
   constructor(private _activatedRoute: ActivatedRoute) {
   }
@@ -52,7 +53,7 @@ export class ErrorsComponent implements OnInit, OnDestroy {
     this._activatedRoute.queryParamMap
       .pipe(untilDestroyed(this))
       .subscribe((params) => {
-        this.back_link = params.get('back_link');
+        this.backLink = params.get(BACK_LINK_QUERY_PARAM);
       });
   }
 

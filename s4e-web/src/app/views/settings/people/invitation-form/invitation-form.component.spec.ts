@@ -8,10 +8,11 @@ import { InvitationFormComponent } from './invitation-form.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { MODAL_DEF } from 'src/app/modal/modal.providers';
-import { INVITATION_FORM_MODAL_ID } from './invitation-form-modal.model';
+import { INVITATION_FORM_MODAL_ID, InvitationFormModal } from './invitation-form-modal.model';
 import { Subject, ReplaySubject, of } from 'rxjs';
 import { InstitutionsSearchResultsStore } from '../../state/institutions-search/institutions-search-results.store';
 import { InstitutionService } from '../../state/institution/institution.service';
+import { InjectorModule } from 'src/app/common/injector.module';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap>;
@@ -27,11 +28,11 @@ describe('InvitationFormComponent', () => {
   let fixture: ComponentFixture<InvitationFormComponent>;
   let invitationService: InvitationService;
   let route: ActivatedRouteStub;
-  let institutionQuery: InstitutionsSearchResultsQuery;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        InjectorModule,
         PeopleModule,
         HttpClientTestingModule,
         RouterTestingModule,
@@ -43,7 +44,8 @@ describe('InvitationFormComponent', () => {
           useValue: {
               id: INVITATION_FORM_MODAL_ID,
               size: 'lg',
-            }
+              institution: {name: 'test', slug: 'test'}
+            } as InvitationFormModal
         },
         S4eConfig
       ]

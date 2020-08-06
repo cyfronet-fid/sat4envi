@@ -24,7 +24,7 @@ export interface ConfigurationModal extends Modal {
 }
 
 export function isConfigurationModal(modal: Modal): modal is ConfigurationModal {
-  return modal.id == SHARE_CONFIGURATION_MODAL_ID
+  return modal.id === SHARE_CONFIGURATION_MODAL_ID
     && (modal as ConfigurationModal).mapImage != null
     && (modal as ConfigurationModal).configurationUrl != null;
 }

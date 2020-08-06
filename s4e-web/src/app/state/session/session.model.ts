@@ -1,7 +1,6 @@
 export interface LoginFormState {
-  login: string;
+  email: string;
   password: string;
-  rememberMe: boolean;
 }
 
 export interface Role {

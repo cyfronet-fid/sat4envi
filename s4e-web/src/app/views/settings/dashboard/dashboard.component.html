@@ -13,7 +13,7 @@
         routerLink="../people"
         queryParamsHandling="merge"
         class="button button--secondary"
-        [disabled]="!(hasSelectedInstitution$ | async)"
+        [disabled]="!(isInstitutionActive$ | async)"
         footer-navigation
       >
         Zarządzaj ludźmi
@@ -28,7 +28,7 @@
         routerLink="../institution"
         queryParamsHandling="merge"
         class="button button--secondary"
-        [disabled]="!(hasSelectedInstitution$ | async)"
+        [disabled]="!(isInstitutionActive$ | async)"
         footer-navigation
       >
         Zobacz profil

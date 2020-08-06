@@ -1,3 +1,4 @@
+import { RouterTestingModule } from '@angular/router/testing';
 import {TestBed} from '@angular/core/testing';
 import {S4eConfig} from './config.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
@@ -12,8 +13,14 @@ describe('Configuration service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [S4eConfig, SessionService],
-      imports: [HttpClientTestingModule]
+      providers: [
+        S4eConfig,
+        SessionService
+      ],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule
+      ]
     });
 
     configService = TestBed.get(S4eConfig);

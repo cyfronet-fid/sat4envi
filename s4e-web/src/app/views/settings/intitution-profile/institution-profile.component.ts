@@ -30,7 +30,7 @@ export class InstitutionProfileComponent implements OnInit, OnDestroy {
     this.isLoading$ = this._institutionQuery.selectLoading();
     this.institutions$ = combineLatest(
       this._institutionQuery.selectAll(),
-      this._institutionsSearchResultsQuery.getInstitutionFrom$(this._activatedRoute)
+      this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute)
     )
       .pipe(
         filter(([institutions, parentInstitution]) => !!parentInstitution && !!institutions && institutions.length > 0),
@@ -41,7 +41,7 @@ export class InstitutionProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._institutionsSearchResultsQuery
-      .getInstitutionFrom$(this._activatedRoute)
+      .selectActive$(this._activatedRoute)
       .pipe(untilDestroyed(this))
       .subscribe(institution => this.activeInstitution = institution);
   }

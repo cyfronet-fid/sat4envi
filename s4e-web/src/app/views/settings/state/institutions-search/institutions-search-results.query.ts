@@ -1,47 +1,43 @@
 import { InstitutionService } from './../institution/institution.service';
-import { map, filter, switchMap } from 'rxjs/operators';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { map, filter, switchMap, shareReplay } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap, Router, RoutesRecognized, convertToParamMap } from '@angular/router';
 import { InstitutionsSearchResultsStore } from './institutions-search-results.store';
 import { Institution } from '../institution/institution.model';
 import {Injectable} from '@angular/core';
 import { SearchResultsQuery } from 'src/app/views/map-view/state/search-results/search-results.query';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+export const INSTITUTION_QUERY_PARAM = 'institution';
+export const ADD_CHILD_QUERY_PARAM = 'add_child';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InstitutionsSearchResultsQuery extends SearchResultsQuery<Institution> {
-  constructor(protected store: InstitutionsSearchResultsStore, protected _institutionService: InstitutionService) {
-    super(store);
+
+  constructor(
+    protected _store: InstitutionsSearchResultsStore,
+    protected _institutionService: InstitutionService
+  ) {
+    super(_store);
   }
 
-  addChild$(activatedRoute: ActivatedRoute) {
-    return this._routeToParam$(activatedRoute, 'addChild');
+  isChildAddition$(activatedRoute: ActivatedRoute) {
+    return activatedRoute.queryParamMap.pipe(map((params) => params.has(ADD_CHILD_QUERY_PARAM)));
   }
 
-  getInstitutionSlugFrom$(activatedRoute: ActivatedRoute) {
-    return this._routeToParam$(activatedRoute, 'institution');
+  isAnyInstitutionActive$(activatedRoute: ActivatedRoute) {
+    return activatedRoute.queryParamMap.pipe(map((params => params.has(INSTITUTION_QUERY_PARAM))));
   }
 
-  hasInstitutionSlugIn$(activatedRoute: ActivatedRoute) {
-    return this.getInstitutionSlugFrom$(activatedRoute)
-      .pipe(map(slug => !!slug));
-  }
-
-  getInstitutionFrom$(activatedRoute: ActivatedRoute): Observable<Institution | null> {
-    return this._slugToInstitution$(this.getInstitutionSlugFrom$(activatedRoute));
-  }
-
-  protected _slugToInstitution$(slug$) {
-    return slug$
-      .pipe(
-        filter((institutionSlug: string | null) => !!institutionSlug && institutionSlug !== ''),
-        switchMap((institutionSlug: string) => this._institutionService.findBy(institutionSlug)),
-        filter((institution: Institution | null) => !!institution)
-      );
-  }
-  protected _routeToParam$(activatedRoute: ActivatedRoute, name: string): Observable<string | null> {
+  selectActive$(activatedRoute: ActivatedRoute): Observable<Institution> {
     return activatedRoute.queryParamMap
-      .pipe(map((params: ParamMap) => params.has(name) && params.get(name) || null));
+      .pipe(
+        filter(params => params.has(INSTITUTION_QUERY_PARAM) && params.get(INSTITUTION_QUERY_PARAM) !== ''),
+        map((params) => params.get(INSTITUTION_QUERY_PARAM)),
+        switchMap((institutionSlug: string) => this._institutionService.findBy(institutionSlug)),
+        filter((institution: Institution | null) => !!institution),
+        shareReplay(1)
+      );
   }
 }

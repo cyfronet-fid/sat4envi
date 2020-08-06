@@ -3,5 +3,8 @@ Dzień dobry!
 Zostałeś zaproszony do instytucji '[( ${institutionName} )]'.
 Potwierdź klikając 'Dołącz', a następnie zaloguj się lub zarejestruj.
 
+Dołącz: [( ${confirmUrl} )]
+Odrzuć: [( ${rejectUrl} )]
+
 Pozdrawiamy,
 Zespół sat4envi

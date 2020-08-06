@@ -1,5 +1,3 @@
-import { map } from 'rxjs/operators';
-import { InstitutionService } from './../state/institution/institution.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -10,16 +8,14 @@ import { InstitutionsSearchResultsQuery } from '../state/institutions-search/ins
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
-  public hasSelectedInstitution$: Observable<boolean>;
+export class DashboardComponent {
+  public isInstitutionActive$: Observable<boolean>;
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _activatedRoute: ActivatedRoute
-  ) {}
-
-  ngOnInit() {
-    this.hasSelectedInstitution$ = this._institutionsSearchResultsQuery
-      .hasInstitutionSlugIn$(this._activatedRoute);
+  ) {
+    this.isInstitutionActive$ = this._institutionsSearchResultsQuery
+      .isAnyInstitutionActive$(this._activatedRoute);
   }
 }

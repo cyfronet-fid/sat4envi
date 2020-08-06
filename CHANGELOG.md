@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Confirm or reject invitation with email URLs [#625](https://github.com/cyfronet-fid/sat4envi/issues/625)
+
 ### Changed
 
 ### Fixed

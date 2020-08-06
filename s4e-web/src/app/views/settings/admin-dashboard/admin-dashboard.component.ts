@@ -15,7 +15,7 @@ import { InstitutionsSearchResultsStore } from '../state/institutions-search/ins
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  public hasSelectedInstitution$: Observable<boolean>;
+  public isInstitutionActive$: Observable<boolean>;
   public searchValue: string = '';
 
   constructor(
@@ -28,8 +28,8 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.hasSelectedInstitution$ = this.institutionsSearchResultsQuery
-      .hasInstitutionSlugIn$(this._activatedRoute);
+    this.isInstitutionActive$ = this.institutionsSearchResultsQuery
+      .isAnyInstitutionActive$(this._activatedRoute);
 
     if (environment.hmr) {
       const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;

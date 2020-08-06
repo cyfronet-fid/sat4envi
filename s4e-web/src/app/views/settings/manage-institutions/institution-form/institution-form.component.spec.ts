@@ -11,6 +11,7 @@ import { InstitutionFormComponent } from './institution-form.component';
 import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { Data, ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
 import { InstitutionProfileComponent } from '../../intitution-profile/institution-profile.component';
+import { InjectorModule } from 'src/app/common/injector.module';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -31,6 +32,7 @@ describe('InstitutionFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        InjectorModule,
         ManageInstitutionsModule,
         InstitutionProfileModule,
         RouterTestingModule

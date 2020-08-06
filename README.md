@@ -423,7 +423,7 @@ In order do run docker-compose following steps must be done (**unless stated oth
 
 6. Run `docker-compose up`.
 
-7. You're done - application should be available on http://localhost:4200 and have 3 available products.
+7. You're done - application should be available on https://localhost:4200 and have 3 available products.
 
 **IMPORTANT** If you run `docker-compose up` you'll get application all set up, but it does not support any kind of live reload, etc. If you plan on developing any part of the project (frontend or backend) you should run docker compose without module you would like to develop - for example:
 
