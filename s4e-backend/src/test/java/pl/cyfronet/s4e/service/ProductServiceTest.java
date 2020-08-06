@@ -12,10 +12,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.SceneTestHelper;
-import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.TestResourceHelper;
+import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Product;
@@ -35,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
@@ -110,15 +106,8 @@ public class ProductServiceTest {
 
         @BeforeEach
         public void beforeEach() {
-            Stream.of("Sentinel-1.scene.v1.json", "Sentinel-1.metadata.v1.json")
-                    .map(name -> {
-                        String content = new String(testResourceHelper.getAsBytes(SCHEMA_PATH_PREFIX + name));
-                        return Schema.builder()
-                                .name(name)
-                                .type(name.contains("scene") ? Schema.Type.SCENE : Schema.Type.METADATA)
-                                .content(content)
-                                .build();
-                    })
+            SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
+                    .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
                     .forEach(schemaRepository::save);
 
             dtoBuilder = ProductService.DTO.builder()
@@ -278,15 +267,8 @@ public class ProductServiceTest {
 
         @BeforeEach
         public void beforeEach() {
-            Map<String, Schema> schemas = Stream.of("Sentinel-1.scene.v1.json", "Sentinel-1.metadata.v1.json")
-                    .map(name -> {
-                        String content = new String(testResourceHelper.getAsBytes(SCHEMA_PATH_PREFIX + name));
-                        return Schema.builder()
-                                .name(name)
-                                .type(name.contains("scene") ? Schema.Type.SCENE : Schema.Type.METADATA)
-                                .content(content)
-                                .build();
-                    })
+            Map<String, Schema> schemas = SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
+                    .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
                     .map(schemaRepository::save)
                     .collect(Collectors.toMap(Schema::getName, schema -> schema));
 

@@ -20,7 +20,6 @@ import pl.cyfronet.s4e.data.repository.SchemaRepository;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -84,15 +83,8 @@ public class AdminProductControllerTest {
                 .enabled(true)
                 .build());
 
-        schemas = Stream.of("Sentinel-1.scene.v1.json", "Sentinel-1.metadata.v1.json")
-                .map(name -> {
-                    String content = new String(testResourceHelper.getAsBytes(SCHEMA_PATH_PREFIX + name));
-                    return Schema.builder()
-                            .name(name)
-                            .type(name.contains("scene") ? Schema.Type.SCENE : Schema.Type.METADATA)
-                            .content(content)
-                            .build();
-                })
+        schemas = SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
+                .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
                 .map(schemaRepository::save)
                 .collect(Collectors.toMap(Schema::getName, schema -> schema));
     }

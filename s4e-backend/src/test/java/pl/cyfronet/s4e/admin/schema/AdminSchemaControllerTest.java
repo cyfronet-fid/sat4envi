@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.SchemaTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -140,15 +141,13 @@ public class AdminSchemaControllerTest {
 
         @Test
         public void shouldSetPrevious() throws Exception {
-            schemaRepository.save(Schema.builder()
-                    .name("test.scene.v1.json")
-                    .type(Schema.Type.SCENE)
-                    .content(new String(testResourceHelper.getAsBytes(S1_SCENE_SCHEMA_PATH)))
+            schemaRepository.save(SchemaTestHelper
+                    .schemaBuilder(S1_SCENE_SCHEMA_PATH, testResourceHelper)
                     .build());
 
             AdminCreateSchemaRequest request = getCreateSchemaRequestBuilder()
-                    .name("test.scene.v2.json")
-                    .previous("test.scene.v1.json")
+                    .name("Sentinel-1.scene.v2.json")
+                    .previous("Sentinel-1.scene.v1.json")
                     .build();
 
             assertThat(schemaRepository.count(), is(equalTo(1L)));
@@ -165,15 +164,14 @@ public class AdminSchemaControllerTest {
 
         @Test
         public void shouldVerifySchemaType() throws Exception {
-            schemaRepository.save(Schema.builder()
-                    .name("test.metadata.v1.json")
+            schemaRepository.save(SchemaTestHelper
+                    .schemaBuilder(S1_SCENE_SCHEMA_PATH, testResourceHelper)
                     .type(Schema.Type.METADATA)
-                    .content(new String(testResourceHelper.getAsBytes(S1_SCENE_SCHEMA_PATH)))
                     .build());
 
             AdminCreateSchemaRequest request = getCreateSchemaRequestBuilder()
-                    .name("test.scene.v2.json")
-                    .previous("test.metadata.v1.json")
+                    .name("Sentinel-1.scene.v2.json")
+                    .previous("Sentinel-1.scene.v1.json")
                     .build();
 
             assertThat(schemaRepository.count(), is(equalTo(1L)));
