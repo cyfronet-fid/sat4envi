@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.*;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Scene;
+import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -21,7 +24,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -34,8 +36,6 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @BasicTest
 @AutoConfigureMockMvc
 public class AdminSceneControllerTest {
-    private static final String SCHEMA_PATH_PREFIX = "classpath:schema/";
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -89,15 +89,8 @@ public class AdminSceneControllerTest {
                 .enabled(true)
                 .build());
 
-        schemas = Stream.of("Sentinel-1.scene.v1.json", "Sentinel-1.metadata.v1.json")
-                .map(name -> {
-                    String content = new String(testResourceHelper.getAsBytes(SCHEMA_PATH_PREFIX + name));
-                    return Schema.builder()
-                            .name(name)
-                            .type(name.contains("scene") ? Schema.Type.SCENE : Schema.Type.METADATA)
-                            .content(content)
-                            .build();
-                })
+        schemas = SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
+                .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
                 .map(schemaRepository::save)
                 .collect(Collectors.toMap(Schema::getName, schema -> schema));
 
@@ -105,8 +98,7 @@ public class AdminSceneControllerTest {
                 .mapToObj(i -> SceneTestHelper.productBuilder()
                         .name("Product-" + i)
                         .build())
-                .map
-                        (productRepository::save)
+                .map(productRepository::save)
                 .collect(Collectors.toMap(Product::getName, product -> product));
 
         productScenes = new HashMap<>();
