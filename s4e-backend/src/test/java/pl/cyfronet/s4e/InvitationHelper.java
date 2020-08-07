@@ -3,7 +3,7 @@ package pl.cyfronet.s4e;
 import com.github.slugify.Slugify;
 import lombok.val;
 import pl.cyfronet.s4e.bean.*;
-import pl.cyfronet.s4e.controller.request.CreateInvitationRequest;
+import pl.cyfronet.s4e.controller.request.InvitationRequest;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,9 +54,9 @@ public class InvitationHelper {
                 .token(UUID.randomUUID().toString());
     }
 
-    public static CreateInvitationRequest.CreateInvitationRequestBuilder createInvitationRequestBuilder() {
+    public static InvitationRequest.InvitationRequestBuilder invitationRequestBuilder() {
         val invitationEmail = String.format(email, COUNT.getAndIncrement());
-        return CreateInvitationRequest
+        return InvitationRequest
                 .builder()
                 .email(invitationEmail);
 

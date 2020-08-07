@@ -1,0 +1,6 @@
+Dzień dobry!
+
+Twoje zaproszenie do instytucji '[( ${institutionName} )]' zostało usunięte.
+
+Pozdrawiamy,
+Zespół sat4envi

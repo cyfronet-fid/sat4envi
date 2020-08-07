@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-public class CreateInvitationRequest {
+public class InvitationRequest {
     @Email
     @NotEmpty
     private String email;

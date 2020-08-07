@@ -11,6 +11,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pl.cyfronet.s4e.bean.Invitation;
 import pl.cyfronet.s4e.event.OnConfirmInvitationEvent;
+import pl.cyfronet.s4e.event.OnDeleteInvitationEvent;
 import pl.cyfronet.s4e.event.OnRejectInvitationEvent;
 import pl.cyfronet.s4e.event.OnSendInvitationEvent;
 import pl.cyfronet.s4e.ex.NotFoundException;
@@ -46,7 +47,7 @@ public class InvitationListener {
         val invitation = invitationService.findByToken(event.getToken(), Invitation.class)
                 .orElseThrow(() -> new NotFoundException("Invitation with your token doesn't exist"));
         this.sendConfirmation(invitation, event.getLocale());
-        this.invitationService.remove(event.getToken());
+        this.invitationService.deleteBy(event.getToken());
     }
 
     @Async
@@ -56,6 +57,16 @@ public class InvitationListener {
         val invitation = invitationService.findByToken(event.getToken(), Invitation.class)
                 .orElseThrow(() -> new NotFoundException("Invitation with your token doesn't exist"));
         this.sendRejection(invitation, event.getLocale());
+    }
+
+    @Async
+    @EventListener
+    @Transactional
+    public void handle(OnDeleteInvitationEvent event) throws NotFoundException {
+        val invitation = invitationService.findByToken(event.getToken(), Invitation.class)
+                .orElseThrow(() -> new NotFoundException("Invitation with your token doesn't exist"));
+        this.sendDeletion(invitation, event.getLocale());
+        this.invitationService.deleteBy(event.getToken());
     }
 
     private void send(Invitation invitation, Locale locale) {
@@ -105,6 +116,21 @@ public class InvitationListener {
 
         Object[] subjectInstitution = new Object[]{invitation.getInstitution().getName()};
         String subject = messageSource.getMessage("email.invitation-rejection.subject", subjectInstitution, locale);
+        mailService.sendEmail(invitation.getEmail(), subject, plainText, htmlText);
+    }
+
+    private void sendDeletion(Invitation invitation, Locale locale) {
+        Context ctx = new Context(locale);
+        mailHelper.injectCommonVariables(ctx);
+
+        ctx.setVariable("email", invitation.getEmail());
+        ctx.setVariable("institutionName", invitation.getInstitution().getName());
+
+        String plainText = templateEngine.process("delete-invitation-email.txt", ctx);
+        String htmlText = templateEngine.process("delete-invitation-email.html", ctx);
+
+        Object[] subjectInstitution = new Object[]{invitation.getInstitution().getName()};
+        String subject = messageSource.getMessage("email.invitation-deletion.subject", subjectInstitution, locale);
         mailService.sendEmail(invitation.getEmail(), subject, plainText, htmlText);
     }
 }
