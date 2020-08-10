@@ -2,10 +2,6 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MapModule} from '../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {TestingConfigProvider} from '../../../app.configuration.spec';
-import {ProfileStore} from '../../../state/profile/profile.store';
-import {MapStore} from '../state/map/map.store';
-import {SceneStore} from '../state/scene/scene.store.service';
 import {MapViewComponent} from '../map-view.component';
 import {ActivatedRoute} from '@angular/router';
 import {ProductService} from '../state/product/product.service';
@@ -23,8 +19,7 @@ describe('ViewManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     })
       .compileComponents();
     productQuery = TestBed.get(ProductQuery);

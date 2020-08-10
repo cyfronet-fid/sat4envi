@@ -11,7 +11,6 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import {S4eConfig} from '../../../utils/initializer/config.service';
 import {Subject} from 'rxjs';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
@@ -70,8 +69,11 @@ export class TimelineComponent implements OnInit, OnDestroy {
   private updateStream = new Subject<void>();
 
   // tslint:disable-next-line:no-shadowed-variable
-  constructor(@Inject(LOCALE_ID) private LOCALE_ID: string, private config: S4eConfig,
-              private renderer: Renderer2, private guidService: AkitaGuidService) {
+  constructor(
+    @Inject(LOCALE_ID) private LOCALE_ID: string,
+    private renderer: Renderer2,
+    private guidService: AkitaGuidService
+  ) {
     //class name can not start with number
     this.componentId = `D${this.guidService.guid()}`;
   }

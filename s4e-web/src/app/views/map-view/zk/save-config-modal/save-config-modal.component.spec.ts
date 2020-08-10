@@ -2,7 +2,6 @@ import {SaveConfigModalComponent} from './save-config-modal.component';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {SAVE_CONFIG_MODAL_ID} from './save-config-modal.model';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
 import {ViewConfigurationQuery} from '../../state/view-configuration/view-configuration.query';
 import {ModalQuery} from '../../../../modal/state/modal.query';
@@ -37,7 +36,6 @@ describe('SaveConfigModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
-        TestingConfigProvider,
         {
           provide: MODAL_DEF, useValue: {
             id: SAVE_CONFIG_MODAL_ID,

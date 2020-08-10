@@ -4,32 +4,28 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {createSentinelSearchResult, SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBLE_QUERY_KEY} from './sentinel-search.model';
 import {ReplaySubject, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
+import environment from 'src/environments/environment';
 
 describe('SentinelSearchResultQuery', () => {
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
   let routerQuery: RouterQuery;
   let queryParams$: Subject<string>;
-  let apiPrefixV1: string;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     query = TestBed.get(SentinelSearchQuery);
     store = TestBed.get(SentinelSearchStore);
     routerQuery = TestBed.get(RouterQuery);
     queryParams$ = new ReplaySubject<string>(1);
-    apiPrefixV1 = (TestBed.get(S4eConfig) as S4eConfig).apiPrefixV1
     spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
   });
 
@@ -131,8 +127,9 @@ describe('SentinelSearchResultQuery', () => {
   });
 
   it('selectIsActiveFirst', async () => {
-    const apiURL = '/api/v1'
-    const results = SentinelSearchFactory.buildList(3).map(result => createSentinelSearchResult(result, apiPrefixV1));
+    const results = SentinelSearchFactory
+      .buildList(3)
+      .map(result => createSentinelSearchResult(result));
     store.set(results);
     store.setActive(results[1].id);
     expect(await query.selectIsActiveFirst().pipe(take(1)).toPromise()).toBeFalsy();
@@ -141,8 +138,9 @@ describe('SentinelSearchResultQuery', () => {
   });
 
   it('selectIsActiveLast', async () => {
-    const apiURL = '/api/v1'
-    const results = SentinelSearchFactory.buildList(3).map(result => createSentinelSearchResult(result, apiPrefixV1));
+    const results = SentinelSearchFactory
+      .buildList(3)
+      .map(result => createSentinelSearchResult(result));
     store.set(results);
     store.setActive(results[1].id);
     expect(await query.selectIsActiveLast().pipe(take(1)).toPromise()).toBeFalsy();

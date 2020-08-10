@@ -10,7 +10,6 @@ import {RouterTestingModule} from '@angular/router/testing';
 import { DebugElement } from '@angular/core';
 import { Router, ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { Institution } from '../state/institution/institution.model';
 import { TileComponent } from 'src/app/components/tiles-dashboard/tile/tile.component';
 
@@ -42,7 +41,6 @@ describe('AdminDashboardComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        S4eConfig,
         {provide: ActivatedRoute, useClass: ActivatedRouteStub},
         {provide: Router, useValue: router}
       ]

@@ -1,7 +1,7 @@
+import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
 import {TestBed} from '@angular/core/testing';
 import {MapService} from './map.service';
 import {MapStore} from './map.store';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
@@ -28,7 +28,7 @@ describe('MapService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TestingConfigProvider],
+      providers: [RemoteConfigurationTestingProvider],
       imports: [MapModule, RouterTestingModule.withRoutes([])]
     });
 

@@ -93,7 +93,15 @@
         <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz obraz</a></li>
         <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok</a></li>
         <li><a (click)="openListViewModal()" href="javascript:undefined" i18n>Wyświetl zapisane widoki</a></li>
-        <li><a data-test-download-original [ngClass]="{disabled: (activeScene$ | async) == null}" [attr.href]="(activeScene$ | async) == null ? null : CONFIG.apiPrefixV1 + '/scenes/' + (activeScene$ | async)?.id + '/download'" target="_blank" i18n>Zapisz oryginalny plik sceny</a></li>
+        <li><a
+          data-test-download-original
+          [ngClass]="{disabled: (activeScene$ | async) == null}"
+          [attr.href]="activeSceneUrl$ | async"
+          target="_blank"
+          i18n
+        >
+          Zapisz oryginalny plik sceny
+        </a></li>
       </ul>
     </div>
   </ng-container>

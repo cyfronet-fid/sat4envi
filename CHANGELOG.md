@@ -18,6 +18,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix circular dependencies while dependency injection [#648](https://github.com/cyfronet-fid/sat4envi/issues/648)
 - Super admin security issues [#551](https://github.com/cyfronet-fid/sat4envi/issues/551)
 
 ### Updated

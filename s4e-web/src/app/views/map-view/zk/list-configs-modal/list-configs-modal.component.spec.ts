@@ -1,6 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
 import {ViewConfigurationQuery} from '../../state/view-configuration/view-configuration.query';
 import {ModalQuery} from '../../../../modal/state/modal.query';
@@ -24,7 +23,6 @@ describe('ListConfigsModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapModule, RouterTestingModule],
       providers: [
-        TestingConfigProvider,
         ViewConfigurationService,
         ViewConfigurationQuery,
         ModalQuery,

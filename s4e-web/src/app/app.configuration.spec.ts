@@ -1,16 +1,19 @@
+import { IRemoteConfiguration } from './app.configuration';
 import {Provider} from '@angular/core';
-import {S4eConfig} from './utils/initializer/config.service';
+import { RemoteConfiguration } from './utils/initializer/config.service';
+import { of } from 'rxjs';
+import * as Factory from 'factory.ts';
 
-export const TestingConfigProvider: Provider = {
-  provide: S4eConfig, useValue: {
-    geoserverUrl: 'http://localhost:8080/geoserver/wms',
-    geoserverWorkspace: 'testing',
-    backendDateFormat: 'YYYY-MM-DDTHH:mm:ssZ',
-    recaptchaSiteKey: 'abc123',
-    projection: {toProjection: 'EPSG:3857', coordinates: [19, 52]},
-    apiPrefixV1: 'api/v1',
-    userLocalStorageKey: 'user',
-    generalErrorKey: '__general__',
-    timezone: 'testTZ'
+export const RemoteConfigurationFactory = Factory.makeFactory<IRemoteConfiguration>({
+  geoserverUrl: 'http://localhost:8080/geoserver/wms',
+  geoserverWorkspace: 'testing',
+  recaptchaSiteKey: 'abc123',
+});
+
+export const RemoteConfigurationTestingProvider: Provider = {
+  provide: RemoteConfiguration,
+  useValue: {
+    get: () => RemoteConfigurationFactory.build(),
+    isInitialized$: of(false)
   }
 };

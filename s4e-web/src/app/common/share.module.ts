@@ -3,7 +3,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
-import {InjectorModule} from './injector.module';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import localePl from '@angular/common/locales/pl';
 import {registerLocaleData} from '@angular/common';
@@ -23,7 +22,6 @@ library.add(fas);
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    InjectorModule,
     FontAwesomeModule,
     UtilsModule
   ]

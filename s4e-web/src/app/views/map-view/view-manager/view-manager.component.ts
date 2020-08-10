@@ -15,7 +15,6 @@ import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
 import { LocationSearchResultsQuery } from '../state/location-search-results/location-search-results.query';
 import { ResizeEvent } from 'angular-resizable-element';
-import { InjectorModule } from 'src/app/common/injector.module';
 
 @Component({
   selector: 's4e-view-manager',
@@ -86,7 +85,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {}
 
   toggleSearchResult(show: boolean) {
-    InjectorModule.Injector.get(SearchResultsService).toggleSearchResults(show);
+    this.searchResultsService.toggleSearchResults(show);
   }
 
   selectProduct(productId: number) {

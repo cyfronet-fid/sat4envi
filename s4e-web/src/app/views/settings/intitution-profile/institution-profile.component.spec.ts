@@ -9,35 +9,42 @@ import { InstitutionProfileModule } from './institution-profile.module';
 import { convertToParamMap, ParamMap, ActivatedRoute, Router } from '@angular/router';
 import { Subject, ReplaySubject, of } from 'rxjs';
 import { DebugElement } from '@angular/core';
-import { S4eConfig } from 'src/app/utils/initializer/config.service';
 import { InstitutionService } from '../state/institution/institution.service';
-import { InjectorModule } from 'src/app/common/injector.module';
+
+class ActivatedRouteStub {
+  paramMap: Subject<ParamMap> = new ReplaySubject(1);
+  queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
+
+  constructor() {
+    this.paramMap.next(convertToParamMap({}));
+    this.queryParamMap.next(convertToParamMap({backLink: '/'}));
+  }
+}
 
 describe('InstitutionProfileComponent', () => {
   let component: InstitutionProfileComponent;
   let fixture: ComponentFixture<InstitutionProfileComponent>;
   let institutionService: InstitutionService;
-  let route: ActivatedRoute;
+  let route: ActivatedRouteStub;
   let router: Router;
   let de: DebugElement;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        InjectorModule,
         InstitutionProfileModule,
         HttpClientTestingModule,
         RouterTestingModule
       ],
       providers: [
-        S4eConfig
+        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(InstitutionProfileComponent);
     component = fixture.componentInstance;
-    route = TestBed.get(ActivatedRoute);
+    route = <ActivatedRouteStub>TestBed.get(ActivatedRoute);
     router = TestBed.get(Router);
     institutionService = TestBed.get(InstitutionService);
     de = fixture.debugElement;
@@ -51,15 +58,7 @@ describe('InstitutionProfileComponent', () => {
   it('Should display institution on init', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
-    router.navigate(
-      [],
-      {
-        relativeTo: route,
-        queryParams: { institution: institution.slug },
-        queryParamsHandling: 'merge',
-        skipLocationChange: true
-      }
-    );
+    route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
     tick();
     fixture.detectChanges();
 

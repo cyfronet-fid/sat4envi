@@ -4,7 +4,6 @@ import {CheckBoxListComponent} from './check-box-list.component';
 import {ReactiveFormsModule} from '@angular/forms';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 describe('CheckBoxListComponent', () => {
   let component: CheckBoxListComponent<any>;
@@ -17,9 +16,6 @@ describe('CheckBoxListComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule,
         HttpClientTestingModule
-      ],
-      providers: [
-        TestingConfigProvider
       ]
     })
       .compileComponents();

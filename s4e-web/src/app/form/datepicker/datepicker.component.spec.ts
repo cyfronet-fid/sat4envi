@@ -1,6 +1,5 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {DatepickerComponent} from './datepicker.component';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import {S4EFormsModule} from '../form.module';
 
 describe('DatepickerComponent', () => {
@@ -9,8 +8,7 @@ describe('DatepickerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [S4EFormsModule],
-      providers: [TestingConfigProvider]
+      imports: [S4EFormsModule]
     })
       .compileComponents();
   }));

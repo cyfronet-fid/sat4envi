@@ -1,3 +1,5 @@
+import { environment } from '../../src/environments/environment';
+
 context('ErrorHandling', () => {
   beforeEach(() => {
     cy.visit('/');
@@ -13,7 +15,7 @@ context('ErrorHandling', () => {
       status: 404,
       response: {}
     });
-    cy.route('/api/v1/products', { errors: 'Endpoint doesn\'t exists' });
+    cy.route(`${environment.apiPrefixV1}/products`, { errors: 'Endpoint doesn\'t exists' });
     cy.visit('/');
     cy.url().should('contain', 'errors/404');
   });
@@ -25,7 +27,7 @@ context('ErrorHandling', () => {
       status: 502,
       response: {}
     });
-    cy.route('/api/v1/products', { errors: 'Bad Gateway 502' });
+    cy.route(`${environment.apiPrefixV1}/products`, { errors: 'Bad Gateway 502' });
     cy.visit('/');
     cy.url().should('contain', 'errors/502');
   });
@@ -37,7 +39,7 @@ context('ErrorHandling', () => {
       status: 500,
       response: {}
     });
-    cy.route('/api/v1/products', { errors: 'Server don\'t responded' });
+    cy.route(`${environment.apiPrefixV1}/products`, { errors: 'Server don\'t responded' });
     cy.visit('/');
     cy.url().should('contain', 'errors/500');
   });
@@ -49,7 +51,7 @@ context('ErrorHandling', () => {
       status: 403,
       response: {}
     });
-    cy.route('/api/v1/products', { errors: 'Access forbidden' });
+    cy.route(`${environment.apiPrefixV1}/products`, { errors: 'Access forbidden' });
     cy.visit('/');
     cy.url().should('contain', 'login');
 
@@ -59,7 +61,7 @@ context('ErrorHandling', () => {
       status: 401,
       response: {}
     });
-    cy.route('/api/v1/products', { errors: 'You\'re not authorized' });
+    cy.route(`${environment.apiPrefixV1}/products`, { errors: 'You\'re not authorized' });
     cy.visit('/');
     cy.url().should('contain', 'login');
   });

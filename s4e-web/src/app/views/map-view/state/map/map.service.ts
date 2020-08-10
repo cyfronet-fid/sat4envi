@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MapStore} from './map.store';
 import {MapQuery} from './map.query';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {ViewPosition} from './map.model';
 import {forkJoin, of} from 'rxjs';
 import {catchError, filter, map, take, tap} from 'rxjs/operators';
@@ -18,17 +17,17 @@ import {ViewRouterConfig} from '../view-configuration/view-configuration.model';
 @Injectable({providedIn: 'root'})
 export class MapService {
 
-  constructor(private store: MapStore,
-              private mapQuery: MapQuery,
-              private http: HttpClient,
-              private overlayQuery: OverlayQuery,
-              private overlayService: OverlayService,
-              private productQuery: ProductQuery,
-              private productService: ProductService,
-              private sceneQuery: SceneQuery,
-              private sceneService: SceneService,
-              private router: Router,
-              private CONFIG: S4eConfig
+  constructor(
+    private store: MapStore,
+    private mapQuery: MapQuery,
+    private http: HttpClient,
+    private overlayQuery: OverlayQuery,
+    private overlayService: OverlayService,
+    private productQuery: ProductQuery,
+    private productService: ProductService,
+    private sceneQuery: SceneQuery,
+    private sceneService: SceneService,
+    private router: Router,
   ) {
   }
 
@@ -109,14 +108,18 @@ export class MapService {
   }
 
   public connectStoreToRouter() {
-    return this.mapQuery.selectQueryParamsFromStore().pipe(
-      tap((queryParams) => {
-        this.router.navigate([], {
-          queryParamsHandling: 'merge',
-          queryParams: queryParams
-        });
-      })
-    );
+    return this.mapQuery.selectQueryParamsFromStore()
+      .pipe(
+        tap((queryParams) => {
+          this.router.navigate(
+            [],
+            {
+              queryParamsHandling: 'merge',
+              queryParams: queryParams
+            }
+          );
+        })
+      );
   }
 }
 

@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PersonService } from './person.service';
 import { PersonStore } from './person.store';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('PersonService', () => {
   let personService: PersonService;
@@ -10,7 +9,7 @@ describe('PersonService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [PersonService, PersonStore, TestingConfigProvider],
+      providers: [PersonService, PersonStore],
       imports: [ HttpClientTestingModule ]
     });
 

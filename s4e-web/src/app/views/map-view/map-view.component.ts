@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
@@ -5,7 +6,6 @@ import {MapQuery} from './state/map/map.query';
 import {MapService} from './state/map/map.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
-import {S4eConfig} from '../../utils/initializer/config.service';
 import {ViewPosition} from './state/map/map.model';
 import {Legend, LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
@@ -32,7 +32,6 @@ import {map, switchMap, take} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
-import { InjectorModule } from 'src/app/common/injector.module';
 
 @Component({
   selector: 's4e-map-view',
@@ -42,6 +41,7 @@ import { InjectorModule } from 'src/app/common/injector.module';
 export class MapViewComponent implements OnInit, OnDestroy {
   public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
+  public activeSceneUrl$: Observable<string>;
   public activeProducts$: Observable<Product | null>;
   public scenes$: Observable<Scene[]>;
   public scenesAreLoading$: Observable<boolean>;
@@ -63,31 +63,36 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
-  constructor(public mapService: MapService,
-              private router: Router,
-              private route: ActivatedRoute,
-              private mapQuery: MapQuery,
-              private overlayQuery: OverlayQuery,
-              private overlayService: OverlayService,
-              private sceneService: SceneService,
-              private productService: ProductService,
-              private productQuery: ProductQuery,
-              private sceneQuery: SceneQuery,
-              private sessionQuery: SessionQuery,
-              private sessionService: SessionService,
-              private legendQuery: LegendQuery,
-              private legendService: LegendService,
-              private searchResultsQuery: LocationSearchResultsQuery,
-              private modalService: ModalService,
-              private viewConfigurationQuery: ViewConfigurationQuery,
-              private CONFIG: S4eConfig) {
-  }
+  constructor(
+    public mapService: MapService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private mapQuery: MapQuery,
+    private overlayQuery: OverlayQuery,
+    private overlayService: OverlayService,
+    private sceneService: SceneService,
+    private productService: ProductService,
+    private productQuery: ProductQuery,
+    private sceneQuery: SceneQuery,
+    private sessionQuery: SessionQuery,
+    private sessionService: SessionService,
+    private legendQuery: LegendQuery,
+    private legendService: LegendService,
+    private searchResultsQuery: LocationSearchResultsQuery,
+    private modalService: ModalService,
+    private viewConfigurationQuery: ViewConfigurationQuery
+  ) {}
 
   ngOnInit(): void {
     this.userIsZK$ = this.sessionQuery.selectMemberZK();
     this.loading$ = this.mapQuery.selectLoading();
     this.currentTimelineDate$ = this.productQuery.selectSelectedDate();
     this.activeScene$ = this.sceneQuery.selectActive();
+    this.activeSceneUrl$ = this.activeScene$
+      .pipe(map((scene) => !!scene
+        ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
+        : null
+      ));
     this.scenes$ = this.sceneQuery.selectAll();
     this.scenesAreLoading$ = this.sceneQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectAllAsUIOverlays();
@@ -119,7 +124,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.activeView$ = this.mapQuery.select('view');
 
     this.mapService.setView({
-      centerCoordinates: proj4(this.CONFIG.projection.toProjection, this.CONFIG.projection.coordinates),
+      centerCoordinates: proj4(environment.projection.toProjection, environment.projection.coordinates),
       zoomLevel: 6
     });
 

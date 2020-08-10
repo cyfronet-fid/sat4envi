@@ -3,7 +3,6 @@ import {InputComponent} from './input.component';
 import {ControlContainer} from '@angular/forms';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 class MockedControlContainer {
   hasError(errorCode: string, path?: string[]): boolean {
@@ -22,7 +21,7 @@ describe('InputComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [S4EFormsModule],
-      providers: [{provide: ControlContainer, useClass: MockedControlContainer}, TestingConfigProvider]
+      providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
     })
       .compileComponents();
   });

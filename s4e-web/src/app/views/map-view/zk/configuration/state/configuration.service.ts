@@ -1,45 +1,33 @@
+import { httpPostRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ConfigurationStore} from './configuration.store';
 import {Configuration, ConfigurationState, ShareConfigurationRequest} from './configuration.model';
-import {catchError, finalize, map, shareReplay} from 'rxjs/operators';
+import { catchError, finalize, map, shareReplay, tap } from 'rxjs/operators';
 import {ConfigurationQuery} from './configuration.query';
-import {S4eConfig} from '../../../../../utils/initializer/config.service';
 import {Dao} from '../../../../../common/dao.service';
 import {NotificationService} from 'notifications';
 import {Observable, of} from 'rxjs';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class ConfigurationService extends Dao<Configuration, ConfigurationState, ConfigurationStore> {
   constructor(store: ConfigurationStore,
               http: HttpClient,
               private notifications: NotificationService,
-              private config: S4eConfig,
               private query: ConfigurationQuery) {
-    super(http, `${config.apiPrefixV1}/configurations`, store);
+    super(http, `${environment.apiPrefixV1}/configurations`, store);
   }
 
   shareConfiguration(conf: ShareConfigurationRequest): Observable<boolean> {
-    this.store.setLoading(true);
+    const url = `${environment.apiPrefixV1}/share-link`;
+    const postRequest = httpPostRequest$(this.http, url, conf, this.store)
+      .pipe(tap(() => this.notifications.addGeneral({
+        type: 'success',
+        content: `Link został wysłany na adres ${conf.emails.join(', ')}`
+      })));
 
-    const r = this.http.post<void>(`${this.config.apiPrefixV1}/share-link`, conf)
-      .pipe(
-        map(r => {
-          this.notifications.addGeneral({
-            type: 'success',
-            content: `Link został wysłany na adres ${conf.emails.join(', ')}`
-          });
-          return true;
-        }),
-        catchError(error => {
-          this.store.setError(error);
-          return of(false);
-        }),
-        finalize(() => this.store.setLoading(false)),
-        shareReplay(1)
-      );
-
-    r.subscribe();
-    return r;
+    postRequest.subscribe();
+    return postRequest;
   }
 }

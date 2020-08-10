@@ -4,7 +4,6 @@ import { SearchResultModalComponent } from './search-result-modal.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 
 describe('SearchResultModalComponent', () => {
   let component: SearchResultModalComponent;
@@ -12,8 +11,7 @@ describe('SearchResultModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
   }));

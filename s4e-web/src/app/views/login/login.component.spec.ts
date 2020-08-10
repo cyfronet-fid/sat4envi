@@ -4,7 +4,6 @@ import {LoginComponent} from './login.component';
 import {ShareModule} from '../../common/share.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {SessionService} from '../../state/session/session.service';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 
 describe('LoginComponent', () => {
@@ -15,8 +14,7 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ShareModule, RouterTestingModule, FormErrorModule],
-      declarations: [LoginComponent],
-      providers: [TestingConfigProvider]
+      declarations: [LoginComponent]
     })
       .compileComponents();
   }));

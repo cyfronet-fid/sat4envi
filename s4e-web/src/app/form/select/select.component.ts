@@ -4,7 +4,6 @@ import {ControlContainer, FormControl, NG_VALUE_ACCESSOR, SelectControlValueAcce
 import {GeneralInput} from '../general-input/general-input';
 import {DateUtilsService} from '../../utils/s4e-date/date-utils.service';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
-import {S4eConfig} from '../../utils/initializer/config.service';
 
 @Component({
   selector: 'ext-select',
@@ -24,7 +23,6 @@ export class SelectComponent extends GeneralInput {
   @ViewChild(SelectControlValueAccessor) select: SelectControlValueAccessor;
 
   constructor(private dateUtils: DateUtilsService,
-              public constants: S4eConfig,
               @Optional() extForm: ExtFormDirective,
               @Optional() @Host() @SkipSelf() cc: ControlContainer) {
     super(cc, extForm);

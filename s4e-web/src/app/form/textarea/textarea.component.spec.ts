@@ -4,7 +4,6 @@ import {ControlContainer, FormBuilder, FormGroup, ReactiveFormsModule} from '@an
 import {Component, DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
-import {TestingConfigProvider} from '../../app.configuration.spec';
 
 class MockedControlContainer {
   hasError(errorCode: string, path?: string[]): boolean {
@@ -39,7 +38,7 @@ describe('InputComponent', () => {
       TestBed.configureTestingModule({
         imports: [S4EFormsModule, ReactiveFormsModule],
         declarations: [TestHostComponent],
-        providers: [{provide: ControlContainer, useClass: MockedControlContainer}, TestingConfigProvider]
+        providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
       })
         .compileComponents();
     });
@@ -64,8 +63,7 @@ describe('InputComponent', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [TestHostComponent],
-        imports: [S4EFormsModule, ReactiveFormsModule],
-        providers: [TestingConfigProvider]
+        imports: [S4EFormsModule, ReactiveFormsModule]
       }).compileComponents();
     });
 

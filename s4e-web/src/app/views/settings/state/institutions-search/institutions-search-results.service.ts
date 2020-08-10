@@ -3,7 +3,6 @@ import {InstitutionService} from './../institution/institution.service';
 import {InstitutionsSearchResultsStore} from './institutions-search-results.store';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {AkitaGuidService} from 'src/app/views/map-view/state/search-results/guid.service';
 import {Institution} from '../institution/institution.model';
 
@@ -14,8 +13,7 @@ export class InstitutionsSearchResultsService {
               private _guidGenerationService: AkitaGuidService,
               private _insitutionService: InstitutionService,
               private _InstitutionQuery: InstitutionQuery,
-              private _http: HttpClient,
-              private s4EConfig: S4eConfig) {
+              private _http: HttpClient) {
   }
 
   get(partialInstitutionName: string) {

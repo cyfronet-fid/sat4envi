@@ -6,7 +6,7 @@ import {RegisterStore} from './register.store';
 import {RouterTestingModule} from '@angular/router/testing';
 import {RegisterQuery} from './register.query';
 import {Router} from '@angular/router';
-import {TestingConfigProvider} from '../../../app.configuration.spec';
+import environment from 'src/environments/environment';
 
 describe('RegisterService', () => {
   let registerService: RegisterService;
@@ -16,7 +16,7 @@ describe('RegisterService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RegisterService, RegisterStore, RegisterQuery, TestingConfigProvider],
+      providers: [RegisterService, RegisterStore, RegisterQuery],
       imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
@@ -36,7 +36,7 @@ describe('RegisterService', () => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${recaptcha}`);
+      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
       expect(req.request.method).toBe('POST');
 
       expect(req.request.body).toEqual(request);
@@ -51,7 +51,7 @@ describe('RegisterService', () => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${recaptcha}`);
+      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush({});
 
       tick(1000);
@@ -63,7 +63,7 @@ describe('RegisterService', () => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${recaptcha}`);
+      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush({email: ['Invalid email']}, {status: 400, statusText: 'Bad Request'});
 
       registerQuery.selectError().subscribe(error => {
@@ -78,7 +78,7 @@ describe('RegisterService', () => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`api/v1/register?g-recaptcha-response=${userRegister.recaptcha}`);
+      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
       req.flush('Server Failed', {status: 500, statusText: 'Server Error'});
 
       registerQuery.selectError().subscribe(error => {

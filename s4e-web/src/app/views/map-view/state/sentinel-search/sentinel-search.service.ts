@@ -1,3 +1,4 @@
+import { environment } from './../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SentinelSearchStore} from './sentinel-search.store';
@@ -10,7 +11,6 @@ import {
 import {SentinelSearchQuery} from './sentinel-search.query';
 import {delay, finalize, map, shareReplay} from 'rxjs/operators';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {HashMap} from '@datorama/akita';
@@ -29,7 +29,6 @@ export class SentinelSearchService {
     private http: HttpClient,
     private router: Router,
     private notificationService: NotificationService,
-    private CONFIG: S4eConfig,
     private modalService: ModalService
   ) {
     this._activatedQueue = new ActivatedQueue(this.query, this.store);
@@ -53,11 +52,11 @@ export class SentinelSearchService {
     this.store.set([]);
     this.store.setLoading(true);
     const r = this.http.get<SentinelSearchResultResponse[]>(
-      `${this.CONFIG.apiPrefixV1}/search`, {params}
+      `${environment.apiPrefixV1}/search`, {params}
     ).pipe(
       delay(250),
       catchErrorAndHandleStore(this.store),
-      map(data => data.map(product => createSentinelSearchResult(product, this.CONFIG.apiPrefixV1))),
+      map(data => data.map(product => createSentinelSearchResult(product))),
       finalize(() => this.store.setLoading(false)),
       shareReplay(1)
     );
@@ -83,7 +82,7 @@ export class SentinelSearchService {
 
     this.store.setMetadataLoading();
 
-    const r = this.http.get<SentinelSearchMetadata>(`${this.CONFIG.apiPrefixV1}/config/sentinel-search`)
+    const r = this.http.get<SentinelSearchMetadata>(`${environment.apiPrefixV1}/config/sentinel-search`)
       .pipe(
         catchErrorAndHandleStore(this.store),
         finalize(() => this.store.setMetadataLoading(false)),

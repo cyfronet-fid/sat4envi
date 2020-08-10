@@ -3,7 +3,6 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {ProductService} from './product.service';
 import {ProductStore} from './product.store';
 import {ProductQuery} from './product.query';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {LegendQuery} from '../legend/legend.query';
 import {LegendService} from '../legend/legend.service';
 import {SceneQuery} from '../scene/scene.query.service';
@@ -24,7 +23,6 @@ describe('ProductService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TestingConfigProvider],
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 

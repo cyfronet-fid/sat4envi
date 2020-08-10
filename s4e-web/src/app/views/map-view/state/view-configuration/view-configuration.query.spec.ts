@@ -1,7 +1,6 @@
 import {ViewConfigurationQuery} from './view-configuration.query';
 import {ViewConfigurationStore} from './view-configuration.store';
 import {TestBed} from '@angular/core/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {MapQuery} from '../map/map.query';
 import {ProductQuery} from '../product/product.query';
 import {SceneQuery} from '../scene/scene.query.service';
@@ -21,8 +20,7 @@ describe('ViewConfigurationQuery', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     query = TestBed.get(ViewConfigurationQuery);

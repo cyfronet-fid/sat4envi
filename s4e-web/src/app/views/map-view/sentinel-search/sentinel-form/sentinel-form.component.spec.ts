@@ -3,7 +3,6 @@ import {SentinelFormComponent} from './sentinel-form.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {SentinelFloatParamFactory, SentinelSearchMetadataFactory} from '../../state/sentinel-search/sentinel-search.factory.spec';
 import {FormControl} from '@angular/forms';
 import {DebugElement} from '@angular/core';
@@ -16,8 +15,7 @@ describe('SentinelFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     })
       .compileComponents();
   }));

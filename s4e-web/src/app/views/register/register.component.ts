@@ -1,3 +1,4 @@
+import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
@@ -8,7 +9,6 @@ import {RegisterService} from './state/register.service';
 import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {Router} from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
-import {S4eConfig} from '../../utils/initializer/config.service';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {
@@ -38,7 +38,7 @@ export function MustMatch(controlName: string, matchingControlName: string) {
 export class RegisterComponent extends GenericFormComponent<RegisterQuery, RegisterFormState> {
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
-              public CONFIG: S4eConfig,
+              public remoteConfiguration: RemoteConfiguration,
               private registerService: RegisterService,
               private registerQuery: RegisterQuery) {
     super(fm, router, registerQuery, 'register');

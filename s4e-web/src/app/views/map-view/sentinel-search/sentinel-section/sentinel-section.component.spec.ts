@@ -3,7 +3,6 @@ import { SentinelSectionComponent } from './sentinel-section.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {SentinelSearchMetadataFactory, SentinelSectionFactory} from '../../state/sentinel-search/sentinel-search.factory.spec';
 import {FormControl} from '@angular/forms';
 import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search.service';
@@ -24,8 +23,7 @@ describe('SentinelSectionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     })
     .compileComponents();
 

@@ -1,11 +1,12 @@
+import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import {Injectable} from '@angular/core';
 import {OverlayStore} from './overlay.store';
-import {OverlayResponse, OverlayType} from './overlay.model';
+import {OverlayResponse, OverlayType, Overlay} from './overlay.model';
 import {map} from 'rxjs/operators';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import {catchErrorAndHandleStore, httpGetRequest$} from '../../../../common/store.util';
+import environment from 'src/environments/environment';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -13,33 +14,34 @@ import {catchErrorAndHandleStore} from '../../../../common/store.util';
  */
 @Injectable({providedIn: 'root'})
 export class OverlayService {
-  constructor(private store: OverlayStore,
-              private http: HttpClient,
-              private CONFIG: S4eConfig) {
+  constructor(
+    private _store: OverlayStore,
+    private _http: HttpClient,
+    private _remoteConfiguration: RemoteConfiguration) {
   }
 
   get() {
-    this.store.setLoading(true);
-    // :TODO replace mock with HTTP request
-
-    this.http.get<OverlayResponse[]>(`${this.CONFIG.apiPrefixV1}/overlays/prg/`)
-      .pipe(
-        catchErrorAndHandleStore(this.store),
-        map(or => or.map(o => ({
-          id: this.CONFIG.geoserverWorkspace + ':' + o.layerName,
-          caption: o.name,
-          type: 'wms' as OverlayType
-        }))))
-      .subscribe(overlays => this.store.set(overlays));
+    const url = `${environment.apiPrefixV1}/overlays/prg/`;
+    httpGetRequest$<OverlayResponse[]>(this._http, url, this._store)
+      .pipe(map(overlays => overlays.map(response => this._toOverlay(response))))
+      .subscribe(overlays => this._store.set(overlays));
   }
 
   setActive(overlayId: string | null) {
-    this.store.toggleActive(overlayId);
+    this._store.toggleActive(overlayId);
   }
 
   @action('setAllActive')
   setAllActive(overlayIds: string[]) {
-    this.store.setActive(overlayIds);
+    this._store.setActive(overlayIds);
+  }
+
+  private _toOverlay(response: OverlayResponse): Overlay {
+    return {
+      id: this._remoteConfiguration.get().geoserverWorkspace + ':' + response.layerName,
+      caption: response.name,
+      type: 'wms' as OverlayType
+    };
   }
 
 }

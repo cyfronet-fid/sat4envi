@@ -3,7 +3,6 @@ import {EmailListValidator, ShareConfigurationModalComponent} from './share-conf
 import {MapModule} from '../../../map.module';
 import {MODAL_DEF} from '../../../../../modal/modal.providers';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from '../state/configuration.model';
-import {TestingConfigProvider} from '../../../../../app.configuration.spec';
 import {By} from '@angular/platform-browser';
 import {FormControl} from '@ng-stack/forms';
 import {ConfigurationService} from '../state/configuration.service';
@@ -22,7 +21,6 @@ describe('ShareConfigurationModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
-        TestingConfigProvider,
         {
           provide: MODAL_DEF, useValue: {
             id: SHARE_CONFIGURATION_MODAL_ID,

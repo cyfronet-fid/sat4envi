@@ -3,8 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 import sharedEnvironment from './base';
+import commonEnvironmentVariables from './environment.common';
 
 export const environment = {
+  ...commonEnvironmentVariables,
   version: 'undefined-dev-version',
   ...sharedEnvironment,
   production: false,
@@ -12,6 +14,8 @@ export const environment = {
   inviteOnly: false,
   uiDevelopment: false
 };
+
+export default environment;
 
 /*
  * In development mode, to ignore zone related error stack frames such as

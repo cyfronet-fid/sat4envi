@@ -4,7 +4,6 @@ import {ProductStore} from './product.store';
 import {Product, PRODUCT_MODE_FAVOURITE, PRODUCT_MODE_QUERY_KEY} from './product.model';
 import {catchError, finalize, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {LegendService} from '../legend/legend.service';
 import {Observable, of, throwError} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
@@ -14,13 +13,13 @@ import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 import {catchErrorAndHandleStore} from '../../../../common/store.util';
 import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
 import {Router} from '@angular/router';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
 
   constructor(private store: ProductStore,
               private sceneStore: SceneStore,
-              private CONFIG: S4eConfig,
               private http: HttpClient,
               private legendService: LegendService,
               private query: ProductQuery,
@@ -31,7 +30,7 @@ export class ProductService {
   get() {
     this.sceneStore.setLoading(true);
     this.store.setLoading(true);
-    this.http.get<Product[]>(`${this.CONFIG.apiPrefixV1}/products`)
+    this.http.get<Product[]>(`${environment.apiPrefixV1}/products`)
       .pipe(catchErrorAndHandleStore(this.store))
       .subscribe(data => this.store.set(data));
   }
@@ -71,9 +70,9 @@ export class ProductService {
     (
       isFavourite
         ? this.http
-          .put(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, {}, HANDLE_ALL_ERRORS)
+          .put(`${environment.apiPrefixV1}/products/${ID}/favourite`, {}, HANDLE_ALL_ERRORS)
         : this.http
-          .delete(`${this.CONFIG.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
+          .delete(`${environment.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
     )
       .pipe(
         catchErrorAndHandleStore(this.store),
@@ -90,8 +89,8 @@ export class ProductService {
       return;
     }
     this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`, {
-      params: {tz: this.CONFIG.timezone, yearMonth: dateF}
+    this.http.get<string[]>(`${environment.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`, {
+      params: {tz: environment.timezone, yearMonth: dateF}
     })
       .subscribe(data => this.updateAvailableDays(data));
   }
@@ -106,8 +105,8 @@ export class ProductService {
 
     const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
 
-    this.http.get<string[]>(`${this.CONFIG.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
-      {params: {timeZone: this.CONFIG.timezone, yearMonth: dateF}})
+    this.http.get<string[]>(`${environment.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
+      {params: {timeZone: environment.timezone, yearMonth: dateF}})
       .pipe(
         finalize(() => this.store.setLoading(false)),
         catchError(error => {
@@ -160,7 +159,7 @@ export class ProductService {
 
   private getSingle$(product: Product): Observable<any> {
     if (product.legend === undefined) {
-      return this.http.get<Product>(`${this.CONFIG.apiPrefixV1}/products/${product.id}`)
+      return this.http.get<Product>(`${environment.apiPrefixV1}/products/${product.id}`)
         .pipe(tap(pt => this.store.upsert(product.id, pt)));
     } else {
       return of(null);

@@ -1,10 +1,10 @@
 import {OverlayQuery} from './overlay.query';
 import {OverlayStore} from './overlay.store';
 import {async, TestBed} from '@angular/core/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
 
 describe('OverlayQuery', () => {
   let query: OverlayQuery;
@@ -12,8 +12,8 @@ describe('OverlayQuery', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      providers: [TestingConfigProvider],
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [RemoteConfigurationTestingProvider]
     });
 
     query = TestBed.get(OverlayQuery);

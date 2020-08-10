@@ -1,6 +1,5 @@
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {S4eConfig} from '../../../../utils/initializer/config.service';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ParentInstitutionModalComponent} from './parent-institution-modal.component';
 import {ManageInstitutionsModule} from '../manage-institutions.module';
@@ -25,7 +24,6 @@ describe('ParentInstitutionModalComponent', () => {
         RouterTestingModule
       ],
       providers: [
-        S4eConfig,
         {
           provide: MODAL_DEF, useValue: createModal({
             id: PARENT_INSTITUTION_MODAL_ID,

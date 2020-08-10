@@ -6,7 +6,6 @@ import { PersonQuery } from './../state/person.query';
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {PersonListComponent} from './person-list.component';
 import {SettingsModule} from '../../settings.module';
 import { DebugElement } from '@angular/core';
@@ -25,9 +24,6 @@ describe('PeopleComponent', () => {
         SettingsModule,
         RouterTestingModule,
         HttpClientTestingModule
-      ],
-      providers: [
-        TestingConfigProvider
       ]
     })
       .compileComponents();
