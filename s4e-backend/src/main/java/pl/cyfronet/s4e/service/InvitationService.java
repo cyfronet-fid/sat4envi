@@ -74,6 +74,14 @@ public class InvitationService {
         return invitationRepository.findAllByInstitutionSlug(institutionSlug, projection);
     }
 
+    public <T> Optional<T> findByIdAndInstitutionSlug(Long id, String institutionSlug, Class<T> projection) {
+        return invitationRepository.findByIdAndInstitutionSlug(id, institutionSlug, projection);
+    }
+
+    public <T> Optional<T> findByEmailAndInstitutionSlug(String email, String institutionSlug, Class<T> projection) {
+        return invitationRepository.findByEmailAndInstitutionSlug(email, institutionSlug, projection);
+    }
+
     public <T> Optional<T> findInstitutionBy(String token, Class<T> projection) throws NotFoundException {
         val invitation = invitationRepository.findByToken(token, Invitation.class)
                 .orElseThrow(() -> constructNFE("token: " + token));

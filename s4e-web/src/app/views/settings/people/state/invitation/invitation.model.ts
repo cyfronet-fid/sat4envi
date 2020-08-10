@@ -1,10 +1,15 @@
 import { Person } from './../person/person.model';
 
+export interface InvitationResendRequest {
+  oldEmail: string;
+  newEmail: string;
+}
+
 type stateType = 'waiting' | `rejected`;
 export interface Invitation {
+  id: string;
   email: string;
   status: stateType;
-  token: string;
 }
 
 const invitationName = 'Invitation';
@@ -12,7 +17,7 @@ export function isInvitation(item: any) {
   return item.roles.length === 0
     && item.name === invitationName
     && !!item.surname
-    && !!item.token;
+    && !!item.id;
 }
 
 export function invitationToPerson(invitation: Invitation): Person {
@@ -21,6 +26,6 @@ export function invitationToPerson(invitation: Invitation): Person {
     name: invitationName,
     surname: `(${invitation.status})`,
     roles: [],
-    token: invitation.token
+    id: invitation.id
   } as any as Person;
 }

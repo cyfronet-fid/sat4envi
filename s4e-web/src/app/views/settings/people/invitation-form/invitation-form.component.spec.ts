@@ -85,14 +85,13 @@ describe('InvitationFormComponent', () => {
 
     const email = 'test@mail.pl';
     const status = 'waiting';
-    const token = 'test';
-    component.invitation = {email, status, token} as any;
+    component.invitation = {email, status} as any;
 
     fixture.detectChanges();
     component.form.patchValue({email});
 
     spyOn(invitationService, 'resend').and.callThrough();
     component.send();
-    expect(invitationService.resend).toHaveBeenCalledWith(component.invitation, component.institution);
+    expect(invitationService.resend).toHaveBeenCalledWith({newEmail: email, oldEmail: email}, component.institution);
   });
 });

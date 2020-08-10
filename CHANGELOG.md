@@ -19,6 +19,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix resending invitations and refactor endpoints to not operate on tokens [#660](https://github.com/cyfronet-fid/sat4envi/issues/660)
 - Fix circular dependencies while dependency injection [#648](https://github.com/cyfronet-fid/sat4envi/issues/648)
 - Super admin security issues [#551](https://github.com/cyfronet-fid/sat4envi/issues/551)
 

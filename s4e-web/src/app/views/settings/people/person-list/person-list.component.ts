@@ -98,7 +98,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   resendTo(invitation: any) {
-    this._invitationService.resend(invitation, this.institution);
+    this._invitationService
+      .resend({oldEmail: invitation.email, newEmail: invitation.email}, this.institution);
   }
 
   isInvitation(person: Person) {

@@ -9,6 +9,7 @@ import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface InvitationRepository extends CrudRepository<Invitation, Long> {
+    <T> Optional<T> findByIdAndInstitutionSlug(Long id, String institutionSlug, Class<T> projection);
     <T> Optional<T> findByEmailAndInstitutionSlug(String email, String institutionSlug, Class<T> projection);
     <T> Optional<T> findByToken(String token, Class<T> projection);
     <T> Optional<T> findById(Long id, Class<T> projection);
