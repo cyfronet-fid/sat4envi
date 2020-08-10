@@ -6,7 +6,6 @@ import {InstitutionService} from './institution.service';
 import {InstitutionStore} from './institution.store';
 import {RouterTestingModule} from '@angular/router/testing';
 import {of} from 'rxjs';
-import {httpGetRequest$} from 'src/app/common/store.util';
 import {HttpClient} from '@angular/common/http';
 import environment from 'src/environments/environment';
 
@@ -41,14 +40,12 @@ describe('InstitutionService', () => {
 
   it('should find institution', () => {
     const institution = InstitutionFactory.build();
-    const spyHttpGetRequest = jasmine.createSpy('httpGetRequest$').and.returnValue(of(institution));
-    const spyHttp = spyOn(http, 'get');
+    const spyHttp = spyOn(http, 'get').and.returnValue(of(institution));
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}`;
 
     institutionService.findBy(institution.slug)
       .subscribe(loadedInstitution => {
         expect(loadedInstitution).toEqual(institution);
-        expect(spyHttpGetRequest).toBeCalled();
         expect(spyHttp).toBeCalledWith(url);
       });
   });

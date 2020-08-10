@@ -44,32 +44,38 @@ describe('ConfigurationService', () => {
 
     it('should call http, pass data and return true if ok', async () => {
       spyOn(notifications, 'addGeneral').and.stub();
-      const r = service.shareConfiguration(body).toPromise();
+      service.shareConfiguration(body).subscribe((value) => expect(value).toBeTruthy());
       const req = http.expectOne({method: 'POST', url: `${environment.apiPrefixV1}/share-link`});
       req.flush({});
 
       expect(req.request.body).toEqual(body);
-      expect(await r).toBeTruthy();
-      expect(await query.selectLoading().pipe(take(1)).toPromise()).toBeFalsy();
-      expect(notifications.addGeneral).toHaveBeenCalledWith({'content': 'Link został wysłany na adres a@a', 'type': 'success'});
+
+      const notification = {content: 'Link został wysłany na adres a@a', type: 'success'};
+      expect(notifications.addGeneral).toHaveBeenCalledWith(notification);
     });
 
     it('should return set store error and return false if http errored', async () => {
-      const loadings = query.selectLoading().pipe(take(3), toArray()).toPromise();
-      const r = service.shareConfiguration(body).pipe(catchError(error => of(error))).toPromise();
-
+      const error = service.shareConfiguration(body).pipe(catchError(error => of(error))).toPromise();
       const url = `${environment.apiPrefixV1}/share-link`;
       const req = http.expectOne({method: 'POST', url});
       req.flush({}, {status: 500, statusText: 'server error'});
 
       expect(req.request.body).toEqual(body);
-      expect((await r).status).toEqual(500);
-      expect(await loadings).toEqual([false, true, false]);
+      expect((await error).status).toEqual(500);
     });
 
-    it('should set loading', async () => {
-      const r = service.shareConfiguration(body);
-      expect((await query.selectLoading().pipe(take(1)).toPromise())).toBeTruthy();
+    it('should set loading', (done) => {
+      query.selectLoading()
+        .pipe(take(3), toArray())
+        .subscribe(data => {
+          expect(data).toEqual([false, true, false]);
+          done();
+        });
+      service.shareConfiguration(body).subscribe();
+
+      const url = `${environment.apiPrefixV1}/share-link`;
+      const r = http.expectOne(url);
+      r.flush({content: []});
     });
   });
 });

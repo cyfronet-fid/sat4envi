@@ -1,20 +1,18 @@
-import { REJECTION_QUERY_PARAMETER } from './../../views/settings/people/state/invitation.service';
-import {SessionQuery} from './session.query';
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {ERROR_INTERCEPTOR_SKIP_HEADER} from '../../utils/error-interceptor/error.helper';
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
 import {SessionStore} from './session.store';
-import {catchError, shareReplay, switchMap, tap, filter} from 'rxjs/operators';
+import { catchError, shareReplay, switchMap, tap, filter, finalize } from 'rxjs/operators';
 import {action} from '@datorama/akita';
 import {LoginFormState, Session} from './session.model';
 import {HTTP_401_UNAUTHORIZED, HTTP_404_BAD_REQUEST} from '../../errors/errors.model';
-import {httpPostRequest$} from '../../common/store.util';
 import {Observable, of} from 'rxjs';
 import {NotificationService} from 'notifications';
-import { Router, ParamMap, ActivatedRoute } from '@angular/router';
-import { InvitationService, TOKEN_QUERY_PARAMETER } from 'src/app/views/settings/people/state/invitation.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import environment from 'src/environments/environment';
 import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { InvitationService, TOKEN_QUERY_PARAMETER } from 'src/app/views/settings/people/state/invitation/invitation.service';
 
 export const BACK_LINK_QUERY_PARAM = 'back_link';
 
@@ -56,18 +54,23 @@ export class SessionService {
 
   resetPassword(oldPassword: string, newPassword: string) {
     const url = `${environment.apiPrefixV1}/password-change`;
-    return httpPostRequest$(this._http, url, {oldPassword, newPassword}, this._store)
-      .pipe(tap(() => this._notificationService.addGeneral({
-        type: 'success',
-        content: 'Hasło zostało zmienione'
-      })));
+    return this._http.post(url, {oldPassword, newPassword})
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this._notificationService.addGeneral({
+          type: 'success',
+          content: 'Hasło zostało zmienione'
+        }))
+      );
+;
   }
 
   @action('login')
   login(request: LoginFormState, activatedRoute: ActivatedRoute) {
     const url = `${environment.apiPrefixV1}/login`;
-    return httpPostRequest$(this._http, url, request, this._store)
+    const post$ = this._http.post<LoginFormState>(url, request)
       .pipe(
+        handleHttpRequest$(this._store),
         switchMap(data => this.getProfile$()),
         tap(() => this._store.update({email: request.email})),
         tap(() => this._navigateToApplication()),
@@ -78,7 +81,7 @@ export class SessionService {
           }
 
           const token = params.get(TOKEN_QUERY_PARAMETER);
-          this._invitationService.accept(token);
+          this._invitationService.confirm(token);
         })
       )
       .subscribe();

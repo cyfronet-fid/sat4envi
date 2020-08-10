@@ -1,3 +1,4 @@
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import { environment } from './../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -9,8 +10,7 @@ import {
   SentinelSearchResultResponse,
 } from './sentinel-search.model';
 import {SentinelSearchQuery} from './sentinel-search.query';
-import {delay, finalize, map, shareReplay} from 'rxjs/operators';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
+import { delay, finalize, map, shareReplay, tap } from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {HashMap} from '@datorama/akita';
@@ -50,29 +50,26 @@ export class SentinelSearchService {
 
   search(params: HashMap<string>) {
     this.store.set([]);
-    this.store.setLoading(true);
-    const r = this.http.get<SentinelSearchResultResponse[]>(
-      `${environment.apiPrefixV1}/search`, {params}
-    ).pipe(
-      delay(250),
-      catchErrorAndHandleStore(this.store),
-      map(data => data.map(product => createSentinelSearchResult(product))),
-      finalize(() => this.store.setLoading(false)),
-      shareReplay(1)
-    );
-
-    r.subscribe(
-      data => {
-        this.store.set(data);
-        this.store.setLoaded(true);
-      },
-      error => this.notificationService.addGeneral({
-        type: 'error',
-        content: 'Wystąpił błąd podczas wyszukiwaniania'
-      })
-    );
-
-    return r;
+    const url = `${environment.apiPrefixV1}/search`;
+    const get$ = this.http.get<SentinelSearchResultResponse[]>(url, {params})
+      .pipe(
+        handleHttpRequest$(this.store),
+        delay(250),
+        map(data => data.map(product => createSentinelSearchResult(product))),
+        shareReplay(1)
+      );
+      get$
+      .subscribe(
+        (data) => {
+          this.store.set(data);
+          this.store.setLoaded(true);
+        },
+        error => this.notificationService.addGeneral({
+          type: 'error',
+          content: 'Wystąpił błąd podczas wyszukiwaniania'
+        })
+      );
+    return get$;
   }
 
   getSentinels() {
@@ -81,23 +78,22 @@ export class SentinelSearchService {
     }
 
     this.store.setMetadataLoading();
-
-    const r = this.http.get<SentinelSearchMetadata>(`${environment.apiPrefixV1}/config/sentinel-search`)
+    const url = `${environment.apiPrefixV1}/config/sentinel-search`;
+    const get$ = this.http.get<SentinelSearchMetadata>(url)
       .pipe(
-        catchErrorAndHandleStore(this.store),
-        finalize(() => this.store.setMetadataLoading(false)),
-        shareReplay(1)
+        handleHttpRequest$(this.store),
+        tap(() => this.store.setMetadataLoading(false)),
+        tap(data => this.store.update({metadata: data, metadataLoaded: true}))
       );
-
-    r.subscribe(
-      data => this.store.update({metadata: data, metadataLoaded: true}),
+      get$.subscribe(
+      () => {},
       error => this.notificationService.addGeneral({
         type: 'error',
         content: 'Wystąpił błąd podczas pobierania metadanych'
       })
     );
 
-    return r;
+    return get$;
   }
 
   setLoaded(loaded: boolean) {

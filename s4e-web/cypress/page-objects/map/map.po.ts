@@ -83,6 +83,7 @@ export namespace Map {
     PageObject.getYearBtn(year).should("be.visible").click();
     PageObject.getMonthBtn(month).should("be.visible").click();
     PageObject.getDayBtn(day).should("be.visible").click();
+    cy.wait(500);
     PageObject.getHourBtn(hour).should("be.visible").click();
     return Map;
   }

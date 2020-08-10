@@ -1,12 +1,12 @@
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ViewConfigurationStore} from './view-configuration.store';
 import {ViewConfiguration} from './view-configuration.model';
-import {finalize, map, shareReplay} from 'rxjs/operators';
+import { finalize, map, shareReplay, tap } from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {IPageableResponse} from '../../../../state/pagable.model';
 import {ViewConfigurationQuery} from './view-configuration.query';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
 import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
@@ -18,40 +18,37 @@ export class ViewConfigurationService {
   }
 
   add$(viewConfiguration: ViewConfiguration): Observable<boolean> {
-    this.store.setError(null);
-    this.store.setLoading(true);
-
-    const r = this.http.post<ViewConfiguration>(`${environment.apiPrefixV1}/saved-views`, viewConfiguration)
+    const url = `${environment.apiPrefixV1}/saved-views`;
+    const post$ = this.http.post<ViewConfiguration>(url, viewConfiguration)
       .pipe(
-        map(r => true),
-        catchErrorAndHandleStore(this.store),
-        finalize(() => this.store.setLoading(false)),
-        shareReplay(1)
+        handleHttpRequest$(this.store),
+        map(r => true)
       );
-    r.subscribe();
-    return r;
+    post$.subscribe();
+    return post$;
   }
 
   delete(uuid: string) {
-    this.store.setError(null);
-    this.store.setLoading(true);
-    this.http.delete(`${environment.apiPrefixV1}/saved-views/${uuid}`, {
-      headers: {'Content-Type': 'application/json'}
-    }).pipe(
-      catchErrorAndHandleStore(this.store),
-      finalize(() => this.store.setLoading(false))
-    )
-      .subscribe(() => this.store.remove(uuid));
+    const url = `${environment.apiPrefixV1}/saved-views/${uuid}`;
+    const headers = {'Content-Type': 'application/json'};
+    this.http.delete(url, {headers})
+      .pipe(
+        handleHttpRequest$(this.store),
+        tap(() => this.store.remove(uuid))
+      )
+      .subscribe();
   }
 
   get() {
     this.store.setError(null);
     this.store.setLoading(true);
-    this.http.get<IPageableResponse<ViewConfiguration>>(`${environment.apiPrefixV1}/saved-views`, {
-      headers: {'Content-Type': 'application/json'}
-    }).pipe(
-      finalize(() => this.store.setLoading(false)),
-      catchErrorAndHandleStore(this.store),
-    ).subscribe(data => this.store.set(data.content));
+    const url = `${environment.apiPrefixV1}/saved-views`;
+    const headers = {'Content-Type': 'application/json'};
+    this.http.get<IPageableResponse<ViewConfiguration>>(url, {headers})
+      .pipe(
+        handleHttpRequest$(this.store),
+        map(data => data.content)
+      )
+      .subscribe((data) => this.store.set(data));
   }
 }

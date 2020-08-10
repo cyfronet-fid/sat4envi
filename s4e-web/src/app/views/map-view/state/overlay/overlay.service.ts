@@ -1,3 +1,4 @@
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import {Injectable} from '@angular/core';
 import {OverlayStore} from './overlay.store';
@@ -5,7 +6,6 @@ import {OverlayResponse, OverlayType, Overlay} from './overlay.model';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
-import {catchErrorAndHandleStore, httpGetRequest$} from '../../../../common/store.util';
 import environment from 'src/environments/environment';
 
 /**
@@ -22,9 +22,12 @@ export class OverlayService {
 
   get() {
     const url = `${environment.apiPrefixV1}/overlays/prg/`;
-    httpGetRequest$<OverlayResponse[]>(this._http, url, this._store)
-      .pipe(map(overlays => overlays.map(response => this._toOverlay(response))))
-      .subscribe(overlays => this._store.set(overlays));
+    const get$ = this._http.get<OverlayResponse[]>(url)
+      .pipe(
+        handleHttpRequest$(this._store),
+        map(overlays => overlays.map(response => this._toOverlay(response)))
+      )
+      .subscribe((data) => this._store.set(data));
   }
 
   setActive(overlayId: string | null) {

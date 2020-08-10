@@ -30,11 +30,11 @@ context('Institutions', () => {
 
   context('Institution list', () => {
     it('Should show institutions', () => {
-      InstitutionList.getEntries().should('have.length', 2);
+      InstitutionList.getEntries().should('have.length.gte', 1);
     });
 
-    it('should delete institution', () => {
-      InstitutionList.deleteEntry(1);
+    it('should delete institution', async () => {
+      await InstitutionList.deleteNth(1);
     });
 
     it('should go to Profile', () => {

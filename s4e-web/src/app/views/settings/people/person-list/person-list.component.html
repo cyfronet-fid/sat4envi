@@ -1,9 +1,16 @@
-<s4e-generic-list-view [loading]="loading$ | async"
-                       [items]="users$ | async"
-                       [error]="error$ | async"
-                       [selectable]="false">
+<s4e-generic-list-view
+  [loading]="areLoading$ | async"
+  [items]="users$ | async"
+  [error]="errors$ | async"
+  [selectable]="false"
+>
   <ng-container add-button>
-    <button class="button button--secondary button--small" (click)="openPersonForm(null)">Wyślij zaproszenie</button>
+    <button
+      class="button button--secondary button--small"
+      (click)="sendInvitation()"
+    >
+      Wyślij zaproszenie
+    </button>
   </ng-container>
   <ng-container caption i18n>Zarządzaj ludźmi</ng-container>
   <ng-container search-label i18n>Szukaj ludzi:</ng-container>
@@ -18,13 +25,18 @@
   </ng-container>
   <ng-template let-user="item">
     <td i18n>{{user.name}} {{user.surname}}</td>
-    <td>{{user.email}}</td>
+    <td i18n>{{user.email}}</td>
     <td>
-      <!-- TODO: Resend on email change -->
-      <!-- <a href="javascript:void(0)" (click)="openPersonForm(user)">
-        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
-      </a> -->
-      <a href="javascript:void(0)" (click)="deleteMember(user.email)">
+      <ng-container *ngIf="isInvitation(user)">
+        <a href="javascript:void(0)" (click)="resendTo(user)" data-ut="resend-btn">
+          <i class="fas fa-redo"></i>
+        </a>
+        <a href="javascript:void(0)" (click)="sendInvitation(user)" data-ut="edit-btn">
+          <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+        </a>
+      </ng-container>
+
+      <a href="javascript:void(0)" (click)="delete(user)" data-ut="delete-btn">
         <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
       </a>
     </td>

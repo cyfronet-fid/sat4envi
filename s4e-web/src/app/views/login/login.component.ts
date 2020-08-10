@@ -1,5 +1,4 @@
 import { NotificationService } from './../../../../projects/notifications/src/lib/state/notification.service';
-import { InvitationService, REJECTION_QUERY_PARAMETER, TOKEN_QUERY_PARAMETER } from './../settings/people/state/invitation.service';
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
@@ -11,6 +10,7 @@ import {LoginFormState} from '../../state/session/session.model';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
 import { filter, map } from 'rxjs/operators';
+import { InvitationService, TOKEN_QUERY_PARAMETER, REJECTION_QUERY_PARAMETER } from '../settings/people/state/invitation/invitation.service';
 
 @Component({
   selector: 's4e-login',
