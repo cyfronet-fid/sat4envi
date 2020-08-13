@@ -10,8 +10,10 @@ import org.locationtech.jts.io.ParseException;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import pl.cyfronet.s4e.admin.sync.PrefixScanner;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.ex.S3ClientException;
@@ -21,7 +23,6 @@ import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.properties.SeedProperties;
 import pl.cyfronet.s4e.service.GeoServerService;
 import pl.cyfronet.s4e.service.SceneStorage;
-import pl.cyfronet.s4e.sync.PrefixScanner;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
 import pl.cyfronet.s4e.util.GeometryUtil;
 import software.amazon.awssdk.services.s3.model.S3Object;
@@ -35,8 +36,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -90,6 +89,7 @@ public class SeedProducts implements ApplicationRunner {
     private final PrefixScanner prefixScanner;
     private final SceneAcceptor sceneAcceptor;
     private final SchemaScanner schemaScanner;
+    private final AsyncTaskExecutor syncJobExecutor;
 
     private final AtomicInteger sceneKeyCounter = new AtomicInteger();
 
@@ -756,9 +756,6 @@ public class SeedProducts implements ApplicationRunner {
     }
 
     private void readScenes(String prefix) {
-        // AWS SDK has a default connection pool size of 50, so 40 threads should be fine.
-        ExecutorService es = Executors.newFixedThreadPool(40);
-
         try {
             List<String> allSceneKeys = prefixScanner.scan(prefix)
                     .map(S3Object::key)
@@ -773,7 +770,7 @@ public class SeedProducts implements ApplicationRunner {
                         int i = count.addAndGet(1);
                         log.info(String.format("%d/%d. scene key: '%s'", i, sceneKeysToSync.size(), sceneKey));
                     })
-                    .map(es::submit)
+                    .map(syncJobExecutor::submit)
                     .collect(Collectors.toList());
             for (Future future : futures) {
                 future.get();
@@ -782,8 +779,6 @@ public class SeedProducts implements ApplicationRunner {
             log.error(e.getMessage(), e);
         } catch (ExecutionException e) {
             log.error(e.getMessage(), e);
-        } finally {
-            es.shutdown();
         }
     }
 
