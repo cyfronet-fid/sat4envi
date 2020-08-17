@@ -9,14 +9,15 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.2
-      - name: Cache m2
-        uses: actions/cache@v1
+          java-version: 11.0.8
+      - name: Cache backend
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-backend-${{ hashFiles('pom.xml', 's4e-backend/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-backend-
       - name: Maven package
         run: ../mvnw clean package -DskipTests
         working-directory: s4e-backend
@@ -38,14 +39,15 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.2
-      - name: Cache m2
-        uses: actions/cache@v1
+          java-version: 11.0.8
+      - name: Cache gs-gateway
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.m2/repository
+          key: ${{ runner.os }}-gs-gateway-${{ hashFiles('pom.xml', 'gs-gateway/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-gs-gateway-
       - name: Maven package
         run: ../mvnw clean package -DskipTests
         working-directory: gs-gateway
@@ -60,28 +62,17 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.2
-      - name: Cache m2
-        uses: actions/cache@v1
+          java-version: 11.0.8
+      - name: Cache web
+        uses: actions/cache@v2
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.m2/repository
+            ~/.npm
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-web-${{ hashFiles('**/pom.xml', '**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Cache npm
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      - name: Cache Cypress
-        uses: actions/cache@v1
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-cypress-
+            ${{ runner.os }}-web-
       - name: Maven package
         run: ./mvnw clean package -DskipTests -Dsha1=-${GITHUB_SHA}
       - name: Start containers
@@ -103,20 +94,20 @@ jobs:
       - name: Stop s4e-backend and s4e-web
         run: docker-compose -f docker-compose-test.yml down
       - name: E2E upload screenshots
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: e2e-results
           path: s4e-web/cypress/screenshots
       - name: E2E upload videos
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: e2e-results-videos
           path: s4e-web/cypress/videos
     # Enable after downloading files in E2E has been resolved
     #- name: E2E upload Report PDF
-    #  uses: actions/upload-artifact@v1
+    #  uses: actions/upload-artifact@v2
     #  if: success()
     #  with:
     #    name: report.pdf

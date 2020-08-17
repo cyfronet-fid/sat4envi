@@ -1,10 +1,11 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.user.GreenMailUser;
-import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.mail.util.MimeMessageParser;
@@ -12,12 +13,12 @@ import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -28,6 +29,7 @@ import pl.cyfronet.s4e.properties.MailProperties;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 
+import static com.icegreen.greenmail.configuration.GreenMailConfiguration.aConfig;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -42,6 +44,10 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @Slf4j
 public class ShareLinkControllerTest {
     private static final String IMAGE_PNG_PATH = "classpath:images/image.png";
+
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+            .withConfiguration(aConfig().withDisabledAuthentication());
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -63,8 +69,6 @@ public class ShareLinkControllerTest {
 
     private AppUser appUser;
 
-    private GreenMail greenMail;
-
     @BeforeEach
     public void beforeEach() {
         testDbHelper.clean();
@@ -77,14 +81,10 @@ public class ShareLinkControllerTest {
                 .enabled(true)
                 .memberZK(true)
                 .build());
-
-        greenMail = new GreenMailSupplier().get();
-        greenMail.start();
     }
 
     @AfterEach
     public void afterEach() {
-        greenMail.stop();
         testDbHelper.clean();
     }
 
@@ -151,7 +151,7 @@ public class ShareLinkControllerTest {
         return new MimeMessageParser(mimeMessage).parse();
     }
 
-    public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {
+    public static MailFolder getInbox(GreenMailExtension greenMail, GreenMailUser mailUser) throws FolderException {
         return greenMail.getManagers().getImapHostManager().getInbox(mailUser);
     }
 }

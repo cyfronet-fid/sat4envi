@@ -1,11 +1,13 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.PasswordReset;
@@ -33,6 +34,7 @@ import java.util.UUID;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.icegreen.greenmail.configuration.GreenMailConfiguration.aConfig;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,6 +53,10 @@ public class PasswordControllerTest {
     private static final String PROFILE_EMAIL = "get@profile.com";
     private static final String WRONG_EMAIL = "mail@email.pl";
     private static final TemporalAmount EXPIRE_IN = Duration.ofDays(1);
+
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+            .withConfiguration(aConfig().withDisabledAuthentication());
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -78,8 +84,6 @@ public class PasswordControllerTest {
 
     private AppUser securityAppUser;
 
-    private GreenMail greenMail;
-
     @BeforeEach
     public void beforeEach() {
         reset();
@@ -91,14 +95,10 @@ public class PasswordControllerTest {
                 .password(passwordEncoder.encode("password"))
                 .enabled(true)
                 .build());
-
-        greenMail = new GreenMailSupplier().get();
-        greenMail.start();
     }
 
     @AfterEach
     public void afterEach() {
-        greenMail.stop();
         reset();
     }
 
