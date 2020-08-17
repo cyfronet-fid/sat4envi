@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mkopylec.recaptcha.RecaptchaProperties;
 import com.github.mkopylec.recaptcha.validation.ErrorCode;
 import com.github.mkopylec.recaptcha.validation.RecaptchaValidator;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.store.StoredMessage;
 import com.icegreen.greenmail.user.GreenMailUser;
-import com.icegreen.greenmail.util.GreenMail;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.mail.util.MimeMessageParser;
@@ -16,6 +17,7 @@ import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -24,10 +26,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.GreenMailSupplier;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
-import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
@@ -49,6 +49,7 @@ import java.util.Set;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
+import static com.icegreen.greenmail.configuration.GreenMailConfiguration.aConfig;
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static java.util.Collections.emptyList;
 import static org.awaitility.Awaitility.await;
@@ -69,6 +70,10 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtCookieToken;
 @Slf4j
 @AutoConfigureMockMvc
 public class AppUserControllerTest {
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+            .withConfiguration(aConfig().withDisabledAuthentication());
+
     @Autowired
     private AppUserRepository appUserRepository;
 
@@ -108,8 +113,6 @@ public class AppUserControllerTest {
     @Autowired
     private MailProperties mailProperties;
 
-    private GreenMail greenMail;
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -130,9 +133,6 @@ public class AppUserControllerTest {
                 .password("{noop}password")
                 .enabled(true)
                 .build());
-
-        greenMail = new GreenMailSupplier().get();
-        greenMail.start();
 
         recaptchaProperties.getTesting().setSuccessResult(true);
         recaptchaProperties.getTesting().setResultErrorCodes(emptyList());
@@ -160,7 +160,6 @@ public class AppUserControllerTest {
 
     @AfterEach
     public void afterEach() {
-        greenMail.stop();
         reset();
     }
 
@@ -596,7 +595,7 @@ public class AppUserControllerTest {
         assertThat(groupService.getMembers(slugInstitution, "grupa-wladzy", AppUserResponse.class), hasSize(1));
     }
 
-    public static MailFolder getInbox(GreenMail greenMail, GreenMailUser mailUser) throws FolderException {
+    public static MailFolder getInbox(GreenMailExtension greenMail, GreenMailUser mailUser) throws FolderException {
         return greenMail.getManagers().getImapHostManager().getInbox(mailUser);
     }
 

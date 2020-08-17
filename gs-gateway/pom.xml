@@ -17,7 +17,7 @@
     <description>GeoServer Gateway</description>
 
     <properties>
-        <spring-cloud.version>Hoxton.SR5</spring-cloud.version>
+        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
