@@ -15,7 +15,6 @@ export interface Overlay {
   id: string;
   type: OverlayType;
   caption: string;
-  // :TODO: below fields have not been added to the API yet, they might need to be renamed later on
   url: string;
   layerName: string;
   mine: boolean;

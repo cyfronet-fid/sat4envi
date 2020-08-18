@@ -1,5 +1,5 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
-  <div class="s4e-modal-header" i18n>Wczytaj konfiguracje</div>
+  <div class="s4e-modal-header" i18n>Wczytaj konfigurację</div>
   <div class="s4e-modal-body">
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
       <div *ngIf="!(hasCustomOverlays$ | async)" class="infobox infobox--emptylayers">
@@ -46,7 +46,6 @@
               <th i18n>URL nakładki</th>
               <th i18n>Warstwa</th>
               <th i18n>Pokaż w panelu</th>
-              <!--<th i18n>Publiczna?</th>-->
               <th i18n>Data dodania</th>
               <th></th>
             </tr>
@@ -67,7 +66,6 @@
                   <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
                 </ng-template>
               </td>
-              <!--<th>Publiczna?</th>-->
               <td>{{overlay.created | S4EDate}}</td>
               <td>
                 <button *ngIf="overlay.mine" [disabled]="overlay.loadingDelete" (click)="removeOverlay(overlay.id)">
