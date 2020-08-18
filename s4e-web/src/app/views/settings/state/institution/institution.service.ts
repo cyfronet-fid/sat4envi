@@ -2,72 +2,96 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {InstitutionStore} from './institution.store';
 import {Institution} from './institution.model';
-import {filter, flatMap, map} from 'rxjs/operators';
+import { filter, flatMap, map, finalize, tap } from 'rxjs/operators';
 import {InstitutionQuery} from './institution.query';
 import {ActivatedRoute, Router} from '@angular/router';
 import {combineLatest, Observable} from 'rxjs';
 import {AkitaGuidService} from 'src/app/views/map-view/state/search-results/guid.service';
-import {httpDeleteRequest$, httpGetRequest$, httpPostRequest$, httpPutRequest$} from 'src/app/common/store.util';
 import {HashMap} from '@datorama/akita';
 import {toHashMap} from '../../../../utils/miscellaneous/miscellaneous';
 import environment from 'src/environments/environment';
+import { gt } from 'cypress/types/lodash';
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionService {
   CONFIG: any;
-  constructor(private store: InstitutionStore,
-              private query: InstitutionQuery,
-              private router: Router,
-              private http: HttpClient,
-              private guidGenerationService: AkitaGuidService) {
+  constructor(private _store: InstitutionStore,
+              private _query: InstitutionQuery,
+              private _router: Router,
+              private _http: HttpClient,
+              private _guidGenerationService: AkitaGuidService) {
   }
 
   findBy(slug: string): Observable<Institution | null> {
     const url = !!slug && slug !== '' && `${environment.apiPrefixV1}/institutions/${slug}` || null;
-    return httpGetRequest$<Institution>(this.http, url, this.store);
+    return this._http.get<Institution>(url)
+      .pipe(handleHttpRequest$(this._store));
   }
 
   get() {
-    if (this.query.getHasCache()) {
+    if (this._query.getHasCache()) {
       return;
     }
+
     const url = `${environment.apiPrefixV1}/institutions`;
-    httpGetRequest$<Institution[]>(this.http, url, this.store)
-      .subscribe(institutions => this._saveIn(this.store, institutions, this.guidGenerationService));
+    const get$ = this._http.get<Institution[]>(url)
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap((institutions) => this._saveIn(this._store, institutions, this._guidGenerationService))
+      )
+      .subscribe();
   }
 
   add(institution: Institution) {
-    this.store.add(institution);
+    this._store.add(institution);
+  }
+
+  delete(slug: string) {
+    const url = `${environment.apiPrefixV1}/institutions/${slug}`;
+    return this._http.delete(url)
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this._store.remove(slug))
+      );
   }
 
   updateInstitution$(institution: Institution) {
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}`;
-    return  httpPutRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
+    return this._http.put<Institution>(url, institution)
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this.get())
+      );
   }
 
   createInstitutionChild$(institution: Institution) {
     const url = `${environment.apiPrefixV1}/institutions/${institution.parentSlug}/child`;
-    return  httpPostRequest$(this.http, url, institution, this.store).subscribe(() => this.get());
+    return this._http.post<Institution>(url, institution)
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this.get())
+      );
   }
 
   setActive(slug: string) {
-    this.store.setActive(slug);
+    this._store.setActive(slug);
   }
 
   connectInstitutionToQuery$(route: ActivatedRoute): Observable<string> {
-    this.store.setError(null);
+    this._store.setError(null);
 
-    const cache$ = this.query.selectHasCache().pipe(filter(cache => !!cache));
+    const cache$ = this._query.selectHasCache().pipe(filter(cache => !!cache));
     const combinedActiveWithInstitutions$ = cache$
       .pipe(flatMap(() => combineLatest([
-        this._getInstitutionsFrom$(this.query),
+        this._getInstitutionsFrom$(this._query),
         this._getInstitutionSlugFrom$(route)
       ])));
     const activeInstitutionSlug$ = combinedActiveWithInstitutions$
       .pipe(
         map((params) => this._initiateActiveSlugOnEmpty(route, params)),
         filter(([institutions, activeInstitutionSlug]) => !!activeInstitutionSlug),
-        map((params) => this._setActiveInstitutionSlug(this.store, params)),
+        map((params) => this._setActiveInstitutionSlug(this._store, params)),
         filter(activeInstitutionSlug => !!activeInstitutionSlug)
       );
     this.get();
@@ -77,7 +101,7 @@ export class InstitutionService {
 
   setInstitution(route: ActivatedRoute, institutionSlug: string) {
     this.setActive(institutionSlug);
-    this.router
+    this._router
       .navigate(
         ['.'],
         {
@@ -143,7 +167,7 @@ export class InstitutionService {
       .pipe(
         filter(institutions => {
           if (institutions.length === 0) {
-            this.store.setError('no_institution');
+            this._store.setError('no_institution');
           }
 
           return institutions.length > 0;
@@ -177,10 +201,5 @@ export class InstitutionService {
     store.setActive(activeInstitutionSlug);
     store.setError(null);
     return activeInstitutionSlug;
-  }
-
-  delete(slug: string) {
-    return httpDeleteRequest$(this.http, `${environment.apiPrefixV1}/institutions/${slug}`, this.store)
-      .subscribe(() => this.store.remove(slug));
   }
 }

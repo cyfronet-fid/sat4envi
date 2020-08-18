@@ -1,6 +1,5 @@
 import { Validators } from '@angular/forms';
 import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
-import { InvitationService } from './../state/invitation.service';
 import { Institution } from './../../state/institution/institution.model';
 import { Modal } from '../../../../modal/state/modal.model';
 import { INVITATION_FORM_MODAL_ID, isInvitationFormModal, InvitationFormModal } from './invitation-form-modal.model';
@@ -19,6 +18,8 @@ import { MODAL_DEF } from 'src/app/modal/modal.providers';
 import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
 import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { InvitationForm } from './invitation-form.model';
+import { Invitation } from '../state/invitation/invitation.model';
+import { InvitationService } from '../state/invitation/invitation.service';
 
 @Component({
   templateUrl: './invitation-form.component.html',
@@ -29,6 +30,7 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
   modalId = INVITATION_FORM_MODAL_ID;
 
   institution: Institution;
+  invitation: Invitation | null;
 
   constructor(
     fm: AkitaNgFormsManager<FormState>,
@@ -45,15 +47,19 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     assertModalType(isInvitationFormModal, modal);
 
     this.institution = modal.institution;
+    this.invitation = modal.invitation;
   }
 
   makeForm(): FormGroup<InvitationForm> {
     return new FormGroup<InvitationForm>({
-      email: new FormControl<string>(null, Validators.required)
+      email: new FormControl<string>(
+        !!this.invitation ? this.invitation.email : null,
+        Validators.required
+      )
     });
   }
 
-  create() {
+  send() {
     if (!this.institution) {
       this._notificationService.addGeneral({
         content: `
@@ -71,7 +77,9 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     }
 
     const email = this.form.controls.email.value;
-    this._invitationService.create(this.institution.slug, email);
+    !!this.invitation
+      ? this._invitationService.resend(this.invitation, this.institution)
+      : this._invitationService.send(this.institution.slug, email);
     this.dismiss();
   }
 }

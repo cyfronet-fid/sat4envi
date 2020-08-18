@@ -1,3 +1,4 @@
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import { environment } from './../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
@@ -10,7 +11,6 @@ import {ProductStore} from '../product/product.store';
 import {applyTransaction} from '@datorama/akita';
 import { map, finalize } from 'rxjs/operators';
 import {Product} from '../product/product.model';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
@@ -26,12 +26,10 @@ export class SceneService {
   get(product: Product, date: string) {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
     const urlParams = {params: {date, timeZone: environment.timezone}};
-    this.store.setLoading(true);
-    this.http.get<Scene[]>(url, urlParams)
+    const get$ = this.http.get<Scene[]>(url, urlParams)
       .pipe(
-        catchErrorAndHandleStore(this.store),
-        map(scenes => scenes.map(scene => ({...scene, layerName: product.layerName}))),
-        finalize(() => this.store.setLoading(false))
+        handleHttpRequest$(this.store),
+        map(scenes => scenes.map(scene => ({...scene, layerName: product.layerName})))
       )
       .subscribe((scenes) => applyTransaction(() => this.store.set(scenes)));
   }

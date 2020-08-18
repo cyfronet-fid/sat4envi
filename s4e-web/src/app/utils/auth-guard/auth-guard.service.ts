@@ -1,11 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
 import {SessionQuery} from '../../state/session/session.query';
-import {
-  TOKEN_QUERY_PARAMETER,
-  REJECTION_QUERY_PARAMETER,
-  InvitationService
-} from 'src/app/views/settings/people/state/invitation.service';
+import { InvitationService, TOKEN_QUERY_PARAMETER } from 'src/app/views/settings/people/state/invitation/invitation.service';
 
 @Injectable({providedIn: 'root'})
 export class IsLoggedIn implements CanActivate {

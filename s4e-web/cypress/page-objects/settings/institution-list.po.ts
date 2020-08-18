@@ -1,3 +1,4 @@
+import promisify from 'cypress-promise';
 import 'cypress-file-upload';
 import {SideNav} from './side-nav.po';
 import {AddInstitutionForm} from './add-institution-form.po';
@@ -25,11 +26,17 @@ export namespace InstitutionList {
     return PageObject.getAllListEntries();
   }
 
-  export function deleteEntry(index: number) {
-    PageObject.getAllListEntries().should('have.length', 2);
-    PageObject.getNthListEntry(index).find('[data-e2e="delete"]').click();
+  export async function deleteNth(index: number) {
+    const length = await promisify(PageObject.getAllListEntries()
+      .should('have.length.gt', 0)
+      .its('length'));
+
+    PageObject.getNthListEntry(index)
+      .find('[data-e2e="delete"]')
+      .click();
     ConfirmModal.accept();
-    PageObject.getAllListEntries().should('have.length', 1);
+
+    PageObject.getAllListEntries().should('have.length', length - 1);
     return InstitutionList;
   }
 

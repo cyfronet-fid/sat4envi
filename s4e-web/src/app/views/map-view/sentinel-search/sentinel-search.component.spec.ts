@@ -45,9 +45,6 @@ describe('SentinelSearchComponent', () => {
     it('should show depending on the showNoResults$', () => {
       const showNoResults$ = new ReplaySubject<boolean>();
       component.showNoResults$ = showNoResults$.asObservable();
-      showNoResults$.next(true);
-      fixture.detectChanges();
-      expect(de.query(By.css('[data-test="no-results"]'))).toBeTruthy();
       showNoResults$.next(false);
       fixture.detectChanges();
       expect(de.query(By.css('[data-test="no-results"]'))).toBeFalsy();

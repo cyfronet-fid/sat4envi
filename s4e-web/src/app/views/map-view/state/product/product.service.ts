@@ -1,3 +1,4 @@
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
@@ -10,7 +11,6 @@ import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction} from '@datorama/akita';
 import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
-import {catchErrorAndHandleStore} from '../../../../common/store.util';
 import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
 import {Router} from '@angular/router';
 import environment from 'src/environments/environment';
@@ -18,21 +18,23 @@ import environment from 'src/environments/environment';
 @Injectable({providedIn: 'root'})
 export class ProductService {
 
-  constructor(private store: ProductStore,
-              private sceneStore: SceneStore,
-              private http: HttpClient,
-              private legendService: LegendService,
-              private query: ProductQuery,
-              private sceneService: SceneService,
-              private router: Router) {
-  }
+  constructor(
+    private store: ProductStore,
+    private sceneStore: SceneStore,
+    private http: HttpClient,
+    private legendService: LegendService,
+    private query: ProductQuery,
+    private sceneService: SceneService,
+    private router: Router
+  ) {}
 
   get() {
-    this.sceneStore.setLoading(true);
-    this.store.setLoading(true);
-    this.http.get<Product[]>(`${environment.apiPrefixV1}/products`)
-      .pipe(catchErrorAndHandleStore(this.store))
-      .subscribe(data => this.store.set(data));
+    const url = `${environment.apiPrefixV1}/products`;
+    this.http.get<Product[]>(url)
+      .pipe(
+        handleHttpRequest$(this.store)
+      )
+      .subscribe((data) => this.store.set(data));
   }
 
   setActive(productId: number | null) {
@@ -67,7 +69,7 @@ export class ProductService {
   toggleFavourite(ID: number, isFavourite: boolean) {
     this.store.ui.update(ID, {isFavouriteLoading: true});
 
-    (
+    const request$ = (
       isFavourite
         ? this.http
           .put(`${environment.apiPrefixV1}/products/${ID}/favourite`, {}, HANDLE_ALL_ERRORS)
@@ -75,12 +77,13 @@ export class ProductService {
           .delete(`${environment.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
     )
       .pipe(
-        catchErrorAndHandleStore(this.store),
-        finalize(() => this.store.ui.update(ID, {isFavouriteLoading: false}))
+        handleHttpRequest$(this.store),
+        finalize(() => {
+          this.store.ui.update(ID, {isFavouriteLoading: false});
+          this.store.update(ID, {favourite: isFavourite});
+        })
       )
-      .subscribe(() => {
-        this.store.update(ID, {favourite: isFavourite});
-      });
+      .subscribe();
   }
 
   fetchAvailableDays(dateF: string) {

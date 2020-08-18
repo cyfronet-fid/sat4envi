@@ -1,3 +1,4 @@
+import { filter } from 'rxjs/operators';
 import {Component, Inject} from '@angular/core';
 import {FormModalComponent} from '../../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../../modal/state/modal.service';
@@ -59,20 +60,21 @@ export class ShareConfigurationModalComponent extends FormModalComponent<'config
     });
   }
 
-  async submit() {
+  submit() {
     validateAllFormFields(this.form);
     if (this.form.invalid) {
       return;
     }
 
-    if (await this.configurationService.shareConfiguration({
+    const configuration = {
       caption: this.form.value.caption,
       description: this.form.value.description,
       emails: this.form.value.emails.split(',').map(s => s.trim()),
       path: this.configurationUrl,
       thumbnail: this.image.replace(/^data:image\/[a-z]+;base64,/, '')
-    }).toPromise()) {
-      this.dismiss();
-    }
+    };
+    this.configurationService.shareConfiguration(configuration)
+      .pipe(filter(value => value))
+      .subscribe(() => this.dismiss());
   }
 }

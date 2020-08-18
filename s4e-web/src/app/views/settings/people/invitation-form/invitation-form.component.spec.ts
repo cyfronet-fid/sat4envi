@@ -1,7 +1,6 @@
 import { PeopleModule } from './../people.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentFixture, TestBed, async, fakeAsync, tick } from '@angular/core/testing';
-import { InvitationService } from './../state/invitation.service';
 import { ActivatedRoute, ParamMap, convertToParamMap } from '@angular/router';
 import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
 import { InvitationFormComponent } from './invitation-form.component';
@@ -9,6 +8,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MODAL_DEF } from 'src/app/modal/modal.providers';
 import { INVITATION_FORM_MODAL_ID, InvitationFormModal } from './invitation-form-modal.model';
 import { Subject, ReplaySubject, of } from 'rxjs';
+import { InvitationService } from '../state/invitation/invitation.service';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap>;
@@ -60,11 +60,11 @@ describe('InvitationFormComponent', () => {
 
     fixture.detectChanges();
 
-    spyOn(invitationService, 'create').and.callThrough();
-    component.create();
-    expect(invitationService.create).not.toHaveBeenCalled();
+    spyOn(invitationService, 'send').and.callThrough();
+    component.send();
+    expect(invitationService.send).not.toHaveBeenCalled();
   });
-  it('should call invitation create', () => {
+  it('should call invitation send', () => {
     const name = 'test';
     const slug = 'test';
     component.institution = {name, slug} as any;
@@ -74,8 +74,25 @@ describe('InvitationFormComponent', () => {
     const email = 'test@mail.pl';
     component.form.patchValue({email});
 
-    spyOn(invitationService, 'create').and.callThrough();
-    component.create();
-    expect(invitationService.create).toHaveBeenCalledWith(slug, email);
+    spyOn(invitationService, 'send').and.callThrough();
+    component.send();
+    expect(invitationService.send).toHaveBeenCalledWith(slug, email);
+  });
+  it('should call invitation resend', () => {
+    const name = 'test';
+    const slug = 'test';
+    component.institution = {name, slug} as any;
+
+    const email = 'test@mail.pl';
+    const status = 'waiting';
+    const token = 'test';
+    component.invitation = {email, status, token} as any;
+
+    fixture.detectChanges();
+    component.form.patchValue({email});
+
+    spyOn(invitationService, 'resend').and.callThrough();
+    component.send();
+    expect(invitationService.resend).toHaveBeenCalledWith(component.invitation, component.institution);
   });
 });

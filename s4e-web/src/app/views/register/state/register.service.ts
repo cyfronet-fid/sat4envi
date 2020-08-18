@@ -1,6 +1,6 @@
 import { SessionService } from './../../../state/session/session.service';
 import { environment } from './../../../../environments/environment';
-import { httpPostRequest$ } from 'src/app/common/store.util';
+import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {RegisterStore} from './register.store';
@@ -21,8 +21,11 @@ export class RegisterService {
   register(request: Partial<RegisterFormState>, recaptcha: string) {
     const captchaQuery = `g-recaptcha-response=${recaptcha}`;
     const url = `${environment.apiPrefixV1}/register?` + captchaQuery;
-    httpPostRequest$(this._http, url, request, this._store)
-      .pipe(tap(() => this._router.navigate(['/'], { queryParamsHandling: 'merge' })))
+    this._http.post<RegisterFormState>(url, request)
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this._router.navigate(['/'], { queryParamsHandling: 'merge' }))
+      )
       .subscribe(() => {}, errorResponse => {
         const errorMessage = errorResponse.status === 400
           ? errorResponse.error
