@@ -1,11 +1,13 @@
 package pl.cyfronet.s4e.bean;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -53,5 +55,13 @@ public class AppUser extends CreationAndModificationAudited {
     public void removeRole(UserRole role) {
         roles.remove(role);
     }
+
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    @Builder.Default
+    @ToString.Exclude
+    private UserPreferences preferences = UserPreferences.builder()
+            .nonVisibleOverlays(List.of())
+            .build();
 }
 

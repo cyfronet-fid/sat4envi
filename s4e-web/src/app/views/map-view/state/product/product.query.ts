@@ -53,7 +53,7 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
         map(([products, productsUi, activeId]) => products
           .map((pt, i) => ({
             cid: pt.id,
-            caption: pt.displayName,
+            label: pt.displayName,
             active: pt.id === activeId,
             favourite: pt.favourite,
             isLoading: productsUi[i].isLoading,

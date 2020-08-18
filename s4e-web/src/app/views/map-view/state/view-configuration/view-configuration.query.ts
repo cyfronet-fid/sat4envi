@@ -40,9 +40,11 @@ export class ViewConfigurationQuery extends QueryEntity<ViewConfigurationState, 
     return {
       ...viewConfiguration,
       configurationNames: {
-        product: viewConfiguration.configuration.productId == null ? null : this.productQuery.getEntity(viewConfiguration.configuration.productId).name,
+        product: viewConfiguration.configuration.productId == null
+          ? null
+          : this.productQuery.getEntity(viewConfiguration.configuration.productId).name,
         selectedDate: viewConfiguration.configuration.date,
-        overlays: viewConfiguration.configuration.overlays.map(id => this.overlayQuery.getEntity(id).caption)
+        overlays: viewConfiguration.configuration.overlays.map(id => this.overlayQuery.getEntity(id).label)
       }
     };
   }

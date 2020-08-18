@@ -64,7 +64,7 @@ public class InvitationControllerTest {
 
     @BeforeEach
     public void beforeEach() {
-        reset();
+        testDbHelper.clean();
 
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
         Group group = groupRepository
@@ -83,7 +83,7 @@ public class InvitationControllerTest {
 
     @AfterEach
     public void afterEach() {
-        reset();
+        testDbHelper.clean();
     }
 
     @Test
@@ -263,10 +263,6 @@ public class InvitationControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(institutionAdmin, objectMapper))
         ).andExpect(status().isNotFound());
-    }
-
-    private void reset() {
-        testDbHelper.clean();
     }
 
     private void addRoles(AppUser user, Group group, AppRole[] roles) {

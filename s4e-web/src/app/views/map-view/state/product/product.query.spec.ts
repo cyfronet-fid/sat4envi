@@ -68,7 +68,7 @@ describe('ProductQuery', () => {
     const toUILayer = (product: Product, favourite: boolean = false) => {
       return {
           cid: product.id,
-          caption: product.displayName,
+          label: product.displayName,
           active: false,
           favourite: favourite,
           isLoading: false,

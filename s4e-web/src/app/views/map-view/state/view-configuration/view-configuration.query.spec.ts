@@ -54,13 +54,15 @@ describe('ViewConfigurationQuery', () => {
 
     let productSpy = jest.spyOn(productQuery, 'getEntity');
     productSpy.mockReturnValueOnce({
-      description: '', imageUrl: '', legend: undefined,
+      description: '',
+      imageUrl: '',
+      legend: undefined,
       id: 1,
       name: 'product 1 name'
     });
     let overlaySpy = jest.spyOn(overlayQuery, 'getEntity');
     overlaySpy.mockReturnValueOnce({
-      caption: 'overlay 1 caption', id: 'ov1', type: undefined
+      label: 'overlay 1 caption', id: 'ov1', type: undefined
     });
 
 
@@ -106,18 +108,18 @@ describe('ViewConfigurationQuery', () => {
     overlaySpyActive.mockReturnValueOnce(
       [
         {
-          caption: 'overlay 1 caption', id: 'ov1', type: undefined
+          label: 'overlay 1 caption', id: 'ov1', type: undefined
         },
         {
-          caption: 'overlay 3 caption', id: 'ov3', type: undefined
+          label: 'overlay 3 caption', id: 'ov3', type: undefined
         }
       ]
     );
     let overlaySpy = jest.spyOn(overlayQuery, 'getEntity');
     overlaySpy.mockReturnValueOnce({
-      caption: 'overlay 1 caption', id: 'ov1', type: undefined
+      label: 'overlay 1 caption', id: 'ov1', type: undefined
     }).mockReturnValueOnce({
-      caption: 'overlay 3 caption', id: 'ov31', type: undefined
+      label: 'overlay 3 caption', id: 'ov31', type: undefined
     });
 
     let sceneSpyActive = jest.spyOn(sceneQuery, 'getActiveId');

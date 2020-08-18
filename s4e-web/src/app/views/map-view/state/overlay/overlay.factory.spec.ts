@@ -1,13 +1,11 @@
 import * as Factory from 'factory.ts';
-import {Overlay} from './overlay.model';
+import { Overlay, GLOBAL_OWNER_TYPE } from './overlay.model';
 
 export const OverlayFactory = Factory.makeFactory<Overlay>({
   id: Factory.each(i => `overlay:${i}`),
-  caption: Factory.each(i => `Overlay #${i}`),
-  type: 'wms',
+  label: Factory.each(i => `Overlay #${i}`),
+  ownerType: GLOBAL_OWNER_TYPE,
   visible: true,
-  mine: false,
-  layerName: Factory.each(i => `Overlay Name #${i}`),
   url: 'http://localhost:8080/geoserver/wms',
-  created: null
+  createdAt: null
 });

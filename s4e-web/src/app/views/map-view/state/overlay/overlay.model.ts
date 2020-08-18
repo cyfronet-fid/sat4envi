@@ -3,36 +3,21 @@ import {Image, Layer} from 'ol/layer';
 import {IUILayer} from '../common.model';
 import {EntityState} from '@datorama/akita';
 
-export type OverlayType = 'wms'; // later |'tile'|'etc' may be added
+// Overlay
+// IUILayer -> caption to label
 
-export interface OverlayResponse {
-  id: number;
-  name: string;
-  layerName: string; // id
-}
+export const GLOBAL_OWNER_TYPE = 'GLOBAL';
+export const INSTITUTIONAL_OWNER_TYPE = 'INSTITUTIONAL';
+export const PERSONAL_OWNER_TYPE = 'PERSONAL';
+export type OwnerType = typeof GLOBAL_OWNER_TYPE | typeof PERSONAL_OWNER_TYPE | typeof INSTITUTIONAL_OWNER_TYPE;
 
 export interface Overlay {
   id: string;
-  type: OverlayType;
-  caption: string;
+  ownerType: OwnerType;
   url: string;
-  layerName: string;
-  mine: boolean;
+  label: string;
   visible: boolean;
-  created: string|null; //date string
-}
-
-/**
- * A factory function that creates Overlay
- */
-export function createOverlay(params: Partial<Overlay> & {id: string, type: OverlayType, caption: string, layerName: string}): Overlay {
-  return {
-    mine: false,
-    visible: true,
-    created: new Date().toISOString(),
-    url: '',
-    ...params
-  }
+  createdAt: string|null;
 }
 
 /**

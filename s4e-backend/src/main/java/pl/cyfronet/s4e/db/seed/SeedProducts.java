@@ -88,6 +88,7 @@ public class SeedProducts implements ApplicationRunner {
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
     private final PropertyRepository propertyRepository;
+    private final WMSOverlayRepository wmsOverlayRepository;
 
     private final GeoServerService geoServerService;
     private final GeoServerSynchronizer geoServerSynchronizer;
@@ -724,30 +725,55 @@ public class SeedProducts implements ApplicationRunner {
                 .build());
         sldStyleRepository.saveAll(sldStyles);
 
+        val wmsOverlays = List.of(new WMSOverlay[]{
+                WMSOverlay.builder()
+                        .label("wojewodztwa")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build(),
+                WMSOverlay.builder()
+                        .label("powiaty")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build(),
+                WMSOverlay.builder()
+                        .label("gminy")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build(),
+                WMSOverlay.builder()
+                        .label("jednostki_ewidencyjne")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build(),
+                WMSOverlay.builder()
+                        .label("obreby_ewidencyjne")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build()
+        });
+        val savedWmsOverlays = wmsOverlayRepository.saveAll(wmsOverlays).iterator();
+
         log.info("Seeding PRGOverlays");
         val prgOverlays = List.of(new PRGOverlay[]{
                 PRGOverlay.builder()
-                        .name("wojewodztwa")
                         .featureType("wojewodztwa")
                         .build(),
                 PRGOverlay.builder()
-                        .name("powiaty")
                         .featureType("powiaty")
                         .build(),
                 PRGOverlay.builder()
-                        .name("gminy")
                         .featureType("gminy")
                         .build(),
                 PRGOverlay.builder()
-                        .name("jednostki_ewidencyjne")
                         .featureType("jednostki_ewidencyjne")
                         .build(),
                 PRGOverlay.builder()
-                        .name("obreby_ewidencyjne")
                         .featureType("obreby_ewidencyjne")
                         .build(),
         });
         prgOverlays.forEach(overlay -> {
+            overlay.setWmsOverlay(savedWmsOverlays.next());
             overlay.setCreated(!seedProperties.isSyncGeoserver());
             overlay.setSldStyle(sldStyles.get(0));
         });

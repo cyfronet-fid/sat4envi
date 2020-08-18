@@ -1,3 +1,4 @@
+import { GLOBAL_OWNER_TYPE } from './overlay.model';
 import {OverlayQuery} from './overlay.query';
 import {OverlayStore} from './overlay.store';
 import {async, TestBed} from '@angular/core/testing';
@@ -27,7 +28,7 @@ describe('OverlayQuery', () => {
 
   describe('selectVisibleAsUIOverlays', () => {
     it('should work', (done) => {
-      store.add(OverlayFactory.build({caption: 'test', layerName: 'test', type: 'wms', id: 'test-overlay-id'}));
+      store.add(OverlayFactory.build({label: 'test', ownerType: GLOBAL_OWNER_TYPE, id: 'test-overlay-id'}));
       query.selectVisibleAsUIOverlays().subscribe(overlays => {
 
         expect(overlays.length).toEqual(1);
@@ -38,18 +39,17 @@ describe('OverlayQuery', () => {
         expect(overlays.map(o => ({...o, olLayer: undefined}))).toEqual([
           {
             id: 'test-overlay-id',
-            caption: 'test',
-            layerName: 'test',
-            type: 'wms',
+            label: 'test',
+            ownerType: GLOBAL_OWNER_TYPE,
             cid: 'test-overlay-id',
             active: false,
             favourite: false,
             isFavouriteLoading: false,
             isLoading: false,
-            mine: false,
             visible: true,
             url: 'http://localhost:8080/geoserver/wms',
-            created: null
+            createdAt: null,
+            olLayer: undefined
           }
         ]);
         done();

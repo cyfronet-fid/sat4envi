@@ -8,7 +8,7 @@
         </p>
         <button [disabled]="showOverlayForm$ | async"
                 class="button button--secondary button--small"
-                type="button" (click)="showOverlayForm(true)" i18n>Dodaj Nakładkę
+                type="button" (click)="setNewFormVisible(true)" i18n>Dodaj Nakładkę
         </button>
       </div>
 
@@ -29,7 +29,7 @@
             </table>
             <ng-container *ngIf="!(addingNewLayer$ | async); else createLoadingRef">
               <button [disabled]="addingNewLayer$ | async" (click)="addNewOverlay()" class="button button--secondary button--small">Dodaj</button>
-              <button [disabled]="addingNewLayer$ | async" (click)="showOverlayForm(false)" class="button button--cancel button--small">Anuluj</button>
+              <button [disabled]="addingNewLayer$ | async" (click)="setNewFormVisible(false)" class="button button--cancel button--small">Anuluj</button>
             </ng-container>
             <ng-template #createLoadingRef>
               <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
@@ -52,9 +52,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let overlay of (overlays$ | async);trackBy:getOverlayId;index as $index" [ngClass]="{disabled: overlay.loadingDelete}">
-              <td>{{overlay.caption}}</td>
+              <td>{{overlay.label}}</td>
               <td>{{overlay.url}}</td>
-              <td>{{overlay.layerName}}</td>
+              <td>{{overlay.label}}</td>
               <td i18n align="center">
                 <label class="fancycheckbox">
                   <input *ngIf="!overlay.loadingVisible; else loadingVisibleRef" type="checkbox"
@@ -66,9 +66,9 @@
                   <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
                 </ng-template>
               </td>
-              <td>{{overlay.created | S4EDate}}</td>
+              <td>{{overlay.createdAt | S4EDate}}</td>
               <td>
-                <button *ngIf="overlay.mine" [disabled]="overlay.loadingDelete" (click)="removeOverlay(overlay.id)">
+                <button *ngIf="isPersonal(overlay)" [disabled]="overlay.loadingDelete" (click)="removeOverlay(overlay.id)">
                   <img *ngIf="!overlay.loadingDelete; else deleteLoadingRef" src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
                   <ng-template #deleteLoadingRef>
                     <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
@@ -88,7 +88,7 @@
       <ng-container *ngIf="hasCustomOverlays$ | async">
         <button *ngIf="!(showOverlayForm$ | async)"
                 class="button button--secondary button--small"
-                type="button" (click)="showOverlayForm(true)" i18n>Dodaj Nakładkę</button>
+                type="button" (click)="setNewFormVisible(true)" i18n>Dodaj Nakładkę</button>
       </ng-container>
     </ng-container>
     <ng-template #loadingRef>

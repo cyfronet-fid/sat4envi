@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.service;
 
+import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,13 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.SldStyle;
-import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.SldStyleRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.geoserver.op.SeedProductsTest;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
@@ -40,6 +36,9 @@ public class GeoServerServiceIntegrationTest {
 
     @Autowired
     private PRGOverlayRepository prgOverlayRepository;
+
+    @Autowired
+    private WMSOverlayRepository wmsOverlayRepository;
 
     @Autowired
     private GeoServerOperations geoServerOperations;
@@ -78,10 +77,17 @@ public class GeoServerServiceIntegrationTest {
                 .build());
         geoServerService.addStyle(sldStyle);
         sldStyle.setCreated(true);
+        val wmsOverlay = wmsOverlayRepository.save(
+                WMSOverlay.builder()
+                        .label("wojewodztwa")
+                        .url("")
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .build()
+        );
         PRGOverlay prgOverlay = prgOverlayRepository.save(PRGOverlay.builder()
-                .name("wojewodztwa")
                 .featureType("wojewodztwa")
                 .sldStyle(sldStyle)
+                .wmsOverlay(wmsOverlay)
                 .build());
 
         List<PRGOverlay> prgOverlays = prgOverlayRepository.findAll();

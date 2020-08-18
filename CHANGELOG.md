@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Overlay management [#615](https://github.com/cyfronet-fid/sat4envi/issues/615)
 - Add operations on created invitations and status of them [#643](https://github.com/cyfronet-fid/sat4envi/issues/643)
 - Admin scenes synchronization endpoints [#621](https://github.com/cyfronet-fid/sat4envi/issues/621)
 - Create endpoints for existing invitations [#642](https://github.com/cyfronet-fid/sat4envi/issues/642)
