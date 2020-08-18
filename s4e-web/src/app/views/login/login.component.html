@@ -25,7 +25,7 @@
     <div class="content__formContainer">
       <form (ngSubmit)="login()" [formGroup]="form" autocomplete="off">
         <h2 class="content__header" i18n>Logowanie</h2>
-        <div class="alert alert-danger special__error" *ngIf="error$ | async">
+        <div *ngIf="error$ | async" class="alert alert-danger special__error">
           <ng-container [ngSwitch]="(error$ | async).status">
             <ng-container *ngSwitchCase="401">Niepoprawny login / hasło</ng-container>
             <ng-container *ngSwitchDefault>Nieoczekiwany błąd</ng-container>
@@ -33,13 +33,14 @@
           <br>
         </div>
 
-        <div class="alert alert-danger special__error" *ngIf="form.errors">
-          <ul>
-            <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
-              <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
-            </li>
-          </ul>
-        </div>
+<!-- this part of the form is always visible, also it only handles unhandled errors, someone could elaborate about this? -->
+<!--        <div class="alert alert-danger special__error" *ngIf="!(form.errors | isEmpty)">-->
+<!--          <ul>-->
+<!--            <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">-->
+<!--              <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>-->
+<!--            </li>-->
+<!--          </ul>-->
+<!--        </div>-->
 
         <ul class="form__list">
           <li class="form__element">

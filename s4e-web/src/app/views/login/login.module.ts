@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {LoginComponent} from './login.component';
 import {ShareModule} from '../../common/share.module';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
@@ -17,4 +17,5 @@ import {FormErrorModule} from '../../components/form-error/form-error.module';
     LoginComponent
   ]
 })
-export class LoginModule { }
+export class LoginModule {
+}

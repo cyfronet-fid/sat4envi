@@ -1,10 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { OverlayListModalComponent } from './overlay-list-modal.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {OverlayListModalComponent} from './overlay-list-modal.component';
 import {MapModule} from '../../map.module';
-import {TestingConfigProvider} from '../../../../app.configuration.spec';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {RemoteConfigurationTestingProvider} from '../../../../app.configuration.spec';
 
 describe('OverlayListModalComponent', () => {
   let component: OverlayListModalComponent;
@@ -12,10 +11,10 @@ describe('OverlayListModalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ MapModule, HttpClientTestingModule, RouterTestingModule ],
-      providers: [TestingConfigProvider]
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+      providers: [RemoteConfigurationTestingProvider]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
