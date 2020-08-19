@@ -4,6 +4,7 @@ import com.github.slugify.Slugify;
 import lombok.val;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.InvitationRequest;
+import pl.cyfronet.s4e.controller.request.InvitationResendInvitation;
 
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,6 +39,7 @@ public class InvitationHelper {
         val name = String.format(profileName, COUNT.getAndIncrement());
         val profileEmail = String.format(email, COUNT.getAndIncrement());
         return AppUser.builder()
+                .id((long) COUNT.getAndIncrement())
                 .email(profileEmail)
                 .name(name)
                 .surname(name)
@@ -60,6 +62,14 @@ public class InvitationHelper {
                 .builder()
                 .email(invitationEmail);
 
+    }
+
+    public static InvitationResendInvitation.InvitationResendInvitationBuilder invitationResendInvitationBuilder(String oldEmail) {
+        val newEmail = String.format(email, COUNT.getAndIncrement());
+        return InvitationResendInvitation
+                .builder()
+                .oldEmail(oldEmail)
+                .newEmail(newEmail);
     }
 
     private static String nextUnique(String format) {

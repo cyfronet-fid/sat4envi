@@ -42,9 +42,9 @@ describe('InvitationService', () => {
 
     const newInvitation = InvitationFactory.build();
     const institution = InstitutionFactory.build();
-    service.resend(invitation, institution);
+    service.resend({oldEmail: invitation.email, newEmail: newInvitation.email}, institution);
 
-    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.token}`;
+    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations`;
     const method = 'PUT';
     const req = http.expectOne({method, url});
     req.flush(newInvitation);
@@ -60,7 +60,7 @@ describe('InvitationService', () => {
     const institution = InstitutionFactory.build();
     service.delete(invitation, institution);
 
-    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.token}`;
+    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.id}`;
     const method = 'DELETE';
     const req = http.expectOne({method, url});
     req.flush({});

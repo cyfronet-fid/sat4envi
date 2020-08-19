@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { tap, finalize } from 'rxjs/operators';
-import { Invitation } from './invitation.model';
+import { Invitation, InvitationResendRequest } from './invitation.model';
 import { handleHttpRequest$ } from 'src/app/common/store.util';
 
 export const TOKEN_QUERY_PARAMETER = 'token';
@@ -31,15 +31,16 @@ export class InvitationService {
       .subscribe((data) => this._store.set(data));
   }
 
-  public resend(invitation: Invitation, institution: Institution) {
-    this._store.remove(invitation.email);
-
+  public resend(request: InvitationResendRequest, institution: Institution) {
     const notificationMessage = 'Zaproszenie zostało ponownie wysłane';
-    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.token}`;
-    this._http.put<Invitation>(url, {email: invitation.email} as any)
+    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations`;
+    this._http.put<Invitation>(url, request)
       .pipe(
         handleHttpRequest$(this._store),
-        tap((newInvitation) => this._store.add(newInvitation)),
+        tap((newInvitation) => {
+          this._store.remove(request.oldEmail);
+          this._store.add(newInvitation);
+        }),
         finalize(() => this._notificationService.addGeneral({
           content: notificationMessage,
           type: 'success'
@@ -50,7 +51,7 @@ export class InvitationService {
 
   public delete(invitation: Invitation, institution: Institution) {
     const notificationMessage = 'Zaproszenie zostało usunięte';
-    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.token}`;
+    const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations/${invitation.id}`;
     this._http.delete(url)
       .pipe(
         handleHttpRequest$(this._store),

@@ -160,11 +160,11 @@ public class InvitationControllerTest {
 
     @Test
     public void resendShouldBeSecured() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
         val invitation = invitationRepository
                 .save(InvitationHelper.invitationBuilder(institution).build());
-        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{token}";
-        mockMvc.perform(put(URL, institution.getSlug(), invitation.getToken())
+        val request = InvitationHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
+        mockMvc.perform(put(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(member, objectMapper))
                 .content(objectMapper.writeValueAsBytes(request))
@@ -172,27 +172,12 @@ public class InvitationControllerTest {
     }
 
     @Test
-    public void resendShouldThrowBadRequestOnDifferentUrlInstitutionAndInvitationInstitution() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
-        val newInstitution = institutionRepository
-                .save(InvitationHelper.institutionBuilder().build());
-        val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(newInstitution).build());
-        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{token}";
-        mockMvc.perform(put(URL, institution.getSlug(), invitation.getToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(institutionAdmin, objectMapper))
-                .content(objectMapper.writeValueAsBytes(request))
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
     public void shouldResend() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
         val invitation = invitationRepository
                 .save(InvitationHelper.invitationBuilder(institution).build());
-        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{token}";
-        mockMvc.perform(put(URL, institution.getSlug(), invitation.getToken())
+        val request = InvitationHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
+        mockMvc.perform(put(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(institutionAdmin, objectMapper))
                 .content(objectMapper.writeValueAsBytes(request))
@@ -202,7 +187,7 @@ public class InvitationControllerTest {
                 .findByToken(invitation.getToken(), Invitation.class);
         val dbInvitation = invitationRepository
                 .findByEmailAndInstitutionSlug(
-                        request.getEmail(),
+                        request.getNewEmail(),
                         institution.getSlug(),
                         Invitation.class
                 );
@@ -257,27 +242,27 @@ public class InvitationControllerTest {
     }
 
     @Test
-    public void deleteShouldThrowBadRequestOnDifferentUrlInstitutionAndInvitationInstitution() throws Exception {
+    public void deleteShouldBeSecured() throws Exception {
+        val invitation = invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        val URL = API_PREFIX_V1 + "/institution/{institution}/invitation/{id}";
+        mockMvc.perform(delete(URL, institution.getSlug(), invitation.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(member, objectMapper))
+        ).andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteShouldThrowNotFoundExceptionOnDifferentUrlInstitutionAndInvitationInstitution() throws Exception {
         val newInstitution = institutionRepository
                 .save(InvitationHelper.institutionBuilder().build());
         val invitation = invitationRepository
                 .save(InvitationHelper.invitationBuilder(newInstitution).build());
-        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{token}";
-        mockMvc.perform(delete(URL, institution.getSlug(), invitation.getToken())
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{id}";
+        mockMvc.perform(delete(URL, institution.getSlug(), invitation.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(institutionAdmin, objectMapper))
-        ).andExpect(status().isBadRequest());
-    }
-
-    @Test
-    public void deleteShouldBeSecured() throws Exception {
-        val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
-        val URL = API_PREFIX_V1 + "/institution/{institution}/invitation/{token}";
-        mockMvc.perform(delete(URL, institution.getSlug(), invitation.getToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .with(jwtBearerToken(member, objectMapper))
-        ).andExpect(status().isForbidden());
+        ).andExpect(status().isNotFound());
     }
 
     private void reset() {
