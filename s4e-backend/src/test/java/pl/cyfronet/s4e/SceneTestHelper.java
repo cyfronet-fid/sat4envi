@@ -74,8 +74,8 @@ public class SceneTestHelper {
                 "   \"processing_level\": \"" + number%10 + "LC\",\n" +
                 "   \"cloud_cover\": " + number + ",\n" +
                 "   \"polarisation\": \"Dual VV/VH\",\n" +
-                "   \"sensing_time\": \"2019-11-0" + number%10 + "T05:07:42.047432+00:00\",\n" +
-                "   \"ingestion_time\": \"2019-11-0" + number%10 + "T05:34:27.000000+00:00\",\n" +
+                "   \"sensing_time\": \"2019-11-0" + (number%9 + 1) + "T05:07:42.047432+00:00\",\n" +
+                "   \"ingestion_time\": \"2019-11-0" + (number%9 + 1) + "T05:34:27.000000+00:00\",\n" +
                 "   \"relative_orbit_number\": \"" + number + "\",\n" +
                 "   \"absolute_orbit_number\": \"0" + number + "\",\n" +
                 "   \"polygon\": \"55.975475,19.579060 56.395580,15.414984 57.887905,15.835841 57.462494,20.167494\",\n" +
