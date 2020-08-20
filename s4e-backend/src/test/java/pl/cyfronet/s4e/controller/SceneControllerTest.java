@@ -112,9 +112,7 @@ public class SceneControllerTest {
     @Test
     public void shouldReturnZuluZonedTimestampByDefault() throws Exception {
         val product = productRepository.save(productBuilder().build());
-        sceneRepository.save(sceneBuilder(product)
-                .timestamp(LocalDateTime.of(2019, 10, 11, 12, 13))
-                .build());
+        sceneRepository.save(sceneBuilder(product, LocalDateTime.of(2019, 10, 11, 12, 13)).build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-10-11"))
@@ -127,9 +125,7 @@ public class SceneControllerTest {
     public void shouldReturnZonedTimestamp() throws Exception {
         val product = productRepository.save(productBuilder().build());
 
-        sceneRepository.save(sceneBuilder(product)
-                .timestamp(LocalDateTime.of(2019, 12, 1, 23, 0))
-                .build());
+        sceneRepository.save(sceneBuilder(product, LocalDateTime.of(2019, 12, 1, 23, 0)).build());
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
@@ -215,8 +211,6 @@ public class SceneControllerTest {
     @Test
     public void shouldReturnAvailabilityDatesWithTimezone() throws Exception {
         val product = productRepository.save(productBuilder().build());
-
-        val defaultBuilder = sceneBuilder(product);
 
         /*
         We create data for the days marked with * and we will extract availability for October.

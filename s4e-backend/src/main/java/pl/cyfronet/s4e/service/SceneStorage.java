@@ -1,11 +1,10 @@
 package pl.cyfronet.s4e.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.properties.S3Properties;
+import pl.cyfronet.s4e.util.SceneArtifactsHelper;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -15,28 +14,20 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 import java.net.URL;
 import java.time.Duration;
 
-import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
-
 @Service
 public class SceneStorage extends Storage {
     private final S3Properties s3Properties;
     private final S3Presigner s3Presigner;
-    private final SceneRepository sceneRepository;
-
-    interface SceneProjection {
-        String getS3Path();
-
-        JsonNode getSceneContent();
-    }
+    private final SceneArtifactsHelper sceneArtifactsHelper;
 
     public SceneStorage(S3Client s3Client,
                         S3Properties s3Properties,
                         S3Presigner s3Presigner,
-                        SceneRepository sceneRepository) {
+                        SceneArtifactsHelper sceneArtifactsHelper) {
         super(s3Client);
         this.s3Properties = s3Properties;
         this.s3Presigner = s3Presigner;
-        this.sceneRepository = sceneRepository;
+        this.sceneArtifactsHelper = sceneArtifactsHelper;
     }
 
     public String get(String key) throws NotFoundException, S3ClientException {
@@ -52,11 +43,10 @@ public class SceneStorage extends Storage {
     }
 
     public URL generatePresignedGetLinkWithFileType(Long id, Duration signatureDuration, String type) throws NotFoundException {
-        SceneProjection sceneProjection = sceneRepository.findById(id, SceneProjection.class)
-                .orElseThrow(() -> new NotFoundException("Scene with id '" + id + "' not found"));
+        String key = sceneArtifactsHelper.getArtifact(id, type);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(s3Properties.getBucket())
-                .key(getKey(sceneProjection, type))
+                .key(key)
                 .build();
 
         PresignedGetObjectRequest presignedGetObjectRequest =
@@ -70,13 +60,6 @@ public class SceneStorage extends Storage {
         }
 
         return presignedGetObjectRequest.url();
-    }
-
-    public String getKey(SceneProjection sceneProjection, String type) {
-        if (type != null) {
-            return sceneProjection.getSceneContent().get(SCENE_SCHEMA_ARTIFACTS_KEY).get(type).asText().substring(1);
-        }
-        return sceneProjection.getS3Path();
     }
 
     public Duration getPresignedGetTimeout() {

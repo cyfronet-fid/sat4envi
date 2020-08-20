@@ -5,16 +5,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.properties.S3Properties;
+import pl.cyfronet.s4e.util.SceneArtifactsHelper;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,27 +25,26 @@ import static org.mockito.Mockito.when;
 public class SceneStorageTest {
     @Mock
     private S3Properties s3Properties;
+
     @Mock
     private S3Presigner s3Presigner;
+
     @Mock
-    private SceneRepository sceneRepository;
+    private SceneArtifactsHelper sceneArtifactsHelper;
 
     @InjectMocks
     private SceneStorage sceneStorage;
 
     @Test
-    public void shouldThrowNotFoundExceptionIfSceneNotFound() {
-        when(sceneRepository.findById(42L, SceneStorage.SceneProjection.class)).thenReturn(Optional.empty());
+    public void shouldThrowNotFoundExceptionIfSceneNotFound() throws NotFoundException {
+        when(sceneArtifactsHelper.getArtifact(42L, null)).thenThrow(NotFoundException.class);
 
         assertThrows(NotFoundException.class, () -> sceneStorage.generatePresignedGetLink(42L, Duration.ZERO));
     }
 
     @Test
-    public void shouldThrowAnIllegalStateExceptionIfThePresignedRequestNotBrowserExecutable() {
-        SceneStorage.SceneProjection scene = mock(SceneStorage.SceneProjection.class);
-        when(scene.getS3Path()).thenReturn("some/path");
-        when(sceneRepository.findById(42L, SceneStorage.SceneProjection.class))
-                .thenReturn(Optional.of(scene));
+    public void shouldThrowAnIllegalStateExceptionIfThePresignedRequestNotBrowserExecutable() throws NotFoundException {
+        when(sceneArtifactsHelper.getArtifact(42L, null)).thenReturn("some/path");
 
         PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
         when(pgor.isBrowserExecutable()).thenReturn(false);
@@ -57,10 +55,7 @@ public class SceneStorageTest {
 
     @Test
     public void shouldReturnURL() throws NotFoundException {
-        SceneStorage.SceneProjection scene = mock(SceneStorage.SceneProjection.class);
-        when(scene.getS3Path()).thenReturn("some/path");
-        when(sceneRepository.findById(42L, SceneStorage.SceneProjection.class))
-                .thenReturn(Optional.of(scene));
+        when(sceneArtifactsHelper.getArtifact(42L, null)).thenReturn("some/path");
 
         PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
         when(pgor.isBrowserExecutable()).thenReturn(true);

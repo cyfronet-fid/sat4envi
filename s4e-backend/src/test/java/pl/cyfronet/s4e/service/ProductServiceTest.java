@@ -27,10 +27,9 @@ import pl.cyfronet.s4e.ex.product.ProductException;
 import pl.cyfronet.s4e.ex.product.ProductValidationException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
@@ -53,8 +52,6 @@ public class ProductServiceTest {
         SchemaProjection getSceneSchema();
         SchemaProjection getMetadataSchema();
     }
-
-    private static final String SCHEMA_PATH_PREFIX = "classpath:schema/";
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -88,6 +85,7 @@ public class ProductServiceTest {
                 .displayName("108m")
                 .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                 .layerName("108m")
+                .granuleArtifactRule(Map.of("default", "default_artifact"))
                 .build());
     }
 
@@ -553,7 +551,7 @@ public class ProductServiceTest {
             @Test
             public void shouldReturnTrueWhenFavourited() {
                 Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
-                product.setFavourites(new HashSet<>(Arrays.asList(appUser)));
+                product.setFavourites(Set.of(appUser));
                 productRepository.save(product);
 
                 assertThat(productService.isFavourite(product108m.getId()), is(true));

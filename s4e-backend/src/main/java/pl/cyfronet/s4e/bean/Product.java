@@ -8,6 +8,7 @@ import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.List;
@@ -78,6 +79,7 @@ public class Product extends CreationAndModificationAudited {
      * When format is <code>foobar</code>, then a default granule path key <code>foo</code> will be taken.
      */
     @Type(type = "jsonb")
+    @NotNull
     @ToString.Exclude
     private Map<String, String> granuleArtifactRule;
 

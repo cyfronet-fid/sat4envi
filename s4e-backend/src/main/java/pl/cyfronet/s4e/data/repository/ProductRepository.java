@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    <T> List<T> findAllBy(Class<T> projection);
+    <T> List<T> findAllByOrderByIdAsc(Class<T> projection);
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})

@@ -41,6 +41,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Improve DB normalization [#623](https://github.com/cyfronet-fid/sat4envi/issues/623)
 - Improve scene time filtering performance [#610](https://github.com/cyfronet-fid/sat4envi/issues/610)
 
 ## [v9.1.0]

@@ -16,10 +16,7 @@ import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -80,12 +77,14 @@ public class ProductControllerTest {
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .layerName("108m")
+                        .granuleArtifactRule(Map.of())
                         .build(),
                 Product.builder()
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .layerName("setvak")
+                        .granuleArtifactRule(Map.of())
                         .build(),
                 Product.builder()
                         .name("WV_IR")
@@ -93,6 +92,7 @@ public class ProductControllerTest {
                         .description("Opis produktu WV-IR.")
                         .layerName("wv_ir")
                         .legend(legend)
+                        .granuleArtifactRule(Map.of())
                         .build()));
 
         productId = repository.findByNameContainingIgnoreCase("108m").get().getId();
@@ -134,7 +134,7 @@ public class ProductControllerTest {
     @Test
     public void shouldReturnProductWithoutInfoForAuthorizedUserWithFavourite() throws Exception {
         Product product = repository.findByNameContainingIgnoreCase("108m").get();
-        product.setFavourites(new HashSet<>(Arrays.asList(appUser)));
+        product.setFavourites(Set.of(appUser));
         repository.save(product);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products")

@@ -37,9 +37,8 @@ public class DbTimestampTest {
         // A datetime, which if Polish timezone is used gets shifted one hour forward
         // on writing to DB.
         LocalDateTime dstBorderTimestamp = LocalDateTime.of(2019, 3, 31, 2, 0);
-        val scene = sceneRepository.save(sceneBuilder(product)
-                .timestamp(dstBorderTimestamp)
-                .build());
+
+        val scene = sceneRepository.save(sceneBuilder(product, dstBorderTimestamp).build());
 
         val sceneId = sceneRepository.save(scene).getId();
 

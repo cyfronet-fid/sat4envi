@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.db.seed;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -30,6 +32,8 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +56,10 @@ public class SeedProducts implements ApplicationRunner {
     private static final DateTimeFormatter YEAR_PATTERN = DateTimeFormatter.ofPattern("yyyy");
     private static final DateTimeFormatter TIME_PATTERN = DateTimeFormatter.ofPattern("HHmm");
     private static final String SCENE_KEY_PATTERN = "path/to/%dth.scene";
+
+    private static final DateTimeFormatter METADATA_SENSING_TIME_PATTERN = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private static final Map<String, String> DEFAULT_GRANULE_ARTIFACT_RULE = Map.of("GeoTiff", "default_artifact");
+    public static final String SCENE_GRANULE_PATH_PREFIX_PROPERTY = "scene_granule_path_prefix";
 
     @Builder
     @Value
@@ -79,6 +87,7 @@ public class SeedProducts implements ApplicationRunner {
     private final SceneRepository sceneRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PRGOverlayRepository prgOverlayRepository;
+    private final PropertyRepository propertyRepository;
 
     private final GeoServerService geoServerService;
     private final GeoServerSynchronizer geoServerSynchronizer;
@@ -90,6 +99,8 @@ public class SeedProducts implements ApplicationRunner {
     private final SceneAcceptor sceneAcceptor;
     private final SchemaScanner schemaScanner;
     private final AsyncTaskExecutor syncJobExecutor;
+
+    private final ObjectMapper objectMapper;
 
     private final AtomicInteger sceneKeyCounter = new AtomicInteger();
 
@@ -107,6 +118,7 @@ public class SeedProducts implements ApplicationRunner {
             sldStyleRepository.deleteAll();
             schemaRepository.deleteAll();
 
+            setGranulePathPrefixProperty();
             seedScenes();
             seedOverlays();
         }
@@ -121,6 +133,14 @@ public class SeedProducts implements ApplicationRunner {
         }
 
         log.info("Seeding complete");
+    }
+
+    public void setGranulePathPrefixProperty() {
+        Property property = propertyRepository.findByName(SCENE_GRANULE_PATH_PREFIX_PROPERTY)
+                .orElseGet(() -> Property.builder().name(SCENE_GRANULE_PATH_PREFIX_PROPERTY).build());
+        String value = geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/";
+        property.setValue(value);
+        propertyRepository.save(property);
     }
 
     private void seedScenes() {
@@ -150,18 +170,21 @@ public class SeedProducts implements ApplicationRunner {
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .layerName("108m")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .layerName("setvak")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("WV_IR")
                         .displayName("WV-IR")
                         .description("Opis produktu WV-IR.")
                         .layerName("wv_ir")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
         });
         productRepository.saveAll(products);
@@ -220,30 +243,35 @@ public class SeedProducts implements ApplicationRunner {
                         .displayName("Zachmurzenie (108m)")
                         .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
                         .layerName("108m")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("NatCol")
                         .displayName("Detekcja chmur lodowych i śniegu")
                         .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
                         .layerName("natcol")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("Polsafi")
                         .displayName("Burze")
                         .description("Obraz satelitarny HRV z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
                         .layerName("polsafi")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("RGB24_micro")
                         .displayName("Mikrofizyka chmur")
                         .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
                         .layerName("rgb24_micro")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("Setvak_Eu")
                         .displayName("Chmury konwekcyjne")
                         .description("Obraz satelitarny IR z dedykowaną paletą barwną")
                         .layerName("setvak_eu")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
         });
         productRepository.saveAll(products);
@@ -300,6 +328,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Intensywność opadu")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia  intensywność opadu w mm/h.")
                             .layerName("h03")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -314,6 +343,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Suma opadu (3h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
                             .layerName("h05_03")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -329,6 +359,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Suma opadu (6h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
                             .layerName("h05_06")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -344,6 +375,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Suma opadu (12h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
                             .layerName("h05_12")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -359,6 +391,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Suma opadu (24h)")
                             .description("Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.")
                             .layerName("h05_24")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 2, 0, 0))
@@ -374,6 +407,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)")
                             .description("Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).")
                             .layerName("ost")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
@@ -388,6 +422,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Polsafi, wyładowania atmosferyczne")
                             .description("Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)")
                             .layerName("polsafi")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 9, 1, 0, 0))
@@ -402,6 +437,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Wilgotność gleby - SM1")
                             .description("Procentowy wskaźnik wilgotności gleby - SM1")
                             .layerName("sm1")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -417,6 +453,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Wilgotność gleby - SM2")
                             .description("Procentowy wskaźnik wilgotności gleby - SM2")
                             .layerName("sm2")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 1, 2, 0, 0))
@@ -432,6 +469,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Pył w atmosferze")
                             .description("Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.")
                             .layerName("dust")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2020, 1, 1, 0, 0))
@@ -446,6 +484,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Detekcja chmur lodowych i śniegu")
                             .description("Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)")
                             .layerName("natcol")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 06, 1, 0, 0))
@@ -460,6 +499,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Zachmurzenie (108m)")
                             .description("Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)")
                             .layerName("108m")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 10, 1, 0, 0))
@@ -474,6 +514,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Mikrofizyka chmur")
                             .description("Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia")
                             .layerName("rgb24_micro")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 8, 1, 0, 0))
@@ -488,6 +529,7 @@ public class SeedProducts implements ApplicationRunner {
                             .displayName("Chmury konwekcyjne")
                             .description("Obraz satelitarny IR z dedykowaną paletą barwną")
                             .layerName("setvak_eu")
+                            .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                             .build())
                     .params(ProductParams.builder()
                             .startInclusive(LocalDateTime.of(2019, 7, 1, 0, 0))
@@ -716,22 +758,30 @@ public class SeedProducts implements ApplicationRunner {
         val count = Duration.between(params.startInclusive, params.endExclusive).dividedBy(params.increment);
         log.info("Seeding scenes of product '" + product.getName() + "', " + count + " total (from " + params.startInclusive + " to " + params.endExclusive + ")");
         for (long i = 0; i < count; i++) {
-            val timestamp = params.startInclusive.plus(params.increment.multipliedBy(i));
+            ZonedDateTime startInclusive = params.startInclusive.atZone(ZoneId.of("UTC"));
+            val timestamp = startInclusive.plus(params.increment.multipliedBy(i));
             Function<String, String> replacer = (str) -> str
                     .replace("{timestamp}", DATE_TIME_PATTERN.format(timestamp))
                     .replace("{date}", DATE_PATTERN.format(timestamp))
                     .replace("{year}", YEAR_PATTERN.format(timestamp))
                     .replace("{time}", TIME_PATTERN.format(timestamp));
             val s3Path = replacer.apply(params.s3PathFormat);
-            val granulePath = geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/" + s3Path;
+
+            ObjectNode sceneContent = objectMapper.createObjectNode();
+            {
+                ObjectNode artifacts = sceneContent.putObject("artifacts");
+                artifacts.put("default_artifact", "/" + s3Path);
+            }
+            ObjectNode metadataContent = objectMapper.createObjectNode();
+            metadataContent.put("format", "GeoTiff");
+            metadataContent.put("sensing_time", METADATA_SENSING_TIME_PATTERN.format(timestamp));
 
             val scene = Scene.builder()
                     .product(product)
                     .sceneKey(nextUniqueSceneKey())
-                    .timestamp(timestamp)
-                    .s3Path(s3Path)
-                    .granulePath(granulePath)
                     .footprint(params.getFootprint())
+                    .sceneContent(sceneContent)
+                    .metadataContent(metadataContent)
                     .build();
 
             try {

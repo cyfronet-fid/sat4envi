@@ -1,10 +1,10 @@
 package pl.cyfronet.s4e.sync;
 
-import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestGeometryHelper;
 import pl.cyfronet.s4e.bean.Product;
@@ -13,14 +13,12 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
-import javax.json.JsonValue;
-import java.time.LocalDateTime;
+import javax.json.Json;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static pl.cyfronet.s4e.SceneTestHelper.sceneBuilder;
 
 @BasicTest
 class ScenePersisterTest {
@@ -35,8 +33,6 @@ class ScenePersisterTest {
 
     @Autowired
     private TestDbHelper testDbHelper;
-
-    private Faker faker = new Faker();
 
     @BeforeEach
     public void beforeEach() {
@@ -75,9 +71,7 @@ class ScenePersisterTest {
         assertThat(persistedId, is(equalTo(scene.getId())));
         assertThat(listProductScenes(product.getId()), hasItems(allOf(
                 hasProperty("id", equalTo(persistedId)),
-                hasProperty("sceneKey", equalTo(sceneKey)),
-                hasProperty("s3Path", equalTo(prototype.getS3Path())),
-                hasProperty("granulePath", equalTo("mailto://s4e-test-1/" + prototype.getS3Path()))
+                hasProperty("sceneKey", equalTo(sceneKey))
         )));
     }
 
@@ -105,17 +99,11 @@ class ScenePersisterTest {
     }
 
     private Product createProduct() {
-        String displayName = faker.numerify(faker.space().constellation() + " ##");
-        String name = displayName.replace(" ", "_");
-        return productRepository.save(Product.builder()
-                .name(name)
-                .displayName(displayName)
-                .layerName(name.toLowerCase())
-                .build());
+        return productRepository.save(SceneTestHelper.productBuilder().build());
     }
 
     private Scene createScene(Product product, String sceneKey) {
-        return sceneRepository.save(sceneBuilder(product)
+        return sceneRepository.save(SceneTestHelper.sceneBuilder(product)
                 .sceneKey(sceneKey)
                 .build());
     }
@@ -123,12 +111,17 @@ class ScenePersisterTest {
     private Prototype getPrototype(Long productId, String sceneKey) {
         return Prototype.builder()
                 .sceneKey(sceneKey)
-                .s3Path("path/to/granule.tif")
                 .productId(productId)
-                .timestamp(LocalDateTime.now())
                 .footprint(TestGeometryHelper.ANY_POLYGON)
-                .sceneJson(JsonValue.EMPTY_JSON_OBJECT)
-                .metadataJson(JsonValue.EMPTY_JSON_OBJECT)
+                .sceneJson(Json.createObjectBuilder()
+                        .add("artifacts", Json.createObjectBuilder()
+                                .add("default_artifact", "some/value.tif")
+                                .build())
+                        .build())
+                .metadataJson(Json.createObjectBuilder()
+                        .add("format", "GeoTiff")
+                        .add("sensing_time", "2020-01-01T00:00:00Z")
+                        .build())
                 .build();
     }
 

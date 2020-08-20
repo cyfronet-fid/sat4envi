@@ -3,6 +3,8 @@ package pl.cyfronet.s4e.bean;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.locationtech.jts.geom.Geometry;
@@ -43,16 +45,8 @@ public class Scene extends CreationAndModificationAudited {
     @NotEmpty
     private String sceneKey;
 
-    @NotNull
+    @Generated(GenerationTime.ALWAYS)
     private LocalDateTime timestamp;
-
-    /// E.g. "path/to/granule.tiff", excluding endpoint and bucket information
-    @NotEmpty
-    private String s3Path;
-
-    /// E.g. "mailto://s4e-sth/path/to/granule.tiff". Including endpoint and bucket information.
-    @NotEmpty
-    private String granulePath;
 
     @NotNull
     private Geometry footprint;
@@ -63,10 +57,12 @@ public class Scene extends CreationAndModificationAudited {
     private Legend legend;
 
     @Type(type = "jsonb")
+    @NotNull
     @ToString.Exclude
     private JsonNode sceneContent;
 
     @Type(type = "jsonb")
+    @NotNull
     @ToString.Exclude
     private JsonNode metadataContent;
 }
