@@ -31,8 +31,6 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @BasicTest
 @AutoConfigureMockMvc
 public class AdminProductControllerTest {
-    private static final String SCHEMA_PATH_PREFIX = "classpath:schema/";
-
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -402,7 +400,7 @@ public class AdminProductControllerTest {
                     .layerName("product_01")
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
-                    .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .granuleArtifactRule(Map.of("default", "default_artifact"))
                     .build());
         }
 

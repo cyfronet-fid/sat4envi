@@ -2,12 +2,16 @@ package pl.cyfronet.s4e;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -15,6 +19,15 @@ public class SceneTestHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
     private static final String SCENE_KEY_PATTERN = "path/to/%dth.scene";
     private static final String PRODUCT_NAME_PATTERN = "Great %d Product";
+
+    private static final DateTimeFormatter METADATA_SENSING_TIME_PATTERN = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private static final Map<String, String> DEFAULT_GRANULE_ARTIFACT_RULE = Map.of(
+            "default", "quicklook",
+            "GeoTiff", "default_artifact"
+    );
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ZoneId BASE_ZONE = ZoneId.of("UTC");
 
     public static String nextUnique(String format) {
         return String.format(format, COUNT.getAndIncrement());
@@ -27,24 +40,29 @@ public class SceneTestHelper {
                 .name(name)
                 .displayName(displayName)
                 .description("sth")
-                .layerName(name.toLowerCase());
+                .layerName(name.toLowerCase())
+                .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE);
     }
 
     @SneakyThrows
     public static Scene.SceneBuilder sceneBuilder(Product product) {
-        JsonNode sceneContent = new ObjectMapper().readTree("{\"key\":\"value\"}");
-        JsonNode metadataContent = new ObjectMapper().readTree("{\"key\":\"value\"}");
+        return sceneBuilder(product, LocalDateTime.now());
+    }
+
+    @SneakyThrows
+    public static Scene.SceneBuilder sceneBuilder(Product product, LocalDateTime timestamp) {
+        ObjectNode metadataContent = OBJECT_MAPPER.createObjectNode();
+        metadataContent.put("format", "GeoTiff");
+        metadataContent.put("sensing_time", METADATA_SENSING_TIME_PATTERN.format(timestamp.atZone(BASE_ZONE)));
+
         return Scene.builder()
                 .product(product)
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
-                .timestamp(LocalDateTime.now())
-                .s3Path("some/path")
-                .granulePath("mailto://s4e-test-1/some/path")
                 .footprint(TestGeometryHelper.ANY_POLYGON)
                 .legend(Legend.builder()
                         .type("some_type")
                         .build())
-                .sceneContent(sceneContent)
+                .sceneContent(getDefaultSceneContent())
                 .metadataContent(metadataContent);
     }
 
@@ -52,14 +70,22 @@ public class SceneTestHelper {
         return Scene.builder()
                 .product(product)
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
-                .timestamp(LocalDateTime.now())
-                .s3Path("some/path")
-                .granulePath("mailto://s4e-test-1/some/path")
+                .sceneContent(getDefaultSceneContent())
                 .metadataContent(jsonNode)
                 .footprint(TestGeometryHelper.ANY_POLYGON)
                 .legend(Legend.builder()
                         .type("some_type")
                         .build());
+    }
+
+    private static ObjectNode getDefaultSceneContent() {
+        ObjectNode sceneContent = OBJECT_MAPPER.createObjectNode();
+        {
+            ObjectNode artifacts = sceneContent.putObject("artifacts");
+            artifacts.put("default_artifact", "/some/path");
+            artifacts.put("other_artifact", "/some/other/path");
+        }
+        return sceneContent;
     }
 
     public static String getMetaDataWithNumber(long number) {
@@ -98,6 +124,6 @@ public class SceneTestHelper {
     }
 
     public static Function<LocalDateTime, Scene> toScene(Product product) {
-        return timestamp -> sceneBuilder(product).timestamp(timestamp).build();
+        return timestamp -> sceneBuilder(product, timestamp).build();
     }
 }

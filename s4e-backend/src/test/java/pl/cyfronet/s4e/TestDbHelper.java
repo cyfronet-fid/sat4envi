@@ -15,6 +15,7 @@ public class TestDbHelper {
     private final WMSOverlayRepository wmsOverlayRepository;
     private final PRGOverlayRepository prgOverlayRepository;
     private final SldStyleRepository sldStyleRepository;
+    private final PropertyRepository propertyRepository;
 
     public void clean() {
         institutionRepository.deleteAll();
@@ -25,5 +26,6 @@ public class TestDbHelper {
         wmsOverlayRepository.deleteAll();
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
+        propertyRepository.deleteAll();
     }
 }

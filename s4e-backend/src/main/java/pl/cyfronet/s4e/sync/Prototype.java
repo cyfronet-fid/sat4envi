@@ -5,7 +5,6 @@ import lombok.Value;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.json.JsonObject;
-import java.time.LocalDateTime;
 
 @Builder
 @Value
@@ -14,7 +13,5 @@ public class Prototype {
     String sceneKey;
     JsonObject sceneJson;
     JsonObject metadataJson;
-    LocalDateTime timestamp;
-    String s3Path;
     Geometry footprint;
 }

@@ -72,7 +72,7 @@ public class PipelineFactory {
                 LoadProduct.<Context>builder()
                         .productRepository(() -> productRepository)
                         .json(c -> c.getScene().getJson())
-                        .update((c, product) -> c.setProduct(product))
+                        .update(Context::setProduct)
                         .build(),
                 // Check product sceneSchema matches scene file schema.
                 VerifySchemasMatch.<Context>builder()
@@ -144,34 +144,12 @@ public class PipelineFactory {
         errorContext(pipeline, c -> Map.of(
                 "file_type", "metadata",
                 "file_key", c.getMetadata().getKey(),
-                "parsing_phase", "timestamp")
-        );
-        append(pipeline, IngestTimestamp.<Context>builder()
-                .metadataJson(c -> c.getMetadata().getJson())
-                .update((c, timestamp) -> c.getPrototype().timestamp(timestamp))
-                .build());
-
-        errorContext(pipeline, c -> Map.of(
-                "file_type", "metadata",
-                "file_key", c.getMetadata().getKey(),
                 "parsing_phase", "footprint")
         );
         append(pipeline, IngestFootprint.<Context>builder()
                 .geometryUtil(() -> geometryUtil)
                 .metadataJson(c -> c.getMetadata().getJson())
                 .update((c, footprint) -> c.getPrototype().footprint(footprint))
-                .build());
-
-        errorContext(pipeline, c -> Map.of(
-                "file_type", "metadata",
-                "file_key", c.getMetadata().getKey(),
-                "parsing_phase", "s3path")
-        );
-        append(pipeline, IngestS3Path.<Context>builder()
-                .metadataJson(c -> c.getMetadata().getJson())
-                .artifacts(c -> c.getScene().getArtifacts())
-                .product(c -> c.getProduct())
-                .update((c, s3Path) -> c.getPrototype().s3Path(s3Path))
                 .build());
     }
 

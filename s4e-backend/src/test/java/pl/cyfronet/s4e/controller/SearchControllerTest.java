@@ -51,7 +51,9 @@ public class SearchControllerTest {
     public void setUp() throws Exception {
         testDbHelper.clean();
         //add product
-        product = productRepository.save(productBuilder().build());
+        product = productRepository.save(productBuilder()
+                .granuleArtifactRule(Map.of("default", "quicklook"))
+                .build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 30; j++) {
@@ -76,9 +78,6 @@ public class SearchControllerTest {
 
     @Test
     public void shouldGetSceneBySearchEndpoint() throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put("timeZone", "UTC");
-
         // default limit is 20
         int limit = 20;
         mockMvc.perform(get(API_PREFIX_V1 + "/search")
@@ -120,24 +119,6 @@ public class SearchControllerTest {
                 Arguments.of(INGESTION_FROM, "2019-11-08", "Zły format daty: `2019-11-08`"),
                 Arguments.of(INGESTION_FROM, "Hakuna matata", "Zły format daty: `Hakuna matata`")
         );
-    }
-
-    @Test
-    public void shouldGetSceneBySearchEndpointWithNoSceneContent() throws Exception {
-        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(30));
-        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
-                .build();
-        sceneRepository.save(scene);
-        Map<String, Object> params = new HashMap<>();
-        params.put("timeZone", "UTC");
-
-        // default limit is 20
-        int limit = 40;
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC")
-                .param("limit", String.valueOf(limit)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(31))));
     }
 
     @Test

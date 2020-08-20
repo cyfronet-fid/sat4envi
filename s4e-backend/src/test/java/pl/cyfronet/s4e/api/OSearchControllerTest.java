@@ -89,8 +89,6 @@ public class OSearchControllerTest {
         return scene;
     }
 
-
-
     @Test
     public void shouldReturnScenesDhus() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")

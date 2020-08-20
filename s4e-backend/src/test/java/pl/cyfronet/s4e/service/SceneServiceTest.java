@@ -61,7 +61,7 @@ public class SceneServiceTest {
                     LocalDateTime.of(2019, 10, 11, 1, 0),
                     LocalDateTime.of(2019, 10, 12, 0, 0)
             )
-                    .map(timestamp -> sceneBuilder(product).timestamp(timestamp).build())
+                    .map(timestamp -> sceneBuilder(product, timestamp).build())
                     .collect(Collectors.toList());
             sceneRepository.saveAll(scenes);
 

@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.geoserver.op;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -8,14 +10,12 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.util.GeometryUtil;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -39,20 +39,21 @@ public class SeedProductsTest {
     private static final DateTimeFormatter YEAR_PATTERN = DateTimeFormatter.ofPattern("yyyy");
     private static final DateTimeFormatter TIME_PATTERN = DateTimeFormatter.ofPattern("HHmm");
 
+    private static final DateTimeFormatter METADATA_SENSING_TIME_PATTERN = DateTimeFormatter.ISO_DATE_TIME;
+    private static final Map<String, String> DEFAULT_GRANULE_ARTIFACT_RULE = Map.of("GeoTiff", "default_artifact");
+
     @Autowired
     private SceneRepository sceneRepository;
     @Autowired
     private S3Properties s3Properties;
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
     private S3Client s3Client;
-    @Autowired
-    private GeoServerProperties geoServerProperties;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
     private GeometryUtil geom;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Builder
     @Value
@@ -77,16 +78,17 @@ public class SeedProductsTest {
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .layerName("108m")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
                 Product.builder()
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .layerName("setvak")
+                        .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build()
         });
         productRepository.saveAll(products);
-        createViews(products);
 
         LocalDateTime startInclusive = LocalDateTime.of(2018, 10, 4, 0, 0);
         LocalDateTime endExclusive = startInclusive.plusDays(1);
@@ -130,15 +132,22 @@ public class SeedProductsTest {
                     .replace("{year}", YEAR_PATTERN.format(timestamp))
                     .replace("{time}", TIME_PATTERN.format(timestamp));
             val s3Path = replacer.apply(params.s3PathFormat);
-            val granulePath = geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/" + s3Path;
+
+            ObjectNode sceneContent = objectMapper.createObjectNode();
+            {
+                ObjectNode artifacts = sceneContent.putObject("artifacts");
+                artifacts.put("default_artifact", "/" + s3Path);
+            }
+            ObjectNode metadataContent = objectMapper.createObjectNode();
+            metadataContent.put("format", "GeoTiff");
+            metadataContent.put("sensing_time", METADATA_SENSING_TIME_PATTERN.format(timestamp));
 
             val scene = Scene.builder()
                     .product(product)
                     .sceneKey(SceneTestHelper.nextUnique("path/to/%dth.scene"))
-                    .timestamp(timestamp)
-                    .s3Path(s3Path)
-                    .granulePath(granulePath)
                     .footprint(params.getFootprint())
+                    .sceneContent(sceneContent)
+                    .metadataContent(metadataContent)
                     .build();
 
             if (objectExists(s3Path)) {
@@ -150,18 +159,6 @@ public class SeedProductsTest {
             if ((i + 1) % 100 == 0) {
                 log.info((i + 1) + "/" + count + " scenes of product '" + product.getName() + "' processed");
             }
-        }
-    }
-
-    private void createViews(List<Product> products) {
-        for (val product : products) {
-            String id = product.getId().toString();
-            String name = product.getLayerName();
-            jdbcTemplate.execute("DROP VIEW IF EXISTS scene_" + name);
-            jdbcTemplate.execute("CREATE VIEW scene_" + name + " AS " +
-                    "SELECT  s.id, s.footprint, s.timestamp, s.granule_path " +
-                    "FROM scene s " +
-                    "WHERE s.product_id = " + id);
         }
     }
 

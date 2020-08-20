@@ -16,8 +16,6 @@ public interface AdminSceneProjection {
     ProductProjection getProduct();
     String getSceneKey();
     LocalDateTime getTimestamp();
-    String getS3Path();
-    String getGranulePath();
     Geometry getFootprint();
     Legend getLegend();
     JsonNode getSceneContent();

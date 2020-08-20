@@ -1,6 +1,5 @@
 package pl.cyfronet.s4e.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,8 +17,7 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
 
 @BasicTest
@@ -32,9 +30,6 @@ public class SceneFileStorageServiceTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     private TestDbHelper testDbHelper;
 
     @Autowired
@@ -43,12 +38,11 @@ public class SceneFileStorageServiceTest {
     private Scene scene;
 
     @BeforeEach
-    public void beforeEach() throws Exception {
+    public void beforeEach() {
         testDbHelper.clean();
         Product product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
         scene = buildScene(product);
-        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
         sceneRepository.save(scene);
     }
 
@@ -65,6 +59,6 @@ public class SceneFileStorageServiceTest {
     public void shouldReturnSceneArtifacts() throws NotFoundException {
         Map<String, String> result = sceneFileStorageService.getSceneArtifacts(scene.getId());
 
-        assertThat(result.size(), is(equalTo(7)));
+        assertThat(result, aMapWithSize(2));
     }
 }

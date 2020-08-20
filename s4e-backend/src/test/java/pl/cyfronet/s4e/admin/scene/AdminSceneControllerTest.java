@@ -11,7 +11,6 @@ import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -61,9 +60,7 @@ public class AdminSceneControllerTest {
     private TestResourceHelper testResourceHelper;
 
     private AppUser admin;
-    private AppUser user;
 
-    private Map<String, Schema> schemas;
     private Map<String, Product> products;
     private Map<String, List<Scene>> productScenes;
     private long maxSceneId;
@@ -81,18 +78,9 @@ public class AdminSceneControllerTest {
                 .admin(true)
                 .build());
 
-        user = appUserRepository.save(AppUser.builder()
-                .email("user@mail.pl")
-                .name("John")
-                .surname("Smith")
-                .password("{noop}password")
-                .enabled(true)
-                .build());
-
-        schemas = SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
+        SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
                 .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
-                .map(schemaRepository::save)
-                .collect(Collectors.toMap(Schema::getName, schema -> schema));
+                .forEach(schemaRepository::save);
 
         products = IntStream.range(0, 2)
                 .mapToObj(i -> SceneTestHelper.productBuilder()
@@ -136,8 +124,6 @@ public class AdminSceneControllerTest {
                     .andExpect(jsonPath("$.product.name", is(equalTo(product.getName()))))
                     .andExpect(jsonPath("$.sceneKey").isString())
                     .andExpect(jsonPath("$.timestamp", is(equalTo("2020-10-07T00:00:00"))))
-                    .andExpect(jsonPath("$.s3Path").isString())
-                    .andExpect(jsonPath("$.granulePath").isString())
                     .andExpect(jsonPath("$.footprint.epsg3857").isString())
                     .andExpect(jsonPath("$.footprint.epsg4326").isString())
                     .andExpect(jsonPath("$.legend").isMap())

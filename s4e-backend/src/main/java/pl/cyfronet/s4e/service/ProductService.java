@@ -66,7 +66,7 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public <T> List<T> findAll(Class<T> projection) {
-        return productRepository.findAllBy(projection);
+        return productRepository.findAllByOrderByIdAsc(projection);
     }
 
     public <T> List<T> findAllFetchSchemas(Class<T> projection) {

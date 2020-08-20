@@ -12,8 +12,6 @@ import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.properties.GeoServerProperties;
-import pl.cyfronet.s4e.properties.S3Properties;
 
 import javax.json.JsonObject;
 
@@ -21,9 +19,6 @@ import javax.json.JsonObject;
 @RequiredArgsConstructor
 @Slf4j
 public class ScenePersister {
-    private final GeoServerProperties geoServerProperties;
-    private final S3Properties s3Properties;
-
     private final ProductRepository productRepository;
     private final SceneRepository sceneRepository;
     private final ObjectMapper objectMapper;
@@ -32,8 +27,6 @@ public class ScenePersister {
     public Long persist(Prototype prototype) throws NotFoundException {
         Product product = productRepository.findById(prototype.getProductId())
                 .orElseThrow(() -> new NotFoundException("Product with id '" + prototype.getProductId() + "' not found"));
-
-        String granulePath = geoServerProperties.getEndpoint() + "://" + s3Properties.getBucket() + "/" + prototype.getS3Path();
 
         JsonNode sceneJsonNode = convert(prototype.getSceneJson());
         JsonNode metadataJsonNode = convert(prototype.getMetadataJson());
@@ -47,9 +40,6 @@ public class ScenePersister {
             scene.setProduct(product);
         }
         scene.setSceneKey(prototype.getSceneKey());
-        scene.setTimestamp(prototype.getTimestamp());
-        scene.setS3Path(prototype.getS3Path());
-        scene.setGranulePath(granulePath);
         scene.setFootprint(prototype.getFootprint());
         scene.setSceneContent(sceneJsonNode);
         scene.setMetadataContent(metadataJsonNode);

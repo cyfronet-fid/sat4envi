@@ -24,8 +24,6 @@ class AdminSceneResponse {
     private ProductPart product;
     private String sceneKey;
     private LocalDateTime timestamp;
-    private String s3Path;
-    private String granulePath;
     private FootprintPart footprint;
     private Legend legend;
     private JsonNode sceneContent;

@@ -80,8 +80,10 @@ public class ODataControllerTest {
 
     private Scene buildScene(Product product, long number) throws Exception {
         JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        return SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
                 .build();
+        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+        return scene;
     }
 
     @Test

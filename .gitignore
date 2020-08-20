@@ -26,6 +26,7 @@
 
 # maven build
 .flattened-pom.xml
+/target
 
 # misc
 /.sass-cache
