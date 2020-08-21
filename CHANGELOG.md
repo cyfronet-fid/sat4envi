@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- HTTP code 429 for /login and /token endpoints [#541](https://github.com/cyfronet-fid/sat4envi/issues/541)
 - Overlay management [#615](https://github.com/cyfronet-fid/sat4envi/issues/615)
 - Add operations on created invitations and status of them [#643](https://github.com/cyfronet-fid/sat4envi/issues/643)
 - Admin scenes synchronization endpoints [#621](https://github.com/cyfronet-fid/sat4envi/issues/621)

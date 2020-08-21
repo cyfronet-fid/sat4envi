@@ -42,6 +42,8 @@
         <slugify.version>2.4</slugify.version>
         <springdoc-openapi.version>1.4.3</springdoc-openapi.version>
         <unirest.version>3.8.06</unirest.version>
+        <bucket4j-starter.version>0.2.0</bucket4j-starter.version>
+        <caffeine.version>2.8.5</caffeine.version>
     </properties>
 
     <build>
