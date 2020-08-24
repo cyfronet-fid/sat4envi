@@ -1,0 +1,208 @@
+.timeline {
+  position: absolute;
+  left: 460px;
+  margin-left: auto;
+  bottom : 60px;
+  right: 20px;
+  z-index: 2;
+  width: calc(100% - 460px);
+
+
+  &__manager {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+
+
+    .timecontrol {
+      border-radius: $border-radius-circle;
+      background: $color-white-50;
+      padding: 5px;
+      display: flex;
+      margin: 0 5px;
+      font-weight: 600;
+      font-size: 1rem;
+      justify-content: space-between;
+
+      span {
+        margin: 0 5px;
+        text-align: center;
+        align-self: center;
+      }
+
+      &--date {
+        cursor: pointer;
+      }
+
+      &__button {
+        width: 23px;
+        height: 23px;
+        background-repeat: no-repeat;
+        background-image: url(/../assets/images/ico_chevron.svg);
+        background-size: 12px;
+        background-position: center;
+        transform: rotate(90deg);
+        display: inline-block;
+        border: 1px solid $color-grey-secondary;
+        border-radius: $border-radius-circle;
+        cursor: pointer;
+        transition: 0.6s;
+        position: relative;
+
+        &--next {
+          transform: rotate(-90deg);
+        }
+
+        &--minus {
+          background: none;
+
+          &:after {
+            background: $color-black;
+            content: " ";
+            position: absolute;
+            width: 12px;
+            height: 1px;
+            left: 6px;
+            top: 10px;
+            transform: rotate(-90deg);
+            display: block;
+          }
+        }
+
+        &--plus {
+          background: none;
+
+          &:after,
+          &:before {
+            background: $color-black;
+            content: " ";
+            position: absolute;
+            width: 12px;
+            height: 1px;
+            left: 6px;
+            top: 10px;
+            transform: rotate(-90deg);
+            display: block;
+          }
+
+          &:before {
+            transform: rotate(0deg);
+          }
+        }
+
+        &:hover {
+          background-color: $color-grey-secondary;
+        }
+      }
+    }
+  }
+
+
+  &__grid {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    &:before {
+      content: " ";
+      height: 2px;
+      border-radius: $border-radius-circle;
+      background-color: $color-white;
+      width: 100%;
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 4px;
+      z-index: 1;
+      filter: drop-shadow(0px 0px 13px rgba(0,0,0,0.41));
+    }
+  }
+
+  &__item {
+    display: block;
+    z-index: 3;
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: $border-radius-circle;
+    background-color: $color-white;
+    cursor: pointer;
+    filter: drop-shadow(0px 0px 13px rgba(0,0,0,0.41));
+    transition: 0.4s;
+
+    &.active {
+      background-color: $color-secondary;
+      width: 12px;
+      height: 12px;
+    }
+
+    &:hover {
+      width: 14px;
+      height: 14px;
+      margin: -2px;
+    }
+
+    span {
+      display: none;
+    }
+
+    &--noproduct {
+      display: inline-block;
+      width: auto;
+      height: auto;
+      padding: 5px 15px;
+      font-size: 0.875rem;
+      margin: -6px auto 0 auto;
+      filter: none;
+    }
+
+  }
+
+  &__hourmark {
+    margin-top: 10px;
+
+    .hourmark {
+      font-size: 0.75rem;
+      color: $color-white;
+      font-weight: 600;
+      position: absolute;
+      display: block;
+      filter: drop-shadow(0px 0px 13px rgba(0,0,0,0.41));
+
+      &:first-child {
+        left: -10px;
+      }
+
+      &:nth-child(2) {
+        left: calc(17% - 20px);
+      }
+
+      &:nth-child(3) {
+        left: calc(34% - 30px);
+      }
+
+      &:nth-child(4) {
+        left: calc(51% - 15px);
+      }
+
+      &:nth-child(5) {
+        left: calc(68% - 15px);
+      }
+
+      &:last-child {
+        left: 85%;
+      }
+    }
+  }
+
+  &__changedate {
+    display: block;
+    background: url(/../assets/images/ico_calendar.svg) no-repeat;
+    width: 18px;
+    height: 18px;
+    filter: invert(100%);
+    margin-top: -2px;
+  }
+}

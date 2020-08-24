@@ -1,12 +1,11 @@
 <div>
-  <section class="timeline__manage">
-    <div class="timeline__currentday">
+  <section class="timeline__manager">
+    <div class="timecontrol timecontrol--date" [owlDateTimeTrigger]="datepicker">
+      <span class="timecontrol__button timecontrol__button--prev"></span>
       <span>{{currentDate}}</span>
       <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays" (dateTimeChange)="selectDate($event)"
-             [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
-    </div>
-    <div class="timeline__calendar" [owlDateTimeTrigger]="datepicker">
-      <img src="../../../../assets/images/ico_calendar.svg" class="timeline__changedate"/>
+           [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
+      <span class="timeline__changedate"></span>
       <owl-date-time #datepicker
                      [startAt]="currentDate"
                      [panelClass]="componentId"
@@ -14,17 +13,37 @@
                      (afterPickerClosed)="setPickerOpenState(false)"
                      [pickerMode]="'popup'" [pickerType]="'calendar'"
                      (monthSelected)="monthSelected($event)"></owl-date-time>
+      <span class="timecontrol__button timecontrol__button--next"></span>
+    </div>
+    <div class="timecontrol timecontrol--clock">
+      <span class="timecontrol__button timecontrol__button--prev"></span>
+      <span>12:15</span>
+      <span class="timecontrol__button timecontrol__button--next"></span>
+    </div>
+    <div class="timecontrol timecontrol--interval">
+      <span class="timecontrol__button timecontrol__button--minus"></span>
+      <span>14h</span>
+      <span class="timecontrol__button timecontrol__button--plus"></span>
     </div>
   </section>
+
   <ul class="timeline__grid">
-    <li class="timeline__item" *ngIf="scenes.length == 0 && !loading">Brak produktów, wybierz inną datę</li>
+    <li class="timeline__item timeline__item--noproduct" *ngIf="scenes.length == 0 && !loading">Brak scen w tym dniu, wybierz inną datę</li>
     <li class="timeline__item"
         *ngFor="let scene of scenes"
         [attr.data-scene-id]="scene.id"
         [attr.data-active-id]="activeScene?.id"
         [ngClass]="{active: scene.id === activeScene?.id}"
         (click)="selectedScene.emit(scene)">
-      {{ scene.timestamp | date : 'shortTime' }}
+      <span>{{ scene.timestamp | date : 'shortTime' }}</span>
     </li>
   </ul>
+  <div class="timeline__hourmark">
+    <span class="hourmark">0:00</span>
+    <span class="hourmark">4:00</span>
+    <span class="hourmark">8:00</span>
+    <span class="hourmark">12:00</span>
+    <span class="hourmark">16:00</span>
+    <span class="hourmark">20:00</span>
+  </div>
 </div>
