@@ -39,11 +39,11 @@ public class InvitationHelper {
         val name = String.format(profileName, COUNT.getAndIncrement());
         val profileEmail = String.format(email, COUNT.getAndIncrement());
         return AppUser.builder()
-                .id((long) COUNT.getAndIncrement())
                 .email(profileEmail)
                 .name(name)
                 .surname(name)
                 .password(password)
+                .admin(false)
                 .enabled(true);
     }
 

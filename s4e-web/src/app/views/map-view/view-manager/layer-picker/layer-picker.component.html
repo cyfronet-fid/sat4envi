@@ -19,7 +19,7 @@
         </ng-template>
       </ng-container>
       <button (click)="itemSelected.emit(item.cid)" class="products__name">
-        {{item.caption}}
+        {{item.label}}
       </button>
       <ng-container *ngIf="item.isLoading; else visibility">
         <span class="products__visibility__spinner">

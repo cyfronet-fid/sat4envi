@@ -1,19 +1,16 @@
 package pl.cyfronet.s4e.service;
 
+import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
+import pl.cyfronet.s4e.OverlayHelper;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.PRGOverlay;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.SldStyle;
-import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.SldStyleRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.geoserver.op.GeoServerOperations;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 
@@ -41,6 +38,9 @@ class GeoServerServiceTest {
     private PRGOverlayRepository prgOverlayRepository;
 
     @Autowired
+    private WMSOverlayRepository wmsOverlayRepository;
+
+    @Autowired
     private GeoServerProperties geoServerProperties;
 
     @Autowired
@@ -66,7 +66,14 @@ class GeoServerServiceTest {
         product = productRepository.save(productBuilder().build());
         sceneRepository.save(sceneBuilder(product).build());
         sldStyle = sldStyleRepository.save(sldStyleBuilder().build());
-        prgOverlay = prgOverlayRepository.save(prgOverlayBuilder(sldStyle).build());
+
+        val wmsOverlay = wmsOverlayRepository.save(
+                OverlayHelper.wmsOverlayBuilder()
+                        .ownerType(OverlayOwner.GLOBAL)
+                        .url("")
+                        .build()
+        );
+        prgOverlay = prgOverlayRepository.save(prgOverlayBuilder(sldStyle, wmsOverlay).build());
     }
 
     private SldStyle.SldStyleBuilder sldStyleBuilder() {
@@ -74,9 +81,9 @@ class GeoServerServiceTest {
                 .name("styleOne");
     }
 
-    private PRGOverlay.PRGOverlayBuilder prgOverlayBuilder(SldStyle sldStyle) {
+    private PRGOverlay.PRGOverlayBuilder prgOverlayBuilder(SldStyle sldStyle, WMSOverlay wmsOverlay) {
         return PRGOverlay.builder()
-                .name("wojewodztwa")
+                .wmsOverlay(wmsOverlay)
                 .featureType("wojewodztwaFeatureType")
                 .sldStyle(sldStyle);
     }

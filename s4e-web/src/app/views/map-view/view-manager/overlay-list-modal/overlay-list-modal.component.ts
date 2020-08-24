@@ -1,3 +1,4 @@
+import { OwnerType, GLOBAL_OWNER_TYPE, PERSONAL_OWNER_TYPE } from './../../state/overlay/overlay.model';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
@@ -36,22 +37,26 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
     layer: new FormControl<string>('', [Validators.required])
   });
 
-  constructor(modalService: ModalService, private _overlayQuery: OverlayQuery, private _overlayService: OverlayService) {
+  constructor(
+    modalService: ModalService,
+    private _overlayQuery: OverlayQuery,
+    private _overlayService: OverlayService
+  ) {
     super(modalService, OVERLAY_LIST_MODAL_ID);
   }
 
   ngOnInit() {
     this.loading$ = this._overlayQuery.selectLoading();
     this.overlays$ = this._overlayQuery.selectAllWithUIState();
-    this.hasCustomOverlays$ = this.overlays$.pipe(map(overlays => overlays.find(ol => ol.mine) !== undefined));
+    this.hasCustomOverlays$ = this.overlays$.pipe(map(overlays => overlays.some(overlay => overlay.ownerType === GLOBAL_OWNER_TYPE)));
     this.showOverlayForm$ = this._overlayQuery.ui.select('showNewOverlayForm');
     this.overlays$.subscribe(overlays => {
       this._overlaysChanged$.next();
       this.visibilityFCList = overlays.map(overlay => {
         const fc = new FormControl<boolean>(overlay.visible);
         fc.valueChanges.pipe(takeUntil(this._overlaysChanged$)).subscribe(visible => this._overlayService.setVisible(overlay.id, visible))
-        return fc
-      })
+        return fc;
+      });
     });
 
     this.addingNewLayer$ = this._overlayQuery.ui.select('loadingNew').pipe(untilDestroyed(this));
@@ -68,7 +73,7 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
     }
   }
 
-  showOverlayForm(show: boolean) {
+  setNewFormVisible(show: boolean) {
     this.newOverlayForm.reset();
     this._overlayService.setNewFormVisible(show);
   }
@@ -82,11 +87,15 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
 
     this._overlayService.createOverlay(
       this.newOverlayForm.value.layerName,
-      this.newOverlayForm.value.url,
-      this.newOverlayForm.value.layer);
+      this.newOverlayForm.value.url
+    );
+  }
+
+  isPersonal(overlay: Overlay) {
+    return overlay.ownerType === PERSONAL_OWNER_TYPE;
   }
 
   getOverlayId(overlay: Overlay): string {
-    return overlay.id
+    return overlay.id;
   }
 }
