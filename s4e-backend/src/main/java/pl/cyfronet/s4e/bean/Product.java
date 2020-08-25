@@ -95,6 +95,12 @@ public class Product extends CreationAndModificationAudited {
     @Builder.Default
     private Set<AppUser> favourites = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_category_id", insertable = false)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private ProductCategory productCategory;
+
     public void addFavourite(AppUser appUser) {
         this.favourites.add(appUser);
     }

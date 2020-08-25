@@ -81,6 +81,10 @@ public class ProductService {
         return productRepository.findByIdFetchSchemas(id, projection);
     }
 
+    public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
+        return productRepository.findAllFetchProductCategory(projection);
+    }
+
     @Transactional
     public Long create(DTO dto) throws ProductException {
         val productBuilder = Product.builder();

@@ -5,6 +5,12 @@ import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 export const PRODUCT_MODE_QUERY_KEY = 'pmode'
 export const PRODUCT_MODE_FAVOURITE = 'favourite'
 
+export interface ProductCategory {
+  id: number | undefined;
+  label: string;
+  url: string;
+}
+
 export interface Product {
   id: number | undefined;
   name: string;
@@ -14,6 +20,7 @@ export interface Product {
   legend: Legend | null | undefined;
   layerName: string;
   favourite: boolean;
+  productCategory: ProductCategory;
 }
 
 export interface ProductState extends EntityState<Product>, ActiveState<number> {
