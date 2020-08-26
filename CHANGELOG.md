@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v11.0.0]
+
+### Added
+
 - HTTP code 429 for /login and /token endpoints [#541](https://github.com/cyfronet-fid/sat4envi/issues/541)
 - Overlay management [#615](https://github.com/cyfronet-fid/sat4envi/issues/615)
 - Add operations on created invitations and status of them [#643](https://github.com/cyfronet-fid/sat4envi/issues/643)
@@ -17,15 +27,11 @@ The most recent changes are on top, in each type of changes category.
 - Admin endpoints for Scenes management [#620](https://github.com/cyfronet-fid/sat4envi/issues/620)
 - Confirm or reject invitation with email URLs [#625](https://github.com/cyfronet-fid/sat4envi/issues/625)
 
-### Changed
-
 ### Fixed
 
 - Fix resending invitations and refactor endpoints to not operate on tokens [#660](https://github.com/cyfronet-fid/sat4envi/issues/660)
 - Fix circular dependencies while dependency injection [#648](https://github.com/cyfronet-fid/sat4envi/issues/648)
 - Super admin security issues [#551](https://github.com/cyfronet-fid/sat4envi/issues/551)
-
-### Updated
 
 ## [v10.0.0]
 
@@ -234,7 +240,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v10.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v11.0.0...HEAD
+[v11.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v10.0.0...v11.0.0
 [v10.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.1.0...v10.0.0
 [v9.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...v9.1.0
 [v9.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v8.0.0...v9.0.0
