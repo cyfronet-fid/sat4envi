@@ -13,12 +13,10 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateUserRoleRequest;
 import pl.cyfronet.s4e.controller.request.DeleteUserRoleRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.service.SlugService;
@@ -39,9 +37,6 @@ public class UserRoleControllerTest {
 
     @Autowired
     private AppUserRepository appUserRepository;
-
-    @Autowired
-    private GroupRepository groupRepository;
 
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -80,12 +75,6 @@ public class UserRoleControllerTest {
         Institution institution = institutionRepository.save(Institution.builder()
                 .name(test_institution)
                 .slug(slugInstitution)
-                .build());
-
-        Group group = groupRepository.save(Group.builder()
-                .name("default")
-                .slug("default")
-                .institution(institution)
                 .build());
     }
 

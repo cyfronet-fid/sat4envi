@@ -8,14 +8,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppRole;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
-import pl.cyfronet.s4e.ex.GroupCreationException;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
@@ -24,7 +25,6 @@ import java.util.Set;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.equalTo;
 
 @BasicTest
 @Slf4j
@@ -38,13 +38,9 @@ public class InstitutionServiceTest {
     @Autowired
     private InstitutionRepository institutionRepository;
     @Autowired
-    private GroupRepository groupRepository;
-    @Autowired
     private UserRoleRepository userRoleRepository;
     @Autowired
     private AppUserRepository appUserRepository;
-    @Autowired
-    private GroupService groupService;
     @Autowired
     private SlugService slugService;
     @Autowired
@@ -79,11 +75,10 @@ public class InstitutionServiceTest {
                 .name(testInstitution)
                 .slug(slugInstitution)
                 .build());
-        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group).build();
+        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
-        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).group(group).build();
+        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
 
         // 2nd lvl institution
@@ -93,15 +88,14 @@ public class InstitutionServiceTest {
                 .parent(institution)
                 .slug(slugInstitution2)
                 .build());
-        Group group2 = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution2).build());
 
-        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser2).group(group2).build();
+        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser2).institution(institution2).build();
         userRoleRepository.save(userRole);
-        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser2).group(group2).build();
+        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser2).institution(institution2).build();
         userRoleRepository.save(userRole);
-        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group2).build();
+        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution2).build();
         userRoleRepository.save(userRole);
-        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).group(group2).build();
+        userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).institution(institution2).build();
         userRoleRepository.save(userRole);
     }
 
@@ -111,19 +105,13 @@ public class InstitutionServiceTest {
     }
 
     @Test
-    public void shouldDeleteInstitutionAndGroup() throws InstitutionCreationException, GroupCreationException {
+    public void shouldDeleteInstitution() throws InstitutionCreationException {
         Institution institution = Institution.builder().name("Instytycja 15").slug("instytucja-15").build();
         institutionService.save(institution);
 
-        Group group = Group.builder().name("Group 15").slug("group-15").institution(institution).build();
-        groupService.save(group);
-
         institutionService.delete("instytucja-15");
-
-        val groupDB = groupService.getGroup("instytucja-15", "group-15", Group.class);
         val institutionDB = institutionService.findBySlug("instytucja-15", Institution.class);
 
-        assertThat(groupDB, isEmpty());
         assertThat(institutionDB, isEmpty());
     }
 
@@ -141,10 +129,10 @@ public class InstitutionServiceTest {
                 .institutionAdminEmail(childAdmin.getEmail())
                 .build();
 
-        Set<AppUserResponse> result = groupService.getMembers("child-institution", DEFAULT, AppUserResponse.class);
+        Set<AppUserResponse> result = institutionService.getMembers("child-institution", AppUserResponse.class);
         assertThat(result, hasSize(0));
         institutionService.createChildInstitution(request, slugInstitution2);
-        result = groupService.getMembers("child-institution", DEFAULT, AppUserResponse.class);
+        result = institutionService.getMembers("child-institution", AppUserResponse.class);
         // new inst_admin and two from parent
         assertThat(result, hasSize(3));
     }

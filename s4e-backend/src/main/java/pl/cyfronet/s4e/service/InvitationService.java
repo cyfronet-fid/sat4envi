@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.InvitationRepository;
 import pl.cyfronet.s4e.ex.InvitationCreationException;
@@ -25,12 +24,11 @@ public class InvitationService {
     private final AppUserRepository appUserRepository;
     private final InstitutionRepository institutionRepository;
     private final InvitationRepository invitationRepository;
-    private final GroupRepository groupRepository;
 
     @Transactional(rollbackFor = {InvitationCreationException.class, NotFoundException.class})
     public String createInvitationFrom(String email, String institutionSlug) throws InvitationCreationException, NotFoundException {
         val institution = institutionRepository.findBySlug(institutionSlug, Institution.class)
-            .orElseThrow(() -> constructNFE("institution slug: " + institutionSlug));
+                .orElseThrow(() -> constructNFE("institution slug: " + institutionSlug));
         val optionalInvitation = invitationRepository.findByEmailAndInstitutionSlug(
                 email,
                 institutionSlug,
@@ -101,22 +99,22 @@ public class InvitationService {
     }
 
     private void addMemberToDefaultGroup(AppUser user, Institution institution) throws NotFoundException {
-        val group = groupRepository.findByInstitution_SlugAndSlug(institution.getSlug(), "default", Group.class)
-                .orElseThrow(() -> new NotFoundException("Group not found for institution: " + institution.getName()));
-        val sourceRoles = group.getMembersRoles();
+        val dbInstitution = institutionRepository.findBySlug(institution.getSlug(), Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for : " + institution.getSlug()));
+        val sourceRoles = dbInstitution.getMembersRoles();
         val memberRole = UserRole
                 .builder()
                 .role(AppRole.GROUP_MEMBER)
                 .user(user)
-                .group(group)
+                .institution(dbInstitution)
                 .build();
         if (!sourceRoles.contains(memberRole)) {
-            group.getMembersRoles().add(memberRole);
+            dbInstitution.getMembersRoles().add(memberRole);
             user.getRoles().add(memberRole);
         }
     }
 
-    private pl.cyfronet.s4e.ex.NotFoundException constructNFE(String ...args) {
+    private pl.cyfronet.s4e.ex.NotFoundException constructNFE(String... args) {
         return new NotFoundException("Invitation not found for '" + String.join(", ", args) + "'");
     }
 }

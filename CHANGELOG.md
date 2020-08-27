@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Remove Group entity [#669](https://github.com/cyfronet-fid/sat4envi/issues/669)
+
 ### Fixed
 
 ### Updated

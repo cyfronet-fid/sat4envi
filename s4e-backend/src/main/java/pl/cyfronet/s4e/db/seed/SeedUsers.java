@@ -16,7 +16,6 @@ import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.SlugService;
 import pl.cyfronet.s4e.service.UserRoleService;
@@ -32,7 +31,6 @@ public class SeedUsers implements ApplicationRunner {
     private final AppUserRepository appUserRepository;
     private final InstitutionRepository institutionRepository;
     private final InstitutionService institutionService;
-    private final GroupService groupService;
     private final UserRoleService userRoleService;
     private final SlugService slugService;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -245,18 +243,18 @@ public class SeedUsers implements ApplicationRunner {
                     .slug(slugService.slugify(name))
                     .city("Warszawa")
                     .build());
-            groupService.addMember(institution.getSlug(), "default", "zkMember@mail.pl");
-            groupService.addMember(institution.getSlug(), "default", "zkAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkAdmin@mail.pl", institution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkAdmin@mail.pl", institution.getSlug(), "default");
-            userRoleService.addRole(AppRole.GROUP_MANAGER, "zkAdmin@mail.pl", institution.getSlug(), "default");
+            institutionService.addMember(institution.getSlug(), "zkMember@mail.pl");
+            institutionService.addMember(institution.getSlug(), "zkAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkAdmin@mail.pl", institution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkAdmin@mail.pl", institution.getSlug());
+            userRoleService.addRole(AppRole.GROUP_MANAGER, "zkAdmin@mail.pl", institution.getSlug());
 
-            groupService.addMember(institution.getSlug(), "default", "zkPLMember@mail.pl");
-            groupService.addMember(institution.getSlug(), "default", "zkPLManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLManager@mail.pl", institution.getSlug(), "default");
-            groupService.addMember(institution.getSlug(), "default", "zkPLAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkPLAdmin@mail.pl", institution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLAdmin@mail.pl", institution.getSlug(), "default");
+            institutionService.addMember(institution.getSlug(), "zkPLMember@mail.pl");
+            institutionService.addMember(institution.getSlug(), "zkPLManager@mail.pl");
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLManager@mail.pl", institution.getSlug());
+            institutionService.addMember(institution.getSlug(), "zkPLAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkPLAdmin@mail.pl", institution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLAdmin@mail.pl", institution.getSlug());
 
             name = "Zarządzanie kryzysowe - Mazowieckie";
             Institution childInstitution = institutionService.save(Institution.builder()
@@ -265,12 +263,12 @@ public class SeedUsers implements ApplicationRunner {
                     .city("Warszawa")
                     .parent(institution)
                     .build());
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMazMember@mail.pl");
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMazManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazManager@mail.pl", childInstitution.getSlug(), "default");
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMazAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkMazAdmin@mail.pl", childInstitution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazAdmin@mail.pl", childInstitution.getSlug(), "default");
+            institutionService.addMember(childInstitution.getSlug(), "zkMazMember@mail.pl");
+            institutionService.addMember(childInstitution.getSlug(), "zkMazManager@mail.pl");
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazManager@mail.pl", childInstitution.getSlug());
+            institutionService.addMember(childInstitution.getSlug(), "zkMazAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkMazAdmin@mail.pl", childInstitution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Warszawa";
             Institution child2RowInstitution = institutionService.save(Institution.builder()
@@ -279,12 +277,12 @@ public class SeedUsers implements ApplicationRunner {
                     .city("Warszawa")
                     .parent(childInstitution)
                     .build());
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkWawMember@mail.pl");
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkWawManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawManager@mail.pl", child2RowInstitution.getSlug(), "default");
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkWawAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug(), "default");
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawMember@mail.pl");
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawManager@mail.pl");
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawManager@mail.pl", child2RowInstitution.getSlug());
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Małopolska";
             childInstitution = institutionService.save(Institution.builder()
@@ -293,12 +291,12 @@ public class SeedUsers implements ApplicationRunner {
                     .city("Kraków")
                     .parent(institution)
                     .build());
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMalMember@mail.pl");
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMalManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalManager@mail.pl", childInstitution.getSlug(), "default");
-            groupService.addMember(childInstitution.getSlug(), "default", "zkMalAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkMalAdmin@mail.pl", childInstitution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalAdmin@mail.pl", childInstitution.getSlug(), "default");
+            institutionService.addMember(childInstitution.getSlug(), "zkMalMember@mail.pl");
+            institutionService.addMember(childInstitution.getSlug(), "zkMalManager@mail.pl");
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalManager@mail.pl", childInstitution.getSlug());
+            institutionService.addMember(childInstitution.getSlug(), "zkMalAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkMalAdmin@mail.pl", childInstitution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Kraków";
             child2RowInstitution = institutionService.save(Institution.builder()
@@ -307,12 +305,12 @@ public class SeedUsers implements ApplicationRunner {
                     .city("Kraków")
                     .parent(childInstitution)
                     .build());
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkKrMember@mail.pl");
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkKrManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrManager@mail.pl", child2RowInstitution.getSlug(), "default");
-            groupService.addMember(child2RowInstitution.getSlug(), "default", "zkKrAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug(), "default");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug(), "default");
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrMember@mail.pl");
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrManager@mail.pl");
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrManager@mail.pl", child2RowInstitution.getSlug());
+            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrAdmin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug());
+            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug());
 
         } catch (InstitutionCreationException e) {
             log.warn(e.getMessage(), e);

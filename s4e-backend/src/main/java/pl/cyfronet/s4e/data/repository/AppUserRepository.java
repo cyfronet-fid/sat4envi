@@ -14,15 +14,14 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
     @Query("SELECT u " +
             "FROM AppUser u " +
             "LEFT JOIN FETCH u.roles r " +
-            "LEFT JOIN FETCH r.group g " +
+            "LEFT JOIN FETCH r.institution i " +
             "WHERE u.email = :email")
-    Optional<AppUser> findByEmailWithRolesAndGroups(String email);
+    Optional<AppUser> findByEmailWithRolesAndInstitutions(String email);
 
     @Query("SELECT u " +
             "FROM AppUser u " +
             "LEFT JOIN FETCH u.roles r " +
-            "LEFT JOIN FETCH r.group g " +
-            "LEFT JOIN FETCH g.institution i " +
+            "LEFT JOIN FETCH r.institution i " +
             "WHERE u.email = :email")
-    <T> Optional<T> findByEmailWithRolesAndGroupsAndInstitution(String email, Class<T> projection);
+    <T> Optional<T> findByEmailWithRolesAndInstitution(String email, Class<T> projection);
 }

@@ -7,9 +7,6 @@ public interface UserRoleResponse {
 
     AppRole getRole();
 
-    @Value("#{target.group.slug}")
-    String getGroupSlug();
-
-    @Value("#{target.group.institution.slug}")
+    @Value("#{target.institution.slug}")
     String getInstitutionSlug();
 }

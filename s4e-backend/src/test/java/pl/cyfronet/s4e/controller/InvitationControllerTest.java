@@ -49,9 +49,6 @@ public class InvitationControllerTest {
     private SlugService slugService;
 
     @Autowired
-    private GroupRepository groupRepository;
-
-    @Autowired
     private UserRoleRepository userRoleRepository;
 
     @Autowired
@@ -65,18 +62,15 @@ public class InvitationControllerTest {
     @BeforeEach
     public void beforeEach() {
         testDbHelper.clean();
-
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
-        Group group = groupRepository
-                .save(InvitationHelper.defaultGroupBuilder(institution).build());
 
         institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
         val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MANAGER, AppRole.GROUP_MEMBER};
-        addRoles(institutionAdmin, group, institutionAdminRoles);
+        addRoles(institutionAdmin, institution, institutionAdminRoles);
 
         member = appUserRepository.save(InvitationHelper.userBuilder().build());
         val memberRoles = new AppRole[]{AppRole.GROUP_MEMBER};
-        addRoles(member, group, memberRoles);
+        addRoles(member, institution, memberRoles);
 
         user = appUserRepository.save(InvitationHelper.userBuilder().build());
     }
@@ -143,9 +137,9 @@ public class InvitationControllerTest {
         val request = InvitationHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(jwtBearerToken(institutionAdmin, objectMapper))
-                    .content(objectMapper.writeValueAsBytes(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(institutionAdmin, objectMapper))
+                .content(objectMapper.writeValueAsBytes(request))
         ).andExpect(status().isOk());
 
         val dbInvitation = invitationRepository
@@ -215,7 +209,7 @@ public class InvitationControllerTest {
                         .with(jwtBearerToken(user, objectMapper))
         ).andExpect(status().isOk());
 
-        val userResponse = appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(user.getEmail(), AppUser.class);
+        val userResponse = appUserRepository.findByEmailWithRolesAndInstitution(user.getEmail(), AppUser.class);
         assertThat(userResponse.get().getRoles(), hasSize(1));
     }
 
@@ -265,12 +259,12 @@ public class InvitationControllerTest {
         ).andExpect(status().isNotFound());
     }
 
-    private void addRoles(AppUser user, Group group, AppRole[] roles) {
-        for (AppRole role: roles) {
+    private void addRoles(AppUser user, Institution institution, AppRole[] roles) {
+        for (AppRole role : roles) {
             val roleBuild = UserRole.builder().
                     role(role)
                     .user(user)
-                    .group(group)
+                    .institution(institution)
                     .build();
             userRoleRepository.save(roleBuild);
         }

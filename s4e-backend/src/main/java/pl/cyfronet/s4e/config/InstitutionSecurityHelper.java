@@ -4,12 +4,9 @@ import lombok.val;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.security.AppUserDetails;
-import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 public class InstitutionSecurityHelper {
-    private static final String DEFAULT_GROUP_SLUG = InstitutionService.DEFAULT;
-
     public boolean isAdmin(String institutionSlug) {
         AppUserDetails details = AppUserDetailsSupplier.get();
         if (details == null) {
@@ -31,7 +28,7 @@ public class InstitutionSecurityHelper {
     }
 
     private SimpleGrantedAuthority simpleGrantedAuthority(String institutionSlug, AppRole appRole) {
-        String role = String.join("_", "ROLE", appRole.name(), institutionSlug, DEFAULT_GROUP_SLUG);
+        String role = String.join("_", "ROLE", appRole.name(), institutionSlug);
         return new SimpleGrantedAuthority(role);
     }
 }

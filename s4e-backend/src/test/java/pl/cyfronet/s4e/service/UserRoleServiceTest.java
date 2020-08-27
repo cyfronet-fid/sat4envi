@@ -9,10 +9,8 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 
@@ -34,9 +32,6 @@ public class UserRoleServiceTest {
 
     @Autowired
     private InstitutionRepository institutionRepository;
-
-    @Autowired
-    private GroupRepository groupRepository;
 
     @Autowired
     private TestDbHelper testDbHelper;
@@ -63,7 +58,6 @@ public class UserRoleServiceTest {
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());
-        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
     }
 
     @AfterEach
@@ -78,32 +72,32 @@ public class UserRoleServiceTest {
     @Test
     public void shouldAddMemberRole() throws Exception {
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.GROUP_MEMBER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.addRole(AppRole.GROUP_MEMBER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(1));
     }
 
     @Test
     public void shouldAddManagerRoleWithMemberRole() throws Exception {
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.INST_MANAGER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.addRole(AppRole.INST_MANAGER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(2));
     }
 
     @Test
     public void shouldDeleteOnlyManagerRole() throws Exception {
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.addRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(2));
-        userRoleService.removeRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.removeRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(1));
     }
 
     @Test
     public void shouldDeleteMemberAndManagerRole() throws Exception {
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.addRole(AppRole.GROUP_MANAGER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(2));
-        userRoleService.removeRole(AppRole.GROUP_MEMBER, PROFILE_EMAIL, slugInstitution, "default");
+        userRoleService.removeRole(AppRole.GROUP_MEMBER, PROFILE_EMAIL, slugInstitution);
         assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
     }
 }
