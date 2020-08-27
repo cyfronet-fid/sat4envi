@@ -27,14 +27,6 @@ public class InvitationHelper {
                 .slug(slugify.slugify(name));
     }
 
-    public static Group.GroupBuilder defaultGroupBuilder(Institution institution) {
-        return Group
-                .builder()
-                .name("__default__")
-                .slug("default")
-                .institution(institution);
-    }
-
     public static AppUser.AppUserBuilder userBuilder() {
         val name = String.format(profileName, COUNT.getAndIncrement());
         val profileEmail = String.format(email, COUNT.getAndIncrement());

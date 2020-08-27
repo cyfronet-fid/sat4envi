@@ -6,6 +6,8 @@ import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * If you delete Institution, you will also delete all Group entries
@@ -15,14 +17,16 @@ import javax.validation.constraints.NotEmpty;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "institution", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
 public class Institution extends CreationAndModificationAudited {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @NotEmpty
+    @EqualsAndHashCode.Include
     private String name;
 
     private String address;
@@ -37,11 +41,20 @@ public class Institution extends CreationAndModificationAudited {
 
     @NotEmpty
     @NaturalId(mutable = true)
+    @EqualsAndHashCode.Include
     private String slug;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Institution parent;
+
+    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    private Set<UserRole> membersRoles = new HashSet<>();
+
+    public void removeMemberRole(UserRole role) {
+        membersRoles.remove(role);
+    }
 }

@@ -17,7 +17,6 @@ import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.properties.FileStorageProperties;
@@ -50,9 +49,6 @@ public class InstitutionControllerIntegrationTest {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
-
-    @Autowired
-    private GroupRepository groupRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -98,9 +94,7 @@ public class InstitutionControllerIntegrationTest {
                 .slug(parentSlug)
                 .build());
 
-        Group group = groupRepository.save(Group.builder().name("__default__").slug("default").institution(institution).build());
-
-        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).group(group).build();
+        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
     }
 

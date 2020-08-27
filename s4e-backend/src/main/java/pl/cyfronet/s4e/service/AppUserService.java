@@ -7,10 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
-import pl.cyfronet.s4e.controller.request.CreateUserWithGroupsRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.ex.AppUserCreationException;
@@ -18,9 +16,7 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -81,7 +77,11 @@ public class AppUserService {
         return appUserRepository.findByEmail(email);
     }
 
+    public Optional<AppUser> findById(Long id) {
+        return appUserRepository.findById(id);
+    }
+
     public <T> Optional<T> findByEmailWithRolesAndGroupsAndInstitution(String email, Class<T> projection) {
-        return appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(email, projection);
+        return appUserRepository.findByEmailWithRolesAndInstitution(email, projection);
     }
 }

@@ -11,28 +11,25 @@ import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface UserRoleRepository extends CrudRepository<UserRole, Long> {
-    Optional<UserRole> findByUser_IdAndGroup_IdAndRole(Long userId, Long groupId, AppRole role);
+    Optional<UserRole> findByUser_IdAndInstitution_IdAndRole(Long userId, Long institutionId, AppRole role);
     @Query(value = "SELECT r " +
             "FROM UserRole r " +
             "LEFT JOIN r.user u " +
-            "LEFT JOIN r.group g " +
-            "LEFT JOIN g.institution i " +
+            "LEFT JOIN r.institution i " +
             "WHERE i.slug = :institutionSlug AND u.email = :email")
     Set<UserRole> findUserRolesInInstitution(String email, String institutionSlug);
     @Query(value = "SELECT r " +
             "FROM UserRole r " +
             "LEFT JOIN r.user u " +
-            "LEFT JOIN r.group g " +
-            "LEFT JOIN g.institution i " +
-            "WHERE i.slug = :institutionSlug AND u.email = :email AND g.slug = :groupSlug AND r.role = :role")
-    Optional<UserRole>  findUserRolesInInstitution(String email, String institutionSlug, String groupSlug, AppRole role);
+            "LEFT JOIN r.institution i " +
+            "WHERE i.slug = :institutionSlug AND u.email = :email AND r.role = :role")
+    Optional<UserRole>  findUserRolesInInstitution(String email, String institutionSlug, AppRole role);
     @Query(value = "SELECT r " +
             "FROM UserRole r " +
             "LEFT JOIN r.user u " +
-            "LEFT JOIN FETCH r.group g " +
-            "LEFT JOIN g.institution i " +
+            "LEFT JOIN r.institution i " +
             "WHERE u.id = :userId")
     Set<UserRole> findByUser_Id(Long userId);
-    Set<UserRole> findByUser_IdAndGroup_Id(Long userId, Long groupId);
+    Set<UserRole> findByUser_IdAndInstitution_Id(Long userId, Long institutionId);
 
 }

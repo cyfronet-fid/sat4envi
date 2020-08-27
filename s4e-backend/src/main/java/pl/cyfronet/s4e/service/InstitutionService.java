@@ -7,14 +7,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppRole;
-import pl.cyfronet.s4e.bean.Group;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
-import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.GroupRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.InstitutionUpdateException;
@@ -31,12 +28,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class InstitutionService {
-    public static final String DEFAULT = "default";
-    public static final String PREFIX = "__";
-    public static final String SUFFIX = "__";
     private final InstitutionRepository institutionRepository;
     private final AppUserRepository appUserRepository;
-    private final GroupRepository groupRepository;
     private final UserRoleService userRoleService;
     private final SlugService slugService;
     private final FileStorageProperties fileStorageProperties;
@@ -62,10 +55,7 @@ public class InstitutionService {
     @Transactional(rollbackFor = InstitutionCreationException.class)
     public Institution save(Institution institution) throws InstitutionCreationException {
         try {
-            Institution result = institutionRepository.save(institution);
-            Group group = Group.builder().institution(result).name(PREFIX + DEFAULT + SUFFIX).slug(DEFAULT).build();
-            groupRepository.save(group);
-            return result;
+            return institutionRepository.save(institution);
         } catch (DataIntegrityViolationException e) {
             log.info("Cannot create Institution with name '" + institution.getName() + "'", e);
             throw new InstitutionCreationException("Cannot create Institution", e);
@@ -102,7 +92,7 @@ public class InstitutionService {
             addParentInstitutionAdministrators(parent.getSlug(), leafInstitutionSlug);
         }
         // look for institution admins and add them to leaf institution
-        Set<String> adminEmails = groupRepository.findAllMembersEmails(institutionSlug, DEFAULT, AppRole.INST_ADMIN);
+        Set<String> adminEmails = institutionRepository.findAllMembersEmails(institutionSlug, AppRole.INST_ADMIN);
         for (String adminEmail : adminEmails) {
             addInstitutionAdminIfRequested(adminEmail, leafInstitutionSlug);
         }
@@ -113,13 +103,17 @@ public class InstitutionService {
             val appUser = appUserRepository.findByEmail(adminMail);
             if (appUser.isPresent()) {
                 // add member to default group
-                userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug, "default");
+                userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug);
                 // add institution_admin role for user
-                userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug, "default");
+                userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug);
             } else {
                 // TODO: invite
             }
         }
+    }
+
+    public <T> Set<T> getMembers(String institutionSlug, Class<T> projection) {
+        return institutionRepository.findAllMembers(institutionSlug, AppRole.GROUP_MEMBER, projection);
     }
 
     public <T> List<T> getAll(Class<T> projection) {
@@ -128,6 +122,14 @@ public class InstitutionService {
 
     public <T> Optional<T> findBySlug(String slug, Class<T> projection) {
         return institutionRepository.findBySlug(slug, projection);
+    }
+
+    public void addMember(String institutionSlug, String email) throws NotFoundException {
+        userRoleService.addRole(AppRole.GROUP_MEMBER, email, institutionSlug);
+    }
+
+    public void removeMember(String institutionSlug, String email) throws NotFoundException {
+        userRoleService.removeRole(AppRole.GROUP_MEMBER, email, institutionSlug);
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})

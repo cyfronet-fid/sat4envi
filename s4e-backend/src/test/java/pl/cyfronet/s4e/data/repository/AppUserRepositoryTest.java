@@ -24,9 +24,6 @@ public class AppUserRepositoryTest {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    private GroupRepository groupRepository;
-
-    @Autowired
     private InstitutionRepository institutionRepository;
 
     private String slugInstitution;
@@ -49,11 +46,6 @@ public class AppUserRepositoryTest {
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());
-        Group group = groupRepository.save(Group.builder()
-                .name("__default")
-                .slug("default")
-                .institution(institution)
-                .build());
         AppUser appUser = appUserRepository.save(AppUser.builder()
                 .name("Name")
                 .surname("Surname")
@@ -64,7 +56,7 @@ public class AppUserRepositoryTest {
         userRoleRepository.save(UserRole.builder()
                 .role(AppRole.GROUP_MEMBER)
                 .user(appUser)
-                .group(group)
+                .institution(institution)
                 .build());
     }
 
@@ -79,7 +71,7 @@ public class AppUserRepositoryTest {
 
     @Test
     void shouldFindByEmailWithRolesTest() {
-        val dbUser = appUserRepository.findByEmailWithRolesAndGroups(email);
+        val dbUser = appUserRepository.findByEmailWithRolesAndInstitutions(email);
         assertThat(dbUser, isPresent());
         assertThat(dbUser.get().getRoles(), hasSize(1));
     }

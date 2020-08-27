@@ -28,7 +28,7 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final AppUser appUser;
         try {
-            appUser = appUserRepository.findByEmailWithRolesAndGroupsAndInstitution(username, AppUser.class).get();
+            appUser = appUserRepository.findByEmailWithRolesAndInstitution(username, AppUser.class).get();
         } catch (NoSuchElementException e) {
             log.debug("AppUser with email " + username + " not found", e);
             throw new UsernameNotFoundException("AppUser with email " + username + " not found", e);
@@ -64,8 +64,7 @@ public class AppUserDetailsService implements UserDetailsService {
     private SimpleGrantedAuthority simpleGrantedAuthority(UserRole userRole) {
         String role = toRole(
                 userRole.getRole().name(),
-                userRole.getGroup().getInstitution().getSlug(),
-                userRole.getGroup().getSlug()
+                userRole.getInstitution().getSlug()
         );
         return new SimpleGrantedAuthority(role);
     }

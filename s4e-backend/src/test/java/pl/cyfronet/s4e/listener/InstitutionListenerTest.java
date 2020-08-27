@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
-import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.util.MailHelper;
 
@@ -19,7 +18,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class GroupListenerTest {
+public class InstitutionListenerTest {
     @Mock
     private MessageSource messageSource;
     @Mock
@@ -27,12 +26,10 @@ public class GroupListenerTest {
     @Mock
     private MailService mailService;
     @Mock
-    private GroupService groupService;
-    @Mock
     private MailHelper mailHelper;
 
     @InjectMocks
-    private GroupListener listener;
+    private InstitutionListener listener;
 
     @Test
     public void shouldntSendIfEmailsEmptyOnShareLinkEvent() throws IOException {

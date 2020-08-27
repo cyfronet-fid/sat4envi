@@ -43,9 +43,6 @@ public class OverlayControllerTest {
     private InstitutionRepository institutionRepository;
 
     @Autowired
-    private GroupRepository groupRepository;
-
-    @Autowired
     private AppUserRepository appUserRepository;
 
     @Autowired
@@ -78,16 +75,14 @@ public class OverlayControllerTest {
         superAdmin = appUserRepository.save(InvitationHelper.userBuilder().admin(true).build());
 
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
-        Group group = groupRepository
-                .save(InvitationHelper.defaultGroupBuilder(institution).build());
 
         institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
         val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MANAGER, AppRole.GROUP_MEMBER};
-        addRoles(institutionAdmin, group, institutionAdminRoles);
+        addRoles(institutionAdmin, institution, institutionAdminRoles);
 
         member = appUserRepository.save(InvitationHelper.userBuilder().build());
         val memberRoles = new AppRole[]{AppRole.GROUP_MEMBER};
-        addRoles(member, group, memberRoles);
+        addRoles(member, institution, memberRoles);
 
         user = appUserRepository.save(InvitationHelper.userBuilder().build());
 
@@ -319,12 +314,12 @@ public class OverlayControllerTest {
         assertEquals((Long) nonVisibleOverlays.get(0), wmsPersonalOverlay.getId());
     }
 
-    private void addRoles(AppUser user, Group group, AppRole[] roles) {
+    private void addRoles(AppUser user, Institution institution, AppRole[] roles) {
         for (AppRole role: roles) {
             val roleBuild = UserRole.builder().
                     role(role)
                     .user(user)
-                    .group(group)
+                    .institution(institution)
                     .build();
             userRoleRepository.save(roleBuild);
         }

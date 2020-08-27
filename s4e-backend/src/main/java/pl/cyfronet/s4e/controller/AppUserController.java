@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
-import pl.cyfronet.s4e.controller.request.UpdateUserGroupsRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
@@ -28,7 +27,6 @@ import pl.cyfronet.s4e.ex.RecaptchaException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
-import pl.cyfronet.s4e.service.GroupService;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +45,6 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class AppUserController {
     private final AppUserService appUserService;
     private final RecaptchaValidator recaptchaValidator;
-    private final GroupService groupService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Operation(summary = "Register a new user")
@@ -106,23 +103,6 @@ public class AppUserController {
         Long emailVerificationId = appUserService.confirmEmail(token).getId();
         String requesterEmail = appUserService.getRequesterEmailBy(token);
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(requesterEmail, emailVerificationId, LocaleContextHolder.getLocale()));
-    }
-
-    @Operation(summary = "Update user groups in an institution")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User groups were updated"),
-            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
-            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
-    })
-    @PutMapping(value = "/institutions/{institution}/users", consumes = APPLICATION_JSON_VALUE)
-    public void updateUserGroupsInInstitution(@RequestBody @Valid UpdateUserGroupsRequest request,
-                                                           @PathVariable("institution") String institutionSlug)
-            throws NotFoundException {
-        if (request.getGroupsWithRoles() != null) {
-            groupService.updateUserGroups(request, institutionSlug);
-        }
     }
 
     @Operation(summary = "Get user profile")

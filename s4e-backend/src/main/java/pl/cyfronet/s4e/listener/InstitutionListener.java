@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pl.cyfronet.s4e.bean.Group;
-import pl.cyfronet.s4e.event.OnAddToGroupEvent;
-import pl.cyfronet.s4e.event.OnRemoveFromGroupEvent;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.event.OnAddToInstitutionEvent;
+import pl.cyfronet.s4e.event.OnRemoveFromInstitutionEvent;
 import pl.cyfronet.s4e.event.OnShareLinkEvent;
-import pl.cyfronet.s4e.service.GroupService;
+import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.util.MailHelper;
 
@@ -24,29 +24,28 @@ import java.net.URLConnection;
 
 @Component
 @RequiredArgsConstructor
-public class GroupListener {
+public class InstitutionListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
-    private final GroupService groupService;
+    private final InstitutionService institutionService;
     private final MailHelper mailHelper;
 
     @Async
     @EventListener
     @Transactional(readOnly = true)
-    public void handle(OnAddToGroupEvent event) {
-        Group group = groupService.getGroup(event.getInstitutionSlug(), event.getGroupSlug(), Group.class).get();
+    public void handle(OnAddToInstitutionEvent event) {
+        Institution institution = institutionService.findBySlug(event.getInstitutionSlug(), Institution.class).get();
 
         String recipientAddress = event.getAddedMemberEmail();
-        String subject = messageSource.getMessage("email.group-add.subject", null, event.getLocale());
+        String subject = messageSource.getMessage("email.institution-add.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
         mailHelper.injectCommonVariables(ctx);
-        ctx.setVariable("groupName", group.getName());
-        ctx.setVariable("institutionName", group.getInstitution().getName());
+        ctx.setVariable("institutionName", institution.getName());
 
-        String plainText = templateEngine.process("group-add-member.txt", ctx);
-        String htmlText = templateEngine.process("group-add-member.html", ctx);
+        String plainText = templateEngine.process("institution-add-member.txt", ctx);
+        String htmlText = templateEngine.process("institution-add-member.html", ctx);
 
         mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
@@ -54,19 +53,18 @@ public class GroupListener {
     @Async
     @EventListener
     @Transactional(readOnly = true)
-    public void handle(OnRemoveFromGroupEvent event) {
-        Group group = groupService.getGroup(event.getInstitutionSlug(), event.getGroupSlug(), Group.class).get();
+    public void handle(OnRemoveFromInstitutionEvent event) {
+        Institution institution = institutionService.findBySlug(event.getInstitutionSlug(), Institution.class).get();
 
         String recipientAddress = event.getRemovedMemberEmail();
-        String subject = messageSource.getMessage("email.group-remove.subject", null, event.getLocale());
+        String subject = messageSource.getMessage("email.institution-remove.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
         mailHelper.injectCommonVariables(ctx);
-        ctx.setVariable("groupName", group.getName());
-        ctx.setVariable("institutionName", group.getInstitution().getName());
+        ctx.setVariable("institutionName", institution.getName());
 
-        String plainText = templateEngine.process("group-remove-member.txt", ctx);
-        String htmlText = templateEngine.process("group-remove-member.html", ctx);
+        String plainText = templateEngine.process("institution-remove-member.txt", ctx);
+        String htmlText = templateEngine.process("institution-remove-member.html", ctx);
 
         mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }
