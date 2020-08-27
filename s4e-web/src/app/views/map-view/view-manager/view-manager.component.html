@@ -24,10 +24,11 @@
     [loading]="overlaysLoading$ | async"
     [items]="overlays$ | async"
     (itemSelected)="selectOverlay($event)"
+    data-e2e="layers-list"
   >
     <div s4e-caption i18n>
       <span>Warstwy</span>
-      <button *ngIf="isLoggedIn" (click)="showOverlayListModal()" class="layers__manager">Zarządzaj</button>
+      <button *ngIf="isLoggedIn" (click)="showOverlayListModal()" class="layers__manager" data-e2e="sidebar-management-btn">Zarządzaj</button>
     </div>
   </s4e-items-picker>
 

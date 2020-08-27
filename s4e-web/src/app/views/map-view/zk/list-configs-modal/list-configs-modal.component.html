@@ -3,7 +3,12 @@
   <div class="s4e-modal-body">
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
       <div class="s4e-modal-table" *ngIf="(configs$ | async).length > 0; else noConfigurations">
-          <section class="element" role="menuitem" *ngFor="let config of (configs$ | async)">
+          <section
+            class="element"
+            role="menuitem"
+            *ngFor="let config of (configs$ | async)"
+            data-e2e="view"
+          >
             <header>
               {{config.caption}}
             </header>
@@ -21,11 +26,24 @@
                {{config.configurationNames.overlays.toString() || 'Nie wybrano'}}
               </p>
               <div class="buttons__container">
-                <button class="button button--primary button--small" type="button" (click)="loadConfig(config)" i18n>Wczytaj
+                <button
+                  class="button button--primary button--small"
+                  type="button"
+                  (click)="loadConfig(config)"
+                  data-e2e="view-load-btn"
+                  i18n
+                >
+                  Wczytaj
                 </button>
                 <button class="button button--primary button--small" type="button" (click)="sendTo(config)" i18n>Wyślij do
                 </button>
-                <button class="button button--cancel button--small" (click)="deleteConfig(config)" i18n>Kasuj
+                <button
+                  class="button button--cancel button--small"
+                  (click)="deleteConfig(config)"
+                  data-e2e="view-delete-btn"
+                  i18n
+                >
+                  Kasuj
                 </button>
               </div>
             </div>

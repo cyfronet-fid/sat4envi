@@ -24,12 +24,26 @@
             <td i18n>{{viewConfig.configurationNames.overlays.toString() || 'Nie wybrano'}}
           </tr>
         </table>
-        <ext-input label="Nazwa własna konfiguracji" i18n-label formControlName="configurationName" #configurationNameRef></ext-input>
+        <ext-input
+          label="Nazwa własna konfiguracji"
+          i18n-label
+          formControlName="configurationName"
+          #configurationNameRef
+          data-e2e="view-label"
+        ></ext-input>
       </div>
     </div>
     <div class="s4e-modal-footer">
       <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
-      <button class="button button--primary button--small" type="submit" *ngIf="!(loading$ | async)" i18n>Zapisz konfigurację</button>
+      <button
+        class="button button--primary button--small"
+        type="submit"
+        *ngIf="!(loading$ | async)"
+        data-e2e="add-view-btn"
+        i18n
+      >
+        Zapisz konfigurację
+      </button>
       <button class="button button--cancel button--small" type="button" *ngIf="!(loading$ | async)" (click)="dismiss()" i18n>Anuluj
       </button>
     </div>

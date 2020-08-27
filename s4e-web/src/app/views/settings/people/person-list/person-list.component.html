@@ -8,6 +8,7 @@
     <button
       class="button button--secondary button--small"
       (click)="sendInvitation()"
+      data-e2e="open-send-invitation-btn"
     >
       Wyślij zaproszenie
     </button>
@@ -28,15 +29,30 @@
     <td i18n>{{user.email}}</td>
     <td>
       <ng-container *ngIf="isInvitation(user)">
-        <a href="javascript:void(0)" (click)="resendTo(user)" data-ut="resend-btn">
+        <a
+          href="javascript:void(0)"
+          (click)="resendTo(user)"
+          data-e2e="resend-invitation-btn"
+          data-ut="resend-btn"
+        >
           <i class="fas fa-redo"></i>
         </a>
-        <a href="javascript:void(0)" (click)="sendInvitation(user)" data-ut="edit-btn">
+        <a
+          href="javascript:void(0)"
+          (click)="sendInvitation(user)"
+          data-ut="edit-btn"
+          data-e2e="edit-invitation-btn"
+        >
           <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
         </a>
       </ng-container>
 
-      <a href="javascript:void(0)" (click)="delete(user)" data-ut="delete-btn">
+      <a
+        href="javascript:void(0)"
+        (click)="delete(user)"
+        data-e2e="delete-invitation-btn"
+        data-ut="delete-btn"
+      >
         <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
       </a>
     </td>

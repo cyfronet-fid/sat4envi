@@ -49,6 +49,7 @@
           [routerLink]="['./people']"
           queryParamsHandling="merge"
           [class.disabled]="!(isInstitutionActive$ | async)"
+          data-e2e="go-to-institution-people-btn"
           i18n
         >
           Ludzie
@@ -59,6 +60,7 @@
           [routerLink]="['./institution']"
           queryParamsHandling="merge"
           [class.disabled]="!(isInstitutionActive$ | async)"
+          data-e2e="go-to-institution-profile-btn"
           i18n
         >
           Profil Instytucji

@@ -1,35 +1,49 @@
 import { Map } from '../map/map.po';
+import { Core } from '../core.po';
 
 export interface User {
   email: string;
   password: string;
 }
 
-export namespace Login {
-  export class PageObject {
-    // TODO: update elements with data-e2e attributes
-    static getLoginInput = () => cy.get('#login-login');
-    static getPasswordInput = () => cy.get('#login-password');
-    static getSubmitBtn = () => cy.get('button[type="submit"]');
-  }
+export class Login extends Core {
+  static readonly pageObject = {
+    getLoginInput: () => cy.get('input[data-test="login-email-input"]'),
+    getPasswordInput: () => cy.get('input[data-test="login-password-input"]'),
+    getSubmitBtn: () => cy.get('button[data-test="login-submit-btn"]'),
+    getGoToMapBtn: () => cy.get('a[data-test="go-to-map-btn"]')
+  };
 
-  export function loginAs(user: User) {
-    cy.visit('/login');
-
-    PageObject
+  static fillForm(user: User) {
+    Login
+      .pageObject
       .getLoginInput()
       .should('be.visible')
       .type(user.email);
-    PageObject
+    Login
+      .pageObject
       .getPasswordInput()
       .should('be.visible')
       .type(user.password);
-    PageObject
+
+    return Login;
+  }
+
+  static sendForm() {
+    Login
+      .pageObject
       .getSubmitBtn()
       .should('be.visible')
       .click();
 
-    cy.location('pathname').should('eq', '/map/products');
-    return Map;
+    return Login;
+  }
+
+  static loginAs(user: User) {
+    return Login
+      .callAndChangeContextTo(cy.visit('/login'), Login)
+      .fillForm(user)
+      .sendForm()
+      .callAndChangeContextTo(cy.location('pathname').should('eq', '/map/products'), Map);
   }
 }

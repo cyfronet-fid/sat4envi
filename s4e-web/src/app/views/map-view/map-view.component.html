@@ -81,7 +81,12 @@
   (outsideClick)="toggleZKOptions(false)"
   (routerChange)="toggleZKOptions(false)"
 >
-  <button (click)="toggleZKOptions()" id="zk-options-button" class="dropdown__button dropdown__button--zk">
+  <button
+    (click)="toggleZKOptions()"
+    id="zk-options-button"
+    class="dropdown__button dropdown__button--zk"
+    data-e2e="zk-options-btn"
+  >
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
     <div class="dropdown__content dropdown__content--zk">
@@ -91,8 +96,22 @@
         <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj raport</a></li>
         <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
         <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz obraz</a></li>
-        <li><a (click)="openSaveViewModal()" href="javascript:undefined" i18n>Zapisz widok</a></li>
-        <li><a (click)="openListViewModal()" href="javascript:undefined" i18n>Wyświetl zapisane widoki</a></li>
+        <li><a
+          (click)="openSaveViewModal()"
+          href="javascript:undefined"
+          data-e2e="open-save-view-modal-btn"
+          i18n
+        >
+          Zapisz widok
+      </a></li>
+        <li><a
+          (click)="openListViewModal()"
+          href="javascript:undefined"
+          data-e2e="open-views-modal-btn"
+          i18n
+        >
+          Wyświetl zapisane widoki
+        </a></li>
         <li><a
           data-test-download-original
           [ngClass]="{disabled: (activeScene$ | async) == null}"

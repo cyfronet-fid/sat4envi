@@ -1,4 +1,6 @@
-import { environment } from '../../src/environments/environment';
+/// <reference types="Cypress" />
+
+import { environment } from '../../../src/environments/environment';
 
 context('ErrorHandling', () => {
   beforeEach(() => {

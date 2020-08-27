@@ -16,7 +16,7 @@ export class PersonService {
   ) {}
 
   fetchAll(institutionSlug: string) {
-    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members`;
+    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/members`;
     this._http.get<Person[]>(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe((data) => this._store.set(data));
@@ -24,7 +24,7 @@ export class PersonService {
 
   deleteMember(userId: string) {
     const institutionSlug = this._institutionQuery.getActiveId();
-    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/groups/${DEFAULT_GROUP_SLUG}/members/${userId}`;
+    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/members/${userId}`;
     this._http.post(url, {})
       .pipe(handleHttpRequest$(this._store))
       .subscribe();

@@ -68,7 +68,7 @@ export class SessionService {
   @action('login')
   login(request: LoginFormState, activatedRoute: ActivatedRoute) {
     const url = `${environment.apiPrefixV1}/login`;
-    const post$ = this._http.post<LoginFormState>(url, request)
+    this._http.post<LoginFormState>(url, request)
       .pipe(
         handleHttpRequest$(this._store),
         switchMap(data => this.getProfile$()),
