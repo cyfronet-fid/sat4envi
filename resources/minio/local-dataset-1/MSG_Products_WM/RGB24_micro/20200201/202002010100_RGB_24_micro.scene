@@ -1,0 +1,10 @@
+{
+  "product_type": "RGB24_micro",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/RGB24_micro/20200201/202002010100_RGB_24_micro.metadata",
+    "product_file": "/MSG_Products_WM/RGB24_micro/20200201/202002010100_RGB_24_micro.cog.tif",
+    "original_file": "/MSG_Products/RGB24_micro/20200201/202002010100_RGB_24_micro.gif",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002010100.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}

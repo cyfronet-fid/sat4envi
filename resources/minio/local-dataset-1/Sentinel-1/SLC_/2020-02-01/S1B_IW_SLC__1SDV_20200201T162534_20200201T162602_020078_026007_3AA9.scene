@@ -1,0 +1,11 @@
+{
+  "product_type": "Sentinel-1-SLC_",
+  "artifacts": {
+    "metadata": "/Sentinel-1/SLC_/2020-02-01/S1B_IW_SLC__1SDV_20200201T162534_20200201T162602_020078_026007_3AA9.metadata",
+    "manifest": "/Sentinel-1/SLC_/2020-02-01/S1B_IW_SLC__1SDV_20200201T162534_20200201T162602_020078_026007_3AA9.manifest.xml",
+    "product_archive": "/Sentinel-1/SLC_/2020-02-01/S1B_IW_SLC__1SDV_20200201T162534_20200201T162602_020078_026007_3AA9.SAFE.zip",
+    "checksum": "/Sentinel-1/SLC_/2020-02-01/S1B_IW_SLC__1SDV_20200201T162534_20200201T162602_020078_026007_3AA9.SAFE.md5",
+    "quicklook": "/Sentinel-1/SLC_/2020-02-01/S1B_IW_SLC__1SDV_20200201T162534_20200201T162602_020078_026007_3AA9.qlf.cog.tif"
+  },
+  "schema": "Sentinel-1.scene.v1.json"
+}

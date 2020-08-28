@@ -1,0 +1,9 @@
+{
+  "product_type": "Opad_H05_24h",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/Opad_H05/20200201/H5_20200201_1200_24.metadata",
+    "product_file": "/MSG_Products_WM/Opad_H05/20200201/H5_20200201_1200_24.cog.tif",
+    "original_file": "/SAF_Products/Opad_H05/20200201/H5_20200201_1200_24.txt"
+},
+  "schema": "MSG.scene.v1.json"
+}

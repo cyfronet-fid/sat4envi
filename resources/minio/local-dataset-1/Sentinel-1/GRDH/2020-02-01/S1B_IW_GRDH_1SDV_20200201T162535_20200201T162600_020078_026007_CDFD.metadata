@@ -1,0 +1,13 @@
+{
+   "spacecraft": "Sentinel-1B",
+   "product_type": "GRDH",
+   "sensor_mode": "IW",
+   "processing_level": "1",
+   "polarisation": "Dual VV/VH",
+   "sensing_time": "2020-02-01T16:25:35.936296+00:00",
+   "ingestion_time": "2020-02-02T00:50:42.000000+00:00",
+   "relative_orbit_number": "102",
+   "polygon": "48.473587,19.273281 48.878479,22.771502 47.380516,23.109674 46.976223,19.710758",
+   "format": "COG",
+   "schema": "Sentinel-1.metadata.v1.json"
+}

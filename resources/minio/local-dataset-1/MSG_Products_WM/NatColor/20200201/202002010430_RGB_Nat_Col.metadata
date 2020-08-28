@@ -1,0 +1,10 @@
+{
+   "spacecraft": "MSG",
+   "product_type": "NatCol",
+   "sensor_mode": "full_scan",
+   "processing_level": "2",
+   "sensing_time": "2020-02-01T04:30:00.0+00:00",
+   "polygon": "58.9,-52.7 73.4,-22.0 75.5,22.9 71.5,48 66.8,57.3 59.3,64.5 47.8,70.0 38.3,53.9 23.4,40.9 31.0,15.0 26.8,-13.7 40.9,-22.7 51.6,-35 58.9,-52.7",
+   "format": "COG",
+   "schema": "MSG.metadata.v1.json"
+}

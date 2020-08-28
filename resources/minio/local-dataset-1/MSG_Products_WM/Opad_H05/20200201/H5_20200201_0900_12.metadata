@@ -1,0 +1,10 @@
+{
+   "spacecraft": "MSG",
+   "product_type": "Opad_H05_12h",
+   "sensor_mode": "full_scan",
+   "processing_level": "2",
+   "sensing_time": "2020-02-01T09:00:00.0+00:00",
+   "polygon": "56.0,12.0 56.0,26.0 48.0,26.0 48.0,12.0 56.0,12.0",
+   "format": "COG",
+   "schema": "MSG.metadata.v1.json"
+}

@@ -1,0 +1,10 @@
+{
+   "spacecraft": "MSG",
+   "product_type": "RGB24_micro",
+   "sensor_mode": "full_scan",
+   "processing_level": "2",
+   "sensing_time": "2020-02-01T18:15:00.0+00:00",
+   "polygon": "60.0,-0.75 61.9,20.0 59.9,41.4 49.0,35.3 41.0,32.5 42.1,20.0 41.1,7.9 48.5,5.5 60.0,-0.75",
+   "format": "COG",
+   "schema": "MSG.metadata.v1.json"
+}

@@ -1,0 +1,10 @@
+{
+  "product_type": "NatCol",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/NatColor/20200201/202002011500_RGB_Nat_Col.metadata",
+    "product_file": "/MSG_Products_WM/NatColor/20200201/202002011500_RGB_Nat_Col.cog.tif",
+    "original_file": "/MSG_Products/NatColor/20200201/202002011500_RGB_Nat_Col1.jpeg",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002011500.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}
