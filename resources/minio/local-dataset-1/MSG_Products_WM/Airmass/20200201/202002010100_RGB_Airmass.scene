@@ -1,0 +1,10 @@
+{
+  "product_type": "Airmass",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/Airmass/20200201/202002010100_RGB_Airmass.metadata",
+    "product_file": "/MSG_Products_WM/Airmass/20200201/202002010100_RGB_Airmass.cog.tif",
+    "original_file": "/MSG_Products/Airmass/20200201/202002010100_RGB_Airmass.jpeg",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002010100.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}

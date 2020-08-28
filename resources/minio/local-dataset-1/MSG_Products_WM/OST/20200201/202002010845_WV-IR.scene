@@ -1,0 +1,10 @@
+{
+  "product_type": "OST",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/OST/20200201/202002010845_WV-IR.metadata",
+    "product_file": "/MSG_Products_WM/OST/20200201/202002010845_WV-IR.cog.tif",
+    "original_file": "/MSG_Products/OST/20200201/202002010845_WV-IR.bmp",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002010845.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}

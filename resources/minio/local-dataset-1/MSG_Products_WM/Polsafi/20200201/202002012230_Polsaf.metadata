@@ -1,0 +1,10 @@
+{
+   "spacecraft": "MSG",
+   "product_type": "Polsafi",
+   "sensor_mode": "full_scan",
+   "processing_level": "2",
+   "sensing_time": "2020-02-01T22:30:00.0+00:00",
+   "polygon": "55.0,12.6 55.25,19.0 55.0,26.0 47.55,24.93 47.67,19.0 47.5,14.0 55.0,12.6",
+   "format": "COG",
+   "schema": "MSG.metadata.v1.json"
+}

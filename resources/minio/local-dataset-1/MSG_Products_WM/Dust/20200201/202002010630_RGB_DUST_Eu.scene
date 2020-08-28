@@ -1,0 +1,10 @@
+{
+  "product_type": "Dust",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/Dust/20200201/202002010630_RGB_DUST_Eu.metadata",
+    "product_file": "/MSG_Products_WM/Dust/20200201/202002010630_RGB_DUST_Eu.cog.tif",
+    "original_file": "/MSG_Products/Dust/20200201/202002010630_RGB_DUST_Eu.jpeg",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002010630.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}

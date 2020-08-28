@@ -1,0 +1,10 @@
+{
+  "product_type": "Setvak_Eu",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/Setvak_Eu/20200201/202002010700_Eu_centr_ir_108_setvak_wtemp.metadata",
+    "product_file": "/MSG_Products_WM/Setvak_Eu/20200201/202002010700_Eu_centr_ir_108_setvak_wtemp.cog.tif",
+    "original_file": "/MSG_Products/Setvak_Eu/20200201/202002010700_Eu_centr_ir_108_setvak_wtemp.gif",
+    "raw_data": "/MSG_Raw/2020-02-01/MSG_202002010700.zip"
+  },
+  "schema": "MSG.scene.v1.json"
+}
