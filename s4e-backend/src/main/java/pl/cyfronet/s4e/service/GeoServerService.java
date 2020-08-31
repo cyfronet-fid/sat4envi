@@ -34,8 +34,12 @@ public class GeoServerService {
 
     @Transactional(rollbackFor = RestClientResponseException.class)
     public void addStoreAndLayer(Product product) {
+        addStoreAndLayer(product.getLayerName());
+    }
+
+    @Transactional(rollbackFor = RestClientResponseException.class)
+    public void addStoreAndLayer(String gsName) {
         // Both the coverage store, coverage and layer (the last one with workspace prefix) names will be the same
-        String gsName = product.getLayerName();
         try {
             geoServerOperations.createS3CoverageStore(geoServerProperties.getWorkspace(), gsName);
             geoServerOperations.createS3Coverage(geoServerProperties.getWorkspace(), gsName, gsName);
