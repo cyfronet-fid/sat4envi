@@ -22,8 +22,6 @@ public class GeoServerProperties {
     private String password;
     @NotBlank
     private String baseUrl;
-    @NotBlank
-    private String endpoint = "mailto";
     private Long timeoutConnect = 60L;
     private Long timeoutRead = 60L;
 }
