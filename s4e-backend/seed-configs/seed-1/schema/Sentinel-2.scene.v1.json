@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "Sentinel-2.scene.v1.json",
+  "title": "Sentinel-2.scene.v1",
+  "description": "First schema for Sentinel-2",
+  "required": [
+    "product_type",
+    "artifacts",
+    "schema"
+  ],
+  "type": "object",
+  "properties": {
+    "product_type": {
+      "type": "string",
+      "pattern": "^[-_a-zA-Z0-9]+$"
+    },
+    "artifacts": {
+      "type": "object",
+      "required": [
+        "metadata",
+        "product_archive",
+        "checksum"
+      ],
+      "properties": {
+        "metadata": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.metadata$"
+        },
+        "manifest": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.manifest\\.xml$"
+        },
+        "product_archive": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.zip$"
+        },
+        "checksum": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.md5$"
+        },
+        "quicklook": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.tif$"
+        },
+        "RGB_16b": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.tif$"
+        },
+        "RGBs_8b": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.tif$"
+        }
+      }
+    },
+    "schema": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Sentinel-1-GRDH",
+    "displayName": "Sentinel 1 GRDH",
+    "description": "Opis GRDH",
+    "layerName": "sentinel_1_grdh",
+    "sceneSchemaName": "Sentinel-1.scene.v1.json",
+    "metadataSchemaName": "Sentinel-1.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "quicklook",
+      "COG": "RGBs_8b"
+    }
+  },
+  {
+    "name": "Sentinel-1-GRDM",
+    "displayName": "Sentinel 1 GRDM",
+    "description": "Opis GRDM",
+    "layerName": "sentinel_1_grdm",
+    "sceneSchemaName": "Sentinel-1.scene.v1.json",
+    "metadataSchemaName": "Sentinel-1.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "quicklook"
+    }
+  },
+  {
+    "name": "Sentinel-1-SLC_",
+    "displayName": "Sentinel 1 SLC",
+    "description": "Opis SLC",
+    "layerName": "sentinel_1_slc",
+    "sceneSchemaName": "Sentinel-1.scene.v1.json",
+    "metadataSchemaName": "Sentinel-1.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "quicklook"
+    }
+  },
+  {
+    "name": "108m",
+    "displayName": "Zachmurzenie (108m)",
+    "description": "Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)",
+    "layerName": "108m",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Airmass",
+    "displayName": "Airmass",
+    "description": "Airmass",
+    "layerName": "airmass",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Dust",
+    "displayName": "Pył w atmosferze",
+    "description": "Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.",
+    "layerName": "dust",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "NatCol",
+    "displayName": "Detekcja chmur lodowych i śniegu",
+    "description": "Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)",
+    "layerName": "natcol",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Polsafi",
+    "displayName": "Polsafi, wyładowania atmosferyczne",
+    "description": "Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)",
+    "layerName": "polsafi",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "RGB24_micro",
+    "displayName": "Mikrofizyka chmur",
+    "description": "Kompozycja barwna RGB Mikrofizyka 24 godzinna do detekcji różnego typu zachmurzenia",
+    "layerName": "rgb24_micro",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Setvak_Eu",
+    "displayName": "Chmury konwekcyjne",
+    "description": "Obraz satelitarny IR z dedykowaną paletą barwną",
+    "layerName": "setvak_eu",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Setvak_PL",
+    "displayName": "Chmury konwekcyjne (PL)",
+    "description": "Obraz satelitarny IR z dedykowaną paletą barwną",
+    "layerName": "setvak_pl",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Opad_H03",
+    "displayName": "Intensywność opadu",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia intensywność opadu w mm/h.",
+    "layerName": "opad_h03",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Opad_H05_03h",
+    "displayName": "Suma opadu (3h)",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "layerName": "opad_h05_03h",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Opad_H05_06h",
+    "displayName": "Suma opadu (6h)",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "layerName": "opad_h05_06h",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Opad_H05_12h",
+    "displayName": "Suma opadu (12h)",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "layerName": "opad_h05_12h",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "Opad_H05_24h",
+    "displayName": "Suma opadu (24h)",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "layerName": "opad_h05_24h",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  },
+  {
+    "name": "OST",
+    "displayName": "Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)",
+    "description": "Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).",
+    "layerName": "ost",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    }
+  }
+]
