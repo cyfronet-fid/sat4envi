@@ -26,17 +26,17 @@ class PrefixScannerIntegrationTest {
     public void shouldWork() {
         Stream<S3Object> scan = prefixScanner.scan("/");
 
-        assertThat(scan.count(), is(equalTo(288L)));
+        assertThat(scan.count(), is(equalTo(4312L)));
     }
 
     @Test
     public void shouldLimitResultsToPrefix() {
-        Stream<S3Object> scan = prefixScanner.scan("/201810040000_");
+        Stream<S3Object> scan = prefixScanner.scan("/MSG_Products_WM/108m/20200201/202002010000_kan_10800m");
 
         assertThat(scan.map(S3Object::key).collect(Collectors.toList()), containsInAnyOrder(
-                "/201810040000_Merkator_Europa_ir_108_setvak.tif",
-                "/201810040000_Merkator_Europa_ir_108m.tif",
-                "/201810040000_Merkator_WV-IR.tif"
+                "/MSG_Products_WM/108m/20200201/202002010000_kan_10800m.cog.tif",
+                "/MSG_Products_WM/108m/20200201/202002010000_kan_10800m.metadata",
+                "/MSG_Products_WM/108m/20200201/202002010000_kan_10800m.scene"
         ));
     }
 }

@@ -14,9 +14,9 @@ context('Map Products', () => {
   });
 
   it('should load product map', function () {
-    const year = 2018;
-    const month = 10;
-    const day = 4;
+    const year = 2020;
+    const month = 2;
+    const day = 1;
     const hour = 2;
     Login
       .loginAs(this.zkMember)
@@ -33,7 +33,7 @@ context('Map Products', () => {
     // resonably tested at all.
     cy.wait(7500).window().then(win => {
       const networkrequests = win.performance.getEntries()
-        .filter(r => /http:\/\/.+\/wms\?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=development%3A108m&TIME=2018-10-04T00%3A00%3A00.000Z&CRS=EPSG%3A3857&.+/.test(r.name));
+        .filter(r => /http:\/\/.+\/wms\?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=development%3A108m&TIME=2020-02-01T00%3A00%3A00.000Z&CRS=EPSG%3A3857&.+/.test(r.name));
     });
   });
 });

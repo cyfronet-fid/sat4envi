@@ -34,7 +34,7 @@ services:
     build: ./gs-gateway
     env_file:
       - ${GS_GATEWAY_TEST_ENV_PATH:-gsg-test.env}
-      - ${GS_GATEWAY_TEST_DATASET_ENV_PATH:-gsg-dataset-minio-data-v1.env}
+      - ${GS_GATEWAY_TEST_DATASET_ENV_PATH:-gsg-seed-1.env}
     ports:
       - ${GS_GATEWAY_TEST_PORT:-8091}:8090
     networks:
@@ -45,6 +45,8 @@ services:
     image: fiddev/minio-test:1.1.0
     ports:
       - ${MINIO_TEST_PORT:-9002}:9000
+    volumes:
+      - ./resources/minio:/data
     networks:
       - net-test
     environment:

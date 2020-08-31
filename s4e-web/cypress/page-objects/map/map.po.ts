@@ -20,7 +20,7 @@ export class Map extends Core {
     getMonthBtn: (month: number) =>
       cy.get(".owl-dt-calendar-cell-content").eq(month - 1),
     getDayBtn: (day: number) =>
-      cy.get(".owl-dt-calendar-cell-content").contains(day),
+      cy.get(".owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-out)").contains(day),
     getHourBtn: (hour: number) =>
       cy.get(".timeline__item").contains(hour),
   };

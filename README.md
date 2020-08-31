@@ -64,8 +64,10 @@ Both methods will expose the server under `http://localhost:4201`.
 
 During bootstrap Flyway will migrate the schema based on migrations placed in `src/main/resources/db/migration`.
 
-In the `development` mode the DB and GeoServer are seeded by components from `pl.cyfronet.s4e.db.seed`.
+In the `development` mode the DB is seeded by components from `pl.cyfronet.s4e.db.seed`.
 They are executed on every startup, but they can also be run by setting appropriate profiles.
+
+If you want Products in your instance, see [the instructions in Seeding Products](#seeding-products).
 
 To bake version into the application (to be seen by the testers, etc) package application while having
 environmental variable `NG_VERSION` set to the specified string which will be shown in the application.
@@ -89,56 +91,61 @@ Several profiles can be specified in a comma separated list, e.g. `production,ru
 
 `run-seed-users`: Runs `SeedUsers`.
 
-`run-seed-products`: Runs `SeedProducts`.
-See the section Seeding for more info.
-
 `run-seed-places`: Runs `SeedPlaces`.
 
 
-#### Seeding
+#### Seeding Products
 
-The operation of seeding products seeds the DB and synchronizes GeoServer to it.
-To disable either phase set `seed.products.seed-db=false` or `seed.products.sync-geoserver=false`, respectively.
+(Versions up to v11.0.x used Product seeding during application startup, if you need info about that removed
+mechanism please refer to the history of `README.md`.)
 
-If GeoServer is not seeded then the `Product::created` flag is set to true without extra checks.
+After the backend boots up on a clean DB it will have no Schemas, Products, nor Scenes registered.
+To initialize them, use admin endpoints: first creating Schemas, then, Products which depend on them, and finally run
+a SyncJob to read Scenes in from Ceph.
 
-You can also disable GeoServer workspace reset by setting `seed.products.sync-geoserver.reset-workspace=true`.
-This may come handy if the GeoServer workspace has a lot of layers and operation of deleting it would trigger
-the `RestTemplate`'s timeout.
+Examples of their usage are in `s4e-backend/src/scripts/seed.sh`, a script which can also be used to perform
+initialization based on a directory with configuration.
 
-There are currently 3 data sets which the backend is capable of seeding: `minio-data-v1`, `s4e-demo` and `s4e-demo-2`.
-The default is `minio-data-v1`, but another one can be set with the property `seed.products.data-set`.
+For the script to succeed, make sure you have correct admin credentials (admin user must be present in DB), DB hasn't
+been seeded with Products yet, backend and GeoServer are connected to correct S3 endpoint, and backend has a proper
+scene bucket set.
+In particular, running `docker-compose up` will set it up correctly (although with bogus actual s3 data, only
+metadata and scene files are copied with content, so GeoServer won't produce sensible imagery).
 
-The gs-gateway layer lists have to be updated so that seeded layers remain accessible.
-There are env files available for each dataset in the root of the project named `gsg-dataset-<name>.env`.
-Docker-compose can be pointed at them by setting `GS_GATEWAY_DATASET_ENV_PATH`.
+When the backend is running, issue `s4e-backend/src/scripts/seed.sh http://localhost:4201 <seed-config-path>`.
+Set `<seed-config-path>` to lead to a seed-config, for example: `s4e-backend/seed-configs/seed-1`.
 
-`minio-data-v1` contains a single day of data for three products.
-It uses local minio for S3 storage.
+Extra envvars, which can be set on script:
+- `BUCKET`: customizes the bucket name used by DB to generate granule paths for GeoServer,
+- `SKIP_SEED_GEOSERVER`: set to `true` not to seed GeoServer (useful for PR instances),
+- `ADMIN_EMAIL`: by default equal to `admin@mail.pl`,
+- `ADMIN_PASSWORD`: by default equal to `adminPass20`.
 
-`s4e-demo` is a data set which consists of a month of data of five products.
-There is no archive with this data set, but it is available in the CEPH's bucket `s4e-demo`.
-After setting the property `seed.products.data-set`, point the GeoServer to the Cyfronet's CEPH instance.
-Moreover, you must set a proper bucket by setting `s3.bucket=s4e-demo` so that layers provisioned to the
-GeoServer have correct bucket set.
-(The provisioning will take a while, so it makes sense to only do it once and in the subsequent runs disable
-the products seeding by setting the profile `skip-seed-products`.)
+The script will:
+- authenticate (waiting with some timeout),
+- set necessary property,
+- create schemas,
+- create products,
+- synchronize scene prefixes,
+- reset GeoServer workspace
+- recreate overlays and synchronize them with GeoServer,
+- create layer (one per product) in GeoServer.
 
-`s4e-demo-2` is an extension of `s4e-demo`, which has 14 products with variable amount of data.
-Like in the case of the base dataset, the data is stored in the Cyfronet CEPH in bucket `s4e-demo-2`.
-You have to observe the steps for `s4e-demo` with updated dataset and bucket names.
+The seed-config consists of a list of Schemas, Products and prefixes to scan.
+Schemas are placed in separate files in directory `schema/`, their type is determined by name.
+Products are put in `products.json`, which is an array of Product creation requests.
+The prefixes to be scanned are put line by line in `prefixes.list`.
 
-`s4e-sync-1` is the first dataset which scenes are loaded based on their scene files.
-It consists of 12 products: Airmass, Opad_H03, Opad_H05, Polsafi, 108m, Dust, OST, Setvak_Eu, Setvak_PL,
-Sentinel-1-GRDH, Sentinel-1-GRDM and Sentinel-1-SLC_.
-See the following section for info on loading it.
+The existing seed-config can be used as a base for creating custom ones, just make sure to update `gs-gateway`
+configuration when modifying product (layer) list.
+By default, docker-compose uses envvar `GS_GATEWAY_DATASET_ENV_PATH=gsg-seed-1.env`, but it can be customized.
 
+`seed-1` is configured to work with a local bucket `local-dataset-1`, with bogus data, however, it is also more or less
+synchronized with bucket `s4e-sync-1` (`Opad_H05`, `Opad_H03` and `NatCol` are faulty as of 2020-08-31).
+You can set SOK property `s3.bucket` or envvar `S3_BUCKET` to set the desired bucket name.
 
-#### Seeding with s4e-demo data
-
-The first thing is to obtain production CEPH credentials, they are for example
-[here](https://docs.cyfronet.pl/display/FID/Projekty).
-(Use `storage.cloud...` endpoint for `s4e-demo` and `s3.cloud...` for `s4e-sync`.)
+To access `s4e-sync-1` you need to obtain production CEPH credentials, they are for example
+[here](https://docs.cyfronet.pl/display/FID/Projekty), use `s3.cloud...` endpoint.
 Once you have them, point your GeoServer instance to the Cyfronet CEPH by setting the following evvars in `.env`:
 ```
 GEOSERVER_S3_ENDPOINT=<endpoint>
@@ -153,13 +160,12 @@ If you run with docker, package the application with `./mvnw package -DskipTests
 If you had already created a GeoServer container you may need to recreate it: `docker-compose down`, to remove
 the container.
 This will also erase other containers from the project.
-Then, run required docker-compose services with `docker-compose up -d db geoserver`.
+Then, run required docker-compose services with `docker-compose up -d db geoserver broker`.
 
 Then, run the backend with properties:
 ```
 spring.profiles.active=development
-seed.products.data-set=<dataset>
-s3.bucket=<dataset>
+s3.bucket=<bucket>
 s3.access-key=<access_key>
 s3.secret-key=<secret_key>
 s3.endpoint=<path to storage>
@@ -167,34 +173,16 @@ s3.endpoint=<path to storage>
 If you run with docker, update the `backend-development.env` (or another env file you have wired up to `s4e-backend`
 service in `docker-compose.yml`) by appending:
 ```
-SEED_PRODUCTS_DATASET=<dataset>
-S3_BUCKET=<dataset>
+S3_BUCKET=<bucket>
 S3_ACCESSKEY=<access_key>
 S3_SECRETKEY=<secret_key>
 S3_ENDPOINT=<path to storage>
 ```
 
-The backend will seed db and GeoServer.
-It is normal that there are some errors in the backend's logs as there are gaps in the available data.
-However, the beginning of the `s4e-demo` data is quite clean, so you should see progress info when the seeder starts.
-
-If you're seeding `s4e-sync-1` there can also be some errors in the logs, however, most likely it is fine.
+The backend will initialize, then run the seeds.
+If you're seeding `s4e-sync-1` there can be some errors in the logs, however, most likely it is fine.
 Nevertheless, if you see S3ClientExceptions, or too many keys not found errors, you may need to evaluate if you have
-correct credentials.
-
-If you want to skip seeding db and GeoServer with products on subsequent runs add profile `skip-seed-products`,
-either by adding property:
-```
-spring.profiles.active=development,skip-seed-products
-```
-or by setting envvar (in `backend-development.env`, not `.env`):
-```
-SPRING_PROFILES_ACTIVE=development,skip-seed-products
-```
-
-To control the number of scenes seeded per product for `s4e-sync-1` dataset use property
-`seed.products.s4e-sync-v1.limit`, by default the seeder loads only 100 scenes of each product.
-To load an unlimited number set its value to -1.
+correct credentials, bucket set, or if the Ceph infrastructure isn't down.
 
 
 #### Scene updates from AMQP queue
@@ -231,9 +219,7 @@ services:
 and `/backend-custom.env` with contents:
 ```properties
 SPRING_PROFILES_ACTIVE=development
-SEED_PRODUCTS_DATASET=s4e-demo
 S3_BUCKET=s4e-demo
-SEED_PRODUCTS_SYNCGEOSERVER=false
 ```
 Both files are ignored by `.gitignore`, so they won't be accidentally committed and pushed to the public repository.
 
@@ -300,7 +286,7 @@ When you run the backend Swagger-UI is exposed under `http://localhost:4201/swag
 
 #### <a id="backend-static"></a> Static images S3 storage
 
-**This is somehow outdated, but describes the **
+**This is somehow outdated, but describes the process more or less. **
 
 To easily set bucket policies, install [minio client](https://github.com/minio/mc).
 
