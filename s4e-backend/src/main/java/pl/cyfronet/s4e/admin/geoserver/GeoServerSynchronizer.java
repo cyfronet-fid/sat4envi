@@ -1,4 +1,4 @@
-package pl.cyfronet.s4e.geoserver.sync;
+package pl.cyfronet.s4e.admin.geoserver;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class GeoServerSynchronizer {
     public void synchronizeStoreAndMosaics() {
         log.info("Creating stores and mosaics");
         for (val product : productRepository.findAll()) {
-            if (!geoServerService.layerExists(product.getName().toLowerCase())) {
+            if (!geoServerService.layerExists(product.getLayerName())) {
                 geoServerService.addStoreAndLayer(product);
             }
         }
