@@ -3,12 +3,14 @@ package pl.cyfronet.s4e.controller;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -234,6 +236,75 @@ public class SceneControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 .andExpect(jsonPath("$", contains("2019-10-01", "2019-10-02", "2019-10-31")));
+    }
+
+    @Nested
+    class GetMostRecent {
+        private final LocalDateTime BASE_TIME = LocalDateTime.of(2020, 1, 1, 0, 0);
+
+        private Product product1;
+        private Product product2;
+
+        @BeforeEach
+        public void beforeEach() {
+            product1 = productRepository.save(productBuilder().build());
+            product2 = productRepository.save(productBuilder().build());
+            Stream.of(BASE_TIME.plusHours(1), BASE_TIME)
+                    .map(toScene(product2))
+                    .forEach(sceneRepository::save);
+        }
+
+        @Test
+        public void shouldWork() throws Exception {
+            val product1Scenes = Stream.of(BASE_TIME.minusSeconds(1), BASE_TIME, BASE_TIME.plusSeconds(1))
+                    .map(toScene(product1))
+                    .map(sceneRepository::save)
+                    .collect(Collectors.toList());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(2).getId().intValue()))))
+                    .andExpect(jsonPath("$.timestamp", is(equalTo("2020-01-01T00:00:01Z"))));
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent")
+                    .param("timeZone", "Europe/Warsaw"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(2).getId().intValue()))))
+                    .andExpect(jsonPath("$.timestamp", is(equalTo("2020-01-01T01:00:01+01:00"))));
+        }
+
+        @Test
+        public void shouldWorkIfThereAreTwoScenesWithEqualTimestamp() throws Exception {
+            val product1Scenes = Stream.of(BASE_TIME, BASE_TIME)
+                    .map(toScene(product1))
+                    .map(sceneRepository::save)
+                    .collect(Collectors.toList());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
+                    .andExpect(status().isOk())
+                    // Expect the one with lower id to be returned.
+                    .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(0).getId().intValue()))))
+                    .andExpect(jsonPath("$.timestamp", is(equalTo("2020-01-01T00:00:00Z"))));
+        }
+
+        @Test
+        public void shouldReturn404IfProductDoesntExist() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + (product2.getId() + 1) + "/scenes/most-recent"))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        public void shouldReturnEmptyIfThereAreNoScenes() throws Exception {
+            Stream.of(BASE_TIME.plusHours(1), BASE_TIME)
+                    .map(toScene(product2))
+                    .forEach(sceneRepository::save);
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
+                    .andExpect(status().isOk())
+                    // Expect the one with lower id to be returned.
+                    .andExpect(jsonPath("$.sceneId", is(nullValue())))
+                    .andExpect(jsonPath("$.timestamp", is(nullValue())));
+        }
     }
 
     @Test
