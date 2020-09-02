@@ -119,6 +119,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, prefix(
                         "/products/{id}/scenes",
                         "/products/{id}/scenes/available",
+                        "/products/{id}/scenes/most-recent",
                         "/scenes/{id}/download"
                 )).permitAll()
 

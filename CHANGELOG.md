@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Endpoint returning the most recent scene for a product [#680](https://github.com/cyfronet-fid/sat4envi/issues/680)
+
 ### Changed
 
 ### Fixed

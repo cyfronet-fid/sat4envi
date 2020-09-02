@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.data.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Scene;
@@ -15,6 +16,8 @@ public interface SceneRepository extends JpaRepository<Scene, Long>, SceneReposi
     <T> Optional<T> findById(Long id, Class<T> projection);
 
     Optional<Scene> findBySceneKey(String sceneKey);
+
+    <T> Optional<T> findFirstByProductId(Long productId, Sort sort, Class<T> projection);
 
     List<Scene> findAllByProductId(Long productId);
 

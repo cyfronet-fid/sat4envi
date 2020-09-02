@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
+import pl.cyfronet.s4e.controller.response.MostRecentSceneResponse;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.SceneService;
@@ -71,6 +72,29 @@ public class SceneController {
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
     ) {
         return sceneService.getAvailabilityDates(productId, yearMonth, timeZone.getZoneId());
+    }
+
+    public interface SceneProjection {
+        Long getId();
+        LocalDateTime getTimestamp();
+    }
+
+    @Operation(summary = "Return the most recent available Scene for a Product")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved most recent scene or Product has no Scenes"),
+            @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
+    })
+    @GetMapping("/products/{productId}/scenes/most-recent")
+    public MostRecentSceneResponse getMostRecent(
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
+    ) throws NotFoundException {
+        return sceneService.getMostRecentScene(productId, SceneProjection.class)
+                .map(scene -> MostRecentSceneResponse.builder()
+                        .sceneId(scene.getId())
+                        .timestamp(timeHelper.getZonedDateTime(scene.getTimestamp(), timeZone.getZoneId()))
+                        .build())
+                .orElseGet(() -> MostRecentSceneResponse.builder().build());
     }
 
     @Operation(summary = "Redirect to a presigned download url for a scene")

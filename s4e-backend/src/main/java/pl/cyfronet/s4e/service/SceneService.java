@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.Scene;
@@ -87,6 +88,13 @@ public class SceneService {
         }
 
         return dates;
+    }
+
+    public <T> Optional<T> getMostRecentScene(Long productId, Class<T> projection) throws NotFoundException {
+        if (!productRepository.existsById(productId)) {
+            throw constructNFE("Product", productId);
+        }
+        return sceneRepository.findFirstByProductId(productId, Sort.by(Sort.Direction.DESC, "timestamp"), projection);
     }
 
     private NotFoundException constructNFE(String name, Long id) {
