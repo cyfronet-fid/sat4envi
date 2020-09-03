@@ -16,11 +16,13 @@
       i18n-placeholder
       [formControl]="searchFormControl"
       (focus)="valueChange.emit(searchFormControl.value)"
+      data-e2e="search-input"
     />
     <button
       *ngIf="!!search.value.trim()"
       class="reset_search_button"
       (click)="resetSearchValue()"
+      data-e2e="clear-search-btn"
     >
       <i class="fas fa-times"></i>
     </button>
@@ -28,6 +30,7 @@
       class="search__button"
       (click)="select(query.getActive())"
       [disabled]="!canSelectActiveResult"
+      data-e2e="select-active-result-btn"
     >
       <i class="fas fa-search"></i>
     </button>
@@ -35,7 +38,10 @@
 
   <div *ngIf="areResultsOpen">
     <div *ngIf="!isLoading; else emptyResultSet" class="searchResults">
-      <div class="searchresult__container">
+      <div
+        class="searchresult__container"
+        data-e2e="search-results-list"
+      >
         <div *ngIf="!hasResults">
           <span class="search__notfound"i18n>
             Nie znaleziono wynikow
@@ -47,6 +53,7 @@
             [ngClass]="{'active': isActive(result)}"
             (click)="select(result); store.setActive(result)"
             (focus)="store.setActive(result)"
+            data-e2e="search-result"
           >
             <ng-container
               *ngTemplateOutlet="resultTemplate, context: { $implicit: result }"

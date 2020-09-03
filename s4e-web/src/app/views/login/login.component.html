@@ -45,16 +45,33 @@
         <ul class="form__list">
           <li class="form__element">
             <label for="login-login" i18n>Email</label>
-            <input class="form-control" formControlName="email" id="login-login" type="text">
+            <input
+              class="form-control"
+              formControlName="email"
+              id="login-login"
+              type="text"
+              data-test="login-email-input"
+            >
             <ul s4e-form-error [control]="form.controls.email"></ul>
           </li>
           <li class="form__element">
             <label for="login-password" i18n>Hasło</label>
-            <input class="form-control" formControlName="password" id="login-password" type="password">
+            <input
+              class="form-control"
+              formControlName="password"
+              id="login-password"
+              type="password"
+              data-test="login-password-input"
+            >
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
           <li class="form__element">
-            <button class="button button--primary" type="submit" [disabled]="form.invalid">
+            <button
+              class="button button--primary"
+              type="submit"
+              [disabled]="form.invalid"
+              data-test="login-submit-btn"
+            >
               <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
               <ng-container i18n>Zaloguj</ng-container>
             </button>
@@ -64,7 +81,7 @@
       </form>
     </div>
     <section class="content__switch content__switch--left">
-      <a routerLink="/">
+      <a routerLink="/" data-test="go-to-map-btn">
         Przejdź do mapy
       </a>
     </section>

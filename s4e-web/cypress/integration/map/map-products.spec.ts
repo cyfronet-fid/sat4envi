@@ -1,0 +1,39 @@
+/// <reference types="Cypress" />
+
+import { Login } from '../../page-objects/login/login.po';
+import { Map } from '../../page-objects/map/map.po';
+import { MapProducts } from './../../page-objects/map/map-products.po';
+
+context('Map Products', () => {
+  beforeEach(() => {
+    cy.fixture('users/zkMember.json').as('zkMember');
+  });
+
+  beforeEach(() => {
+    cy.visit('/');
+  });
+
+  it('should load product map', function () {
+    const year = 2018;
+    const month = 10;
+    const day = 4;
+    const hour = 2;
+    Login
+      .loginAs(this.zkMember)
+      .changeContextTo(MapProducts)
+      .selectProductBy('108m')
+      .changeContextTo(Map)
+      .openDateChange()
+      .selectDate(year, month, day, hour);
+
+      // TODO: Replace with filtration of entries
+
+    // this is a very fragile hack, we basically give 5 seconds for the request and then check it
+    // cypress by itself can not intercept wms (image) requests, so thats the only way it can be
+    // resonably tested at all.
+    cy.wait(7500).window().then(win => {
+      const networkrequests = win.performance.getEntries()
+        .filter(r => /http:\/\/.+\/wms\?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=development%3A108m&TIME=2018-10-04T00%3A00%3A00.000Z&CRS=EPSG%3A3857&.+/.test(r.name));
+    });
+  });
+});

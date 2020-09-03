@@ -3,11 +3,19 @@
 </header>
 <section class="content__details content__details--75 profile">
   <ng-container *ngIf="!!activeInstitution">
-    <div class="profile__content">
+    <div
+      class="profile__content"
+      data-e2e="institution-details"
+    >
       <h2 id="institution-title">{{ activeInstitution.name }}</h2>
       <ul>
         <li id="institution-address">{{ activeInstitution.address }}</li>
-        <li id="institution-postal-code">{{ activeInstitution.postalCode }} {{ activeInstitution.city }}</li>
+        <li
+          id="institution-postal-code"
+          data-e2e="postal-code-with-city"
+        >
+          {{ activeInstitution.postalCode }} {{ activeInstitution.city }}
+        </li>
         <li *ngIf="!!activeInstitution.institutionAdminEmail" id="institution-email">
           email: {{ activeInstitution.institutionAdminEmail }}
         </li>
@@ -20,7 +28,12 @@
       </ul>
     </div>
     <aside class="institution__logo">
-      <img *ngIf="!!activeInstitution && activeInstitution.emblem" [src]="activeInstitution.emblem" alt="Logo instytucji" />
+      <img
+        *ngIf="!!activeInstitution && activeInstitution.emblem"
+        [src]="activeInstitution.emblem"
+        alt="Logo instytucji"
+        data-e2e="institution-emblem"
+      />
     </aside>
   </ng-container>
   <footer>
@@ -37,6 +50,7 @@
       [routerLink]="['/settings/add-institution']"
       [queryParams]="{'add_child': true}"
       queryParamsHandling="merge"
+      data-e2e="add-child-btn"
       i18n
     >
       Dodaj jednostkę podrzędną

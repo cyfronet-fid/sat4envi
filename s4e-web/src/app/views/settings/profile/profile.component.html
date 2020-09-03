@@ -3,7 +3,10 @@
 </header>
 
 <section class="content__details content__details--50 profile">
-  <div class="profile__content">
+  <div
+    class="profile__content"
+    data-e2e="user-details"
+  >
     <p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
       Zaloguj się by zobaczyć swój profil
     </p>
@@ -17,7 +20,12 @@
 
   </div>
   <footer>
-    <button class="button button--secondary button--small" routerLink="/settings/change-password" queryParamsHandling="merge">
+    <button
+      class="button button--secondary button--small"
+      routerLink="/settings/change-password"
+      queryParamsHandling="merge"
+      data-e2e="go-to-password-change"
+    >
       Zmień hasło
     </button>
   </footer>
