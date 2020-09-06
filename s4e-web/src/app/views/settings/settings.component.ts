@@ -17,10 +17,10 @@ import {SessionQuery} from '../../state/session/session.query';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit {
-  showInstitutions$: Observable<boolean>;
-
+  public isMobileSidebarOpen = false;
   public searchValue: string;
 
+  public showInstitutions$: Observable<boolean>;
   public isInstitutionActive$: Observable<boolean>;
 
   constructor(

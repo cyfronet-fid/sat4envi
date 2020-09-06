@@ -3,11 +3,16 @@
   /* SETTINGS */
 
   .settings {
+
     .navigation {
       .logo {
         width: 100px;
         height: 41px;
         top: 18px;
+      }
+
+      &.open {
+        display: block !important;
       }
 
       display: none;

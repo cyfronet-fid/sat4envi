@@ -1,5 +1,13 @@
 @media only screen and (min-width: 701px) and (max-width: 1050px){
 s4e-settings {
+  .settings {
+    .navigation {
+      &.open {
+        display: block !important;
+      }
+    }
+  }
+
   .dashboard {
     margin-top: 0;
     display: block;
