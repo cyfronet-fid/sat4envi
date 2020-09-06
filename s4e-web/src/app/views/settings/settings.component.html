@@ -1,5 +1,13 @@
 <div class="settings">
+  <button
+    id="settings-menu-button"
+    class="navigation__open--mobile"
+  ></button>
+
   <nav class="navigation">
+    <div class="logo">
+
+    </div>
     <ul class="navigation__list">
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
           data-e2e="dashboard">

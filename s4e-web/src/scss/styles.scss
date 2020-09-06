@@ -12,6 +12,8 @@
 @import "loading";
 @import "../../projects/notifications/src/scss/notifications";
 @import "settings";
+@import "rwd_phone";
+@import "rwd_tablet";
 
 :root, body {
   font-size: 16px;
