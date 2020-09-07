@@ -16,6 +16,14 @@ System consists of three applications:
 * backend (directory `s4e-backend` - Java Spring Boot application)
 * GeoServer licensing gateway (directory `gs-gateway` - Java Spring Cloud Gateway Boot application)
 
+### Sentry - monitoring
+
+To use sentry for GeoServer Gateway or s4e-backend you need to set up dsn property in sentry.properties 
+in GS-Gateway or s4e-backend:
+```
+dsn = <https://url with token to your sentry>
+```
+
 ### s4e-backend
 
 #### Prerequisites
