@@ -204,6 +204,16 @@ Related properties list and their defaults:
   exist or be created by setting `amqp.create-queues=true`.
 
 
+#### Actuator endpoints
+
+There are several HTTP actuator endpoints exposed:
+- /actuator/health
+- /actuator/info
+- /actuator/prometheus
+
+See [Actuator API docs](https://docs.spring.io/spring-boot/docs/current/actuator-api/html/) for more information.
+
+
 #### Custom docker-compose local configurations
 
 To customize the docker-compose configuration locally use [multiple Compose files](https://docs.docker.com/compose/extends/).
@@ -358,6 +368,16 @@ EUMETSAT layers. Property: `gateway.eumetsat-layers` or envvar `GATEWAY_EUMETSAT
 A comma delimited list of layers with access type EUMETSAT.
 
 An example of configuration can be found in `docker-compose.yml`.
+
+
+#### Actuator endpoints
+
+There are several HTTP actuator endpoints exposed:
+- /actuator/health
+- /actuator/info
+- /actuator/prometheus
+
+See [Actuator API docs](https://docs.spring.io/spring-boot/docs/current/actuator-api/html/) for more information.
 
 
 ## Development & Docker
