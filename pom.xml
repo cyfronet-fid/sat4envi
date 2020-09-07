@@ -156,6 +156,17 @@
                     <artifactId>frontend-maven-plugin</artifactId>
                     <version>1.10.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>4.0.2</version>
+                    <configuration>
+                        <verbose>true</verbose>
+                        <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                        <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

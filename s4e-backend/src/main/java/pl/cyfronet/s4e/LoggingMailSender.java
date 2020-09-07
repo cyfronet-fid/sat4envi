@@ -39,4 +39,7 @@ public class LoggingMailSender extends JavaMailSenderImpl {
             throw new MailParseException(e);
         }
     }
+
+    @Override
+    public void testConnection() { }
 }

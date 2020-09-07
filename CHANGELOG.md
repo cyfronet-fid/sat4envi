@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Enable actuator endpoints [#689](https://github.com/cyfronet-fid/sat4envi/issues/689)
 - Added full (basic) functionality to the timeline [#653](https://github.com/cyfronet-fid/sat4envi/issues/653)
 - Categories in sidebar [#599](https://github.com/cyfronet-fid/sat4envi/issues/599)
 - Add Products seed script [#665](https://github.com/cyfronet-fid/sat4envi/issues/665)
