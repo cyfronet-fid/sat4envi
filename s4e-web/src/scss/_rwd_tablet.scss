@@ -1,0 +1,49 @@
+@media only screen and (min-width: 701px) and (max-width: 1050px){
+s4e-settings {
+  .settings {
+    .navigation {
+      &.open {
+        display: block !important;
+      }
+    }
+  }
+
+  .dashboard {
+    margin-top: 0;
+    display: block;
+    height: auto;
+  }
+
+  .content {
+    &__header {
+      margin-bottom: 30px;
+      p {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-top: 40px;
+      }
+
+      .button {
+        position: relative;
+      }
+    }
+    &__details {
+      padding: 15px 0;
+
+      &--50 {
+        width: auto;
+      }
+    }
+  }
+
+  .panel {
+    flex-direction: column;
+  }
+}
+
+
+
+}

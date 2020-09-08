@@ -15,22 +15,34 @@ s4e-settings {
     font-size: 0.875rem;
   }
 
+  &__open--mobile {
+    display: none;
+  }
+
+  .logo {
+    background: url("/../assets/images/logo_s4e_color.png") no-repeat;
+    background-size: contain;
+    position: absolute;
+    top: 25px;
+    left: 15px;
+    width: 130px;
+
+  }
+
 .navigation {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   width: 360px;
   padding: 0 $space-default;
-  padding-top: 120px;
+  padding-top: 110px;
   color: $color-black;
   height: 100%;
-  background: $color-white 40px 40px no-repeat;
-  background-image:  url("/../assets/images/logo_s4e_color.png");
-  background-size: 115px;
   position: absolute;
   z-index: 1;
   font-family: $font-secondary;
   font-weight: bold;
+  background: $color-white;
 
   header {
     display: flex;
@@ -42,6 +54,7 @@ s4e-settings {
     font-weight: 600;
     color: $color-black;
     align-items: center;
+    margin-top: 45px;
 
     img {
       margin-right: $space-small;
@@ -126,6 +139,10 @@ s4e-settings {
       color: $color-grey;
     }
   }
+
+  .section.search {
+    padding: 10px 15px;
+  }
 } // end navigation
 
 
@@ -209,7 +226,6 @@ p {
   margin-right: 40px;
   color: $color-grey-tertiary;
   height: 100%;
-  overflow-x: auto;
   width: 100%;
   padding-bottom: $space-large;
 
@@ -222,6 +238,7 @@ p {
     position: fixed;
     bottom: -50px;
     right: -300px;
+    z-index: 1;
     filter: invert(94%) sepia(36%) saturate(214%) hue-rotate(146deg) brightness(107%) contrast(93%);
 
     &--profile {
@@ -257,7 +274,7 @@ p {
     .button {
       position: absolute;
       right: 0;
-      top: 15px;
+      top: 7px;
     }
   }
 
@@ -558,6 +575,8 @@ p {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
 
   h2 {
     margin-bottom: $space-xlarge;

@@ -1,5 +1,17 @@
 <div class="settings">
-  <nav class="navigation">
+  <button
+    id="settings-menu-button"
+    class="navigation__open--mobile"
+    (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
+  ></button>
+
+  <nav
+    class="navigation"
+    [ngClass]="{'open': isMobileSidebarOpen}"
+  >
+    <div class="logo">
+
+    </div>
     <ul class="navigation__list">
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
           data-e2e="dashboard">
