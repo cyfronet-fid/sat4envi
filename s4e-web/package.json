@@ -8,7 +8,7 @@
     "start-notifications": "ng build notifications --watch",
     "build-libraries": "ng build notifications",
     "prestart": "npm run make-requirements",
-    "start": "ng serve --host 192.168.1.10 --proxy-config proxy.conf.json --configuration hmr",
+    "start": "ng serve --proxy-config proxy.conf.json --configuration hmr",
     "prestart-private": "npm run make-requirements",
     "start-private": "ng serve --proxy-config proxy.conf.json --configuration hmr.private",
     "prestart-production": "npm run make-requirements",
