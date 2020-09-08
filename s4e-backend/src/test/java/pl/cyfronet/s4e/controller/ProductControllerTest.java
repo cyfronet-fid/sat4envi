@@ -1,13 +1,13 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -16,7 +16,10 @@ import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -110,8 +113,8 @@ public class ProductControllerTest {
     @Test
     public void shouldReturnProductWithInfo() throws Exception {
         Product product = repository.findByNameContainingIgnoreCase("WV_IR").orElseThrow();
-        ResultActions result = mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId()));
-        result
+        val url = API_PREFIX_V1 + "/products/{id}";
+        mockMvc.perform(get(url, product.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is(equalTo("WV_IR"))))
                 .andExpect(jsonPath("displayName", is(equalTo("WV-IR"))))

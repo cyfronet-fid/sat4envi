@@ -5,7 +5,6 @@ import {Product, PRODUCT_MODE_FAVOURITE, PRODUCT_MODE_QUERY_KEY, ProductState, P
 import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
 import {map} from 'rxjs/operators';
-import {SceneQuery} from '../scene/scene.query.service';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 
 @Injectable({
@@ -14,10 +13,11 @@ import {RouterQuery} from '@datorama/akita-ng-router-store';
 export class ProductQuery extends QueryEntity<ProductState, Product> {
   public readonly ui: EntityUIQuery<ProductUIState>;
 
-  constructor(protected store: ProductStore,
-              private routerQuery: RouterQuery,
-              private sceneQuery: SceneQuery) {
-    super(store);
+  constructor(
+    protected _store: ProductStore,
+    private _routerQuery: RouterQuery
+  ) {
+    super(_store);
     this.createUIQuery();
   }
 
@@ -29,9 +29,32 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
     return this.selectFavourites().pipe(map(products => products.length));
   }
 
+  public selectGroupedProducts(): Observable<IUILayer[][]> {
+    return this.selectAllFilteredAsUILayer()
+      .pipe(map(products => Object.values<IUILayer[]>(
+        products
+          .reduce((accumulator, layer) => {
+              const category = layer.category;
+              if (!category) {
+                return accumulator;
+              }
+
+            Object.keys(accumulator).some(key => key === category.id.toString())
+                ?  accumulator[category.id].push(layer)
+                : accumulator[category.id] = [layer];
+
+              return accumulator;
+            },
+            {}
+          )
+        )
+        .filter(categoryProducts => !!categoryProducts && categoryProducts.length > 0)
+      ));
+  }
+
   public selectAllFilteredAsUILayer(): Observable<IUILayer[]> {
     return combineLatest(
-      this.routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY),
+      this._routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY),
       this.selectAllAsUILayer()
     ).pipe(
       map(([mode, layers]) => {
@@ -55,6 +78,7 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
             cid: pt.id,
             label: pt.displayName,
             active: pt.id === activeId,
+            category: pt.productCategory,
             favourite: pt.favourite,
             isLoading: productsUi[i].isLoading,
             isFavouriteLoading: productsUi[i].isFavouriteLoading
@@ -72,7 +96,7 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   selectIsFavouriteMode(): Observable<boolean> {
-    return this.routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY)
+    return this._routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY)
       .pipe(map(param => param === PRODUCT_MODE_FAVOURITE));
   }
 }

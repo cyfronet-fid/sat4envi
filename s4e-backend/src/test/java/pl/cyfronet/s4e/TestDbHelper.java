@@ -16,8 +16,10 @@ public class TestDbHelper {
     private final PRGOverlayRepository prgOverlayRepository;
     private final SldStyleRepository sldStyleRepository;
     private final PropertyRepository propertyRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     public void clean() {
+        productCategoryRepository.deleteAllByLabelNot(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL);
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
         placeRepository.deleteAll();

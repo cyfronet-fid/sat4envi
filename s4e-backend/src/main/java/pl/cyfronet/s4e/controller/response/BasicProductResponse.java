@@ -4,11 +4,11 @@ import org.springframework.beans.factory.annotation.Value;
 
 public interface BasicProductResponse {
     Long getId();
-
     String getName();
-
     String getDisplayName();
 
     @Value("#{@productService.isFavourite(target.id)}")
-    boolean isFavourite();
+    boolean getFavourite();
+
+    BasicProductCategoryResponse getProductCategory();
 }

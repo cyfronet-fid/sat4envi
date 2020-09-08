@@ -1,4 +1,5 @@
 import {ID} from '@datorama/akita';
+import { ProductCategory } from './product/product.model';
 
 export interface IUILayer {
   cid: ID;
@@ -7,4 +8,6 @@ export interface IUILayer {
   favourite: boolean;
   isLoading: boolean;
   isFavouriteLoading: boolean;
+
+  category?: ProductCategory;
 }

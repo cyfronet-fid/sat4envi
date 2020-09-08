@@ -17,6 +17,10 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
     <T> List<T> findAllFetchSchemas(Class<T> projection);
 
+    @Query("SELECT p FROM Product p")
+    @EntityGraph(attributePaths = {"productCategory"})
+    <T> List<T> findAllFetchProductCategory(Class<T> projection);
+
     <T> Optional<T> findById(Long id, Class<T> projection);
 
     @Query("SELECT p FROM Product p WHERE p.id = :id")

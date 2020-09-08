@@ -32,7 +32,7 @@ public class ProductController {
     })
     @GetMapping("/products")
     public List<BasicProductResponse> getProducts() {
-        return productService.findAll(BasicProductResponse.class);
+        return productService.findAllFetchProductCategory(BasicProductResponse.class);
     }
 
     @Operation(summary = "View product info")

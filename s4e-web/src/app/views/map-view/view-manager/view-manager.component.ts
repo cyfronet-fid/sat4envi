@@ -45,48 +45,36 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     }
   }
 
-  loading$: Observable<boolean>;
   scenes: IUILayer[] = [];
-  products$: Observable<IUILayer[]>;
-  productsLoading$: Observable<boolean>;
-  overlays$: Observable<IUILayer[]>;
-  overlaysLoading$: Observable<boolean>;
-  searchResults$: Observable<LocationSearchResult[]>;
-  searchResultsLoading$: Observable<boolean>;
+  groupedProducts$: Observable<IUILayer[][]> = this.productQuery.selectGroupedProducts();
+  productsLoading$: Observable<boolean> = this.productQuery.selectLoading();
+  overlays$: Observable<IUILayer[]> = this.overlayQuery.selectVisibleAsUIOverlays();
+  overlaysLoading$: Observable<boolean> = this.overlayQuery.selectLoading();
+  loading$: Observable<boolean> = combineLatest([this.overlaysLoading$, this.productsLoading$])
+    .pipe(map(areLoading => areLoading.some(isLoading => isLoading)));
+
   isFavouriteFiltration: boolean = false;
   searchValue: string;
 
-  favouriteProductsCount$: Observable<number>;
+  favouriteProductsCount$: Observable<number> = this.productQuery.selectFavouritesCount();
 
   constructor(
+    public searchResultsQuery: LocationSearchResultsQuery,
+    public searchResultsStore: LocationSearchResultsStore,
+
     private productQuery: ProductQuery,
     private overlayQuery: OverlayQuery,
-    private mapQuery: MapQuery,
-    private sceneQuery: SceneQuery,
     private productService: ProductService,
     private overlayService: OverlayService,
     private searchResultsService: SearchResultsService,
     private sessionQuery: SessionQuery,
     private _renderer: Renderer2,
-    public searchResultsQuery: LocationSearchResultsQuery,
-    private _modalService: ModalService,
-    public searchResultsStore: LocationSearchResultsStore
+    private _modalService: ModalService
   ) {
   }
 
   ngOnInit(): void {
-    this.overlaysLoading$ = this.overlayQuery.selectLoading();
-    this.products$ = this.productQuery.selectAllFilteredAsUILayer();
-    this.favouriteProductsCount$ = this.productQuery.selectFavouritesCount();
-    this.productsLoading$ = this.productQuery.selectLoading();
-    this.overlays$ = this.overlayQuery.selectVisibleAsUIOverlays();
-
     this.productQuery.selectIsFavouriteMode().subscribe(isFavourite => this.isFavouriteFiltration = isFavourite);
-
-    this.loading$ = combineLatest([
-      this.overlaysLoading$,
-      this.productsLoading$
-    ]).pipe(map(([overlayLoading, productsLoading]) => overlayLoading || productsLoading));
 
     if (environment.hmr) {
       const location = this.searchResultsQuery.getValue().searchResult;
