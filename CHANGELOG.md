@@ -24,6 +24,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- [Fix] Add institution with form [#683](https://github.com/cyfronet-fid/sat4envi/issues/683)
 - [Hotfix] PRG URL Overlays [#715](https://github.com/cyfronet-fid/sat4envi/issues/715)
 - [Hotfix] Categories url builder for S3 icons [#711](https://github.com/cyfronet-fid/sat4envi/issues/711)
 
