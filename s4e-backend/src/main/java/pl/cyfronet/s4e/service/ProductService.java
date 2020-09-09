@@ -11,10 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.MapBindingResult;
 import pl.cyfronet.s4e.bean.*;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.SchemaRepository;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
 import pl.cyfronet.s4e.ex.product.ProductException;
@@ -22,12 +19,15 @@ import pl.cyfronet.s4e.ex.product.ProductValidationException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@PersistenceContext(type = PersistenceContextType.EXTENDED)
 public class ProductService {
     public static final String GRANULE_ARTIFACT_RULE_MISSING_DEFAULT_CODE = "pl.cyfronet.s4e.service.ProductService.granuleArtifactRule.missing-default";
     public static final String SCHEMA_DOESNT_EXIST_CODE = "pl.cyfronet.s4e.service.ProductService.schema.doesnt-exist";
@@ -51,6 +51,9 @@ public class ProductService {
         private String metadataSchemaName;
 
         private Map<String, String> granuleArtifactRule;
+
+        @Builder.Default
+        private String productCategoryName = ProductCategoryRepository.DEFAULT_CATEGORY_NAME;
     }
 
     private final ProductRepository productRepository;
@@ -61,6 +64,8 @@ public class ProductService {
 
     private final SchemaRepository schemaRepository;
 
+    private final ProductCategoryRepository productCategoryRepository;
+
     private final ObjectMapper objectMapper;
 
     private final ProductMapper productMapper;
@@ -69,16 +74,16 @@ public class ProductService {
         return productRepository.findAllByOrderByIdAsc(projection);
     }
 
-    public <T> List<T> findAllFetchSchemas(Class<T> projection) {
-        return productRepository.findAllFetchSchemas(projection);
+    public <T> List<T> findAllFetchSchemasAndCategory(Class<T> projection) {
+        return productRepository.findAllFetchSchemasAndCategory(projection);
     }
 
     public <T> Optional<T> findById(Long id, Class<T> projection) {
         return productRepository.findById(id, projection);
     }
 
-    public <T> Optional<T> findByIdFetchSchemas(Long id, Class<T> projection) {
-        return productRepository.findByIdFetchSchemas(id, projection);
+    public <T> Optional<T> findByIdFetchSchemasAndCategory(Long id, Class<T> projection) {
+        return productRepository.findByIdFetchSchemasAndCategory(id, projection);
     }
 
     public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
@@ -86,7 +91,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Long create(DTO dto) throws ProductException {
+    public Long create(DTO dto) throws ProductException, NotFoundException {
         val productBuilder = Product.builder();
 
         BindingResult bindingResult = new MapBindingResult(objectMapper.convertValue(dto, Map.class), "productCreateRequest");
@@ -97,6 +102,11 @@ public class ProductService {
         if (!dto.getGranuleArtifactRule().containsKey("default")) {
             bindingResult.rejectValue("granuleArtifactRule", GRANULE_ARTIFACT_RULE_MISSING_DEFAULT_CODE);
         }
+
+        val productCategory = productCategoryRepository
+                .findByName(dto.getProductCategoryName(), ProductCategory.class)
+                .orElseThrow(() -> constructNFE("Product category", dto.getProductCategoryName()));
+        productBuilder.productCategory(productCategory);
 
         if (bindingResult.hasErrors()) {
             throw new ProductValidationException(bindingResult);
@@ -110,6 +120,18 @@ public class ProductService {
     public void update(Long id, DTO dto) throws ProductException, NotFoundException {
         Product product = productRepository.findById(id)
                 .orElseThrow((() -> constructNFE("Product", id.toString())));
+
+        if (
+                dto.getProductCategoryName() != null
+                && !product.getProductCategory()
+                        .getName()
+                        .contains(dto.getProductCategoryName())
+        ) {
+            val productCategory = productCategoryRepository
+                    .findByName(dto.getProductCategoryName(), ProductCategory.class)
+                    .orElseThrow(() -> constructNFE("Product category", dto.getProductCategoryName()));
+            product.setProductCategory(productCategory);
+        }
 
         BindingResult bindingResult = new MapBindingResult(objectMapper.convertValue(dto, Map.class), "productUpdateRequest");
         Schema sceneSchema = null;

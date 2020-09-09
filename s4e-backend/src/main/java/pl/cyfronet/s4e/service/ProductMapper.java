@@ -17,6 +17,7 @@ public interface ProductMapper {
     @Mapping(target = "metadataSchema", ignore = true)
     @Mapping(target = "scenes", ignore = true)
     @Mapping(target = "favourites", ignore = true)
+    @Mapping(target = "productCategory", ignore = true)
     void create(ProductService.DTO dto, @MappingTarget Product.ProductBuilder productBuilder);
 
     @Mapping(target = "id", ignore = true)
@@ -28,5 +29,6 @@ public interface ProductMapper {
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)
     @Mapping(target = "lastModifiedBy", ignore = true)
+    @Mapping(target = "productCategory", ignore = true)
     void update(ProductService.DTO dto, @MappingTarget Product product);
 }

@@ -9,7 +9,8 @@
     "granuleArtifactRule": {
       "default": "quicklook",
       "COG": "RGBs_8b"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "Sentinel-1-GRDM",
@@ -20,7 +21,8 @@
     "metadataSchemaName": "Sentinel-1.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "quicklook"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "Sentinel-1-SLC_",
@@ -31,7 +33,8 @@
     "metadataSchemaName": "Sentinel-1.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "quicklook"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "108m",
@@ -42,7 +45,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "atmosphere-meteorology"
   },
   {
     "name": "Airmass",
@@ -53,7 +57,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "Dust",
@@ -64,7 +69,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "air"
   },
   {
     "name": "NatCol",
@@ -75,7 +81,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "Polsafi",
@@ -86,7 +93,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "RGB24_micro",
@@ -97,7 +105,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "other"
   },
   {
     "name": "Setvak_Eu",
@@ -108,7 +117,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "atmosphere-meteorology"
   },
   {
     "name": "Setvak_PL",
@@ -119,7 +129,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "atmosphere-meteorology"
   },
   {
     "name": "Opad_H03",
@@ -130,7 +141,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "Opad_H05_03h",
@@ -141,7 +153,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "Opad_H05_06h",
@@ -152,7 +165,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "Opad_H05_12h",
@@ -163,7 +177,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "Opad_H05_24h",
@@ -174,7 +189,8 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   },
   {
     "name": "OST",
@@ -185,6 +201,7 @@
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
       "default": "product_file"
-    }
+    },
+    "productCategoryName": "rains-and-storms"
   }
 ]

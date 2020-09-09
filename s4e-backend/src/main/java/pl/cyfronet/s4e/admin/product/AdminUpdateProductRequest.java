@@ -27,4 +27,6 @@ class AdminUpdateProductRequest {
     private String metadataSchemaName;
 
     private Map<String, String> granuleArtifactRule;
+
+    private String productCategoryName;
 }

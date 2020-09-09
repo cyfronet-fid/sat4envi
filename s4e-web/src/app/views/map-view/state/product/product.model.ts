@@ -17,7 +17,7 @@ export interface MostRecentScene {
 export interface ProductCategory {
   id: number | undefined;
   label: string;
-  url: string;
+  iconPath: string;
 }
 
 export interface Product {

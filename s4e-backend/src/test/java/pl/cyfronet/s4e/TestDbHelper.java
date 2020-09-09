@@ -19,7 +19,7 @@ public class TestDbHelper {
     private final ProductCategoryRepository productCategoryRepository;
 
     public void clean() {
-        productCategoryRepository.deleteAllByLabelNot(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL);
+        productCategoryRepository.deleteAllByNameNot(ProductCategoryRepository.DEFAULT_CATEGORY_NAME);
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
         placeRepository.deleteAll();

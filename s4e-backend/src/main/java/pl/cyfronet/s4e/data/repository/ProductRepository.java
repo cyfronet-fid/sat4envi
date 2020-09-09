@@ -14,8 +14,8 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     <T> List<T> findAllByOrderByIdAsc(Class<T> projection);
 
     @Query("SELECT p FROM Product p")
-    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
-    <T> List<T> findAllFetchSchemas(Class<T> projection);
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
+    <T> List<T> findAllFetchSchemasAndCategory(Class<T> projection);
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"productCategory"})
@@ -24,12 +24,16 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     <T> Optional<T> findById(Long id, Class<T> projection);
 
     @Query("SELECT p FROM Product p WHERE p.id = :id")
-    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
-    <T> Optional<T> findByIdFetchSchemas(Long id, Class<T> projection);
+    @EntityGraph(attributePaths = {"productCategory"})
+    <T> Optional<T> findByIdFetchCategory(Long id, Class<T> projection);
+
+    @Query("SELECT p FROM Product p WHERE p.id = :id")
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
+    <T> Optional<T> findByIdFetchSchemasAndCategory(Long id, Class<T> projection);
 
     Optional<Product> findByNameContainingIgnoreCase(String name);
 
-    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema"})
+    @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
     <T> Optional<T> findByName(String name, Class<T> projection);
 
     boolean existsBySceneSchemaId(Long id);

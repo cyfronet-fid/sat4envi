@@ -97,7 +97,6 @@ public class Product extends CreationAndModificationAudited {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_category_id", insertable = false)
-    @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private ProductCategory productCategory;
 

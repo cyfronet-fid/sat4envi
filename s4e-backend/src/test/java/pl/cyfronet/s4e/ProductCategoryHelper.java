@@ -9,15 +9,16 @@ public class ProductCategoryHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
 
     private static final String label = "Product category %d";
-    private static final String url = "host:5000/%d";
+    private static final String iconName = "icon %d SVG";
 
     public static ProductCategory.ProductCategoryBuilder productCategoryBuilder() {
         val label = nextUnique(ProductCategoryHelper.label);
-        val url = nextUnique(ProductCategoryHelper.url);
+        val iconName = nextUnique(ProductCategoryHelper.iconName);
         return ProductCategory
                 .builder()
                 .label(label)
-                .name(label);
+                .name(label)
+                .iconName(iconName);
     }
 
     private static String nextUnique(String format) {

@@ -34,10 +34,10 @@ public class AdminProductController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(consumes = APPLICATION_JSON_VALUE)
-    public AdminProductResponse create(@RequestBody @Valid AdminCreateProductRequest request) throws ProductException {
+    public AdminProductResponse create(@RequestBody @Valid AdminCreateProductRequest request) throws ProductException, NotFoundException {
         ProductService.DTO dto = adminProductMapper.toProductServiceDTO(request);
         Long newId = productService.create(dto);
-        return productService.findByIdFetchSchemas(newId, AdminProductResponse.class).get();
+        return productService.findByIdFetchSchemasAndCategory(newId, AdminProductResponse.class).get();
     }
 
     @Operation(summary = "List Products")
@@ -48,7 +48,7 @@ public class AdminProductController {
     })
     @GetMapping
     public List<AdminProductResponse> list() {
-        return productService.findAllFetchSchemas(AdminProductResponse.class);
+        return productService.findAllFetchSchemasAndCategory(AdminProductResponse.class);
     }
 
     @Operation(summary = "Return Product")
@@ -60,7 +60,7 @@ public class AdminProductController {
     })
     @GetMapping("/{id}")
     public AdminProductResponse read(@PathVariable Long id) throws NotFoundException {
-        return productService.findByIdFetchSchemas(id, AdminProductResponse.class)
+        return productService.findByIdFetchSchemasAndCategory(id, AdminProductResponse.class)
                 .orElseThrow(() -> new NotFoundException("Product not found for id '" + id + "'"));
     }
 
@@ -79,7 +79,7 @@ public class AdminProductController {
     ) throws NotFoundException, ProductException {
         ProductService.DTO dto = adminProductMapper.toProductServiceDTO(request);
         productService.update(id, dto);
-        return productService.findByIdFetchSchemas(id, AdminProductResponse.class).get();
+        return productService.findByIdFetchSchemasAndCategory(id, AdminProductResponse.class).get();
     }
 
     @Operation(summary = "Delete Product")
