@@ -1,8 +1,6 @@
 package pl.cyfronet.s4e.admin.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Builder;
-import lombok.Data;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -15,8 +13,6 @@ import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -26,70 +22,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
-
-@Data
-@Builder
-class IncorrectAdminCreateProductRequest {
-    @NotEmpty
-    @Pattern(regexp = "[-_a-zA-Z0-9]+")
-    private String name;
-
-    @NotEmpty
-    private String displayName;
-
-    @NotEmpty
-    private String description;
-
-    private Legend legend;
-
-    @NotEmpty
-    @Pattern(regexp = "[_a-z0-9]+")
-    private String layerName;
-
-    @NotEmpty
-    private String sceneSchemaName;
-
-    @NotEmpty
-    private String metadataSchemaName;
-
-    @NotEmpty
-    private Map<String, String> granuleArtifactRule;
-
-    @NotEmpty
-    private ProductCategory productCategory;
-}
-
-@Data
-@Builder
-class IncorrectAdminUpdateProductRequest {
-    @NotEmpty
-    @Pattern(regexp = "[-_a-zA-Z0-9]+")
-    private String name;
-
-    @NotEmpty
-    private String displayName;
-
-    @NotEmpty
-    private String description;
-
-    private Legend legend;
-
-    @NotEmpty
-    @Pattern(regexp = "[_a-z0-9]+")
-    private String layerName;
-
-    @NotEmpty
-    private String sceneSchemaName;
-
-    @NotEmpty
-    private String metadataSchemaName;
-
-    @NotEmpty
-    private Map<String, String> granuleArtifactRule;
-
-    @NotEmpty
-    private ProductCategory productCategory;
-}
 
 @BasicTest
 @AutoConfigureMockMvc
@@ -159,6 +91,7 @@ public class AdminProductControllerTest {
 
         @BeforeEach
         public void beforeEach() {
+
             requestBuilder = AdminCreateProductRequest.builder()
                     .name("Product01")
                     .displayName("Product 01")
@@ -169,7 +102,22 @@ public class AdminProductControllerTest {
                     .layerName("product_01")
                     .sceneSchemaName("Sentinel-1.scene.v1.json")
                     .metadataSchemaName("Sentinel-1.metadata.v1.json")
-                    .granuleArtifactRule(Map.of("default", "some_artifact"));
+                    .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .productCategoryName("other");
+        }
+
+        @Test
+        public void shouldReturnNotFoundOnNonExistingCategory() throws Exception {
+            AdminCreateProductRequest createRequest = requestBuilder
+                    .productCategoryName("non-existing")
+                    .build();
+
+            assertThat(productRepository.count(), is(equalTo(0L)));
+            mockMvc.perform(post(Constants.ADMIN_PREFIX + "/products")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper))
+                    .content(objectMapper.writeValueAsBytes(createRequest)))
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -190,47 +138,8 @@ public class AdminProductControllerTest {
                     .findAllFetchProductCategory(Product.class)
                     .get(0)
                     .getProductCategory()
-                    .getLabel();
-            assertThat(newProductCategory, is(equalTo(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL)));
-        }
-
-        @Test
-        public void shouldNotChangeCategoryOnIncorrectRequest() throws Exception {
-            IncorrectAdminCreateProductRequest createRequest = IncorrectAdminCreateProductRequest.builder()
-                    .name("Product01")
-                    .displayName("Product 01")
-                    .description("Product 01 __description__")
-                    .legend(Legend.builder()
-                            .type("Legend 01")
-                            .build())
-                    .layerName("product_01")
-                    .sceneSchemaName("Sentinel-1.scene.v1.json")
-                    .metadataSchemaName("Sentinel-1.metadata.v1.json")
-                    .granuleArtifactRule(Map.of("default", "some_artifact"))
-                    .productCategory(
-                            ProductCategory.builder()
-                                    .label("Incorrect")
-                                    .name("Incorrect")
-                                    .build()
-                    )
-                    .build();
-
-            assertThat(productRepository.count(), is(equalTo(0L)));
-
-            mockMvc.perform(post(Constants.ADMIN_PREFIX + "/products")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(jwtBearerToken(admin, objectMapper))
-                    .content(objectMapper.writeValueAsBytes(createRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").isNumber());
-
-            assertThat(productRepository.count(), is(equalTo(1L)));
-            val newProductCategory = productRepository
-                    .findAllFetchProductCategory(Product.class)
-                    .get(0)
-                    .getProductCategory()
-                    .getLabel();
-            assertThat(newProductCategory, is(equalTo(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL)));
+                    .getName();
+            assertThat(newProductCategory, is(equalTo(ProductCategoryRepository.DEFAULT_CATEGORY_NAME)));
         }
 
         @Test
@@ -325,7 +234,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$[0].description", is(equalTo("Product 01 __description__"))))
                     .andExpect(jsonPath("$[0].legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$[0].layerName", is(equalTo("product_01"))))
-                    .andExpect(jsonPath("$[0].granuleArtifactRule.default", is(equalTo("some_artifact"))));
+                    .andExpect(jsonPath("$[0].granuleArtifactRule.default", is(equalTo("some_artifact"))))
+                    .andExpect(jsonPath("$[0].productCategory.label", is(equalTo("Inne"))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -343,7 +253,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
-                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_artifact"))));
+                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_artifact"))))
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -365,9 +276,18 @@ public class AdminProductControllerTest {
         private AdminUpdateProductRequest.AdminUpdateProductRequestBuilder requestBuilder;
 
         private Product product;
+        private ProductCategory category;
 
         @BeforeEach
         public void beforeEach() {
+            productCategoryRepository.deleteAllByNameNot(ProductCategoryRepository.DEFAULT_CATEGORY_NAME);
+            category = productCategoryRepository.save(
+                    ProductCategory.builder()
+                            .label("Atmosfera/Meteorologia")
+                            .name("atmosphere-meteorology")
+                            .iconName("ico_cloud")
+                            .build()
+            );
             product = productRepository.save(Product.builder()
                     .name("Product01")
                     .displayName("Product 01")
@@ -389,7 +309,21 @@ public class AdminProductControllerTest {
                             .type("Legend 02")
                             .build())
                     .layerName("product_02")
-                    .granuleArtifactRule(Map.of("default", "some_other_artifact"));
+                    .granuleArtifactRule(Map.of("default", "some_other_artifact"))
+                    .productCategoryName(category.getName());
+        }
+
+        @Test
+        public void shouldReturnNotFoundOnNonExistingCategory() throws Exception {
+            AdminUpdateProductRequest updateRequest = requestBuilder
+                    .productCategoryName("non-existing")
+                    .build();
+            assertThat(productRepository.count(), is(equalTo(1L)));
+            mockMvc.perform(patch(Constants.ADMIN_PREFIX + "/products/{id}", product.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper))
+                    .content(objectMapper.writeValueAsBytes(updateRequest)))
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -409,58 +343,17 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.description", is(equalTo("Product 02 __description__"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 02"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_02"))))
-                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))));
+                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo(category.getLabel()))))
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo(category.getLabel()))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val updatedProductCategory = productRepository
                     .findAllFetchProductCategory(Product.class)
                     .get(0)
                     .getProductCategory()
-                    .getLabel();
-            assertThat(updatedProductCategory, is(equalTo(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL)));
-        }
-
-        @Test
-        public void shouldNotChangeCategoryOnIncorrectRequest() throws Exception {
-            IncorrectAdminUpdateProductRequest updateRequest = IncorrectAdminUpdateProductRequest.builder()
-                    .name("Product02")
-                    .displayName("Product 02")
-                    .description("Product 02 __description__")
-                    .legend(Legend.builder()
-                            .type("Legend 02")
-                            .build())
-                    .layerName("product_02")
-                    .granuleArtifactRule(Map.of("default", "some_other_artifact"))
-                    .productCategory(
-                            ProductCategory.builder()
-                                .label("Incorrect")
-                                .name("Incorrect")
-                                .build()
-                    )
-                    .build();
-
-            assertThat(productRepository.count(), is(equalTo(1L)));
-
-            mockMvc.perform(patch(Constants.ADMIN_PREFIX + "/products/{id}", product.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(jwtBearerToken(admin, objectMapper))
-                    .content(objectMapper.writeValueAsBytes(updateRequest)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").isNumber())
-                    .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
-                    .andExpect(jsonPath("$.displayName", is(equalTo("Product 02"))))
-                    .andExpect(jsonPath("$.description", is(equalTo("Product 02 __description__"))))
-                    .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 02"))))
-                    .andExpect(jsonPath("$.layerName", is(equalTo("product_02"))))
-                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))));
-
-            assertThat(productRepository.count(), is(equalTo(1L)));
-            val updatedProductCategory = productRepository
-                    .findAllFetchProductCategory(Product.class)
-                    .get(0)
-                    .getProductCategory()
-                    .getLabel();
-            assertThat(updatedProductCategory, is(equalTo(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL)));
+                    .getName();
+            assertThat(updatedProductCategory, is(equalTo(category.getName())));
         }
 
         @Test
@@ -483,7 +376,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
-                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))));
+                    .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -550,7 +444,7 @@ public class AdminProductControllerTest {
 
         @BeforeEach
         public void beforeEach() {
-            productCategoryRepository.deleteAllByLabelNot(ProductCategoryRepository.DEFAULT_CATEGORY_LABEL);
+            productCategoryRepository.deleteAllByNameNot(ProductCategoryRepository.DEFAULT_CATEGORY_NAME);
 
             val category = productCategoryRepository.save(ProductCategoryHelper.productCategoryBuilder().build());
             product = productRepository.save(Product.builder()

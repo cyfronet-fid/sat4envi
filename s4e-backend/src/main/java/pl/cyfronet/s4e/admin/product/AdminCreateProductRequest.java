@@ -35,4 +35,7 @@ class AdminCreateProductRequest {
 
     @NotEmpty
     private Map<String, String> granuleArtifactRule;
+
+    @NotEmpty
+    private String productCategoryName;
 }

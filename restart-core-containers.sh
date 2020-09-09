@@ -17,4 +17,6 @@ fi
 # TODO: Get services from input or provide options to choose
 
 sudo docker-compose up -d broker db geoserver gs-gateway minio
-sudo sudo docker-compose -f docker-compose-test.yml up -d db-test
+sudo docker-compose -f docker-compose-test.yml up -d db-test
+
+bash ./s4e-backend/scripts/seed.sh

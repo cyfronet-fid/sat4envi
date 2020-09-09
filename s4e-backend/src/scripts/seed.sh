@@ -106,6 +106,16 @@ for schema_path in $(ls $configuration_path/schema); do
   unset name type content payload
 done
 
+# Create categories
+echo "Creating categories"
+url=$api_endpoint/api/admin/product-category/seed
+curl --silent --include --url $url \
+  --request POST \
+  --header "Content-Type: application/json" \
+  --header "Authorization: Bearer $auth_token"
+# Fail if there was error
+handle_error "Call to $url returned an error:"
+
 # Create products
 echo "Creating products"
 count=$(jq 'length' < $configuration_path/products.json)

@@ -6,11 +6,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.ProductCategory;
 
+import java.util.Optional;
+
 public interface ProductCategoryRepository extends CrudRepository<ProductCategory, Long> {
-    public static final String DEFAULT_CATEGORY_LABEL = "Default";
+    String DEFAULT_CATEGORY_NAME = "other";
+
+    <T> Optional<T> findByName(String name, Class<T> projection);
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM ProductCategory WHERE label != :label")
-    void deleteAllByLabelNot(String label);
+    @Query("DELETE FROM ProductCategory WHERE name != :name")
+    void deleteAllByNameNot(String name);
 }

@@ -27,4 +27,10 @@ public class FileStorageProperties {
      */
     @NotBlank
     private String keyPrefixEmblem;
+
+    /**
+     * A key prefix for products categories icons, including the trailing slash.
+     */
+    @NotBlank
+    private String keyPrefixProductsCategoriesIcons;
 }

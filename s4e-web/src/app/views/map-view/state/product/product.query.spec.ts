@@ -72,7 +72,8 @@ describe('ProductQuery', () => {
           active: false,
           favourite: favourite,
           isLoading: false,
-          isFavouriteLoading: false
+          isFavouriteLoading: false,
+          category: product.productCategory
         };
     }
 

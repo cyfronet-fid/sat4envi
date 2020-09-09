@@ -24,4 +24,7 @@ public class ProductCategory {
 
     @NotEmpty
     private String name;
+
+    @NotEmpty
+    private String iconName;
 }

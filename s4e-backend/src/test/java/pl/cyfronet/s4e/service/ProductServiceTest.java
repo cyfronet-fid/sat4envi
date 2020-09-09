@@ -13,8 +13,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import pl.cyfronet.s4e.*;
-import pl.cyfronet.s4e.bean.*;
-import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Legend;
+import pl.cyfronet.s4e.bean.Product;
+import pl.cyfronet.s4e.bean.Schema;
+import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.data.repository.SchemaRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
 import pl.cyfronet.s4e.ex.product.ProductException;
@@ -116,7 +122,7 @@ public class ProductServiceTest {
         }
 
         @Test
-        public void shouldCreate() throws ProductException {
+        public void shouldCreate() throws ProductException, NotFoundException {
             ProductService.DTO dto = dtoBuilder.build();
 
             assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
@@ -130,12 +136,15 @@ public class ProductServiceTest {
             assertThat(product.getId(), is(equalTo(createdId)));
             assertThat(product.getSceneSchema().getName(), is(equalTo(dto.getSceneSchemaName())));
             assertThat(product.getMetadataSchema().getName(), is(equalTo(dto.getMetadataSchemaName())));
+
+            val categoryName = product.getProductCategory().getName();
+            assertThat(categoryName, is(equalTo("other")));
         }
 
         @Nested
         class FieldSceneSchema {
             @Test
-            public void shouldVerifyItExists() throws ProductException {
+            public void shouldVerifyItExists() throws ProductException, NotFoundException {
                 ProductService.DTO dto = dtoBuilder
                         .sceneSchemaName("doesnt_exist")
                         .build();
@@ -157,7 +166,7 @@ public class ProductServiceTest {
             }
 
             @Test
-            public void shouldVerifyTypeScene() throws ProductException {
+            public void shouldVerifyTypeScene() throws ProductException, NotFoundException {
                 ProductService.DTO dto = dtoBuilder
                         .sceneSchemaName("Sentinel-1.metadata.v1.json")
                         .build();
@@ -182,7 +191,7 @@ public class ProductServiceTest {
         @Nested
         class FieldMetadataSchema {
             @Test
-            public void shouldVerifyItExists() throws ProductException {
+            public void shouldVerifyItExists() throws ProductException, NotFoundException {
                 ProductService.DTO dto = dtoBuilder
                         .metadataSchemaName("doesnt_exist")
                         .build();
@@ -204,7 +213,7 @@ public class ProductServiceTest {
             }
 
             @Test
-            public void shouldVerifyTypeMetadata() throws ProductException {
+            public void shouldVerifyTypeMetadata() throws ProductException, NotFoundException {
                 ProductService.DTO dto = dtoBuilder
                         .metadataSchemaName("Sentinel-1.scene.v1.json")
                         .build();
@@ -229,7 +238,7 @@ public class ProductServiceTest {
         @Nested
         class FieldGranuleArtifactRule {
             @Test
-            public void shouldVerifyHasDefaultKey() throws ProductException {
+            public void shouldVerifyHasDefaultKey() throws ProductException, NotFoundException {
                 ProductService.DTO dto = dtoBuilder
                         .granuleArtifactRule(Map.of())
                         .build();
@@ -245,6 +254,26 @@ public class ProductServiceTest {
                     assertThat(errors, hasSize(1));
                     FieldError error = errors.get(0);
                     assertThat(error.getCode(), containsString("default"));
+                }
+
+                assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
+            }
+        }
+
+        @Nested
+        class ProductCategory {
+            @Test
+            public void shouldVerifyItExists() throws ProductException, NotFoundException {
+                ProductService.DTO dto = dtoBuilder
+                        .productCategoryName("doesnt_exist")
+                        .build();
+                assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
+
+                try {
+                    productService.create(dto);
+                    fail("Should throw");
+                } catch (NotFoundException e) {
+                    assertThat(e.getMessage(), containsString(dto.getProductCategoryName()));
                 }
 
                 assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
@@ -302,7 +331,7 @@ public class ProductServiceTest {
 
             productService.update(product.getId(), dto);
 
-            Product updatedProduct = productRepository.findById(product.getId(), Product.class).get();
+            Product updatedProduct = productRepository.findByIdFetchCategory(product.getId(), Product.class).get();
 
             assertThat(updatedProduct, allOf(
                     hasProperty("name", equalTo(dto.getName())),
@@ -311,6 +340,9 @@ public class ProductServiceTest {
                     hasProperty("layerName", equalTo(dto.getLayerName())),
                     hasProperty("granuleArtifactRule", hasEntry("default", "some_other_artifact"))
             ));
+
+            val categoryName = updatedProduct.getProductCategory().getName();
+            assertThat(categoryName, is(equalTo("other")));
         }
 
         @Test
@@ -449,6 +481,26 @@ public class ProductServiceTest {
                 Product updatedProduct = productRepository.findById(product.getId(), Product.class).get();
 
                 assertThat(updatedProduct.getGranuleArtifactRule(), hasKey("default"));
+            }
+        }
+
+        @Nested
+        class ProductCategory {
+            @Test
+            public void shouldVerifyItExists() throws ProductException, NotFoundException {
+                ProductService.DTO dto = dtoBuilder
+                        .productCategoryName("doesnt_exist")
+                        .build();
+                assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
+
+                try {
+                    productService.create(dto);
+                    fail("Should throw");
+                } catch (NotFoundException e) {
+                    assertThat(e.getMessage(), containsString(dto.getProductCategoryName()));
+                }
+
+                assertThat(productRepository.findByName(dto.getName(), Product.class), isEmpty());
             }
         }
     }
