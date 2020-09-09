@@ -21,6 +21,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Don't use deprecated temporary file name generator [#696](https://github.com/cyfronet-fid/sat4envi/issues/696) 
+
 ### Updated
 
 - 2020.09 backend dependencies update

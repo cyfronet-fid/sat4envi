@@ -67,7 +67,7 @@ unset timeout_threshold err
 auth_token=$(echo $result | jq -r '.token')
 unset payload result err
 
-temp_file=$(tempfile)
+temp_file=$(mktemp)
 payload=$(
   jq -n '$ARGS.named' \
     --arg value "mailto://${BUCKET-local-dataset-1}/"
