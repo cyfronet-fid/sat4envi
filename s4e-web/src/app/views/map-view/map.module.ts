@@ -23,7 +23,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ProductQuery} from './state/product/product.query';
 import {ProductService} from './state/product/product.service';
 import {ProductStore} from './state/product/product.store';
-import {SceneQuery} from './state/scene/scene.query.service';
+import {SceneQuery} from './state/scene/scene.query';
 import {SceneService} from './state/scene/scene.service';
 import {SceneStore} from './state/scene/scene.store.service';
 import {ReportModalComponent} from './zk/report-modal/report-modal.component';

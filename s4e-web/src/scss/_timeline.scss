@@ -123,7 +123,7 @@
   &__item {
     display: block;
     z-index: 3;
-    position: relative;
+    position: absolute;
     width: 10px;
     height: 10px;
     border-radius: $border-radius-circle;
@@ -138,7 +138,7 @@
       height: 12px;
     }
 
-    &:hover {
+    &:not(&--noproduct):hover {
       width: 14px;
       height: 14px;
       margin: -2px;
@@ -156,6 +156,8 @@
       font-size: 0.875rem;
       margin: -6px auto 0 auto;
       filter: none;
+      left: unset;
+      position: relative;
     }
 
   }

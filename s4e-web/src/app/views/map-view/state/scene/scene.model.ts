@@ -8,6 +8,10 @@ export interface Scene {
   layerName: string;
 }
 
+export interface SceneWithUI extends Scene{
+  position: number;
+}
+
 /**
  * A factory function that creates Scene
  */

@@ -7,7 +7,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {ProductFactory} from './product.factory.spec';
 import {take, toArray} from 'rxjs/operators';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {ReplaySubject} from 'rxjs';
+import {ReplaySubject, Subject} from 'rxjs';
 import {Product, PRODUCT_MODE_FAVOURITE} from './product.model';
 
 describe('ProductQuery', () => {
@@ -96,5 +96,31 @@ describe('ProductQuery', () => {
     queryParams$.next(PRODUCT_MODE_FAVOURITE);
 
     expect(await modes).toEqual([false, true]);
+  });
+
+  describe('selectTimelineResolution', () => {
+    let queryParams$: Subject<{}>;
+    beforeEach(() => {
+      queryParams$ = new ReplaySubject(1);
+      spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
+    });
+
+    it('should handle unexpected value', async () => {
+      queryParams$.next(undefined)
+      const resolutions = query.selectTimelineResolution().pipe(take(3), toArray()).toPromise()
+      queryParams$.next('<bad_value>')
+      queryParams$.next('55')
+      expect(await resolutions).toEqual([24, 24, 24]);
+    });
+
+    it('should pass valid value', async () => {
+      queryParams$.next('1')
+      const resolutions = query.selectTimelineResolution().pipe(take(5), toArray()).toPromise()
+      queryParams$.next('3')
+      queryParams$.next('6')
+      queryParams$.next('12')
+      queryParams$.next('24')
+      expect(await resolutions).toEqual([1, 3, 6, 12, 24]);
+    });
   });
 });

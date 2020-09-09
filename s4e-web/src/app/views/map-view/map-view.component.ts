@@ -13,12 +13,12 @@ import {LegendService} from './state/legend/legend.service';
 import {LocationSearchResult} from './state/location-search-results/location-search-result.model';
 import {SessionService} from '../../state/session/session.service';
 import {SessionQuery} from '../../state/session/session.query';
-import {Scene} from './state/scene/scene.model';
+import {Scene, SceneWithUI} from './state/scene/scene.model';
 import {Product} from './state/product/product.model';
 import {SceneService} from './state/scene/scene.service';
 import {ProductService} from './state/product/product.service';
 import {ProductQuery} from './state/product/product.query';
-import {SceneQuery} from './state/scene/scene.query.service';
+import {SceneQuery, TimelineUI} from './state/scene/scene.query';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
 import {SAVE_CONFIG_MODAL_ID, SaveConfigModal} from './zk/save-config-modal/save-config-modal.model';
@@ -43,7 +43,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public activeScene$: Observable<Scene>;
   public activeSceneUrl$: Observable<string>;
   public activeProducts$: Observable<Product | null>;
-  public scenes$: Observable<Scene[]>;
+  public timelineUI$: Observable<TimelineUI>;
   public scenesAreLoading$: Observable<boolean>;
   public legend$: Observable<Legend>;
   public legendState$: Observable<LegendState>;
@@ -60,6 +60,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public selectedLocation$: Observable<LocationSearchResult | null>;
   public overlays$: Observable<UIOverlay[]>;
   public userIsZK$: Observable<boolean>;
+  public timelineResolution$: Observable<number>;
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
 
@@ -93,7 +94,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
         ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
         : null
       ));
-    this.scenes$ = this.sceneQuery.selectAll();
+    this.timelineUI$ = this.sceneQuery.selectTimelineUI();
     this.scenesAreLoading$ = this.sceneQuery.selectLoading();
     this.overlays$ = this.overlayQuery.selectVisibleAsUIOverlays();
     this.activeProducts$ = this.productQuery.selectActive();
@@ -118,6 +119,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
     this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
     this.showProductDescription$ = this.mapQuery.select('productDescriptionOpened');
+    this.timelineResolution$ = this.productQuery.selectTimelineResolution()
 
     this.productService.get();
     this.overlayService.get();
@@ -153,7 +155,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   setDate($event: string) {
-    this.sceneService.get(this.productQuery.getActive(), $event);
+    this.sceneService.get(this.productQuery.getActive(), $event, 'first');
     this.productService.setSelectedDate($event);
   }
 
@@ -250,5 +252,33 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   isLinkActive(url: string): boolean {
     return this.route.snapshot.children[0].url[0].path === url;
+  }
+
+  getLastAvailableScene() {
+    this.productService.getLastAvailableScene()
+  }
+
+  nextScene() {
+    this.productService.nextScene();
+  }
+
+  previousScene() {
+    this.productService.previousScene();
+  }
+
+  nextDay() {
+    this.productService.nextDay();
+  }
+
+  previousDay() {
+    this.productService.previousDay();
+  }
+
+  increaseResolution() {
+    this.productService.moveResolution(1);
+  }
+
+  decreaseResolution() {
+    this.productService.moveResolution(-1);
   }
 }

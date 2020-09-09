@@ -19,7 +19,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {ProductQuery} from '../state/product/product.query';
 import {OverlayQuery} from '../state/overlay/overlay.query';
 import {MapQuery} from '../state/map/map.query';
-import {SceneQuery} from '../state/scene/scene.query.service';
+import {SceneQuery} from '../state/scene/scene.query';
 import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';

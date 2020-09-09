@@ -5,19 +5,23 @@ import {
   Inject,
   Input,
   LOCALE_ID,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
   Renderer2,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {Subject} from 'rxjs';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {debounceTime} from 'rxjs/operators';
-import {Scene} from '../state/scene/scene.model';
+import {Scene, SceneWithUI} from '../state/scene/scene.model';
 import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
-import { AkitaGuidService } from '../state/search-results/guid.service';
+import {AkitaGuidService} from '../state/search-results/guid.service';
+import {DEFAULT_TIMELINE_RESOLUTION} from '../state/product/product.model';
+import moment from 'moment';
 
 export interface Day {
   label: string;
@@ -42,16 +46,30 @@ export const DATEPICKER_FORMAT_CUSTOMIZATION = {
     {provide: OWL_DATE_TIME_FORMATS, useValue: DATEPICKER_FORMAT_CUSTOMIZATION}
   ]
 })
-export class TimelineComponent implements OnInit, OnDestroy {
+export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
+  static readonly HOURMARKS_COUNT = 6;
   @ViewChild('datepicker', {read: ElementRef}) datepicker: ElementRef;
-  @Input() public loading: boolean = true;
+  @Input() loading: boolean = true;
+  @Input() resolution: number = DEFAULT_TIMELINE_RESOLUTION;
   currentDate: string = '';
   startAt = null;
   @Input() activeScene: Scene | null = null;
-  @Input() scenes: Scene[] = [];
+  @Input() startTime: moment.Moment;
+  hourmarks: string[] = [];
+
+
+  @Input() scenes: SceneWithUI[] = [];
   @Output() dateSelected = new EventEmitter<string>();
   @Output() selectedScene = new EventEmitter<Scene>();
+  @Output() previousScene = new EventEmitter<void>();
+  @Output() nextScene = new EventEmitter<void>();
+  @Output() nextDay = new EventEmitter<void>();
+  @Output() previousDay = new EventEmitter<void>();
+  @Output() increaseResolution = new EventEmitter<void>();
+  @Output() decreaseResolution = new EventEmitter<void>();
+
   @Output() loadAvailableDates = new EventEmitter<string>();
+  @Output() lastAvailableScene = new EventEmitter<void>();
   pickerState: boolean = false;
   componentId: string;
   // @Input() set products(products: Scene[] | null) {
@@ -103,7 +121,8 @@ export class TimelineComponent implements OnInit, OnDestroy {
     this.dateSelected.emit(yyyymmdd($event.value));
   }
 
-  monthSelected($event: any) {}
+  monthSelected($event: any) {
+  }
 
   setPickerOpenState(state: boolean) {
     this.pickerState = state;
@@ -126,5 +145,17 @@ export class TimelineComponent implements OnInit, OnDestroy {
       .subscribe(() => this.hackCalendar());
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.resolution || changes.startTime) {
+      this.hourmarks = [];
+      for (let i = 0; i < this.resolution && this.hourmarks.length < TimelineComponent.HOURMARKS_COUNT; i += (this.resolution / TimelineComponent.HOURMARKS_COUNT)) {
+        let date = moment(this.startTime);
+        date.add(i, 'hours');
+        this.hourmarks.push(date.format('HH:mm'));
+      }
+    }
+  }
 }

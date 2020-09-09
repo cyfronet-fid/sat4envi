@@ -6,7 +6,7 @@ import {combineLatest} from 'rxjs';
 import {distinctUntilChanged, map} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ProductQuery} from '../product/product.query';
-import {SceneQuery} from '../scene/scene.query.service';
+import {SceneQuery} from '../scene/scene.query';
 
 @Injectable({providedIn: 'root'})
 export class MapQuery extends Query<MapState> {

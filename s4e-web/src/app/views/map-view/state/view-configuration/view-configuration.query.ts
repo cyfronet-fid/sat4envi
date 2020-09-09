@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {QueryEntity} from '@datorama/akita';
 import {ViewConfigurationState, ViewConfigurationStore} from './view-configuration.store';
 import {ViewConfiguration, ViewConfigurationEx, ViewRouterConfig} from './view-configuration.model';
-import {SceneQuery} from '../scene/scene.query.service';
+import {SceneQuery} from '../scene/scene.query';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ProductQuery} from '../product/product.query';
 import {MapQuery} from '../map/map.query';
