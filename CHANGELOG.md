@@ -16,6 +16,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Content for invitation form [#629](https://github.com/cyfronet-fid/sat4envi/issues/629)
 - New text for sharing view mail [#790](https://github.com/cyfronet-fid/sat4envi/issues/790)
 
 ### Fixed

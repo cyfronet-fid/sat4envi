@@ -1,6 +1,14 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="modalId">
-  <div class="s4e-modal-header" i18n>Wyślij zaproszenie do instytucji {{ institution?.name }}</div>
+  <div class="s4e-modal-header" i18n>Zaproś osobę do instytucji</div>
   <div class="s4e-modal-body">
+    <p>
+      Aby dodać nowego członka instytucji <strong>{{ institution?.name }}</strong> wprowadź w poniższym polu
+      adres e-mail zapraszanej osoby.
+    </p>
+    <p>
+      Portal użyje tego adresu do wysłania wiadomości e-mail z linkiem aktywacyjnym. Informację o zaakceptowaniu
+      zaproszenia przez nowego członka instytucji możesz odczytać na liście osób.
+    </p>
     <form [formGroup]="form" class="form">
       <ul>
         <li>
