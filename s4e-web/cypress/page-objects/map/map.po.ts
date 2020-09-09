@@ -22,7 +22,7 @@ export class Map extends Core {
     getDayBtn: (day: number) =>
       cy.get(".owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-out)").contains(day),
     getHourBtn: (hour: number) =>
-      cy.get(".timeline__item").contains(hour),
+      cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {timeout: 5000}),
   };
 
   static logout() {
@@ -60,7 +60,6 @@ export class Map extends Core {
     Map.pageObject.getYearBtn(year).should("be.visible").click();
     Map.pageObject.getMonthBtn(month).should("be.visible").click();
     Map.pageObject.getDayBtn(day).should("be.visible").click();
-    cy.wait(500);
     Map.pageObject.getHourBtn(hour).should("be.visible").click();
     return Map;
   }

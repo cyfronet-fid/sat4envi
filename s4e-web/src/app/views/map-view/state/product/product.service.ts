@@ -1,19 +1,29 @@
-import { handleHttpRequest$ } from 'src/app/common/store.util';
+import {handleHttpRequest$} from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
-import {Product, PRODUCT_MODE_FAVOURITE, PRODUCT_MODE_QUERY_KEY} from './product.model';
-import {catchError, finalize, tap} from 'rxjs/operators';
+import {
+  AVAILABLE_TIMELINE_RESOLUTIONS,
+  MostRecentScene,
+  Product,
+  PRODUCT_MODE_FAVOURITE,
+  PRODUCT_MODE_QUERY_KEY,
+  TIMELINE_RESOLUTION_QUERY_KEY
+} from './product.model';
+import {catchError, finalize, take, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {LegendService} from '../legend/legend.service';
 import {Observable, of, throwError} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction} from '@datorama/akita';
-import {yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
+import {timezone, yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
 import {Router} from '@angular/router';
 import environment from 'src/environments/environment';
+import * as moment from 'moment';
+import {NotificationService} from 'notifications';
+import {SceneQuery} from '../scene/scene.query';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -24,9 +34,12 @@ export class ProductService {
     private http: HttpClient,
     private legendService: LegendService,
     private query: ProductQuery,
+    private _notificationService: NotificationService,
     private sceneService: SceneService,
+    private _sceneQuery: SceneQuery,
     private router: Router
-  ) {}
+  ) {
+  }
 
   get() {
     const url = `${environment.apiPrefixV1}/products`;
@@ -37,6 +50,30 @@ export class ProductService {
       .subscribe((data) => this.store.set(data));
   }
 
+  getLastAvailableScene() {
+    const product = this.query.getActive();
+
+    if (product == null) {
+      return;
+    }
+
+    this.store.ui.update(product.id, state => ({...state, isLoading: true}));
+    this.http.get<MostRecentScene>(`${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent`,
+      {params: {timeZone: timezone()}}
+    ).pipe(
+      finalize(() => this.store.ui.update(product.id, state => ({...state, isLoading: false})))
+    ).subscribe((data: MostRecentScene) => {
+      if (data.sceneId == null) {
+        this._notificationService.addGeneral({type: 'info', content: 'Ten produkt nie posiada jeszcze scen'});
+        return;
+      }
+
+      this.setSelectedDate(data.timestamp);
+      this.sceneService.get(product, data.timestamp.substr(0, 10));
+      this.sceneService.setActive(data.sceneId);
+    });
+  }
+
   setActive(productId: number | null) {
     this.store.ui.update({isLoading: false});
 
@@ -44,14 +81,15 @@ export class ProductService {
       this.store.ui.update(productId, {isLoading: true});
       const product = this.query.getEntity(productId);
       this.getSingle$(product)
-        .pipe(finalize(() => this.store.ui.update(productId, {isLoading: false})))
-        .subscribe((product) => {
-          applyTransaction(() => {
-            this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
-            this.store.setActive(productId);
-          });
-          this.getAvailableDays();
+        .pipe(
+          finalize(() => this.store.ui.update(productId, {isLoading: false}))
+        ).subscribe(product => {
+        applyTransaction(() => {
+          this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
+          this.store.setActive(productId);
         });
+        this.getAvailableDays();
+      });
     } else {
       applyTransaction(() => {
         this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
@@ -93,7 +131,7 @@ export class ProductService {
     }
     this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
     this.http.get<string[]>(`${environment.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`, {
-      params: {tz: environment.timezone, yearMonth: dateF}
+      params: {tz: timezone(), yearMonth: dateF}
     })
       .subscribe(data => this.updateAvailableDays(data));
   }
@@ -123,8 +161,8 @@ export class ProductService {
       });
   }
 
-  setSelectedDate($event: string) {
-    const date = new Date($event);
+  setSelectedDate(dateString: string) {
+    const date = new Date(dateString);
 
     this.store.update(store => ({
       ...store,
@@ -133,7 +171,7 @@ export class ProductService {
         selectedMonth: date.getMonth(),
         selectedYear: date.getFullYear(),
         selectedDay: date.getDate(),
-        selectedDate: yyyymmdd(date)
+        selectedDate: yyyymmdd(date),
       }
     }));
   }
@@ -158,6 +196,52 @@ export class ProductService {
       queryParamsHandling: 'merge',
       queryParams: {[PRODUCT_MODE_QUERY_KEY]: favourite ? PRODUCT_MODE_FAVOURITE : ''}
     });
+  }
+
+  nextScene() {
+    if (!this.sceneService.next()) {
+      this.nextDay();
+    }
+  }
+
+  previousScene() {
+    if (!this.sceneService.previous()) {
+      this.previousDay();
+    }
+  }
+
+  previousDay() {
+    let newDate = moment(this.query.getValue().ui.selectedDate);
+    newDate.subtract(1, 'day');
+    this.setSelectedDate(yyyymmdd(newDate.toDate()));
+    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'last');
+  }
+
+  nextDay() {
+    let newDate = moment(this.query.getValue().ui.selectedDate);
+    newDate.add(1, 'day');
+    this.setSelectedDate(yyyymmdd(newDate.toDate()));
+    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'first');
+  }
+
+  moveResolution(direction: -1 | 1) {
+    this.query.selectTimelineResolution().pipe(
+      take(1)
+    ).subscribe(
+      currentResolution => {
+        const index = AVAILABLE_TIMELINE_RESOLUTIONS.indexOf(currentResolution) + direction;
+
+        if (index < 0 || index >= AVAILABLE_TIMELINE_RESOLUTIONS.length) {
+          return;
+        }
+
+        this.router.navigate([],
+          {
+            queryParams: {[TIMELINE_RESOLUTION_QUERY_KEY]: AVAILABLE_TIMELINE_RESOLUTIONS[index]},
+            queryParamsHandling: 'merge'
+          });
+      }
+    );
   }
 
   private getSingle$(product: Product): Observable<any> {

@@ -2,8 +2,17 @@ import {Legend} from '../legend/legend.model';
 import {ActiveState, EntityState} from '@datorama/akita';
 import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 
-export const PRODUCT_MODE_QUERY_KEY = 'pmode'
-export const PRODUCT_MODE_FAVOURITE = 'favourite'
+export const PRODUCT_MODE_QUERY_KEY = 'pmode';
+export const PRODUCT_MODE_FAVOURITE = 'favourite';
+export const TIMELINE_RESOLUTION_QUERY_KEY = 'resolution';
+
+export const AVAILABLE_TIMELINE_RESOLUTIONS = [1, 3, 6, 12, 24];
+export const DEFAULT_TIMELINE_RESOLUTION = 24;
+
+export interface MostRecentScene {
+  sceneId: number;
+  timestamp: string;
+}
 
 export interface ProductCategory {
   id: number | undefined;
@@ -55,7 +64,7 @@ export function createProductState(state: Partial<ProductState> = {}): ProductSt
             selectedDay: now.getDate(),
             selectedYear: now.getFullYear(),
             selectedMonth: now.getMonth(),
-            availableDays: []
+            availableDays: [],
         },
         loaded: false,
         ...state

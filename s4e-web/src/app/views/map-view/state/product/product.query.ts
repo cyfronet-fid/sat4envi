@@ -1,7 +1,15 @@
 import {Injectable} from '@angular/core';
 import {EntityUIQuery, QueryEntity} from '@datorama/akita';
 import {ProductStore} from './product.store';
-import {Product, PRODUCT_MODE_FAVOURITE, PRODUCT_MODE_QUERY_KEY, ProductState, ProductUIState} from './product.model';
+import {
+  AVAILABLE_TIMELINE_RESOLUTIONS, DEFAULT_TIMELINE_RESOLUTION,
+  Product,
+  PRODUCT_MODE_FAVOURITE,
+  PRODUCT_MODE_QUERY_KEY,
+  ProductState,
+  ProductUIState,
+  TIMELINE_RESOLUTION_QUERY_KEY
+} from './product.model';
 import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
 import {map} from 'rxjs/operators';
@@ -98,5 +106,13 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   selectIsFavouriteMode(): Observable<boolean> {
     return this._routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY)
       .pipe(map(param => param === PRODUCT_MODE_FAVOURITE));
+  }
+
+  selectTimelineResolution() {
+    return this._routerQuery.selectQueryParams(TIMELINE_RESOLUTION_QUERY_KEY)
+      .pipe(
+        map(resolution => Number(resolution)),
+        map(resolution => AVAILABLE_TIMELINE_RESOLUTIONS.includes(resolution) ? resolution : DEFAULT_TIMELINE_RESOLUTION)
+      )
   }
 }

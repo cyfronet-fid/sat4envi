@@ -16,3 +16,7 @@ export function yyyymmdd(date: Date) {
 export function yyyymm(date: Date) {
   return yyyymmdd(date).substr(0, 7);
 }
+
+export function timezone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone
+}

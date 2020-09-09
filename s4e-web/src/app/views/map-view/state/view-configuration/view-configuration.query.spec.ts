@@ -3,7 +3,7 @@ import {ViewConfigurationStore} from './view-configuration.store';
 import {TestBed} from '@angular/core/testing';
 import {MapQuery} from '../map/map.query';
 import {ProductQuery} from '../product/product.query';
-import {SceneQuery} from '../scene/scene.query.service';
+import {SceneQuery} from '../scene/scene.query';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ViewConfiguration, ViewConfigurationEx} from './view-configuration.model';
 import {MapModule} from '../../map.module';

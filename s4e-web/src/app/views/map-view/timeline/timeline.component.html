@@ -1,11 +1,11 @@
 <div>
   <section class="timeline__manager">
-    <div class="timecontrol timecontrol--date" [owlDateTimeTrigger]="datepicker">
-      <span class="timecontrol__button timecontrol__button--prev"></span>
-      <span>{{currentDate}}</span>
+    <div class="timecontrol timecontrol--date">
+      <span (click)="previousDay.emit()" class="timecontrol__button timecontrol__button--prev"></span>
+      <span [owlDateTimeTrigger]="datepicker">{{currentDate}}</span>
       <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays" (dateTimeChange)="selectDate($event)"
            [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
-      <span class="timeline__changedate"></span>
+      <span [owlDateTimeTrigger]="datepicker" class="timeline__changedate"></span>
       <owl-date-time #datepicker
                      [startAt]="currentDate"
                      [panelClass]="componentId"
@@ -13,37 +13,34 @@
                      (afterPickerClosed)="setPickerOpenState(false)"
                      [pickerMode]="'popup'" [pickerType]="'calendar'"
                      (monthSelected)="monthSelected($event)"></owl-date-time>
-      <span class="timecontrol__button timecontrol__button--next"></span>
+      <span (click)="nextDay.emit()" class="timecontrol__button timecontrol__button--next"></span>
     </div>
     <div class="timecontrol timecontrol--clock">
-      <span class="timecontrol__button timecontrol__button--prev"></span>
-      <span>12:15</span>
-      <span class="timecontrol__button timecontrol__button--next"></span>
+      <span (click)="previousScene.emit()" class="timecontrol__button timecontrol__button--prev"></span>
+      <span>{{activeScene?.timestamp | hour}}</span>
+      <span (click)="nextScene.emit()" class="timecontrol__button timecontrol__button--next"></span>
     </div>
     <div class="timecontrol timecontrol--interval">
-      <span class="timecontrol__button timecontrol__button--minus"></span>
-      <span>14h</span>
-      <span class="timecontrol__button timecontrol__button--plus"></span>
+      <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
+      <span>{{resolution}}h</span>
+      <span (click)="increaseResolution.emit()" class="timecontrol__button timecontrol__button--plus"></span>
     </div>
   </section>
 
   <ul class="timeline__grid">
-    <li class="timeline__item timeline__item--noproduct" *ngIf="scenes.length == 0 && !loading">Brak scen w tym dniu, wybierz inną datę</li>
+    <li class="timeline__item timeline__item--noproduct" *ngIf="scenes.length == 0 && !loading">Brak scen w tym dniu, wybierz inną datę, lub <a href="javascript:void" (click)="lastAvailableScene.emit()">przejdź do ostatniej zarejestrowanej sceny</a></li>
     <li class="timeline__item"
         *ngFor="let scene of scenes"
+        [attr.title]="scene.timestamp | hour"
         [attr.data-scene-id]="scene.id"
         [attr.data-active-id]="activeScene?.id"
         [ngClass]="{active: scene.id === activeScene?.id}"
+        [style.left.%]="scene.position"
         (click)="selectedScene.emit(scene)">
       <span>{{ scene.timestamp | date : 'shortTime' }}</span>
     </li>
   </ul>
   <div class="timeline__hourmark">
-    <span class="hourmark">0:00</span>
-    <span class="hourmark">4:00</span>
-    <span class="hourmark">8:00</span>
-    <span class="hourmark">12:00</span>
-    <span class="hourmark">16:00</span>
-    <span class="hourmark">20:00</span>
+    <span *ngFor="let hour of hourmarks" class="hourmark">{{hour}}</span>
   </div>
 </div>

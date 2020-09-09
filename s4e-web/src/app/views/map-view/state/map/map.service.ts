@@ -8,7 +8,7 @@ import {catchError, filter, map, take, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {SceneService} from '../scene/scene.service';
 import {ProductQuery} from '../product/product.query';
-import {SceneQuery} from '../scene/scene.query.service';
+import {SceneQuery} from '../scene/scene.query';
 import {ActivatedRoute, Router} from '@angular/router';
 import {OverlayService} from '../overlay/overlay.service';
 import {ProductService} from '../product/product.service';

@@ -64,7 +64,7 @@
         </form>
       </ng-container>
 
-      <div class="s4e-modal-table" *ngIf="(overlays$ | async).length > 0; else noConfigurations">
+      <div class="s4e-modal-table" *ngIf="(overlays$ | async).length > 0; else noOverlaysRef">
         <table class="modal__table modal__table--white">
           <thead>
             <tr>
@@ -120,8 +120,8 @@
         <section class="element" role="menuitem" *ngFor="let config of (overlays$ | async)">
         </section>
       </div>
-      <ng-template #noConfigurations>
-        <span i18n>Brak zapisanych widoków</span>
+      <ng-template #noOverlaysRef>
+        <span i18n>Brak nakładek</span>
       </ng-template>
 
       <ng-container *ngIf="hasCustomOverlays$ | async">

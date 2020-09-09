@@ -2,7 +2,7 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {SceneService} from './scene.service';
 import {SceneStore} from './scene.store.service';
-import {SceneQuery} from './scene.query.service';
+import {SceneQuery} from './scene.query';
 import {take, toArray} from 'rxjs/operators';
 import {SceneFactory} from './scene.factory.spec';
 import {LegendFactory} from '../legend/legend.factory.spec';
@@ -12,6 +12,7 @@ import {ProductQuery} from '../product/product.query';
 import {ProductStore} from '../product/product.store';
 import {ProductFactory} from '../product/product.factory.spec';
 import environment from 'src/environments/environment';
+import {timezone} from '../../../../utils/miscellaneous/date-utils';
 
 describe('SceneService', () => {
   let sceneService: SceneService;
@@ -83,7 +84,7 @@ describe('SceneService', () => {
 
       sceneService.get(product, dateF);
 
-      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
       const request = http.expectOne(url);
       request.flush([]);
@@ -95,7 +96,7 @@ describe('SceneService', () => {
       const dateF = '2019-10-01';
       sceneService.get(product, dateF);
 
-      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
       const request = http.expectOne(url);
     });
@@ -118,7 +119,7 @@ describe('SceneService', () => {
 
       sceneService.get(product, dateF);
 
-      const urlParams = `date=${dateF}&timeZone=${environment.timezone}`;
+      const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
       const request = http.expectOne(url);
       request.flush([scene]);

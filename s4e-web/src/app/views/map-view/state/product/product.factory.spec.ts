@@ -9,5 +9,5 @@ export const ProductFactory = Factory.makeFactory<Product>({
   description: '',
   layerName: Factory.each(i => `layer #${i}`),
   legend: null,
-  favourite: false
+  favourite: false,
 });
