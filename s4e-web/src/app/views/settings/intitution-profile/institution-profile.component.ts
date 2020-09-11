@@ -1,4 +1,5 @@
-import { filter, map } from 'rxjs/operators';
+import { SessionQuery } from 'src/app/state/session/session.query';
+import { filter, map, take } from 'rxjs/operators';
 import { InstitutionQuery } from './../state/institution/institution.query';
 import { InstitutionService } from './../state/institution/institution.service';
 import { ModalService } from './../../../modal/state/modal.service';
@@ -16,28 +17,29 @@ import { Observable, combineLatest } from 'rxjs';
 })
 export class InstitutionProfileComponent implements OnInit, OnDestroy {
   public activeInstitution: Institution | null;
-  public isLoading$: Observable<boolean>;
-  public institutions$: Observable<Institution[]>;
-  public error$: Observable<any>;
+  public isLoading$: Observable<boolean> = this._institutionQuery.selectLoading();
+  public childrenInstitutions$: Observable<Institution[]> = combineLatest(
+      this._institutionQuery.selectAll(),
+      this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute)
+    )
+      .pipe(
+        untilDestroyed(this),
+        filter(([institutions, parentInstitution]) => !!parentInstitution && !!institutions && institutions.length > 0),
+        map(([institutions, parentInstitution]) => this._filterChildrenDeep(institutions, [parentInstitution]))
+      );
+  public error$: Observable<any> = this._institutionQuery.selectError();
+
+  public isManager$ = this._sessionQuery.selectCanSeeInstitutions()
+    .pipe(take(1), map(manager => manager));
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
     private _institutionService: InstitutionService,
-    private _institutionQuery: InstitutionQuery
-  ) {
-    this.isLoading$ = this._institutionQuery.selectLoading();
-    this.institutions$ = combineLatest(
-      this._institutionQuery.selectAll(),
-      this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute)
-    )
-      .pipe(
-        filter(([institutions, parentInstitution]) => !!parentInstitution && !!institutions && institutions.length > 0),
-        map(([institutions, parentInstitution]) => this._filterChildrenDeep(institutions, [parentInstitution]))
-      );
-    this.error$ = this._institutionQuery.selectError();
-  }
+    private _institutionQuery: InstitutionQuery,
+    private _sessionQuery: SessionQuery
+  ) {}
 
   ngOnInit() {
     this._institutionsSearchResultsQuery

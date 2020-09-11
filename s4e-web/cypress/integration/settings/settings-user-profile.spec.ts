@@ -22,4 +22,9 @@ context('Settings user profile', () => {
       .userDetailsShouldContain(this.zkMember.email)
       .goToPasswordChange();
   });
+  it('should display and navigate to institutions', function () {
+    UserProfile
+      .goToNthMemberInstitution(0)
+      .actionsBtnsAndChildrenShouldBeHidden();
+  });
 });

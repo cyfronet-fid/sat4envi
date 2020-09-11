@@ -12,7 +12,9 @@ export class IsManagerGuard implements CanActivate {
   }
 
   canActivate(
-    next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     return this.sessionQuery.selectCanSeeInstitutions().pipe(take(1),
       map(manager => manager ? true : this.router.parseUrl('/settings/profile')));
   }
