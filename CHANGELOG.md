@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v12.0.0]
+
+### Added
+
 - Migrate seeds of products to specific category and handle them with REST API [#671](https://github.com/cyfronet-fid/sat4envi/issues/671)
 - Sentry [#687](https://github.com/cyfronet-fid/sat4envi/issues/687)
 - Add new sentinel search results UI [#613](https://github.com/cyfronet-fid/sat4envi/issues/613)
