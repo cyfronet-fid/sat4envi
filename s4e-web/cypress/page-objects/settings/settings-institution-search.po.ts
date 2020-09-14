@@ -19,6 +19,17 @@ export class InstitutionSearch extends Core {
     return InstitutionSearch;
   }
 
+  static shouldHaveValue(value: string) {
+    InstitutionSearch
+      .pageObject
+      .getSearch()
+      .should('be.visible')
+      .invoke('val')
+      .should('be.a', value);
+
+    return InstitutionSearch;
+  }
+
   static searchFor(label: string) {
     InstitutionSearch
       .pageObject

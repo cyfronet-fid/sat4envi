@@ -47,6 +47,7 @@
             [query]="institutionsSearchResultsQuery"
             [store]="institutionsSearchResultsStore"
             [value]="searchValue"
+            [hasBeenSelected]="hasBeenSelected"
             (valueChange)="searchForInstitutions($event)"
             (selectResult)="selectInstitution($event)"
           >

@@ -54,9 +54,10 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
-    public void create(@RequestBody @Valid CreateInstitutionRequest request)
+    public BasicInstitutionResponse create(@RequestBody @Valid CreateInstitutionRequest request)
             throws InstitutionCreationException, NotFoundException {
-        institutionService.save(request);
+        val institutionSlug = institutionService.save(request);
+        return institutionService.findBySlug(institutionSlug, BasicInstitutionResponse.class).get();
     }
 
     @Operation(summary = "Update an institution")
@@ -68,10 +69,11 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PutMapping(value = "/institutions/{institution}", consumes = APPLICATION_JSON_VALUE)
-    public void update(@RequestBody UpdateInstitutionRequest request,
+    public BasicInstitutionResponse update(@RequestBody UpdateInstitutionRequest request,
                        @PathVariable("institution") String institutionSlug)
             throws NotFoundException, S3ClientException {
-        institutionService.update(request, institutionSlug);
+        val updatedInstitutionSlug = institutionService.update(request, institutionSlug);
+        return institutionService.findBySlug(updatedInstitutionSlug, BasicInstitutionResponse.class).get();
     }
 
     @Operation(summary = "Create a new child institution")
@@ -83,10 +85,11 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/child", consumes = APPLICATION_JSON_VALUE)
-    public void createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
+    public BasicInstitutionResponse createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                             @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
-        institutionService.createChildInstitution(request, institutionSlug);
+        val newInstitutionSlug = institutionService.createChildInstitution(request, institutionSlug).getSlug();
+        return institutionService.findBySlug(newInstitutionSlug, BasicInstitutionResponse.class).get();
     }
 
     @Operation(summary = "Get a list of institutions")

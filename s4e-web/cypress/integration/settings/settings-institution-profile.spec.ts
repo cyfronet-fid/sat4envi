@@ -46,47 +46,46 @@ context('Settings institution profile', () => {
       .should('be.visible');
   });
 
-  // TODO: Uncomment and refactor after repairing addition of children
-  // it('should add institution child, display and remove it', async () => {
-  //   const parentInstitutionLabel = await promisify(
-  //     InstitutionSearch
-  //         .pageObject
-  //         .getSearch()
-  //         .invoke('val')
-  //   );
+  it('should add institution child, display and remove it', async () => {
+    const parentInstitutionLabel = await promisify(
+      InstitutionSearch
+          .pageObject
+          .getSearch()
+          .invoke('val')
+    );
 
-  //   // add child
-  //   const institution = InstitutionFactory.build();
-  //   InstitutionProfile
-  //     .childrenCountShouldBe(0)
-  //     .goToAddChildForm()
-  //     .openParentInstitutionModal()
-  //     .selectFirstParentInstitution()
-  //     .submitAndClose()
-  //     .fillFormWith(institution)
-  //     .submit();
+    // add child
+    const institution = InstitutionFactory.build();
+    InstitutionProfile
+      .childrenCountShouldBe(0)
+      .goToAddChildForm()
+      .openParentInstitutionModal()
+      .selectFirstParentInstitution()
+      .submitAndClose()
+      .fillFormWith(institution)
+      .submit();
 
-  //   InstitutionProfile
-  //     .pageObject
-  //     .getInstitutionDetails()
-  //     .should('have.text', institution.name);
+    InstitutionProfile
+      .pageObject
+      .getInstitutionDetails()
+      .should('have.text', institution.name);
 
-  //   InstitutionProfile
-  //     .pageObject
-  //     .getEmblem()
-  //     .should('exist');
+    InstitutionProfile
+      .pageObject
+      .getEmblem()
+      .should('exist');
 
-  //   InstitutionProfile
-  //     .pageObject
-  //     .getPostalCodeWithCity()
-  //     .should('have.text', institution.city);
+    InstitutionProfile
+      .pageObject
+      .getPostalCodeWithCity()
+      .should('have.text', institution.city);
 
-  //   // remove child
-  //   InstitutionSearch
-  //     .selectNthInstitutionResultByLabel(1, parentInstitutionLabel)
-  //     .changeContextTo(InstitutionProfile)
-  //     .childrenCountShouldBe(1)
-  //     .removeNthChild(1)
-  //     .childrenCountShouldBe(0);
-  // });
+    // remove child
+    InstitutionSearch
+      .selectNthInstitutionResultByLabel(1, parentInstitutionLabel)
+      .changeContextTo(InstitutionProfile)
+      .childrenCountShouldBe(1)
+      .removeNthChild(1)
+      .childrenCountShouldBe(0);
+  });
 });

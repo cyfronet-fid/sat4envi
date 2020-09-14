@@ -119,21 +119,13 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       return;
     }
 
-    this.activeInstitution
+    (
+      this.activeInstitution
       ? this._institutionService.updateInstitution$(this.form.value)
-      : this._institutionService.createInstitutionChild$(this.form.value);
-
-    !!this.activeInstitution
-      ? this.activeInstitution = this.form.value
-      : this.form.reset();
-
-    this._router.navigate(
-      ['/settings/institution'],
-      {
-        relativeTo: this._activatedRoute,
-        queryParamsHandling: 'merge'
-      }
-    );
+      : this._institutionService.createInstitutionChild$(this.form.value)
+    )
+      .pipe(untilDestroyed(this))
+      .subscribe();
   }
 
   resetForm() {

@@ -45,8 +45,12 @@ context('Settings institutions list', () => {
     InstitutionList.getEntries().should('have.length', 1);
   });
 
-  it('should go to Profile', () => {
-    InstitutionList.goToProfile(0);
+  it('should go to Profile', async () => {
+    const institutionName = await InstitutionList.getNthInstitutionName(0);
+    InstitutionList
+      .goToInstitutionProfile(0)
+      .changeContextTo(InstitutionSearch)
+      .shouldHaveValue(institutionName);
   });
 });
 

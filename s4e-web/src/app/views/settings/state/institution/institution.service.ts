@@ -30,12 +30,8 @@ export class InstitutionService {
   }
 
   get() {
-    if (this._query.getHasCache()) {
-      return;
-    }
-
     const url = `${environment.apiPrefixV1}/institutions`;
-    const get$ = this._http.get<Institution[]>(url)
+    this._http.get<Institution[]>(url)
       .pipe(
         handleHttpRequest$(this._store),
         tap((institutions) => this._saveIn(this._store, institutions, this._guidGenerationService))
@@ -61,7 +57,16 @@ export class InstitutionService {
     return this._http.put<Institution>(url, institution)
       .pipe(
         handleHttpRequest$(this._store),
-        tap(() => this.get())
+        tap(updatedInstitution => this._store.update(institution.slug, updatedInstitution)),
+        tap(updatedInstitution => this._router.navigate(
+          ['/settings/institution'],
+          {
+            queryParamsHandling: 'merge',
+            queryParams: {
+              institution: updatedInstitution.slug
+            }
+          }
+        ))
       );
   }
 
@@ -70,7 +75,16 @@ export class InstitutionService {
     return this._http.post<Institution>(url, institution)
       .pipe(
         handleHttpRequest$(this._store),
-        tap(() => this.get())
+        tap(newInstitution => this._store.add(newInstitution)),
+        tap(newInstitution => this._router.navigate(
+          ['/settings/institution'],
+          {
+            queryParamsHandling: 'merge',
+            queryParams: {
+              institution: newInstitution.slug
+            }
+          }
+        ))
       );
   }
 

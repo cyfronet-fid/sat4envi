@@ -36,7 +36,7 @@ public class InstitutionService {
     private final FileStorage fileStorage;
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
-    public void save(CreateInstitutionRequest request) throws InstitutionCreationException, NotFoundException {
+    public String save(CreateInstitutionRequest request) throws InstitutionCreationException, NotFoundException {
         String slug = slugService.slugify(request.getName());
         save(Institution.builder()
                 .name(request.getName())
@@ -50,6 +50,8 @@ public class InstitutionService {
                 .build());
         addInstitutionAdminIfRequested(request.getInstitutionAdminEmail(), slug);
         uploadEmblemIfRequested(slug, request.getEmblem());
+
+        return slug;
     }
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
@@ -133,7 +135,7 @@ public class InstitutionService {
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
-    public void update(UpdateInstitutionRequest request, String institutionSlug)
+    public String update(UpdateInstitutionRequest request, String institutionSlug)
             throws NotFoundException, S3ClientException {
         val institution = findBySlug(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
@@ -150,6 +152,8 @@ public class InstitutionService {
         institution.setPostalCode(request.getPostalCode());
         institution.setPhone(request.getPhone());
         institution.setSecondaryPhone(request.getSecondaryPhone());
+
+        return slug;
     }
 
     @Transactional

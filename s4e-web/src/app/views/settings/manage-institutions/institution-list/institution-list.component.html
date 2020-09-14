@@ -18,7 +18,10 @@
     <th i18n class="table__actions">Akcje</th>
   </ng-container>
   <ng-template let-inst="item">
-    <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
+    <td
+      [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15"
+      data-e2e="institution-name"
+    >
       <a routerLink="../institution" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
     <td >
