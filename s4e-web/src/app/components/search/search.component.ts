@@ -20,22 +20,29 @@ export class SearchComponent implements OnInit, OnDestroy {
   set value(value: string) {
     if (!!value && value !== '' && !!this.searchFormControl.value) {
       this.hasBeenSelected = true;
+      this.hasBeenSelectedChange.emit(true);
     }
 
     this.searchFormControl.setValue(value);
   }
+  @Input()
+  set hasBeenSelected(hasBeenSelected: boolean) {
+    this._hasBeenSelected = hasBeenSelected;
+  }
+  @Output() hasBeenSelectedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectResult: EventEmitter<any> = new EventEmitter<any>();
 
   @ContentChild('result') resultTemplate: TemplateRef<any>;
 
   public searchFormControl: FormControl<string> = new FormControl<string>('');
-  public hasBeenSelected = false;
   public areResultsOpen = false;
 
   public results: any[];
   public isLoading = false;
   public activatedQueue: ActivatedQueue;
+
+  private _hasBeenSelected = false;
 
   ngOnInit() {
     this._handleSearchValueChange();
@@ -96,6 +103,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   select(result: any) {
     this.hasBeenSelected = true;
+    this.hasBeenSelectedChange.emit(true);
     this.selectResult.emit(result);
     this.areResultsOpen = false;
   }
@@ -116,11 +124,12 @@ export class SearchComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       untilDestroyed(this),
     ).subscribe((text: string) => {
-      if (!this.hasBeenSelected) {
+      if (!this._hasBeenSelected) {
         this.areResultsOpen = true;
         this.valueChange.emit(text);
       }
 
       this.hasBeenSelected = false;
+      this.hasBeenSelectedChange.emit(false);
     })
 }

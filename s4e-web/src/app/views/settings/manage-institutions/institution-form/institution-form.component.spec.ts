@@ -1,5 +1,5 @@
 import { InstitutionProfileModule } from './../../intitution-profile/institution-profile.module';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, of } from 'rxjs';
 import { InstitutionFactory } from '../../state/institution/institution.factory.spec';
 import { InstitutionService } from '../../state/institution/institution.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -63,7 +63,7 @@ describe('InstitutionFormComponent', () => {
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(institutionService, 'createInstitutionChild$');
+    const spy = spyOn(institutionService, 'createInstitutionChild$').and.returnValue(of());
     const {id, ...formInstitution} = InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'});
     component.form.setValue(formInstitution as undefined);
     component.updateInstitution();

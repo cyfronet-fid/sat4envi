@@ -29,7 +29,7 @@
       <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
       <header class="panel__header" tile-title>Instytucje administrowane</header>
       <div tile-description>
-        <p *ngFor="let institution of (administrationInstitutions$ | async).slice(0, MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY)">
+        <p *ngFor="let institution of (administrationInstitutions$ | async) | slice:0:MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY">
           <a
             routerLink="/settings/institution"
             [queryParams]="{institution: institution.slug}"
@@ -54,20 +54,13 @@
 
     <s4e-tile
       *ngIf="(memberInstitutions$ | async).length > 0"
-<<<<<<< HEAD
       data-e2e="member-institutions-tile"
-=======
->>>>>>> 72a89c06... [#671] Migrate seeds of products to specific category and handle them with REST API
       data-ut="member-institutions-tile"
     >
       <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
       <header class="panel__header" tile-title>Instytucje członkowskie</header>
       <div tile-description>
-<<<<<<< HEAD
         <p *ngFor="let institution of (memberInstitutions$ | async)">
-=======
-        <p *ngFor="let institution of (memberInstitutions$ | async).slice(0, MAX_INSTITUTIONS_TO_DISPLAY_PER_TILE)">
->>>>>>> 72a89c06... [#671] Migrate seeds of products to specific category and handle them with REST API
           <a
             routerLink="/settings/institution"
             [queryParams]="{institution: institution.slug}"
@@ -77,20 +70,6 @@
           </a>
         </p>
       </div>
-<<<<<<< HEAD
-=======
-      <button
-        *ngIf="hasMoreMemberInstitutionsThanMax$ | async"
-        class="button button--secondary button--small"
-        routerLink="/settings/institutions"
-        queryParamsHandling="merge"
-        data-ut="go-to-institutions"
-        data-e2e="go-to-institutions"
-        footer-navigation
-      >
-        Pokaż więcej
-      </button>
->>>>>>> 72a89c06... [#671] Migrate seeds of products to specific category and handle them with REST API
     </s4e-tile>
   </ng-container>
 </s4e-tiles-dashboard>

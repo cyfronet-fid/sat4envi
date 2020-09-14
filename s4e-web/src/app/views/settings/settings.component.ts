@@ -1,7 +1,7 @@
 import { InstitutionQuery } from './state/institution/institution.query';
 import { InstitutionsSearchResultsStore } from './state/institutions-search/institutions-search-results.store';
 import {InstitutionService} from './state/institution/institution.service';
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
@@ -10,18 +10,22 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Institution} from './state/institution/institution.model';
 import {environment} from 'src/environments/environment';
 import {SessionQuery} from '../../state/session/session.query';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 @Component({
   selector: 's4e-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
   public searchValue: string;
+  public hasBeenSelected = false;
 
-  public showInstitutions$: Observable<boolean>;
-  public isInstitutionActive$: Observable<boolean>;
+  public showInstitutions$: Observable<boolean> = this._sessionQuery
+    .selectCanSeeInstitutions();
+  public isInstitutionActive$: Observable<boolean> = this.institutionsSearchResultsQuery
+    .isAnyInstitutionActive$(this._activatedRoute);
 
   constructor(
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
@@ -36,16 +40,21 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.showInstitutions$ = this._sessionQuery.selectCanSeeInstitutions();
-
-    this.isInstitutionActive$ = this.institutionsSearchResultsQuery
-      .isAnyInstitutionActive$(this._activatedRoute);
-
-    // TODO: set institution from storage
     if (environment.hmr) {
       const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;
       this.searchValue = !!searchResult ? searchResult.name : '';
     }
+    this.institutionsSearchResultsQuery
+      .selectActive$(this._activatedRoute)
+      .pipe(untilDestroyed(this))
+      .subscribe(institution => {
+        const isSearchValueActiveInstitution = !!this.searchValue
+          && this.searchValue === institution.name;
+        if (!isSearchValueActiveInstitution) {
+          this.searchValue = institution.name;
+          this.hasBeenSelected = false;
+        }
+      });
 
     this._institutionService.get();
   }
@@ -73,4 +82,6 @@ export class SettingsComponent implements OnInit {
       }
     );
   }
+
+  ngOnDestroy() {}
 }

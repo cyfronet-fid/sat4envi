@@ -12,7 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppRole;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
@@ -115,7 +118,9 @@ public class InstitutionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(equalTo(request.getName()))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugService.slugify(request.getName())))));
 
         // Expect object is found. Otherwise, throw NoSuchKeyException.
         assertDoesNotThrow(() -> s3Client.getObject(
@@ -158,7 +163,9 @@ public class InstitutionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(equalTo(request.getName()))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugService.slugify(request.getName())))));
 
         // Expect object is found. Otherwise, throw NoSuchKeyException.
         assertDoesNotThrow(() -> s3Client.getObject(
@@ -177,7 +184,9 @@ public class InstitutionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(updateRequest))
                 .with(jwtBearerToken(appUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(equalTo(updateRequest.getName()))))
+                .andExpect(jsonPath("$.slug", is(equalTo(updateSlug))));
 
         // Expect object is found. Otherwise, throw NoSuchKeyException.
         assertDoesNotThrow(() -> s3Client.getObject(
@@ -206,7 +215,9 @@ public class InstitutionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(equalTo(request.getName()))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugService.slugify(request.getName())))));
 
         // Expect object is found. Otherwise, throw NoSuchKeyException.
         assertDoesNotThrow(() -> s3Client.getObject(
@@ -234,7 +245,9 @@ public class InstitutionControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is(equalTo(request.getName()))))
+                .andExpect(jsonPath("$.slug", is(equalTo(slugService.slugify(request.getName())))));
 
         mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", parentSlug)
                 .contentType(MediaType.APPLICATION_JSON)
