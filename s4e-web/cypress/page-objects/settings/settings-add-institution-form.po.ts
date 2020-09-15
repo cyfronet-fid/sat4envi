@@ -20,7 +20,7 @@ export class AddInstitutionForm extends Core {
     getLogoInput:  () => cy.get('[data-e2e="emblem-input"]'),
     getEmailInput:  () => cy.get('#institutionAdminEmail'),
     getSubmitBtn:  () => cy.get('[data-e2e="submit-btn"]'),
-  }
+  };
 
   static openParentInstitutionModal() {
     return ParentInstitutionModal;

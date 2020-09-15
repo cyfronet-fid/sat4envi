@@ -14,7 +14,7 @@
     </div>
     <ul class="navigation__list">
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
-          data-e2e="dashboard">
+          data-e2e="go-to-dashboard">
         <a [routerLink]="['./dashboard']"
            queryParamsHandling="merge"
            i18n>Start</a>

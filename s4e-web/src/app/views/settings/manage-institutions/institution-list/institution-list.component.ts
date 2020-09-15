@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
 import {Institution} from '../../state/institution/institution.model';
 import {InstitutionQuery} from '../../state/institution/institution.query';
@@ -10,7 +11,7 @@ import {ModalService} from '../../../../modal/state/modal.service';
   templateUrl: './institution-list.component.html',
   styleUrls: ['./institution-list.component.scss']
 })
-export class InstitutionListComponent implements OnInit {
+export class InstitutionListComponent implements OnInit, OnDestroy {
   isLoading$: Observable<boolean>;
   institutions$: Observable<Institution[]>;
   error$: Observable<any>;
@@ -31,7 +32,9 @@ export class InstitutionListComponent implements OnInit {
   async deleteInstitution(slug: string) {
     if(await this._modalService.confirm('Usuń instytucję',
       'Czy na pewno chcesz usunąć tą instytucję? Operacja jest nieodwracalna.')) {
-      this._institutionService.delete(slug);
+      this._institutionService.delete(slug).pipe(untilDestroyed(this)).subscribe();
     }
   }
+
+  ngOnDestroy() {}
 }

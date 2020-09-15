@@ -1,3 +1,5 @@
+import { AdminDashboard, SuperAdminDashboard } from './settings-dashboard.po';
+import { User } from './../login/login.po';
 import { InstitutionSearch } from './settings-institution-search.po';
 import { InstitutionProfile } from './settings-institution-profile.po';
 import { Login } from '../login/login.po';
@@ -12,6 +14,7 @@ export class SideNav extends Core {
     // TODO: update elements with data-e2e attributes
     getAddInstitutionBtn: () => cy.get('[data-e2e="addInstitution"]'),
     getProfileBtn: () => cy.get('li[data-e2e="profile"] a'),
+    getGoToDashboardBtn: () => cy.get('[data-e2e="go-to-dashboard"]').find('a'),
     getLogoutBtn: () => cy.get('.login a'),
     getInstitutionListBtn: () => cy.get('li[data-e2e="institutions"] a'),
     getInstitutionProfileBtn: () => cy.get('[data-e2e="go-to-institution-profile-btn"]'),
@@ -58,5 +61,11 @@ export class SideNav extends Core {
 
   static goToInstitutionPeople() {
     return SideNav.goTo(SideNav.pageObject.getInstitutionPeopleBtn(), '/settings/people', InstitutionPeople);
+  }
+
+  static goToDashboardAs(user: User) {
+    const isAdmin = user.email.startsWith('zkAdmin');
+    const actualContext = isAdmin ? AdminDashboard : SuperAdminDashboard;
+    return SideNav.goTo(SideNav.pageObject.getGoToDashboardBtn(), '/settings/dashboard', actualContext);
   }
 }
