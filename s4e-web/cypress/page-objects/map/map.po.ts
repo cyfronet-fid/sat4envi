@@ -1,3 +1,4 @@
+import { JwtTokenModal } from './map-jwt-token-modal.po';
 import { Core } from './../core.po';
 import { User, Login } from '../login/login.po';
 import { SideNav } from '../settings/settings-side-nav.po';
@@ -9,6 +10,7 @@ export class Map extends Core {
     getUserBtn: () => cy.get("#user-login-button"),
 
     // user
+    getOpenJwtTokenModalBtn: () => cy.get('[data-e2e="open-jwt-token-btn"]'),
     getSettingsBtn: () => cy.get("a").contains("Ustawienia"),
     getLogoutBtn: () => cy.get("a").contains("Wyloguj"),
 
@@ -43,6 +45,21 @@ export class Map extends Core {
       isAdmin ? "/settings/dashboard" : "/settings/profile"
     );
     return SideNav;
+  }
+
+  static openJwtTokenModal() {
+    Map
+      .pageObject
+      .getUserBtn()
+      .should('be.visible')
+      .click();
+    Map
+      .pageObject
+      .getOpenJwtTokenModalBtn()
+      .should('be.visible')
+      .click();
+
+    return JwtTokenModal;
   }
 
   static openDateChange() {

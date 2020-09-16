@@ -68,7 +68,7 @@
       <span class="dropdown__header">Twoje Sat4Envi</span>
       <div class="dropdown__close" (click)="toggleLoginOptions(false)"></div>
       <ul>
-        <ng-container *ngIf="!(userLoggedIn$ | async); else logoutLink">
+        <ng-container *ngIf="!(userLoggedIn$ | async); else loginOptions">
           <li>
             <a routerLink="/login" i18n>Zaloguj</a>
           </li>
@@ -76,9 +76,19 @@
             <a routerLink="/register" i18n>Zarejestruj</a>
           </li>
         </ng-container>
-        <ng-template #logoutLink>
+        <ng-template #loginOptions>
           <li>
             <a routerLink="/settings" i18n>Ustawienia</a>
+          </li>
+          <li>
+            <a
+              href="javascript:void(0)"
+              (click)="openJwtTokenModal()"
+              data-e2e="open-jwt-token-btn"
+              i18n
+            >
+              Pobierz token API
+            </a>
           </li>
           <li>
             <a routerLink="/logout" i18n>Wyloguj</a>
