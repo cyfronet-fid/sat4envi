@@ -1,3 +1,5 @@
+import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal/jwt-token-modal.model';
+import { JwtTokenModalComponent } from './jwt-token-modal/jwt-token-modal.component';
 import { FormErrorModule } from 'src/app/components/form-error/form-error.module';
 import {NgModule} from '@angular/core';
 import {SearchModule} from '../../components/search/search.module';
@@ -72,7 +74,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     SearchResultsComponent,
     SearchResultModalComponent,
     OverlayListModalComponent,
-    SearchResultsComponent
+    SearchResultsComponent,
+    JwtTokenModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -115,7 +118,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     makeModalProvider(SAVE_CONFIG_MODAL_ID, SaveConfigModalComponent),
     makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent),
     makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent),
-    makeModalProvider(OVERLAY_LIST_MODAL_ID, OverlayListModalComponent)
+    makeModalProvider(OVERLAY_LIST_MODAL_ID, OverlayListModalComponent),
+    makeModalProvider(JWT_TOKEN_MODAL_ID, JwtTokenModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
@@ -123,7 +127,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     SaveConfigModalComponent,
     ListConfigsModalComponent,
     SearchResultModalComponent,
-    OverlayListModalComponent
+    OverlayListModalComponent,
+    JwtTokenModalComponent
   ]
 })
 export class MapModule {

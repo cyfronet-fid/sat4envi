@@ -5,6 +5,7 @@ import {ReportForm} from '../../views/map-view/zk/report-modal/report-modal.mode
 import {ShareConfigurationForm} from '../../views/map-view/zk/configuration/state/configuration.model';
 import {Institution} from 'src/app/views/settings/state/institution/institution.model';
 import { InvitationForm } from 'src/app/views/settings/people/invitation-form/invitation-form.model';
+import { JwtTokenForm } from 'src/app/views/map-view/jwt-token-modal/jwt-token-modal.model';
 
 
 export interface FormState {
@@ -16,4 +17,5 @@ export interface FormState {
   resetPassword: PasswordChangeFormState;
   addInstitution: Institution;
   invitation: InvitationForm;
+  jwtToken: JwtTokenForm;
 }

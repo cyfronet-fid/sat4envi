@@ -1,7 +1,7 @@
 import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {ERROR_INTERCEPTOR_SKIP_HEADER} from '../../utils/error-interceptor/error.helper';
 import {SessionStore} from './session.store';
-import { catchError, shareReplay, switchMap, tap, filter, finalize } from 'rxjs/operators';
+import { catchError, shareReplay, switchMap, tap, filter, finalize, map } from 'rxjs/operators';
 import {action} from '@datorama/akita';
 import {LoginFormState, Session} from './session.model';
 import {HTTP_401_UNAUTHORIZED, HTTP_404_BAD_REQUEST} from '../../errors/errors.model';
@@ -94,6 +94,12 @@ export class SessionService {
         this._store.reset();
         this._router.navigate(['/login']);
       });
+  }
+
+  getJwtToken$(request: LoginFormState) {
+    const url = `${environment.apiPrefixV1}/token`;
+    return this._http.post<{email: string, token: string}>(url, request)
+      .pipe(map(response => response.token));
   }
 
   clearError() {

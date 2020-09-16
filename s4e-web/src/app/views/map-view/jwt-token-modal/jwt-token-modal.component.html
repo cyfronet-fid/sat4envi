@@ -1,0 +1,70 @@
+<form [formGroup]="form">
+  <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+    <div class="s4e-modal-header" i18n>Wygeneruj token API</div>
+    <div class="s4e-modal-body report">
+      <aside><b>
+        Uwaga! Wygenerowany token jest dostępny do
+        skopiowania jedynie na czas otwarcia aktualnego okna!
+      </b></aside>
+      <div class="form">
+        <ul *ngIf="!token">
+          <li>
+            <ext-input
+              type="password"
+              formControlName="password"
+              label="Hasło"
+              data-ut="jwt-token-password-input"
+              data-e2e="jwt-token-password-input"
+              i18n-label
+            ></ext-input>
+          </li>
+          <li>
+            <button
+              class="button button--cancel button--small"
+              type="button"
+              (click)="getJwtToken()"
+              data-ut="get-jwt-token-btn"
+              data-e2e="load-jwt-token-btn"
+              i18n
+            >
+              Generuj nowy token
+            </button>
+          </li>
+        </ul>
+
+        <ul *ngIf="!!token">
+          <li>
+            <textarea
+              disabled="true"
+              data-ut="jwt-token-txt"
+              data-e2e="jwt-token-txt"
+            >
+              {{ token }}
+            </textarea>
+          </li>
+          <li>
+            <button
+              class="button button--cancel button--small"
+              type="button"
+              (click)="copyToClipboard()"
+              data-e2e="copy-to-clipboard"
+              i18n
+            >
+              Kopiuj do schowka
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="s4e-modal-footer">
+      <button
+        class="button button--cancel button--small"
+        type="button"
+        (click)="dismiss()"
+        i18n
+      >
+        Zamknij
+      </button>
+    </div>
+  </s4e-generic-modal>
+</form>

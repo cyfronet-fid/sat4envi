@@ -1,3 +1,5 @@
+import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal/jwt-token-modal.model';
+import { Modal } from './../../modal/state/modal.model';
 import { environment } from 'src/environments/environment';
 import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
@@ -249,7 +251,14 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.toggleZKOptions(false);
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void {}
+
+  openJwtTokenModal() {
+    this.modalService.show<Modal>({
+      id: JWT_TOKEN_MODAL_ID,
+      size: 'lg'
+    });
+    this.toggleZKOptions(false);
   }
 
   isLinkActive(url: string): boolean {

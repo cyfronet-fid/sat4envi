@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Copy JWT token to clipboard on map in user floating button [#713](https://github.com/cyfronet-fid/sat4envi/issues/713)
+
 ### Changed
 
 - log4j2 to logback for backend and gateway [#723](https://github.com/cyfronet-fid/sat4envi/issues/723)
