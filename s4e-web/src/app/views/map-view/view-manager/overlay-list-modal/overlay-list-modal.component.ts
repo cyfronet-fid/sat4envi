@@ -14,7 +14,7 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
 
 export interface OverlayForm {
   url: string;
-  layer: string;
+  label: string;
   layerName: string;
 }
 
@@ -32,9 +32,9 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
   public hasCustomOverlays$: Observable<boolean>;
   private _overlaysChanged$: Subject<void> = new Subject();
   public newOverlayForm: FormGroup<OverlayForm> = new FormGroup<OverlayForm>({
-    layerName: new FormControl<string>('', [Validators.required]),
+    label: new FormControl<string>('', [Validators.required]),
     url: new FormControl<string>('', [Validators.required]),
-    layer: new FormControl<string>('', [Validators.required])
+    layerName: new FormControl<string>('', [Validators.required])
   });
 
   constructor(
@@ -85,10 +85,7 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
       return;
     }
 
-    this._overlayService.createOverlay(
-      this.newOverlayForm.value.layerName,
-      this.newOverlayForm.value.url
-    );
+    this._overlayService.createOverlay(this.newOverlayForm.value);
   }
 
   isPersonal(overlay: Overlay) {

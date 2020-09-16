@@ -9,6 +9,7 @@ import {action, guid} from '@datorama/akita';
 import {of} from 'rxjs';
 import {OverlayQuery} from './overlay.query';
 import environment from 'src/environments/environment';
+import { OverlayForm } from '../../view-manager/overlay-list-modal/overlay-list-modal.component';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -62,13 +63,13 @@ export class OverlayService {
     this._store.ui.update({showNewOverlayForm: show});
   }
 
-  createOverlay(label: string, url: string) {
+  createOverlay(overlay: OverlayForm) {
     this._store.ui.update({loadingNew: true});
     const postUrl = `${environment.apiPrefixV1}/overlays/personal`;
-    this._http.post<Overlay>(postUrl, {label, url})
+    this._http.post<Overlay>(postUrl, overlay)
       .pipe(finalize(() => this._store.ui.update({loadingNew: false})))
-      .subscribe((overlay) => {
-        this._store.add(overlay);
+      .subscribe((newOverlay) => {
+        this._store.add(newOverlay);
         this._store.ui.update({showNewOverlayForm: false});
       },
       error => this._store.ui.setError(error)

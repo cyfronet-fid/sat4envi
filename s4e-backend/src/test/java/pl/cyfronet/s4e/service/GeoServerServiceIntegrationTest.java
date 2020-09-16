@@ -81,6 +81,7 @@ public class GeoServerServiceIntegrationTest {
                 WMSOverlay.builder()
                         .label("wojewodztwa")
                         .url("")
+                        .layerName("wojewodztwa")
                         .ownerType(OverlayOwner.GLOBAL)
                         .build()
         );

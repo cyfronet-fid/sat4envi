@@ -16,6 +16,7 @@ export interface Overlay {
   ownerType: OwnerType;
   url: string;
   label: string;
+  layerName: string;
   visible: boolean;
   createdAt: string|null;
 }
@@ -28,7 +29,10 @@ export interface UIOverlay extends Overlay, IUILayer {
   olLayer: Layer;
 }
 
-export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, active: boolean = false): UIOverlay {
+export function convertToUIOverlay(
+  overlay: Overlay,
+  active: boolean = false
+): UIOverlay {
   return {
     favourite: false,
     ...overlay,
@@ -37,7 +41,7 @@ export function convertToUIOverlay(overlay: Overlay, geoServerUrl: string, activ
         crossOrigin: 'Anonymous',
         url: overlay.url,
         serverType: 'geoserver',
-        params: {LAYERS: overlay.id}
+        params: {LAYERS: overlay.layerName}
       })
     }),
     cid: overlay.id,

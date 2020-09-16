@@ -15,6 +15,7 @@ import pl.cyfronet.s4e.bean.WMSOverlay;
 import pl.cyfronet.s4e.data.repository.PRGOverlayRepository;
 import pl.cyfronet.s4e.data.repository.SldStyleRepository;
 import pl.cyfronet.s4e.data.repository.WMSOverlayRepository;
+import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.service.GeoServerService;
 
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import static pl.cyfronet.s4e.Constants.ADMIN_PREFIX;
 @Tag(name = "admin-geoserver", description = "The Admin GeoServer API")
 @Slf4j
 public class AdminGeoserverController {
+    private final GeoServerProperties geoServerProperties;
     private final GeoServerService geoServerService;
     private final GeoServerSynchronizer geoServerSynchronizer;
 
@@ -72,6 +74,7 @@ public class AdminGeoserverController {
                 .map(name -> WMSOverlay.builder()
                         .label(name)
                         .url("")
+                        .layerName(geoServerProperties.getWorkspace() + ':' + name)
                         .ownerType(OverlayOwner.GLOBAL)
                         .build())
                 .map(wmsOverlayRepository::save)

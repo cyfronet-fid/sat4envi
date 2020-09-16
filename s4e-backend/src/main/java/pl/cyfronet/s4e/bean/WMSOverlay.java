@@ -21,6 +21,9 @@ public class WMSOverlay extends CreationAndModificationAudited {
     @NotEmpty
     private String label;
 
+    @NotEmpty
+    private String layerName;
+
     @NotNull
     private String url;
 

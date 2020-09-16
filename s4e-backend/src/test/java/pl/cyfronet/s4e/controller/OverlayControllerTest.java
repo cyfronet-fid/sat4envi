@@ -77,7 +77,11 @@ public class OverlayControllerTest {
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
 
         institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
-        val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MANAGER, AppRole.GROUP_MEMBER};
+        val institutionAdminRoles = new AppRole[]{
+                AppRole.INST_ADMIN,
+                AppRole.INST_MANAGER,
+                AppRole.GROUP_MEMBER
+        };
         addRoles(institutionAdmin, institution, institutionAdminRoles);
 
         member = appUserRepository.save(InvitationHelper.userBuilder().build());
@@ -138,8 +142,8 @@ public class OverlayControllerTest {
         ).andExpect(status().isOk());
 
         val personalOverlays = wmsOverlayRepository
-                .findAllByOwnerTypeAndAppUserId(OverlayOwner.PERSONAL, member.getId(), WMSOverlay.class);
-        assertEquals(personalOverlays.size(), 2);
+                .findAllPersonal(member.getId(), OverlayOwner.PERSONAL);
+        assertEquals(2, personalOverlays.size());
     }
 
     @Test
@@ -169,8 +173,9 @@ public class OverlayControllerTest {
                 .content(objectMapper.writeValueAsBytes(request))
         ).andExpect(status().isOk());
 
-        val globalOverlays = wmsOverlayRepository.findAllByOwnerType(OverlayOwner.GLOBAL, WMSOverlay.class);
-        assertEquals(globalOverlays.size(), 3);
+        val globalOverlays = wmsOverlayRepository
+                .findAllByOwnerType(OverlayOwner.GLOBAL);
+        assertEquals(3, globalOverlays.size());
     }
 
     @Test
@@ -195,8 +200,12 @@ public class OverlayControllerTest {
         ).andExpect(status().isOk());
 
         val institutionalOverlays = wmsOverlayRepository
-                .findAllByOwnerTypeAndInstitutionId(OverlayOwner.INSTITUTIONAL, institution.getId(), WMSOverlay.class);
-        assertEquals(institutionalOverlays.size(), 2);
+                .findAllInstitutional(
+                        institutionAdmin.getId(),
+                        AppRole.GROUP_MEMBER,
+                        OverlayOwner.INSTITUTIONAL
+                );
+        assertEquals(2, institutionalOverlays.size());
     }
 
     @Test
@@ -217,8 +226,8 @@ public class OverlayControllerTest {
         ).andExpect(status().isOk());
 
         val personalOverlays = wmsOverlayRepository
-                .findAllByOwnerTypeAndAppUserId(OverlayOwner.PERSONAL, member.getId(), WMSOverlay.class);
-        assertEquals(personalOverlays.size(), 0);
+                .findAllPersonal(member.getId(), OverlayOwner.PERSONAL);
+        assertEquals(0, personalOverlays.size());
     }
 
     @Test
@@ -244,8 +253,8 @@ public class OverlayControllerTest {
         ).andExpect(status().isOk());
 
         val globalOverlays = wmsOverlayRepository
-                .findAllByOwnerType(OverlayOwner.GLOBAL, WMSOverlay.class);
-        assertEquals(globalOverlays.size(), 1);
+                .findAllByOwnerType(OverlayOwner.GLOBAL);
+        assertEquals(1, globalOverlays.size());
     }
 
     @Test
@@ -259,6 +268,13 @@ public class OverlayControllerTest {
 
     @Test
     public void shouldDeleteInstitutionalOverlay() throws Exception {
+        val oldInstitutionalOverlaysSize = wmsOverlayRepository
+                .findAllInstitutional(
+                        institutionAdmin.getId(),
+                        AppRole.GROUP_MEMBER,
+                        OverlayOwner.INSTITUTIONAL
+                )
+                .size();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/overlays/{id}";
         mockMvc.perform(delete(URL, institution.getSlug(), wmsInstitutionalOverlay.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -266,8 +282,12 @@ public class OverlayControllerTest {
         ).andExpect(status().isOk());
 
         val institutionalOverlays = wmsOverlayRepository
-                .findAllByOwnerTypeAndInstitutionId(OverlayOwner.INSTITUTIONAL, institution.getId(), WMSOverlay.class);
-        assertEquals(institutionalOverlays.size(), 0);
+                .findAllInstitutional(
+                        institutionAdmin.getId(),
+                        AppRole.GROUP_MEMBER,
+                        OverlayOwner.INSTITUTIONAL
+                );
+        assertEquals(oldInstitutionalOverlaysSize - 1, institutionalOverlays.size());
     }
 
     @Test
@@ -288,7 +308,7 @@ public class OverlayControllerTest {
 
         val user = appUserRepository.findByEmail(member.getEmail()).get();
         val nonVisibleOverlays = (List<Long>) user.getPreferences().getNonVisibleOverlays();
-        assertEquals(nonVisibleOverlays.size(), 0);
+        assertEquals(0, nonVisibleOverlays.size());
     }
 
     @Test
@@ -310,8 +330,8 @@ public class OverlayControllerTest {
         val user = appUserRepository.findByEmail(member.getEmail()).get();
         user.getPreferences();
         val nonVisibleOverlays = (List<Long>) user.getPreferences().getNonVisibleOverlays();
-        assertEquals(nonVisibleOverlays.size(), 1);
-        assertEquals((Long) nonVisibleOverlays.get(0), wmsPersonalOverlay.getId());
+        assertEquals(1, nonVisibleOverlays.size());
+        assertEquals(wmsPersonalOverlay.getId(), (Long) nonVisibleOverlays.get(0));
     }
 
     private void addRoles(AppUser user, Institution institution, AppRole[] roles) {

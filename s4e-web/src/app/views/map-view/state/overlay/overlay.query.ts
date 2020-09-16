@@ -26,9 +26,8 @@ export class OverlayQuery extends QueryEntity<OverlayState, Overlay> {
         .filter(overlay => overlay.visible)
         .map(overlay => convertToUIOverlay(
           overlay,
-          this._remoteConfiguration.get().geoserverUrl,
-          activeId.includes(overlay.id))
-        ))
+          activeId.includes(overlay.id)
+        )))
     );
   }
 

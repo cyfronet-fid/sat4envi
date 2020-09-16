@@ -22,7 +22,7 @@
               <tbody>
               <tr>
                 <td><ext-input
-                  formControlName="layerName"
+                  formControlName="label"
                   label="Nazwa"
                   i18n-label
                   placeholder="Moja nakładka 1"
@@ -37,7 +37,7 @@
                   data-e2e="layer-url-input"
                 ></ext-input></td>
                 <td><ext-input
-                  formControlName="layer"
+                  formControlName="layerName"
                   label="Warstwa"
                   i18n-label
                   placeholder="LAYER_W_1"
@@ -84,7 +84,7 @@
             >
               <td>{{overlay.label}}</td>
               <td>{{overlay.url}}</td>
-              <td>{{overlay.label}}</td>
+              <td>{{overlay.layerName}}</td>
               <td i18n align="center">
                 <label class="fancycheckbox" data-e2e="display-in-panel-btn">
                   <input
