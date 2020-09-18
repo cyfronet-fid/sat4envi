@@ -23,6 +23,7 @@
 /.env
 /backend-production.env
 /backend-custom.env
+/resources
 
 # maven build
 .flattened-pom.xml

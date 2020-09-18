@@ -15,6 +15,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- [Hotfix] Categories url builder for S3 icons [#711](https://github.com/cyfronet-fid/sat4envi/issues/711)
+
 ### Updated
 
 ## [v12.0.0]
