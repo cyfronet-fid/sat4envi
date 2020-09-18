@@ -1,7 +1,7 @@
 <ul class="breadcrumb">
   <li i18n>Tutaj jesteś: </li>
   <ng-container *ngFor="let breadcrumb of breadcrumbs; last as isLast">
-    <li>
+    <li data-e2e="breadcrumb-item">
       <ng-container *ngIf="isLast; else parent">
         {{ breadcrumb.label }}
       </ng-container>
