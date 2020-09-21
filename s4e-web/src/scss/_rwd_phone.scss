@@ -2,13 +2,33 @@
 
   /* MAP */
   .sidebar {
-    //display: none;
+
+    &:after {
+      display: block;
+      position: absolute;
+      z-index: 1;
+      top: -100px;
+      height: 100px;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: $color-black;
+      opacity: .3;
+      content: " ";
+
+    }
+
+    &.open {
+      display: flex !important;
+    }
+    display: none;
     position: absolute;
     width: auto;
     top: 100px;
     left: 0;
     right: 0;
   }
+
 
   .layers {
     display: none;
@@ -23,19 +43,65 @@
     display: none;
   }
 
-  .dropdown__button {
-    &--login {
-      right: 20px !important;
+  .dropdown {
+    &__button {
+      &--login {
+        right: 20px !important;
+      }
+
+      &--products {
+        display: block;
+        z-index: 5 !important;
+      }
+
+      &--zk {
+        right: 80px !important;
+      }
+
+      &--product {
+        left: 80px !important;
+      }
+
     }
 
-    &--products {
-      display: block;
-    }
+    &__content {
+      &--zk {
+        right: 78px !important;
+      }
 
-    &--zk {
-      right: 80px !important;
+      &--login {
+        right: 20px !important;
+      }
+
+      &--product {
+        left: 80px !important;
+        width: auto !important;
+        right: 5px !important;
+      }
     }
   }
+
+
+  /* TIMELINE */
+  .timeline {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 50px;
+    width: auto;
+    max-width: 100%;
+
+    &__manager {
+
+      flex-wrap: wrap;
+
+      & > * {
+        margin-bottom: 5px !important;
+      }
+    }
+  }
+
+
 
 
 

@@ -1,11 +1,12 @@
 <div class="container">
-  <h2 class="title">{{ actualError.title }}</h2>
-  <h4 class="description">{{ actualError.description }}</h4>
+  <h2 class="description">{{ actualError.description }}</h2>
+  <h3 class="title">{{ actualError.title }}</h3>
+
   <p>
-    <b><a routerLink="/">Return to main page</a></b>
-    <b *ngIf="!!backLink && backLink !== ''" >
+    <a routerLink="/" class="button button--secondary button--small">Wróć do poprzedniej strony</a>
+    <span *ngIf="!!backLink && backLink !== ''" >
       <span>&nbsp; | &nbsp;</span>
       <a routerLink="{{ backLink }}">Return to last page</a>
-    </b>
+    </span>
   </p>
 </div>

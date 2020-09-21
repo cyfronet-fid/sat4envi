@@ -1,4 +1,7 @@
-<div class="section sidebar">
+<div
+  class="section sidebar"
+  [ngClass]="{'open': isMobileSidebarOpen}"
+>
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
       <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
@@ -137,10 +140,8 @@
 </div>
 
 <button
-  (click)="toggleZKOptions()"
-  id=""
+  (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
   class="dropdown__button dropdown__button--products"
-  data-e2e=""
 >
 </button>
 

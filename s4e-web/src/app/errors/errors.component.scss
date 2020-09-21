@@ -1,19 +1,36 @@
+body, html {
+  height: auto;
+}
+
 .container {
-  min-width: 300px;
-  width: 50%;
-  padding: 10px;
-  margin: calc(50vh - 300px) auto;
-  background-color: smokewhite;
-  border-radius: 8px;
-  border: 2px solid #fc1303;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   text-align: center;
-  line-height: 30px;
 }
 
-.title {
-  color: #fc1303;
+h2 {
+  padding-top: 120px;
+  background: url(/../../assets/images/logo_s4e_color.png) no-repeat center top;
+  margin-bottom: 10px;
+  padding-bottom: 0;
+  font-family: 'Titillium Web', sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
 }
 
-.description {
-  color: lightgray;
+h3 {
+  margin-bottom: 20px;
+  margin-top: 5px;
+  opacity: .5;
+  font-weight: normal;
+}
+
+p {
+  margin-top: 40px;
+}
+
+a {
+  font-weight: 500;
 }
