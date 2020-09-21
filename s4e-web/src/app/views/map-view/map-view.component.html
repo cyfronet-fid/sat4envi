@@ -1,4 +1,4 @@
-<div class="section sidebar" style="z-index: 5; position: absolute;">
+<div class="section sidebar">
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
       <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
@@ -135,6 +135,14 @@
     </div>
   </ng-container>
 </div>
+
+<button
+  (click)="toggleZKOptions()"
+  id=""
+  class="dropdown__button dropdown__button--products"
+  data-e2e=""
+>
+</button>
 
 <button *ngIf="activeProducts$ | async"
         (click)="toggleProductDescription()"

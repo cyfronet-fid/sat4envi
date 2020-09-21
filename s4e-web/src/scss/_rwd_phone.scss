@@ -1,5 +1,47 @@
 @media only screen and (max-width: 700px) {
 
+  /* MAP */
+  .sidebar {
+    //display: none;
+    position: absolute;
+    width: auto;
+    top: 100px;
+    left: 0;
+    right: 0;
+  }
+
+  .layers {
+    display: none;
+  }
+
+  #map {
+    left: 0 !important;
+    width: 100% !important;
+  }
+
+  .ol-zoom {
+    display: none;
+  }
+
+  .dropdown__button {
+    &--login {
+      right: 20px !important;
+    }
+
+    &--products {
+      display: block;
+    }
+
+    &--zk {
+      right: 80px !important;
+    }
+  }
+
+
+
+
+
+
   /* SETTINGS */
 
   .settings {

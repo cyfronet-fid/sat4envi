@@ -1,5 +1,6 @@
 @import "../../../scss/variables";
 
+
 .zk-options {
   position: absolute;
   right: 10px;
@@ -51,6 +52,13 @@
       top: 12px;
       left: 430px;
       background-size: 10px;
+    }
+
+    &--products {
+      background: url(/../assets/images/ico_stack.svg) $color-white no-repeat center;
+      top: 12px;
+      left: 20px;
+      background-size: 23px;
     }
   }
 
