@@ -9,16 +9,22 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
-- E2E tests for Settings [#453])(https://github.com/cyfronet-fid/sat4envi/issues/453)
-
 ### Changed
+
+### Fixed
+
+### Updated
+
+## [v12.0.1]
+
+### Added
+
+- E2E tests for Settings [#453])(https://github.com/cyfronet-fid/sat4envi/issues/453)
 
 ### Fixed
 
 - [Hotfix] PRG URL Overlays [#715](https://github.com/cyfronet-fid/sat4envi/issues/715)
 - [Hotfix] Categories url builder for S3 icons [#711](https://github.com/cyfronet-fid/sat4envi/issues/711)
-
-### Updated
 
 ## [v12.0.0]
 
