@@ -255,7 +255,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   getLastAvailableScene() {
-    this.productService.getLastAvailableScene()
+    this.productService.getLastAvailableScene();
   }
 
   nextScene() {

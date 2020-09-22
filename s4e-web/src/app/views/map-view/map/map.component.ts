@@ -175,7 +175,6 @@ export class MapComponent implements OnInit, OnDestroy {
       // Due to change in geo-server we need floor timestamp to seconds
       // If not, it will not respond correctly
       const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
-
       const source = new ImageWMS({
         crossOrigin: 'Anonymous',
         url: this._remoteConfiguration.get().geoserverUrl,

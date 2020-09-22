@@ -10,6 +10,10 @@ import javax.validation.constraints.NotEmpty;
 public class OverlayRequest {
     @NotEmpty
     private String label;
+
+    @NotEmpty
+    private String layerName;
+
     @NotEmpty
     private String url;
 }

@@ -13,10 +13,8 @@ import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.bean.OverlayOwner;
 import pl.cyfronet.s4e.bean.WMSOverlay;
 import pl.cyfronet.s4e.controller.request.OverlayRequest;
-import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.controller.response.OverlayResponse;
 import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.OverlayService;
@@ -39,7 +37,6 @@ public class OverlayController {
     private final OverlayService overlayService;
     private final AppUserService appUserService;
     private final InstitutionService institutionService;
-    private final GeoServerProperties geoServerProperties;
 
     @Operation(summary = "View a list of MS overlays")
     @ApiResponses({
@@ -47,28 +44,21 @@ public class OverlayController {
     })
     @GetMapping("/overlays")
     public List<OverlayResponse> get() throws NotFoundException {
-        val globalOverlays = overlayService.findAllGlobalBy(geoServerProperties.getOutsideBaseUrl());
         val appUserDetails = AppUserDetailsSupplier.get();
         if (appUserDetails == null) {
-            return globalOverlays;
+            return overlayService.findAllGlobal();
         }
 
-        val appUserResponse = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getEmail(), AppUserResponse.class)
-                .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
-        val institutionalOverlays = overlayService.findAllInstitutional(appUserResponse, geoServerProperties.getOutsideBaseUrl());
+        val user = appUserService.findByEmail(AppUserDetailsSupplier.get().getEmail())
+                .orElseThrow(() -> new NotFoundException("User not found for email: '"
+                        + appUserDetails.getUsername() + "'"
+                ));
+        val globalOverlays = overlayService.findAllGlobalByUser(user);
+        val institutionalOverlays = overlayService.findAllInstitutionalByUser(user);
+        val personalOverlays = overlayService.findAllPersonalByUser(user);
 
-        val appUser = appUserService.findByEmail(AppUserDetailsSupplier.get().getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
-        val personalOverlays = overlayService.findAllPersonalBy(appUser, geoServerProperties.getOutsideBaseUrl());
-        var nonVisibleOverlays = (List<Long>) appUser.getPreferences().getNonVisibleOverlays();
-        return Stream
-                .of(
-                        globalOverlays,
-                        institutionalOverlays,
-                        personalOverlays
-                )
+        return Stream.of(globalOverlays, institutionalOverlays, personalOverlays)
                 .flatMap(Collection::stream)
-                .peek(overlayResponse -> overlayResponse.setVisible(!nonVisibleOverlays.contains(overlayResponse.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -88,6 +78,7 @@ public class OverlayController {
                 WMSOverlay.builder()
                     .url(request.getUrl())
                     .label(request.getLabel())
+                    .layerName(request.getLayerName())
                     .ownerType(OverlayOwner.PERSONAL)
                     .appUser(appUser)
                     .build()
@@ -103,11 +94,12 @@ public class OverlayController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping("/overlays/global")
-    public OverlayResponse createGlobal(@RequestBody @Valid OverlayRequest request) {
+    public OverlayResponse createGlobal(@RequestBody @Valid OverlayRequest request) throws NotFoundException {
         return overlayService.save(
                 WMSOverlay.builder()
                         .url(request.getUrl())
                         .label(request.getLabel())
+                        .layerName(request.getLayerName())
                         .ownerType(OverlayOwner.GLOBAL)
                         .build()
         );
@@ -127,11 +119,14 @@ public class OverlayController {
             @PathVariable("institution") String institutionSlug
     ) throws NotFoundException {
         val institution = institutionService.findBySlug(institutionSlug, Institution.class)
-                .orElseThrow(() -> new NotFoundException("Institution with slug: '" + institutionSlug + "' doesn't exist"));
+                .orElseThrow(() -> new NotFoundException("Institution with slug: '"
+                        + institutionSlug + "' doesn't exist"
+                ));
         return overlayService.save(
                 WMSOverlay.builder()
                         .url(request.getUrl())
                         .label(request.getLabel())
+                        .layerName(request.getLayerName())
                         .ownerType(OverlayOwner.INSTITUTIONAL)
                         .institution(institution)
                         .build()
@@ -146,10 +141,8 @@ public class OverlayController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @DeleteMapping("/overlays/global/{id}")
-    public void deleteGlobal(@PathVariable Long id) throws NotFoundException {
-        val overlay = overlayService.findByOwnerTypeAndId(OverlayOwner.GLOBAL, id, WMSOverlay.class)
-                .orElseThrow(() -> new NotFoundException("Overlay with id: " + id + "doesn't exist"));
-        overlayService.delete(overlay);
+    public void deleteGlobal(@PathVariable Long id) {
+        overlayService.deleteByIdAndOwnerType(id, OverlayOwner.GLOBAL);
     }
 
     @Operation(summary = "Delete personal WMS overlay")
@@ -161,9 +154,11 @@ public class OverlayController {
     @DeleteMapping("/overlays/personal/{id}")
     public void deletePersonal(@PathVariable Long id) throws NotFoundException {
         val appUser = appUserService.findByEmail(AppUserDetailsSupplier.get().getEmail())
-                .orElseThrow(() -> new NotFoundException("User not found for email: '" + AppUserDetailsSupplier.get().getUsername() + "'"));
+                .orElseThrow(() -> new NotFoundException("User not found for email: '"
+                        + AppUserDetailsSupplier.get().getUsername() + "'"
+                ));
         val overlay = overlayService
-                .findByOwnerTypeAndIdAndUserId(OverlayOwner.PERSONAL, id, appUser, WMSOverlay.class)
+                .findByIdAndAppUserIdAndOwnerType(id, appUser, OverlayOwner.PERSONAL, WMSOverlay.class)
                 .orElseThrow(() -> new NotFoundException("Overlay with id: " + id + "doesn't exist"));
         overlayService.delete(overlay);
     }
@@ -183,7 +178,7 @@ public class OverlayController {
         val institution = institutionService.findBySlug(institutionSlug, Institution.class)
                 .orElseThrow(() -> new NotFoundException("Institution with slug: '" + institutionSlug + "' doesn't exist"));
         val overlay = overlayService
-                .findByOwnerTypeAndIdAndInstitutionId(OverlayOwner.INSTITUTIONAL, id, institution.getId(), WMSOverlay.class)
+                .findByIdAndOwnerTypeAndInstitutionId(id, OverlayOwner.INSTITUTIONAL, institution, WMSOverlay.class)
                 .orElseThrow(() -> new NotFoundException("Overlay with id: " + id + "doesn't exist"));
         overlayService.delete(overlay);
     }

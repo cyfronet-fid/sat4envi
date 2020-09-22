@@ -1,6 +1,8 @@
 ALTER TABLE wms_overlay
 RENAME COLUMN name TO label;
 ALTER TABLE wms_overlay
+ADD COLUMN layer_name VARCHAR NOT NULL;
+ALTER TABLE wms_overlay
 ADD COLUMN owner_type VARCHAR NOT NULL;
 ALTER TABLE wms_overlay
 ADD COLUMN institution_id BIGINT REFERENCES institution ON DELETE CASCADE;
@@ -45,4 +47,6 @@ ALTER TABLE prg_overlay
     DROP COLUMN name;
 
 ALTER TABLE app_user
-ADD COLUMN preferences JSONB NOT NULL default '{}'::jsonb;
+ADD COLUMN preferences JSONB NOT NULL default '{
+  "nonVisibleOverlays": []
+}'::jsonb;

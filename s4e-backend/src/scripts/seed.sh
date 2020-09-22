@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+
+### Install required packages
+if [ "$(ls /bin | grep -i jq | wc -l)" == 0 ]; then
+  sudo su - root -c 'curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > /bin/jq'
+  sudo chmod 755 /bin/jq
+fi
+###
+
+
 function usage () {
   echo "Seeds SOK instance based on configuration in specified path"
   echo "Usage: $0 <api_endpoint> <configuration_path>"

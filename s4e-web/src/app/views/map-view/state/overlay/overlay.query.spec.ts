@@ -28,19 +28,25 @@ describe('OverlayQuery', () => {
 
   describe('selectVisibleAsUIOverlays', () => {
     it('should work', (done) => {
-      store.add(OverlayFactory.build({label: 'test', ownerType: GLOBAL_OWNER_TYPE, id: 'test-overlay-id'}));
+      store.add(OverlayFactory.build({
+        label: 'test',
+        ownerType: GLOBAL_OWNER_TYPE,
+        id: 'test-overlay-id',
+        layerName: 'test'
+      }));
       query.selectVisibleAsUIOverlays().subscribe(overlays => {
 
         expect(overlays.length).toEqual(1);
 
         expect((overlays[0].olLayer as any).values_.source.url_).toEqual('http://localhost:8080/geoserver/wms');
-        expect((overlays[0].olLayer as any).values_.source.params_.LAYERS).toEqual('test-overlay-id');
+        expect((overlays[0].olLayer as any).values_.source.params_.LAYERS).toEqual('test');
 
         expect(overlays.map(o => ({...o, olLayer: undefined}))).toEqual([
           {
             id: 'test-overlay-id',
             label: 'test',
             ownerType: GLOBAL_OWNER_TYPE,
+            layerName: 'test',
             cid: 'test-overlay-id',
             active: false,
             favourite: false,
