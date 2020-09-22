@@ -40,6 +40,8 @@ export class Login extends Core {
   }
 
   static loginAs(user: User) {
+    cy.clearLocalStorage('s4eStore');
+
     return Login
       .callAndChangeContextTo(cy.visit('/login'), Login)
       .fillForm(user)
