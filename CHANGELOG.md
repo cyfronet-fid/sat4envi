@@ -11,6 +11,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- log4j2 to logback for backend and gateway [#723](https://github.com/cyfronet-fid/sat4envi/issues/723)
+
 ### Fixed
 
 - [Fix] Products seeds categories
