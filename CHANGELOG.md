@@ -19,6 +19,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Dynamic institutions name in settings panel [#598](https://github.com/cyfronet-fid/sat4envi/issues/598)
 - E2E tests for Settings [#453])(https://github.com/cyfronet-fid/sat4envi/issues/453)
 
 ### Fixed

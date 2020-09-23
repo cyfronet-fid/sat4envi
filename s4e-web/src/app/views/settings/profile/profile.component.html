@@ -1,33 +1,76 @@
-<header class="content__header">
-  <h1 i18n>Twój profil</h1>
-</header>
+<s4e-tiles-dashboard>
+  <h1 dashboard-title i18n>Twój profil</h1>
+  <p dashboard-description i18n></p>
+  <ng-container dashboard-tiles>
+    <s4e-tile data-e2e="user-details">
+      <img src="./assets/images/ico_people.svg" alt="Ikona ludzi" width="50" tile-image />
+      <header class="panel__header" tile-title>Moje dane</header>
+      <div tile-description>
+        <p i18n>Imie: Jan</p>
+        <p i18n>Nazwisko: Kowalski</p>
+        <p i18n>Email: {{ userEmail$ | async }}</p>
+      </div>
+      <button
+        class="button button--secondary button--small"
+        routerLink="/settings/change-password"
+        queryParamsHandling="merge"
+        data-e2e="go-to-password-change"
+        footer-navigation
+      >
+        Zmień hasło
+      </button>
+    </s4e-tile>
 
-<section class="content__details content__details--50 profile">
-  <div
-    class="profile__content"
-    data-e2e="user-details"
-  >
-    <p *ngIf="!(isLoggedIn$ | async); else userDetails" i18n>
-      Zaloguj się by zobaczyć swój profil
-    </p>
-    <ng-template #userDetails>
-      <h2>Jan Kowalski</h2>
-      <p i18n>Email: {{ userEmail$ | async }}</p>
-      <p>
-        Jesteś administratorem instytucji <a href="#">Ochotnicza Straż Pożarna, Kraków i 5 innych</a>
-      </p>
-    </ng-template>
-
-  </div>
-  <footer>
-    <button
-      class="button button--secondary button--small"
-      routerLink="/settings/change-password"
-      queryParamsHandling="merge"
-      data-e2e="go-to-password-change"
+    <s4e-tile
+      *ngIf="(administrationInstitutions$ | async).length > 0"
+      data-e2e="administrative-institutions-tile"
+      data-ut="administrative-institutions-tile"
     >
-      Zmień hasło
-    </button>
-  </footer>
-</section>
+      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
+      <header class="panel__header" tile-title>Instytucje administrowane</header>
+      <div tile-description>
+        <p *ngFor="let institution of (administrationInstitutions$ | async).slice(0, MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY)">
+          <a
+            routerLink="/settings/institution"
+            [queryParams]="{institution: institution.slug}"
+            queryParamsHandling="merge"
+          >
+            {{ institution.name }}
+          </a>
+        </p>
+      </div>
+      <button
+        *ngIf="hasMoreAdministrationInstitutionsThanMax$ | async"
+        class="button button--secondary button--small"
+        routerLink="/settings/institutions"
+        queryParamsHandling="merge"
+        data-ut="go-to-institutions"
+        data-e2e="go-to-institutions"
+        footer-navigation
+      >
+        Pokaż więcej
+      </button>
+    </s4e-tile>
+
+    <s4e-tile
+      *ngIf="(memberInstitutions$ | async).length > 0"
+      data-e2e="member-institutions-tile"
+      data-ut="member-institutions-tile"
+    >
+      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
+      <header class="panel__header" tile-title>Instytucje członkowskie</header>
+      <div tile-description>
+        <p *ngFor="let institution of (memberInstitutions$ | async)">
+          <a
+            routerLink="/settings/institution"
+            [queryParams]="{institution: institution.slug}"
+            queryParamsHandling="merge"
+          >
+            {{ institution.name }}
+          </a>
+        </p>
+      </div>
+    </s4e-tile>
+  </ng-container>
+</s4e-tiles-dashboard>
 <div class="content__image content__image--profile"></div>

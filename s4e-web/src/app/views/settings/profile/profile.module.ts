@@ -1,3 +1,4 @@
+import { TilesDashboardModule } from './../../../components/tiles-dashboard/tiles-dashboard.module';
 import {NgModule} from '@angular/core';
 
 import {ShareModule} from '../../../common/share.module';
@@ -14,7 +15,8 @@ import { FormErrorModule } from 'src/app/components/form-error/form-error.module
   imports: [
     ShareModule,
     S4EFormsModule,
-    FormErrorModule
+    FormErrorModule,
+    TilesDashboardModule
   ],
   exports: [
     ProfileComponent,

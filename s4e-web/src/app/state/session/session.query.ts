@@ -12,7 +12,7 @@ const ROLE_GROUP_MANAGER = 'GROUP_MANAGER';
 const MANAGER_ROLES = [ROLE_INSTANCE_ADMIN, ROLE_INSTANCE_MANAGER, ROLE_GROUP_MANAGER];
 
 function hasAnyManagerRole(roles: Role[]) {
-  return !!roles.find(role => MANAGER_ROLES.includes(role.role));
+  return roles.some(role => MANAGER_ROLES.includes(role.role));
 }
 
 @Injectable({
@@ -41,6 +41,16 @@ export class SessionQuery extends Query<Session> {
     const roles = this.getValue().roles;
     return roles.length === 1 && roles.some((role) => role.role === ROLE_GROUP_MANAGER);
   }
+  getAdministratorInstitutionsSlugs() {
+    const institutionsRolesMap = this._getInstitutionsRolesMap();
+    return Object.keys(institutionsRolesMap)
+      .filter(institutionSlug => hasAnyManagerRole(institutionsRolesMap[institutionSlug]));
+  }
+  getMemberInstitutionSlugs() {
+    const institutionsRolesMap = this._getInstitutionsRolesMap();
+    return Object.keys(institutionsRolesMap)
+      .filter(institutionSlug => !hasAnyManagerRole(institutionsRolesMap[institutionSlug]));
+  }
 
   public selectMemberZK(): Observable<boolean> {
     return this.select('memberZK');
@@ -48,5 +58,16 @@ export class SessionQuery extends Query<Session> {
 
   public selectCanSeeInstitutions(): Observable<boolean> {
     return this.select().pipe(map(state => state.admin || hasAnyManagerRole(state.roles)));
+  }
+
+  private _getInstitutionsRolesMap() {
+    return this.getValue().roles
+      .reduce((permissions, role) => {
+          return Object.keys(permissions).includes(role.institutionSlug)
+              ? {...permissions, [role.institutionSlug]: [...permissions[role.institutionSlug], role]}
+              : {...permissions, [role.institutionSlug]: [role]};
+        },
+        {}
+      );
   }
 }

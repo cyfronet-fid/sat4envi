@@ -1,3 +1,4 @@
+import { SessionService } from './../../../state/session/session.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
@@ -59,6 +60,7 @@ describe('InstitutionProfileComponent', () => {
     const institution = InstitutionFactory.build();
     const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
     route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
+    component.isManager$ = of(true);
     tick();
     fixture.detectChanges();
 
@@ -85,5 +87,62 @@ describe('InstitutionProfileComponent', () => {
 
     const secondaryPhone = de.query(By.css('#institution-second-phone'));
     expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.secondaryPhone);
+
+    const editInstitutionBtn = de.query(By.css('[data-ut="edit-institution"]'));
+    expect(editInstitutionBtn).toBeTruthy();
+
+    const addChildBtn = de.query(By.css('[data-ut="add-child-btn"]'));
+    expect(addChildBtn).toBeTruthy();
+
+    const goToProfileBtn = de.query(By.css('[data-ut="go-to-user-profile"]'));
+    expect(goToProfileBtn).toBeFalsy();
+
+    const institutionChildren = de.query(By.css('[data-ut="institution-children"]'));
+    expect(institutionChildren).toBeTruthy();
+  }));
+
+  it('Should display only institution details when user is only member', fakeAsync(() => {
+    const institution = InstitutionFactory.build();
+    const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
+    component.isManager$ = of(false);
+    route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
+    tick();
+    fixture.detectChanges();
+
+    expect(spyFindBy).toHaveBeenCalledWith(institution.slug);
+    expect(component.activeInstitution).toEqual(institution);
+
+    const image = de.query(By.css('.institution__logo img'));
+    expect(image).toBeTruthy();
+
+    const title = de.query(By.css('#institution-title'));
+    expect(title.nativeElement.innerHTML).toContain(institution.name);
+
+    const address = de.query(By.css('#institution-address'));
+    expect(address.nativeElement.innerHTML).toContain(institution.address);
+
+    const postalCode = de.query(By.css('#institution-postal-code'));
+    expect(postalCode.nativeElement.innerHTML).toContain(institution.postalCode);
+
+    const institutionAdminEmail = de.query(By.css('#institution-email'));
+    expect(institutionAdminEmail.nativeElement.innerHTML).toContain('email: ' + institution.institutionAdminEmail);
+
+    const phone = de.query(By.css('#institution-phone'));
+    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);
+
+    const secondaryPhone = de.query(By.css('#institution-second-phone'));
+    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.secondaryPhone);
+
+    const editInstitutionBtn = de.query(By.css('[data-ut="edit-institution"]'));
+    expect(editInstitutionBtn).toBeFalsy();
+
+    const addChildBtn = de.query(By.css('[data-ut="add-child-btn"]'));
+    expect(addChildBtn).toBeFalsy();
+
+    const goToProfileBtn = de.query(By.css('[data-ut="go-to-user-profile"]'));
+    expect(goToProfileBtn).toBeTruthy();
+
+    const institutionChildren = de.query(By.css('[data-ut="institution-children"]'));
+    expect(institutionChildren).toBeFalsy();
   }));
 });

@@ -61,7 +61,7 @@ export const settingsRoutes: Routes = [
       {
         path: INSTITUTION_PROFILE_PATH,
         component: InstitutionProfileComponent,
-        canActivate: [IsManagerGuard],
+        canActivate: [IsLoggedIn],
         data: {
           breadcrumbs: [
             {

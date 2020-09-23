@@ -10,6 +10,20 @@ export class InstitutionProfile extends Core {
     getChildren: () => cy.get('[data-e2e="entity-row"]')
   };
 
+  static actionsBtnsAndChildrenShouldBeHidden() {
+    InstitutionProfile
+      .pageObject
+      .getAddChildBtn()
+      .should('not.be.visible');
+
+    InstitutionProfile
+      .pageObject
+      .getChildren()
+      .should('not.be.visible');
+
+    return InstitutionProfile;
+  }
+
   static removeNthChild(nth: number) {
     InstitutionProfile
       .pageObject

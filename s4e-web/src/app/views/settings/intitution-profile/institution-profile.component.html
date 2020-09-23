@@ -37,31 +37,50 @@
     </aside>
   </ng-container>
   <footer>
-    <button
-      class="button button--default button--small"
-      [routerLink]="['/settings/edit-institution']"
-      queryParamsHandling="merge"
-      i18n
-    >
-      Edytuj dane
-    </button>
-    <button
-      class="button button--secondary button--small"
-      [routerLink]="['/settings/add-institution']"
-      [queryParams]="{'add_child': true}"
-      queryParamsHandling="merge"
-      data-e2e="add-child-btn"
-      i18n
-    >
-      Dodaj jednostkę podrzędną
-    </button>
+    <ng-container *ngIf="isManager$ | async; else returnToUserProfile">
+      <button
+        class="button button--default button--small"
+        [routerLink]="['/settings/edit-institution']"
+        queryParamsHandling="merge"
+        data-ut="edit-institution"
+        i18n
+      >
+        Edytuj dane
+      </button>
+      <button
+        class="button button--secondary button--small"
+        [routerLink]="['/settings/add-institution']"
+        [queryParams]="{'add_child': true}"
+        queryParamsHandling="merge"
+        data-e2e="add-child-btn"
+        data-ut="add-child-btn"
+        i18n
+      >
+        Dodaj jednostkę podrzędną
+      </button>
+    </ng-container>
+    <ng-template #returnToUserProfile>
+      <button
+        class="button button--secondary button--small"
+        [routerLink]="['/settings/profile']"
+        data-e2e="go-to-user-profile"
+        data-ut="go-to-user-profile"
+        i18n
+      >
+        Wróć do mojego profilu
+      </button>
+    </ng-template>
   </footer>
 </section>
 
-<s4e-generic-list-view [loading]="isLoading$ | async"
-                       [items]="institutions$ | async"
-                       [error]="error$ | async"
-                       [searchable]="true">
+<s4e-generic-list-view
+  *ngIf="isManager$ | async"
+  [loading]="isLoading$ | async"
+  [items]="childrenInstitutions$ | async"
+  [error]="error$ | async"
+  [searchable]="true"
+  data-ut="institution-children"
+>
   <ng-container description></ng-container>
   <h3 caption-inside i18n>
     <ng-container>Jednostki podległe</ng-container>
