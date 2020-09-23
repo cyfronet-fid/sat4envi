@@ -1,5 +1,6 @@
 @import "../../../scss/variables";
 
+
 .zk-options {
   position: absolute;
   right: 10px;
@@ -52,6 +53,13 @@
       left: 430px;
       background-size: 10px;
     }
+
+    &--products {
+      background: url(/../assets/images/ico_stack.svg) $color-white no-repeat center;
+      top: 12px;
+      left: 20px;
+      background-size: 23px;
+    }
   }
 
   &__content {
@@ -64,7 +72,7 @@
     padding: $space-xsmall;
     width: 215px;
     box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
-    z-index: 2;
+    z-index: 6;
 
     &--zk {
       right: 148px;

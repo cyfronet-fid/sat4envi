@@ -1,4 +1,7 @@
-<div class="section sidebar" style="z-index: 5; position: absolute;">
+<div
+  class="section sidebar"
+  [ngClass]="{'open': isMobileSidebarOpen}"
+>
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
       <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
@@ -135,6 +138,12 @@
     </div>
   </ng-container>
 </div>
+
+<button
+  (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
+  class="dropdown__button dropdown__button--products"
+>
+</button>
 
 <button *ngIf="activeProducts$ | async"
         (click)="toggleProductDescription()"

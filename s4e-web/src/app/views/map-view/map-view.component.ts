@@ -39,6 +39,8 @@ import {LocationSearchResultsQuery} from './state/location-search-results/locati
   styleUrls: ['./map-view.component.scss'],
 })
 export class MapViewComponent implements OnInit, OnDestroy {
+  public isMobileSidebarOpen = false;
+
   public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
   public activeSceneUrl$: Observable<string>;

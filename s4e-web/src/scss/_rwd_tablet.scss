@@ -1,5 +1,14 @@
 @media only screen and (min-width: 701px) and (max-width: 1050px){
-s4e-settings {
+
+  .sidebar {
+    &.open {
+      display: block !important;
+    }
+
+    display: none;
+  }
+
+  s4e-settings {
   .settings {
     .navigation {
       &.open {

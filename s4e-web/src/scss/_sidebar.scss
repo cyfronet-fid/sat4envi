@@ -6,19 +6,18 @@
   -moz-box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   box-shadow: -1px 0px 12px 0px rgba(0,0,0,0.37);
   width: #{$width-sidebar + 30px};
-  height: 100%;
   display: flex;
   flex-direction: column;
-  z-index: 2;
-  //padding: 0 15px;
+  z-index: 4;
   box-sizing: padding-box;
-  //scrollbar-width: thin;
   flex: 1 1 auto;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  left: 0;
+  right: 0;
+  position: absolute;
+  bottom: 0;
+  top: 0;
 
   .switch {
-    margin: 0 -15px 0 -15px;
     display: flex;
     flex-direction: row;
 
@@ -28,6 +27,9 @@
       text-transform: uppercase;
       padding: 13px 15px;
       background: $color-white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       a {
         display: block;
@@ -144,43 +146,18 @@
     font-weight: 500;
     padding: $space-small $space-default;
     border-bottom: 1px solid $color-grey-secondary;
+
   }
 
   &__title {
-    padding-left: 30px;
     position: relative;
     font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    &--satellite:before {
-      background-image: url(../assets/images/ico_earth.svg);
-    }
-
-    &--favourite:before {
-      background-image: url(../assets/images/ico_starbig.svg);
-    }
-
-    &--sentinel {
-      padding-left: 35px;
-      margin-left: 5px;
-    }
-
-    &--sentinel:before {
-      background-image: url(../assets/images/ico_satellite.svg);
-      width: 27px !important;
-      height: 25px !important;
-      top: -7px !important;
-    }
-
-    &:before {
-      content: " ";
-      display: block;
-      width: 20px;
-      height: 20px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      position: absolute;
-      left: 0;
-      top: -2px;
+    p {
+      margin: 0 0 0 15px;
     }
   }
 
@@ -189,6 +166,7 @@
     font-size: 0.625rem;
     text-align: right;
     color: $color-grey;
+    display: none;
 
     a {
       color: $color-grey;
