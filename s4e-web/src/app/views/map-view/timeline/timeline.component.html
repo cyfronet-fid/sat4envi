@@ -39,6 +39,30 @@
         (click)="selectedScene.emit(scene)">
       <span>{{ scene.timestamp | date : 'shortTime' }}</span>
     </li>
+    <li class="timeline__item timeline__item--multiple">
+      <div class="multiple__popup">
+        <header>Dostępne sceny</header>
+        <ul>
+          <li>
+            12:04:23
+          </li>
+          <li>
+            11:04:23
+          </li>
+          <li>
+            10:04:23
+          </li>
+          <li>
+            14:04:23
+          </li>
+        </ul>
+      </div>
+      <div class="multiple__dot">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </li>
   </ul>
   <div class="timeline__hourmark">
     <span *ngFor="let hour of hourmarks" class="hourmark">{{hour}}</span>
