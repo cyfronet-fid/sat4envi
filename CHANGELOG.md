@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- [Fix] Products seeds categories
+
 ### Updated
 
 ## [v12.0.1]
