@@ -97,6 +97,7 @@ export class Map extends Core {
     hourStart: number,
     hourEnd: number
   ) {
+    cy.wait(500);
     Map.pageObject.getStackedHourBtn(hourStart, hourEnd).should("be.visible").click();
     Map.pageObject.getHourBtnInPopup(hourStart).click();
     return Map;

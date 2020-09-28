@@ -5,13 +5,14 @@ import { Layers } from '../../page-objects/map/map-layers.po';
 import promisify from 'cypress-promise';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
+import { Map } from '../../page-objects/map/map.po';
 
 context('Map Layers', () => {
-  beforeEach(() => {
+  before(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
-  beforeEach(function () {
+  before(function () {
     Login.loginAs(this.zkMember);
   });
 

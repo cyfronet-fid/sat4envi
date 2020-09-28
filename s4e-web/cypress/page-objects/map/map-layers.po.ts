@@ -33,7 +33,6 @@ export class Layers extends Core {
       .pageObject
       .getSidebarLayers()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return Layers;
@@ -47,7 +46,6 @@ export class Layers extends Core {
     Layers
       .pageObject
       .getSidebarManagementBtn()
-      .should('be.visible')
       .click({ force: true });
 
     GeneralModal.isVisible();
@@ -60,7 +58,6 @@ export class Layers extends Core {
       .pageObject
       .getDisplayInPanelBtns()
       .eq(nth)
-      .should('be.visible')
       .click({force: true});
 
     return Layers;
@@ -71,7 +68,6 @@ export class Layers extends Core {
       .pageObject
       .getRemoveBtns()
       .eq(nth)
-      .should('be.visible')
       .click({force: true});
 
     return Layers;
@@ -99,25 +95,21 @@ export class Layers extends Core {
     Layers
       .pageObject
       .getAddBtn()
-      .should('be.visible')
       .click({ force: true });
 
     Layers
       .pageObject
       .getLabelInput()
-      .should('be.visible')
       .type(label);
 
     Layers
       .pageObject
       .getUrlInput()
-      .should('be.visible')
       .type(url);
 
     Layers
       .pageObject
       .getGroupLabelInput()
-      .should('be.visible')
       .type(label);
 
     return Layers;
@@ -139,7 +131,6 @@ export class Layers extends Core {
     Layers
       .pageObject
       .getSubmitFormBtn()
-      .should('be.visible')
       .click({ force: true });
 
     return Layers;

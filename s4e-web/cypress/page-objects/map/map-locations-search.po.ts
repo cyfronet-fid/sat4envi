@@ -15,7 +15,6 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getSearch()
-      .should('be.visible')
       .clear()
       .type(value, { force: true });
 
@@ -68,7 +67,6 @@ export class LocationsSearch extends Core {
       .pageObject
       .getSearchResults()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return LocationsSearch;
@@ -97,7 +95,6 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getClearSearchBtn()
-      .should('be.visible')
       .click({ force: true });
 
     return LocationsSearch;
@@ -107,7 +104,6 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getSelectActiveResultBtn()
-      .should('be.visible')
       .click({ force: true });
 
     return LocationsSearch;

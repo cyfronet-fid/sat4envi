@@ -10,7 +10,7 @@ export class UserProfile extends Core {
   };
 
   static goToPasswordChange() {
-    return UserProfile.goTo(UserProfile.pageObject.getGoToChangePasswordBtn(), '/settings/change-password', UserPasswordChange);
+    return UserProfile.goTo(UserProfile.pageObject.getGoToChangePasswordBtn, '/settings/change-password', UserPasswordChange);
   }
 
   static userDetailsShouldContain(...details: string[]) {
@@ -31,7 +31,6 @@ export class UserProfile extends Core {
       .pageObject
       .getMemberInstitutions()
       .eq(nth)
-      .should('be.visible')
       .click();
 
     cy.location('pathname').should('eq', '/settings/institution');

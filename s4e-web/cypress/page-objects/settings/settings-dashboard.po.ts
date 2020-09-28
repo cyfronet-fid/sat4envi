@@ -33,31 +33,25 @@ export class AdminDashboard extends Core {
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('header')
-      .should('be.visible')
       .should('have.length', tilesNumber);
 
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('p')
-      .should('be.visible')
       .should('have.length', tilesNumber);
 
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('img')
-      .should('be.visible')
       .should('have.length', tilesNumber);
   }
 
   static goToPeopleList() {
     return InstitutionPeople.goTo(
-      AdminDashboard.pageObject.getGoToPeopleListBtn(),
+      AdminDashboard.pageObject.getGoToPeopleListBtn,
       '/settings/profile',
       UserProfile
     );
@@ -65,7 +59,7 @@ export class AdminDashboard extends Core {
 
   static goToInstitutionProfile() {
     return InstitutionPeople.goTo(
-      AdminDashboard.pageObject.getGoToInstitutionProfileBtn(),
+      AdminDashboard.pageObject.getGoToInstitutionProfileBtn,
       '/settings/institution',
       InstitutionProfile
     );
@@ -84,7 +78,7 @@ export class SuperAdminDashboard extends Core {
 
   static goToInstitutionsList() {
     return InstitutionPeople.goTo(
-      AdminDashboard.pageObject.getGoToPeopleListBtn(),
+      AdminDashboard.pageObject.getGoToPeopleListBtn,
       '/settings/institutions',
       InstitutionProfile
     );
@@ -100,25 +94,19 @@ export class SuperAdminDashboard extends Core {
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('header')
-      .should('be.visible')
       .should('have.length', tilesNumber);
 
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('p')
-      .should('be.visible')
       .should('have.length', tilesNumber);
 
     AdminDashboard
       .pageObject
       .getTiles()
-      .should('be.visible')
       .find('img')
-      .should('be.visible')
       .should('have.length', tilesNumber);
   }
 }

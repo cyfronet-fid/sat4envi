@@ -1,5 +1,6 @@
 import { Map } from '../map/map.po';
 import { Core } from '../core.po';
+import { GeneralModal } from '../modal/general-modal.po';
 
 export interface User {
   email: string;
@@ -18,12 +19,10 @@ export class Login extends Core {
     Login
       .pageObject
       .getLoginInput()
-      .should('be.visible')
       .type(user.email);
     Login
       .pageObject
       .getPasswordInput()
-      .should('be.visible')
       .type(user.password);
 
     return Login;
@@ -33,19 +32,21 @@ export class Login extends Core {
     Login
       .pageObject
       .getSubmitBtn()
-      .should('be.visible')
       .click();
 
+    cy.location('pathname').should('eq', '/map/products');
     return Login;
   }
 
   static loginAs(user: User) {
+    // force logout
     cy.clearLocalStorage('s4eStore');
 
-    return Login
-      .callAndChangeContextTo(cy.visit('/login'), Login)
+    cy.visit('/login');
+    Login
       .fillForm(user)
-      .sendForm()
-      .callAndChangeContextTo(cy.location('pathname').should('eq', '/map/products'), Map);
+      .sendForm();
+
+    return Map;
   }
 }

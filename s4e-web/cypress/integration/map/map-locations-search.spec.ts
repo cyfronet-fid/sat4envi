@@ -4,11 +4,11 @@ import { Login } from '../../page-objects/login/login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
 context('Map Locations Search', () => {
-  before(() => {
+  beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
-  before(function () {
+  beforeEach(function () {
     Login
       .loginAs(this.zkMember)
       .changeContextTo(LocationsSearch);
@@ -18,7 +18,6 @@ context('Map Locations Search', () => {
     LocationsSearch
       .pageObject
       .getSearch()
-      .should('be.visible')
       .clear();
   });
 
@@ -28,8 +27,7 @@ context('Map Locations Search', () => {
       .callAndChangeContextTo(
         cy
           .wait(700)
-          .get('.searchResults', {timeout: 10000})
-          .should('be.visible'),
+          .get('.searchResults'),
         LocationsSearch
       )
       .nthResultShouldHaveLabel(0, 'Warszawa')
@@ -47,8 +45,7 @@ context('Map Locations Search', () => {
   //     .callAndChangeContextTo(
   //       cy
   //         .wait(700)
-  //         .get('.searchResults', {timeout: 10000})
-  //         .should('be.visible'),
+  //         .get('.searchResults'),
   //       LocationsSearch
   //     )
   //     .nthResultShouldHaveLabel(0, 'Warszawa')
@@ -63,8 +60,7 @@ context('Map Locations Search', () => {
   //     .callAndChangeContextTo(
   //       cy
   //         .wait(700)
-  //         .get('.searchResults', {timeout: 10000})
-  //         .should('be.visible'),
+  //         .get('.searchResults'),
   //       LocationsSearch
   //     )
   //     .nthResultShouldHaveLabel(0, 'Warszawa')
@@ -79,8 +75,7 @@ context('Map Locations Search', () => {
   //     .callAndChangeContextTo(
   //       cy
   //         .wait(700)
-  //         .get('.searchResults', {timeout: 10000})
-  //         .should('be.visible'),
+  //         .get('.searchResults'),
   //       LocationsSearch
   //     )
   //     .nthResultShouldHaveLabel(0, 'Warszawa')
@@ -95,8 +90,7 @@ context('Map Locations Search', () => {
   //     .callAndChangeContextTo(
   //       cy
   //         .wait(700)
-  //         .get('.searchResults', {timeout: 10000})
-  //         .should('be.visible'),
+  //         .get('.searchResults'),
   //       LocationsSearch
   //     )
   //     .nthResultShouldHaveLabel(1, 'Warszawiaki')

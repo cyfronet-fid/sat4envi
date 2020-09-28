@@ -18,10 +18,11 @@ export class InstitutionPeople extends Core {
   };
 
   static fillEmail(email: string) {
+    cy.wait(500);
+
     InstitutionPeople
       .pageObject
       .getInvitationEmailInput()
-      .should('be.visible')
       .clear()
       .type(email, { force: true });
 
@@ -32,7 +33,6 @@ export class InstitutionPeople extends Core {
     InstitutionPeople
       .pageObject
       .getOpenSendInvitationBtn()
-      .should('be.visible')
       .click();
 
     InstitutionPeople
@@ -41,7 +41,6 @@ export class InstitutionPeople extends Core {
     InstitutionPeople
       .pageObject
       .getSubmitFormBtn()
-      .should('be.visible')
       .click({ force: true });
 
     cy.wait(500);
@@ -70,7 +69,6 @@ export class InstitutionPeople extends Core {
       .pageObject
       .getPeopleAndInvitations()
       .contains(email)
-      .should('be.visible')
       .should('have.length', 1);
 
     return InstitutionPeople;
@@ -81,7 +79,6 @@ export class InstitutionPeople extends Core {
       .pageObject
       .getPeopleAndInvitations()
       .contains(email)
-      .should('be.visible')
       .should('have.length', 1)
       .parent()
       .find(InstitutionPeople.pageObject.getDeleteBtnClass)
@@ -97,7 +94,6 @@ export class InstitutionPeople extends Core {
       .pageObject
       .getPeopleAndInvitations()
       .contains(oldEmail)
-      .should('be.visible')
       .should('have.length', 1)
       .parent()
       .find(InstitutionPeople.pageObject.getEditBtnClass)
@@ -109,7 +105,6 @@ export class InstitutionPeople extends Core {
     InstitutionPeople
       .pageObject
       .getSubmitFormBtn()
-      .should('be.visible')
       .click({ force: true });
 
     cy.wait(500);

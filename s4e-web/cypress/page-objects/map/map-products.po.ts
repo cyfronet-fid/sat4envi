@@ -63,7 +63,6 @@ export class MapProducts extends Core {
   static selectAllFavorites() {
     MapProducts
       .pageObject.getNonFavoritesBtns()
-      .should('be.visible')
       .click({ multiple: true, force: true });
 
     return MapProducts;
@@ -72,7 +71,6 @@ export class MapProducts extends Core {
   static unselectAllFavorites() {
     MapProducts
       .pageObject.getFavoritesBtns()
-      .should('be.visible')
       .click({ multiple: true, force: true });
 
     return MapProducts;

@@ -13,7 +13,6 @@ export class InstitutionSearch extends Core {
     InstitutionSearch
       .pageObject
       .getSearch()
-      .should('be.visible')
       .click();
 
     return InstitutionSearch;
@@ -23,7 +22,6 @@ export class InstitutionSearch extends Core {
     InstitutionSearch
       .pageObject
       .getSearch()
-      .should('be.visible')
       .invoke('val')
       .should('be.a', value);
 
@@ -34,7 +32,6 @@ export class InstitutionSearch extends Core {
     InstitutionSearch
       .pageObject
       .getSearch()
-      .should('be.visible')
       .type(label);
 
     return InstitutionSearch;
@@ -47,7 +44,6 @@ export class InstitutionSearch extends Core {
       .pageObject
       .getSearchResults()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return InstitutionSearch;
@@ -60,7 +56,6 @@ export class InstitutionSearch extends Core {
       .pageObject
       .getSearchResults()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return InstitutionSearch;
