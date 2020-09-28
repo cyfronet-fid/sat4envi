@@ -96,6 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(GET, prefix("/institutions/{institution}"))
                     .access("hasRole('ADMIN') || @ish.isMember(#institution)")
+                .mvcMatchers(DELETE, prefix("/institutions/{institution}"))
+                    .access("hasRole('ADMIN')")
                 .mvcMatchers(prefix("/institutions/{institution}", "/institutions/{institution}/**"))
                     .access("hasRole('ADMIN') || @ish.isAdmin(#institution)")
                 .mvcMatchers(GET, prefix("/institutions")).authenticated()
