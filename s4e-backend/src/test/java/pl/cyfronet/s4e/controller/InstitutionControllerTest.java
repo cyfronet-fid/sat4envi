@@ -383,4 +383,70 @@ public class InstitutionControllerTest {
                     .andExpect(status().isForbidden());
         }
     }
+
+    @Nested
+    class DeleteInstitution {
+        @Test
+        public void shouldWorkChild() throws Exception {
+            String childSlugInstitution = slugService.slugify(testInstitution+" child");
+            Institution institution = institutionRepository.save(Institution.builder()
+                    .name(testInstitution+" child")
+                    .slug(childSlugInstitution)
+                    .parent(institutionRepository.findBySlug(slugInstitution, Institution.class).get())
+                    .build());
+
+            mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        public void shouldWorkParent() throws Exception {
+            String childSlugInstitution = slugService.slugify(testInstitution+" child");
+            Institution institution = institutionRepository.save(Institution.builder()
+                    .name(testInstitution+" child")
+                    .slug(childSlugInstitution)
+                    .parent(institutionRepository.findBySlug(slugInstitution, Institution.class).get())
+                    .build());
+
+            mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isNotFound());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        public void shouldBeSecured() throws Exception {
+            mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(instAdmin, objectMapper)))
+                    .andExpect(status().isForbidden());
+
+            mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+        }
+    }
 }

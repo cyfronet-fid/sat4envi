@@ -15,6 +15,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix DELETE on institution in API [#709](https://github.com/cyfronet-fid/sat4envi/issues/709)
 - Remove system affecting sudo calls from seed.sh [#731](https://github.com/cyfronet-fid/sat4envi/issues/731)
 - [Fix] Products seeds categories
 
