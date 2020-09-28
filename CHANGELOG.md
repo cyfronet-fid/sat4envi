@@ -15,6 +15,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Remove system affecting sudo calls from seed.sh [#731](https://github.com/cyfronet-fid/sat4envi/issues/731)
 - [Fix] Products seeds categories
 
 ### Updated

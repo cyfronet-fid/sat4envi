@@ -6,6 +6,7 @@
 - docker `^18.09.3`
 - docker-compose `^1.18.0`
 - node `^11`,  npm `^6`
+- jq 1.6 (required by `s4e-backend/src/scripts/seed.sh`)
 
 
 ## System Components
