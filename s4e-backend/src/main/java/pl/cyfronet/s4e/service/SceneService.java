@@ -94,7 +94,8 @@ public class SceneService {
         if (!productRepository.existsById(productId)) {
             throw constructNFE("Product", productId);
         }
-        return sceneRepository.findFirstByProductId(productId, Sort.by(Sort.Direction.DESC, "timestamp"), projection);
+        Sort sort = Sort.by(Sort.Order.desc("timestamp"), Sort.Order.asc("id"));
+        return sceneRepository.findFirstByProductId(productId, sort, projection);
     }
 
     private NotFoundException constructNFE(String name, Long id) {
