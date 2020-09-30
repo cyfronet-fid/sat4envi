@@ -39,11 +39,9 @@ services:
     networks:
       - net
   minio:
-    image: fiddev/minio-test:1.1.0
+    image: fiddev/minio-test:1.2.0
     ports:
       - ${MINIO_PORT:-9001}:9000
-    volumes:
-    - ./resources/minio:/data
     networks:
       - net
     environment:

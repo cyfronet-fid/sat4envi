@@ -22,6 +22,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Updated
 
+- Upgrade minio image to 1.2.0 [#737](https://github.com/cyfronet-fid/sat4envi/issues/737)
+
 ## [v12.0.1]
 
 ### Added
