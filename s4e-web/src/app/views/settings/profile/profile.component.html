@@ -29,7 +29,7 @@
       <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
       <header class="panel__header" tile-title>Instytucje administrowane</header>
       <div tile-description>
-        <p *ngFor="let institution of (administrationInstitutions$ | async) | slice:0:MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY">
+        <p *ngFor="let institution of (administrationInstitutions$ | async).slice(0, MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY)">
           <a
             routerLink="/settings/institution"
             [queryParams]="{institution: institution.slug}"

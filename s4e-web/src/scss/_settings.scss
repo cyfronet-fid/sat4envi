@@ -42,7 +42,8 @@ s4e-settings {
   z-index: 1;
   font-family: $font-secondary;
   font-weight: bold;
-  background: $color-white;
+  border-right: 1px solid $color-bluish;
+
 
   header {
     display: flex;
@@ -58,6 +59,7 @@ s4e-settings {
 
     img {
       margin-right: $space-small;
+      filter: grayscale(100) ;
     }
 
     span {
@@ -94,19 +96,27 @@ s4e-settings {
     }
 
     &--institution {
-      background-color: $color-grey-primary;
+      border-top: 1px solid $color-bluish;
+      border-bottom: 1px solid $color-bluish;
       margin: 0 -15px 40px -15px;
-      padding: 10px 20px 5px 25px;
+      padding: 0 20px 5px 25px;
 
+      .searchResults {
+        width: 344px;
 
+        li {
+          font-size: 1rem;
 
-      li {
-        &:first-child {
-          padding-left: 0;
-          list-style-type: none;
-          margin-top: 0;
+          &:first-child {
+            padding-left: 0;
+            list-style-type: none;
+            margin-top: 0;
+          }
+
+          &:after {
+            display: none;
+          }
         }
-        font-size: 1rem;
       }
     }
 
@@ -181,9 +191,12 @@ p {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: $border-radius-default;
 
     p {
       margin-bottom: $space-xlarge;
+      line-height: 1.55rem;
     }
 
     aside {
@@ -260,7 +273,7 @@ p {
 
     h1 {
       font-size: 2.5rem;
-      font-weight: 500;
+      font-weight: 700;
       margin-bottom: $space-default;
       font-family: $font-secondary;
     }
@@ -282,6 +295,9 @@ p {
     background: $color-white;
     padding: $space-xlarge;
     margin-bottom: $space-default;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: $border-radius-default;
+
 
     &--50 {
       width: 50%;
@@ -311,6 +327,8 @@ p {
       width: 50%;
       position: relative;
       margin-left: 130px;
+      border-radius: $border-radius-default;
+
 
       span {
         display: inline-block;

@@ -10,7 +10,7 @@
       "default": "quicklook",
       "COG": "RGBs_8b"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "surface"
   },
   {
     "name": "Sentinel-1-GRDM",
@@ -22,7 +22,7 @@
     "granuleArtifactRule": {
       "default": "quicklook"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "surface"
   },
   {
     "name": "Sentinel-1-SLC_",
@@ -34,12 +34,12 @@
     "granuleArtifactRule": {
       "default": "quicklook"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "surface"
   },
   {
     "name": "108m",
     "displayName": "Zachmurzenie (108m)",
-    "description": "Obraz satelitarny IR 10.8µm maskowany (różne palety barwne dla lądu, morza i chmur)",
+    "description": "Obraz satelitarny SEVIRI/Meteosat dla obszaru Europy w kanale 10.8 µm (podczerwień) utworzony z zastosowaniem różnych palet barwnych dla powierzchni wody, lądu i chmur. Chmury na tym obrazie zaznaczone są za pomocą odcieni szarości, które przechodzą w odcienie niebieskiego i różu.",
     "layerName": "108m",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -63,7 +63,7 @@
   {
     "name": "Dust",
     "displayName": "Pył w atmosferze",
-    "description": "Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Dust (6.2-7.3/3.9-10.8/1.6-0.6) do identyfikacji wysokiej koncentracji pyłu w atmosferze.",
+    "description": "Kompozycja barwna RGB utworzona z kanałów spektralnych czujnika  SEVIRI/METEOSAT (12.0-10.8)/(10.8-8.7)/10.8. Została zaprojektowana do detekcji pyłów w atmosferze. Na obecność piasku w atmosferze wskazuje kolor różowy, a  pyłu wulkanicznego - kolor pomarańczowy. Kompozycja ta może być również wykorzystywana do rozpoznawania zachmurzenia różnych pieter.",
     "layerName": "dust",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -75,7 +75,7 @@
   {
     "name": "NatCol",
     "displayName": "Detekcja chmur lodowych i śniegu",
-    "description": "Kompozycja barwna RGB Natural Colors (dostępna tylko w ciągu dnia)",
+    "description": "Kompozycja barwna RGB Natural Colors utworzona z kanałów spektralnych czujnika SEVIRI/Meteosat 1.6 µm, 0.8 µm i 0.6 µm. Pozwala na detekcję powierzchni lądu pokrytej wegetacją oraz rozróżnienia chmur lodowych od wodnych. Chmury lodowe, śnieg oraz lód na powierzchni widoczne są tu w cyjanie, przy czym odróżnienie śniegu na powierzchni gruntu od chmur lodowych jest możliwe jedynie na podstawie charakterystycznej struktury śniegu (o ile występuje). Z kolei fotosyntetycznie aktywna wegetacja zaznaczona jest kolorem zielonym (i jego odcieniami). Pustynie, odsłonięta gleba i wyschnięta wegetacja widoczne są w odcieniach brązu.",
     "layerName": "natcol",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -87,7 +87,7 @@
   {
     "name": "Polsafi",
     "displayName": "Polsafi, wyładowania atmosferyczne",
-    "description": "Obraz satelitarny Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami atmosferycznymi (dostępny tylko w ciągu dnia)",
+    "description": "Obraz satelitarny SEVIRI/Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami z systemu detekcji wyładowań PERUN IMGW-PIB.  Na obrazie tym chmury widoczne są w odcieniach jasnej szarości. Im jaśniejszy odcień tym grubsza optycznie jest chmura.\n\nObraz pozwala na detekcję burz, a nie tylko komórek konwekcyjnych (jak np. obraz 10.8 wzmocniony). Chmura, na której występują wyładowania jest chmurą burzową.\n\nWyładowania nałożone na obraz HRV oznaczone są następująco:\n\n    kolor czerwony - wyładowania doziemne dodatnie,\n    kolor niebieski – wyładowania doziemne ujemne\n    kolor brązowy – wyładowania międzychmurowe.",
     "layerName": "polsafi",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -111,7 +111,7 @@
   {
     "name": "Setvak_Eu",
     "displayName": "Chmury konwekcyjne",
-    "description": "Obraz satelitarny IR z dedykowaną paletą barwną",
+    "description": "Obraz satelitarny SEVIRI/Meteosat w kanale 10.8 µm z paletą barwną dobraną tak, aby wyróżnić najzimniejsze wierzchołki chmur, tj. te o temperaturze niższej niż -33°C. Są to zazwyczaj wierzchołki chmur konwekcyjnych.  Obecność kolorowych (zazwyczaj pomarańczowych lub czerwonych) struktur O-, V- i U-kształtnych świadczy o możliwości wystąpienia gwałtownych zjawisk na powierzchni ziemi takich jak silny wiatr, grad, opad nawalny.",
     "layerName": "setvak_eu",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -123,7 +123,7 @@
   {
     "name": "Setvak_PL",
     "displayName": "Chmury konwekcyjne (PL)",
-    "description": "Obraz satelitarny IR z dedykowaną paletą barwną",
+    "description": "Obraz satelitarny SEVIRI/Meteosat w kanale 10.8 µm z paletą barwną dobraną tak, aby wyróżnić najzimniejsze wierzchołki chmur, tj. te o temperaturze niższej niż -33°C. Są to zazwyczaj wierzchołki chmur konwekcyjnych.  Obecność kolorowych (zazwyczaj pomarańczowych lub czerwonych) struktur O-, V- i U-kształtnych świadczy o możliwości wystąpienia gwałtownych zjawisk na powierzchni ziemi takich jak silny wiatr, grad, opad nawalny.",
     "layerName": "setvak_pl",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -135,7 +135,7 @@
   {
     "name": "Opad_H03",
     "displayName": "Intensywność opadu",
-    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Przedstawia intensywność opadu w mm/h.",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  intensywność opadu w mm/h z krokiem czasowym 15 min.",
     "layerName": "opad_h03",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -147,7 +147,7 @@
   {
     "name": "Opad_H05_03h",
     "displayName": "Suma opadu (3h)",
-    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "layerName": "opad_h05_03h",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -159,7 +159,7 @@
   {
     "name": "Opad_H05_06h",
     "displayName": "Suma opadu (6h)",
-    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "layerName": "opad_h05_06h",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -171,7 +171,7 @@
   {
     "name": "Opad_H05_12h",
     "displayName": "Suma opadu (12h)",
-    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną",
     "layerName": "opad_h05_12h",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -183,7 +183,7 @@
   {
     "name": "Opad_H05_24h",
     "displayName": "Suma opadu (24h)",
-    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych. Obliczany na podstawie produktu „Intensywność opadu”.",
+    "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "layerName": "opad_h05_24h",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
@@ -194,8 +194,8 @@
   },
   {
     "name": "OST",
-    "displayName": "Chmury konwekcyjne wysoko wypiętrzone (Overshooting Tops)",
-    "description": "Przetworzony obraz Meteosat dla obszaru Polski – różnica kanałów 6.2 i 10.8 µm, do identyfikacji wysoko wypiętrzonych chmur konwekcyjnych (Overshooting Tops).",
+    "displayName": "Chmury konwekcyjne wysoko wypiętrzone",
+    "description": "Obraz satelitarny będący różnicą kanałów 6.2 i 10.8 µm czujnika SEVIRI/METEOSAT. Wartości różnicy większe od 0K wskazują na obszary w chmurze, w których występują silne prądy wstępujące, co z kolei prowadzi do silnego wypiętrzenia wierzchołków chmur (kolor czerwony i fioletowy). Obszary te mogą być powiązane z gwałtownymi zjawiskami takimi jak: silne opady deszczu, silne porywy wiatru lub nawet tornada.",
     "layerName": "ost",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",

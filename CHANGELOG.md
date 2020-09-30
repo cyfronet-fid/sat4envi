@@ -9,13 +9,17 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add application loader [#729](https://github.com/cyfronet-fid/sat4envi/issues/729)
 - Return scene key in SearchResponse [#743](https://github.com/cyfronet-fid/sat4envi/issues/743)
 
 ### Changed
 
+- Assign categories to products [#729](https://github.com/cyfronet-fid/sat4envi/issues/729)
 - Remove obsolete AppRoles from backend [#746](https://github.com/cyfronet-fid/sat4envi/issues/746)
 
 ### Fixed
+
+- Fix minor graphical issues [#729](https://github.com/cyfronet-fid/sat4envi/issues/729)
 
 ### Updated
 

@@ -61,7 +61,7 @@ describe('PeopleListComponent', () => {
 
     fixture.detectChanges();
 
-    const resendBtn = de.query(By.css('a[data-ut="resend-btn"]'));
+    const resendBtn = de.query(By.css('button[data-ut="resend-btn"]'));
     expect(resendBtn).toBeTruthy();
 
     const editBtn = de.query(By.css('a[data-ut="edit-btn"]'));
