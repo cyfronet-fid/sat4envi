@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v13.0.0]
+
+### Added
+
 - Copy JWT token to clipboard on map in user floating button [#713](https://github.com/cyfronet-fid/sat4envi/issues/713)
 
 ### Changed
@@ -290,7 +300,10 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v11.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v13.0.0...HEAD
+[v13.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v12.0.0...v13.0.0
+[v12.0.1]: https://github.com/cyfronet-fid/sat4envi/compare/v12.0.0...v12.0.1
+[v12.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v11.0.0...v12.0.0
 [v11.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v10.0.0...v11.0.0
 [v10.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.1.0...v10.0.0
 [v9.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v9.0.0...v9.1.0
