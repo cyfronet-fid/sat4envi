@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.sync;
 
+import jakarta.json.Json;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
-import javax.json.Json;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;

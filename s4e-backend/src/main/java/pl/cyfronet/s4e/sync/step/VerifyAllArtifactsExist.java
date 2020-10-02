@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.sync.step;
 
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
 import lombok.Builder;
 import lombok.val;
 import pl.cyfronet.s4e.ex.S3ClientException;
@@ -7,8 +9,6 @@ import pl.cyfronet.s4e.service.SceneStorage;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.context.BaseContext;
 
-import javax.json.JsonObject;
-import javax.json.JsonString;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

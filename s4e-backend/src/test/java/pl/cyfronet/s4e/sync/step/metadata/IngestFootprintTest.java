@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.sync.step.metadata;
 
+import jakarta.json.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -9,7 +10,6 @@ import pl.cyfronet.s4e.sync.context.BaseContext;
 import pl.cyfronet.s4e.sync.step.BaseStepTest;
 import pl.cyfronet.s4e.util.GeometryUtil;
 
-import javax.json.JsonObject;
 import java.util.function.BiConsumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;

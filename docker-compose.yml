@@ -65,7 +65,7 @@ services:
       S3_ACCESS_KEY: ${GEOSERVER_S3_ACCESS_KEY:-minio}
       S3_SECRET_KEY: ${GEOSERVER_S3_SECRET_KEY:-minio123}
   db:
-    image: postgis/postgis:12-3.0-alpine
+    image: postgis/postgis:13-3.0
     ports:
       - ${DB_PORT:-5433}:5432
     networks:

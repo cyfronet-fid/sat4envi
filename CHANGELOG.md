@@ -15,6 +15,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Updated
 
+- 2020.10 backend dependencies update (postgis image 12-3.0-alpine -> 13-3.0)
+
 ## [v13.0.0]
 
 ### Added
