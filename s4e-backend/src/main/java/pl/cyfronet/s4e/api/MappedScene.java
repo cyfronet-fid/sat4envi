@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class MappedScene {
     private Long id;
     private Long productId;
+    private String sceneKey;
     private String footprint;
     private String sceneContent;
     private String metadataContent;

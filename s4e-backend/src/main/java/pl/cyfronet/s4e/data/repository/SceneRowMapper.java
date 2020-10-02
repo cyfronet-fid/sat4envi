@@ -15,6 +15,7 @@ public class SceneRowMapper implements RowMapper {
         return MappedScene.builder()
                 .id(rs.getLong(Scene.COLUMN_ID))
                 .productId(rs.getLong(Scene.COLUMN_PRODUCT_ID))
+                .sceneKey(rs.getString(Scene.COLUMN_SCENE_KEY))
                 .footprint(rs.getString(Scene.COLUMN_FOOTPRINT))
                 .metadataContent(rs.getString(Scene.COLUMN_METADATA))
                 .sceneContent(rs.getString(Scene.COLUMN_CONTENT))

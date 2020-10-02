@@ -14,6 +14,7 @@ public class QueryBuilderImpl implements QueryBuilder {
         columns = new ArrayList<>();
         columns.add(Scene.COLUMN_ID);
         columns.add(Scene.COLUMN_PRODUCT_ID);
+        columns.add(Scene.COLUMN_SCENE_KEY);
         columns.add("ST_AsText(ST_Transform(" + Scene.COLUMN_FOOTPRINT + ",4326)) AS footprint");
         columns.add(Scene.COLUMN_METADATA);
         columns.add(Scene.COLUMN_CONTENT);

@@ -45,7 +45,7 @@ public class QueryBuilderTest {
         params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
         StringBuilder resultQuery = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        query.append("SELECT id,product_id,ST_AsText(ST_Transform(footprint,4326)) AS footprint,");
+        query.append("SELECT id,product_id,scene_key,ST_AsText(ST_Transform(footprint,4326)) AS footprint,");
         query.append("metadata_content,scene_content,timestamp ");
         query.append("FROM Scene WHERE true  ");
         query.append("AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  ");
@@ -67,7 +67,7 @@ public class QueryBuilderTest {
         Map<String, Object> params = new HashMap<>();
         StringBuilder resultQuery = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        query.append("SELECT id,product_id,");
+        query.append("SELECT id,product_id,scene_key,");
         query.append("ST_AsText(ST_Transform(footprint,4326)) AS footprint,");
         query.append("metadata_content,scene_content,timestamp ");
         query.append("FROM Scene ");
