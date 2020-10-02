@@ -85,9 +85,13 @@ public class SearchControllerTest {
                 .param("limit", String.valueOf(limit)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(limit))))
+                .andExpect(jsonPath("$[0].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].productId").isNotEmpty())
+                .andExpect(jsonPath("$[0].sceneKey", startsWith("path/to/")))
                 .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder(
                         "RGB_16b", "RGBs_8b", "checksum", "manifest", "metadata", "quicklook", "product_archive"
-                )));
+                )))
+                .andExpect(jsonPath("$[0].timestamp").value("2019-11-03T05:07:42.047432Z"));
     }
 
     @Test

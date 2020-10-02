@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Return scene key in SearchResponse [#743](https://github.com/cyfronet-fid/sat4envi/issues/743)
+
 ### Changed
 
 ### Fixed

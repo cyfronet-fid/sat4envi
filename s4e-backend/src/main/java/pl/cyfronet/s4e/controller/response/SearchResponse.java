@@ -12,6 +12,7 @@ import java.util.Set;
 public class SearchResponse {
     private Long id;
     private Long productId;
+    private String sceneKey;
     private String footprint;
     private Set<String> artifacts;
     private JsonNode metadataContent;

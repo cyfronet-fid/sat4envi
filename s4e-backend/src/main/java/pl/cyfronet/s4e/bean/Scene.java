@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 public class Scene extends CreationAndModificationAudited {
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_PRODUCT_ID = "product_id";
+    public static final String COLUMN_SCENE_KEY = "scene_key";
     public static final String COLUMN_TIMESTAMP = "timestamp";
     public static final String COLUMN_FOOTPRINT = "footprint";
     public static final String COLUMN_METADATA = "metadata_content";
