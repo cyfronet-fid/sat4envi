@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.sync.step.metadata;
 
+import jakarta.json.JsonObject;
 import lombok.Builder;
 import lombok.val;
 import org.locationtech.jts.geom.Coordinate;
@@ -11,7 +12,6 @@ import pl.cyfronet.s4e.sync.context.BaseContext;
 import pl.cyfronet.s4e.sync.step.Step;
 import pl.cyfronet.s4e.util.GeometryUtil;
 
-import javax.json.JsonObject;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;

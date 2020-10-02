@@ -1,5 +1,7 @@
 package pl.cyfronet.s4e.sync.step;
 
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import lombok.Builder;
 import lombok.val;
 import org.leadpony.justify.api.JsonSchema;
@@ -9,8 +11,6 @@ import org.leadpony.justify.api.ProblemHandler;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.context.BaseContext;
 
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;

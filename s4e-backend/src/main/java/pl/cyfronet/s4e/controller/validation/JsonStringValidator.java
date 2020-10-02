@@ -1,8 +1,9 @@
 package pl.cyfronet.s4e.controller.validation;
 
-import javax.json.Json;
-import javax.json.JsonReader;
-import javax.json.stream.JsonParsingException;
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
+import jakarta.json.stream.JsonParsingException;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.io.ByteArrayInputStream;

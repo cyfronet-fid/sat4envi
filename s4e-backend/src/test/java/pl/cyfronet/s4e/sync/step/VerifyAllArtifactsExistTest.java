@@ -1,5 +1,8 @@
 package pl.cyfronet.s4e.sync.step;
 
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,9 +12,6 @@ import pl.cyfronet.s4e.service.SceneStorage;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.context.BaseContext;
 
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.util.Map;
 import java.util.function.BiConsumer;
 

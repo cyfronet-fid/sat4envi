@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.sync.step;
 
+import jakarta.json.JsonException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.leadpony.justify.api.JsonSchema;
@@ -11,7 +12,6 @@ import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.context.BaseContext;
 import pl.cyfronet.s4e.sync.context.SchemaData;
 
-import javax.json.JsonException;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 

@@ -1,12 +1,12 @@
 package pl.cyfronet.s4e.sync.step;
 
+import jakarta.json.JsonObject;
 import lombok.Builder;
 import lombok.val;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.context.BaseContext;
 
-import javax.json.JsonObject;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;

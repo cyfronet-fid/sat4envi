@@ -26,22 +26,25 @@
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
 
-        <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
 
-        <awssdk.version>2.14.7</awssdk.version>
+        <awssdk.version>2.15.2</awssdk.version>
         <commonmark.version>0.15.2</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>23.2</geotools.version>
         <greenmail.version>1.6.0</greenmail.version>
         <guava.version>29.0-jre</guava.version>
         <hibernate-types.version>2.9.13</hibernate-types.version>
+        <jakarta.json-api.version>2.0.0-RC3</jakarta.json-api.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <mapstruct.version>1.4.0.CR1</mapstruct.version>
+        <joy.version>2.0.0-RC2</joy.version>
+        <justify.version>3.0.0-RC2</justify.version>
+        <mapstruct.version>1.4.0.Final</mapstruct.version>
         <poiooxml.version>4.1.2</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.4</slugify.version>
-        <springdoc-openapi.version>1.4.5</springdoc-openapi.version>
-        <unirest.version>3.10.00</unirest.version>
+        <springdoc-openapi.version>1.4.8</springdoc-openapi.version>
+        <unirest.version>3.11.00</unirest.version>
         <bucket4j-starter.version>0.2.0</bucket4j-starter.version>
         <caffeine.version>2.8.5</caffeine.version>
         <!--
@@ -166,6 +169,10 @@
                     <version>4.0.2</version>
                     <configuration>
                         <verbose>true</verbose>
+                        <!-- Don't fail for example when building based on a zip from a release. -->
+                        <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                        <!-- Work only on the git information already in the .git directory. Don't fetch. -->
+                        <offline>true</offline>
                         <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
                         <generateGitPropertiesFile>true</generateGitPropertiesFile>
                         <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>

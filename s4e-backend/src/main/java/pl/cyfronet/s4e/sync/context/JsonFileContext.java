@@ -1,8 +1,7 @@
 package pl.cyfronet.s4e.sync.context;
 
+import jakarta.json.JsonObject;
 import lombok.Data;
-
-import javax.json.JsonObject;
 
 @Data
 public class JsonFileContext {

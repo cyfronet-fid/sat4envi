@@ -1,5 +1,9 @@
 package pl.cyfronet.s4e;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonValue;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.data.repository.SchemaRepository;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
