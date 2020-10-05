@@ -79,13 +79,12 @@ public class OverlayControllerTest {
         institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
         val institutionAdminRoles = new AppRole[]{
                 AppRole.INST_ADMIN,
-                AppRole.INST_MANAGER,
-                AppRole.GROUP_MEMBER
+                AppRole.INST_MEMBER
         };
         addRoles(institutionAdmin, institution, institutionAdminRoles);
 
         member = appUserRepository.save(InvitationHelper.userBuilder().build());
-        val memberRoles = new AppRole[]{AppRole.GROUP_MEMBER};
+        val memberRoles = new AppRole[]{AppRole.INST_MEMBER};
         addRoles(member, institution, memberRoles);
 
         user = appUserRepository.save(InvitationHelper.userBuilder().build());
@@ -202,7 +201,7 @@ public class OverlayControllerTest {
         val institutionalOverlays = wmsOverlayRepository
                 .findAllInstitutional(
                         institutionAdmin.getId(),
-                        AppRole.GROUP_MEMBER,
+                        AppRole.INST_MEMBER,
                         OverlayOwner.INSTITUTIONAL
                 );
         assertEquals(2, institutionalOverlays.size());
@@ -271,7 +270,7 @@ public class OverlayControllerTest {
         val oldInstitutionalOverlaysSize = wmsOverlayRepository
                 .findAllInstitutional(
                         institutionAdmin.getId(),
-                        AppRole.GROUP_MEMBER,
+                        AppRole.INST_MEMBER,
                         OverlayOwner.INSTITUTIONAL
                 )
                 .size();
@@ -284,7 +283,7 @@ public class OverlayControllerTest {
         val institutionalOverlays = wmsOverlayRepository
                 .findAllInstitutional(
                         institutionAdmin.getId(),
-                        AppRole.GROUP_MEMBER,
+                        AppRole.INST_MEMBER,
                         OverlayOwner.INSTITUTIONAL
                 );
         assertEquals(oldInstitutionalOverlaysSize - 1, institutionalOverlays.size());

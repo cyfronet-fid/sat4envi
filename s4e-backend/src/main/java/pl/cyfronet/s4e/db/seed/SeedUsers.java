@@ -115,14 +115,6 @@ public class SeedUsers implements ApplicationRunner {
                         .memberZK(true)
                         .build(),
                 AppUser.builder()
-                        .email("zkPLManager@mail.pl")
-                        .name("Jakub")
-                        .surname("Kowalski")
-                        .password(passwordEncoder.encode("zkPLManager"))
-                        .enabled(true)
-                        .memberZK(true)
-                        .build(),
-                AppUser.builder()
                         .email("zkPLMember@mail.pl")
                         .name("Michał")
                         .surname("Buda")
@@ -136,14 +128,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Maciek")
                         .surname("Poważny")
                         .password(passwordEncoder.encode("zkMazAdmin"))
-                        .enabled(true)
-                        .memberZK(true)
-                        .build(),
-                AppUser.builder()
-                        .email("zkMazManager@mail.pl")
-                        .name("Mirosław")
-                        .surname("Koło")
-                        .password(passwordEncoder.encode("zkMazManager"))
                         .enabled(true)
                         .memberZK(true)
                         .build(),
@@ -165,14 +149,6 @@ public class SeedUsers implements ApplicationRunner {
                         .memberZK(true)
                         .build(),
                 AppUser.builder()
-                        .email("zkWawManager@mail.pl")
-                        .name("Andrzej")
-                        .surname("Dach")
-                        .password(passwordEncoder.encode("zkWawManager"))
-                        .enabled(true)
-                        .memberZK(true)
-                        .build(),
-                AppUser.builder()
                         .email("zkWawMember@mail.pl")
                         .name("Krzysztof")
                         .surname("Duka")
@@ -190,14 +166,6 @@ public class SeedUsers implements ApplicationRunner {
                         .memberZK(true)
                         .build(),
                 AppUser.builder()
-                        .email("zkMalManager@mail.pl")
-                        .name("Rafał")
-                        .surname("Kowal")
-                        .password(passwordEncoder.encode("zkMalManager"))
-                        .enabled(true)
-                        .memberZK(true)
-                        .build(),
-                AppUser.builder()
                         .email("zkMalMember@mail.pl")
                         .name("Jarosław")
                         .surname("Bulba")
@@ -211,14 +179,6 @@ public class SeedUsers implements ApplicationRunner {
                         .name("Tomasz")
                         .surname("Kłopotek")
                         .password(passwordEncoder.encode("zkKrAdmin"))
-                        .enabled(true)
-                        .memberZK(true)
-                        .build(),
-                AppUser.builder()
-                        .email("zkKrManager@mail.pl")
-                        .name("Piotr")
-                        .surname("Okno")
-                        .password(passwordEncoder.encode("zkKrManager"))
                         .enabled(true)
                         .memberZK(true)
                         .build(),
@@ -246,15 +206,10 @@ public class SeedUsers implements ApplicationRunner {
             institutionService.addMember(institution.getSlug(), "zkMember@mail.pl");
             institutionService.addMember(institution.getSlug(), "zkAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkAdmin@mail.pl", institution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkAdmin@mail.pl", institution.getSlug());
-            userRoleService.addRole(AppRole.GROUP_MANAGER, "zkAdmin@mail.pl", institution.getSlug());
 
             institutionService.addMember(institution.getSlug(), "zkPLMember@mail.pl");
-            institutionService.addMember(institution.getSlug(), "zkPLManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLManager@mail.pl", institution.getSlug());
             institutionService.addMember(institution.getSlug(), "zkPLAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkPLAdmin@mail.pl", institution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkPLAdmin@mail.pl", institution.getSlug());
 
             name = "Zarządzanie kryzysowe - Mazowieckie";
             Institution childInstitution = institutionService.save(Institution.builder()
@@ -264,11 +219,8 @@ public class SeedUsers implements ApplicationRunner {
                     .parent(institution)
                     .build());
             institutionService.addMember(childInstitution.getSlug(), "zkMazMember@mail.pl");
-            institutionService.addMember(childInstitution.getSlug(), "zkMazManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazManager@mail.pl", childInstitution.getSlug());
             institutionService.addMember(childInstitution.getSlug(), "zkMazAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkMazAdmin@mail.pl", childInstitution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMazAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Warszawa";
             Institution child2RowInstitution = institutionService.save(Institution.builder()
@@ -278,11 +230,8 @@ public class SeedUsers implements ApplicationRunner {
                     .parent(childInstitution)
                     .build());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkWawMember@mail.pl");
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawManager@mail.pl", child2RowInstitution.getSlug());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkWawAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Małopolska";
             childInstitution = institutionService.save(Institution.builder()
@@ -292,11 +241,8 @@ public class SeedUsers implements ApplicationRunner {
                     .parent(institution)
                     .build());
             institutionService.addMember(childInstitution.getSlug(), "zkMalMember@mail.pl");
-            institutionService.addMember(childInstitution.getSlug(), "zkMalManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalManager@mail.pl", childInstitution.getSlug());
             institutionService.addMember(childInstitution.getSlug(), "zkMalAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkMalAdmin@mail.pl", childInstitution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkMalAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Kraków";
             child2RowInstitution = institutionService.save(Institution.builder()
@@ -306,11 +252,8 @@ public class SeedUsers implements ApplicationRunner {
                     .parent(childInstitution)
                     .build());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkKrMember@mail.pl");
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrManager@mail.pl");
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrManager@mail.pl", child2RowInstitution.getSlug());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkKrAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug());
-            userRoleService.addRole(AppRole.INST_MANAGER, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug());
 
         } catch (InstitutionCreationException e) {
             log.warn(e.getMessage(), e);

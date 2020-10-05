@@ -4,7 +4,7 @@ export interface LoginFormState {
 }
 
 export interface Role {
-  role: 'INST_ADMIN'|'INST_MANAGER'|'GROUP_MANAGER'|'GROUP_MEMBER',
+  role: 'INST_ADMIN'|'INST_MANAGER'|'GROUP_MANAGER'|'INST_MEMBER',
   institutionSlug: string|null,
   groupSlug: string|null,
 }

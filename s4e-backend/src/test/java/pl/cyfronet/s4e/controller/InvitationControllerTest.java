@@ -65,11 +65,11 @@ public class InvitationControllerTest {
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
 
         institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
-        val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MANAGER, AppRole.GROUP_MEMBER};
+        val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MEMBER};
         addRoles(institutionAdmin, institution, institutionAdminRoles);
 
         member = appUserRepository.save(InvitationHelper.userBuilder().build());
-        val memberRoles = new AppRole[]{AppRole.GROUP_MEMBER};
+        val memberRoles = new AppRole[]{AppRole.INST_MEMBER};
         addRoles(member, institution, memberRoles);
 
         user = appUserRepository.save(InvitationHelper.userBuilder().build());

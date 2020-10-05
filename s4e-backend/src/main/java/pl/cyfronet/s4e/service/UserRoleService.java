@@ -34,10 +34,10 @@ public class UserRoleService {
                 .orElseThrow(() -> new NotFoundException("Institution not found for id " + institutionSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
-        if (!AppRole.GROUP_MEMBER.equals(role) &&
-                userRoleRepository.findByUser_IdAndInstitution_IdAndRole(appUser.getId(), institution.getId(), AppRole.GROUP_MEMBER).isEmpty()) {
+        if (!AppRole.INST_MEMBER.equals(role) &&
+                userRoleRepository.findByUser_IdAndInstitution_IdAndRole(appUser.getId(), institution.getId(), AppRole.INST_MEMBER).isEmpty()) {
             UserRole userRole = UserRole.builder().
-                    role(AppRole.GROUP_MEMBER)
+                    role(AppRole.INST_MEMBER)
                     .user(appUser)
                     .institution(institution)
                     .build();
@@ -64,7 +64,7 @@ public class UserRoleService {
                 .orElseThrow(() -> new NotFoundException("Institution not found for id " + institutionSlug + "'"));
         AppUser appUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found for mail: '" + email + "'"));
-        if (AppRole.GROUP_MEMBER.equals(role)) {
+        if (AppRole.INST_MEMBER.equals(role)) {
             userRoleRepository.findByUser_IdAndInstitution_Id(appUser.getId(), institution.getId()).forEach(userRole -> {
                 institution.removeMemberRole(userRole);
                 appUser.removeRole(userRole);

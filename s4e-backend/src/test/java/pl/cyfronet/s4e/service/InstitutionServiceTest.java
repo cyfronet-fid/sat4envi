@@ -76,7 +76,7 @@ public class InstitutionServiceTest {
                 .slug(slugInstitution)
                 .build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution).build();
+        UserRole userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
         userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
@@ -89,11 +89,11 @@ public class InstitutionServiceTest {
                 .slug(slugInstitution2)
                 .build());
 
-        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser2).institution(institution2).build();
+        userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser2).institution(institution2).build();
         userRoleRepository.save(userRole);
         userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser2).institution(institution2).build();
         userRoleRepository.save(userRole);
-        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution2).build();
+        userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser).institution(institution2).build();
         userRoleRepository.save(userRole);
         userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(appUser).institution(institution2).build();
         userRoleRepository.save(userRole);

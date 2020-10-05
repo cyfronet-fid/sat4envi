@@ -13,9 +13,7 @@ public class InstitutionSecurityHelper {
             return false;
         }
         val authorities = details.getAuthorities();
-        return authorities.contains(simpleGrantedAuthority(institutionSlug, AppRole.INST_ADMIN))
-                ||
-                authorities.contains(simpleGrantedAuthority(institutionSlug, AppRole.INST_MANAGER));
+        return authorities.contains(simpleGrantedAuthority(institutionSlug, AppRole.INST_ADMIN));
     }
 
     public boolean isMember(String institutionSlug) {
@@ -24,7 +22,7 @@ public class InstitutionSecurityHelper {
             return false;
         }
         val authorities = details.getAuthorities();
-        return authorities.contains(simpleGrantedAuthority(institutionSlug, AppRole.GROUP_MEMBER));
+        return authorities.contains(simpleGrantedAuthority(institutionSlug, AppRole.INST_MEMBER));
     }
 
     private SimpleGrantedAuthority simpleGrantedAuthority(String institutionSlug, AppRole appRole) {

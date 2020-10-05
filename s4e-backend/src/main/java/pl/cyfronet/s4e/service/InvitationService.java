@@ -104,7 +104,7 @@ public class InvitationService {
         val sourceRoles = dbInstitution.getMembersRoles();
         val memberRole = UserRole
                 .builder()
-                .role(AppRole.GROUP_MEMBER)
+                .role(AppRole.INST_MEMBER)
                 .user(user)
                 .institution(dbInstitution)
                 .build();

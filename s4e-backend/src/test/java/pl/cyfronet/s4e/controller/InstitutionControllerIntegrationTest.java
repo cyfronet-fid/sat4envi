@@ -97,7 +97,7 @@ public class InstitutionControllerIntegrationTest {
                 .slug(parentSlug)
                 .build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution).build();
+        UserRole userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
     }
 
