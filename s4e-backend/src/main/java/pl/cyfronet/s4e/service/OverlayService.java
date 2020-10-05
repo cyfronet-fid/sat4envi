@@ -37,7 +37,7 @@ public class OverlayService {
         val overlays = wmsOverlayRepository
                 .findAllInstitutional(
                         user.getId(),
-                        AppRole.GROUP_MEMBER,
+                        AppRole.INST_MEMBER,
                         OverlayOwner.INSTITUTIONAL
                 );
         val nonActiveIds = user.getPreferences().getNonVisibleOverlays();

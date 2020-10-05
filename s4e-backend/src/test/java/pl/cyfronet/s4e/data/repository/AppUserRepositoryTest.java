@@ -54,7 +54,7 @@ public class AppUserRepositoryTest {
                 .enabled(true)
                 .build());
         userRoleRepository.save(UserRole.builder()
-                .role(AppRole.GROUP_MEMBER)
+                .role(AppRole.INST_MEMBER)
                 .user(appUser)
                 .institution(institution)
                 .build());

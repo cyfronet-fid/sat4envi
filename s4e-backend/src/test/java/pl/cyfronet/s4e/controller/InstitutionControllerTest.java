@@ -95,7 +95,7 @@ public class InstitutionControllerTest {
                 .build());
 
         UserRole userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(instAdmin).institution(institution).build();
-        UserRole userRole2 = UserRole.builder().role(AppRole.GROUP_MEMBER).user(instAdmin).institution(institution).build();
+        UserRole userRole2 = UserRole.builder().role(AppRole.INST_MEMBER).user(instAdmin).institution(institution).build();
         userRoleRepository.save(userRole);
         userRoleRepository.save(userRole2);
     }
@@ -141,7 +141,7 @@ public class InstitutionControllerTest {
                 .slug(slugInstitutionZK)
                 .build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution).build();
+        UserRole userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser).institution(institution).build();
         userRoleRepository.save(userRole);
 
         String testInstitutionZK_MAZ = "Test Institution ZK - Mazowieckie";
@@ -152,7 +152,7 @@ public class InstitutionControllerTest {
                 .parent(institution)
                 .build());
 
-        userRole = UserRole.builder().role(AppRole.GROUP_MEMBER).user(appUser).institution(institution2).build();
+        userRole = UserRole.builder().role(AppRole.INST_MEMBER).user(appUser).institution(institution2).build();
         userRoleRepository.save(userRole);
 
         String testInstitutionPAK = "Test Institution PAK";

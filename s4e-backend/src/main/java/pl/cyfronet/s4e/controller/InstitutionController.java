@@ -108,7 +108,7 @@ public class InstitutionController {
             return institutionService.getAll(BasicInstitutionResponse.class);
         }
         return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),
-                List.of(AppRole.GROUP_MEMBER.name()),
+                List.of(AppRole.INST_MEMBER.name()),
                 BasicInstitutionResponse.class);
     }
 

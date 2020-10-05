@@ -13,6 +13,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- Remove obsolete AppRoles from backend [#746](https://github.com/cyfronet-fid/sat4envi/issues/746)
+
 ### Fixed
 
 ### Updated

@@ -54,14 +54,14 @@ describe('SessionQuery', () => {
   });
 
   it('should resolve to false if user has no managerial role', async () => {
-    store.update({roles: [RoleFactory.build({role: 'GROUP_MEMBER'})]});
+    store.update({roles: [RoleFactory.build({role: 'INST_MEMBER'})]});
     expect(await canSeeInstitutions$()).toBeFalsy();
   });
 
   it('should not resolve to true if user has at least one managerial role in group', async () => {
     store.update({
       roles: [
-        RoleFactory.build({role: 'GROUP_MEMBER'}),
+        RoleFactory.build({role: 'INST_MEMBER'}),
         RoleFactory.build({role: 'GROUP_MANAGER'})
       ]
     });

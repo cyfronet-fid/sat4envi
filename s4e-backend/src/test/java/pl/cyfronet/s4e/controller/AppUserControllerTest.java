@@ -138,12 +138,7 @@ public class AppUserControllerTest {
                 .build());
 
         userRoleRepository.save(UserRole.builder().
-                role(AppRole.INST_MANAGER)
-                .user(securityAppUser)
-                .institution(institution)
-                .build());
-        userRoleRepository.save(UserRole.builder().
-                role(AppRole.GROUP_MEMBER)
+                role(AppRole.INST_MEMBER)
                 .user(securityAppUser)
                 .institution(institution)
                 .build());

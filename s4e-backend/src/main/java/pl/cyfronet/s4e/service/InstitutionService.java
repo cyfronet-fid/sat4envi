@@ -105,7 +105,7 @@ public class InstitutionService {
             val appUser = appUserRepository.findByEmail(adminMail);
             if (appUser.isPresent()) {
                 // add member to default group
-                userRoleService.addRole(AppRole.GROUP_MEMBER, adminMail, institutionSlug);
+                userRoleService.addRole(AppRole.INST_MEMBER, adminMail, institutionSlug);
                 // add institution_admin role for user
                 userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug);
             } else {
@@ -115,7 +115,7 @@ public class InstitutionService {
     }
 
     public <T> Set<T> getMembers(String institutionSlug, Class<T> projection) {
-        return institutionRepository.findAllMembers(institutionSlug, AppRole.GROUP_MEMBER, projection);
+        return institutionRepository.findAllMembers(institutionSlug, AppRole.INST_MEMBER, projection);
     }
 
     public <T> List<T> getAll(Class<T> projection) {
@@ -127,11 +127,11 @@ public class InstitutionService {
     }
 
     public void addMember(String institutionSlug, String email) throws NotFoundException {
-        userRoleService.addRole(AppRole.GROUP_MEMBER, email, institutionSlug);
+        userRoleService.addRole(AppRole.INST_MEMBER, email, institutionSlug);
     }
 
     public void removeMember(String institutionSlug, String email) throws NotFoundException {
-        userRoleService.removeRole(AppRole.GROUP_MEMBER, email, institutionSlug);
+        userRoleService.removeRole(AppRole.INST_MEMBER, email, institutionSlug);
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})
