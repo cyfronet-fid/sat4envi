@@ -1,5 +1,4 @@
-import { NotificationService } from './../../../../../projects/notifications/src/lib/state/notification.service';
-import { Observable } from 'rxjs';
+import { NotificationService } from 'notifications';
 import { SessionQuery } from './../../../state/session/session.query';
 import { SessionService } from './../../../state/session/session.service';
 import { JwtTokenForm } from 'src/app/views/map-view/jwt-token-modal/jwt-token-modal.model';

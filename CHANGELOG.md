@@ -19,6 +19,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Fix Notifications [#651](https://github.com/cyfronet-fid/sat4envi/issues/651)
 - Fix minor graphical issues [#729](https://github.com/cyfronet-fid/sat4envi/issues/729)
 
 ### Updated
