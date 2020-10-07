@@ -24,7 +24,7 @@
     </section>
     <div class="content__formContainer">
       <!--suppress AngularInvalidExpressionResultType -->
-      <form (ngSubmit)="register()" [formGroup]="form">
+      <form (ngSubmit)="register()" [formGroup]="form" class="form">
         <h2 class="content__header" i18n>Rejestracja</h2>
         <div class="alert alert-danger" *ngIf="form.errors">
           <ul s4e-form-error [control]="form"></ul>

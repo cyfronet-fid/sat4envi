@@ -23,6 +23,18 @@
   z-index: 20;
 }
 
+.collapse {
+  height: 40px;
+  width: 40px;
+  z-index: 50;
+  position: fixed;
+  left: 390px;
+  top: 0;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+  background: url(/../assets/images/ico_chevron.svg) $color-grey-primary no-repeat center;
+  background-size: 15px;
+  transform: rotate(90deg);
+}
 .dropdown {
 
   &__button {
@@ -50,7 +62,7 @@
     &--product {
       background: url(/../assets/images/ico_info.svg) $color-white no-repeat center;
       top: 12px;
-      left: 430px;
+      left: 460px;
       background-size: 10px;
     }
 
@@ -83,7 +95,7 @@
     }
 
     &--product {
-      left: 430px;
+      left: 460px;
       width: 350px;
 
       .dropdown__header {

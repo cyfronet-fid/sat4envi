@@ -22,21 +22,28 @@
   <ng-container table-header>
       <th i18n>Imię i nazwisko</th>
       <th i18n>Email</th>
+      <th i18n class="text--center">Status</th>
       <th i18n>Akcje</th>
   </ng-container>
   <ng-template let-user="item">
     <td i18n>{{user.name}} {{user.surname}}</td>
     <td i18n>{{user.email}}</td>
-    <td>
+    <td class="text--center">
       <ng-container *ngIf="isInvitation(user)">
-        <a
+        <button
           href="javascript:void(0)"
           (click)="resendTo(user)"
           data-e2e="resend-invitation-btn"
           data-ut="resend-btn"
+          class="button button--secondary button--xsmall"
         >
-          <i class="fas fa-redo"></i>
-        </a>
+          Zaproś ponownie
+        </button>
+      </ng-container>
+    </td>
+    <td>
+      <ng-container *ngIf="isInvitation(user)">
+
         <a
           href="javascript:void(0)"
           (click)="sendInvitation(user)"

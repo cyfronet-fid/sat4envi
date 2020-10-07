@@ -82,7 +82,7 @@ section, .section {
 
   ul {
     li {
-      padding: $space-xsmall $space-default;
+      padding: 7px 15px 3px 15px;
       font-size: 0.938rem;
 
       &:last-child {
@@ -92,10 +92,6 @@ section, .section {
       &:hover {
         background: $color-grey-primary;
         cursor: pointer;
-      }
-
-      &.active {
-        background: lightblue;
       }
     }
   }

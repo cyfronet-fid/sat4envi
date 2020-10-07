@@ -8,6 +8,13 @@
     display: none;
   }
 
+
+
+  #map {
+    left: 0 !important;
+    width: 100% !important;
+  }
+
   s4e-settings {
   .settings {
     .navigation {
@@ -22,6 +29,8 @@
     display: block;
     height: auto;
   }
+
+
 
   .content {
     &__header {
@@ -52,7 +61,57 @@
     flex-direction: column;
   }
 }
+}
 
+@media only all and (max-width: 800px)  {
+  .container {
+    flex-direction: column;
 
+    .intro {
+      display: none;
+    }
 
+    .content {
+      width: 100%;
+      background: $color-white;
+
+      form {
+        padding: 25px;
+
+        .logo__partners {
+          display:block;
+          margin-top: 50px;
+        }
+      }
+
+      &__switch {
+        &--right {
+          right: 20px;
+
+          p {
+            display: none;
+          }
+
+        }
+      }
+    }
+
+    h1 {
+      display: none;
+    }
+
+    .logo--color {
+      position: absolute;
+      left: 25px;
+      top: 47px;
+      display: block;
+      width: 100px;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .logo--white {
+      display: none;
+    }
+  }
 }

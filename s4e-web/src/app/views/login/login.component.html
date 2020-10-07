@@ -23,7 +23,7 @@
       </a>
     </section>
     <div class="content__formContainer">
-      <form (ngSubmit)="login()" [formGroup]="form" autocomplete="off">
+      <form (ngSubmit)="login()" [formGroup]="form" autocomplete="off" class="form">
         <h2 class="content__header" i18n>Logowanie</h2>
         <div *ngIf="error$ | async" class="alert alert-danger special__error">
           <ng-container [ngSwitch]="(error$ | async).status">

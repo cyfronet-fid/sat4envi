@@ -67,7 +67,6 @@ body, html {
       vertical-align: middle;
       position: relative;
       padding-top: 100px;
-      padding-bottom: 100px;
 
       & > * {
         padding: 35px;
@@ -80,13 +79,16 @@ body, html {
       }
 
       .form {
+        background: $color-white;
+
         &__element {
           margin-bottom: $space-xlarge;
-
-          &:nth-child(3) {
-            margin-bottom: 0;
-          }
         }
+
+        li {
+          display: block;
+        }
+
       }
 
 
@@ -277,6 +279,8 @@ body, html {
       font-size: 1.25rem;
       padding: 8px 45px;
       margin-top: 30px;
+      display: inline-block;
+      width: auto;
     }
 
     .special__error:not(:empty) {
@@ -289,6 +293,11 @@ body, html {
       position:relative;
       border-radius: $border-radius-default;
       animation: fadein 2s;
+
+      li {
+        padding: 0;
+        margin: 0;
+      }
     }
 
     @keyframes fadein {
@@ -304,56 +313,5 @@ body, html {
 
 
 
-@media only all and (max-width: 800px)  {
-  .container {
-    flex-direction: column;
 
-    .intro {
-      display: none;
-    }
-
-    .content {
-      width: 100%;
-      background: $color-white;
-
-      form {
-        padding: 25px;
-
-        .logo__partners {
-          display:block;
-          margin-top: 50px;
-        }
-      }
-
-      &__switch {
-        &--right {
-          right: 20px;
-
-          p {
-            display: none;
-          }
-
-        }
-      }
-    }
-
-    h1 {
-      display: none;
-    }
-
-    .logo--color {
-      position: absolute;
-      left: 25px;
-      top: 47px;
-      display: block;
-      width: 100px;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-
-    .logo--white {
-      display: none;
-    }
-  }
-}
 
