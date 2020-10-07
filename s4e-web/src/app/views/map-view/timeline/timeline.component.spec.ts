@@ -1,12 +1,67 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {TimelineComponent} from './timeline.component';
+import {DataPoint, PointStacker, TimelineComponent} from './timeline.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MapModule} from '../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {RemoteConfigurationTestingProvider} from '../../../app.configuration.spec';
-import moment from 'moment';
 import {SimpleChange} from '@angular/core';
+import {Scene, SceneWithUI} from '../state/scene/scene.model';
+import {convertToSceneWithPosition, SceneFactory} from '../state/scene/scene.factory.spec';
+import {take, toArray} from 'rxjs/operators';
+
+describe('PointStacker', () => {
+  let stacker: PointStacker = new PointStacker(10, 15);;
+  const totalSceneCount = 4;
+  let scenes: Scene[];
+  let scenesWithPositions: SceneWithUI[];
+
+  beforeEach(() => {
+    scenes = SceneFactory.buildList(totalSceneCount);
+  });
+
+  it('should stack', () => {
+    const width = 10;
+    scenesWithPositions = convertToSceneWithPosition(width, scenes)
+    let output = stacker.stack(scenesWithPositions, width, null);
+    expect(output).toEqual([{points: scenesWithPositions, position: 37.5, selected: false}]);
+  });
+
+  it('should partially stack', () => {
+    const width = 100;
+    scenesWithPositions = convertToSceneWithPosition(width, scenes);
+
+    let output = stacker.stack(scenesWithPositions, width, null);
+    expect(output).toEqual([
+      {points: [scenesWithPositions[0], scenesWithPositions[1]], position: 12.5, selected: false},
+      {points: [scenesWithPositions[2], scenesWithPositions[3]], position: 62.5, selected: false},
+    ]);
+  });
+
+  it('should flag selected', () => {
+    const width = 100;
+    scenesWithPositions = convertToSceneWithPosition(width, scenes);
+
+    let output = stacker.stack(scenesWithPositions, width, scenesWithPositions[2]);
+    expect(output).toEqual([
+      {points: [scenesWithPositions[0], scenesWithPositions[1]], position: 12.5, selected: false},
+      {points: [scenesWithPositions[2], scenesWithPositions[3]], position: 62.5, selected: true},
+    ]);
+  });
+
+  it('should not stack', () => {
+    const width = 200;
+    scenesWithPositions = convertToSceneWithPosition(width, scenes);
+
+    let output = stacker.stack(scenesWithPositions, width, null);
+    expect(output).toEqual([
+      {points: [scenesWithPositions[0]], position: scenesWithPositions[0].position, selected: false},
+      {points: [scenesWithPositions[1]], position: scenesWithPositions[1].position, selected: false},
+      {points: [scenesWithPositions[2]], position: scenesWithPositions[2].position, selected: false},
+      {points: [scenesWithPositions[3]], position: scenesWithPositions[3].position, selected: false},
+    ]);
+  });
+});
 
 describe('TimelineComponent', () => {
   let component: TimelineComponent;
@@ -32,7 +87,7 @@ describe('TimelineComponent', () => {
 
   it('should calculate hourmarks', () => {
     component.resolution = 12;
-    component.startTime = moment('2020-09-09');
+    component.startTime = '2020-09-09';
     component.ngOnChanges({
       startTime: new SimpleChange(null, component.startTime, false),
       resolution: new SimpleChange(24, component.resolution, false)
@@ -46,4 +101,19 @@ describe('TimelineComponent', () => {
         '08:00',
         '10:00']);
   });
+
+  it('should stackPoint', async () => {
+    const width = 200;
+    const scenes = convertToSceneWithPosition(width, SceneFactory.buildList(4));
+    component._activeScene = null;
+    component.scenesWithUI = scenes;
+    jest.spyOn((component as any).element.nativeElement, 'clientWidth', 'get').mockReturnValue(width);
+    component.onResize();
+
+    expect(await component.scenes$.pipe(take(2), toArray()).toPromise()).toEqual([
+      [],
+      scenes.map(scene => ({points: [scene], selected: false, position: scene.position} as DataPoint))
+    ]);
+  });
+
 });

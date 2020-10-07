@@ -25,6 +25,15 @@ export class Map extends Core {
       cy.get(".owl-dt-calendar-cell-content:not(.owl-dt-calendar-cell-out)").contains(day),
     getHourBtn: (hour: number) =>
       cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {timeout: 5000}),
+    getHourBtnInPopup: (hour: number) =>
+      cy.get(`li[data-hour="${hour < 10 ? '0' + hour : hour}:00:00"]`, {timeout: 5000}),
+    getStackedHourBtn: (hourStart: number, hourEnd: number) =>
+      cy.get(`.timeline__item--multiple[title="${hourStart < 10 ? '0' + hourStart : hourStart}:00 - ${hourEnd < 10 ? '0' + hourEnd : hourEnd}:00"]`,
+        {timeout: 5000}),
+    getIncreaseResolutionBtn: () =>
+      cy.get('.timecontrol__button--plus', {timeout: 5000}),
+    getDecreaseResolutionBtn: () =>
+      cy.get('.timecontrol__button--minus', {timeout: 5000}),
   };
 
   static logout() {
@@ -71,13 +80,35 @@ export class Map extends Core {
     year: number,
     month: number,
     day: number,
-    hour: number
   ) {
     Map.pageObject.getYearSelectionBtn().should("be.visible").click();
     Map.pageObject.getYearBtn(year).should("be.visible").click();
     Map.pageObject.getMonthBtn(month).should("be.visible").click();
     Map.pageObject.getDayBtn(day).should("be.visible").click();
+    return Map;
+  }
+
+  static selectDataPoint(hour: number) {
     Map.pageObject.getHourBtn(hour).should("be.visible").click();
+    return Map;
+  }
+
+  static selectStackedDataPoint(
+    hourStart: number,
+    hourEnd: number
+  ) {
+    Map.pageObject.getStackedHourBtn(hourStart, hourEnd).should("be.visible").click();
+    Map.pageObject.getHourBtnInPopup(hourStart).click();
+    return Map;
+  }
+
+  static increaseResolution() {
+    Map.pageObject.getIncreaseResolutionBtn().click()
+    return Map;
+  }
+
+  static decreaseResolution() {
+    Map.pageObject.getDecreaseResolutionBtn().click()
     return Map;
   }
 }

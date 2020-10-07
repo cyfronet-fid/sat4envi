@@ -8,3 +8,10 @@ export const SceneFactory = Factory.makeFactory<Scene>({
   layerName: Factory.each(i => `layer #${i}`),
   legend: null
 });
+
+export function convertToSceneWithPosition(width: number, scenes: Scene[]) {
+  return scenes.map((scene, i) => ({
+    ...scene,
+    position: i * 100.0 / scenes.length
+  }));
+}

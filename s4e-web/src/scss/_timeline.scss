@@ -164,7 +164,7 @@
     &--multiple {
       left: 150px;
 
-      &:hover {
+      &:hover, &.active {
         margin: 0 !important;
         width: 10px !important;
         height: 10px !important;

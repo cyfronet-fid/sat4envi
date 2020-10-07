@@ -6,11 +6,11 @@ import moment from 'moment';
 })
 export class HourPipe implements PipeTransform {
 
-  transform(date: string): any {
+  transform(date: string, seconds: boolean = false): any {
     if (!date) {
-      return '00:00'
+      return seconds ? '00:00:00' : '00:00'
     }
-    return moment(date).format('HH:mm');
+    return moment(date).format(seconds ? 'HH:mm:ss' : 'HH:mm');
   }
 
 }
