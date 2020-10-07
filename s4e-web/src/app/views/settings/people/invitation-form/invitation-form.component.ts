@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms';
-import { NotificationService } from './../../../../../../projects/notifications/src/lib/state/notification.service';
+import { NotificationService } from 'notifications';
 import { Institution } from './../../state/institution/institution.model';
 import { Modal } from '../../../../modal/state/modal.model';
 import { INVITATION_FORM_MODAL_ID, isInvitationFormModal, InvitationFormModal } from './invitation-form-modal.model';

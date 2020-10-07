@@ -1,6 +1,6 @@
 import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import { environment } from './../../../../environments/environment';
-import {NotificationService} from '../../../../../projects/notifications/src/lib/state/notification.service';
+import {NotificationService} from 'notifications';
 import {ImageWmsLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';

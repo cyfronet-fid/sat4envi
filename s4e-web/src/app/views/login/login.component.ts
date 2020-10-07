@@ -1,4 +1,4 @@
-import { NotificationService } from './../../../../projects/notifications/src/lib/state/notification.service';
+import { NotificationService } from 'notifications';
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';

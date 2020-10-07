@@ -1,7 +1,7 @@
 import { environment } from './../../../../../../environments/environment';
 import { InvitationStore } from './invitation.store';
 import { Institution } from './../../../state/institution/institution.model';
-import { NotificationService } from './../../../../../../../projects/notifications/src/lib/state/notification.service';
+import { NotificationService } from 'notifications';
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
