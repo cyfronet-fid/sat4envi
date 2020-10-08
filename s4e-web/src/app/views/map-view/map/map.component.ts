@@ -146,6 +146,10 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
+  public updateSize() {
+    this.map.updateSize();
+  }
+
   protected _handleLoadError() {
     this._loaderService.stopBackground();
     this._notificationService.addGeneral({

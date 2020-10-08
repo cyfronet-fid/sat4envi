@@ -1,9 +1,9 @@
 import {handleHttpRequest$} from 'src/app/common/store.util';
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {
-  AVAILABLE_TIMELINE_RESOLUTIONS,
+  AVAILABLE_TIMELINE_RESOLUTIONS, COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY,
   MostRecentScene,
   Product,
   PRODUCT_MODE_FAVOURITE,
@@ -16,7 +16,7 @@ import {LegendService} from '../legend/legend.service';
 import {Observable, of, throwError} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
-import {applyTransaction} from '@datorama/akita';
+import {applyTransaction, arrayRemove, arrayUpsert} from '@datorama/akita';
 import {timezone, yyyymm, yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 import {HANDLE_ALL_ERRORS} from '../../../../utils/error-interceptor/error.helper';
 import {Router} from '@angular/router';
@@ -24,6 +24,7 @@ import environment from 'src/environments/environment';
 import * as moment from 'moment';
 import {NotificationService} from 'notifications';
 import {SceneQuery} from '../scene/scene.query';
+import {LocalStorage} from '../../../../app.providers';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -37,7 +38,8 @@ export class ProductService {
     private _notificationService: NotificationService,
     private sceneService: SceneService,
     private _sceneQuery: SceneQuery,
-    private router: Router
+    private router: Router,
+    @Inject(LocalStorage) private storage: Storage
   ) {
   }
 
@@ -242,6 +244,18 @@ export class ProductService {
           });
       }
     );
+  }
+
+  toggleCategoryCollapse(category: number) {
+    this.store.ui.update(state => {
+      let categories = state.collapsedCategories.indexOf(category) === -1
+          ? arrayUpsert(state.collapsedCategories, category, category)
+          : arrayRemove(state.collapsedCategories, category)
+
+      this.storage.setItem(COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, JSON.stringify(categories));
+
+      return {...state, collapsedCategories: categories}
+    });
   }
 
   private getSingle$(product: Product): Observable<any> {

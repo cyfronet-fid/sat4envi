@@ -18,6 +18,7 @@
     height: 40px;
     text-transform: uppercase;
     font-weight: 500;
+    cursor: pointer;
 
 
     .close {
@@ -108,7 +109,11 @@
 
   &__spec {
     display: flex;
-    justify-content: space-between;
+
+    li {
+      margin-right: 15px;
+    }
+
     span {
       display: block;
       opacity: .5;

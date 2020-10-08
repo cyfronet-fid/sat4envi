@@ -90,15 +90,17 @@ h3 {
 .modal__next {
   font-size: 3rem;
   color: $color-white;
-  display: inline-block;
-  left: -50px;
-  float: left;
-  height: 100%;
-  margin-top: 200px;
+  display: block;
+  left: -80px;
+  position: absolute;
+  height: 50px;
+  width: 50px;
+  top: 45%;
 }
 
 .modal__next {
-  float: right;
+  right: -80px;
+  left: auto;
 }
 
 

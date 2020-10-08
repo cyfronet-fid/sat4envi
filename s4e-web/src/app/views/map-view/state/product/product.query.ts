@@ -14,6 +14,7 @@ import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
 import {map} from 'rxjs/operators';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
+import {logIt} from '../../../../utils/rxjs/observable';
 
 @Injectable({
   providedIn: 'root'
@@ -79,14 +80,14 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   public selectAllAsUILayer(): Observable<IUILayer[]> {
-    return combineLatest(this.selectAll(), this.ui.selectAll(), this.selectActiveId())
+    return combineLatest(this.selectAll(), this.ui.selectAll(), this.ui.select('collapsedCategories'), this.selectActiveId())
       .pipe(
-        map(([products, productsUi, activeId]) => products
+        map(([products, productsUi, collapsedCategories, activeId]) => products
           .map((pt, i) => ({
             cid: pt.id,
             label: pt.displayName,
             active: pt.id === activeId,
-            category: pt.productCategory,
+            category: {...pt.productCategory, collapsed: collapsedCategories.indexOf(pt.productCategory.id) !== -1},
             favourite: pt.favourite,
             isLoading: productsUi[i].isLoading,
             isFavouriteLoading: productsUi[i].isFavouriteLoading

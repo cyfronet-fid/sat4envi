@@ -11,7 +11,7 @@ import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from '../state/sentinel-search/sentinel-search.factory.spec';
 import {toTestPromise} from '../../../test.utils.spec';
-import environment from 'src/environments/environment';
+
 
 describe('SentinelSearchComponent', () => {
   let component: SentinelSearchComponent;

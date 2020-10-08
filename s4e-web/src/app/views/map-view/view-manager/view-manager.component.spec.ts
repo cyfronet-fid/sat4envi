@@ -9,6 +9,7 @@ import {ProductStore} from '../state/product/product.store';
 import {ProductQuery} from '../state/product/product.query';
 import {ViewManagerComponent} from './view-manager.component';
 import {ProductFactory} from '../state/product/product.factory.spec';
+import {LocalStorageTestingProvider} from '../../../app.configuration.spec';
 
 describe('ViewManagerComponent', () => {
   let fixture: ComponentFixture<ViewManagerComponent>;
@@ -19,6 +20,7 @@ describe('ViewManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider],
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     })
       .compileComponents();

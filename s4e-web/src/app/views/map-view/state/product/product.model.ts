@@ -2,6 +2,7 @@ import {Legend} from '../legend/legend.model';
 import {ActiveState, EntityState} from '@datorama/akita';
 import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
 
+export const COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY = 'collapsedCategories'
 export const PRODUCT_MODE_QUERY_KEY = 'pmode';
 export const PRODUCT_MODE_FAVOURITE = 'favourite';
 export const TIMELINE_RESOLUTION_QUERY_KEY = 'resolution';
@@ -20,6 +21,10 @@ export interface ProductCategory {
   iconPath: string;
 }
 
+export interface UIProductCategory extends ProductCategory {
+  collapsed: boolean;
+}
+
 export interface Product {
   id: number | undefined;
   name: string;
@@ -30,6 +35,10 @@ export interface Product {
   layerName: string;
   favourite: boolean;
   productCategory: ProductCategory;
+}
+
+export interface ProductWithUICategory extends Product {
+  productCategory: UIProductCategory;
 }
 
 export interface ProductState extends EntityState<Product>, ActiveState<number> {
@@ -50,6 +59,7 @@ export interface ProductUI {
 }
 
 export interface ProductUIState extends EntityState<ProductUI> {
+  collapsedCategories: number[];
 }
 
 export function createProductState(state: Partial<ProductState> = {}): ProductState {

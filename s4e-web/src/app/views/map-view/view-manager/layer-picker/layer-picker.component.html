@@ -1,12 +1,13 @@
-<header>
+<header (click)="collapse.emit()">
   <span class="products__title">
     <ng-content select="[s4e-caption]"></ng-content>
   </span>
   <span class="products__hint">
     <a href="#">{{help}}</a>
   </span>
+  <span [ngClass]="collapsed ? 'down' : 'up'"></span>
 </header>
-<section>
+<section *ngIf="!collapsed">
   <ul>
     <li
       [ngClass]="{active: item.active}"

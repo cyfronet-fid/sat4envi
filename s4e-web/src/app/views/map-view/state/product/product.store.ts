@@ -1,6 +1,7 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {EntityStore, EntityUIStore, StoreConfig} from '@datorama/akita';
-import {createProductState, Product, ProductState, ProductUIState} from './product.model';
+import {COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, createProductState, Product, ProductState, ProductUIState} from './product.model';
+import {LocalStorage} from '../../../../app.providers';
 
 
 @Injectable({providedIn: 'root'})
@@ -8,9 +9,9 @@ import {createProductState, Product, ProductState, ProductUIState} from './produ
 export class ProductStore extends EntityStore<ProductState, Product> {
   public readonly ui: EntityUIStore<ProductUIState>;
 
-  constructor() {
+  constructor(@Inject(LocalStorage) storage: Storage) {
     super(createProductState());
-    this.createUIStore().setInitialEntityState({isLoading: false, isFavouriteLoading: false});
+    this.createUIStore({collapsedCategories: JSON.parse(storage.getItem(COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY)) || []}).setInitialEntityState({isLoading: false, isFavouriteLoading: false});
   }
 }
 

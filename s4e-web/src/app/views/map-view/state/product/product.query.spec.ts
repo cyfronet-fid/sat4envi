@@ -9,6 +9,7 @@ import {take, toArray} from 'rxjs/operators';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {ReplaySubject, Subject} from 'rxjs';
 import {Product, PRODUCT_MODE_FAVOURITE} from './product.model';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ProductQuery', () => {
   let store: ProductStore;
@@ -18,6 +19,7 @@ describe('ProductQuery', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider],
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
@@ -48,41 +50,62 @@ describe('ProductQuery', () => {
     expect(await query.selectFavouritesCount().pipe(take(1)).toPromise()).toBe(1);
   });
 
-  it('should selectAllFilteredAsUILayer', async () => {
-    const queryParams$ = new ReplaySubject(1);
-    spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
-    queryParams$.next(undefined);
-    const products = ProductFactory.buildList(2);
-    const favProduct = products[0];
-    const nonFavProduct = products[1];
-    store.set(products);
+  describe('', () => {
+    let queryParams$: ReplaySubject<any>;
 
-    const filtered = query.selectAllFilteredAsUILayer().pipe(take(4), toArray()).toPromise();
+    beforeEach(() => {
+      queryParams$ = new ReplaySubject(1);
+      spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
+      queryParams$.next(undefined);
+    });
 
-    queryParams$.next(PRODUCT_MODE_FAVOURITE);
-
-    store.update(favProduct.id, {favourite: true});
-
-    queryParams$.next('');
-
-    const toUILayer = (product: Product, favourite: boolean = false) => {
+    function toUILayer(product: Product, favourite: boolean = false, categoryCollapsed: boolean = false) {
       return {
-          cid: product.id,
-          label: product.displayName,
-          active: false,
-          favourite: favourite,
-          isLoading: false,
-          isFavouriteLoading: false,
-          category: product.productCategory
-        };
+        cid: product.id,
+        label: product.displayName,
+        active: false,
+        favourite: favourite,
+        isLoading: false,
+        isFavouriteLoading: false,
+        category: {...product.productCategory, collapsed: categoryCollapsed}
+      };
     }
 
-    expect(await filtered).toEqual([
-      products.map(p => toUILayer(p)),
-      [],
-      [toUILayer(favProduct, true)],
-      [toUILayer(favProduct, true), toUILayer(nonFavProduct)]
-    ]);
+    it('should selectAllFilteredAsUILayer', async () => {
+      const products = ProductFactory.buildList(2);
+      const favProduct = products[0];
+      const nonFavProduct = products[1];
+      store.set(products);
+
+      const filtered = query.selectAllFilteredAsUILayer().pipe(take(4), toArray()).toPromise();
+
+      queryParams$.next(PRODUCT_MODE_FAVOURITE);
+
+      store.update(favProduct.id, {favourite: true});
+
+      queryParams$.next('');
+
+      expect(await filtered).toEqual([
+        products.map(p => toUILayer(p)),
+        [],
+        [toUILayer(favProduct, true)],
+        [toUILayer(favProduct, true), toUILayer(nonFavProduct)]
+      ]);
+    });
+
+    it('should selectAllFilteredAsUILayer with category collapsed based on store', async () => {
+      const product = ProductFactory.build();
+      store.set([product]);
+
+      const filtered = query.selectAllFilteredAsUILayer().pipe(take(2), toArray()).toPromise();
+
+      store.ui.update({collapsedCategories: [product.productCategory.id]});
+
+      expect(await filtered).toEqual([
+        [toUILayer(product, false, false)],
+        [toUILayer(product, false, true)]
+      ]);
+    });
   });
 
   it('should selectIsFavouriteMode', async () => {

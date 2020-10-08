@@ -29,14 +29,15 @@ export interface SentinelSearchResultResponse {
   timestamp: string;
   artifacts: string[];
   footprint: string;
+  sceneKey: string;
   metadataContent: SentinelSearchResultMetadata;
 }
 
 export interface SentinelSearchResult extends SentinelSearchResultResponse {
+  sceneKeyShort: string;
   image: string;
   mission: string;
   instrument: string;
-  size: string;
   timestamp: string;
   // this should be calculated from the response
   url: string;
@@ -48,9 +49,7 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
 export function createSentinelSearchResult(params: SentinelSearchResultResponse) {
   return {
     image: null,
-    mission: 'Sentinel-1',
-    instrument: 'SAR-C',
-    size: '6.97 GB',
+    sceneKeyShort: params.sceneKey.match(/([^/]+)\.scene$/)[1],
     url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.productId}')/$value`,
     metadataContent: {},
     artifacts: [],

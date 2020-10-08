@@ -17,6 +17,35 @@
   bottom: 0;
   top: 0;
 
+  .collapse {
+    height: 40px;
+    width: 40px;
+    z-index: 50;
+    position: absolute;
+    left: 390px;
+    top: 0;
+    border-radius:  0 $border-radius-default $border-radius-default 0;
+    background-color: $color-grey-primary;
+    cursor: pointer;
+
+    &:after {
+      background: url(/../assets/images/ico_chevron.svg) transparent no-repeat center;
+      content: " ";
+      width: 30px;
+      height: 30px;
+      transform: rotate(90deg);
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    &.closed {
+      &:after {
+        transform: rotate(273deg);
+      }
+    }
+  }
+
   .switch {
     display: flex;
     flex-direction: row;

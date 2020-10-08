@@ -6,6 +6,8 @@ import {RouterTestingModule} from '@angular/router/testing';
 import { AkitaGuidService } from '../search-results/guid.service';
 import { LocationSearchResultsQuery } from './location-search-results.query';
 import environment from 'src/environments/environment';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {MapModule} from '../../map.module';
 
 
 describe('SearchResultsService', () => {
@@ -17,8 +19,8 @@ describe('SearchResultsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SearchResultsService, LocationSearchResultsStore, LocationSearchResultsQuery, AkitaGuidService],
-      imports: [HttpClientTestingModule, RouterTestingModule]
+      providers: [LocalStorageTestingProvider],
+      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);

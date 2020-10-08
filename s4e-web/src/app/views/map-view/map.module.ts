@@ -81,6 +81,7 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     MapViewComponent,
   ],
   imports: [
+    BrowserAnimationsModule,
     ShareModule,
     FormsModule,
     BrowserAnimationsModule,

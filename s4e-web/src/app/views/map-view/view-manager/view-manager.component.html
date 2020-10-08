@@ -26,10 +26,10 @@
     (itemSelected)="selectOverlay($event)"
     data-e2e="layers-list"
   >
-    <div s4e-caption i18n>
-      <span>Warstwy</span>
-      <button *ngIf="isLoggedIn" (click)="showOverlayListModal()" class="layers__manager" data-e2e="sidebar-management-btn">Zarządzaj</button>
-    </div>
+  <div s4e-caption i18n>
+    <span>Warstwy</span>
+    <button *ngIf="isLoggedIn" (click)="showOverlayListModal()" class="layers__manager" data-e2e="sidebar-management-btn">Zarządzaj</button>
+  </div>
   </s4e-items-picker>
 
   <div class="products-list">
@@ -62,6 +62,8 @@
         [loading]="productsLoading$ | async"
         [items]="categoryProducts"
         [hasFavourite]="isLoggedIn"
+        [collapsed]="categoryProducts[0].category.collapsed"
+        (collapse)="productService.toggleCategoryCollapse(categoryProducts[0].category.id)"
         (itemSelected)="selectProduct($event)"
         (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)"
       >

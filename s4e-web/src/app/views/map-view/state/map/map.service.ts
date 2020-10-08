@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MapStore} from './map.store';
 import {MapQuery} from './map.query';
-import {ViewPosition} from './map.model';
+import {SIDEBAR_OPEN_LOCAL_STORAGE_KEY, ViewPosition} from './map.model';
 import {forkJoin, of} from 'rxjs';
 import {catchError, filter, map, take, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
@@ -13,6 +13,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {OverlayService} from '../overlay/overlay.service';
 import {ProductService} from '../product/product.service';
 import {ViewRouterConfig} from '../view-configuration/view-configuration.model';
+import {LocalStorage} from '../../../../app.providers';
 
 @Injectable({providedIn: 'root'})
 export class MapService {
@@ -28,6 +29,7 @@ export class MapService {
     private sceneQuery: SceneQuery,
     private sceneService: SceneService,
     private router: Router,
+    @Inject(LocalStorage) private storage: Storage
   ) {
   }
 
@@ -120,6 +122,15 @@ export class MapService {
           );
         })
       );
+  }
+
+  showSidebar(show: boolean) {
+    this.store.update(state => ({...state, sidebarOpen: show}));
+    this.storage.setItem(SIDEBAR_OPEN_LOCAL_STORAGE_KEY, JSON.stringify(show));
+  }
+
+  toggleSidebar() {
+    this.showSidebar(!this.mapQuery.getValue().sidebarOpen);
   }
 }
 

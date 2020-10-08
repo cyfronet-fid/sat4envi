@@ -1,7 +1,5 @@
-<div
-  class="section sidebar"
-  [ngClass]="{'open': isMobileSidebarOpen}"
->
+<div class="section sidebar" [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'">
+  <div class="collapse" (click)="mapService.toggleSidebar()" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"></div>
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
       <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
@@ -13,9 +11,6 @@
   <div class="sidebar-content">
     <router-outlet></router-outlet>
   </div>
-</div>
-<div class="collapse">
-
 </div>
 
 <s4e-legend *ngIf="legend$ | async"
@@ -53,6 +48,7 @@
          [activeScene]="activeScene$ | async"
          [activeView]="activeView$ | async"
          (viewChanged)="viewChanged($event)"
+         [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
 >
 </s4e-map>
 <div
@@ -129,7 +125,7 @@
           i18n
         >
           Zapisz widok
-      </a></li>
+        </a></li>
         <li><a
           (click)="openListViewModal()"
           href="javascript:undefined"
@@ -165,13 +161,10 @@
 </button>
 <ng-container *ngIf="showProductDescription$ | async">
   <div class="dropdown__content dropdown__content--product">
-    <span class="dropdown__header">Opis produktu</span>
+    <span class="dropdown__header" i18n>Opis produktu</span>
     <div class="dropdown__close dropdown" (click)="toggleProductDescription(false)"></div>
-    <h2>Setvak i chmurki</h2>
-    <div class="dropdown__description">
-      <p>
-        Miejsce na opis prodktu. W tym momencie jest statyczne.
-      </p>
+    <h2>{{(activeProducts$ | async).displayName}}</h2>
+    <div class="dropdown__description" [innerHTML]="(activeProducts$ | async).description">
     </div>
   </div>
 </ng-container>

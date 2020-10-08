@@ -1,6 +1,6 @@
 import { environment } from 'src/environments/environment';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 import {MapViewComponent} from './map-view.component';
 import {MapModule} from './map.module';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -12,6 +12,8 @@ import {MapStore} from './state/map/map.store';
 import {SceneStore} from './state/scene/scene.store.service';
 import {SceneFactory} from './state/scene/scene.factory.spec';
 import {SessionStore} from '../../state/session/session.store';
+import {LocalStorageTestingProvider, RemoteConfigurationTestingProvider} from '../../app.configuration.spec';
+import waitForExpect from 'wait-for-expect';
 
 describe('MapViewComponent', () => {
   let component: MapViewComponent;
@@ -35,6 +37,7 @@ describe('MapViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider, RemoteConfigurationTestingProvider],
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     })
       .compileComponents();
@@ -134,5 +137,11 @@ describe('MapViewComponent', () => {
         .getAttribute('href'))
         .toEqual(`${environment.apiPrefixV1}/scenes/${scene.id}/download`);
     });
+  });
+
+  it('sidebarOpen$ should trigger map update size', async () => {
+    const spy = spyOn(component.mapComponent, 'updateSize');
+    mapStore.update({sidebarOpen: true});
+    await waitForExpect(() => { expect(spy).toHaveBeenCalled(); });
   });
 });

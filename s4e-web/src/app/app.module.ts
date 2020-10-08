@@ -1,6 +1,6 @@
 import { ConfigurationLoader } from './utils/initializer/config.service';
 import {LogoutModule} from './views/logout/logout.module';
-import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
+import {APP_INITIALIZER, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 import {ShareModule} from './common/share.module';
@@ -28,9 +28,9 @@ import {NotificationsModule} from 'notifications';
 import {ErrorsModule} from './errors/errors.module';
 import {NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
+import {LocalStorage} from './app.providers';
 
 registerLocaleData(localePl, 'pl');
-
 
 export function initializeConfiguration(loader: ConfigurationLoader): () => Promise<any> {
   return () => loader.load$();
@@ -78,7 +78,8 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     ConfigurationLoader,
     {provide: APP_INITIALIZER, useFactory: initializeConfiguration, deps: [ConfigurationLoader], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-    {provide: LOCALE_ID, useValue: 'pl-PL'}
+    {provide: LOCALE_ID, useValue: 'pl-PL'},
+    {provide: LocalStorage, useValue: window.localStorage},
   ],
   bootstrap: [RootComponent],
   exports: [LoginComponent],

@@ -11,6 +11,7 @@ import {ViewConfiguration, ViewConfigurationEx} from '../../state/view-configura
 import {of} from 'rxjs';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('SaveConfigModalComponent', () => {
   let component: SaveConfigModalComponent;
@@ -36,6 +37,7 @@ describe('SaveConfigModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
       providers: [
+        LocalStorageTestingProvider,
         {
           provide: MODAL_DEF, useValue: {
             id: SAVE_CONFIG_MODAL_ID,
