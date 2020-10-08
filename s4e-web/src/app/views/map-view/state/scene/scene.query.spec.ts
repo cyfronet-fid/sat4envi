@@ -9,6 +9,7 @@ import {take, toArray} from 'rxjs/operators';
 import {ReplaySubject} from 'rxjs';
 import moment from 'moment-timezone';
 import * as dateUtil from '../../../../utils/miscellaneous/date-utils';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('SceneQuery', () => {
   let query: SceneQuery;
@@ -19,6 +20,7 @@ describe('SceneQuery', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        LocalStorageTestingProvider,
         SceneStore,
         SceneQuery,
         ProductQuery,

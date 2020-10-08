@@ -10,6 +10,7 @@ import {ModalService} from '../../../../modal/state/modal.service';
 import {ViewConfiguration, ViewRouterConfig} from '../../state/view-configuration/view-configuration.model';
 import {MapService} from '../../state/map/map.service';
 import {RouterTestingModule} from '@angular/router/testing';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ListConfigsModalComponent', () => {
   let component: ListConfigsModalComponent;
@@ -23,11 +24,7 @@ describe('ListConfigsModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [MapModule, RouterTestingModule],
       providers: [
-        ViewConfigurationService,
-        ViewConfigurationQuery,
-        ModalQuery,
-        ModalService,
-        MapService,
+        LocalStorageTestingProvider,
         {
           provide: MODAL_DEF, useValue: {
             id: LIST_CONFIGS_MODAL_ID,

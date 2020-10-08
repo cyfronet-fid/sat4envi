@@ -9,6 +9,7 @@ import {ViewConfiguration, ViewConfigurationEx} from './view-configuration.model
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ViewConfigurationQuery', () => {
   let query: ViewConfigurationQuery;
@@ -20,6 +21,7 @@ describe('ViewConfigurationQuery', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider],
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 

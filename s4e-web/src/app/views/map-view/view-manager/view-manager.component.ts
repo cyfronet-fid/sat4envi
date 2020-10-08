@@ -61,10 +61,10 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   constructor(
     public searchResultsQuery: LocationSearchResultsQuery,
     public searchResultsStore: LocationSearchResultsStore,
+    public productService: ProductService,
 
     private productQuery: ProductQuery,
     private overlayQuery: OverlayQuery,
-    private productService: ProductService,
     private overlayService: OverlayService,
     private searchResultsService: SearchResultsService,
     private sessionQuery: SessionQuery,

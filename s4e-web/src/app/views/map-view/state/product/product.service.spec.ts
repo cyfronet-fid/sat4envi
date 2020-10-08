@@ -17,6 +17,7 @@ import * as dateUtils from '../../../../utils/miscellaneous/date-utils'
 import environment from '../../../../../environments/environment';
 import {SceneFactory} from '../scene/scene.factory.spec';
 import {distinctUntilChanged, map, take, toArray} from 'rxjs/operators';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -31,6 +32,7 @@ describe('ProductService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider],
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 

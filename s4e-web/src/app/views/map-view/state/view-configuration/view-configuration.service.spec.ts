@@ -8,6 +8,7 @@ import {ViewConfiguration} from './view-configuration.model';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import environment from 'src/environments/environment';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ViewConfigurationService', () => {
   let service: ViewConfigurationService;
@@ -17,6 +18,7 @@ describe('ViewConfigurationService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers: [LocalStorageTestingProvider],
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
@@ -58,7 +60,7 @@ describe('ViewConfigurationService', () => {
       const sampleView: ViewConfiguration = {
         caption: 'test',
         configuration: {
-          overlays: ['ov'], product: 123, scene: 3, selectedDate: '03-03-2021', viewPosition: {
+          overlays: ['ov'], productId: 123, sceneId: 3, date: '03-03-2021', viewPosition: {
             centerCoordinates: [1, 2],
             zoomLevel: 4
           }
@@ -114,7 +116,7 @@ describe('ViewConfigurationService', () => {
 
       service.add$({
         caption: '',
-        configuration: {overlays: [], product: undefined, scene: undefined, selectedDate: '', viewPosition: undefined},
+        configuration: {overlays: [], productId: undefined, sceneId: undefined, date: '', viewPosition: undefined},
         thumbnail: ''
       }).subscribe();
 
@@ -126,7 +128,7 @@ describe('ViewConfigurationService', () => {
       const viewConf: ViewConfiguration = {
         caption: 'test caption',
         configuration: {
-          overlays: ['123'], product: 3, scene: 76, selectedDate: '12-12-2012', viewPosition: {}
+          overlays: ['123'], productId: 3, sceneId: 76, date: '12-12-2012', viewPosition: undefined
         },
         thumbnail: ''
       };

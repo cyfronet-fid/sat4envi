@@ -1,5 +1,5 @@
 <div class="contents">
-  <header>
+  <header (click)="close.emit()">
     <button type="button"
             data-test="back-button"
             class="back"
@@ -21,8 +21,7 @@
     <ul class="search-result">
       <li *ngFor="let result of searchResults" data-test="search-result-entry">
         <div class="search-result__package">
-          <span class="sentinel-type">{{result.instrument}}</span>
-          <strong class="package-name">S1A_IW_GRDH_1SDV_20200518T052552_20200518T052617_032615_03C710_C6F8</strong>
+          <strong class="package-name">{{result.sceneKeyShort}}</strong>
         </div>
         <section class="search-result__content">
           <div class="search-result__quicklook" (click)="showDetails.emit(result)">
@@ -33,16 +32,12 @@
             <span class="search-result__timestamp">{{result.timestamp}}</span>
             <ul class="search-result__spec">
               <li>
-                <span i18n>Mission:</span>
-                <strong>{{result.mission}}</strong>
+                <span i18n>Spacecraft:</span>
+                <strong>{{result.metadataContent.spacecraft}}</strong>
               </li>
               <li>
-                <span i18n>Instrument:</span>
-                <strong>{{result.instrument}}</strong>
-              </li>
-              <li>
-                <span i18n>Size:</span>
-                <strong>{{result.size}}</strong>
+                <span i18n>Level:</span>
+                <strong>{{result.metadataContent.processing_level}}</strong>
               </li>
             </ul>
           </div>

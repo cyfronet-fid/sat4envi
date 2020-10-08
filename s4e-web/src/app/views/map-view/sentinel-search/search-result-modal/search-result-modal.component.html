@@ -2,7 +2,7 @@
 <button [disabled]="isLast$ | async" (click)="nextResult()" class="modal__next"><i class="fa fa-chevron-right"></i></button>
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
   <div class="s4e-modal-header">
-    {{(searchResult$ | async)?.id}}
+    {{(searchResult$ | async)?.sceneKeyShort}}
   </div>
   <div class="s4e-modal-body report">
     <aside>

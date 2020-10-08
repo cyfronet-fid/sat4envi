@@ -53,7 +53,8 @@
 
 .modal-content {
   scrollbar-width: thin;
-  overflow-x: hidden;
-  overflow-y: auto;
+  //overflow-x: hidden;
+  //overflow-y: auto;
   margin-top: 25px;
+  position: relative;
 }

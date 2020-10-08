@@ -1,4 +1,4 @@
-import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
+import {LocalStorageTestingProvider, RemoteConfigurationTestingProvider} from 'src/app/app.configuration.spec';
 import {TestBed} from '@angular/core/testing';
 import {MapService} from './map.service';
 import {MapStore} from './map.store';
@@ -28,7 +28,7 @@ describe('MapService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [RemoteConfigurationTestingProvider],
+      providers: [RemoteConfigurationTestingProvider, LocalStorageTestingProvider],
       imports: [MapModule, RouterTestingModule.withRoutes([])]
     });
 

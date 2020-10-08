@@ -30,15 +30,33 @@ import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {map, switchMap, take} from 'rxjs/operators';
+import {delay, map, switchMap, take} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+
 
 @Component({
   selector: 's4e-map-view',
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss'],
+  animations: [
+    trigger('sidebar', [
+      state('open', style({
+        left: '0'
+      })),
+      state('closed', style({
+        left: '-400px'
+      })),
+      transition('open => closed', [
+        animate('300ms ease-out')
+      ]),
+      transition('closed => open', [
+        animate('300ms ease-out')
+      ])
+    ])
+  ]
 })
 export class MapViewComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
@@ -67,6 +85,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public timelineResolution$: Observable<number>;
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
+  sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
 
   constructor(
     public mapService: MapService,
@@ -124,6 +143,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
     this.showProductDescription$ = this.mapQuery.select('productDescriptionOpened');
     this.timelineResolution$ = this.productQuery.selectTimelineResolution()
+    this.sidebarOpen$.pipe(delay(0),untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize())
 
     this.productService.get();
     this.overlayService.get();

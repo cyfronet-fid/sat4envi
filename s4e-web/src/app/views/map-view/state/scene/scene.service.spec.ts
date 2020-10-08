@@ -13,6 +13,7 @@ import {ProductStore} from '../product/product.store';
 import {ProductFactory} from '../product/product.factory.spec';
 import environment from 'src/environments/environment';
 import {timezone} from '../../../../utils/miscellaneous/date-utils';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('SceneService', () => {
   let sceneService: SceneService;
@@ -24,6 +25,7 @@ describe('SceneService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        LocalStorageTestingProvider,
         SceneService,
         SceneStore,
         LegendStore,
