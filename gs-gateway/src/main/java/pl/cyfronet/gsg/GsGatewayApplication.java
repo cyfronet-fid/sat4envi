@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -14,6 +16,7 @@ import org.springframework.cloud.gateway.filter.OrderedGatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import pl.cyfronet.gsg.counter.GetMapRequestCounterFilter;
 import pl.cyfronet.gsg.jwt.JwtGlobalFilter;
 import pl.cyfronet.gsg.security.AccessType;
 import pl.cyfronet.gsg.security.LayerSecurityGatewayFilter;
@@ -82,6 +85,16 @@ public class GsGatewayApplication {
     public GatewayFilter whitelistRequestParametersGatewayFilter(GatewayProperties gatewayProperties) {
         GatewayFilter filter = new WhitelistRequestParametersGatewayFilter(gatewayProperties.getAllowedParams());
         return new OrderedGatewayFilter(filter, 0);
+    }
+
+    @Bean
+    public Counter mapRequestCounter(MeterRegistry registry) {
+        return Counter.builder("mapRequestCounter").register(registry);
+    }
+
+    @Bean
+    public GlobalFilter getMapRequestCounterFilter(Counter mapRequestCounter){
+        return new GetMapRequestCounterFilter(mapRequestCounter);
     }
 
     @Bean
