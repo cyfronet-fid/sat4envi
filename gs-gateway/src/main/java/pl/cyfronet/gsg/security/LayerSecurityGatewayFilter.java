@@ -33,6 +33,9 @@ public class LayerSecurityGatewayFilter implements GatewayFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+        if ("GetCapabilities".equals(request.getQueryParams().getFirst("REQUEST"))) {
+            return chain.filter(exchange);
+        }
         String layer = request.getQueryParams().getFirst(layersQueryParam);
         if (layer == null) {
             return responseStatus(exchange, HttpStatus.BAD_REQUEST);

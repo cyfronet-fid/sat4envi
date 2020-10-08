@@ -9,6 +9,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- GS-Gateway mapRequestCounter metric[#699](https://github.com/cyfronet-fid/sat4envi/issues/699)
+
 ### Changed
 
 ### Fixed

@@ -51,6 +51,24 @@ class LayerSecurityGatewayFilterTest {
     }
 
     @Test
+    public void shouldAllowGetCapabilitiesRequests() {
+        Clock clock = Clock.systemUTC();
+        GatewayFilter filter = new LayerSecurityGatewayFilter(
+                clock, "LAYERS", null, null, Map.of("layer_1", AccessType.PRIVATE));
+        MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost")
+                .queryParam("LAYERS", "layer_1")
+                .queryParam("REQUEST", "GetCapabilities")
+                .build();
+        ServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        filter.filter(exchange, filterChain);
+
+        assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
+        verify(filterChain).filter(exchange);
+        verifyNoMoreInteractions(filterChain);
+    }
+
+    @Test
     public void shouldRejectByDefault() {
         Clock clock = Clock.systemUTC();
         GatewayFilter filter = new LayerSecurityGatewayFilter(
