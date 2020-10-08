@@ -26,6 +26,14 @@ export class InstitutionQuery extends QueryEntity<InstitutionState, Institution>
         .filter(institution => memberInstitutionSlugs.some(slug => slug === institution.slug));
     }));
   }
+  public isManagerOf$(institution$: Observable<Institution>): Observable<boolean> {
+    return institution$
+      .pipe(map(institution => this.isManagerOf(institution)));
+  }
+  public isManagerOf(institution: Institution): boolean {
+    const administratorInstitutionsSlugs = this._sessionQuery.getAdministratorInstitutionsSlugs();
+    return administratorInstitutionsSlugs.some(slug => slug === institution.slug);
+  }
 
   constructor(
     protected store: InstitutionStore,

@@ -9,7 +9,7 @@ import { DebugElement } from '@angular/core';
 import { Router, convertToParamMap, ParamMap, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
-import { Subject, ReplaySubject } from 'rxjs';
+import { Subject, ReplaySubject, of } from 'rxjs';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -58,6 +58,7 @@ describe('DashboardComponent', () => {
 
   it('should enable buttons on known institution', fakeAsync( () => {
     activatedRoute.queryParamMap.next(convertToParamMap({ institution: 'test '}));
+    component.isManagerOfActive$ = of(true);
     tick();
     fixture.detectChanges();
 

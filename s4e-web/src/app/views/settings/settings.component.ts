@@ -26,6 +26,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     .selectCanSeeInstitutions();
   public isInstitutionActive$: Observable<boolean> = this.institutionsSearchResultsQuery
     .isAnyInstitutionActive$(this._activatedRoute);
+  public activeInstitution$: Observable<Institution> = this.institutionsSearchResultsQuery
+    .selectActive$(this._activatedRoute);
+  public isManagerOfActive$ = this._institutionQuery
+    .isManagerOf$(this.activeInstitution$);
 
   constructor(
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,

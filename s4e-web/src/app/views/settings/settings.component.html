@@ -56,11 +56,11 @@
             </ng-template>
           </s4e-search>
       </li>
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
+      <li *ngIf="(showInstitutions$ | async)" routerLinkActive="active">
         <a
           [routerLink]="['./people']"
           queryParamsHandling="merge"
-          [class.disabled]="!(isInstitutionActive$ | async)"
+          [class.disabled]="!((isInstitutionActive$ | async) && (isManagerOfActive$ | async))"
           data-e2e="go-to-institution-people-btn"
           i18n
         >

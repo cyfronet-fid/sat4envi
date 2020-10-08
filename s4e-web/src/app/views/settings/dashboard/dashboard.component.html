@@ -13,7 +13,7 @@
         routerLink="../people"
         queryParamsHandling="merge"
         class="button button--secondary"
-        [disabled]="!(isInstitutionActive$ | async)"
+        [disabled]="!((isInstitutionActive$ | async) && (isManagerOfActive$ | async))"
         footer-navigation
       >
         Zarządzaj ludźmi

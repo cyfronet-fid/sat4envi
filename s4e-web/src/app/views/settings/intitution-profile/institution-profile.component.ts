@@ -5,7 +5,7 @@ import { InstitutionService } from './../state/institution/institution.service';
 import { ModalService } from './../../../modal/state/modal.service';
 import { Institution } from './../state/institution/institution.model';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { InstitutionsSearchResultsQuery } from '../state/institutions-search/institutions-search-results.query';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Observable, combineLatest } from 'rxjs';
@@ -15,22 +15,26 @@ import { Observable, combineLatest } from 'rxjs';
   templateUrl: './institution-profile.component.html',
   styleUrls: ['./institution-profile.component.scss']
 })
-export class InstitutionProfileComponent implements OnInit, OnDestroy {
-  public activeInstitution: Institution | null;
+export class InstitutionProfileComponent implements OnDestroy {
   public isLoading$: Observable<boolean> = this._institutionQuery.selectLoading();
+  public activeInstitution$ = this._institutionsSearchResultsQuery
+    .selectActive$(this._activatedRoute)
+    .pipe(untilDestroyed(this));
   public childrenInstitutions$: Observable<Institution[]> = combineLatest(
       this._institutionQuery.selectAll(),
-      this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute)
+      this.activeInstitution$
     )
       .pipe(
         untilDestroyed(this),
         filter(([institutions, parentInstitution]) => !!parentInstitution && !!institutions && institutions.length > 0),
         map(([institutions, parentInstitution]) => this._filterChildrenDeep(institutions, [parentInstitution]))
       );
-  public error$: Observable<any> = this._institutionQuery.selectError();
+  public error$: Observable<any> = this._institutionQuery
+    .selectError();
 
-  public isManager$ = this._sessionQuery.selectCanSeeInstitutions()
-    .pipe(take(1), map(manager => manager));
+  public isManagerOfActive$ = this._institutionQuery
+    .isManagerOf$(this.activeInstitution$)
+    .pipe(untilDestroyed(this));
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
@@ -41,11 +45,8 @@ export class InstitutionProfileComponent implements OnInit, OnDestroy {
     private _sessionQuery: SessionQuery
   ) {}
 
-  ngOnInit() {
-    this._institutionsSearchResultsQuery
-      .selectActive$(this._activatedRoute)
-      .pipe(untilDestroyed(this))
-      .subscribe(institution => this.activeInstitution = institution);
+  isManagerOf(institution: Institution) {
+    return this._institutionQuery.isManagerOf(institution);
   }
 
   async deleteInstitution(slug: string) {

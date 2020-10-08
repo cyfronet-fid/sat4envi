@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Hide actions in settings by institution roles [#722](https://github.com/cyfronet-fid/sat4envi/issues/722)
 - Add application loader [#729](https://github.com/cyfronet-fid/sat4envi/issues/729)
 - Return scene key in SearchResponse [#743](https://github.com/cyfronet-fid/sat4envi/issues/743)
 

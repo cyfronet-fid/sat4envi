@@ -60,12 +60,11 @@ describe('InstitutionProfileComponent', () => {
     const institution = InstitutionFactory.build();
     const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
     route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
-    component.isManager$ = of(true);
+    component.isManagerOfActive$ = of(true);
     tick();
     fixture.detectChanges();
 
     expect(spyFindBy).toHaveBeenCalledWith(institution.slug);
-    expect(component.activeInstitution).toEqual(institution);
 
     const image = de.query(By.css('.institution__logo img'));
     expect(image).toBeTruthy();
@@ -104,13 +103,12 @@ describe('InstitutionProfileComponent', () => {
   it('Should display only institution details when user is only member', fakeAsync(() => {
     const institution = InstitutionFactory.build();
     const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
-    component.isManager$ = of(false);
+    component.isManagerOfActive$ = of(false);
     route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
     tick();
     fixture.detectChanges();
 
     expect(spyFindBy).toHaveBeenCalledWith(institution.slug);
-    expect(component.activeInstitution).toEqual(institution);
 
     const image = de.query(By.css('.institution__logo img'));
     expect(image).toBeTruthy();
