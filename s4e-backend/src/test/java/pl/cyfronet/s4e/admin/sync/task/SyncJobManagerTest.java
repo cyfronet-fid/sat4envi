@@ -1,18 +1,17 @@
 package pl.cyfronet.s4e.admin.sync.task;
 
-import lombok.experimental.Delegate;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import pl.cyfronet.s4e.TestClock;
 import pl.cyfronet.s4e.admin.sync.PrefixScanner;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.time.*;
-import java.time.temporal.TemporalAmount;
 import java.util.concurrent.Semaphore;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -29,19 +28,6 @@ class SyncJobManagerTest {
     private SceneAcceptor sceneAcceptor;
     private TestClock clock;
     private SyncJobManager syncJobManager;
-
-    public static class TestClock extends Clock {
-        @Delegate
-        private Clock instance;
-
-        public TestClock(LocalDateTime localDateTime) {
-            instance = Clock.fixed(localDateTime.toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
-        }
-
-        public void forward(TemporalAmount duration) {
-            instance = Clock.fixed(instance.instant().plus(duration), instance.getZone());
-        }
-    }
 
     @BeforeEach
     public void beforeEach() {
