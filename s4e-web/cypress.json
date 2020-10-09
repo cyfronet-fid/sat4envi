@@ -2,5 +2,9 @@
   "baseUrl": "https://localhost:4200",
   "viewportWidth": 1400,
   "viewportHeight": 1000,
-  "testFiles": "**/*.spec.ts"
+  "testFiles": "**/*.spec.ts",
+  "retries": {
+    "runMode": 2,
+    "openMode": 1
+  }
 }

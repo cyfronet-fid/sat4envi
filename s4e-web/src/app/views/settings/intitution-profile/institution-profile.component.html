@@ -2,42 +2,42 @@
   <h1 i18n>Profil instytucji</h1>
 </header>
 <section class="content__details content__details--75 profile">
-  <ng-container *ngIf="!!activeInstitution">
+  <ng-container *ngIf="!!(activeInstitution$ | async)">
     <div
       class="profile__content"
       data-e2e="institution-details"
     >
-      <h2 id="institution-title">{{ activeInstitution.name }}</h2>
+      <h2 id="institution-title">{{ (activeInstitution$ | async).name }}</h2>
       <ul>
-        <li id="institution-address">{{ activeInstitution.address }}</li>
+        <li id="institution-address">{{ (activeInstitution$ | async).address }}</li>
         <li
           id="institution-postal-code"
           data-e2e="postal-code-with-city"
         >
-          {{ activeInstitution.postalCode }} {{ activeInstitution.city }}
+          {{ (activeInstitution$ | async).postalCode }} {{ (activeInstitution$ | async).city }}
         </li>
-        <li *ngIf="!!activeInstitution.institutionAdminEmail" id="institution-email">
-          email: {{ activeInstitution.institutionAdminEmail }}
+        <li *ngIf="!!(activeInstitution$ | async).institutionAdminEmail" id="institution-email">
+          email: {{ (activeInstitution$ | async).institutionAdminEmail }}
         </li>
-        <li *ngIf="!!activeInstitution.phone" id="institution-phone">
-          Telefon: {{ activeInstitution.phone }}
+        <li *ngIf="!!(activeInstitution$ | async).phone" id="institution-phone">
+          Telefon: {{ (activeInstitution$ | async).phone }}
         </li>
-        <li *ngIf="!!activeInstitution.secondaryPhone" id="institution-second-phone">
-          Telefon: {{ activeInstitution.secondaryPhone }}
+        <li *ngIf="!!(activeInstitution$ | async).secondaryPhone" id="institution-second-phone">
+          Telefon: {{ (activeInstitution$ | async).secondaryPhone }}
         </li>
       </ul>
     </div>
     <aside class="institution__logo">
       <img
-        *ngIf="!!activeInstitution && activeInstitution.emblem"
-        [src]="activeInstitution.emblem"
+        *ngIf="!!(activeInstitution$ | async) && (activeInstitution$ | async).emblem"
+        [src]="(activeInstitution$ | async).emblem"
         alt="Logo instytucji"
         data-e2e="institution-emblem"
       />
     </aside>
   </ng-container>
   <footer>
-    <ng-container *ngIf="isManager$ | async; else returnToUserProfile">
+    <ng-container *ngIf="isManagerOfActive$ | async; else returnToUserProfile">
       <button
         class="button button--default button--small"
         [routerLink]="['/settings/edit-institution']"
@@ -74,7 +74,7 @@
 </section>
 
 <s4e-generic-list-view
-  *ngIf="isManager$ | async"
+  *ngIf="isManagerOfActive$ | async"
   [loading]="isLoading$ | async"
   [items]="childrenInstitutions$ | async"
   [error]="error$ | async"
@@ -94,17 +94,19 @@
     <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
       <a routerLink="../institution" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
-    <td >
-      <a routerLink="../institution" queryParamsHandling="merge"
-         data-e2e="edit"
-         [queryParams]="{institution: inst.slug}">
-        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
-      </a>
-      <a href="javascript:void(0)"
-         data-e2e="delete"
-         (click)="deleteInstitution(inst.slug)">
-        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
-      </a>
+    <td>
+      <ng-container *ngIf="isManagerOf(inst)">
+        <a routerLink="../institution" queryParamsHandling="merge"
+          data-e2e="edit"
+          [queryParams]="{institution: inst.slug}">
+          <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+        </a>
+        <a href="javascript:void(0)"
+          data-e2e="delete"
+          (click)="deleteInstitution(inst.slug)">
+          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+        </a>
+      </ng-container>
     </td>
   </ng-template>
 </s4e-generic-list-view>

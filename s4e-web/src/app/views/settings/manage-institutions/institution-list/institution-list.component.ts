@@ -1,3 +1,4 @@
+import { SessionQuery } from 'src/app/state/session/session.query';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
@@ -12,21 +13,27 @@ import {ModalService} from '../../../../modal/state/modal.service';
   styleUrls: ['./institution-list.component.scss']
 })
 export class InstitutionListComponent implements OnInit, OnDestroy {
-  isLoading$: Observable<boolean>;
-  institutions$: Observable<Institution[]>;
-  error$: Observable<any>;
+  isAdmin = false;
+
+  isLoading$ = this._institutionQuery.selectLoading();
+  institutions$ = this._institutionQuery.selectAll();
+  error$ = this._institutionQuery.selectError();
 
   institutionId = (item: Institution) => item.slug;
 
-  constructor(private _institutionQuery: InstitutionQuery,
-              private _institutionService: InstitutionService,
-              private _modalService: ModalService) {
-  }
+  constructor(
+    private _institutionQuery: InstitutionQuery,
+    private _institutionService: InstitutionService,
+    private _sessionQuery: SessionQuery,
+    private _modalService: ModalService
+  ) {}
 
   ngOnInit() {
-    this.isLoading$ = this._institutionQuery.selectLoading();
-    this.institutions$ = this._institutionQuery.selectAll();
-    this.error$ = this._institutionQuery.selectError();
+    this.isAdmin = this._sessionQuery.isAdmin();
+  }
+
+  isManagerOf(institution: Institution) {
+    return this._institutionQuery.isManagerOf(institution);
   }
 
   async deleteInstitution(slug: string) {

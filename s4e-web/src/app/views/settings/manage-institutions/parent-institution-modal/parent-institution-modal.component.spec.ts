@@ -54,7 +54,7 @@ describe('ParentInstitutionModalComponent', () => {
       {name: 'Straz pozarna'},
       {name: 'Pogotowie'}
     ];
-    spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
+    spyOn(institutionQuery, 'getAdministrationInstitutions$').and.returnValue(of(institutions));
 
     fixture.detectChanges();
 
@@ -74,7 +74,7 @@ describe('ParentInstitutionModalComponent', () => {
       searchedInstitution,
       {name: 'Pogotowie'}
     ];
-    spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
+    spyOn(institutionQuery, 'getAdministrationInstitutions$').and.returnValue(of(institutions));
 
     fixture.detectChanges();
 
@@ -93,7 +93,7 @@ describe('ParentInstitutionModalComponent', () => {
       {name: 'Straz pozarna'},
       {name: 'Pogotowie'}
     ];
-    spyOn(institutionQuery, 'selectAll').and.returnValue(of(institutions));
+    spyOn(institutionQuery, 'getAdministrationInstitutions$').and.returnValue(of(institutions));
 
     fixture.detectChanges();
 

@@ -24,15 +24,21 @@
     >
       <a routerLink="../institution" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
-    <td >
-      <a routerLink="../institution" queryParamsHandling="merge"
-         data-e2e="edit"
-         [queryParams]="{institution: inst.slug}">
+    <td>
+      <a
+        *ngIf="isManagerOf(inst) || isAdmin"
+        routerLink="../institution"
+        queryParamsHandling="merge"
+        data-e2e="edit"
+        [queryParams]="{institution: inst.slug}"
+      >
         <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
       </a>
-      <a href="javascript:void(0)"
-         data-e2e="delete"
-         (click)="deleteInstitution(inst.slug)">
+      <a
+        *ngIf="isAdmin"
+        href="javascript:void(0)"
+        data-e2e="delete"
+        (click)="deleteInstitution(inst.slug)">
         <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
       </a>
     </td>

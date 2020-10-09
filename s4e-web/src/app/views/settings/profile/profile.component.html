@@ -40,6 +40,7 @@
         </p>
       </div>
       <button
+       style="z-index: 999"
         *ngIf="hasMoreAdministrationInstitutionsThanMax$ | async"
         class="button button--secondary button--small"
         routerLink="/settings/institutions"
@@ -53,6 +54,7 @@
     </s4e-tile>
 
     <s4e-tile
+      style="z-index: 999"
       *ngIf="(memberInstitutions$ | async).length > 0"
       data-e2e="member-institutions-tile"
       data-ut="member-institutions-tile"
