@@ -78,7 +78,7 @@ jobs:
       - name: Install jq 1.6
         run: mkdir bin && curl -L https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 > bin/jq && chmod u+x bin/jq
       - name: Add bin to path
-        run: echo "::add-path::$(pwd)/bin"
+        run: echo "$(pwd)/bin" >> $GITHUB_PATH
       - name: Maven package
         run: ./mvnw clean package -DskipTests -Dsha1=-${GITHUB_SHA}
       - name: Start containers
