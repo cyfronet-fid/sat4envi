@@ -9,6 +9,16 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Updated
+
+## [v13.1.0]
+
+### Added
+
 - Image WMS URL validation [#717](https://github.com/cyfronet-fid/sat4envi/issues/717)
 - Handling of close datapoints in timeline [#726](https://github.com/cyfronet-fid/sat4envi/issues/726)
 - Hide actions in settings by institution roles [#722](https://github.com/cyfronet-fid/sat4envi/issues/722)
@@ -314,7 +324,8 @@ The most recent changes are on top, in each type of changes category.
 
 - 2020.03 backend dependencies update
 
-[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v13.0.0...HEAD
+[unreleased]: https://github.com/cyfronet-fid/sat4envi/compare/v13.1.0...HEAD
+[v13.1.0]: https://github.com/cyfronet-fid/sat4envi/compare/v13.0.0...v13.1.0
 [v13.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v12.0.0...v13.0.0
 [v12.0.1]: https://github.com/cyfronet-fid/sat4envi/compare/v12.0.0...v12.0.1
 [v12.0.0]: https://github.com/cyfronet-fid/sat4envi/compare/v11.0.0...v12.0.0
