@@ -31,6 +31,9 @@ public class SyncJobsConfig {
     @Autowired
     private SceneAcceptor sceneAcceptor;
 
+    @Autowired
+    private Clock clock;
+
     @Bean
     public PrefixScanner prefixScanner() {
         String bucket = s3Properties.getBucket();
@@ -49,7 +52,7 @@ public class SyncJobsConfig {
 
     @Bean
     public SyncJobManager syncJobManager() {
-        return new SyncJobManager(chunkedRunner(), prefixScanner(), sceneAcceptor, clock());
+        return new SyncJobManager(chunkedRunner(), prefixScanner(), sceneAcceptor, clock);
     }
 
     @Bean
@@ -60,10 +63,5 @@ public class SyncJobsConfig {
         executor.setKeepAliveSeconds(1);
         executor.initialize();
         return executor;
-    }
-
-    @Bean
-    public Clock clock() {
-        return Clock.systemUTC();
     }
 }
