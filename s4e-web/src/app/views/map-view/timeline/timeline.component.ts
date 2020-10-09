@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
+  EventEmitter, HostBinding, HostListener,
   Inject,
   Input,
   LOCALE_ID,
@@ -13,20 +13,27 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {Subject} from 'rxjs';
+import {combineLatest, merge, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {debounceTime} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
 import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 import {AkitaGuidService} from '../state/search-results/guid.service';
 import {DEFAULT_TIMELINE_RESOLUTION} from '../state/product/product.model';
 import moment from 'moment';
+import {distinctUntilChangedDE} from '../../../utils/rxjs/observable';
 
 export interface Day {
   label: string;
   products: Scene[];
 
+}
+
+export interface DataPoint {
+  points: SceneWithUI[];
+  position: number;
+  selected: boolean;
 }
 
 export const DATEPICKER_FORMAT_CUSTOMIZATION = {
@@ -37,6 +44,40 @@ export const DATEPICKER_FORMAT_CUSTOMIZATION = {
   dateA11yLabel: {year: 'numeric', month: '2-digit', day: '2-digit'},
   monthYearA11yLabel: {year: 'numeric', month: 'long'},
 };
+
+export class PointStacker {
+  constructor(private scenePointWidth: number, private scenePointMaximumSpace: number) {}
+
+  stack(scenes: SceneWithUI[], width: number, activeScene: Scene): DataPoint[] {
+    const retScenes: DataPoint[] = [];
+
+    for (let i=0; i < scenes.length;) {
+      const scenePoint = []
+      let j = i;
+      const startPosition = scenes[i].position * width * 0.01;
+      let endPosition = startPosition;
+      let selected = false;
+      do {
+        if(activeScene && activeScene.id === scenes[j].id) {
+          selected = true;
+        }
+        scenePoint.push(scenes[j]);
+        endPosition = scenes[j].position * width * 0.01;
+        ++j;
+
+        if (j === scenes.length) {
+          break;
+        }
+      } while ((scenes[j].position * width * 0.01 - startPosition) < this.scenePointWidth + 2 * this.scenePointMaximumSpace);
+
+      const position = (endPosition - startPosition) * 0.5 + startPosition;
+      i = j;
+      retScenes.push({points: scenePoint, position: position * 100.0 / width, selected: selected});
+    }
+
+    return retScenes;
+  }
+}
 
 @Component({
   selector: 's4e-timeline',
@@ -53,12 +94,25 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   @Input() resolution: number = DEFAULT_TIMELINE_RESOLUTION;
   currentDate: string = '';
   startAt = null;
-  @Input() activeScene: Scene | null = null;
+  private pointStacker = new PointStacker(10, 15)
+
+  public activeScene: Scene|null = null
+  @Input('activeScene') set _activeScene(scene: Scene | null) {
+    this.activeScene = scene;
+    this._activeScene$.next(scene);
+  }
   @Input() startTime: string;
   hourmarks: string[] = [];
 
 
-  @Input() scenes: SceneWithUI[] = [];
+  public scenes$: Observable<DataPoint[]>
+  public activeStackedPoint: DataPoint | null = null;
+  private readonly _activeScene$: ReplaySubject<Scene|null> = new ReplaySubject(1);
+  private readonly _timelineWidth$: ReplaySubject<number> = new ReplaySubject(1);
+  private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(1);
+  @Input('scenes') set scenesWithUI(scenes: SceneWithUI[]) {
+    this._scenesWithUi$.next(scenes);
+  }
   @Output() dateSelected = new EventEmitter<string>();
   @Output() selectedScene = new EventEmitter<Scene>();
   @Output() previousScene = new EventEmitter<void>();
@@ -90,7 +144,8 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     @Inject(LOCALE_ID) private LOCALE_ID: string,
     private renderer: Renderer2,
-    private guidService: AkitaGuidService
+    private guidService: AkitaGuidService,
+    private element: ElementRef
   ) {
     //class name can not start with number
     this.componentId = `D${this.guidService.guid()}`;
@@ -143,6 +198,10 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     this.updateStream
       .pipe(untilDestroyed(this), debounceTime(50))
       .subscribe(() => this.hackCalendar());
+
+    this.scenes$ = this.aggregateScenes();
+
+    this.onResize()
   }
 
   ngOnDestroy(): void {
@@ -157,5 +216,21 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
         this.hourmarks.push(date.format('HH:mm'));
       }
     }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this._timelineWidth$.next((this.element.nativeElement as HTMLElement).clientWidth);
+  }
+
+  private aggregateScenes(): Observable<DataPoint[]> {
+    return merge(
+      of<[SceneWithUI[], number, Scene]>([[], undefined, null]),
+      combineLatest([
+        this._scenesWithUi$.asObservable(),
+        this._timelineWidth$.asObservable(),
+        this._activeScene$.asObservable(),
+      ])
+    ).pipe(distinctUntilChangedDE(), map(([scenes, width, activeScene]) => this.pointStacker.stack(scenes, width, activeScene)))
   }
 }

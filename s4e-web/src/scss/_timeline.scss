@@ -95,7 +95,7 @@
         }
       }
     }
-  }
+  } /* timeline__manager */
 
 
   &__grid {
@@ -161,7 +161,98 @@
       text-align: center;
     }
 
-  }
+    &--multiple {
+      left: 150px;
+
+      &:hover, &.active {
+        margin: 0 !important;
+        width: 10px !important;
+        height: 10px !important;
+
+        .multiple {
+          &__dot {
+            border-color: $color-secondary;
+            span {
+              background-color: $color-secondary;
+            }
+          }
+        }
+      }
+
+      .multiple {
+
+        &__dot {
+          position: absolute;
+          border-radius: $border-radius-circle;
+          background: $color-white;
+          height: 15px;
+          width: 15px;
+          top: -4px;
+          border: 2px solid $color-grey-quaternary;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          span {
+            display: block;
+            height: 3px;
+            width: 3px;
+            background-color: $color-grey-quaternary;
+            border-radius: $border-radius-circle;
+          }
+        }
+
+        &__popup {
+          position: absolute;
+          bottom: 30px;
+          left: calc(50% - 75px);
+          background: $color-grey-primary;
+          padding: 10px;
+          width: 140px;
+          border-radius: $border-radius-default;
+
+          header {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-align: center;
+            margin: 2px 0 8px 0;
+          }
+
+          li {
+            padding: 5px;
+            background-color: $color-white;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            border-radius: $border-radius-default;
+
+            &:hover {
+              border: 1px solid $color-grey-quaternary;
+              padding: 4px;
+            }
+
+          }
+
+          &:after {
+            width: 0;
+            height: 0;
+            border: 10px solid $color-grey-primary;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            border-radius: 2px;
+            left: calc(50% - 10px);
+          }
+        }
+      }
+    }
+
+  } /* timeline__item */
 
   &__hourmark {
     margin-top: 10px;

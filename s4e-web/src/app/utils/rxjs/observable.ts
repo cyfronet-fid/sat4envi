@@ -1,5 +1,6 @@
 import {Observable} from 'rxjs';
-import {filter, map, shareReplay, tap} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map, shareReplay, tap} from 'rxjs/operators';
+import equal from 'fast-deep-equal';
 
 export function pubNoSub$<T = any>(obs: Observable<T>): Observable<T> {
   const r = obs.pipe(shareReplay(1));
@@ -41,5 +42,11 @@ export function logIt<T>(identifier?: string): (source: Observable<T>) => Observ
     return source.pipe(
       tap(val => identifier ? console.log(identifier, val) : console.log(val))
     )
+  }
+}
+
+export function distinctUntilChangedDE<T>() {
+  return (source: Observable<T>) => {
+    return source.pipe(distinctUntilChanged((a, b) => equal(a, b)))
   }
 }
