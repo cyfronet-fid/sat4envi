@@ -15,7 +15,8 @@ export class Layers extends Core {
     getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
     getUrlInput: () => cy.get('[data-e2e="layer-url-input"]').find('input'),
     getGroupLabelInput: () => cy.get('[data-e2e="layer-group-label-input"]').find('input'),
-    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]')
+    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
+    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]')
   };
 
   static activeLayersCountShouldBe(count: number) {
@@ -94,7 +95,7 @@ export class Layers extends Core {
     return Layers;
   }
 
-  static addNew(label: string, url: string) {
+  static fillForm(label: string, url: string) {
     Layers
       .pageObject
       .getAddBtn()
@@ -118,6 +119,22 @@ export class Layers extends Core {
       .getGroupLabelInput()
       .should('be.visible')
       .type(label);
+
+    return Layers;
+  }
+
+  static errorsCountShouldBe(count: number) {
+    Layers
+      .pageObject
+      .getUrlErrors()
+      .should('have.length', count);
+
+    return Layers;
+  }
+
+  static addNew(label: string, url: string) {
+    Layers
+      .fillForm(label, url);
 
     Layers
       .pageObject

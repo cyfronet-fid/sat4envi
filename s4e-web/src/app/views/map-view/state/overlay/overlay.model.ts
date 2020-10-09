@@ -2,6 +2,7 @@ import {ImageWMS} from 'ol/source';
 import {Image, Layer} from 'ol/layer';
 import {IUILayer} from '../common.model';
 import {EntityState} from '@datorama/akita';
+import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
 
 // Overlay
 // IUILayer -> caption to label
@@ -33,17 +34,21 @@ export function convertToUIOverlay(
   overlay: Overlay,
   active: boolean = false
 ): UIOverlay {
+  // TODO: Remove layers name param from overlay response
+  // Merge into PRG overlays dynamic url layers param with it's values
+  // Remove layers name from DB
+  const urlAndParams = getBaseUrlAndParamsFrom(overlay.url);
+  const {url, ...urlParams} = !!urlAndParams && urlAndParams || {url: overlay.url};
+  const source = new ImageWMS({
+    crossOrigin: 'Anonymous',
+    serverType: 'geoserver',
+    url,
+    params: { LAYERS: overlay.layerName, ...urlParams}
+  });
   return {
     favourite: false,
     ...overlay,
-    olLayer: new Image({
-      source: new ImageWMS({
-        crossOrigin: 'Anonymous',
-        url: overlay.url,
-        serverType: 'geoserver',
-        params: {LAYERS: overlay.layerName}
-      })
-    }),
+    olLayer: new Image({ source }),
     cid: overlay.id,
     active: active,
     isLoading: false,
