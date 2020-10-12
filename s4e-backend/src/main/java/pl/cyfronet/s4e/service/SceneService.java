@@ -7,16 +7,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.license.LicensePermissionEvaluator;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +29,37 @@ public class SceneService {
     private final SceneRepository sceneRepository;
     private final ProductRepository productRepository;
     private final TimeHelper timeHelper;
+    private final LicensePermissionEvaluator licensePermissionEvaluator;
 
-    public <T> List<T> list(Long productId, LocalDateTime start, LocalDateTime end, Class<T> projection) throws NotFoundException {
-        if (!productRepository.existsById(productId)) {
-            throw constructNFE("Product", productId);
+    private interface ProductProjection {
+        Long getId();
+        Product.AccessType getAccessType();
+    }
+
+    public <T extends ProjectionWithId> List<T> list(
+            Long productId,
+            LocalDateTime start,
+            LocalDateTime end,
+            AppUserDetails userDetails,
+            Class<T> projection
+    ) throws NotFoundException {
+        val sort = Sort.by("timestamp");
+
+        ProductProjection product = productRepository.findById(productId, ProductProjection.class)
+                .orElseThrow(() -> constructNFE("Product", productId));
+
+        var scenesStream = sceneRepository.findAllInTimestampRangeForProduct(productId, start, end, sort, projection)
+                .stream();
+
+        // Only handle the EUMETSAT license: in the case of the OPEN license filtering is not necessary, and in the case
+        // of the PRIVATE license no listing is allowed for unlicensed user (enforced by HttpSecurity).
+        if (Product.AccessType.EUMETSAT.equals(product.getAccessType())) {
+            scenesStream = scenesStream.filter(
+                    scene -> licensePermissionEvaluator.allowSceneRead(scene.getId(), userDetails)
+            );
         }
-        return sceneRepository.findAllByProductIdAndTimestampGreaterThanEqualAndTimestampLessThanOrderByTimestampAsc(
-                productId, start, end, projection
-        );
+
+        return scenesStream.collect(Collectors.toUnmodifiableList());
     }
 
     public <T> Page<T> list(Pageable pageable, Class<T> projection) {
@@ -90,11 +118,24 @@ public class SceneService {
         return dates;
     }
 
-    public <T> Optional<T> getMostRecentScene(Long productId, Class<T> projection) throws NotFoundException {
-        if (!productRepository.existsById(productId)) {
-            throw constructNFE("Product", productId);
-        }
+    @Transactional(readOnly = true)
+    public <T extends ProjectionWithId> Optional<T> getMostRecentScene(Long productId, AppUserDetails userDetails, Class<T> projection) throws NotFoundException {
+        ProductProjection product = productRepository.findById(productId, ProductProjection.class)
+                .orElseThrow(() -> constructNFE("Product", productId));
+
         Sort sort = Sort.by(Sort.Order.desc("timestamp"), Sort.Order.asc("id"));
+        if (Product.AccessType.EUMETSAT.equals(product.getAccessType())) {
+            // Stream all the Scenes in chunks of 4 (see query hint in repository) and stop when first matching
+            // is encountered.
+            // Most EUMETSAT products have 15 min temporal resolution,
+            // this means 4 scenes per hour: on 0, 15, 30 and 45 min.
+            // Then, fetching 4 scenes will always yield at least one on the hour scene (open to all)
+            // and only a single chunk will be requested.
+            return sceneRepository.streamAllByProductId(productId, sort, projection)
+                .filter(scene -> licensePermissionEvaluator.allowSceneRead(scene.getId(), userDetails))
+                .findFirst();
+        }
+
         return sceneRepository.findFirstByProductId(productId, sort, projection);
     }
 

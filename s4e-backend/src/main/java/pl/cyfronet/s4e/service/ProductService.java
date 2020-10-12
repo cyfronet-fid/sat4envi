@@ -17,11 +17,13 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
 import pl.cyfronet.s4e.ex.product.ProductException;
 import pl.cyfronet.s4e.ex.product.ProductValidationException;
+import pl.cyfronet.s4e.license.LicensePermissionEvaluator;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,6 +75,8 @@ public class ProductService {
 
     private final ProductMapper productMapper;
 
+    private final LicensePermissionEvaluator licensePermissionEvaluator;
+
     public <T> List<T> findAll(Class<T> projection) {
         return productRepository.findAllByOrderByIdAsc(projection);
     }
@@ -91,6 +95,16 @@ public class ProductService {
 
     public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
         return productRepository.findAllFetchProductCategory(Sort.by("id"), projection);
+    }
+
+    public <T> List<T> findAllAuthorizedFetchProductCategory(AppUserDetails userDetails, Class<T> projection) {
+        val ids = new HashSet<Long>();
+        for (val product : productRepository.findAll()) {
+            if (licensePermissionEvaluator.allowProductRead(product.getId(), userDetails)) {
+                ids.add(product.getId());
+            }
+        }
+        return productRepository.findAllByIdInFetchProductCategory(ids, Sort.by("id"), projection);
     }
 
     @Transactional

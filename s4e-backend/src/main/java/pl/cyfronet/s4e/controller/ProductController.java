@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static pl.cyfronet.s4e.security.AppUserDetailsUtil.isAdmin;
 
 @RestController
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
@@ -32,7 +33,11 @@ public class ProductController {
     })
     @GetMapping("/products")
     public List<BasicProductResponse> getProducts() {
-        return productService.findAllFetchProductCategory(BasicProductResponse.class);
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
+        if (isAdmin(userDetails)) {
+            return productService.findAllFetchProductCategory(BasicProductResponse.class);
+        }
+        return productService.findAllAuthorizedFetchProductCategory(userDetails, BasicProductResponse.class);
     }
 
     @Operation(summary = "View product info")

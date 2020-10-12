@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,19 +11,22 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Scene;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.net.URL;
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.SceneTestHelper.*;
+import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @AutoConfigureMockMvc
 @BasicTest
@@ -42,7 +47,25 @@ public class SceneControllerTest {
     private SceneRepository sceneRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private LicenseGrantRepository licenseGrantRepository;
+
+    @Autowired
+    private AppUserRepository appUserRepository;
+
+    @Autowired
     private S3Presigner s3Presigner;
+
+    @Autowired
+    private Clock clock;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private MockMvc mockMvc;
@@ -240,7 +263,7 @@ public class SceneControllerTest {
 
     @Nested
     class GetMostRecent {
-        private final LocalDateTime BASE_TIME = LocalDateTime.of(2020, 1, 1, 0, 0);
+        private final LocalDateTime BASE_TIME = getBaseTime();
 
         private Product product1;
         private Product product2;
@@ -274,20 +297,6 @@ public class SceneControllerTest {
         }
 
         @Test
-        public void shouldWorkIfThereAreTwoScenesWithEqualTimestamp() throws Exception {
-            val product1Scenes = Stream.of(BASE_TIME, BASE_TIME)
-                    .map(toScene(product1))
-                    .map(sceneRepository::save)
-                    .collect(Collectors.toList());
-
-            mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
-                    .andExpect(status().isOk())
-                    // Expect the one with lower id to be returned.
-                    .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(0).getId().intValue()))))
-                    .andExpect(jsonPath("$.timestamp", is(equalTo("2020-01-01T00:00:00Z"))));
-        }
-
-        @Test
         public void shouldReturn404IfProductDoesntExist() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/products/" + (product2.getId() + 1) + "/scenes/most-recent"))
                     .andExpect(status().isNotFound());
@@ -304,6 +313,99 @@ public class SceneControllerTest {
                     // Expect the one with lower id to be returned.
                     .andExpect(jsonPath("$.sceneId", is(nullValue())))
                     .andExpect(jsonPath("$.timestamp", is(nullValue())));
+        }
+
+        @Nested
+        class EumetsatLicense {
+            private AppUser appUser;
+
+            @BeforeEach
+            public void beforeEach() {
+                appUser = appUserRepository.save(AppUser.builder()
+                        .email("get@profile.com")
+                        .name("Get")
+                        .surname("Profile")
+                        .password("{noop}password")
+                        .enabled(true)
+                        .eumetsatLicense(true)
+                        .build());
+
+                product1.setAccessType(Product.AccessType.EUMETSAT);
+                productRepository.save(product1);
+            }
+
+            @Test
+            public void shouldExcludeLicensedScenes() throws Exception {
+                val product1Scenes = Stream.of(BASE_TIME.minus(2, MINUTES), BASE_TIME.minus(1, HOURS))
+                        .map(toScene(product1))
+                        .map(sceneRepository::save)
+                        .collect(Collectors.toList());
+
+                mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(1).getId().intValue()))));
+            }
+
+            @Test
+            public void shouldIncludeLicensedScenesForLicensedUser() throws Exception {
+                val product1Scenes = Stream.of(BASE_TIME.minus(2, MINUTES), BASE_TIME.minus(1, HOURS))
+                        .map(toScene(product1))
+                        .map(sceneRepository::save)
+                        .collect(Collectors.toList());
+
+                mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent")
+                        .with(jwtBearerToken(appUser, objectMapper)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.sceneId", is(equalTo(product1Scenes.get(0).getId().intValue()))));
+            }
+        }
+
+        @Nested
+        class PrivateLicense {
+            private AppUser appUser;
+
+            @BeforeEach
+            public void beforeEach() {
+                appUser = appUserRepository.save(AppUser.builder()
+                        .email("get@profile.com")
+                        .name("Get")
+                        .surname("Profile")
+                        .password("{noop}password")
+                        .enabled(true)
+                        .build());
+
+                product1.setAccessType(Product.AccessType.PRIVATE);
+                productRepository.save(product1);
+
+                val institution = institutionRepository.save(Institution.builder()
+                        .name("test")
+                        .slug("test")
+                        .build());
+
+                userRoleRepository.save(UserRole.builder().
+                        role(AppRole.INST_MEMBER)
+                        .user(appUser)
+                        .institution(institution)
+                        .build());
+
+                licenseGrantRepository.save(LicenseGrant.builder()
+                        .institution(institution)
+                        .product(product1)
+                        .build());
+            }
+
+            @Test
+            public void shouldForbidNotLicensedUser() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent"))
+                        .andExpect(status().isUnauthorized());
+            }
+
+            @Test
+            public void shouldAllowLicensedUser() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product1.getId() + "/scenes/most-recent")
+                        .with(jwtBearerToken(appUser, objectMapper)))
+                        .andExpect(status().isOk());
+            }
         }
     }
 
@@ -329,6 +431,11 @@ public class SceneControllerTest {
     public void shouldReturn404IfSceneNotFound() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", 42L))
                 .andExpect(status().isNotFound());
+    }
+
+    private LocalDateTime getBaseTime() {
+        ZonedDateTime zonedDateTime = clock.instant().atZone(ZoneId.of("UTC"));
+        return LocalDateTime.from(zonedDateTime);
     }
 }
 
