@@ -115,6 +115,18 @@ class LayerSecurityGatewayFilterTest {
 
     private static Stream<Arguments> shouldHandleEumetsatLicense() {
         return Stream.of(
+                Arguments.of("2007-12-03T10:01:00.00Z", null,              true,  HttpStatus.UNAUTHORIZED),
+                Arguments.of("2007-12-03T10:01:00.00Z", Set.of(),          true,  HttpStatus.FORBIDDEN),
+                Arguments.of("2007-12-03T10:00:59.99Z", null,              false, null),
+                Arguments.of("2007-12-03T10:00:59.99Z", Set.of(),          false, null),
+                Arguments.of("2007-12-03T10:00:00.00Z", null,              false, null),
+                Arguments.of("2007-12-03T10:00:00.00Z", Set.of(),          false, null),
+                Arguments.of("2007-12-03T09:59:59.99Z", null,              true,  HttpStatus.UNAUTHORIZED),
+                Arguments.of("2007-12-03T09:59:59.99Z", Set.of(),          true,  HttpStatus.FORBIDDEN),
+                Arguments.of("2007-12-03T09:00:00.00Z", null,              false, null),
+                Arguments.of("2007-12-03T09:00:00.00Z", Set.of(),          false, null),
+                Arguments.of("2007-12-03T08:00:00.00Z", null,              false, null),
+                Arguments.of("2007-12-03T08:00:00.00Z", Set.of(),          false, null),
                 Arguments.of("2007-12-03T07:15:31.00Z", null,              true,  HttpStatus.UNAUTHORIZED),
                 Arguments.of("2007-12-03T07:15:31.00Z", Set.of(),          true,  HttpStatus.FORBIDDEN),
                 Arguments.of("2007-12-03T07:15:31.00Z", Set.of("layer_1"), false, null),

@@ -44,7 +44,7 @@ public class LayerSecurityGatewayFilter implements GatewayFilter {
         if (accessType == AccessType.OPEN) {
             return chain.filter(exchange);
         } else if (accessType == AccessType.EUMETSAT) {
-            if (isFresh(request)) {
+            if (isFreshAndNotOnTheHour(request)) {
                 return requiresLicense(exchange, chain, layer);
             } else {
                 return chain.filter(exchange);
@@ -59,7 +59,7 @@ public class LayerSecurityGatewayFilter implements GatewayFilter {
         return exchange.getResponse().setComplete();
     }
 
-    private boolean isFresh(ServerHttpRequest request) {
+    private boolean isFreshAndNotOnTheHour(ServerHttpRequest request) {
         String time = request.getQueryParams().getFirst(timeQueryParam);
         // The layers in GeoServer must be configured, so by default they serve the oldest scene,
         // so the EUMETSAT license won't apply.
@@ -72,6 +72,10 @@ public class LayerSecurityGatewayFilter implements GatewayFilter {
         } catch (DateTimeParseException e) {
             // In case of exception here assume it's fresh.
             return true;
+        }
+        // For determining if the timestamp is on the hour allow a skew of a minute.
+        if (dateTime.getMinute() == 0) {
+            return false;
         }
         ZonedDateTime now = ZonedDateTime.now(clock);
         return dateTime.isAfter(now.minus(freshDuration));

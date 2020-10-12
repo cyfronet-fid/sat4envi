@@ -16,6 +16,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Fixed
 
+- Allow accessing on the hour EUMETSAT scenes in gs-gateway [#776](https://github.com/cyfronet-fid/sat4envi/issues/776) 
 - GHSA-mfwh-5m23-j46w github actions vulnerability [#762](https://github.com/cyfronet-fid/sat4envi/issues/762)
 
 ### Updated
