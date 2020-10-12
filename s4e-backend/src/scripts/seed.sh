@@ -68,9 +68,11 @@ auth_token=$(echo $result | jq -r '.token')
 unset payload result err
 
 temp_file=$(mktemp)
+bucket=${BUCKET-local-dataset-1}
+echo "Setting bucket to '$bucket'"
 payload=$(
   jq -n '$ARGS.named' \
-    --arg value "mailto://${BUCKET-local-dataset-1}/"
+    --arg value "mailto://$bucket/"
 )
 url=$api_endpoint/api/admin/properties/scene_granule_path_prefix
 curl --silent --include --url $url \
@@ -83,11 +85,13 @@ handle_error "Call to $url returned an error:"
 unset payload
 
 # Create schemas
+echo "Creating schemas"
 for schema_path in $(ls $configuration_path/schema); do
   # Get required parameters
   name=$schema_path
   type=$([[ $schema_path == *".scene."* ]] && echo "SCENE" || echo "METADATA")
   content=$(<$configuration_path/schema/$schema_path)
+  echo "  Creating $name"
   # Construct payload
   payload=$(
     jq -n '$ARGS.named' \
@@ -112,7 +116,7 @@ url=$api_endpoint/api/admin/product-category/seed
 curl --silent --include --url $url \
   --request POST \
   --header "Content-Type: application/json" \
-  --header "Authorization: Bearer $auth_token"
+  --header "Authorization: Bearer $auth_token" > $temp_file
 # Fail if there was error
 handle_error "Call to $url returned an error:"
 
