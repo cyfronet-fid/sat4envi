@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.*;
@@ -96,6 +97,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
                             .build())
@@ -135,7 +137,7 @@ public class AdminProductControllerTest {
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val newProductCategory = productRepository
-                    .findAllFetchProductCategory(Product.class)
+                    .findAllFetchProductCategory(Sort.by("id"), Product.class)
                     .get(0)
                     .getProductCategory()
                     .getName();
@@ -210,6 +212,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
                             .build())
@@ -232,6 +235,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$[0].name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$[0].displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$[0].description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$[0].accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$[0].legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$[0].layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$[0].granuleArtifactRule.default", is(equalTo("some_artifact"))))
@@ -251,6 +255,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_artifact"))))
@@ -292,6 +297,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
                             .build())
@@ -305,6 +311,7 @@ public class AdminProductControllerTest {
                     .name("Product02")
                     .displayName("Product 02")
                     .description("Product 02 __description__")
+                    .accessType(Product.AccessType.PRIVATE)
                     .legend(Legend.builder()
                             .type("Legend 02")
                             .build())
@@ -341,6 +348,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 02"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 02 __description__"))))
+                    .andExpect(jsonPath("$.accessType", is(equalTo("PRIVATE"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 02"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_02"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
@@ -349,7 +357,7 @@ public class AdminProductControllerTest {
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val updatedProductCategory = productRepository
-                    .findAllFetchProductCategory(Product.class)
+                    .findAllFetchProductCategory(Sort.by("id"), Product.class)
                     .get(0)
                     .getProductCategory()
                     .getName();
@@ -374,6 +382,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
@@ -451,6 +460,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
                             .build())

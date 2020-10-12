@@ -27,6 +27,10 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Product extends CreationAndModificationAudited {
+    public enum AccessType {
+        OPEN, EUMETSAT, PRIVATE
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -46,6 +50,15 @@ public class Product extends CreationAndModificationAudited {
     private List<Scene> scenes;
 
     private String description;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private AccessType accessType;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @Builder.Default
+    private Set<LicenseGrant> licenseGrants = new HashSet<>();
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")

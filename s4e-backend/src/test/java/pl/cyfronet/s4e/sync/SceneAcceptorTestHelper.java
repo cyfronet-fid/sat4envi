@@ -30,6 +30,7 @@ class SceneAcceptorTestHelper {
         return productRepository.save(Product.builder()
                 .name("Sentinel-1-GRDH")
                 .displayName("Sentinel-1-GRDH")
+                .accessType(Product.AccessType.OPEN)
                 .layerName("sentinel_1_grdh")
                 .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                 .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))

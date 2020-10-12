@@ -13,6 +13,7 @@ import pl.cyfronet.s4e.config.MapStructCentralConfig;
 )
 public interface ProductMapper {
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "licenseGrants", ignore = true)
     @Mapping(target = "sceneSchema", ignore = true)
     @Mapping(target = "metadataSchema", ignore = true)
     @Mapping(target = "scenes", ignore = true)
@@ -21,6 +22,7 @@ public interface ProductMapper {
     void create(ProductService.DTO dto, @MappingTarget Product.ProductBuilder productBuilder);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "licenseGrants", ignore = true)
     @Mapping(target = "sceneSchema", ignore = true)
     @Mapping(target = "metadataSchema", ignore = true)
     @Mapping(target = "scenes", ignore = true)

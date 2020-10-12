@@ -17,7 +17,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Table(name = "institution", uniqueConstraints = @UniqueConstraint(columnNames = {"name", "slug"}))
 public class Institution extends CreationAndModificationAudited {
     @Id
@@ -57,4 +57,8 @@ public class Institution extends CreationAndModificationAudited {
     public void removeMemberRole(UserRole role) {
         membersRoles.remove(role);
     }
+
+    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    private Set<LicenseGrant> licenseGrants;
 }

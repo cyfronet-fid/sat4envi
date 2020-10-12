@@ -16,10 +16,7 @@ import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -49,6 +46,7 @@ public class ProductControllerTest {
 
     private AppUser appUser;
     private Long productId;
+    private List<Product> products;
 
     @BeforeEach
     public void beforeEach() {
@@ -75,12 +73,14 @@ public class ProductControllerTest {
                 .rightDescription(rightDesc)
                 .build();
 
+        products = new ArrayList<>();
         repository.saveAll(Arrays.asList(Product.builder()
                         .name("108m")
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .layerName("108m")
                         .granuleArtifactRule(Map.of())
+                        .accessType(Product.AccessType.OPEN)
                         .build(),
                 Product.builder()
                         .name("Setvak")
@@ -88,6 +88,7 @@ public class ProductControllerTest {
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .layerName("setvak")
                         .granuleArtifactRule(Map.of())
+                        .accessType(Product.AccessType.OPEN)
                         .build(),
                 Product.builder()
                         .name("WV_IR")
@@ -96,7 +97,9 @@ public class ProductControllerTest {
                         .layerName("wv_ir")
                         .legend(legend)
                         .granuleArtifactRule(Map.of())
-                        .build()));
+                        .accessType(Product.AccessType.OPEN)
+                        .build()))
+                .forEach(products::add);
 
         productId = repository.findByNameContainingIgnoreCase("108m").get().getId();
     }

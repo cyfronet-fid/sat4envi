@@ -6,6 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -13,14 +15,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import pl.cyfronet.s4e.*;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Legend;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.bean.Schema;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
-import pl.cyfronet.s4e.data.repository.SceneRepository;
-import pl.cyfronet.s4e.data.repository.SchemaRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
 import pl.cyfronet.s4e.ex.product.ProductException;
@@ -66,6 +62,12 @@ public class ProductServiceTest {
     private SchemaRepository schemaRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private LicenseGrantRepository licenseGrantRepository;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -86,6 +88,7 @@ public class ProductServiceTest {
                 .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                 .layerName("108m")
                 .granuleArtifactRule(Map.of("default", "default_artifact"))
+                .accessType(Product.AccessType.OPEN)
                 .build());
     }
 
@@ -112,6 +115,7 @@ public class ProductServiceTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
                             .build())
@@ -263,7 +267,7 @@ public class ProductServiceTest {
         @Nested
         class ProductCategory {
             @Test
-            public void shouldVerifyItExists() throws ProductException, NotFoundException {
+            public void shouldVerifyItExists() throws ProductException {
                 ProductService.DTO dto = dtoBuilder
                         .productCategoryName("doesnt_exist")
                         .build();
@@ -304,6 +308,7 @@ public class ProductServiceTest {
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .accessType(Product.AccessType.OPEN)
                     .build());
 
             dtoBuilder = ProductService.DTO.builder()
@@ -363,6 +368,46 @@ public class ProductServiceTest {
                     hasProperty("layerName", equalTo(product.getLayerName())),
                     hasProperty("granuleArtifactRule", equalTo(product.getGranuleArtifactRule()))
             ));
+        }
+
+        @Nested
+        class FieldAccessType {
+            @BeforeEach
+            public void beforeEach() {
+                product.setAccessType(Product.AccessType.PRIVATE);
+                product = productRepository.save(product);
+
+                val institution = institutionRepository.save(Institution.builder()
+                        .name("test")
+                        .slug("test")
+                        .build());
+
+                licenseGrantRepository.save(LicenseGrant.builder()
+                        .institution(institution)
+                        .product(product)
+                        .build());
+            }
+
+            @ParameterizedTest
+            @CsvSource({
+                    "OPEN,0",
+                    "EUMETSAT,0",
+                    "PRIVATE,1"
+            })
+            public void test(Product.AccessType targetAccessType, Long expectedLicenseGrantCount) throws NotFoundException, ProductException {
+                val dto = ProductService.DTO.builder()
+                        .accessType(targetAccessType)
+                        .build();
+
+                assertThat(licenseGrantRepository.count(), is(equalTo(1L)));
+
+                productService.update(product.getId(), dto);
+
+                assertThat(licenseGrantRepository.count(), is(equalTo(expectedLicenseGrantCount)));
+
+                Product updatedProduct = productRepository.findById(product.getId(), Product.class).get();
+                assertThat(updatedProduct, hasProperty("accessType", equalTo(targetAccessType)));
+            }
         }
 
         @Nested
@@ -485,9 +530,9 @@ public class ProductServiceTest {
         }
 
         @Nested
-        class ProductCategory {
+        class FieldProductCategory {
             @Test
-            public void shouldVerifyItExists() throws ProductException, NotFoundException {
+            public void shouldVerifyItExists() throws ProductException {
                 ProductService.DTO dto = dtoBuilder
                         .productCategoryName("doesnt_exist")
                         .build();
@@ -605,7 +650,7 @@ public class ProductServiceTest {
         }
     }
 
-    private void authenticateAs(String email) {
+    private static void authenticateAs(String email) {
         AppUserDetails appUserDetails = mock(AppUserDetails.class);
         when(appUserDetails.getUsername()).thenReturn(email);
 
