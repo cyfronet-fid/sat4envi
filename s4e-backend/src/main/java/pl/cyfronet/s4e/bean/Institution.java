@@ -61,4 +61,6 @@ public class Institution extends CreationAndModificationAudited {
     @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL)
     @ToString.Exclude
     private Set<LicenseGrant> licenseGrants;
+
+    private boolean eumetsatLicense;
 }

@@ -52,6 +52,8 @@ public class AppUser extends CreationAndModificationAudited {
 
     private boolean admin;
 
+    private boolean eumetsatLicense;
+
     public void removeRole(UserRole role) {
         roles.remove(role);
     }
