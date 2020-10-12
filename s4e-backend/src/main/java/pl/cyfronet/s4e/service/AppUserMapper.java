@@ -22,6 +22,7 @@ public abstract class AppUserMapper {
     @Mapping(target = "enabled", ignore = true)
     @Mapping(target = "memberZK", ignore = true)
     @Mapping(target = "admin", ignore = true)
+    @Mapping(target = "eumetsatLicense", ignore = true)
     @Mapping(target = "preferences", ignore = true)
     public abstract AppUser requestToPreEntity(RegisterRequest registerRequest);
 
