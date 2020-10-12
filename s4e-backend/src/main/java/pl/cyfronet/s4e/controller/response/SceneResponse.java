@@ -3,6 +3,7 @@ package pl.cyfronet.s4e.controller.response;
 import lombok.Builder;
 import lombok.Data;
 import pl.cyfronet.s4e.bean.Legend;
+import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -11,8 +12,7 @@ import java.util.function.Function;
 @Data
 @Builder
 public class SceneResponse {
-    public interface Projection {
-        Long getId();
+    public interface Projection extends ProjectionWithId {
         LocalDateTime getTimestamp();
         Legend getLegend();
     }

@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.properties.JwtProperties;
 import pl.cyfronet.s4e.security.JwtTokenService;
 import pl.cyfronet.s4e.security.LoadKeyPair;
+import pl.cyfronet.s4e.util.LicenseHelper;
 
 import java.io.IOException;
 import java.security.KeyPair;
@@ -24,6 +25,9 @@ public class JwtConfig {
     @Autowired
     private JwtProperties jwtProperties;
 
+    @Autowired
+    private LicenseHelper licenseHelper;
+
     @Bean
     public KeyPair jwtKeyPair() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, UnrecoverableKeyException {
         log.info("Loading jwtKeyPair from '" + jwtProperties.getKeyStore() + "'");
@@ -39,6 +43,6 @@ public class JwtConfig {
 
         long expirationTime = token.getExpirationTime().toMillis();
 
-        return new JwtTokenService(expirationTime, objectMapper, jwtKeyPair);
+        return new JwtTokenService(expirationTime, objectMapper, jwtKeyPair, licenseHelper);
     }
 }

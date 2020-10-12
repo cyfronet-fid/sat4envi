@@ -4,22 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Legend;
-import pl.cyfronet.s4e.bean.Product;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.data.repository.*;
 
 import java.util.*;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +31,15 @@ public class ProductControllerTest {
 
     @Autowired
     private ProductRepository repository;
+
+    @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private LicenseGrantRepository licenseGrantRepository;
 
     @Autowired
     private TestDbHelper testDbHelper;
@@ -126,6 +132,96 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.legend['url']", is("url")))
                 .andExpect(jsonPath("$.legend['leftDescription']").exists())
                 .andExpect(jsonPath("$.legend['bottomMetric']").doesNotExist());
+    }
+
+    @Nested
+    class GetProducts {
+        @BeforeEach
+        public void beforeEach () {
+            products.get(0).setAccessType(Product.AccessType.EUMETSAT);
+            products.get(1).setAccessType(Product.AccessType.PRIVATE);
+            products.get(2).setAccessType(Product.AccessType.PRIVATE);
+            repository.saveAll(products);
+        }
+
+        @Nested
+        class ByUnauthenticatedUser {
+            @Test
+            public void shouldReturnNoThirdProduct() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$[*].id", contains(
+                                products.get(0).getId().intValue()
+                        )));
+            }
+        }
+
+        @Nested
+        class ByUserWithoutLicense {
+            @Test
+            public void shouldReturnNoThirdProduct() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products")
+                        .with(jwtBearerToken(appUser, objectMapper)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$[*].id", contains(
+                                products.get(0).getId().intValue()
+                        )));
+            }
+        }
+
+        @Nested
+        class ByUserWithLicense {
+            @BeforeEach
+            public void beforeEach() {
+                val institution = institutionRepository.save(Institution.builder()
+                        .name("test")
+                        .slug("test")
+                        .build());
+
+                userRoleRepository.save(UserRole.builder().
+                        role(AppRole.INST_MEMBER)
+                        .user(appUser)
+                        .institution(institution)
+                        .build());
+
+                licenseGrantRepository.save(LicenseGrant.builder()
+                        .institution(institution)
+                        .product(products.get(1))
+                        .build());
+            }
+
+            @Test
+            public void shouldReturnAlsoLicensedProducts() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products")
+                        .with(jwtBearerToken(appUser, objectMapper)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$[*].id", contains(
+                                products.get(0).getId().intValue(),
+                                products.get(1).getId().intValue()
+                        )));
+            }
+        }
+
+        @Nested
+        class ByAdmin {
+            @BeforeEach
+            public void beforeEach() {
+                appUser.setAdmin(true);
+                appUserRepository.save(appUser);
+            }
+
+            @Test
+            public void shouldReturnAllProducts() throws Exception {
+                mockMvc.perform(get(API_PREFIX_V1 + "/products")
+                        .with(jwtBearerToken(appUser, objectMapper)))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$[*].id", contains(
+                                products.get(0).getId().intValue(),
+                                products.get(1).getId().intValue(),
+                                products.get(2).getId().intValue()
+                        )));
+            }
+        }
     }
 
     @Test

@@ -114,19 +114,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(GET, prefix("/schemas", "/schemas/{name}")).permitAll()
 
-                .mvcMatchers(GET, prefix("/products", "/products/{id}")).permitAll()
-                .mvcMatchers(PUT, prefix("/products/{id}/favourite")).authenticated()
-                .mvcMatchers(DELETE, prefix("/products/{id}/favourite")).authenticated()
-
+                .mvcMatchers(GET, prefix("/products")).permitAll()
                 .mvcMatchers(GET, prefix(
+                        "/products/{id}",
                         "/products/{id}/scenes",
                         "/products/{id}/scenes/available",
-                        "/products/{id}/scenes/most-recent",
-                        "/scenes/{id}/download"
-                )).permitAll()
+                        "/products/{id}/scenes/most-recent"
+                )).access("@licensePermissionEvaluator.allowProductRead(#id, principal)")
+
+                .mvcMatchers(PUT, prefix("/products/{id}/favourite"))
+                    .access("isAuthenticated() && @licensePermissionEvaluator.allowProductRead(#id, principal)")
+                .mvcMatchers(DELETE, prefix("/products/{id}/favourite"))
+                    .access("isAuthenticated() && @licensePermissionEvaluator.allowProductRead(#id, principal)")
+
+                .mvcMatchers(GET, prefix("/scenes/{id}/download"))
+                    .access("@licensePermissionEvaluator.allowSceneRead(#id, principal)")
 
                 .mvcMatchers(GET, prefix("/search")).permitAll()
-                .mvcMatchers(GET, prefix("/dhus/**")).authenticated()
+                .mvcMatchers(GET, prefix("/dhus/search")).authenticated()
+                // This rule calling allowSceneRead is correct: in OData DHUS nomenclature a Product is our Scene.
+                .mvcMatchers(GET, prefix("/dhus/odata/v1/Products('{id}')/**"))
+                    .access("@licensePermissionEvaluator.allowSceneRead(#id, principal)")
 
                 .mvcMatchers(GET, prefix("/overlays/prg", "/overlays/wms")).permitAll()
 

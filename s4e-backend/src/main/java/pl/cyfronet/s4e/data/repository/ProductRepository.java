@@ -9,6 +9,7 @@ import pl.cyfronet.s4e.bean.Product;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface ProductRepository extends CrudRepository<Product, Long> {
@@ -21,6 +22,10 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"productCategory"})
     <T> List<T> findAllFetchProductCategory(Sort sort, Class<T> projection);
+
+    @Query("SELECT p FROM Product p WHERE p.id IN :ids")
+    @EntityGraph(attributePaths = {"productCategory"})
+    <T> List<T> findAllByIdInFetchProductCategory(Set<Long> ids, Sort sort, Class<T> projection);
 
     <T> Optional<T> findById(Long id, Class<T> projection);
 

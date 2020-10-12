@@ -5,4 +5,8 @@ public class SecurityConstants {
     public static final String COOKIE_NAME = "token";
 
     public static final String JWT_AUTHORITIES_CLAIM = "authorities";
+    public static final String JWT_LAYERS_CLAIM = "layers";
+    public static final String JWT_PRIORITY_ACCESS_CLAIM = "priority_access";
+
+    public static final String LICENSE_READ_AUTHORITY_PREFIX = "LICENSE_READ_";
 }

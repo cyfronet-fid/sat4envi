@@ -22,6 +22,15 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
             "FROM AppUser u " +
             "LEFT JOIN FETCH u.roles r " +
             "LEFT JOIN FETCH r.institution i " +
+            "LEFT JOIN FETCH i.licenseGrants lg " +
+            "LEFT JOIN FETCH lg.product p " +
+            "WHERE u.email = :email")
+    Optional<AppUser> findByEmailWithAllUpToLicensedProducts(String email);
+
+    @Query("SELECT u " +
+            "FROM AppUser u " +
+            "LEFT JOIN FETCH u.roles r " +
+            "LEFT JOIN FETCH r.institution i " +
             "WHERE u.email = :email")
     <T> Optional<T> findByEmailWithRolesAndInstitution(String email, Class<T> projection);
 

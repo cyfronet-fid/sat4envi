@@ -10,7 +10,6 @@ import lombok.val;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.controller.request.AddMemberRequest;
@@ -36,6 +35,7 @@ import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
+import static pl.cyfronet.s4e.security.AppUserDetailsUtil.isAdmin;
 
 @RestController
 @RequestMapping(path = API_PREFIX_V1, produces = APPLICATION_JSON_VALUE)
@@ -103,8 +103,7 @@ public class InstitutionController {
     @GetMapping("/institutions")
     public List<BasicInstitutionResponse> getAll() {
         AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
-        if (appUserDetails != null &&
-                appUserDetails.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+        if (isAdmin(appUserDetails)) {
             return institutionService.getAll(BasicInstitutionResponse.class);
         }
         return institutionService.getUserInstitutionsBy(appUserDetails.getUsername(),

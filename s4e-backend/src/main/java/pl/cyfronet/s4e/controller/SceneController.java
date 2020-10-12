@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.MostRecentSceneResponse;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
+import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.SceneService;
 import pl.cyfronet.s4e.service.SceneStorage;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.net.URISyntaxException;
@@ -51,12 +55,15 @@ public class SceneController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
     ) throws NotFoundException {
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
+
         ZonedDateTime zdtStart = ZonedDateTime.of(date, LocalTime.MIDNIGHT, timeZone.getZoneId());
         LocalDateTime start = timeHelper.getLocalDateTimeInBaseZone(zdtStart);
         LocalDateTime end = timeHelper.getLocalDateTimeInBaseZone(zdtStart.plusDays(1));
         Function<LocalDateTime, ZonedDateTime> timeConverter = (timestamp) ->
                 timeHelper.getZonedDateTime(timestamp, timeZone.getZoneId());
-        return sceneService.list(productId, start, end, SceneResponse.Projection.class).stream()
+
+        return sceneService.list(productId, start, end, userDetails, SceneResponse.Projection.class).stream()
                 .map(s -> SceneResponse.of(productId, s, timeConverter))
                 .collect(Collectors.toList());
     }
@@ -74,8 +81,7 @@ public class SceneController {
         return sceneService.getAvailabilityDates(productId, yearMonth, timeZone.getZoneId());
     }
 
-    public interface SceneProjection {
-        Long getId();
+    public interface SceneProjection extends ProjectionWithId {
         LocalDateTime getTimestamp();
     }
 
@@ -89,7 +95,8 @@ public class SceneController {
             @PathVariable Long productId,
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
     ) throws NotFoundException {
-        return sceneService.getMostRecentScene(productId, SceneProjection.class)
+        val userDetails = AppUserDetailsSupplier.get();
+        return sceneService.getMostRecentScene(productId, userDetails, SceneProjection.class)
                 .map(scene -> MostRecentSceneResponse.builder()
                         .sceneId(scene.getId())
                         .timestamp(timeHelper.getZonedDateTime(scene.getTimestamp(), timeZone.getZoneId()))

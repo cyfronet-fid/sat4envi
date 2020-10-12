@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
@@ -17,6 +18,7 @@ import org.springframework.validation.FieldError;
 import pl.cyfronet.s4e.*;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
 import pl.cyfronet.s4e.ex.product.ProductException;
@@ -36,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_READ_AUTHORITY_PREFIX;
 
 @BasicTest
 @Slf4j
@@ -99,6 +102,57 @@ public class ProductServiceTest {
 
     private void resetDb() {
         testDbHelper.clean();
+    }
+
+    @Nested
+    class FindAllAuthorizedFetchProductCategory {
+        private Product productPrivate;
+
+        @BeforeEach
+        public void beforeEach() {
+            productPrivate = productRepository.save(SceneTestHelper.productBuilder()
+                    .accessType(Product.AccessType.PRIVATE)
+                    .build());
+
+            // Another private Product, make sure that many private Products are handled correctly.
+            productRepository.save(SceneTestHelper.productBuilder()
+                    .accessType(Product.AccessType.PRIVATE)
+                    .build());
+        }
+
+        @Test
+        public void shouldFilterForUserWithoutLicense() {
+            val userDetails = mock(AppUserDetails.class);
+            when(userDetails.getAuthorities()).thenReturn(Set.of());
+
+            val results = productService.findAllAuthorizedFetchProductCategory(userDetails, ProjectionWithId.class);
+
+            assertThat(results, hasSize(1));
+            assertThat(results.get(0).getId(), is(equalTo(product108m.getId())));
+        }
+
+        @Test
+        public void shouldFilterForAnonymousUser() {
+            val results = productService.findAllAuthorizedFetchProductCategory(null, ProjectionWithId.class);
+
+            assertThat(results, hasSize(1));
+            assertThat(results.get(0).getId(), is(equalTo(product108m.getId())));
+        }
+
+        @Test
+        public void shouldReturnForLicensedUser() {
+            val userDetails = mock(AppUserDetails.class);
+            when(userDetails.getAuthorities()).thenReturn(
+                    Set.of(new SimpleGrantedAuthority(LICENSE_READ_AUTHORITY_PREFIX + productPrivate.getId()))
+            );
+
+            val results = productService.findAllAuthorizedFetchProductCategory(userDetails, ProjectionWithId.class);
+
+            assertThat(results, containsInAnyOrder(
+                    hasProperty("id", is(equalTo(product108m.getId()))),
+                    hasProperty("id", is(equalTo(productPrivate.getId())))
+            ));
+        }
     }
 
     @Nested
