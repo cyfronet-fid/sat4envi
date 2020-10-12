@@ -40,6 +40,7 @@ public class SceneTestHelper {
                 .name(name)
                 .displayName(displayName)
                 .description("sth")
+                .accessType(Product.AccessType.OPEN)
                 .layerName(name.toLowerCase())
                 .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE);
     }

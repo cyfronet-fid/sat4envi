@@ -3,8 +3,10 @@ package pl.cyfronet.s4e.admin.product;
 import lombok.Builder;
 import lombok.Data;
 import pl.cyfronet.s4e.bean.Legend;
+import pl.cyfronet.s4e.bean.Product;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.Map;
 
@@ -20,6 +22,9 @@ class AdminCreateProductRequest {
 
     @NotEmpty
     private String description;
+
+    @NotNull
+    private Product.AccessType accessType;
 
     private Legend legend;
 

@@ -26,6 +26,8 @@ interface AdminProductResponse {
 
     String getDescription();
 
+    String getAccessType();
+
     Legend getLegend();
 
     String getLayerName();

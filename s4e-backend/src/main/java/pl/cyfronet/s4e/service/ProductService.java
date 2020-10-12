@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -41,6 +42,8 @@ public class ProductService {
         private String displayName;
 
         private String description;
+
+        private Product.AccessType accessType;
 
         private Legend legend;
 
@@ -87,7 +90,7 @@ public class ProductService {
     }
 
     public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
-        return productRepository.findAllFetchProductCategory(projection);
+        return productRepository.findAllFetchProductCategory(Sort.by("id"), projection);
     }
 
     @Transactional
@@ -151,6 +154,10 @@ public class ProductService {
         }
 
         productMapper.update(dto, product);
+
+        if (product.getAccessType() != Product.AccessType.PRIVATE) {
+            product.getLicenseGrants().clear();
+        }
 
         if (sceneSchema != null) {
             product.setSceneSchema(sceneSchema);

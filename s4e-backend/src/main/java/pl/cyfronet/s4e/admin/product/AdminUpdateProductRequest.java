@@ -3,6 +3,7 @@ package pl.cyfronet.s4e.admin.product;
 import lombok.Builder;
 import lombok.Data;
 import pl.cyfronet.s4e.bean.Legend;
+import pl.cyfronet.s4e.bean.Product;
 
 import javax.validation.constraints.Pattern;
 import java.util.Map;
@@ -16,6 +17,8 @@ class AdminUpdateProductRequest {
     private String displayName;
 
     private String description;
+
+    private Product.AccessType accessType;
 
     private Legend legend;
 

@@ -77,6 +77,7 @@ public class SeedProductsTest {
                         .name("108m")
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
+                        .accessType(Product.AccessType.OPEN)
                         .layerName("108m")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build(),
@@ -84,6 +85,7 @@ public class SeedProductsTest {
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
+                        .accessType(Product.AccessType.OPEN)
                         .layerName("setvak")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
                         .build()

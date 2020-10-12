@@ -1,5 +1,6 @@
 package pl.cyfronet.s4e.data.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -19,7 +20,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"productCategory"})
-    <T> List<T> findAllFetchProductCategory(Class<T> projection);
+    <T> List<T> findAllFetchProductCategory(Sort sort, Class<T> projection);
 
     <T> Optional<T> findById(Long id, Class<T> projection);
 
