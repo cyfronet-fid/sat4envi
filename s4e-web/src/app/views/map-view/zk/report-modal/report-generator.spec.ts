@@ -14,7 +14,7 @@ describe('ReportGenerator', () => {
       imports: [HttpClientTestingModule, ]
     });
     http = TestBed.get(HttpClient);
-    generator = new ReportGenerator(http, '', 1, 1)
+    generator = new ReportGenerator(http)
   });
 
   it('working$ and loading$ should be set properly', async function () {

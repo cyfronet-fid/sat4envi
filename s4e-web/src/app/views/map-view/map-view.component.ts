@@ -193,8 +193,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
       .subscribe(([mapData, productName, sceneDate]) => this.modalService.show<ReportModal>({
         id: REPORT_MODAL_ID,
         size: 'lg',
-        mapHeight: mapData.height,
-        mapWidth: mapData.width,
         mapImage: mapData.image,
         productName: productName,
         sceneDate: sceneDate

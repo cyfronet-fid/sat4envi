@@ -83,6 +83,7 @@
     "@ngx-translate/http-loader": "^3.0.1",
     "angular-resizable-element": "^3.3.2",
     "core-js": "^2.6.4",
+    "cropperjs": "^1.5.9",
     "date-fns": "^2.0.0-alpha.27",
     "jspdf": "^1.5.3",
     "moment": "^2.24.0",
