@@ -9,6 +9,7 @@ The most recent changes are on top, in each type of changes category.
 
 ### Added
 
+- Add `Potwierdzenie rejestracji` page and go to it after successful register [#769](https://github.com/cyfronet-fid/sat4envi/issues/769)
 - Add map scale / zoom in report modal allowing user to refine which part of the map is rendered in pdf [#657](https://github.com/cyfronet-fid/sat4envi/issues/657)
 - Send notification email on duplicate registration [#768](https://github.com/cyfronet-fid/sat4envi/issues/768)
 - GS-Gateway mapRequestCounter metric [#699](https://github.com/cyfronet-fid/sat4envi/issues/699)
