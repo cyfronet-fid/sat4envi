@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class EmailVerificationListenerTest {
+class RegistrationListenerTest {
     @Mock
     private EmailVerificationService emailVerificationService;
     @Mock
@@ -32,7 +32,7 @@ class EmailVerificationListenerTest {
     private MailHelper mailHelper;
 
     @InjectMocks
-    private EmailVerificationListener listener;
+    private RegistrationListener listener;
 
     @Test
     public void onResendRegistrationTokenEventShouldDeleteExistingToken() throws Exception {

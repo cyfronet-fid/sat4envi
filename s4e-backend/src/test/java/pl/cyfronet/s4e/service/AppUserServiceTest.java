@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.AppUserDuplicateException;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,8 +41,8 @@ class AppUserServiceTest {
         assertThat(appUserRepository.findByEmail(email), isPresent());
 
         assertThrows(
-                AppUserCreationException.class,
-                () -> appUserService.save(AppUser.builder()
+                AppUserDuplicateException.class,
+                () -> appUserService.register(RegisterRequest.builder()
                         .name("Name")
                         .surname("Surname")
                         .email(email)

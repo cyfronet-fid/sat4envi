@@ -3,15 +3,13 @@ package pl.cyfronet.s4e.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.ex.AppUserCreationException;
+import pl.cyfronet.s4e.ex.AppUserDuplicateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 
@@ -23,29 +21,19 @@ import java.util.Optional;
 @Slf4j
 public class AppUserService {
     private final AppUserRepository appUserRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserRoleService userRoleService;
+    private final AppUserMapper appUserMapper;
     private final EmailVerificationService emailVerificationService;
 
-    @Transactional(rollbackFor = AppUserCreationException.class)
-    public AppUser save(AppUser appUser) throws AppUserCreationException {
-        try {
-            return appUserRepository.save(appUser);
-        } catch (DataIntegrityViolationException e) {
-            log.info("Cannot create AppUser with email '" + appUser.getEmail() + "'", e);
-            throw new AppUserCreationException(e);
+    @Transactional(rollbackFor = AppUserDuplicateException.class)
+    public AppUser register(RegisterRequest registerRequest) throws AppUserDuplicateException {
+        val email = registerRequest.getEmail();
+        if (appUserRepository.existsByEmail(email)) {
+            throw new AppUserDuplicateException("AppUser already exists for email '" + email + "'");
         }
-    }
 
-    @Transactional(rollbackFor = AppUserCreationException.class)
-    public AppUser register(RegisterRequest registerRequest) throws AppUserCreationException {
-        return save(AppUser.builder()
-                .name(registerRequest.getName())
-                .surname(registerRequest.getSurname())
-                .email(registerRequest.getEmail())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .enabled(false)
-                .build());
+        val appUser = appUserMapper.requestToPreEntity(registerRequest);
+
+        return appUserRepository.save(appUser);
     }
 
     @Transactional(rollbackFor = {NotFoundException.class, RegistrationTokenExpiredException.class})

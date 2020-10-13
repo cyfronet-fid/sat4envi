@@ -24,4 +24,6 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
             "LEFT JOIN FETCH r.institution i " +
             "WHERE u.email = :email")
     <T> Optional<T> findByEmailWithRolesAndInstitution(String email, Class<T> projection);
+
+    boolean existsByEmail(String email);
 }

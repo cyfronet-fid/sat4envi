@@ -37,12 +37,6 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorHandlerHelper.toResponseMap(e));
     }
 
-    @ExceptionHandler(AppUserCreationException.class)
-    public ResponseEntity<?> handle(AppUserCreationException e) {
-        // don't return an error status in this case, as it would open the system to account enumeration attack
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @ExceptionHandler(RecaptchaException.class)
     public ResponseEntity<?> handle(RecaptchaException e) {
         return ResponseEntity.badRequest().body(errorHandlerHelper.toResponseMap(e));
