@@ -3,12 +3,13 @@
     <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
     <div class="s4e-modal-body report">
       <aside>
-        <strong i18n>Podgląd obszaru</strong>
-        <span i18n>Poruszając poniższą mapą możesz dostosować widok</span>
-        <div #reportTemplate class="report-template">
-          <img id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
+        <div #reportTemplate class="report-template" style="display: block; width: 275px; height: 275px;">
+          <img #minimap style="display: block;" id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
         </div>
-        <ul class="report__details">
+        <strong i18n>Podgląd obszaru</strong>
+        <span i18n>Poruszając poniższą mapą możesz dostosować widok, używając kółka myszy możesz zmienić oddalenie</span>
+
+        <ul class="report__details" *ngIf="sceneDate || productName">
           <li *ngIf="sceneDate">
             <strong>Data</strong>
             <span>{{sceneDate}}</span>

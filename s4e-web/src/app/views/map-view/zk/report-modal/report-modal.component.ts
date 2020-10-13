@@ -1,6 +1,6 @@
 import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import {Component, ElementRef, Inject, ViewChild, OnInit, OnDestroy} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
@@ -15,6 +15,7 @@ import {HttpClient} from "@angular/common/http";
 import {combineLatest, Observable} from "rxjs";
 import {map} from "rxjs/operators";
 import moment from "moment";
+import Cropper from 'cropperjs';
 
 
 @Component({
@@ -22,15 +23,15 @@ import moment from "moment";
   templateUrl: './report-modal.component.html',
   styleUrls: ['./report-modal.component.scss']
 })
-export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit {
+export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit, AfterViewInit {
   image: string = '';
-  imageWidth: number;
-  imageHeight: number;
   public disabled$: Observable<boolean>;
   public reportGenerator: ReportGenerator;
   public productName: string|null = null;
   public sceneDate: string|null = null;
+  private cropper: Cropper = null;
   @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
+  @ViewChild('minimap', {read: ElementRef}) minimap: ElementRef;
 
   makeForm(): FormGroup<FormState['report']> {
     return new FormGroup<ReportForm>({
@@ -49,14 +50,12 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
     assertModalType(isReportModal, modal);
 
     this.image = modal.mapImage;
-    this.imageWidth = modal.mapWidth;
-    this.imageHeight = modal.mapHeight;
     if (modal.sceneDate != null) {
       this.sceneDate = moment(modal.sceneDate).format('DD.MM.YYYY g. HH:mm');
     }
     this.productName = modal.productName;
 
-    this.reportGenerator = new ReportGenerator(http, this.image, this.imageWidth, this.imageHeight);
+    this.reportGenerator = new ReportGenerator(http);
   }
 
   ngOnInit(): void {
@@ -67,14 +66,37 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
       .pipe(map(([w, l]) => w || l));
   }
 
-  accept() {
+  ngAfterViewInit(): void {
+    this.cropper = new Cropper(this.minimap.nativeElement,
+      {
+        aspectRatio: 1,
+        viewMode: 3,
+        dragMode: 'move',
+        responsive: true,
+        autoCrop: true,
+        autoCropArea: 1,
+        cropBoxMovable: false,
+        cropBoxResizable: false
+      });
+    this.cropper.replace(this.image)
+  }
+
+  async accept() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
 
     if (this.form.invalid) {
       return;
     }
+
+    const imageData = this.cropper.getCroppedCanvas({height: 2048, width: 2048}).toDataURL();
+    const imageWidth = this.cropper.getCropBoxData().width
+    const imageHeight = this.cropper.getCropBoxData().height
+
     this.reportGenerator
       .generate(
+        imageData,
+        imageWidth,
+        imageHeight,
         this.form.controls.caption.value,
         this.form.controls.notes.value,
         this.productName,

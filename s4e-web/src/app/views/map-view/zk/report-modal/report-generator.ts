@@ -1,6 +1,6 @@
 import * as JsPDF from 'jspdf';
 import {forkJoin, fromEvent, Observable, ReplaySubject} from 'rxjs';
-import {delay, filter, map, switchMap, take, tap} from 'rxjs/operators';
+import {delay, filter, switchMap, take, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import moment from "moment";
@@ -120,10 +120,7 @@ export class ReportGenerator {
     partners: null,
   };
 
-  constructor(private http: HttpClient,
-              private readonly image: string,
-              private readonly imageWidth: number,
-              private readonly imageHeight: number) {
+  constructor(private http: HttpClient,) {
     this.loading$.next(true);
     this.working$.next(false);
   }
@@ -162,14 +159,22 @@ export class ReportGenerator {
     }));
   }
 
-  public generate(caption: string, notes: string, productName: string, sceneDate: string): Observable<any> {
+  public generate(
+    imageData: string,
+    imageWidth: number,
+    imageHeight: number,
+    caption: string,
+    notes: string,
+    productName: string,
+    sceneDate: string): Observable<any>
+  {
     // ignore this call if the generator is doing something
     return this.working$.pipe(
       take(1),
       filter(w => !w),
       tap(() => this.working$.next(true)),
       delay(0),
-      tap(() => this.combineDocument(caption, notes, productName, sceneDate)),
+      tap(() => this.combineDocument(imageData, imageWidth, imageHeight, caption, notes, productName, sceneDate)),
       delay(0),
       tap(() => this.working$.next(false))
     );
@@ -180,7 +185,15 @@ export class ReportGenerator {
    * @return height of the added text box
    */
 
-  private combineDocument(caption: string, notes: string, productName: string, sceneDate: string) {
+  private combineDocument(
+    imageData: string,
+    imageWidth: number,
+    imageHeight: number,
+    caption: string,
+    notes: string,
+    productName: string,
+    sceneDate: string)
+  {
     if(notes.length > 800) {
       throw Error('description too long');
     }
@@ -196,7 +209,7 @@ export class ReportGenerator {
 
     const A4Width = 297;
     const A4Height = 210;
-    const printImageHeight = this.imageHeight / this.imageWidth * A4Width;
+    const printImageHeight = imageHeight / imageWidth * A4Width;
     const margin = 10;
     const middleMargin = margin;
 
@@ -234,26 +247,26 @@ export class ReportGenerator {
 
     composer.insertImage(this.images.partners, 3);
 
-    this.drawMapImage(doc, margin, A4Height, middleMargin);
+    this.drawMapImage(imageData, imageHeight, imageWidth, doc, margin, A4Height, middleMargin);
 
     doc.save(`RAPORT.${new Date().toISOString()}.pdf`);
   }
 
-  private drawMapImage(doc: JsPDF, margin, A4Height, middleMargin) {
+  private drawMapImage(imageData: string, imageHeight: number, imageWidth: number, doc: JsPDF, margin, A4Height, middleMargin) {
     doc.rect(margin, margin, A4Height - margin - middleMargin, A4Height - 2 * margin, null);
     doc.clip();
 
-    let imageScaleFactor = (A4Height - 2 * margin) / this.imageHeight;
+    let imageScaleFactor = (A4Height - 2 * margin) / imageHeight;
     let printHeight = A4Height - 2 * margin;
 
-    if (this.imageHeight > this.imageWidth) {
-      imageScaleFactor = (A4Height - 2*margin) / this.imageWidth;
-      printHeight = this.imageHeight * imageScaleFactor
+    if (imageHeight > imageWidth) {
+      imageScaleFactor = (A4Height - 2*margin) / imageWidth;
+      printHeight = imageHeight * imageScaleFactor
     }
 
-    let printWidth = this.imageWidth * imageScaleFactor;
+    let printWidth = imageWidth * imageScaleFactor;
 
-    doc.addImage(this.image, 'PNG', A4Height / 2 - printWidth / 2, A4Height / 2 - printHeight / 2, printWidth, printHeight);
+    doc.addImage(imageData, 'PNG', A4Height / 2 - printWidth / 2, A4Height / 2 - printHeight / 2, printWidth, printHeight);
 
     doc.setDrawColor('#3a3a3a');
     doc.rect(margin, margin, A4Height - margin - middleMargin, A4Height - 2 * margin);
