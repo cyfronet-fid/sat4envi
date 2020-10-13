@@ -6,10 +6,12 @@ import {ShareModule} from '../../common/share.module';
 import {UtilsModule} from '../../utils/utils.module';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
+import { RegisterConfirmationComponent } from './register-confirmation/register-confirmation.component';
 
 @NgModule({
   declarations: [
     RegisterComponent,
+    RegisterConfirmationComponent
   ],
   imports: [
     CommonModule,
@@ -21,7 +23,8 @@ import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
     RecaptchaModule,
   ],
   exports: [
-    RegisterComponent
+    RegisterComponent,
+    RegisterConfirmationComponent
   ]
 })
 export class RegisterModule { }

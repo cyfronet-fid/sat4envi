@@ -26,11 +26,14 @@ export class RegisterService {
         handleHttpRequest$(this._store),
         tap(() => this._router.navigate(['/'], { queryParamsHandling: 'merge' }))
       )
-      .subscribe(() => {}, errorResponse => {
-        const errorMessage = errorResponse.status === 400
-          ? errorResponse.error
-          : {__general__: [errorResponse.error]};
-        this._store.setError(errorMessage);
-      });
+      .subscribe(
+        () => this._router.navigate(['/register-confirmation'], { queryParamsHandling: 'merge' }),
+        errorResponse => {
+          const errorMessage = errorResponse.status === 400
+            ? errorResponse.error
+            : {__general__: [errorResponse.error]};
+          this._store.setError(errorMessage);
+        }
+      );
   }
 }
