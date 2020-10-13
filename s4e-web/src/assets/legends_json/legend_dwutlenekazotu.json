@@ -1,0 +1,15 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_dwutlenekazotu.svg",
+  "leftDescription": {
+    "0.988": "25",
+    "0.8": "20",
+    "0.616": "15",
+    "0.431": "10",
+    "0.247": "5",
+    "0.06": "0"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}

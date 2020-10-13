@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="350px" viewBox="0 0 20 350" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>legenda / 10.8</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#000000" offset="0%"></stop>
+            <stop stop-color="#402729" offset="15.2070586%"></stop>
+            <stop stop-color="#831607" offset="27.1743881%"></stop>
+            <stop stop-color="#DA2617" offset="35.8910621%"></stop>
+            <stop stop-color="#FA6F2B" offset="44.4957386%"></stop>
+            <stop stop-color="#FDF94A" offset="57.1285912%"></stop>
+            <stop stop-color="#AEF982" offset="64.1936189%"></stop>
+            <stop stop-color="#4EFAE3" offset="72.2634199%"></stop>
+            <stop stop-color="#2FD6F9" offset="77.7948589%"></stop>
+            <stop stop-color="#0070F8" offset="84.9377185%"></stop>
+            <stop stop-color="#00299E" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#F1F1F6" offset="0%"></stop>
+            <stop stop-color="#C5C5C5" offset="26.5706949%"></stop>
+            <stop stop-color="#616161" offset="74.885271%"></stop>
+            <stop stop-color="#3F3F3F" offset="86.4210009%"></stop>
+            <stop stop-color="#2E2E2E" offset="92.3973357%"></stop>
+            <stop stop-color="#282828" offset="96.7773438%"></stop>
+            <stop stop-color="#000000" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="legenda-/-10.8" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="20" height="155"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-2)" x="0" y="155" width="20" height="195"></rect>
+    </g>
+</svg>

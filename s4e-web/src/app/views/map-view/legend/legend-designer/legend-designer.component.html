@@ -1,0 +1,8 @@
+<div class="half-left" [ngClass]="{error: invalidJSON}">
+  <textarea [formControl]="jsonFc"></textarea>
+</div>
+<div class="half-right">
+  <s4e-legend [isOpen]="isOpen" (opened)="isOpen = !isOpen" [activeLegend]="legend"></s4e-legend>
+</div>
+
+<div *ngIf="invalidJSON" class="error-message">Invalid json</div>

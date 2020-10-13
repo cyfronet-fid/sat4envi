@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="350px" viewBox="0 0 20 350" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>legenda / suma opadu</title>
+    <g id="legenda-/-suma-opadu" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(10.000000, 175.000000) rotate(-180.000000) translate(-10.000000, -175.000000) translate(-0.000000, -0.000000)">
+            <rect id="Rectangle" fill="#000000" x="0" y="-3.63797881e-12" width="20" height="15"></rect>
+            <rect id="Rectangle" fill="#00005A" x="0" y="15" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#0000B3" x="0" y="33" width="20" height="17"></rect>
+            <rect id="Rectangle" fill="#000CFF" x="0" y="50" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#0053FF" x="0" y="66" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#019CFF" x="0" y="84" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#02E4FF" x="0" y="100" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#01ECD0" x="0" y="116" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#00CE84" x="0" y="134" width="20" height="17"></rect>
+            <rect id="Rectangle" fill="#01B13C" x="0" y="151" width="20" height="15"></rect>
+            <rect id="Rectangle" fill="#12A000" x="0" y="166" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#6AC500" x="0" y="184" width="20" height="17"></rect>
+            <rect id="Rectangle" fill="#C3E700" x="0" y="201" width="20" height="15"></rect>
+            <rect id="Rectangle" fill="#FFEB00" x="0" y="216" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#FFAD02" x="0" y="234" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#FA6C00" x="0" y="250" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#FF3001" x="0" y="266" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#F90000" x="0" y="284" width="20" height="16"></rect>
+            <rect id="Rectangle" fill="#D70000" x="0" y="300" width="20" height="17"></rect>
+            <rect id="Rectangle" fill="#B90000" x="0" y="317" width="20" height="18"></rect>
+            <rect id="Rectangle" fill="#990001" x="0" y="335" width="20" height="15"></rect>
+        </g>
+    </g>
+</svg>

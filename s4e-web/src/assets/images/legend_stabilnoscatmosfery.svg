@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="350px" viewBox="0 0 20 350" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>legenda / stabilnosc atmosfery</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#7E5010" offset="0%"></stop>
+            <stop stop-color="#E7AC51" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-2">
+            <stop stop-color="#2F2868" offset="0%"></stop>
+            <stop stop-color="#8980BC" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#928E49" offset="0%"></stop>
+            <stop stop-color="#F5FD70" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-4">
+            <stop stop-color="#F12230" offset="0%"></stop>
+            <stop stop-color="#720612" offset="51.439576%"></stop>
+            <stop stop-color="#660208" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="legenda-/-stabilnosc-atmosfery" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="20" height="196"></rect>
+        <rect id="Rectangle" fill="url(#linearGradient-2)" x="0" y="196" width="20" height="38"></rect>
+        <rect id="Rectangle-Copy" fill="url(#linearGradient-3)" x="0" y="234" width="20" height="38"></rect>
+        <rect id="Rectangle-Copy-2" fill="url(#linearGradient-4)" x="0" y="272" width="20" height="78"></rect>
+    </g>
+</svg>

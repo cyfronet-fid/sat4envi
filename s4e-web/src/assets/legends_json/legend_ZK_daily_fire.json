@@ -1,0 +1,14 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_ZK_daily_fire.svg",
+  "leftDescription": {
+    "0.03": "0",
+    "0.15": "5",
+    "0.272": "10",
+    "0.522": "20",
+    "0.769": "30"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}

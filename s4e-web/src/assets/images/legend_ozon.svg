@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="350px" viewBox="0 0 20 350" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>legenda / ozon</title>
+    <g id="legenda-/-ozon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#800000" x="0" y="0" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#970000" x="0" y="8" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#B00000" x="0" y="17" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#C90000" x="0" y="25" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#E20000" x="0" y="33" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#FB0001" x="0" y="42" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FF1602" x="0" y="50" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FF2E01" x="0" y="58" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#FF4600" x="0" y="67" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FF6000" x="0" y="75" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FF7800" x="0" y="83" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#FF9001" x="0" y="92" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FFAA00" x="0" y="100" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FFC300" x="0" y="108" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#FFDC00" x="0" y="117" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#FFF502" x="0" y="125" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#EFFF0F" x="0" y="133" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#D6FF29" x="0" y="142" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#BDFF41" x="0" y="150" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#A4FF59" x="0" y="158" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#8BFF72" x="0" y="167" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#72FF8B" x="0" y="175" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#59FFA4" x="0" y="183" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#41FFBD" x="0" y="192" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#28FFD7" x="0" y="200" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0EFFEF" x="0" y="208" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#01F5FF" x="0" y="217" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#00CDEF" x="0" y="225" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#00B5EF" x="0" y="233" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#00AAFF" x="0" y="242" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0091FF" x="0" y="250" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0078FF" x="0" y="258" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#0160FF" x="0" y="267" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0146FF" x="0" y="275" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#002DFF" x="0" y="283" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#0016FF" x="0" y="292" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0000FB" x="0" y="300" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0000E2" x="0" y="308" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#0000C9" x="0" y="317" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#0000B0" x="0" y="325" width="20" height="8"></rect>
+        <rect id="Rectangle" fill="#000097" x="0" y="333" width="20" height="9"></rect>
+        <rect id="Rectangle" fill="#00007F" x="0" y="342" width="20" height="8"></rect>
+    </g>
+</svg>

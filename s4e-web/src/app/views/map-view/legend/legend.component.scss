@@ -1,23 +1,28 @@
 @import "../../../../scss/variables";
 
+$legend-height: 600px;
+
 :host {
   position: absolute;
   right: 10px;
-  bottom: 80px;
   z-index: 2;
-  height: calc(100% - 170px);
-  width: 331px;
+  height: $legend-height;
+  top: calc(51% - (#{$legend-height} / 2));
 }
 
+.legend__background {
+  height: 100%;
+  background-size: contain;
+  opacity: 0.2;
+}
 
 .legend__chart {
-  height: 400px;
+  height: $legend-height;
   width: 20px;
   position: absolute;
   right: 0;
-  top: calc(50% - 200px);
-  background: url(/../../../../assets/images/gfx_temp_legend.svg) no-repeat;
-  background-size: contain;
+  background-size: cover;
+  background-repeat: no-repeat;
   cursor: pointer;
 
   ul {
@@ -30,21 +35,31 @@
   }
 }
 
-.legend__description {
-  width: 300px;
-  height: 100%;
-  position: absolute;
-  right: 31px;
-  top: 0;
-  background-color: white;
-  padding: 0 $space-small;
-}
-
-.legend__image {
-  height: 100%;
-}
-
 .chart__label {
   position: absolute;
 }
 
+.legend__left {
+  width: 200px;
+  height: $legend-height;
+  position: absolute;
+  background-size: contain;
+
+  li {
+    font-family: $font-secondary;
+    font-size: .875rem;
+    padding-left: 10px;
+    width: calc(100% - 25px);
+    text-align: right;
+    font-weight: 600;
+  }
+
+}
+
+.toggle-legend {
+  position: absolute;
+  top: calc(50% + 205px);
+  right: 0;
+}
+
+.legend__description {display: none;}
