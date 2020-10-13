@@ -1,8 +1,12 @@
+import { InjectorModule } from 'src/app/common/injector.module';
 import {ImageWMS} from 'ol/source';
 import {Image, Layer} from 'ol/layer';
 import {IUILayer} from '../common.model';
 import {EntityState} from '@datorama/akita';
 import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { NotificationService } from 'notifications';
+import { ImageWmsLoader } from '../utils/layers-loader.util';
 
 // Overlay
 // IUILayer -> caption to label
@@ -45,6 +49,7 @@ export function convertToUIOverlay(
     url,
     params: { LAYERS: overlay.layerName, ...urlParams}
   });
+  handleLoadingOf(source);
   return {
     favourite: false,
     ...overlay,
@@ -54,6 +59,32 @@ export function convertToUIOverlay(
     isLoading: false,
     isFavouriteLoading: false
   };
+}
+
+function handleLoadingOf(source: ImageWMS) {
+  const loaderService = InjectorModule.Injector.get(NgxUiLoaderService);
+  const imageWmsLoader = new ImageWmsLoader(source);
+  imageWmsLoader.start$
+    .then(
+      () => loaderService.startBackground(),
+      () => handleLoadError(loaderService)
+    );
+  imageWmsLoader.end$
+    .then(
+      () => loaderService.stopBackground(),
+      () => handleLoadError(loaderService)
+    );
+}
+
+function handleLoadError(loaderService: NgxUiLoaderService) {
+  loaderService.stopBackground();
+  InjectorModule
+    .Injector
+    .get(NotificationService)
+    .addGeneral({
+      type: 'error',
+      content: 'Wczytanie sceny nie powiodło się'
+    });
 }
 
 
