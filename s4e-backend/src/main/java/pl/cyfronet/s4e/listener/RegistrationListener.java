@@ -11,6 +11,7 @@ import org.thymeleaf.context.Context;
 import pl.cyfronet.s4e.bean.EmailVerification;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
+import pl.cyfronet.s4e.event.OnRegistrationDuplicateEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.EmailVerificationService;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class EmailVerificationListener {
+public class RegistrationListener {
     private final EmailVerificationService emailVerificationService;
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
@@ -33,6 +34,12 @@ public class EmailVerificationListener {
     @EventListener
     public void handle(OnRegistrationCompleteEvent event) throws NotFoundException {
         sendConfirmationEmail(event.getRequesterEmail(), event.getLocale());
+    }
+
+    @Async
+    @EventListener
+    public void handle(OnRegistrationDuplicateEvent event) throws NotFoundException {
+        sendRegistrationDuplicateEmail(event.getRequesterEmail(), event.getLocale());
     }
 
     @Async
@@ -55,7 +62,6 @@ public class EmailVerificationListener {
 
         emailVerificationService.delete(event.getEmailVerificationId());
 
-        String recipientAddress = email;
         String subject = messageSource.getMessage("email.account-activated.subject", null, event.getLocale());
 
         Context ctx = new Context(event.getLocale());
@@ -65,7 +71,7 @@ public class EmailVerificationListener {
         String plainText = templateEngine.process("account-activated.txt", ctx);
         String htmlText = templateEngine.process("account-activated.html", ctx);
 
-        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
+        mailService.sendEmail(email, subject, plainText, htmlText);
     }
 
     private void sendConfirmationEmail(String email, Locale locale) throws NotFoundException {
@@ -82,6 +88,19 @@ public class EmailVerificationListener {
 
         String plainText = templateEngine.process("confirm-email.txt", ctx);
         String htmlText = templateEngine.process("confirm-email.html", ctx);
+
+        mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
+    }
+
+    private void sendRegistrationDuplicateEmail(String recipientAddress, Locale locale) throws NotFoundException {
+        String subject = messageSource.getMessage("email.duplicate-registration.subject", null, locale);
+
+        Context ctx = new Context(locale);
+        mailHelper.injectCommonVariables(ctx);
+        ctx.setVariable("email", recipientAddress);
+
+        String plainText = templateEngine.process("duplicate-registration.txt", ctx);
+        String htmlText = templateEngine.process("duplicate-registration.html", ctx);
 
         mailService.sendEmail(recipientAddress, subject, plainText, htmlText);
     }

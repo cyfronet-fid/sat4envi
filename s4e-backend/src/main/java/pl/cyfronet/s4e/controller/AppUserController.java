@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,9 @@ import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
+import pl.cyfronet.s4e.event.OnRegistrationDuplicateEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
-import pl.cyfronet.s4e.ex.AppUserCreationException;
-import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.ex.RecaptchaException;
-import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
+import pl.cyfronet.s4e.ex.*;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
@@ -59,10 +58,17 @@ public class AppUserController {
     public void register(
             @RequestBody @Valid RegisterRequest registerRequest,
             HttpServletRequest request
-    ) throws AppUserCreationException, RecaptchaException {
+    ) throws RecaptchaException {
+        val email = registerRequest.getEmail();
+
         validateRecaptcha(request);
-        appUserService.register(registerRequest);
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registerRequest.getEmail(), LocaleContextHolder.getLocale()));
+
+        try {
+            appUserService.register(registerRequest);
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(email, LocaleContextHolder.getLocale()));
+        } catch (AppUserDuplicateException e) {
+            eventPublisher.publishEvent(new OnRegistrationDuplicateEvent(email, LocaleContextHolder.getLocale()));
+        }
     }
 
     @Operation(summary = "Resend an email verification token based on email")

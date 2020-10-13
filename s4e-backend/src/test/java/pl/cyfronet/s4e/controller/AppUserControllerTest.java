@@ -35,6 +35,7 @@ import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
+import pl.cyfronet.s4e.event.OnRegistrationDuplicateEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
 import pl.cyfronet.s4e.properties.MailProperties;
 import pl.cyfronet.s4e.service.SlugService;
@@ -166,6 +167,10 @@ public class AppUserControllerTest {
         @EventListener
         public void handle(OnResendRegistrationTokenEvent event) {
         }
+
+        @EventListener
+        public void handle(OnRegistrationDuplicateEvent event) {
+        }
     }
 
     @Test
@@ -264,7 +269,7 @@ public class AppUserControllerTest {
     }
 
     @Test
-    public void shouldReturn200EvenIfEmailExists() throws Exception {
+    public void shouldReturn200EvenIfEmailExistsAndSendNotificationToExistingUser() throws Exception {
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("some@email.pl")
                 .name("Name")
@@ -277,6 +282,8 @@ public class AppUserControllerTest {
                 .email(registerRequest.getEmail())
                 .password("someHash")
                 .build());
+        GreenMailUser mailUser = greenMail.setUser("some@email.pl", "");
+        MailFolder inbox = getInbox(greenMail, mailUser);
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isPresent());
 
@@ -285,10 +292,22 @@ public class AppUserControllerTest {
                 .content(objectMapper.writeValueAsBytes(registerRequest)))
                 .andExpect(status().isOk());
 
-        // The account should not have been updated. This means the same password hash and no event fired.
+        // The account should not have been updated. This means the same password hash.
         AppUser appUser = appUserRepository.findByEmail(registerRequest.getEmail()).get();
         assertThat(appUser.getPassword(), is(equalTo("someHash")));
+
+        // Existing user should be notified that someone tried to register on his account.
+        verify(testListener).handle(any(OnRegistrationDuplicateEvent.class));
         verifyNoMoreInteractions(testListener);
+
+        // Email sending handler is executed in @Async method so allow it to run
+        await().atMost(Durations.ONE_SECOND)
+                .until(() -> inbox.getMessageCount() == 1);
+
+        // The message should contain a link with the token.
+        val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
+        assertThat(messageParser.getPlainContent(), containsString("zresetować"));
+        assertThat(messageParser.getHtmlContent(), containsString("zresetować"));
     }
 
     @Test
