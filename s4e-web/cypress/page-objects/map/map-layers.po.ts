@@ -13,8 +13,7 @@ export class Layers extends Core {
 
     getAddBtn: () => cy.get('[data-e2e="add-layer-btn"]'),
     getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
-    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]').find('input'),
-    getGroupLabelInput: () => cy.get('[data-e2e="layer-group-label-input"]').find('input'),
+    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
     getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
     getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]')
   };
@@ -106,11 +105,6 @@ export class Layers extends Core {
       .pageObject
       .getUrlInput()
       .type(url);
-
-    Layers
-      .pageObject
-      .getGroupLabelInput()
-      .type(label);
 
     return Layers;
   }

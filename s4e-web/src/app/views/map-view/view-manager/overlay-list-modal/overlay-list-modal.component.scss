@@ -1,3 +1,8 @@
 .disabled {
   opacity: 0.5;
 }
+
+#map {
+  display: none;
+  position: absolute;
+}

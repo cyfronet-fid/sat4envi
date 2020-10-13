@@ -64,6 +64,8 @@ export class OverlayService {
   }
 
   createOverlay(overlay: OverlayForm) {
+    console.log('Create overlay');
+
     this._store.ui.update({loadingNew: true});
     const postUrl = `${environment.apiPrefixV1}/overlays/personal`;
     this._http.post<Overlay>(postUrl, overlay)

@@ -1,4 +1,5 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+  <div id="map" class="map"></div>
   <div class="s4e-modal-header" i18n>Wczytaj konfigurację</div>
   <div class="s4e-modal-body">
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
@@ -77,6 +78,7 @@
                     placeholder="https://my-wms-server.com/..."
                     [formControl]="newOverlayForm.controls.url"
                     [ngClass]="{'is-invalid': hasErrors('url')}"
+                    data-e2e="layer-url-input"
                   />
                   <ng-container *ngIf="hasErrors('url')" >
                     <span
@@ -141,7 +143,7 @@
             </table>
             <ng-container *ngIf="!(addingNewLayer$ | async); else createLoadingRef">
               <button
-                (click)="addNewOverlay$()"
+                (click)="addNewOverlay()"
                 class="button button--secondary button--small"
                 data-e2e="submit-layer-form-btn"
               >

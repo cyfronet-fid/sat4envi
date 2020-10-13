@@ -79,21 +79,4 @@ describe('MapComponent', () => {
     };
     expect(component.viewChanged.emit).toHaveBeenCalledWith(expectedView);
   });
-
-  it('should add authorization code into image wms request', () => {
-    const spyOpen = spyOn(XMLHttpRequest.prototype, 'open').and.callThrough();
-    const spySend = spyOn(XMLHttpRequest.prototype, 'send');
-
-    const load = (component as any)._getTileLoadFunction();
-
-    const tile = {
-      getImage: () => ({src: ''})
-    } as any as Tile;
-    const src = '<srcUrl>';
-
-    const xhr = load(tile, src);
-
-    expect(spyOpen).toHaveBeenCalled();
-    expect(spySend).toHaveBeenCalled();
-  });
 });

@@ -47,7 +47,7 @@ describe('OverlayListModalComponent', () => {
     component.addingNewLayer$ = of(false);
     fixture.detectChanges();
 
-    await component.addNewOverlay$();
+    await component.addNewOverlay();
     expect(spy).not.toHaveBeenCalled();
   });
   it('should valid url params on add', async () => {
@@ -75,7 +75,7 @@ describe('OverlayListModalComponent', () => {
     component.addingNewLayer$ = of(false);
     fixture.detectChanges();
 
-    await component.addNewOverlay$();
+    await component.addNewOverlay();
     expect(spy).not.toHaveBeenCalled();
   });
 });
