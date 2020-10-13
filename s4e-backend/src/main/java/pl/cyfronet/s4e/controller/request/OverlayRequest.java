@@ -12,8 +12,5 @@ public class OverlayRequest {
     private String label;
 
     @NotEmpty
-    private String layerName;
-
-    @NotEmpty
     private String url;
 }

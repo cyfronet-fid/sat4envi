@@ -78,7 +78,6 @@ public class OverlayController {
                 WMSOverlay.builder()
                     .url(request.getUrl())
                     .label(request.getLabel())
-                    .layerName(request.getLayerName())
                     .ownerType(OverlayOwner.PERSONAL)
                     .appUser(appUser)
                     .build()
@@ -99,7 +98,6 @@ public class OverlayController {
                 WMSOverlay.builder()
                         .url(request.getUrl())
                         .label(request.getLabel())
-                        .layerName(request.getLayerName())
                         .ownerType(OverlayOwner.GLOBAL)
                         .build()
         );
@@ -126,7 +124,6 @@ public class OverlayController {
                 WMSOverlay.builder()
                         .url(request.getUrl())
                         .label(request.getLabel())
-                        .layerName(request.getLayerName())
                         .ownerType(OverlayOwner.INSTITUTIONAL)
                         .institution(institution)
                         .build()

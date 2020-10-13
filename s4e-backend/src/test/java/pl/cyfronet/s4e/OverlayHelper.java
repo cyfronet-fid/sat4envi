@@ -20,7 +20,6 @@ public class OverlayHelper {
         val url = nextUnique(OverlayHelper.url);
         return OverlayRequest.builder()
                 .label(label)
-                .layerName(label)
                 .url(url);
     }
 
