@@ -1,9 +1,12 @@
-Dzień dobry!
+Dzień dobry,
 
-Użytkownik [( ${email} )] wysłał Ci link do widoku, aby go otworzyć kliknij w [( ${url} )].
+użytkownik [( ${email} )] przesłał do Ciebie wiadomość z aplikacji Sat4Envi o treści:
 
-Tytuł: [( ${caption} )]
-Opis: [( ${description} )]
+[( ${caption} )]
+[( ${description} )]
+
+Chce również podzielić się z Tobą skonfigurowanym przez siebie widokiem.
+Aby go otworzyć kliknij w [( ${url} )].
 
 Pozdrawiamy,
 Zespół sat4envi

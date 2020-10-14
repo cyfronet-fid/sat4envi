@@ -9,13 +9,17 @@
 <div class="container" style="width: 800px;font-family: 'Roboto', sans-serif;padding: 10px;">
 <img th:src="${urlDomain}+'/assets/images/logo_s4e_mail.png'" alt="Logo Satellites for Environment" />
 <div class="content" style="background: #F9FCFE; border: 1px solid #DFEAF5;padding: 20px;border-radius: 5px;margin: 10px 0;">
-    <h1 style="font-size: 20px; font-weight: bold;">Dzień dobry!</h1>
-    <p style="font-size: 16px; font-weight: normal;">
-        Użytkownik [( ${email} )] wysłał Ci link do widoku, aby go otworzyć kliknij w <a th:href="${url}">link</a>.
+    <h1 style="font-size: 16px; font-weight: bold;">Dzień dobry,</h1>
+    <p style="font-weight: normal;">
+        użytkownik [( ${email} )] przesłał do Ciebie wiadomość z aplikacji Sat4Envi o treści:
     </p>
     <p>
-        Tytuł: [( ${caption} )]<br/>
-        Opis: [( ${description} )]
+        <strong>( ${caption} )]</strong><br/>
+        [( ${description} )]
+    </p>
+    <p>
+        Chce również podzielić się z Tobą skonfigurowanym przez siebie widokiem.
+        Aby go otworzyć <a th:href="${url}">kliknij w link</a>.
     </p>
     <p>
         Pozdrawiamy,<br />
