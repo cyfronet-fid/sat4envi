@@ -62,7 +62,19 @@ body, html {
     overflow-x: hidden;
     position: relative;
 
-    &__formContainer {
+    &__text {
+      display: table-cell;
+      vertical-align: middle;
+      position: relative;
+
+      section {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+    }
+
+    &__formContainer
+      {
       display: table-cell;
       vertical-align: middle;
       position: relative;
@@ -218,6 +230,10 @@ body, html {
       line-height: 1.45rem;
     }
 
+    &__text &__paragraph {
+      padding-top: 0;
+    }
+
     &__switch {
       display: flex;
       flex-direction: row;
@@ -276,7 +292,7 @@ body, html {
 
     button.button {
       border-radius: 50px;
-      font-size: 1.25rem;
+      font-size: 1rem;
       padding: 8px 45px;
       margin-top: 30px;
       display: inline-block;
