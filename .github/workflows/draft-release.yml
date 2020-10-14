@@ -1,0 +1,34 @@
+name: Draft release
+
+on:
+  push:
+    tags: "v*"
+
+jobs:
+  draft_release:
+    runs-on: ubuntu-latest
+    name: Draft release
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        run: |
+          FROM_REF=`git describe --abbrev=0 --tags HEAD~1` # Previous tag
+          echo 'CHANGELOG<<EOF' >> $GITHUB_ENV
+          git log --pretty="- %s %h" $FROM_REF..HEAD >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
+      - name: Determine version from tag
+        run: echo 'RELEASE_VERSION='${GITHUB_REF/refs\/tags\/} >> $GITHUB_ENV
+
+      - name: Draft release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          body: ${{ env.CHANGELOG }}
+          draft: true
