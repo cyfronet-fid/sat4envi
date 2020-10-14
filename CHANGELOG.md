@@ -15,6 +15,8 @@ The most recent changes are on top, in each type of changes category.
 
 ### Changed
 
+- New text for sharing view mail [#790](https://github.com/cyfronet-fid/sat4envi/issues/790)
+
 ### Fixed
 
 - Allow accessing on the hour EUMETSAT scenes in gs-gateway [#776](https://github.com/cyfronet-fid/sat4envi/issues/776) 
