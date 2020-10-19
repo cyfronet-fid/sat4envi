@@ -42,7 +42,7 @@ context('Settings institutions list', () => {
   // });
 
   it('Should show institutions', () => {
-    InstitutionList.getEntries().should('have.length', 1);
+    InstitutionList.getEntries().should('have.length', 5);
   });
 
   it('should go to Profile', async () => {

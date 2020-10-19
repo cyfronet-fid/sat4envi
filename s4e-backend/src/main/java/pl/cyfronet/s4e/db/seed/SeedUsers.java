@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
@@ -210,50 +211,45 @@ public class SeedUsers implements ApplicationRunner {
             institutionService.addMember(institution.getSlug(), "zkPLMember@mail.pl");
             institutionService.addMember(institution.getSlug(), "zkPLAdmin@mail.pl");
             userRoleService.addRole(AppRole.INST_ADMIN, "zkPLAdmin@mail.pl", institution.getSlug());
+            institutionService.addMember(institution.getSlug(), "admin@mail.pl");
+            userRoleService.addRole(AppRole.INST_ADMIN, "admin@mail.pl", institution.getSlug());
 
             name = "Zarządzanie kryzysowe - Mazowieckie";
-            Institution childInstitution = institutionService.save(Institution.builder()
+            CreateChildInstitutionRequest zkMazRequest = CreateChildInstitutionRequest.builder()
+                    .institutionAdminEmail("zkMazAdmin@mail.pl")
                     .name(name)
-                    .slug(slugService.slugify(name))
                     .city("Warszawa")
-                    .parent(institution)
-                    .build());
+                    .build();
+            Institution childInstitution = institutionService.createChildInstitution(zkMazRequest, institution.getSlug());
             institutionService.addMember(childInstitution.getSlug(), "zkMazMember@mail.pl");
-            institutionService.addMember(childInstitution.getSlug(), "zkMazAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkMazAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Warszawa";
-            Institution child2RowInstitution = institutionService.save(Institution.builder()
+            CreateChildInstitutionRequest zkWawRequest = CreateChildInstitutionRequest.builder()
+                    .institutionAdminEmail("zkWawAdmin@mail.pl")
                     .name(name)
-                    .slug(slugService.slugify(name))
                     .city("Warszawa")
-                    .parent(childInstitution)
-                    .build());
+                    .build();
+            Institution child2RowInstitution = institutionService.createChildInstitution(zkWawRequest, childInstitution.getSlug());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkWawMember@mail.pl");
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkWawAdmin@mail.pl", child2RowInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Małopolska";
-            childInstitution = institutionService.save(Institution.builder()
+            CreateChildInstitutionRequest zkMalRequest = CreateChildInstitutionRequest.builder()
+                    .institutionAdminEmail("zkMalAdmin@mail.pl")
                     .name(name)
-                    .slug(slugService.slugify(name))
                     .city("Kraków")
-                    .parent(institution)
-                    .build());
+                    .build();
+            childInstitution = institutionService.createChildInstitution(zkMalRequest, institution.getSlug());
             institutionService.addMember(childInstitution.getSlug(), "zkMalMember@mail.pl");
-            institutionService.addMember(childInstitution.getSlug(), "zkMalAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkMalAdmin@mail.pl", childInstitution.getSlug());
 
             name = "Zarządzanie kryzysowe - Kraków";
-            child2RowInstitution = institutionService.save(Institution.builder()
+            CreateChildInstitutionRequest zkKrRequest = CreateChildInstitutionRequest.builder()
+                    .institutionAdminEmail("zkKrAdmin@mail.pl")
                     .name(name)
-                    .slug(slugService.slugify(name))
                     .city("Kraków")
-                    .parent(childInstitution)
-                    .build());
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrMember@mail.pl");
+                    .build();
+            child2RowInstitution = institutionService.createChildInstitution(zkKrRequest, childInstitution.getSlug());
             institutionService.addMember(child2RowInstitution.getSlug(), "zkKrAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkKrAdmin@mail.pl", child2RowInstitution.getSlug());
+
 
         } catch (InstitutionCreationException e) {
             log.warn(e.getMessage(), e);
