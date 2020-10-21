@@ -1,3 +1,4 @@
+import { ExpertHelpForm } from './../../views/map-view/zk/expert-help-modal/expert-help-modal.model';
 import {RegisterFormState} from '../../views/register/state/register.model';
 import {LoginFormState, PasswordChangeFormState} from '../session/session.model';
 import {SaveConfigForm} from '../../views/map-view/zk/save-config-modal/save-config-modal.model';
@@ -18,4 +19,5 @@ export interface FormState {
   addInstitution: Institution;
   invitation: InvitationForm;
   jwtToken: JwtTokenForm;
+  expertHelp: ExpertHelpForm;
 }

@@ -1,0 +1,13 @@
+Dzień dobry!
+
+Twoja prośba o wsparcie eksperckie została wysłana.
+Oczekuj odpowiedzi na aktualny mail.
+
+Typ zgłoszenia: [( ${helpType} )]
+
+Opis pożądanego zakresu wsparcia:
+
+[( ${issueDescription} )]
+
+Pozdrawiamy,
+Zespół sat4envi
