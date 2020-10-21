@@ -116,8 +116,27 @@
       <span class="dropdown__header">Zarządzanie kryzysowe</span>
       <div class="dropdown__close dropdown" (click)="toggleZKOptions(false)"></div>
       <ul>
-        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Wygeneruj raport (pdf)</a></li>
-        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok na adres email</a></li>
+        <li><a
+          (click)="openReportModal()"
+          href="javascript:undefined"
+          i18n
+        >
+          Wygeneruj raport (pdf)
+        </a></li>
+        <li><a
+          (click)="openShareViewModal()"
+          href="javascript:undefined"
+          i18n
+        >
+          Wyślij widok na adres email
+        </a></li>
+        <li><a
+          (click)="openExpertHelpModal()"
+          href="javascript:undefined"
+          i18n
+        >
+          Wsparcie eksperckie
+        </a></li>
         <li><a
           (click)="openSaveViewModal()"
           href="javascript:undefined"
@@ -143,7 +162,13 @@
         >
           Zapisz na dysku jako oryginał (zip)
         </a></li>
-        <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz na dysku (png)</a></li>
+        <li><a
+          (click)="downloadMapImage()"
+          href="javascript:undefined"
+          i18n
+        >
+          Zapisz na dysku (png)
+        </a></li>
       </ul>
     </div>
   </ng-container>

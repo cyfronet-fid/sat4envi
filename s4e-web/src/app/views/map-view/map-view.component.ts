@@ -1,3 +1,4 @@
+import { EXPERT_HELP_MODAL_ID } from './zk/expert-help-modal/expert-help-modal.model';
 import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal/jwt-token-modal.model';
 import { Modal } from './../../modal/state/modal.model';
 import { environment } from 'src/environments/environment';
@@ -201,6 +202,14 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   downloadMapImage() {
     this.mapComponent.downloadMap();
+    this.toggleZKOptions(false);
+  }
+
+  openExpertHelpModal() {
+    this.modalService.show<ReportModal>({
+      id: EXPERT_HELP_MODAL_ID,
+      size: 'lg'
+    });
     this.toggleZKOptions(false);
   }
 

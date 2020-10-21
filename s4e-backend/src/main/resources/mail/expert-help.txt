@@ -1,0 +1,12 @@
+Dzień dobry!
+
+Otrzymałeś nowe zgłoszenie od [( ${requestingUserEmail} )].
+
+Typ zgłoszenia: [( ${helpType} )]
+
+Opis pożądanego zakresu wsparcia:
+
+[( ${issueDescription} )]
+
+Pozdrawiamy,
+Zespół sat4envi

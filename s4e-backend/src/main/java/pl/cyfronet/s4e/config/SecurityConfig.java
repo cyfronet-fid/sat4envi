@@ -84,6 +84,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, prefix("/invitations/{token}/confirm")).authenticated()
                 .mvcMatchers(PUT, prefix("/invitations/{token}/reject")).permitAll()
 
+                .mvcMatchers(POST, prefix("/expert-help")).hasRole("MEMBER_ZK")
+
                 .mvcMatchers(GET, prefix("/overlays")).permitAll()
                 .mvcMatchers(POST, prefix("/overlays/personal")).authenticated()
                 .mvcMatchers(POST, prefix("/overlays/global"))

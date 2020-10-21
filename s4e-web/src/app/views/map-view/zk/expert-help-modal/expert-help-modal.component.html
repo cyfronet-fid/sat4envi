@@ -1,0 +1,83 @@
+<form [formGroup]="form">
+  <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+    <div class="s4e-modal-header" i18n>Zgłoś prośbę o wsparcie eksperckie</div>
+    <div class="s4e-modal-body report">
+      <aside><b>
+        Wiadomość z formularza zostanie dostarczona drogą elektroniczną
+        do działu obsługi. Dalsza korespondencja będzie prowadzona drogą
+        mailową.
+      </b></aside>
+      <div class="form">
+        <ul>
+          <li>
+            <label for="helpType">
+              Rodzaj wsparcia
+            </label>
+            <select id="helpType" formControlName="helpType" [ngModel]='null'>
+              <option [ngValue]="null" disabled>-- Wybierz rodzaj wsparcia --</option>
+              <option [ngValue]="'REMOTE'">Wsparcie zdalne</option>
+              <option [ngValue]="'AT_LOCATION'">Wsparcie wyjazdowe</option>
+            </select>
+            <ng-container *ngIf="hasErrors('helpType')" >
+              <span
+                class="error"
+                *ngFor="let error of form.controls.helpType.errors | keyvalue"
+                [ngSwitch]="error.key"
+              >
+                <ng-container *ngSwitchCase="'required'" i18n>
+                  To pole jest wymagane
+                </ng-container>
+                <ng-container *ngSwitchDefault i18n>
+                  Nieoczekiwany błąd: {{ error.key }}
+                </ng-container>
+              </span>
+            </ng-container>
+          </li>
+          <li>
+            <label for="issueDescription">
+              Opis pożądanego zakresu wsparcia
+            </label>
+            <textarea
+              style="resize: none;"
+              id="issueDescription"
+              name="issueDescription"
+              formControlName="issueDescription"
+            ></textarea>
+            <ng-container *ngIf="hasErrors('issueDescription')" >
+              <span
+                class="error"
+                *ngFor="let error of form.controls.issueDescription.errors | keyvalue"
+                [ngSwitch]="error.key"
+              >
+                <ng-container *ngSwitchCase="'required'" i18n>
+                  To pole jest wymagane
+                </ng-container>
+                <ng-container *ngSwitchDefault i18n>
+                  Nieoczekiwany błąd: {{ error.key }}
+                </ng-container>
+              </span>
+            </ng-container>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="s4e-modal-footer">
+      <button
+        class="button button--primary button--small"
+        type="submit"
+        (click)="sendIssue$()"
+        i18n
+      >
+        Wyślij prośbę
+      </button>
+      <button
+        class="button button--cancel button--small"
+        type="button"
+        (click)="dismiss()"
+        i18n
+      >
+        Zamknij
+      </button>
+    </div>
+  </s4e-generic-modal>
+</form>
