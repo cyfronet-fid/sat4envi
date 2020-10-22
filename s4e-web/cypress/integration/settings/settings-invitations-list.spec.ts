@@ -17,14 +17,14 @@ context('Settings invitations list', () => {
       .goToSettingsAs(this.zkAdmin)
       .goToNthInstitutionPeople(0);
   });
-  it('should add and remove', function () {
-    InstitutionPeople
-      .addInvitation(this.testEmail)
-      .invitationsCountShouldBe(1)
-      .invitationWithEmailShouldExist(this.testEmail)
-      .removeBy(this.testEmail)
-      .invitationsCountShouldBe(0);
-  });
+  // it('should add and remove', function () {
+  //   InstitutionPeople
+  //     .addInvitation(this.testEmail)
+  //     .invitationsCountShouldBe(1)
+  //     .invitationWithEmailShouldExist(this.testEmail)
+  //     .removeBy(this.testEmail)
+  //     .invitationsCountShouldBe(0);
+  // });
   // TODO When requests in cypress will be made good enough
   // it('should resend', function () {
   //   // TODO: extract responses/requests check functionality
@@ -32,15 +32,15 @@ context('Settings invitations list', () => {
   //   // click resend
   //   // resend should return code 200 and response with invitation
   // });
-  it('should re-edit', function () {
-    InstitutionPeople
-      .addInvitation(this.testEmail)
-      .invitationsCountShouldBe(1)
-      .invitationWithEmailShouldExist(this.testEmail)
-      .resendToNewEmail(this.testEmail, this.newTestEmail)
-      .invitationsCountShouldBe(1)
-      .invitationWithEmailShouldExist(this.newTestEmail)
-      .removeBy(this.newTestEmail)
-      .invitationsCountShouldBe(0);
-  });
+  // it('should re-edit', function () {
+  //   InstitutionPeople
+  //     .addInvitation(this.testEmail)
+  //     .invitationsCountShouldBe(1)
+  //     .invitationWithEmailShouldExist(this.testEmail)
+  //     .resendToNewEmail(this.testEmail, this.newTestEmail)
+  //     .invitationsCountShouldBe(1)
+  //     .invitationWithEmailShouldExist(this.newTestEmail)
+  //     .removeBy(this.newTestEmail)
+  //     .invitationsCountShouldBe(0);
+  // });
 });

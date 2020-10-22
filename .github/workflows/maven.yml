@@ -110,12 +110,6 @@ jobs:
         with:
           name: e2e-results
           path: s4e-web/cypress/screenshots
-      - name: E2E upload videos
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: e2e-results-videos
-          path: s4e-web/cypress/videos
     # Enable after downloading files in E2E has been resolved
     #- name: E2E upload Report PDF
     #  uses: actions/upload-artifact@v2

@@ -14,7 +14,6 @@ export class ParentInstitutionModal extends Core {
     AddInstitutionForm
       .pageObject
       .getParentNameInput()
-      .should('be.visible')
       .click();
     ParentInstitutionModal
       .pageObject
@@ -23,12 +22,10 @@ export class ParentInstitutionModal extends Core {
     ParentInstitutionModal
       .pageObject
       .getSearchInput()
-      .should('be.visible')
       .type(searchValue);
     ParentInstitutionModal
       .pageObject
       .getInstitutionsRadios()
-      .should('be.visible')
       .first()
       .click();
 
@@ -39,7 +36,6 @@ export class ParentInstitutionModal extends Core {
     ParentInstitutionModal
       .pageObject
       .getSubmitBtn()
-      .should('be.visible')
       .click();
     ParentInstitutionModal
       .pageObject

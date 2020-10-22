@@ -16,13 +16,11 @@ export class MapViews extends Core {
     MapViews
       .pageObject
       .getZkOptionsBtn()
-      .should('be.visible')
       .click();
 
     MapViews
       .pageObject
       .getOpenSaveViewsBtn()
-      .should('be.visible')
       .click({ force: true });
 
     cy.wait(500);
@@ -34,13 +32,11 @@ export class MapViews extends Core {
     MapViews
       .pageObject
       .getZkOptionsBtn()
-      .should('be.visible')
       .click();
 
     MapViews
       .pageObject
       .getOpenViewsBtn()
-      .should('be.visible')
       .click({ force: true });
 
     return MapViews;
@@ -50,14 +46,12 @@ export class MapViews extends Core {
     MapViews
       .pageObject
       .getViewLabelInput()
-      .should('be.visible')
       .clear({ force: true })
       .type(label, { force: true });
 
     MapViews
       .pageObject
       .getAddBtn()
-      .should('be.visible')
       .click({ force: true });
 
     return MapViews;
@@ -77,7 +71,6 @@ export class MapViews extends Core {
       .pageObject
       .getViewsDeleteBtns()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return MapViews;
@@ -88,7 +81,6 @@ export class MapViews extends Core {
       .pageObject
       .getViewLoadBtns()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return MapViews;

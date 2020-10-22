@@ -29,7 +29,6 @@ export class InstitutionProfile extends Core {
       .pageObject
       .getRemoveChildBtns()
       .eq(nth)
-      .should('be.visible')
       .click({ force: true });
 
     return InstitutionProfile;
@@ -39,7 +38,6 @@ export class InstitutionProfile extends Core {
     InstitutionProfile
       .pageObject
       .getAddChildBtn()
-      .should('be.visible')
       .click();
 
     return AddInstitutionForm;

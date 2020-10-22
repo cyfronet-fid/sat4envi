@@ -9,10 +9,8 @@ export class Core {
     return page;
   }
 
-  static goTo<T>(elementToClick: Cypress.Chainable<JQuery<HTMLElement>>, expectedUrl: string, context: T) {
-    elementToClick
-      .should('be.visible')
-      .click({ force: true });
+  static goTo<T>(getElementToClick: () => Cypress.Chainable<JQuery<HTMLElement>>, expectedUrl: string, context: T) {
+    getElementToClick().click({ force: true });
 
     cy.location('pathname').should('eq', expectedUrl);
     return context;

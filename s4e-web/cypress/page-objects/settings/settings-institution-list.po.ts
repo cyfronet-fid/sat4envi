@@ -67,9 +67,7 @@ export class InstitutionList extends Core {
       InstitutionList
       .pageObject
       .getInstitutionsNames()
-      .should('be.visible')
       .eq(index)
-      .should('be.visible')
       .then((element$) => {
         const slugify = (text: string) => text
           .toLowerCase()

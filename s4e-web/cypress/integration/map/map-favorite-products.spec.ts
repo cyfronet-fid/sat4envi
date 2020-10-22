@@ -24,7 +24,7 @@ describe('Map favorite products', () => {
   it('favourites shouldn\'t be visible without authentication', () => {
     Map
       .logout()
-      .goTo(Login.pageObject.getGoToMapBtn(), '/map/products', Map)
+      .goTo(Login.pageObject.getGoToMapBtn, '/map/products', Map)
       .changeContextTo(MapProducts)
       .favouritesAreNotVisible();
   });

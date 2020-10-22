@@ -40,32 +40,32 @@ export class SideNav extends Core {
   }
 
   static goToInstitutionProfile() {
-    return SideNav.goTo(SideNav.pageObject.getInstitutionProfileBtn(), '/settings/institution', InstitutionProfile);
+    return SideNav.goTo(SideNav.pageObject.getInstitutionProfileBtn, '/settings/institution', InstitutionProfile);
   }
 
   static goToAddInstitution() {
-    return SideNav.goTo(SideNav.pageObject.getAddInstitutionBtn(), '/settings/add-institution', AddInstitutionForm);
+    return SideNav.goTo(SideNav.pageObject.getAddInstitutionBtn, '/settings/add-institution', AddInstitutionForm);
   }
 
   static goToUserProfile() {
-    return SideNav.goTo(SideNav.pageObject.getProfileBtn(), '/settings/profile', UserProfile);
+    return SideNav.goTo(SideNav.pageObject.getProfileBtn, '/settings/profile', UserProfile);
   }
 
   static logout() {
-    return SideNav.goTo(SideNav.pageObject.getLogoutBtn(), '/login', Login);
+    return SideNav.goTo(SideNav.pageObject.getLogoutBtn, '/login', Login);
   }
 
   static goToInstitutionList() {
-    return SideNav.goTo(SideNav.pageObject.getInstitutionListBtn(), '/settings/institutions', InstitutionList);
+    return SideNav.goTo(SideNav.pageObject.getInstitutionListBtn, '/settings/institutions', InstitutionList);
   }
 
   static goToInstitutionPeople() {
-    return SideNav.goTo(SideNav.pageObject.getInstitutionPeopleBtn(), '/settings/people', InstitutionPeople);
+    return SideNav.goTo(SideNav.pageObject.getInstitutionPeopleBtn, '/settings/people', InstitutionPeople);
   }
 
   static goToDashboardAs(user: User) {
     const isAdmin = user.email.startsWith('zkAdmin');
     const actualContext = isAdmin ? AdminDashboard : SuperAdminDashboard;
-    return SideNav.goTo(SideNav.pageObject.getGoToDashboardBtn(), '/settings/dashboard', actualContext);
+    return SideNav.goTo(SideNav.pageObject.getGoToDashboardBtn, '/settings/dashboard', actualContext);
   }
 }

@@ -30,27 +30,22 @@ export class AddInstitutionForm extends Core {
     AddInstitutionForm
       .pageObject
       .getNameInput()
-      .should('be.visible')
       .type(institution.name);
     AddInstitutionForm
       .pageObject
       .getStreetInput()
-      .should('be.visible')
       .type(institution.address);
     AddInstitutionForm
       .pageObject
       .getZipCodeInput()
-      .should('be.visible')
       .type(institution.postalCode);
     AddInstitutionForm
       .pageObject
       .getCityInput()
-      .should('be.visible')
       .type(institution.city);
     AddInstitutionForm
       .pageObject
       .getPhoneInput()
-      .should('be.visible')
       .type(institution.phone);
     AddInstitutionForm
       .pageObject
@@ -72,7 +67,6 @@ export class AddInstitutionForm extends Core {
     AddInstitutionForm
       .pageObject
       .getSubmitBtn()
-      .should('be.visible')
       .click();
 
     return AddInstitutionForm;
