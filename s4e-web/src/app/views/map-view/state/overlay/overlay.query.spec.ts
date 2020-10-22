@@ -7,6 +7,7 @@ import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {RemoteConfigurationTestingProvider} from 'src/app/app.configuration.spec';
 import {OverlayFactory} from './overlay.factory.spec';
+import { InjectorModule } from 'src/app/common/injector.module';
 
 describe('OverlayQuery', () => {
   let query: OverlayQuery;
@@ -14,7 +15,12 @@ describe('OverlayQuery', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+      imports: [
+        MapModule,
+        HttpClientTestingModule,
+        RouterTestingModule,
+        InjectorModule
+      ],
       providers: [RemoteConfigurationTestingProvider]
     });
 
