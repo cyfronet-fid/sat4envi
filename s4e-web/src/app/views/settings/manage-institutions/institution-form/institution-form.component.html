@@ -2,7 +2,7 @@
   <h1 i18n>{{ !!activeInstitution ? 'Edytuj' : 'Dodaj' }} instytucję</h1>
 </header>
 
-<section class="content__details content__details--50">
+<section class="content__details">
   <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="updateInstitution()">
     <section class="alert alert-danger" *ngIf="error$ | async" data-e2e="alert-message">
       <ng-container [ngSwitch]="(error$ | async).status">

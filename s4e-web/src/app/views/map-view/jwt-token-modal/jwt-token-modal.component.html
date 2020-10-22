@@ -2,11 +2,19 @@
   <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
     <div class="s4e-modal-header" i18n>Wygeneruj token API</div>
     <div class="s4e-modal-body report">
-      <aside><b>
-        Uwaga! Wygenerowany token jest dostępny do
-        skopiowania jedynie na czas otwarcia aktualnego okna!
-      </b></aside>
+      <aside>
+        <h3>Jak działa API?</h3>
+        <p>
+          <a href="/howto" target="_blank" (click)="dismiss()">Przeczytaj przewodnik</a>.<br />
+          Otworzy się on w nowym oknie.
+        </p>
+      </aside>
       <div class="form">
+        <h3>Pamiętaj!</h3>
+        <p>
+          Wygenerowany token jest dostępny do
+          skopiowania jedynie na czas otwarcia aktualnego okna!
+        </p>
         <ul *ngIf="!token">
           <li>
             <ext-input
@@ -20,7 +28,7 @@
           </li>
           <li>
             <button
-              class="button button--cancel button--small"
+              class="button button--small button--primary"
               type="button"
               (click)="getJwtToken()"
               data-ut="get-jwt-token-btn"
@@ -44,7 +52,7 @@
           </li>
           <li>
             <button
-              class="button button--cancel button--small"
+              class="button button--small button--primary"
               type="button"
               (click)="copyToClipboard()"
               data-e2e="copy-to-clipboard"

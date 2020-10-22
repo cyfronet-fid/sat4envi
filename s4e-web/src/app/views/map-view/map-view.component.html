@@ -59,7 +59,8 @@
   <button
     (click)="toggleLoginOptions()"
     id="user-login-button"
-    class="dropdown__button dropdown__button--login"
+    [className]="(userLoggedIn$ | async) ? 'dropdown__button dropdown__button--loginactive' : 'dropdown__button dropdown__button--login'"
+
   >
   </button>
   <ng-container *ngIf="showLoginOptions$ | async">
@@ -115,16 +116,15 @@
       <span class="dropdown__header">Zarządzanie kryzysowe</span>
       <div class="dropdown__close dropdown" (click)="toggleZKOptions(false)"></div>
       <ul>
-        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Generuj raport</a></li>
-        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok jako wiadomość</a></li>
-        <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz obraz</a></li>
+        <li><a (click)="openReportModal()" href="javascript:undefined" i18n>Wygeneruj raport (pdf)</a></li>
+        <li><a (click)="openShareViewModal()" href="javascript:undefined" i18n>Wyślij widok na adres email</a></li>
         <li><a
           (click)="openSaveViewModal()"
           href="javascript:undefined"
           data-e2e="open-save-view-modal-btn"
           i18n
         >
-          Zapisz widok
+          Zapisz konfigurację widoku
         </a></li>
         <li><a
           (click)="openListViewModal()"
@@ -132,7 +132,7 @@
           data-e2e="open-views-modal-btn"
           i18n
         >
-          Wyświetl zapisane widoki
+          Wczytaj zapisaną konfigurację
         </a></li>
         <li><a
           data-test-download-original
@@ -141,8 +141,9 @@
           target="_blank"
           i18n
         >
-          Zapisz oryginalny plik sceny
+          Zapisz na dysku jako oryginał (zip)
         </a></li>
+        <li><a (click)="downloadMapImage()" href="javascript:undefined" i18n>Zapisz na dysku (png)</a></li>
       </ul>
     </div>
   </ng-container>

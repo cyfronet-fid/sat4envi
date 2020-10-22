@@ -1,0 +1,126 @@
+<main>
+  <h1> Jak skorzystać z API Sat4Envi</h1>
+
+      HOST: https://sok.grid.cyfronet.pl/api/v1
+
+  <h2>Pobranie tokenu</h2>
+
+  <p>Endpoint [POST]: /token</p>
+
+  <label>Payload:</label>
+  <ul>
+    <li>email</li>
+    <li>password</li>
+  </ul>
+
+  <label>Przykład:</label>
+  <code>
+      curl --location --request POST 'https://sok.grid.cyfronet.pl/api/v1/token' --header 'Content-Type: application/json' --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+  </code>
+
+  <label>Response:</label>
+  <code>
+      &#123;
+      "email": "EMAIL",
+      "token": "..."
+      &#125;
+  </code>
+  <h2>Search</h2>
+  Endpoint [GET]: /dhus/search?rows=&#123;rozmiar&#125;&start=&#123;liczba&#125;&orderby=&#123;pole&#125; &#123;sortowanie&#125;&q=&#123;zapytanie&#125;
+
+  <h2>Opis parametrów</h2>
+  <ul>
+    <li>rows = &#123;rozmiar&#125; //default = 10; rozmiar = [0 - 100]</li>
+    <li>start = &#123;liczba&#125; //default = 0</li>
+    <li>orderby = &#123;pole&#125; &#123;sortowanie&#125; // pole = &#123;beginposition, ingestiondate, id&#125;  sort = &#123;ASC, DESC&#125;</li>
+    <li>timeZone = &#123;strefa&#125; // default=UTC</li>
+    <li>q = &#123;key&#125; : &#123;value&#125; AND &#123;key&#125; : &#123;value&#125; ... // zapytanie</li>
+  </ul>
+
+  <h2>Obsługiwane parametry zapytania:</h2>
+  <h3>TIME format → &#123;key&#125; : [&#123;time&#125; TO &#123;time&#125;]</h3>
+  <h3>Key</h3>
+  <ul>
+    <li>beginposition</li>
+    <li>endposition</li>
+    <li>ingestiondate</li>
+  </ul>
+
+  <h3>Time</h3>
+  <ul>
+    <li>yyyy-MM-ddThh:mm:ss.SSSZ (ISO8601 format)</li>
+    <li>NOW</li>
+    <li>NOW-&#123;n&#125;MINUTE(S) //&#123;n&#125; → liczba: 1,2,3..</li>
+    <li>NOW-&#123;n&#125;HOUR(S) //&#123;n&#125; → liczba: 1,2,3..</li>
+    <li>NOW-&#123;n&#125;DAY(S) //&#123;n&#125; → liczba: 1,2,3..</li>
+    <li>NOW-&#123;n&#125;MONTH(S) //&#123;n&#125; → liczba: 1,2,3..</li>
+  </ul>
+  <label>
+    Przykład
+  </label>
+  <code>
+    beginposition:[NOW-2DAYS TO NOW]
+  </code>
+
+
+
+  <h3>TEXT format   &#123;key&#125; : &#123;value&#125;</h3>
+  <ul>
+    <li>platformname → np. platformname:Sentinel-1A</li>
+    <li>collection</li>
+    <li>timeliness</li>
+    <li>producttype → np. producttype:GRDH</li>
+    <li>polarisationmode → np. polarisationmode:HH HV</li>
+    <li>sensoroperationalmode → np. sensoroperationalmode:IW</li>
+    <li>orbitnumber / lastorbitnumber → np. orbitnumber:22 czy lastorbitnumber:22</li>
+    <li>relativeorbitnumber / lastrelativeorbitnumber  → np. relativeorbitnumber:22 czy lastrelativeorbitnumber:22</li>
+    <li>footprint
+      <ul>
+        <li>POINT → np. footprint:"Intersects(55.8000 19.5000)"</li>
+        <li>POLYGON → np. footprint:"Intersects(POLYGON((55.90 19.60,56.60 15.70,57.40 16.10,57.34 20.05,55.90 19.60)))"</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h3>NUMBER format → &#123;key&#125; : &#123;value&#125; // [liczba] w zakresie [0 - 100] </h3>
+  <ul>
+    <li>cloudcoveragepercentage</li>
+    <li>cloudcoveragepercentage:50</li>
+  </ul>
+  <label>przykład:</label>
+  <code>
+    curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/search?rows=10&start=0&orderby=beginposition DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW' --header 'Authorization: Bearer ...'
+  </code>
+
+  <p><i>wymaga dodania tokenu autoryzacyjnego</i></p>
+
+  <h2>Download</h2>
+  <h3>Ściągnięcie archiwum</h3>
+  <p>
+    Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/$value
+  </p>
+  <h3>Opis parametrów:</h3>
+  <p>
+    &#123;id&#125; → id sceny
+  </p>
+  <label>przykład:</label>
+  <code>
+    curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/odata/v1/Products('550')/\$value' --header 'Authorization: Bearer ...'
+  </code>
+
+
+  <h3>Ściągnięcie dowolnego artefaktu</h3>
+  <p>Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/Nodes('filename')/Nodes('&#123;type&#125;')/$value</p>
+  <p>Opis parametrów:</p>
+  <ul>
+    <li>&#123;id&#125; → id sceny</li>
+    <li>&#123;type&#125; → nazwa artefaktu</li>
+  </ul>
+  <label>przykład:</label>
+  <code>
+      curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/odata/v1/Products('550')/Nodes('filename')/Nodes('&#123;type&#125;')/\$value' --header 'Authorization: Bearer ...'
+  </code>
+  <p>
+    <i>wymaga dodania tokenu autoryzacyjnego</i>
+  </p>
+</main>

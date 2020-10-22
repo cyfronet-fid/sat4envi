@@ -43,11 +43,15 @@
       background-size: 16px;
     }
 
-    &--login {
+    &--login, &--loginactive {
       background: url(/../assets/images/ico_lock.svg) $color-white no-repeat center;
       top: 12px;
       right: 70px;
       background-size: 20px;
+    }
+
+    &--loginactive {
+      background-image: url(/../assets/images/ico_user.svg);
     }
 
     &--product {

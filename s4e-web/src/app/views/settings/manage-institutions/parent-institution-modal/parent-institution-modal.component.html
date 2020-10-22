@@ -2,14 +2,14 @@
   <div class="s4e-modal-header" i18n>Wybierz instytucję nadrzedną</div>
   <div class="s4e-modal-body">
     <p i18n>
-      W tym oknie możesz określić instytucję nadrzędną.
+      W tym oknie możesz wybrać instytucję nadrzędną.
       Wyszukiwarka pomoze zawęzić wyniki wyszukiwań w czasie rzeczywistym.
     </p>
     <section class="search">
       <input
         class="search__input"
         type="text"
-        placeholder="Wpisz szukaną miejscowość..."
+        placeholder="Zacznij wpisywać instytucję a my zawęzimy wyniki lub wybierz z listy poniżej"
         i18n-placeholder
         #searchPlacesInput
         [formControl]="institutionsSearch"
@@ -20,7 +20,7 @@
       </button>
     </section>
 
-    <h3 i18n>Lista instytucji</h3>
+    <h3 i18n>Lista dostępnych instytucji</h3>
     <ul class="box-list">
       <li *ngFor="let institution of searchedInstitutions; index as index$" class="box-list__element box-list__element--radio">
         <input
