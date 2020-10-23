@@ -70,6 +70,19 @@ export class OverlayListModalComponent extends ModalComponent implements OnInit,
     this._overlayService.resetUI();
   }
 
+  filterWmsUrlErrors(errors: {[errorName: string]: true}) {
+    const errorsNames = Object.keys(errors);
+    if (errorsNames.some(error => error === 'required')) {
+      return { 'required': true };
+    }
+
+    if (errorsNames.some(error => error === 'url')) {
+      return { 'url': true };
+    }
+
+    return errors;
+  }
+
   async removeOverlay(id: string) {
     if (await this.modalService.confirm(
       'Usuń nakładkę',

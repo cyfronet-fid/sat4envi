@@ -81,7 +81,7 @@
                   <ng-container *ngIf="hasErrors('url')" >
                     <span
                       class="error"
-                      *ngFor="let error of newOverlayForm.controls.url.errors | keyvalue"
+                      *ngFor="let error of filterWmsUrlErrors(newOverlayForm.controls.url.errors) | keyvalue"
                       [ngSwitch]="error.key"
                       data-e2e="invalid-url-error"
                     >

@@ -2,19 +2,19 @@ import { AbstractControl } from '@angular/forms';
 
 /* BASE URL */
 const HTTP_PREFIX = '(http(s?):\\/\\/)?';
-const LOCALHOST = '(localhost)';
-const DOMAIN_NAME = '((www\\.)?(([a-zA-Z0-9\\-\\_]*\\.)+)([a-zA-Z0-9\\-\\_]{2,3}))';
-const LOCAL_SUB_PAGES = '((\\/[a-zA-Z0-9]*)+)';
-const IP = '(\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b)';
+const LOCALHOST = 'localhost';
+const DOMAIN_NAME = '(www\\.)?((\\.?)[a-zA-Z_\\.-]+)+(\\.[a-zA-Z0-9]{1,3})';
+const LOCAL_SUB_PAGES = '(\\/[a-zA-Z_\\.-]+)';
+const IP = '((\\.?)[0-9]{1,3})+';
 const BASE_URL = HTTP_PREFIX + '(' + LOCALHOST + '|' + DOMAIN_NAME + '|' + IP + '|' + LOCAL_SUB_PAGES + ')';
 
 /* ADVANCED URL PARTS (OPTIONAL) */
 const PORT = '(:[0-9]{1,5})?';
-const SUB_PAGES = '((\\/[a-zA-Z0-9\\.]*)+)?';
-const PARAMETERS = '((\\?)([a-zA-Z0-9\\-\\_\\.]*=[a-zA-Z\\-\\_\\.0-9]*(&?))+)?';
+const SUB_PAGES = '((\\/[a-zA-Z0-9_\\.-]+)+)?';
+const PARAMETERS = '(\\?[a-zA-Z0-9_\\.-]+=[a-zA-Z0-9_\\.-]+)?';
 
 /* FULL URL ASSEMBLY */
-const URL_EXPRESSION = new RegExp(BASE_URL + PORT + SUB_PAGES + PARAMETERS, 'i');
+const URL_EXPRESSION = new RegExp(BASE_URL + PORT + SUB_PAGES + PARAMETERS);
 
 const VERSION_EXPRESSION = /version=\d+\.\d+\.\d+(&?)/i;
 const REQUEST_EXPRESSION = /request=[a-zA-Z]*(&?)/i;
