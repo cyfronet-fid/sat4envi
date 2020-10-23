@@ -1,0 +1,10 @@
+{
+   "spacecraft": "Metop",
+   "product_type": "Soil_Moisture_SM1",
+   "sensor_mode": "ASCAT",
+   "processing_level": "3",
+   "sensing_time": "2020-01-06T09:00:00.0+00:00",
+   "polygon": "55.0,14.0 55.0,24.2 49.0,24.2 49.0,14.0 55.0,14.0",
+   "format": "COG",
+   "schema": "MSG.metadata.v1.json"
+}

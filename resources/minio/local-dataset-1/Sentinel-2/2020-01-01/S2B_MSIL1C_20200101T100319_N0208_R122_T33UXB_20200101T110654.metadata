@@ -1,0 +1,12 @@
+{
+   "spacecraft": "Sentinel-2B",
+   "processing_level": "Level-1C",
+   "sensing_time": "2020-01-01T10:03:19.024Z",
+   "ingestion_time": "2020-01-01T11:06:54.000000Z",
+   "relative_orbit_number": "122",
+   "tile": "T33UXB",
+   "polygon": "55.93533538033806,16.600796876805845 55.899998592279864,18.355968287691326 54.915007227282395,18.273426728773856 54.949074010260645,16.56135744246611 55.93533538033806,16.600796876805845",
+   "cloud_cover": 95.7191,
+   "format": "COG",
+   "schema": "Sentinel-2.metadata.v1.json"
+}

@@ -1,0 +1,13 @@
+{
+  "product_type": "Sentinel-2-L1C",
+  "artifacts": {
+    "metadata": "/Sentinel-2/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.metadata",
+    "manifest": "/Sentinel-2/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.manifest.xml",
+    "product_archive": "/Sentinel-2/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.SAFE.zip",
+    "checksum": "/Sentinel-2/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.SAFE.md5",
+    "quicklook": "/Sentinel-2/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.qlf.cog.tif",
+    "RGB_16b": "/Sentinel-2_Products/RGB_Natural_Color/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.RGB_NatCol.cog.tif",
+    "RGBs_8b": "/Sentinel-2_Products/RGB_Natural_Color/2020-01-01/S2B_MSIL1C_20200101T100319_N0208_R122_T34UCC_20200101T110654.RGBs_NatCol.cog.tif"
+  },
+  "schema": "Sentinel-2.scene.v1.json"
+}

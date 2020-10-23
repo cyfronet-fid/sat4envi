@@ -1,0 +1,9 @@
+{
+  "product_type": "Soil_Moisture_SM2",
+  "artifacts": {
+    "metadata": "/MSG_Products_WM/SM/20200304/SM2_20200304.metadata",
+    "product_file": "/MSG_Products_WM/SM/20200304/SM2_20200304.tif",
+    "original_file": "/SAF_Products/SM/20200304/SM2_20200304.txt"
+},
+  "schema": "MSG.scene.v1.json"
+}
