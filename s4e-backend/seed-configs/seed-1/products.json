@@ -40,6 +40,34 @@
     "productCategoryName": "surface"
   },
   {
+    "name": "Sentinel-2-L1C",
+    "displayName": "Sentinel 2 L1C",
+    "description": "Kompozycja barwna RGB TRue Colors utworzona z kanałów spektralnych czujnika MSI/Sentinel-2  0.665 µm, 0.559µm i 0.492 µm. Obraz przypomina fotografię Ziemi wykonaną np. z samolotu. Kompozycja pozwala na rozpoznawanie rodzaju pokrycia terenu oraz detekcję zachmurzenia, które na tych obrazach jest białe bądź jasno szare. Bardzo dobra rodzielczość przestrzenna (10m) pozwala na detekcję i monitorowanie stosunkowo niewielkich struktur na powierzchni ziemi oraz w polu zachmurzenia.",
+    "accessType": "OPEN",
+    "layerName": "sentinel_2_l1c",
+    "sceneSchemaName": "Sentinel-2.scene.v1.json",
+    "metadataSchemaName": "Sentinel-2.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "quicklook",
+      "COG": "RGBs_8b"
+    },
+    "productCategoryName": "surface"
+  },
+  {
+    "name": "Sentinel-2-L2A",
+    "displayName": "Sentinel 2 L2A",
+    "description": "Kompozycja barwna RGB TRue Colors utworzona z kanałów spektralnych czujnika MSI/Sentinel-2  0.665 µm, 0.559µm i 0.492 µm. Obraz przypomina fotografię Ziemi wykonaną np. z samolotu. Kompozycja pozwala na rozpoznawanie rodzaju pokrycia terenu oraz detekcję zachmurzenia, które na tych obrazach jest białe bądź jasno szare. Bardzo dobra rodzielczość przestrzenna (10m) pozwala na detekcję i monitorowanie stosunkowo niewielkich struktur na powierzchni ziemi oraz w polu zachmurzenia.",
+    "accessType": "OPEN",
+    "layerName": "sentinel_2_l2a",
+    "sceneSchemaName": "Sentinel-2.scene.v1.json",
+    "metadataSchemaName": "Sentinel-2.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "quicklook",
+      "COG": "RGBs_8b"
+    },
+    "productCategoryName": "surface"
+  },
+  {
     "name": "108m",
     "displayName": "Zachmurzenie (108m)",
     "description": "Obraz satelitarny SEVIRI/Meteosat dla obszaru Europy w kanale 10.8 µm (podczerwień) utworzony z zastosowaniem różnych palet barwnych dla powierzchni wody, lądu i chmur. Chmury na tym obrazie zaznaczone są za pomocą odcieni szarości, które przechodzą w odcienie niebieskiego i różu.",
@@ -214,6 +242,58 @@
     "description": "Obraz satelitarny będący różnicą kanałów 6.2 i 10.8 µm czujnika SEVIRI/METEOSAT. Wartości różnicy większe od 0K wskazują na obszary w chmurze, w których występują silne prądy wstępujące, co z kolei prowadzi do silnego wypiętrzenia wierzchołków chmur (kolor czerwony i fioletowy). Obszary te mogą być powiązane z gwałtownymi zjawiskami takimi jak: silne opady deszczu, silne porywy wiatru lub nawet tornada.",
     "accessType": "OPEN",
     "layerName": "ost",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "rains-and-storms"
+  },
+  {
+    "name": "Soil_Moisture_SM1",
+    "displayName": "Wilgotność gleby - SM1",
+    "description": "Procentowy wskaźnik wilgotności gleby w 4 warstwach (0-7cm), (7-28cm), (28-100cm) oraz (100-289cm) generowany przez EUMETSAT H-SAF z wykorzystaniem danych satelitarnych z czujnika ASCAT/Metop. Dane satelitarne są asymilowane do modelu ECMWF poprzez ECMWF Land Data Assimilation System. Produkt jest niezależny od zachmurzenia.\n\nProdukt pokazuje jedynie wodę w stanie ciekłym – grunt całkowicie zamarznięty ma wilgotność równą zero. Oznacza to, że produkt nie jest wiarygodny jeżeli temperatura gruntu spada poniżej zera.\n\nProdukt jest operacyjnie wizualizowany w Zakładzie Teledetekcji satelitarnej IMGW-PIB.",
+    "accessType": "OPEN",
+    "layerName": "soil_moisture_sm1",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "rains-and-storms"
+  },
+  {
+    "name": "Soil_Moisture_SM2",
+    "displayName": "Wilgotność gleby - SM2",
+    "description": "Procentowy wskaźnik wilgotności gleby w 4 warstwach (0-7cm), (7-28cm), (28-100cm) oraz (100-289cm) generowany przez EUMETSAT H-SAF z wykorzystaniem danych satelitarnych z czujnika ASCAT/Metop. Dane satelitarne są asymilowane do modelu ECMWF poprzez ECMWF Land Data Assimilation System. Produkt jest niezależny od zachmurzenia.\n\nProdukt pokazuje jedynie wodę w stanie ciekłym – grunt całkowicie zamarznięty ma wilgotność równą zero. Oznacza to, że produkt nie jest wiarygodny jeżeli temperatura gruntu spada poniżej zera.\n\nProdukt jest operacyjnie wizualizowany w Zakładzie Teledetekcji satelitarnej IMGW-PIB.",
+    "accessType": "OPEN",
+    "layerName": "soil_moisture_sm2",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "rains-and-storms"
+  },
+  {
+    "name": "Soil_Moisture_SM3",
+    "displayName": "Wilgotność gleby - SM3",
+    "description": "Procentowy wskaźnik wilgotności gleby w 4 warstwach (0-7cm), (7-28cm), (28-100cm) oraz (100-289cm) generowany przez EUMETSAT H-SAF z wykorzystaniem danych satelitarnych z czujnika ASCAT/Metop. Dane satelitarne są asymilowane do modelu ECMWF poprzez ECMWF Land Data Assimilation System. Produkt jest niezależny od zachmurzenia.\n\nProdukt pokazuje jedynie wodę w stanie ciekłym – grunt całkowicie zamarznięty ma wilgotność równą zero. Oznacza to, że produkt nie jest wiarygodny jeżeli temperatura gruntu spada poniżej zera.\n\nProdukt jest operacyjnie wizualizowany w Zakładzie Teledetekcji satelitarnej IMGW-PIB.",
+    "accessType": "OPEN",
+    "layerName": "soil_moisture_sm3",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "rains-and-storms"
+  },
+  {
+    "name": "Soil_Moisture_SM4",
+    "displayName": "Wilgotność gleby - SM4",
+    "description": "Procentowy wskaźnik wilgotności gleby w 4 warstwach (0-7cm), (7-28cm), (28-100cm) oraz (100-289cm) generowany przez EUMETSAT H-SAF z wykorzystaniem danych satelitarnych z czujnika ASCAT/Metop. Dane satelitarne są asymilowane do modelu ECMWF poprzez ECMWF Land Data Assimilation System. Produkt jest niezależny od zachmurzenia.\n\nProdukt pokazuje jedynie wodę w stanie ciekłym – grunt całkowicie zamarznięty ma wilgotność równą zero. Oznacza to, że produkt nie jest wiarygodny jeżeli temperatura gruntu spada poniżej zera.\n\nProdukt jest operacyjnie wizualizowany w Zakładzie Teledetekcji satelitarnej IMGW-PIB.",
+    "accessType": "OPEN",
+    "layerName": "soil_moisture_sm4",
     "sceneSchemaName": "MSG.scene.v1.json",
     "metadataSchemaName": "MSG.metadata.v1.json",
     "granuleArtifactRule": {
