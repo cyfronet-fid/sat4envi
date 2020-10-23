@@ -121,6 +121,27 @@ public class InvitationControllerTest {
     }
 
     @Test
+    public void shouldntCreateForMember() throws Exception {
+        val request = InvitationHelper.invitationRequestBuilder().build();
+        request.setEmail(member.getEmail());
+        val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
+        mockMvc.perform(post(URL, institution.getSlug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(jwtBearerToken(institutionAdmin, objectMapper))
+                .content(objectMapper.writeValueAsBytes(request))
+        ).andExpect(status().isBadRequest());
+
+        val dbInvitation = invitationRepository
+                .findByEmailAndInstitutionSlug(
+                        request.getEmail(),
+                        institution.getSlug(),
+                        Invitation.class
+                );
+
+        assertThat(dbInvitation, isEmpty());
+    }
+
+    @Test
     public void createShouldHandleNFE() throws Exception {
         val institution = InvitationHelper.institutionBuilder().build();
         val request = InvitationHelper.invitationRequestBuilder().build();
