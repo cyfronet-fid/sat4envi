@@ -1,6 +1,7 @@
 Sentinel-1/GRDH/
 Sentinel-1/GRDM/
 Sentinel-1/SLC_/
+Sentinel-2/
 MSG_Products_WM/108m/
 MSG_Products_WM/Airmass/
 MSG_Products_WM/Dust/
@@ -12,3 +13,4 @@ MSG_Products_WM/Setvak_PL/
 MSG_Products_WM/Opad_H03/
 MSG_Products_WM/Opad_H05/
 MSG_Products_WM/OST/
+MSG_Products_WM/SM/
