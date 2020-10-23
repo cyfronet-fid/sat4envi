@@ -27,6 +27,9 @@ public class InvitationService {
 
     @Transactional(rollbackFor = {InvitationCreationException.class, NotFoundException.class})
     public String createInvitationFrom(String email, String institutionSlug) throws InvitationCreationException, NotFoundException {
+        if (institutionRepository.isMemberBySlugAndEmail(institutionSlug, email)) {
+            throw new InvitationCreationException("User is a member of this institution");
+        }
         val institution = institutionRepository.findBySlug(institutionSlug, Institution.class)
                 .orElseThrow(() -> constructNFE("institution slug: " + institutionSlug));
         val optionalInvitation = invitationRepository.findByEmailAndInstitutionSlug(

@@ -41,6 +41,13 @@ public interface InstitutionRepository extends CrudRepository<Institution, Long>
             "WHERE i.slug = :institutionSlug AND r.role = :role")
     Set<String> findAllMembersEmails(String institutionSlug, AppRole role);
 
+    @Query("SELECT CASE WHEN COUNT(u)> 0 THEN 'true' ELSE 'false' END " +
+            "FROM AppUser u " +
+            "LEFT JOIN u.roles r " +
+            "LEFT JOIN r.institution i " +
+            "WHERE i.slug = :institutionSlug AND u.email = :email")
+    boolean isMemberBySlugAndEmail(String institutionSlug, String email);
+
     @Transactional
     @Modifying
     void deleteInstitutionBySlug(String slug);
