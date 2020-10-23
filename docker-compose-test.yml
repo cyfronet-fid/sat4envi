@@ -42,7 +42,7 @@ services:
     depends_on:
       - geoserver-test
   minio-test:
-    image: fiddev/minio-test:1.2.0
+    image: fiddev/minio-test:1.3.0
     ports:
       - ${MINIO_TEST_PORT:-9002}:9000
     networks:

@@ -26,7 +26,7 @@ class PrefixScannerIntegrationTest {
     public void shouldWork() {
         Stream<S3Object> scan = prefixScanner.scan("/");
 
-        assertThat(scan.count(), is(equalTo(4312L)));
+        assertThat(scan.count(), is(equalTo(10296L)));
     }
 
     @Test
