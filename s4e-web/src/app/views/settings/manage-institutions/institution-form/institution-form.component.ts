@@ -23,6 +23,7 @@ import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
 import {combineLatest, of} from 'rxjs';
 import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
+import { emailListValidator } from '../../email-list-validator.utils';
 
 @Component({
   selector: 's4e-add-institution',
@@ -128,6 +129,15 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       .subscribe();
   }
 
+  hasErrors(controlName: string) {
+    const formControl = this.form
+      .controls[controlName] as FormControl;
+    return !!formControl
+      && formControl.touched
+      && !!formControl.errors
+      && Object.keys(formControl.errors).length > 0;
+  }
+
   resetForm() {
     !!this.activeInstitution
       ? this._setFormWith(this.form, this.activeInstitution)
@@ -204,7 +214,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       phone: new FormControl<string>(),
       emblem: new FormControl<string>(),
       secondaryPhone: new FormControl<string>(),
-      institutionAdminEmail: new FormControl<string>()
+      institutionAdminEmail: new FormControl<string>(null, emailListValidator)
     });
   }
 
