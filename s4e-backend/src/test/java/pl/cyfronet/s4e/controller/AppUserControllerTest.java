@@ -23,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
@@ -99,6 +100,9 @@ public class AppUserControllerTest {
 
     @Autowired
     private SlugService slugService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private TestDbHelper testDbHelper;
@@ -180,6 +184,9 @@ public class AppUserControllerTest {
                 .name("Name")
                 .surname("Surname")
                 .password("admin123")
+                .domain(AppUser.ScientificDomain.ATMOSPHERE)
+                .usage(AppUser.Usage.RESEARCH)
+                .country("PL")
                 .build();
         GreenMailUser mailUser = greenMail.setUser("some@email.pl", "");
         MailFolder inbox = getInbox(greenMail, mailUser);
@@ -195,8 +202,20 @@ public class AppUserControllerTest {
         verify(recaptchaValidator).validate(any(HttpServletRequest.class));
         verifyNoMoreInteractions(recaptchaValidator);
 
-        // AppUser should have been created and the OnRegistrationCompleteEvent fired.
-        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isPresent());
+        // AppUser should have been created and fields been set.
+        val optionalAppUser = appUserRepository.findByEmail(registerRequest.getEmail());
+        assertThat(optionalAppUser, isPresent());
+        val appUser = optionalAppUser.get();
+        assertThat(appUser, allOf(
+                hasProperty("name", equalTo("Name")),
+                hasProperty("surname", equalTo("Surname")),
+                hasProperty("domain", equalTo(AppUser.ScientificDomain.ATMOSPHERE)),
+                hasProperty("usage", equalTo(AppUser.Usage.RESEARCH)),
+                hasProperty("country", equalTo("PL"))
+        ));
+        assertThat(passwordEncoder.matches("admin123", appUser.getPassword()), is(true));
+
+        // The OnRegistrationCompleteEvent should be fired.
         verify(testListener).handle(any(OnRegistrationCompleteEvent.class));
         verifyNoMoreInteractions(testListener);
 

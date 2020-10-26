@@ -23,6 +23,7 @@ import pl.cyfronet.s4e.service.UserRoleService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Profile({"development", "run-seed-users"})
 @Component
@@ -60,6 +61,9 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname1")
                         .password(passwordEncoder.encode("cat1user"))
                         .enabled(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("cat2user@mail.pl")
@@ -67,6 +71,9 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname2")
                         .password(passwordEncoder.encode("cat2user"))
                         .enabled(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("cat3user@mail.pl")
@@ -74,6 +81,9 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname3")
                         .password(passwordEncoder.encode("cat3user"))
                         .enabled(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("cat4user@mail.pl")
@@ -81,6 +91,9 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname4")
                         .password(passwordEncoder.encode("cat4user"))
                         .enabled(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkMember@mail.pl")
@@ -89,6 +102,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkMember"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkAdmin@mail.pl")
@@ -97,6 +113,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkAdmin20"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("admin@mail.pl")
@@ -105,6 +124,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("adminPass20"))
                         .enabled(true)
                         .admin(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 // ZK - PL
                 AppUser.builder()
@@ -114,6 +136,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkPLAdmin"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkPLMember@mail.pl")
@@ -122,6 +147,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkPLMember"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 // ZK - Maz
                 AppUser.builder()
@@ -131,6 +159,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkMazAdmin"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkMazMember@mail.pl")
@@ -139,6 +170,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkMazMember"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 // ZK - Waw
                 AppUser.builder()
@@ -148,6 +182,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkWawAdmin"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkWawMember@mail.pl")
@@ -156,6 +193,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkWawMember"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 // ZK - Mał
                 AppUser.builder()
@@ -165,6 +205,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkMalAdmin"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkMalMember@mail.pl")
@@ -173,6 +216,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkMalMember"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 // ZK - KR
                 AppUser.builder()
@@ -182,6 +228,9 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkKrAdmin"))
                         .enabled(true)
                         .memberZK(true)
+                        .domain(nextDomain())
+                        .usage(nextUsage())
+                        .country(nextCountry())
                         .build(),
                 AppUser.builder()
                         .email("zkKrMember@mail.pl")
@@ -190,9 +239,31 @@ public class SeedUsers implements ApplicationRunner {
                         .password(passwordEncoder.encode("zkKrMember"))
                         .enabled(true)
                         .memberZK(true)
+                        // Domain, usage and country null until required to be not-null.
+                        .domain(null)
+                        .usage(null)
+                        .country(null)
                         .build(),
         });
         appUserRepository.saveAll(appUsers);
+    }
+
+    private int domainIt = 0;
+
+    private AppUser.ScientificDomain nextDomain() {
+        return AppUser.ScientificDomain.values()[domainIt++ % AppUser.ScientificDomain.values().length];
+    }
+
+    private int usageIt = 0;
+
+    private AppUser.Usage nextUsage() {
+        return AppUser.Usage.values()[usageIt++ % AppUser.Usage.values().length];
+    }
+
+    private int countryIt = 0;
+
+    private String nextCountry() {
+        return Locale.getISOCountries()[countryIt++ % Locale.getISOCountries().length];
     }
 
     private void seedInstitutionsAndRoles() {
