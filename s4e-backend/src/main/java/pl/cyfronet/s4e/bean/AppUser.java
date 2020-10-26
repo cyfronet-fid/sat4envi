@@ -54,6 +54,14 @@ public class AppUser extends CreationAndModificationAudited {
 
     private boolean eumetsatLicense;
 
+    @Enumerated(EnumType.STRING)
+    private ScientificDomain domain;
+
+    @Enumerated(EnumType.STRING)
+    private Usage usage;
+
+    private String country;
+
     public void removeRole(UserRole role) {
         roles.remove(role);
     }
@@ -65,5 +73,13 @@ public class AppUser extends CreationAndModificationAudited {
     private UserPreferences preferences = UserPreferences.builder()
             .nonVisibleOverlays(List.of())
             .build();
+
+    public enum ScientificDomain {
+        ATMOSPHERE, EMERGENCY, MARINE, LAND, SECURITY, CLIMATE, OTHER
+    }
+
+    public enum Usage {
+        RESEARCH, COMMERCIAL, EDUCATION, OTHER
+    }
 }
 

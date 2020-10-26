@@ -14,4 +14,10 @@ public interface AppUserResponse {
     String getSurname();
 
     Set<UserRoleResponse> getRoles();
+
+    String getDomain();
+
+    String getUsage();
+
+    String getCountry();
 }
