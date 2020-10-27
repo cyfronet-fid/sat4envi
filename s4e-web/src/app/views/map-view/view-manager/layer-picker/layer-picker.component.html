@@ -1,11 +1,11 @@
-<header (click)="collapse.emit()">
+<header [ngClass]="collapsed ? 'down' : 'up'" (click)="collapse.emit()">
   <span class="products__title">
     <ng-content select="[s4e-caption]"></ng-content>
   </span>
   <span class="products__hint">
     <a href="#">{{help}}</a>
   </span>
-  <span [ngClass]="collapsed ? 'down' : 'up'"></span>
+  <span class="products__toggle"></span>
 </header>
 <section *ngIf="!collapsed">
   <ul>
@@ -18,7 +18,7 @@
       <ng-container *ngIf="hasFavourite">
         <button *ngIf="!item.isFavouriteLoading; else itemFavLoading"
                 (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
-          <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}"></i>
+          <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}" title="Dodaj produkt do ulubionych"></i>
         </button>
         <ng-template #itemFavLoading>
           <fa-icon class="item-fav-spinner" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
@@ -28,6 +28,7 @@
         (click)="itemSelected.emit(item.cid)"
         class="products__name"
         data-e2e="picker-item-label"
+        [ngClass]="item.active ? 'active' : ''"
       >
         {{item.label}}
       </button>

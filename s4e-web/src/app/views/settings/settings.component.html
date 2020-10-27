@@ -37,13 +37,12 @@
     </ul>
 
     <header *ngIf="showInstitutions$ | async">
-      <img src="assets/images/ico_cog.svg" alt="Institution setting icon"/>
       <span>Panel zarządzania instytucją</span>
     </header>
     <ul class="navigation__list navigation__list--institution" *ngIf="showInstitutions$ | async">
       <li>
           <s4e-search
-            placeholder="Wpisz szukaną instytucję..."
+            placeholder="Wybierz instytucję"
             [query]="institutionsSearchResultsQuery"
             [store]="institutionsSearchResultsStore"
             [value]="searchValue"

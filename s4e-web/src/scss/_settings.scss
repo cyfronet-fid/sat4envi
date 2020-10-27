@@ -297,6 +297,8 @@ p {
     margin-bottom: $space-default;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-radius: $border-radius-default;
+    max-width: 800px;
+    min-width: 400px;
 
 
     &--50 {
@@ -328,6 +330,7 @@ p {
       position: relative;
       margin-left: 130px;
       border-radius: $border-radius-default;
+      display: none;
 
 
       span {
@@ -459,10 +462,19 @@ p {
 .institution {
   &__logo {
     width: 200px;
-    min-height: 100px;
+    min-height: 200px;
     margin-bottom: $space-xsmall;
   }
 }
+
+.logo__empty {
+  width: 200px;
+  height: 200px;
+  background: url('/../assets/images/ico_institution.svg') no-repeat center;
+  opacity: .2;
+  border: 1px solid $color-grey-secondary;
+}
+
 
 
 

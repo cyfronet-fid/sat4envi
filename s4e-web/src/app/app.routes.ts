@@ -6,6 +6,7 @@ import {ResetPasswordComponent} from './views/reset-password/reset-password.comp
 import {RegisterComponent} from './views/register/register.component';
 import {IsLoggedIn, IsNotLoggedIn} from './utils/auth-guard/auth-guard.service';
 import {ActivateComponent} from './views/activate/activate.component';
+import {ApihowtoComponent} from './views/apihowto/apihowto.component';
 import {activateMatcher} from './utils';
 import {HTTP_404_NOT_FOUND} from './errors/errors.model';
 
@@ -31,6 +32,11 @@ export const appRoutes: Routes = [
     component: ResetPasswordComponent,
     canActivate: [IsNotLoggedIn]
   }, {
+    path: 'howto',
+    component: ApihowtoComponent
+  },
+
+  {
     matcher: activateMatcher,
     component: ActivateComponent
   }, {

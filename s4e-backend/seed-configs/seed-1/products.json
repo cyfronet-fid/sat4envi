@@ -122,7 +122,7 @@
   {
     "name": "Polsafi",
     "displayName": "Polsafi, wyładowania atmosferyczne",
-    "description": "Obraz satelitarny SEVIRI/Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami z systemu detekcji wyładowań PERUN IMGW-PIB.  Na obrazie tym chmury widoczne są w odcieniach jasnej szarości. Im jaśniejszy odcień tym grubsza optycznie jest chmura.\n\nObraz pozwala na detekcję burz, a nie tylko komórek konwekcyjnych (jak np. obraz 10.8 wzmocniony). Chmura, na której występują wyładowania jest chmurą burzową.\n\nWyładowania nałożone na obraz HRV oznaczone są następująco:\n\n    kolor czerwony - wyładowania doziemne dodatnie,\n    kolor niebieski – wyładowania doziemne ujemne\n    kolor brązowy – wyładowania międzychmurowe.",
+    "description": "Obraz satelitarny SEVIRI/Meteosat dla obszaru Polski w kanale HRV (0.4-1.1 µm) z nałożonymi wyładowaniami z systemu detekcji wyładowań PERUN IMGW-PIB.  Na obrazie tym chmury widoczne są w odcieniach jasnej szarości. Im jaśniejszy odcień tym grubsza optycznie jest chmura.\n\nObraz pozwala na detekcję burz, a nie tylko komórek konwekcyjnych (jak np. obraz 10.8 wzmocniony). Chmura, na której występują wyładowania jest chmurą burzową.Wyładowania nałożone na obraz HRV oznaczone są następująco: \nkolor czerwony - wyładowania doziemne dodatnie,\nkolor niebieski – wyładowania doziemne ujemne\nkolor brązowy – wyładowania międzychmurowe.",
     "accessType": "OPEN",
     "layerName": "polsafi",
     "sceneSchemaName": "MSG.scene.v1.json",

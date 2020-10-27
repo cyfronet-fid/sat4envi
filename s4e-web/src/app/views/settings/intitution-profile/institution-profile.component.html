@@ -28,6 +28,10 @@
       </ul>
     </div>
     <aside class="institution__logo">
+      <div class="logo__empty"></div>
+
+      <!-- @ToDo Albo logo__empty albo img -->
+
       <img
         *ngIf="!!(activeInstitution$ | async) && (activeInstitution$ | async).emblem"
         [src]="(activeInstitution$ | async).emblem"
@@ -58,6 +62,14 @@
       >
         Dodaj jednostkę podrzędną
       </button>
+      <ng-container add-button>
+        <button
+          class="button button--secondary button--small"
+          [routerLink]="['/settings/people']"
+        >
+          Osoby w tej instytucji
+        </button>
+      </ng-container>
     </ng-container>
     <ng-template #returnToUserProfile>
       <button

@@ -16,6 +16,7 @@ import {AkitaNgDevtools} from '@datorama/akita-ngdevtools';
 import {registerLocaleData} from '@angular/common';
 import localePl from '@angular/common/locales/pl';
 import {LoginComponent} from './views/login/login.component';
+import {ApihowtoModule} from './views/apihowto/apihowto.module';
 import {LoginModule} from './views/login/login.module';
 import {RegisterModule} from './views/register/register.module';
 import {ResetPasswordModule} from './views/reset-password/reset-password.module';
@@ -61,6 +62,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     LoginModule,
     LogoutModule,
     RegisterModule,
+    ApihowtoModule,
     ActivateModule,
     ResetPasswordModule,
     CommonStateModule,

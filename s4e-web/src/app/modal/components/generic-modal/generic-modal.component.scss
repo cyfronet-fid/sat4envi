@@ -30,6 +30,11 @@
   min-height: 20px;
   padding-right: 50px;
   word-wrap: break-word;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+}
+
+.modal-footer {
+  border-radius: 0 0 $border-radius-default $border-radius-default;
 }
 
 .modal-body {

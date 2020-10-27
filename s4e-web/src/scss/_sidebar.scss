@@ -175,7 +175,31 @@
     font-weight: 500;
     padding: $space-small $space-default;
     border-bottom: 1px solid $color-grey-secondary;
+    position: relative;
 
+    .products__toggle {
+      top: 10px;
+      width: calc(100% - 33px);
+      position: absolute;
+      height: 20px;
+      cursor: pointer;
+
+      &:before {
+        content: " ";
+        display: block;
+        width: 12px;
+        height: 10px;
+        right: 0;
+        top: 5px;
+        position: absolute;
+        background: url(/../assets/images/ico_chevron.svg) no-repeat center right;
+      }
+    }
+
+
+    &.up  .products__toggle:before{
+      transform: rotate(180deg);
+    }
   }
 
   &__title {
@@ -215,7 +239,14 @@
       padding-top: $space-xsmall;
       padding-bottom: $space-xsmall;
       text-align: left;
+
+      &.active {
+        background: $color-grey-secondary;
+        border-radius: 8px;
+      }
     }
+
+
 
     &:last-child {
       margin-bottom: 0;
