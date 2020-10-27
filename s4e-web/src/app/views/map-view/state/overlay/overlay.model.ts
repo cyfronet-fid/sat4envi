@@ -1,6 +1,6 @@
 import { InjectorModule } from 'src/app/common/injector.module';
-import {ImageWMS} from 'ol/source';
-import {Image, Layer} from 'ol/layer';
+import {TileWMS} from 'ol/source';
+import {Layer, Tile} from 'ol/layer';
 import {IUILayer} from '../common.model';
 import {EntityState} from '@datorama/akita';
 import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
@@ -43,17 +43,17 @@ export function convertToUIOverlay(
   // Remove layers name from DB
   const urlAndParams = getBaseUrlAndParamsFrom(overlay.url);
   const {url, ...urlParams} = !!urlAndParams && urlAndParams || {url: overlay.url};
-  const source = new ImageWMS({
+  const source = new TileWMS({
     crossOrigin: 'Anonymous',
     serverType: 'geoserver',
     url,
-    params: { LAYERS: overlay.layerName, ...urlParams}
+    params: { LAYERS: overlay.layerName, TILED: true, ...urlParams}
   });
   handleLoadingOf(source);
   return {
     favourite: false,
     ...overlay,
-    olLayer: new Image({ source }),
+    olLayer: new Tile({ source }),
     cid: overlay.id,
     active: active,
     isLoading: false,
@@ -61,7 +61,7 @@ export function convertToUIOverlay(
   };
 }
 
-function handleLoadingOf(source: ImageWMS) {
+function handleLoadingOf(source: TileWMS) {
   const loaderService = InjectorModule.Injector.get(NgxUiLoaderService);
   const imageWmsLoader = new ImageWmsLoader(source);
   imageWmsLoader.start$

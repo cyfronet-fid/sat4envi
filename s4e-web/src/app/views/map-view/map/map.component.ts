@@ -6,8 +6,8 @@ import {SessionQuery} from '../../../state/session/session.query';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
-import {Image, Layer, Tile} from 'ol/layer';
-import {ImageWMS, OSM} from 'ol/source';
+import {Layer, Tile} from 'ol/layer';
+import {TileWMS, OSM} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
@@ -17,7 +17,6 @@ import {distinctUntilChanged} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
-import ImageWrapper from 'ol/Image';
 import {getImageXhr, ImageBase64} from '../../settings/manage-institutions/institution-form/files.utils';
 
 @Component({
@@ -179,13 +178,14 @@ export class MapComponent implements OnInit, OnDestroy {
       // Due to change in geo-server we need floor timestamp to seconds
       // If not, it will not respond correctly
       const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
-      const source = new ImageWMS({
+      const source = new TileWMS({
         crossOrigin: 'Anonymous',
         url: this._remoteConfiguration.get().geoserverUrl,
         serverType: 'geoserver',
         params: {
           'LAYERS': this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
           'TIME': isoTimeWithoutMs,
+          'TILED': true,
         },
       });
 
@@ -203,10 +203,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
       // Event though header based authentication is not used this custom XHRrequest is required
       // because default OpenLayer image loading does not send cookies when used on SAFARI browser
-      const image = new Image({ source });
+      const image = new Tile({ source });
       mapLayers.push(image);
-      source.setImageLoadFunction(this._getImageLoaderWith());
-      mapLayers.push(new Image({ source }));
+      source.setTileLoadFunction(this._getTileLoadFunction());
+      mapLayers.push(new Tile({ source }));
     }
 
     for (const overlay of this.overlays.filter(ol => ol.active)) {
@@ -214,8 +214,8 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  private _getImageLoaderWith() {
-    return function (tile: ImageWrapper, src: string) {
+  private _getTileLoadFunction() {
+    return (tile, src) => {
       const xhr = getImageXhr(src);
       xhr.onload = () => ((tile.getImage() as HTMLImageElement).src = ImageBase64.getFromXhr(xhr));
       xhr.send();

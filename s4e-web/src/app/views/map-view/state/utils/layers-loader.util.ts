@@ -1,14 +1,13 @@
-import { ImageWMS } from 'ol/source';
+import {TileWMS} from 'ol/source';
 
-export const IMAGE_WMS_LAYER = 'image-wms-layer-loader';
 export class ImageWmsLoader {
   public start$: Promise<void>;
   public end$: Promise<void>;
 
   protected _error$: Promise<void>;
 
-  constructor(source: ImageWMS) {
-    this._error$ = new Promise((resolve, reject) => {
+  constructor(source: TileWMS) {
+    this._error$ = new Promise((resolve) => {
       source.once('imageloaderror', () => resolve());
     });
 
