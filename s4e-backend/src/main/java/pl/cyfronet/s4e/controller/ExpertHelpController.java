@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.controller.request.ExpertHelpRequest;
+import pl.cyfronet.s4e.data.repository.PropertyRepository;
 import pl.cyfronet.s4e.event.OnSendHelpRequestEvent;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
@@ -28,6 +30,12 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 @Tag(name = "expertHelp", description = "Send issue to helpdesk")
 public class ExpertHelpController {
     private final ApplicationEventPublisher eventPublisher;
+    private final PropertyRepository propertyRepository;
+
+    private interface PropertyProjection {
+        String getName();
+        String getValue();
+    }
 
     @Operation(summary = "Send expert help request email from user")
     @ApiResponses({
@@ -38,13 +46,23 @@ public class ExpertHelpController {
     })
     @PostMapping(value = "/expert-help", consumes = APPLICATION_JSON_VALUE)
     public void sendHelpRequest(@RequestBody @Valid ExpertHelpRequest request) {
-        val requestingUserEmail = AppUserDetailsSupplier.get().getEmail();
-        val helpRequestEvent = new OnSendHelpRequestEvent(
-                requestingUserEmail,
-                request.getHelpType(),
-                request.getIssueDescription(),
-                LocaleContextHolder.getLocale()
-        );
-        eventPublisher.publishEvent(helpRequestEvent);
+        propertyRepository.findByName(Constants.PROPERTY_EXPERT_HELP_EMAIL, PropertyProjection.class)
+                .map(PropertyProjection::getValue)
+                .map(expertEmail -> {
+                    val requestingUserEmail = AppUserDetailsSupplier.get().getEmail();
+                    return new OnSendHelpRequestEvent(
+                            requestingUserEmail,
+                            expertEmail,
+                            request.getHelpType(),
+                            request.getIssueDescription(),
+                            LocaleContextHolder.getLocale()
+                    );
+                })
+                .ifPresentOrElse(eventPublisher::publishEvent, () -> {
+                    throw new IllegalStateException(
+                            "Cannot send request, expert email not configured " +
+                            "(property " + Constants.PROPERTY_EXPERT_HELP_EMAIL + ")"
+                    );
+                });
     }
 }

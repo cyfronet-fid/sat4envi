@@ -6,4 +6,6 @@ public final class Constants {
 
     public static final String GEOSERVER_PRG_DATA_STORE = "prg";
     public static final String GEOSERVER_PRG_PATH = "/opt/geoserver/prg/";
+
+    public static final String PROPERTY_EXPERT_HELP_EMAIL = "expert_help_email";
 }
