@@ -102,6 +102,21 @@ Several profiles can be specified in a comma separated list, e.g. `production,ru
 
 `run-seed-places`: Runs `SeedPlaces`.
 
+`run-seed-expert-email`: Runs `SeedExpertEmail`.
+
+
+#### DB properties
+
+Apart from the runtime properties, there are several properties in DB table `property`.
+These can be modified with admin API, see `AdminPropertyController`.
+
+`scene_granule_path_prefix`: the prefix necessary to build URLs of granules for GeoServer (it is set by `seed.sh`).
+Its format is: `mailto://<bucket>/`.
+Example: `mailto://s4e-sync-1/`.
+
+`expert_help_email`: the mail to which all the expert help requests go.
+Example: `expert@mail.pl`.
+
 
 #### Seeding Products
 
@@ -132,7 +147,7 @@ Extra envvars, which can be set on script:
 
 The script will:
 - authenticate (waiting with some timeout),
-- set necessary property,
+- set necessary DB properties,
 - create schemas,
 - create products,
 - synchronize scene prefixes,

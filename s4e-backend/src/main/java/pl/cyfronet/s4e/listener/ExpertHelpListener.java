@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pl.cyfronet.s4e.event.OnSendHelpRequestEvent;
-import pl.cyfronet.s4e.properties.ExpertHelpProperties;
-import pl.cyfronet.s4e.service.InstitutionService;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.util.MailHelper;
 
@@ -20,10 +18,7 @@ public class ExpertHelpListener {
     private final MessageSource messageSource;
     private final TemplateEngine templateEngine;
     private final MailService mailService;
-    private final InstitutionService institutionService;
     private final MailHelper mailHelper;
-
-    private final ExpertHelpProperties expertHelpProperties;
 
     @Async
     @EventListener
@@ -68,6 +63,11 @@ public class ExpertHelpListener {
         String plainText = templateEngine.process("expert-help.txt", ctx);
         String htmlText = templateEngine.process("expert-help.html", ctx);
 
-        mailService.sendEmail(expertHelpProperties.getMail(), subject, plainText, htmlText);
+        mailService.sendEmail(helper -> {
+            helper.setTo(event.getExpertEmail());
+            helper.setReplyTo(event.getRequestingUserEmail());
+            helper.setSubject(subject);
+            helper.setText(plainText, htmlText);
+        });
     }
 }
