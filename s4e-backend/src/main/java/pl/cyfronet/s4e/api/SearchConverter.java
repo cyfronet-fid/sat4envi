@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -90,6 +91,8 @@ public class SearchConverter {
                     .replaceAll("\\s+", "")
                     .split("TO");
             String[] ingestionParams = getQueryParam(paramName).split(":");
+            if (times.length != 2 || ingestionParams.length != 2)
+                throw new DateTimeParseException(null, queryParamMap.get(paramName), 0);
             result.put(ingestionParams[0], parseTime(times[0]));
             result.put(ingestionParams[1], parseTime(times[1]));
         }
