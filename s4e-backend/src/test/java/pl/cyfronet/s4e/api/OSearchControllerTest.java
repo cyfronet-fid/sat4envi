@@ -120,6 +120,27 @@ public class OSearchControllerTest {
     }
 
     @Test
+    public void shouldReturnScenesDhusForMultipleQueryParams() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                .param("q", "platformname:Sentinel-1A AND sensoroperationalmode:IW")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(20))));
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                //yyyy-MM-ddThh:mm:ss.SSSZ
+                .param("q", "sensoroperationalmode:IW AND beginposition:[2019-11-01T00:00:00.000Z TO 2019-11-12T00:00:00.000Z]")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(20))));
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                .param("q", "sensoroperationalmode:IW AND beginposition:[NOW-24MONTHS TO NOW]")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(20))));
+
+    }
+
+    @Test
     public void shouldReturnScenesDhusQueryPlatforname() throws Exception {
         //TODO: specific Sentinel not 1 or 2
         mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
@@ -172,6 +193,24 @@ public class OSearchControllerTest {
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(0))));
+    }
+
+    @Test
+    public void shouldntReturnScenesDhusQueryByTime() throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                .param("q", "(beginposition:[2019-11-09T00:00:00.000000+00:00])")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                .param("q", "(beginposition:[2019-11-09T00:00:00.000000+00:00 TO])")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                .param("q", "(beginposition:[ TO 2019-11-12T00:00:00.000000+00:00])")
+                .with(jwtBearerToken(appUser, objectMapper)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
