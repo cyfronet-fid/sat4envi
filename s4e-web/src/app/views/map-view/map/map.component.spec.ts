@@ -3,8 +3,7 @@ import {MapComponent} from './map.component';
 import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
 import {take} from 'rxjs/operators';
-import { getImageXhr } from '../../settings/manage-institutions/institution-form/files.utils';
-import ImageWrapper from 'ol/Image';
+import {Tile} from 'ol/layer';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -85,11 +84,11 @@ describe('MapComponent', () => {
     const spyOpen = spyOn(XMLHttpRequest.prototype, 'open').and.callThrough();
     const spySend = spyOn(XMLHttpRequest.prototype, 'send');
 
-    const load = (component as any)._getImageLoaderWith();
+    const load = (component as any)._getTileLoadFunction();
 
     const tile = {
       getImage: () => ({src: ''})
-    } as any as ImageWrapper;
+    } as any as Tile;
     const src = '<srcUrl>';
 
     const xhr = load(tile, src);
