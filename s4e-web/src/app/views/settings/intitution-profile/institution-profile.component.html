@@ -2,28 +2,25 @@
   <h1 i18n>Profil instytucji</h1>
 </header>
 <section class="content__details content__details--75 profile">
-  <ng-container *ngIf="!!(activeInstitution$ | async)">
+  <ng-container *ngIf="(activeInstitution$ | async) as institution">
     <div
       class="profile__content"
       data-e2e="institution-details"
     >
-      <h2 id="institution-title">{{ (activeInstitution$ | async).name }}</h2>
+      <h2 id="institution-title">{{ institution.name }}</h2>
       <ul>
-        <li id="institution-address">{{ (activeInstitution$ | async).address }}</li>
+        <li id="institution-address">{{ institution.address }}</li>
         <li
           id="institution-postal-code"
           data-e2e="postal-code-with-city"
         >
-          {{ (activeInstitution$ | async).postalCode }} {{ (activeInstitution$ | async).city }}
+          {{ institution.postalCode }} {{ institution.city }}
         </li>
-        <li *ngIf="!!(activeInstitution$ | async).institutionAdminEmail" id="institution-email">
-          email: {{ (activeInstitution$ | async).institutionAdminEmail }}
+        <li *ngIf="!!institution.phone" id="institution-phone">
+          Telefon: {{ institution.phone }}
         </li>
-        <li *ngIf="!!(activeInstitution$ | async).phone" id="institution-phone">
-          Telefon: {{ (activeInstitution$ | async).phone }}
-        </li>
-        <li *ngIf="!!(activeInstitution$ | async).secondaryPhone" id="institution-second-phone">
-          Telefon: {{ (activeInstitution$ | async).secondaryPhone }}
+        <li *ngIf="!!institution.secondaryPhone" id="institution-second-phone">
+          Telefon: {{ institution.secondaryPhone }}
         </li>
       </ul>
     </div>

@@ -1,7 +1,7 @@
-import { Institution } from './institution.model';
+import {Institution, InstitutionForm} from './institution.model';
 import * as Factory from 'factory.ts';
 
-export const InstitutionFactory = Factory.makeFactory<Institution>({
+export const InstitutionFactory = Factory.makeFactory<InstitutionForm>({
   id: Factory.each(i => `institution:${i}`),
 
   parentName : null,
@@ -15,5 +15,5 @@ export const InstitutionFactory = Factory.makeFactory<Institution>({
   phone: '+48 000 000 000',
   secondaryPhone: '+48 000 000 000',
   emblem: 'logo_um.png',
-  institutionAdminEmail: 'zkMember@mail.pl'
+  adminsEmails: 'zkMember@mail.pl'
 });

@@ -134,9 +134,9 @@ describe('InstitutionFormComponent', () => {
   });
 
   it('should validate institution admin email', () => {
-    component.form.controls.institutionAdminEmail.setValue('');
-    expect(component.form.controls.institutionAdminEmail.valid).toBeTruthy();
-    component.form.controls.institutionAdminEmail.setValue(InstitutionFactory.build().institutionAdminEmail);
-    expect(component.form.controls.institutionAdminEmail.valid).toBeTruthy();
+    component.form.controls.adminsEmails.setValue('');
+    expect(component.form.controls.adminsEmails.valid).toBeTruthy();
+    component.form.controls.adminsEmails.setValue(InstitutionFactory.build().adminsEmails);
+    expect(component.form.controls.adminsEmails.valid).toBeTruthy();
   });
 });

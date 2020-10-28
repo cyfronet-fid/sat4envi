@@ -71,6 +71,8 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   loadLogo($event) {
     const emblem = File.getFirst($event);
+    console.log('emblem', emblem);
+
     if (!emblem) {
       return;
     }
