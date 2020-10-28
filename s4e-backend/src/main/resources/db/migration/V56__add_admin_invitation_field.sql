@@ -1,0 +1,2 @@
+ALTER TABLE invitation
+    ADD COLUMN for_admin BOOLEAN DEFAULT FALSE;

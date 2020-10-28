@@ -121,19 +121,29 @@
       <ul s4e-form-error [control]="form.controls.emblem"></ul>
     </section>
     <section>
-      <h2 i18n>Administrator instytucji</h2>
+      <h2 i18n>Administratorzy instytucji</h2>
       <p i18n>
         W tym miejscu możesz dodać osoby, które będą zarządzać instytucją.
         Wpisz e-maile oddzielone przecinkami. Uprawnienia Administratora
         możesz nadać później w zakładce ludzie po uprzednim wybraniu instytucji.
       </p>
-      <ext-input
-        type="email"
-        formControlName="institutionAdminEmail"
-        label="E-mail administratora"
-        [required]="false"
-        i18n-label
-      ></ext-input>
+      <label for="emails" i18n>E-maile administratorów</label>
+      <input
+        type="text"
+        formControlName="adminsEmails"
+      />
+      <ng-container *ngIf="hasErrors('adminsEmails')" >
+        <span
+          class="error"
+          *ngFor="let error of form.controls.adminsEmails.errors | keyvalue"
+          [ngSwitch]="error.key"
+          data-e2e="invalid-url-error"
+        >
+          <ng-container *ngSwitchCase="'emails'" i18n>
+            Email lub emaile nie są poprawne
+          </ng-container>
+        </span>
+      </ng-container>
     </section>
 
     <footer class="form-submit">

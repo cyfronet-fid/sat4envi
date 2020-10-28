@@ -13,7 +13,10 @@ export interface Institution {
   phone: string;
   secondaryPhone: string;
   emblem: string;
-  institutionAdminEmail: string;
+}
+
+export interface InstitutionForm extends Institution {
+  adminsEmails: string;
 }
 
 /**

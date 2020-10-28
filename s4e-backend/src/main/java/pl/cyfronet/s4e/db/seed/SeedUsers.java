@@ -270,57 +270,108 @@ public class SeedUsers implements ApplicationRunner {
         log.info("Seeding Institutions & Roles");
         try {
             String name = "Zarządzenie kryzysowe - PL";
-            Institution institution = institutionService.save(Institution.builder()
+            Institution zkPlInstitution = institutionService.save(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
                     .city("Warszawa")
                     .build());
-            institutionService.addMember(institution.getSlug(), "zkMember@mail.pl");
-            institutionService.addMember(institution.getSlug(), "zkAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkAdmin@mail.pl", institution.getSlug());
-
-            institutionService.addMember(institution.getSlug(), "zkPLMember@mail.pl");
-            institutionService.addMember(institution.getSlug(), "zkPLAdmin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "zkPLAdmin@mail.pl", institution.getSlug());
-            institutionService.addMember(institution.getSlug(), "admin@mail.pl");
-            userRoleService.addRole(AppRole.INST_ADMIN, "admin@mail.pl", institution.getSlug());
+            userRoleService.addRole(
+                    zkPlInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkMember@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
+            userRoleService.addRole(
+                    zkPlInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkPlInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkPLMember@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
+            userRoleService.addRole(
+                    zkPlInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkPLAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkPlInstitution.getSlug(),
+                    appUserRepository.findByEmail("admin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
 
             name = "Zarządzanie kryzysowe - Mazowieckie";
             CreateChildInstitutionRequest zkMazRequest = CreateChildInstitutionRequest.builder()
-                    .institutionAdminEmail("zkMazAdmin@mail.pl")
                     .name(name)
                     .city("Warszawa")
                     .build();
-            Institution childInstitution = institutionService.createChildInstitution(zkMazRequest, institution.getSlug());
-            institutionService.addMember(childInstitution.getSlug(), "zkMazMember@mail.pl");
+            Institution zkMazInstitution = institutionService
+                    .createChildInstitution(zkMazRequest, zkPlInstitution.getSlug());
+            userRoleService.addRole(
+                    zkMazInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkMazAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkMazInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkMazMember@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
 
             name = "Zarządzanie kryzysowe - Warszawa";
             CreateChildInstitutionRequest zkWawRequest = CreateChildInstitutionRequest.builder()
-                    .institutionAdminEmail("zkWawAdmin@mail.pl")
                     .name(name)
                     .city("Warszawa")
                     .build();
-            Institution child2RowInstitution = institutionService.createChildInstitution(zkWawRequest, childInstitution.getSlug());
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkWawMember@mail.pl");
+            Institution zkWawInstitution = institutionService
+                    .createChildInstitution(zkWawRequest, zkMazInstitution.getSlug());
+            userRoleService.addRole(
+                    zkWawInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkWawAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkWawInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkWawMember@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
 
             name = "Zarządzanie kryzysowe - Małopolska";
             CreateChildInstitutionRequest zkMalRequest = CreateChildInstitutionRequest.builder()
-                    .institutionAdminEmail("zkMalAdmin@mail.pl")
                     .name(name)
                     .city("Kraków")
                     .build();
-            childInstitution = institutionService.createChildInstitution(zkMalRequest, institution.getSlug());
-            institutionService.addMember(childInstitution.getSlug(), "zkMalMember@mail.pl");
+            Institution zkMalInstitution = institutionService
+                    .createChildInstitution(zkMalRequest, zkPlInstitution.getSlug());
+            userRoleService.addRole(
+                    zkMalInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkMalAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkMalInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkMalMember@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
 
             name = "Zarządzanie kryzysowe - Kraków";
             CreateChildInstitutionRequest zkKrRequest = CreateChildInstitutionRequest.builder()
-                    .institutionAdminEmail("zkKrAdmin@mail.pl")
                     .name(name)
                     .city("Kraków")
                     .build();
-            child2RowInstitution = institutionService.createChildInstitution(zkKrRequest, childInstitution.getSlug());
-            institutionService.addMember(child2RowInstitution.getSlug(), "zkKrAdmin@mail.pl");
-
+            Institution zkKrInstitution = institutionService
+                    .createChildInstitution(zkKrRequest, zkMalInstitution.getSlug());
+            userRoleService.addRole(
+                    zkKrInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkKrAdmin@mail.pl").get().getId(),
+                    AppRole.INST_ADMIN
+            );
+            userRoleService.addRole(
+                    zkKrInstitution.getSlug(),
+                    appUserRepository.findByEmail("zkKrAdmin@mail.pl").get().getId(),
+                    AppRole.INST_MEMBER
+            );
 
         } catch (InstitutionCreationException e) {
             log.warn(e.getMessage(), e);

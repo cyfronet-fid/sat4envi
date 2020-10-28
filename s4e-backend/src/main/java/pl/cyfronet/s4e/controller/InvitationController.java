@@ -62,7 +62,11 @@ public class InvitationController {
             @RequestBody @Valid InvitationRequest request,
             @PathVariable("institution") String institutionSlug
     ) throws Exception {
-        val token = invitationService.createInvitationFrom(request.getEmail(), institutionSlug);
+        val token = invitationService.createInvitationFrom(
+                request.getEmail(),
+                institutionSlug,
+                request.isForAdmin()
+        );
         val invitationEvent = new OnSendInvitationEvent(token, LocaleContextHolder.getLocale());
         eventPublisher.publishEvent(invitationEvent);
 
@@ -92,7 +96,11 @@ public class InvitationController {
                 .orElseThrow(() -> new NotFoundException("Invitation couldn't be found"));
         invitationService.deleteBy(invitation.getToken());
 
-        val newToken = invitationService.createInvitationFrom(request.getNewEmail(), institutionSlug);
+        val newToken = invitationService.createInvitationFrom(
+                request.getNewEmail(),
+                institutionSlug,
+                request.isForAdmin()
+        );
         val invitationEvent = new OnSendInvitationEvent(newToken, LocaleContextHolder.getLocale());
         eventPublisher.publishEvent(invitationEvent);
 

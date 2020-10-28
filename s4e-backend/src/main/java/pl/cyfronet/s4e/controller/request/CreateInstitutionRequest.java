@@ -7,7 +7,6 @@ import pl.cyfronet.s4e.controller.validation.Base64;
 import pl.cyfronet.s4e.controller.validation.ContentType;
 import pl.cyfronet.s4e.controller.validation.ImageDimensions;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -31,7 +30,4 @@ public class CreateInstitutionRequest {
     private String phone;
 
     private String secondaryPhone;
-
-    @Email
-    private String institutionAdminEmail;
 }

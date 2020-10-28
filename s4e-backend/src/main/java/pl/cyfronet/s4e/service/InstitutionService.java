@@ -37,10 +37,10 @@ public class InstitutionService {
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
     public String save(CreateInstitutionRequest request) throws InstitutionCreationException, NotFoundException {
-        String slug = slugService.slugify(request.getName());
+        String institutionSlug = slugService.slugify(request.getName());
         save(Institution.builder()
                 .name(request.getName())
-                .slug(slug)
+                .slug(institutionSlug)
                 .parent(null)
                 .address(request.getAddress())
                 .city(request.getCity())
@@ -48,10 +48,9 @@ public class InstitutionService {
                 .phone(request.getPhone())
                 .secondaryPhone(request.getSecondaryPhone())
                 .build());
-        addInstitutionAdminIfRequested(request.getInstitutionAdminEmail(), slug);
-        uploadEmblemIfRequested(slug, request.getEmblem());
+        uploadEmblemIfRequested(institutionSlug, request.getEmblem());
 
-        return slug;
+        return institutionSlug;
     }
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
@@ -65,14 +64,14 @@ public class InstitutionService {
     }
 
     @Transactional(rollbackFor = {InstitutionCreationException.class, NotFoundException.class})
-    public Institution createChildInstitution(CreateChildInstitutionRequest request, String institutionSlug)
+    public Institution createChildInstitution(CreateChildInstitutionRequest request, String parentInstitutionSlug)
             throws InstitutionCreationException, NotFoundException {
-        // create child institution with default group
-        Institution result = save(Institution.builder()
+        Institution parentInstitution = findBySlug(parentInstitutionSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + parentInstitutionSlug + "'"));
+        Institution childInstitution = save(Institution.builder()
                 .name(request.getName())
                 .slug(slugService.slugify(request.getName()))
-                .parent(findBySlug(institutionSlug, Institution.class)
-                        .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'")))
+                .parent(parentInstitution)
                 .address(request.getAddress())
                 .city(request.getCity())
                 .postalCode(request.getPostalCode())
@@ -80,42 +79,19 @@ public class InstitutionService {
                 .secondaryPhone(request.getSecondaryPhone())
                 .build());
         uploadEmblemIfRequested(slugService.slugify(request.getName()), request.getEmblem());
-        addInstitutionAdminIfRequested(request.getInstitutionAdminEmail(), result.getSlug());
-        // add all over-admins as members and admins
-        addParentInstitutionAdministrators(institutionSlug, result.getSlug());
-        return result;
-    }
 
-    private void addParentInstitutionAdministrators(String institutionSlug, String leafInstitutionSlug) throws NotFoundException {
-        val institution = institutionRepository.findBySlug(institutionSlug, Institution.class)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
-        if (institution.getParent() != null) {
-            Institution parent = institution.getParent();
-            addParentInstitutionAdministrators(parent.getSlug(), leafInstitutionSlug);
-        }
-        // look for institution admins and add them to leaf institution
-        Set<String> adminEmails = institutionRepository.findAllMembersEmails(institutionSlug, AppRole.INST_ADMIN);
-        for (String adminEmail : adminEmails) {
-            addInstitutionAdminIfRequested(adminEmail, leafInstitutionSlug);
-        }
-    }
-
-    public void addInstitutionAdminIfRequested(String adminMail, String institutionSlug) throws NotFoundException {
-        if (adminMail != null) {
-            val appUser = appUserRepository.findByEmail(adminMail);
-            if (appUser.isPresent()) {
-                // add member to default group
-                userRoleService.addRole(AppRole.INST_MEMBER, adminMail, institutionSlug);
-                // add institution_admin role for user
-                userRoleService.addRole(AppRole.INST_ADMIN, adminMail, institutionSlug);
-            } else {
-                // TODO: invite
+        for (val userRole : parentInstitution.getMembersRoles()) {
+            if (userRole.getRole() == AppRole.INST_ADMIN) {
+                // This should be propagated to the member role automatically.
+                userRoleService.addRole(childInstitution.getSlug(), userRole.getUser().getId(), AppRole.INST_ADMIN);
             }
         }
+
+        return childInstitution;
     }
 
     public <T> Set<T> getMembers(String institutionSlug, Class<T> projection) {
-        return institutionRepository.findAllMembers(institutionSlug, AppRole.INST_MEMBER, projection);
+        return institutionRepository.findAllMembers(institutionSlug, projection);
     }
 
     public <T> List<T> getAll(Class<T> projection) {
@@ -124,14 +100,6 @@ public class InstitutionService {
 
     public <T> Optional<T> findBySlug(String slug, Class<T> projection) {
         return institutionRepository.findBySlug(slug, projection);
-    }
-
-    public void addMember(String institutionSlug, String email) throws NotFoundException {
-        userRoleService.addRole(AppRole.INST_MEMBER, email, institutionSlug);
-    }
-
-    public void removeMember(String institutionSlug, String email) throws NotFoundException {
-        userRoleService.removeRole(AppRole.INST_MEMBER, email, institutionSlug);
     }
 
     @Transactional(rollbackFor = {InstitutionUpdateException.class, NotFoundException.class})

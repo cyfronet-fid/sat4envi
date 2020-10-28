@@ -49,10 +49,14 @@ public class Institution extends CreationAndModificationAudited {
     @ToString.Exclude
     private Institution parent;
 
-    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     private Set<UserRole> membersRoles = new HashSet<>();
+
+    public void addMemberRole(UserRole role) {
+        membersRoles.add(role);
+    }
 
     public void removeMemberRole(UserRole role) {
         membersRoles.remove(role);

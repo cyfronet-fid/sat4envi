@@ -104,7 +104,6 @@ public class UserRoleControllerTest {
 
         DeleteUserRoleRequest userRoleDeleteRequest = DeleteUserRoleRequest.builder()
                 .email(PROFILE_EMAIL)
-                .groupSlug("default")
                 .institutionSlug(slugInstitution)
                 .role(AppRole.INST_ADMIN)
                 .build();

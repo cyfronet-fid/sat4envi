@@ -1,6 +1,7 @@
 package pl.cyfronet.s4e.service;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,24 +40,26 @@ public class UserRoleServiceTest {
     @Autowired
     private SlugService slugService;
 
-    private String slugInstitution;
+    private String institutionSlug;
+    private Long userId;
 
     @BeforeEach
     public void setUp() {
         reset();
-        appUserRepository.save(AppUser.builder()
+        val appUser = appUserRepository.save(AppUser.builder()
                 .email(PROFILE_EMAIL)
                 .name("Get")
                 .surname("Profile")
                 .password("{noop}password")
                 .enabled(true)
                 .build());
+        userId = appUser.getId();
 
         String test_institution = "Test Institution";
-        slugInstitution = slugService.slugify(test_institution);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionSlug = slugService.slugify(test_institution);
+        institutionRepository.save(Institution.builder()
                 .name(test_institution)
-                .slug(slugInstitution)
+                .slug(institutionSlug)
                 .build());
     }
 
@@ -71,26 +74,26 @@ public class UserRoleServiceTest {
 
     @Test
     public void shouldAddMemberRole() throws Exception {
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.INST_MEMBER, PROFILE_EMAIL, slugInstitution);
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(1));
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(0));
+        userRoleService.addRole(institutionSlug, userId, AppRole.INST_MEMBER);
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(1));
     }
 
     @Test
-    public void shouldDeleteOnlyManagerRole() throws Exception {
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.INST_ADMIN, PROFILE_EMAIL, slugInstitution);
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(2));
-        userRoleService.removeRole(AppRole.INST_ADMIN, PROFILE_EMAIL, slugInstitution);
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(1));
+    public void shouldDeleteOnlyAdminRole() throws Exception {
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(0));
+        userRoleService.addRole(institutionSlug, userId, AppRole.INST_ADMIN);
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(2));
+        userRoleService.removeRole(institutionSlug, userId, AppRole.INST_ADMIN);
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(1));
     }
 
     @Test
-    public void shouldDeleteMemberAndManagerRole() throws Exception {
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
-        userRoleService.addRole(AppRole.INST_ADMIN, PROFILE_EMAIL, slugInstitution);
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(2));
-        userRoleService.removeRole(AppRole.INST_MEMBER, PROFILE_EMAIL, slugInstitution);
-        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, slugInstitution), hasSize(0));
+    public void shouldDeleteMemberAndAdminRole() throws Exception {
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(0));
+        userRoleService.addRole(institutionSlug, userId, AppRole.INST_ADMIN);
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(2));
+        userRoleService.removeRole(institutionSlug, userId, AppRole.INST_MEMBER);
+        assertThat(userRoleRepository.findUserRolesInInstitution(PROFILE_EMAIL, institutionSlug), hasSize(0));
     }
 }

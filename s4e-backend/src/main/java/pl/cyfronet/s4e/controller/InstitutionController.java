@@ -27,6 +27,7 @@ import pl.cyfronet.s4e.ex.S3ClientException;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.service.InstitutionService;
+import pl.cyfronet.s4e.service.UserRoleService;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
@@ -45,6 +46,7 @@ public class InstitutionController {
     private final InstitutionService institutionService;
     private final AppUserService appUserService;
     private final ApplicationEventPublisher eventPublisher;
+    private final UserRoleService userRoleService;
 
     @Operation(summary = "Create a new institution")
     @ApiResponses({
@@ -138,7 +140,7 @@ public class InstitutionController {
         return institutionService.getMembers(institutionSlug, MemberResponse.class);
     }
 
-    @Operation(summary = "Add a new member to the group")
+    @Operation(summary = "Add a new member to the institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If member was added"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
@@ -147,15 +149,20 @@ public class InstitutionController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @PostMapping(value = "/institutions/{institution}/members", consumes = APPLICATION_JSON_VALUE)
-    public void addMember(@RequestBody AddMemberRequest request,
-                          @PathVariable("institution") String institutionSlug)
+    public void addMemberRole(@RequestBody AddMemberRequest request,
+                              @PathVariable("institution") String institutionSlug)
             throws NotFoundException {
-        institutionService.addMember(institutionSlug, request.getEmail());
-        eventPublisher.publishEvent(
-                new OnAddToInstitutionEvent(request.getEmail(), institutionSlug, LocaleContextHolder.getLocale()));
+        val appUser = appUserService.findByEmail(request.getEmail())
+                .orElseThrow(() -> new NotFoundException("User not found for email: '" + request.getEmail() + "'"));
+        userRoleService.addRole(institutionSlug, appUser.getId(), AppRole.INST_MEMBER);
+        eventPublisher.publishEvent(new OnAddToInstitutionEvent(
+                request.getEmail(),
+                institutionSlug,
+                LocaleContextHolder.getLocale()
+        ));
     }
 
-    @Operation(summary = "Remove a member from the group")
+    @Operation(summary = "Remove a member from the institution")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "If member was removed"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
@@ -163,15 +170,53 @@ public class InstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
-    @DeleteMapping("/institutions/{institution}/members/{id}")
-    public void removeMember(@PathVariable("institution") String institutionSlug,
-                             @PathVariable Long id)
+    @DeleteMapping("/institutions/{institution}/members/{appUserId}")
+    public void removeMemberRole(@PathVariable("institution") String institutionSlug,
+                                 @PathVariable Long appUserId)
             throws NotFoundException {
-        val appUser = appUserService.findById(id)
-                .orElseThrow(() -> new NotFoundException("User not found for id: '" + id + "'"));
-        institutionService.removeMember(institutionSlug, appUser.getEmail());
-        eventPublisher.publishEvent(
-                new OnRemoveFromInstitutionEvent(appUser.getEmail(), institutionSlug, LocaleContextHolder.getLocale()));
+        userRoleService.removeRole(institutionSlug, appUserId, AppRole.INST_MEMBER);
+
+        val appUser = appUserService.findById(appUserId)
+                .orElseThrow(() -> new NotFoundException("User not found for id: '" + appUserId + "'"));
+        eventPublisher.publishEvent(new OnRemoveFromInstitutionEvent(
+                appUser.getEmail(),
+                institutionSlug,
+                LocaleContextHolder.getLocale()
+        ));
+    }
+
+    @Operation(summary = "Add admin role to the institution")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role has been added"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @PostMapping("/institutions/{institution}/admins/{appUserId}")
+    public void addAdminRole(
+            @PathVariable("institution") String institutionSlug,
+            @PathVariable Long appUserId
+    )
+            throws NotFoundException {
+        userRoleService.addRole(institutionSlug, appUserId, AppRole.INST_ADMIN);
+
+        // TODO: Send confirmation email to user
+    }
+
+    @Operation(summary = "Remove admin role from the institution")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Role has been removed"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @DeleteMapping("/institutions/{institution}/admins/{appUserId}")
+    public void removeAdminRole(
+            @PathVariable("institution") String institutionSlug,
+            @PathVariable Long appUserId
+    )
+            throws NotFoundException {
+        userRoleService.removeRole(institutionSlug, appUserId, AppRole.INST_ADMIN);
+
+        // TODO: Send confirmation email to user
     }
 
     @Operation(summary = "Delete an institution")

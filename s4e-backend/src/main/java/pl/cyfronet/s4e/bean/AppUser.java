@@ -40,10 +40,18 @@ public class AppUser extends CreationAndModificationAudited {
     @NotEmpty
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
     private Set<UserRole> roles = new HashSet<>();
+
+    public void addRole(UserRole role) {
+        roles.add(role);
+    }
+
+    public void removeRole(UserRole role) {
+        roles.remove(role);
+    }
 
     private boolean enabled;
 
@@ -61,10 +69,6 @@ public class AppUser extends CreationAndModificationAudited {
     private Usage usage;
 
     private String country;
-
-    public void removeRole(UserRole role) {
-        roles.remove(role);
-    }
 
     @Type(type = "jsonb")
     @Column(columnDefinition = "jsonb")

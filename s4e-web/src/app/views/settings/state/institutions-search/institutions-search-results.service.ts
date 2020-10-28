@@ -11,7 +11,7 @@ export class InstitutionsSearchResultsService {
 
   constructor(private _store: InstitutionsSearchResultsStore,
               private _guidGenerationService: AkitaGuidService,
-              private _insitutionService: InstitutionService,
+              private _institutionService: InstitutionService,
               private _InstitutionQuery: InstitutionQuery,
               private _http: HttpClient) {
   }
@@ -34,7 +34,7 @@ export class InstitutionsSearchResultsService {
     this._store.update({searchResult: searchResult, isOpen: false});
 
     if (!!searchResult) {
-      this._insitutionService.setActive(searchResult.slug);
+      this._institutionService.setActive(searchResult.slug);
     }
   }
 }

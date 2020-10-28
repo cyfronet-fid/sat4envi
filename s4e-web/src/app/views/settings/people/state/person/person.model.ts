@@ -1,13 +1,18 @@
 export const DEFAULT_GROUP_NAME = '__default__';
 export const DEFAULT_GROUP_SLUG = 'default';
 
+export interface UserRole {
+  institutionSlug: string;
+  role: 'INST_MEMBER' | 'INST_ADMIN';
+}
+
 export interface Person {
-  // this is ID
+  id: number;
   email: string;
   name: string;
   surname: string;
-  roles: any[],
-  // createDate: string
+  roles: UserRole[];
+  isAdmin: boolean;
 }
 
 /**

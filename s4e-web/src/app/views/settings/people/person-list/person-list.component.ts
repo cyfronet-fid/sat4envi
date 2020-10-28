@@ -98,12 +98,26 @@ export class PersonListComponent implements OnInit, OnDestroy {
   }
 
   resendTo(invitation: any) {
-    this._invitationService
-      .resend({oldEmail: invitation.email, newEmail: invitation.email}, this.institution);
+    const request = {
+      oldEmail: invitation.email,
+      newEmail: invitation.email,
+      forAdmin: invitation.isAdmin
+    };
+    this._invitationService.resend(request, this.institution);
   }
 
   isInvitation(person: Person) {
     return isInvitation(person);
+  }
+
+  toggleAdminRoleFor(person: Person) {
+    this.isAdmin(person)
+      ? this._personService.removeAdminRoleFor(person)
+      : this._personService.addAdminRoleFor(person);
+  }
+
+  isAdmin(person: Person) {
+    return person.roles.some(role => role.role === 'INST_ADMIN');
   }
 
   async delete(person: Person) {
@@ -122,7 +136,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
     const description = 'Czy na pewno chcesz usunąć tę osobę z instytucji? Operacja jest nieodwracalna.';
     const hasBeenConfirmed = await this._modalService.confirm(title, description);
     if (hasBeenConfirmed) {
-      // this._personService.deleteMember(userId);
+      this._personService.delete(person);
     }
   }
 
