@@ -1,7 +1,7 @@
 import { INVITATION_FORM_MODAL_ID } from './invitation-form/invitation-form-modal.model';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ReactiveFormsModule} from '@angular/forms';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import {PersonListComponent} from './person-list/person-list.component';
 import {InvitationFormComponent} from './invitation-form/invitation-form.component';
 import {RouterModule} from '@angular/router';

@@ -24,6 +24,7 @@ import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.service.SlugService;
+import pl.cyfronet.s4e.service.UserRoleService;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
@@ -52,6 +53,9 @@ public class InstitutionControllerIntegrationTest {
 
     @Autowired
     private UserRoleRepository userRoleRepository;
+
+    @Autowired
+    private UserRoleService userRoleService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -110,7 +114,6 @@ public class InstitutionControllerIntegrationTest {
     public void shouldCreateInstitutionWithEmblem() throws Exception {
         CreateInstitutionRequest request = CreateInstitutionRequest.builder()
                 .name("Test Institution ZK")
-                .institutionAdminEmail(PROFILE_EMAIL)
                 .emblem(testResourceHelper.getAsStringInBase64(IMAGE_PNG_PATH))
                 .build();
 
@@ -154,7 +157,6 @@ public class InstitutionControllerIntegrationTest {
     public void shouldUpdateInstitutionWithEmblem() throws Exception {
         CreateInstitutionRequest request = CreateInstitutionRequest.builder()
                 .name("Test Institution ZK")
-                .institutionAdminEmail(PROFILE_EMAIL)
                 .emblem(testResourceHelper.getAsStringInBase64(IMAGE_PNG_PATH))
                 .build();
         String slugInstitution = slugService.slugify(request.getName());
@@ -206,7 +208,6 @@ public class InstitutionControllerIntegrationTest {
     public void shouldCreateChildInstitutionWithEmblem() throws Exception {
         CreateChildInstitutionRequest request = CreateChildInstitutionRequest.builder()
                 .name("Test Institution ZK")
-                .institutionAdminEmail(PROFILE_EMAIL)
                 .emblem(testResourceHelper.getAsStringInBase64(IMAGE_PNG_PATH))
                 .build();
         String slugInstitution = slugService.slugify(request.getName());

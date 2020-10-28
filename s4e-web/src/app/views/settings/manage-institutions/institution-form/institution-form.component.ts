@@ -1,3 +1,4 @@
+import { InvitationService } from './../../people/state/invitation/invitation.service';
 import {IBreadcrumb} from '../../breadcrumb/breadcrumb.model';
 import {BreadcrumbService} from '../../breadcrumb/breadcrumb.service';
 import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
@@ -18,7 +19,7 @@ import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
 import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
 import {FormState} from 'src/app/state/form/form.model';
 import {InstitutionQuery} from '../../state/institution/institution.query';
-import {Institution} from '../../state/institution/institution.model';
+import {Institution, InstitutionForm} from '../../state/institution/institution.model';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
 import {combineLatest, of} from 'rxjs';
@@ -30,8 +31,21 @@ import { emailListValidator } from '../../email-list-validator.utils';
   templateUrl: './institution-form.component.html',
   styleUrls: ['./institution-form.component.scss']
 })
-export class InstitutionFormComponent extends GenericFormComponent<InstitutionQuery, Institution> {
-  form: FormGroup<Institution>;
+export class InstitutionFormComponent extends GenericFormComponent<InstitutionQuery, InstitutionForm> {
+  form: FormGroup<InstitutionForm> = new FormGroup<InstitutionForm>({
+    parentName: new FormControl<string>(null, Validators.required),
+    parentSlug: new FormControl<string>(null, Validators.required),
+
+    slug: new FormControl<string>(),
+    name: new FormControl<string>(null, Validators.required),
+    address: new FormControl<string>(),
+    postalCode: new FormControl<string>(),
+    city: new FormControl<string>(null, Validators.required),
+    phone: new FormControl<string>(),
+    emblem: new FormControl<string>(),
+    secondaryPhone: new FormControl<string>(),
+    adminsEmails: new FormControl<string>(null, emailListValidator)
+  });
   activeInstitution: Institution;
   emblemImgSrc: string;
 
@@ -44,18 +58,16 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     private _modalService: ModalService,
     private _modalQuery: ModalQuery,
     private _activatedRoute: ActivatedRoute,
-    private _breadcrumbService: BreadcrumbService
+    private _breadcrumbService: BreadcrumbService,
+    private _invitationService: InvitationService
   ) {
     super(_formsManager, _router, _institutionQuery, 'addInstitution');
   }
 
   ngOnInit() {
-    this.form = this._createInstitutionForm();
     this._updateFormState();
-
     super.ngOnInit();
   }
-
 
   loadLogo($event) {
     const emblem = File.getFirst($event);
@@ -120,13 +132,18 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       return;
     }
 
+    const {adminsEmails, ...institution} = this.form.value;
     (
       this.activeInstitution
       ? this._institutionService.updateInstitution$(this.form.value)
       : this._institutionService.createInstitutionChild$(this.form.value)
     )
       .pipe(untilDestroyed(this))
-      .subscribe();
+      .subscribe((updatedInstitution: Institution) => {
+        adminsEmails.split(',')
+          .map(email => email.trim())
+          .forEach(email => this._invitationService.send(updatedInstitution.slug, email, true));
+      });
   }
 
   hasErrors(controlName: string) {
@@ -199,23 +216,6 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       url: INSTITUTION_PROFILE_PATH
     };
     this._breadcrumbService.replaceWith(breadcrumbs);
-  }
-
-  protected _createInstitutionForm() {
-    return new FormGroup<Institution>({
-      parentName: new FormControl<string>(null, Validators.required),
-      parentSlug: new FormControl<string>(null, Validators.required),
-
-      slug: new FormControl<string>(),
-      name: new FormControl<string>(null, Validators.required),
-      address: new FormControl<string>(),
-      postalCode: new FormControl<string>(),
-      city: new FormControl<string>(null, Validators.required),
-      phone: new FormControl<string>(),
-      emblem: new FormControl<string>(),
-      secondaryPhone: new FormControl<string>(),
-      institutionAdminEmail: new FormControl<string>(null, emailListValidator)
-    });
   }
 
   protected _setParent(form: FormGroup<Institution>, institution: Institution) {

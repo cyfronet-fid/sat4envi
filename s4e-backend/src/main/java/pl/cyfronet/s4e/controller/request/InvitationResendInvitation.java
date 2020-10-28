@@ -16,4 +16,6 @@ public class InvitationResendInvitation {
     @Email
     @NotEmpty
     private String newEmail;
+
+    private boolean forAdmin;
 }

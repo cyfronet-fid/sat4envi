@@ -24,9 +24,10 @@ public class InvitationService {
     private final AppUserRepository appUserRepository;
     private final InstitutionRepository institutionRepository;
     private final InvitationRepository invitationRepository;
+    private final UserRoleService userRoleService;
 
     @Transactional(rollbackFor = {InvitationCreationException.class, NotFoundException.class})
-    public String createInvitationFrom(String email, String institutionSlug) throws InvitationCreationException, NotFoundException {
+    public String createInvitationFrom(String email, String institutionSlug, boolean forAdmin) throws InvitationCreationException, NotFoundException {
         if (institutionRepository.isMemberBySlugAndEmail(institutionSlug, email)) {
             throw new InvitationCreationException("User is a member of this institution");
         }
@@ -47,6 +48,7 @@ public class InvitationService {
                 .status(InvitationStatus.WAITING)
                 .token(token)
                 .institution(institution)
+                .forAdmin(forAdmin)
                 .build();
         invitationRepository.save(invitation);
 
@@ -61,7 +63,8 @@ public class InvitationService {
 
         val user = appUserRepository.findByEmail(AppUserDetailsSupplier.get().getEmail())
                 .orElseThrow(() -> constructNFE("token: " + token));
-        addMemberToDefaultGroup(user, institution);
+
+        addRoles(user, institution, invitation.isForAdmin());
     }
 
     @Transactional(rollbackFor = NotFoundException.class)
@@ -101,23 +104,15 @@ public class InvitationService {
         invitationRepository.delete(invitation);
     }
 
-    private void addMemberToDefaultGroup(AppUser user, Institution institution) throws NotFoundException {
-        val dbInstitution = institutionRepository.findBySlug(institution.getSlug(), Institution.class)
-                .orElseThrow(() -> new NotFoundException("Institution not found for : " + institution.getSlug()));
-        val sourceRoles = dbInstitution.getMembersRoles();
-        val memberRole = UserRole
-                .builder()
-                .role(AppRole.INST_MEMBER)
-                .user(user)
-                .institution(dbInstitution)
-                .build();
-        if (!sourceRoles.contains(memberRole)) {
-            dbInstitution.getMembersRoles().add(memberRole);
-            user.getRoles().add(memberRole);
+    private void addRoles(AppUser user, Institution institution, boolean forAdmin) throws NotFoundException {
+        userRoleService.addRole(institution.getSlug(), user.getId(), AppRole.INST_MEMBER);
+
+        if (forAdmin) {
+            userRoleService.addRole(institution.getSlug(), user.getId(), AppRole.INST_ADMIN);
         }
     }
 
-    private pl.cyfronet.s4e.ex.NotFoundException constructNFE(String... args) {
+    private NotFoundException constructNFE(String... args) {
         return new NotFoundException("Invitation not found for '" + String.join(", ", args) + "'");
     }
 }

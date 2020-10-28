@@ -7,7 +7,6 @@ import pl.cyfronet.s4e.controller.validation.Base64;
 import pl.cyfronet.s4e.controller.validation.ContentType;
 import pl.cyfronet.s4e.controller.validation.ImageDimensions;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Data
@@ -15,9 +14,6 @@ import javax.validation.constraints.NotEmpty;
 public class CreateChildInstitutionRequest {
     @NotEmpty
     private String name;
-
-    @Email
-    private String institutionAdminEmail;
 
     @Base64
     @ContentType(pattern = "image/(jpeg|png|gif)")

@@ -18,6 +18,4 @@ public class DeleteUserRoleRequest {
     AppRole role;
     @NotEmpty
     String institutionSlug;
-    @NotEmpty
-    String groupSlug;
 }

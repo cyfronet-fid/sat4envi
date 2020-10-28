@@ -13,14 +13,12 @@ import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
-import pl.cyfronet.s4e.controller.response.AppUserResponse;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
+import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 import pl.cyfronet.s4e.ex.InstitutionCreationException;
 import pl.cyfronet.s4e.ex.NotFoundException;
-
-import java.util.Set;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -117,24 +115,18 @@ public class InstitutionServiceTest {
 
     @Test
     public void shouldAddChildInstitutionAndParentInstitutionAdmin() throws NotFoundException, InstitutionCreationException {
-        AppUser childAdmin = appUserRepository.save(AppUser.builder()
-                .email(PROFILE_EMAIL3)
-                .name("Get3")
-                .surname("Profile3")
-                .password("{noop}password")
-                .enabled(true)
-                .build());
         CreateChildInstitutionRequest request = CreateChildInstitutionRequest.builder()
                 .name("child-institution")
-                .institutionAdminEmail(childAdmin.getEmail())
                 .build();
 
-        Set<AppUserResponse> result = institutionService.getMembers("child-institution", AppUserResponse.class);
-        assertThat(result, hasSize(0));
+        val members = institutionService.getMembers("child-institution", ProjectionWithId.class);
+        assertThat(members, hasSize(0));
+
         institutionService.createChildInstitution(request, slugInstitution2);
-        result = institutionService.getMembers("child-institution", AppUserResponse.class);
-        // new inst_admin and two from parent
-        assertThat(result, hasSize(3));
+
+        val updatedMembers = institutionService.getMembers("child-institution", ProjectionWithId.class);
+        // Two admins from the parent.
+        assertThat(updatedMembers, hasSize(2));
     }
 
     @Test

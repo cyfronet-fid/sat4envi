@@ -22,12 +22,20 @@
   <ng-container table-header>
       <th i18n>Imię i nazwisko</th>
       <th i18n>Email</th>
+      <th i18n>Administrator</th>
       <th i18n class="text--center">Status</th>
       <th i18n>Akcje</th>
   </ng-container>
   <ng-template let-user="item">
     <td i18n>{{user.name}} {{user.surname}}</td>
     <td i18n>{{user.email}}</td>
+    <td *ngIf="!isInvitation(user)">
+      <input
+        type="checkbox"
+        (click)="toggleAdminRoleFor(user)"
+        [checked]="isAdmin(user)"
+      />
+    </td>
     <td class="text--center">
       <ng-container *ngIf="isInvitation(user)">
         <button

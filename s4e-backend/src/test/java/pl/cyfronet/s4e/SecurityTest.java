@@ -95,7 +95,6 @@ public class SecurityTest {
         appUserRepository.save(securityAppUser);
         DeleteUserRoleRequest userRoleRequest = DeleteUserRoleRequest.builder()
                 .email("profile@email")
-                .groupSlug("default")
                 .institutionSlug("slugInstitution")
                 .role(AppRole.INST_ADMIN)
                 .build();

@@ -12,4 +12,6 @@ public class InvitationRequest {
     @Email
     @NotEmpty
     private String email;
+
+    private boolean forAdmin;
 }

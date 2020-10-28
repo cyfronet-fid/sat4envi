@@ -53,7 +53,8 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
       email: new FormControl<string>(
         !!this.invitation ? this.invitation.email : null,
         Validators.required
-      )
+      ),
+      forAdmin: new FormControl<boolean>(false)
     });
   }
 
@@ -74,11 +75,11 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
       return;
     }
 
-    const email = this.form.controls.email.value;
+    const {email, forAdmin} = this.form.value;
     !!this.invitation
       ? this._invitationService
-        .resend({oldEmail: this.invitation.email, newEmail: email}, this.institution)
-      : this._invitationService.send(this.institution.slug, email);
+        .resend({oldEmail: this.invitation.email, newEmail: email, forAdmin}, this.institution)
+      : this._invitationService.send(this.institution.slug, email, forAdmin);
     this.dismiss();
   }
 }

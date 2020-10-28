@@ -24,6 +24,8 @@ public class Invitation extends CreationAndModificationAudited {
     @NotEmpty
     private String token;
 
+    private boolean forAdmin;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private InvitationStatus status;

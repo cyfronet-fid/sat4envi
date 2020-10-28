@@ -3,6 +3,7 @@ import { Person } from './../person/person.model';
 export interface InvitationResendRequest {
   oldEmail: string;
   newEmail: string;
+  forAdmin: boolean;
 }
 
 type stateType = 'waiting' | `rejected`;

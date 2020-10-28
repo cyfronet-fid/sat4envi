@@ -17,7 +17,13 @@ public interface InstitutionRepository extends CrudRepository<Institution, Long>
 
     <T> List<T> findAllBy(Class<T> projection);
 
+    Optional<Institution> findBySlug(String slug);
+
     <T> Optional<T> findBySlug(String slug, Class<T> projection);
+
+    Set<Institution> findAllByParentId(Long ParentId);
+
+    <T> Set<T> findAllByParentId(Long ParentId, Class<T> projection);
 
     @Query(value = "SELECT i.* " +
             "FROM Institution i " +
@@ -31,8 +37,8 @@ public interface InstitutionRepository extends CrudRepository<Institution, Long>
             "FROM AppUser u " +
             "LEFT JOIN FETCH u.roles r " +
             "LEFT JOIN FETCH r.institution i " +
-            "WHERE i.slug = :institutionSlug AND r.role = :role")
-    <T> Set<T> findAllMembers(String institutionSlug, AppRole role, Class<T> projection);
+            "WHERE i.slug = :institutionSlug")
+    <T> Set<T> findAllMembers(String institutionSlug, Class<T> projection);
 
     @Query("SELECT u.email " +
             "FROM UserRole r " +

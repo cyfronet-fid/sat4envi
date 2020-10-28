@@ -64,10 +64,10 @@ export class InvitationService {
       .subscribe();
   }
 
-  public send(institutionSlug: string, email: string): void {
+  public send(institutionSlug: string, email: string, forAdmin = false): void {
     const notificationMessage = 'Zaproszenie zostało wysłane';
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/invitations`;
-    this._http.post<Invitation>(url, {email})
+    this._http.post<Invitation>(url, {email, forAdmin})
       .pipe(
         handleHttpRequest$(this._store),
         tap(() => this._notificationService.addGeneral({
