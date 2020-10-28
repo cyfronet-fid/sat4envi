@@ -78,9 +78,6 @@ describe('InstitutionProfileComponent', () => {
     const postalCode = de.query(By.css('#institution-postal-code'));
     expect(postalCode.nativeElement.innerHTML).toContain(institution.postalCode);
 
-    const institutionAdminEmail = de.query(By.css('#institution-email'));
-    expect(institutionAdminEmail.nativeElement.innerHTML).toContain('email: ' + institution.institutionAdminEmail);
-
     const phone = de.query(By.css('#institution-phone'));
     expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);
 
@@ -121,9 +118,6 @@ describe('InstitutionProfileComponent', () => {
 
     const postalCode = de.query(By.css('#institution-postal-code'));
     expect(postalCode.nativeElement.innerHTML).toContain(institution.postalCode);
-
-    const institutionAdminEmail = de.query(By.css('#institution-email'));
-    expect(institutionAdminEmail.nativeElement.innerHTML).toContain('email: ' + institution.institutionAdminEmail);
 
     const phone = de.query(By.css('#institution-phone'));
     expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);

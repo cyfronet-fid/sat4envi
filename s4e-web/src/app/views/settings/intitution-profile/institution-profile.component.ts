@@ -17,7 +17,7 @@ import { Observable, combineLatest } from 'rxjs';
 })
 export class InstitutionProfileComponent implements OnDestroy {
   public isLoading$: Observable<boolean> = this._institutionQuery.selectLoading();
-  public activeInstitution$ = this._institutionsSearchResultsQuery
+  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery
     .selectActive$(this._activatedRoute)
     .pipe(untilDestroyed(this));
   public childrenInstitutions$: Observable<Institution[]> = combineLatest(

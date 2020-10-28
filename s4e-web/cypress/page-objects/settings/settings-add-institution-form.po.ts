@@ -55,10 +55,6 @@ export class AddInstitutionForm extends Core {
       .pageObject
       .getLogoImage()
       .should('be.visible');
-    AddInstitutionForm
-      .pageObject
-      .getEmailInput()
-      .type(institution.institutionAdminEmail);
 
     return AddInstitutionForm;
   }

@@ -1,7 +1,7 @@
 import { NotificationService } from 'notifications';
 import {HttpClient} from '@angular/common/http';
 import {PersonStore} from './person.store';
-import {DEFAULT_GROUP_SLUG, Person } from './person.model';
+import {DEFAULT_GROUP_SLUG, Person, UserRole} from './person.model';
 import { InstitutionQuery } from '../../../state/institution/institution.query';
 import environment from 'src/environments/environment';
 import { handleHttpRequest$ } from 'src/app/common/store.util';
@@ -32,11 +32,11 @@ export class PersonService {
     this._http.post(url, {})
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => {
-          person.roles.push({
+          const newRole: UserRole = {
             institutionSlug,
             role: 'INST_ADMIN'
-          });
-          this._store.replace(person.email, person);
+          };
+          this._store.update(person.email, {roles: [...person.roles, newRole]});
           this._notificationService.addGeneral({
           content: `${person.email} otrzymał rolę administratora`,
           type: 'success'
@@ -50,8 +50,7 @@ export class PersonService {
     this._http.delete(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => {
-        this._store.remove(person.email);
-        this._store.add(this._getPersonWithout(person, 'INST_ADMIN'));
+        this._store.update(person.email, {roles: person.roles.filter(role => role.role !== 'INST_ADMIN' && role.institutionSlug !== institutionSlug)});
         this._notificationService.addGeneral({
           content: `Rola administratora dla ${person.email} została usunięta`,
           type: 'success'
@@ -65,15 +64,5 @@ export class PersonService {
     this._http.post(url, {})
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => this._store.remove(person.email));
-  }
-
-  private _getPersonWithout(person: Person, role: 'INST_MEMBER' | 'INST_ADMIN'): Person {
-    const roleIndex = person.roles.map(personRole => personRole.role).indexOf(role);
-    const clonedPerson = JSON.parse(JSON.stringify(person));
-    delete(clonedPerson.roles[roleIndex]);
-
-    console.log(clonedPerson);
-
-    return person;
   }
 }

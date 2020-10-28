@@ -76,7 +76,7 @@ describe('InvitationFormComponent', () => {
 
     spyOn(invitationService, 'send').and.callThrough();
     component.send();
-    expect(invitationService.send).toHaveBeenCalledWith(slug, email);
+    expect(invitationService.send).toHaveBeenCalledWith(slug, email, false);
   });
   it('should call invitation resend', () => {
     const name = 'test';
@@ -92,6 +92,6 @@ describe('InvitationFormComponent', () => {
 
     spyOn(invitationService, 'resend').and.callThrough();
     component.send();
-    expect(invitationService.resend).toHaveBeenCalledWith({newEmail: email, oldEmail: email}, component.institution);
+    expect(invitationService.resend).toHaveBeenCalledWith({forAdmin: false, newEmail: email, oldEmail: email}, component.institution);
   });
 });
