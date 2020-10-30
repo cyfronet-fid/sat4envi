@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -245,6 +246,38 @@ public class GeoServerOperations {
         restTemplate().put(url, entity);
     }
 
+    public void createTileLayer(String workspace, String layerName) {
+        String baseUrl = geoServerProperties.getBaseUrl().replace("/rest", "");
+        URI url = UriComponentsBuilder.fromHttpUrl(
+                baseUrl + "/gwc/rest/layers/{workspace}:{layerName}.xml")
+                .buildAndExpand(workspace, layerName).toUri();
+        String payload = loadResource("classpath:geoserver/request/post-tile-layer.xml")
+                .replace("{workspace}", workspace)
+                .replace("{layerName}", layerName);
+        val entity = httpEntity(payload, MediaType.APPLICATION_XML_VALUE);
+        restTemplate().put(url, entity);
+    }
+
+    public boolean tileLayerExists(String workspace, String layerName) {
+        String baseUrl = geoServerProperties.getBaseUrl().replace("/rest", "");
+        URI url = UriComponentsBuilder.fromHttpUrl(
+                baseUrl + "/gwc/rest/layers/{workspace}:{layerName}")
+                .buildAndExpand(workspace, layerName).toUri();
+        try {
+            ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
+            return responseEntity.getStatusCode().is2xxSuccessful();
+        } catch (HttpServerErrorException.InternalServerError e) {
+            return false;
+        }
+    }
+
+    public void deleteTileLayer(String workspace, String layerName) {
+        String baseUrl = geoServerProperties.getBaseUrl().replace("/rest", "");
+        URI url = UriComponentsBuilder.fromHttpUrl(
+                baseUrl + "/gwc/rest/layers/{workspace}:{layerName}")
+                .buildAndExpand(workspace, layerName).toUri();
+        restTemplate().delete(url);
+    }
 
     public List<String> listStyles(String workspace) {
         URI url = UriComponentsBuilder.fromHttpUrl(
@@ -265,7 +298,7 @@ public class GeoServerOperations {
         URI url = UriComponentsBuilder.fromHttpUrl(
                 geoServerProperties.getBaseUrl() + "/workspaces/{workspace}/styles/{style}")
                 .buildAndExpand(workspace, style).toUri();
-        String sldFileContents = loadSldFile("classpath:geoserver/" + sld + ".sld");
+        String sldFileContents = loadResource("classpath:geoserver/" + sld + ".sld");
         val entity = httpEntity(sldFileContents, "application/vnd.ogc.sld+xml");
         restTemplate().put(url, entity);
     }
@@ -282,13 +315,13 @@ public class GeoServerOperations {
     }
 
 
-    private String loadSldFile(String path) {
+    private String loadResource(String path) {
         try {
             return ResourceReader.asString(resourceLoader.getResource(path));
         } catch (FileNotFoundException e) {
             throw new IllegalStateException(e);
         } catch (IOException e) {
-            log.warn("Couldn't read SLD file", e);
+            log.warn("Couldn't read resource: '" + path + "'", e);
             throw new RuntimeException(e);
         }
     }

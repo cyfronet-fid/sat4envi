@@ -108,8 +108,10 @@ class GeoServerServiceTest {
 
         geoServerService.createPrgOverlays(prgOverlays);
 
-        verify(geoServerOperations, times(1)).createExternalShpDataStore(geoServerProperties.getWorkspace(), Constants.GEOSERVER_PRG_DATA_STORE, "file://"+Constants.GEOSERVER_PRG_PATH);
-        verify(geoServerOperations, times(1)).setLayerDefaultStyle(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType(), sldStyle.getName());
+        verify(geoServerOperations).createExternalShpDataStore(geoServerProperties.getWorkspace(), Constants.GEOSERVER_PRG_DATA_STORE, "file://"+Constants.GEOSERVER_PRG_PATH);
+        verify(geoServerOperations).setLayerDefaultStyle(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType(), sldStyle.getName());
+        verify(geoServerOperations).createTileLayer(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType());
+        verifyNoMoreInteractions(geoServerOperations);
     }
 
     @Test

@@ -6,6 +6,7 @@ import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientResponseException;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.PRGOverlay;
@@ -43,15 +44,24 @@ public class GeoServerService {
         try {
             geoServerOperations.createS3CoverageStore(geoServerProperties.getWorkspace(), gsName);
             geoServerOperations.createS3Coverage(geoServerProperties.getWorkspace(), gsName, gsName);
+            geoServerOperations.createTileLayer(geoServerProperties.getWorkspace(), gsName);
         } catch (RestClientResponseException e) {
             // try to clean up GeoServer state
             log.warn("Error when adding product", e);
             try {
-                geoServerOperations.deleteCoverageStore(geoServerProperties.getWorkspace(), gsName, true);
-            } catch (HttpClientErrorException.NotFound e1) {
-                log.warn("Probably coverage store wasn't created", e1);
+                geoServerOperations.deleteTileLayer(geoServerProperties.getWorkspace(), gsName);
+            } catch (HttpServerErrorException.InternalServerError e1) {
+                log.warn("Probably tile layer wasn't created", e1);
             } catch (RestClientResponseException e1) {
                 log.error("Couldn't clean up GeoServer state", e1);
+            } finally {
+                try {
+                    geoServerOperations.deleteCoverageStore(geoServerProperties.getWorkspace(), gsName, true);
+                } catch (HttpClientErrorException.NotFound e1) {
+                    log.warn("Probably coverage store wasn't created", e1);
+                } catch (RestClientResponseException e1) {
+                    log.error("Couldn't clean up GeoServer state", e1);
+                }
             }
             throw e;
         }
@@ -96,6 +106,7 @@ public class GeoServerService {
         for (val prgOverlay: prgOverlays) {
             if (layerExists(prgOverlay.getFeatureType())) {
                 geoServerOperations.setLayerDefaultStyle(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType(), prgOverlay.getSldStyle().getName());
+                geoServerOperations.createTileLayer(geoServerProperties.getWorkspace(), prgOverlay.getFeatureType());
             }
         }
     }
