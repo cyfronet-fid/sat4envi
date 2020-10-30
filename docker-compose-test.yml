@@ -52,7 +52,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_TEST_SECRET_KEY:-miniotest123}
     command: server /data
   geoserver-test:
-    image: fiddev/geoserver:1.5.0-GS2.18.0
+    image: fiddev/geoserver:1.6.0-GS2.18.0
     ports:
       - ${GEOSERVER_TEST_PORT:-8081}:8080
     networks:
@@ -62,9 +62,12 @@ services:
       JNDI_URL: ${GEOSERVER_TEST_JNDI_URL:-jdbc:postgresql://db-test:5432/sat4envi_test}
       JNDI_USERNAME: ${GEOSERVER_TEST_JNDI_USERNAME:-sat4envi_test}
       JNDI_PASSWORD: ${GEOSERVER_TEST_JNDI_PASSWORD:-sat4envi_test}
-      S3_ENDPOINT: ${GEOSERVER_S3_ENDPOINT:-http://minio-test:9000/}
-      S3_ACCESS_KEY: ${GEOSERVER_S3_ACCESS_KEY:-miniotest}
-      S3_SECRET_KEY: ${GEOSERVER_S3_SECRET_KEY:-miniotest123}
+      S3_ENDPOINT: ${GEOSERVER_TEST_S3_ENDPOINT:-http://minio-test:9000/}
+      S3_ACCESS_KEY: ${GEOSERVER_TEST_S3_ACCESS_KEY:-miniotest}
+      S3_SECRET_KEY: ${GEOSERVER_TEST_S3_SECRET_KEY:-miniotest123}
+      GWC_AWS_ACCESS_KEY: ${GEOSERVER_TEST_GWC_AWS_ACCESS_KEY:-miniotest}
+      GWC_AWS_SECRET_KEY: ${GEOSERVER_TEST_GWC_AWS_SECRET_KEY:-miniotest123}
+      GWC_ENDPOINT: ${GEOSERVER_TEST_GWC_ENDPOINT:-http://minio-test:9000}
   db-test:
     image: postgis/postgis:13-3.0
     ports:

@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.geoserver.op;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.Constants;
@@ -128,6 +129,30 @@ public class GeoServerOperationsIntegrationTest {
         geoServerOperations.deleteCoverage("test", "setvak", "setvak");
 
         assertThat(geoServerOperations.listCoverages("test", "setvak"), hasSize(0));
+    }
+
+    @Nested
+    class TileLayers {
+        @BeforeEach
+        public void beforeEach() {
+            seedProductsTest.prepareDb();
+            geoServerOperations.createWorkspace("test");
+            geoServerOperations.createS3CoverageStore("test", "setvak");
+            geoServerOperations.createS3Coverage("test", "setvak", "setvak");
+        }
+
+        @Test
+        public void shouldCreateAndDeleteTileLayer() {
+            assertThat(geoServerOperations.tileLayerExists("test", "setvak"), is(false));
+
+            geoServerOperations.createTileLayer("test", "setvak");
+
+            assertThat(geoServerOperations.tileLayerExists("test", "setvak"), is(true));
+
+            geoServerOperations.deleteTileLayer("test", "setvak");
+
+            assertThat(geoServerOperations.tileLayerExists("test", "setvak"), is(false));
+        }
     }
 
     @Test

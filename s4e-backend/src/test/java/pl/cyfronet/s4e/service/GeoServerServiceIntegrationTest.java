@@ -97,17 +97,23 @@ public class GeoServerServiceIntegrationTest {
 
         assertThat(geoServerOperations.layerExists("test", "wojewodztwa"), is(true));
         assertThat(geoServerOperations.getLayer("test", "wojewodztwa").getLayer().getDefaultStyle().getName(), is(equalTo("test:wojewodztwa")));
+        assertThat(geoServerOperations.tileLayerExists("test", "wojewodztwa"), is(true));
     }
 
     @Test
     public void shouldAddStoreAndLayer() {
         seedProductsTest.prepareDb();
         Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
+
+        assertThat(geoServerOperations.layerExists("test", "108m"), is(false));
+        assertThat(geoServerOperations.tileLayerExists("test", "108m"), is(false));
+
         geoServerService.addStoreAndLayer(product);
 
         assertThat(geoServerOperations.layerExists("test", "108m"), is(true));
         assertThat(geoServerOperations.getLayer("test", "108m").getLayer().getName(),
                 is(equalTo("108m")));
+        assertThat(geoServerOperations.tileLayerExists("test", "108m"), is(true));
     }
 
     @Test
