@@ -73,7 +73,7 @@ describe('InvitationService', () => {
 
     const newInvitation = InvitationFactory.build();
     const institution = InstitutionFactory.build();
-    service.send(institution.slug, newInvitation.email);
+    service.send(institution.slug, newInvitation.email).subscribe();
 
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations`;
     const method = 'POST';

@@ -9,6 +9,7 @@ import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { tap, finalize } from 'rxjs/operators';
 import { Invitation, InvitationResendRequest } from './invitation.model';
 import { handleHttpRequest$ } from 'src/app/common/store.util';
+import {Observable} from 'rxjs';
 
 export const TOKEN_QUERY_PARAMETER = 'token';
 export const REJECTION_QUERY_PARAMETER = 'reject';
@@ -64,18 +65,20 @@ export class InvitationService {
       .subscribe();
   }
 
-  public send(institutionSlug: string, email: string, forAdmin = false): void {
+  public send(institutionSlug: string, email: string, forAdmin = false): Observable<Invitation> {
     const notificationMessage = 'Zaproszenie zostało wysłane';
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/invitations`;
-    this._http.post<Invitation>(url, {email, forAdmin})
+    return this._http.post<Invitation>(url, {email, forAdmin})
       .pipe(
         handleHttpRequest$(this._store),
-        tap(() => this._notificationService.addGeneral({
-          content: notificationMessage,
-          type: 'success'
-        }))
+        tap((invitation: Invitation) => {
+          this._store.add(invitation);
+          this._notificationService.addGeneral({
+            content: notificationMessage,
+            type: 'success'
+          });
+        })
       )
-      .subscribe((invitation: Invitation) => this._store.add(invitation));
   }
 
   public confirm(token: string): void {

@@ -1,4 +1,4 @@
-import { InvitationService } from './../../people/state/invitation/invitation.service';
+import {InvitationService} from './../../people/state/invitation/invitation.service';
 import {IBreadcrumb} from '../../breadcrumb/breadcrumb.model';
 import {BreadcrumbService} from '../../breadcrumb/breadcrumb.service';
 import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
@@ -13,7 +13,7 @@ import {
   ParentInstitutionModal
 } from '../parent-institution-modal/parent-institution-modal.model';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {filter, map} from 'rxjs/operators';
+import {filter, map, switchMap} from 'rxjs/operators';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
 import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
@@ -22,9 +22,10 @@ import {InstitutionQuery} from '../../state/institution/institution.query';
 import {Institution, InstitutionForm} from '../../state/institution/institution.model';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
-import {combineLatest, of} from 'rxjs';
+import {combineLatest, forkJoin, of} from 'rxjs';
 import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
-import { emailListValidator } from '../../email-list-validator.utils';
+import {emailListValidator} from '../../email-list-validator.utils';
+import {SessionService} from '../../../../state/session/session.service';
 
 @Component({
   selector: 's4e-add-institution',
@@ -59,7 +60,8 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     private _modalQuery: ModalQuery,
     private _activatedRoute: ActivatedRoute,
     private _breadcrumbService: BreadcrumbService,
-    private _invitationService: InvitationService
+    private _invitationService: InvitationService,
+    private _sessionService: SessionService
   ) {
     super(_formsManager, _router, _institutionQuery, 'addInstitution');
   }
@@ -135,17 +137,20 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     }
 
     const {adminsEmails, ...institution} = this.form.value;
+    const adminsEmailsList: string[] = (adminsEmails || '').split(',').filter(email => !!email).map(email => email.trim());
+
+
     (
       this.activeInstitution
-      ? this._institutionService.updateInstitution$(this.form.value)
-      : this._institutionService.createInstitutionChild$(this.form.value)
+        ? this._institutionService.updateInstitution$(this.form.value)
+        : this._institutionService.createInstitutionChild$(this.form.value)
     )
-      .pipe(untilDestroyed(this))
-      .subscribe((updatedInstitution: Institution) => {
-        adminsEmails.split(',')
-          .map(email => email.trim())
-          .forEach(email => this._invitationService.send(updatedInstitution.slug, email, true));
-      });
+      .pipe(
+        switchMap((updatedInstitution: Institution) =>
+          (adminsEmailsList.length > 0) ? forkJoin(adminsEmailsList.map(email => this._invitationService.send(updatedInstitution.slug, email, true))) : of([])
+        ),
+        switchMap(() => this._sessionService.getProfile$())
+      ).subscribe();
   }
 
   hasErrors(controlName: string) {

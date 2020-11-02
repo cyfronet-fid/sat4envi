@@ -17,6 +17,7 @@ import { PersonQuery } from '../state/person/person.query';
 import { InvitationQuery } from '../state/invitation/invitation.query';
 import { PersonService } from '../state/person/person.service';
 import { InvitationService } from '../state/invitation/invitation.service';
+import {SessionQuery} from '../../../../state/session/session.query';
 
 @Component({
   selector: 's4e-people',
@@ -54,6 +55,7 @@ export class PersonListComponent implements OnInit, OnDestroy {
       untilDestroyed(this),
       tap((institutionSlug) => this._personService.fetchAll(institutionSlug))
     );
+  public currentUserEmail: string|null;
 
   constructor(
     private _personQuery: PersonQuery,
@@ -65,7 +67,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
-    private _modalQuery: ModalQuery
+    private _modalQuery: ModalQuery,
+    private _sessionQuery: SessionQuery
   ) {}
 
   ngOnInit() {
@@ -78,6 +81,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
 
     this._institution$.subscribe((institution) => this.institution = institution);
     this._loadPersons$.subscribe();
+
+    this._sessionQuery.select('email').pipe(untilDestroyed(this)).subscribe(email => this.currentUserEmail = email);
   }
 
   sendInvitation(invitation: any | null = null) {
