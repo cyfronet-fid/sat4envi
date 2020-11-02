@@ -17,7 +17,9 @@
     <description>GeoServer Gateway</description>
 
     <properties>
-        <spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+        <spring-cloud.version>2020.0.0-M4</spring-cloud.version>
+
+        <spring-boot.version>2.4.0-M4</spring-boot.version>
     </properties>
 
     <dependencyManagement>
@@ -88,7 +90,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Required since lombok 1.18.16  -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
+            <version>${lombok-mapstruct-binding.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>

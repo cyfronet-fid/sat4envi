@@ -89,12 +89,10 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>${caffeine.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>jcache</artifactId>
-            <version>${caffeine.version}</version>
         </dependency>
 
         <dependency>
@@ -298,7 +296,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Required since lombok 1.18.16  -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
+            <version>${lombok-mapstruct-binding.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
