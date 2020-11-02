@@ -61,7 +61,7 @@ export class PersonService {
   delete(person: Person) {
     const institutionSlug = this._institutionQuery.getActiveId();
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/members/${person.id}`;
-    this._http.post(url, {})
+    this._http.delete(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => this._store.remove(person.email));
   }

@@ -79,7 +79,7 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     !!this.invitation
       ? this._invitationService
         .resend({oldEmail: this.invitation.email, newEmail: email, forAdmin}, this.institution)
-      : this._invitationService.send(this.institution.slug, email, forAdmin);
+      : this._invitationService.send(this.institution.slug, email, forAdmin).subscribe();
     this.dismiss();
   }
 }

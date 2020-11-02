@@ -20,17 +20,18 @@
     które mają dostęp do zasobów ustalonych dla Urzędu Miasta Kraków
   </ng-container>
   <ng-container table-header>
-      <th i18n>Imię i nazwisko</th>
-      <th i18n>Email</th>
-      <th i18n>Administrator</th>
-      <th i18n class="text--center">Status</th>
-      <th i18n>Akcje</th>
+    <th i18n>Imię i nazwisko</th>
+    <th i18n>Email</th>
+    <th i18n>Administrator</th>
+    <th i18n class="text--center">Status</th>
+    <th i18n>Akcje</th>
   </ng-container>
   <ng-template let-user="item">
     <td i18n>{{user.name}} {{user.surname}}</td>
     <td i18n>{{user.email}}</td>
     <td *ngIf="!isInvitation(user)">
       <input
+        [disabled]="user.email === currentUserEmail"
         type="checkbox"
         (click)="toggleAdminRoleFor(user)"
         [checked]="isAdmin(user)"
@@ -50,26 +51,28 @@
       </ng-container>
     </td>
     <td>
-      <ng-container *ngIf="isInvitation(user)">
+      <ng-container *ngIf="user.email !== currentUserEmail">
+        <ng-container *ngIf="isInvitation(user)">
+
+          <a
+            href="javascript:void(0)"
+            (click)="sendInvitation(user)"
+            data-ut="edit-btn"
+            data-e2e="edit-invitation-btn"
+          >
+            <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+          </a>
+        </ng-container>
 
         <a
           href="javascript:void(0)"
-          (click)="sendInvitation(user)"
-          data-ut="edit-btn"
-          data-e2e="edit-invitation-btn"
+          (click)="delete(user)"
+          data-e2e="delete-invitation-btn"
+          data-ut="delete-btn"
         >
-          <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
         </a>
       </ng-container>
-
-      <a
-        href="javascript:void(0)"
-        (click)="delete(user)"
-        data-e2e="delete-invitation-btn"
-        data-ut="delete-btn"
-      >
-        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
-      </a>
     </td>
   </ng-template>
 </s4e-generic-list-view>

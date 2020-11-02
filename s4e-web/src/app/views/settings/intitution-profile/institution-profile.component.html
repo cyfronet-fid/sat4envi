@@ -91,8 +91,8 @@
   data-ut="institution-children"
 >
   <ng-container description></ng-container>
-  <h3 caption-inside i18n>
-    <ng-container>Jednostki podległe</ng-container>
+  <h3 caption-inside>
+    <ng-container i18n>Jednostki podległe</ng-container>
   </h3>>
   <ng-container search-label i18n>Szukaj instytucji:</ng-container>
   <ng-container table-header>
@@ -104,13 +104,14 @@
       <a routerLink="../institution" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
     <td>
-      <ng-container *ngIf="isManagerOf(inst)">
+      <ng-container *ngIf="isManagerOf(inst) || (isAdmin$ | async)">
         <a routerLink="../institution" queryParamsHandling="merge"
           data-e2e="edit"
           [queryParams]="{institution: inst.slug}">
           <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
         </a>
         <a href="javascript:void(0)"
+          *ngIf="isAdmin$ | async"
           data-e2e="delete"
           (click)="deleteInstitution(inst.slug)">
           <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>

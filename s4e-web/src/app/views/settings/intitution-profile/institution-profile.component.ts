@@ -35,6 +35,7 @@ export class InstitutionProfileComponent implements OnDestroy {
   public isManagerOfActive$ = this._institutionQuery
     .isManagerOf$(this.activeInstitution$)
     .pipe(untilDestroyed(this));
+  public isAdmin$: Observable<boolean> = this._sessionQuery.select('admin');
 
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
@@ -52,7 +53,7 @@ export class InstitutionProfileComponent implements OnDestroy {
   async deleteInstitution(slug: string) {
     if(await this._modalService.confirm('Usuń instytucję',
       'Czy na pewno chcesz usunąć tą instytucję? Operacja jest nieodwracalna.')) {
-      this._institutionService.delete(slug);
+      this._institutionService.delete(slug).subscribe();
     }
   }
 
