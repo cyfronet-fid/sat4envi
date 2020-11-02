@@ -42,6 +42,10 @@
           "type": "string",
           "pattern": "^(/[^/]+)+\\.tif$"
         },
+        "thumbnail": {
+          "type": "string",
+          "pattern": "^(/[^/]+)+\\.jpg$"
+        },
         "RGB_16b": {
           "type": "string",
           "pattern": "^(/[^/]+)+\\.tif$"
