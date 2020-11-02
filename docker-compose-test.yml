@@ -76,7 +76,7 @@ services:
       POSTGRES_USER: ${DB_TEST_POSTGRES_USER:-sat4envi_test}
       POSTGRES_PASSWORD: ${DB_TEST_POSTGRES_PASSWORD:-sat4envi_test}
   broker-test:
-    image: rabbitmq:3.8.3-management
+    image: rabbitmq:3.8.9-management
     ports:
       - ${BROKER_TEST_PORT:-5673}:5672
       - ${BROKER_TEST_PORT_MANAGEMENT:-15673}:15672

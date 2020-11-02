@@ -16,6 +16,22 @@
 
     <name>sat4envi</name>
 
+    <repositories>
+        <repository>
+            <id>repository.spring.milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository.spring.milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <properties>
         <revision>0.0.0</revision>
         <changelist>-SNAPSHOT</changelist>
@@ -26,27 +42,27 @@
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
 
-        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
+        <spring-boot.version>2.4.0-RC1</spring-boot.version>
 
-        <awssdk.version>2.15.2</awssdk.version>
+        <awssdk.version>2.15.19</awssdk.version>
         <commonmark.version>0.15.2</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>23.2</geotools.version>
         <greenmail.version>1.6.0</greenmail.version>
-        <guava.version>29.0-jre</guava.version>
-        <hibernate-types.version>2.9.13</hibernate-types.version>
-        <jakarta.json-api.version>2.0.0-RC3</jakarta.json-api.version>
+        <guava.version>30.0-jre</guava.version>
+        <hibernate-types.version>2.10.0</hibernate-types.version>
+        <jakarta.json-api.version>2.0.0</jakarta.json-api.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <joy.version>2.0.0-RC2</joy.version>
-        <justify.version>3.0.0-RC2</justify.version>
-        <mapstruct.version>1.4.0.Final</mapstruct.version>
+        <joy.version>2.0.0</joy.version>
+        <justify.version>3.0.0</justify.version>
+        <lombok-mapstruct-binding.version>0.1.0</lombok-mapstruct-binding.version>
+        <mapstruct.version>1.4.1.Final</mapstruct.version>
         <poiooxml.version>4.1.2</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.4</slugify.version>
         <springdoc-openapi.version>1.4.8</springdoc-openapi.version>
-        <unirest.version>3.11.00</unirest.version>
+        <unirest.version>3.11.03</unirest.version>
         <bucket4j-starter.version>0.2.0</bucket4j-starter.version>
-        <caffeine.version>2.8.5</caffeine.version>
         <!--
         update sentry version only when fid instance is updated
         -->
@@ -161,12 +177,12 @@
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.10.0</version>
+                    <version>1.10.3</version>
                 </plugin>
                 <plugin>
                     <groupId>pl.project13.maven</groupId>
                     <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.2</version>
+                    <version>4.0.3</version>
                     <configuration>
                         <verbose>true</verbose>
                         <!-- Don't fail for example when building based on a zip from a release. -->
