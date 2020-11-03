@@ -3,6 +3,7 @@ package pl.cyfronet.s4e.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.support.TransactionTemplate;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.AppUser;
@@ -20,6 +20,7 @@ import pl.cyfronet.s4e.bean.SavedView;
 import pl.cyfronet.s4e.controller.request.CreateSavedViewRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.SavedViewRepository;
+import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.service.FileStorage;
 
 import java.time.LocalDateTime;
@@ -121,7 +122,8 @@ public class SavedViewControllerTest {
                 .content(objectMapper.writeValueAsBytes(request))
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.uuid", matchesPattern(UUID_PATTERN)));
+                .andExpect(jsonPath("$.uuid", matchesPattern(UUID_PATTERN)))
+                .andExpect(jsonPath("$.thumbnail", Matchers.startsWith("/static-test/thumbnails-test/")));
 
         val allSavedViews = savedViewRepository.findAllBy(SavedViewProjection.class);
 

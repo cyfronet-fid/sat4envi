@@ -17,10 +17,13 @@ import java.time.Duration;
 public class S3Properties {
     @NotBlank
     private String accessKey;
+
     @NotBlank
     private String secretKey;
+
     @NotNull
     private URI endpoint;
+
     /**
      * A bucket name to use.
      *
@@ -29,6 +32,7 @@ public class S3Properties {
      */
     @NotBlank
     private String bucket;
+
     /**
      * The validity duration of a generated download link.
      */

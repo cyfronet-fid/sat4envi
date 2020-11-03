@@ -12,11 +12,8 @@ public class ProductCategoryService {
     private final FileStorageProperties fileStorageProperties;
 
     public String getIconPath(String iconName) {
-        return String.join("",
-                fileStorageProperties.getBucket(),
-                "/",
-                fileStorageProperties.getKeyPrefixProductsCategoriesIcons(),
-                iconName + ICON_EXTENSION_WITH_DOT
-        );
+        return fileStorageProperties.getPathPrefix() +
+                fileStorageProperties.getKeyPrefixProductsCategoriesIcons() +
+                iconName + ICON_EXTENSION_WITH_DOT;
     }
 }

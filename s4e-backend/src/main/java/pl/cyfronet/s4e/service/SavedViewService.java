@@ -71,7 +71,7 @@ public class SavedViewService {
     }
 
     public String getThumbnailPath(UUID id) {
-        return String.join("/", fileStorageProperties.getBucket(), getThumbnailKey(id));
+        return fileStorageProperties.getPathPrefix() + getThumbnailKey(id);
     }
 
     public String getThumbnailKey(UUID id) {
