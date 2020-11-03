@@ -158,7 +158,7 @@ public class InstitutionService {
     }
 
     public String getEmblemPath(String slug) {
-        return String.join("/", fileStorageProperties.getBucket(), getEmblemKey(slug));
+        return fileStorageProperties.getPathPrefix() + getEmblemKey(slug);
     }
 
     public String getEmblemKey(String slug) {

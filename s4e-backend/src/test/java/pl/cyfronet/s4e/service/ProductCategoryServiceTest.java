@@ -23,8 +23,7 @@ public class ProductCategoryServiceTest {
     public void shouldReturnUrlToCategoriesFileInS3() {
         val iconName = "test";
         val iconNameWithExtension = iconName + ProductCategoryService.ICON_EXTENSION_WITH_DOT;
-        val bucketWithIconsKey = fileStorageProperties.getBucket()
-                + "/" + fileStorageProperties.getKeyPrefixProductsCategoriesIcons();
+        val bucketWithIconsKey = "/static-test/" + fileStorageProperties.getKeyPrefixProductsCategoriesIcons();
         val iconPath = bucketWithIconsKey + iconNameWithExtension;
 
         assertThat(productCategoryService.getIconPath(iconName), is(iconPath));

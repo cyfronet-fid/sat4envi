@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @ConfigurationProperties("mail")
 @Validated
@@ -15,8 +16,9 @@ public class MailProperties {
     /**
      * The base url for use in mails, for example to fetch images.
      * <p>
-     * Without the trailing slash.
+     * Without the trailing slash, including the protocol.
       */
     @NotBlank
+    @Pattern(regexp = "https?://[^/]+")
     private String urlDomain;
 }
