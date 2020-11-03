@@ -45,7 +45,7 @@ describe('OverlayQuery', () => {
 
         expect(overlays.length).toEqual(1);
 
-        expect((overlays[0].olLayer as any).values_.source.url_)
+        expect((overlays[0].olLayer as any).values_.source.urls[0])
           .toEqual(overlay.url);
         expect((overlays[0].olLayer as any).values_.source.params_.LAYERS)
           .toEqual('test');
