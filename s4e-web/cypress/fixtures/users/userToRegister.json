@@ -1,0 +1,7 @@
+{
+    "email":"userMember@mail.pl",
+    "name":"User",
+    "surname":"User",
+    "password":"12341234",
+    "repeatPassword": "12341234"
+}

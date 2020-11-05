@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { InstitutionSearch } from '../../page-objects/settings/settings-institution-search.po';
 import { SideNav } from '../../page-objects/settings/settings-side-nav.po';
 import { InstitutionProfile } from '../../page-objects/settings/settings-institution-profile.po';

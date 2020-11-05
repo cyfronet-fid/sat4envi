@@ -2,7 +2,7 @@
 
 import promisify from 'cypress-promise';
 import { Map } from '../../page-objects/map/map.po';
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { MapProducts } from '../../page-objects/map/map-products.po';
 import { Core } from './../../page-objects/core.po';
 

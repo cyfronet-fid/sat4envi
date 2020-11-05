@@ -2,7 +2,7 @@
 
 import promisify from 'cypress-promise';
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { UserProfile } from '../../page-objects/settings/settings-user-profile.po';
 
 context('Settings user profile', () => {

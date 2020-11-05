@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { InstitutionPeople } from '../../page-objects/settings/settings-institution-people.po';
 import { Core } from './../../page-objects/core.po';
 
