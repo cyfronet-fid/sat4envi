@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.properties.AmqpProperties;
+import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.sync.NotificationDispatcher;
 import pl.cyfronet.s4e.sync.QueueReceiver;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
 
@@ -30,6 +32,9 @@ public class AmqpConfig {
     @Autowired
     private SceneAcceptor sceneAcceptor;
 
+    @Autowired
+    private SceneService sceneService;
+
     @Bean
     public String incomingQueueName() {
         return amqpProperties.getQueues().getIncoming();
@@ -48,7 +53,12 @@ public class AmqpConfig {
     }
 
     @Bean
+    public NotificationDispatcher notificationDispatcher() {
+        return new NotificationDispatcher(sceneAcceptor, sceneService);
+    }
+
+    @Bean
     public QueueReceiver queueReceiver() {
-        return new QueueReceiver(sceneAcceptor);
+        return new QueueReceiver(notificationDispatcher());
     }
 }

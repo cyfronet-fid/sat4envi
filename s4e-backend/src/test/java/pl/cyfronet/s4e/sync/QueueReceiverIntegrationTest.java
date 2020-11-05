@@ -3,6 +3,8 @@ package pl.cyfronet.s4e.sync;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -51,21 +53,39 @@ public class QueueReceiverIntegrationTest {
     @Autowired
     private String incomingQueueName;
 
+    private Long productId;
+
     @BeforeEach
     public void beforeEach() {
         testDbHelper.clean();
+
+        productId = sceneAcceptorTestHelper.setUpProduct();
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post" })
+    public void shouldHandlePutAndPost(String eventName) {
+        assertThat(sceneRepository.count(), is(equalTo(0L)));
+
+        sendMessage(incomingQueueName, SCENE_KEY, eventName);
+
+        await().atMost(Durations.TEN_SECONDS)
+                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
     }
 
     @Test
-    public void test() {
-        Long productId = sceneAcceptorTestHelper.setUpProduct();
-
+    public void shouldHandleDelete() {
         assertThat(sceneRepository.count(), is(equalTo(0L)));
 
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectCreated:Put");
 
         await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
+                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
+
+        sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectRemoved:Delete");
+
+        await().atMost(Durations.TEN_SECONDS)
+                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(0));
     }
 
     private void sendMessage(String routingKey, String sceneKey, String eventName) {

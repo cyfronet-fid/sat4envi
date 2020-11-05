@@ -28,6 +28,8 @@ public interface SceneRepository extends JpaRepository<Scene, Long>, SceneReposi
 
     Optional<Scene> findBySceneKey(String sceneKey);
 
+    boolean existsBySceneKey(String sceneKey);
+
     <T> Optional<T> findFirstByProductId(Long productId, Sort sort, Class<T> projection);
 
     List<Scene> findAllByProductId(Long productId);
@@ -50,4 +52,7 @@ public interface SceneRepository extends JpaRepository<Scene, Long>, SceneReposi
 
     @Transactional
     void deleteAllByProductId(Long productId);
+
+    @Transactional
+    void deleteBySceneKey(String sceneKey);
 }
