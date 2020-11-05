@@ -90,6 +90,14 @@ public class SceneService {
     }
 
     @Transactional
+    public void deleteBySceneKey(String sceneKey) throws NotFoundException {
+        if (!sceneRepository.existsBySceneKey(sceneKey)) {
+            throw constructNFE("Scene", "sceneKey", sceneKey);
+        }
+        sceneRepository.deleteBySceneKey(sceneKey);
+    }
+
+    @Transactional
     public void deleteProductScenes(Long productId) throws NotFoundException {
         if (!productRepository.existsById(productId)) {
             throw constructNFE("Product", productId);
@@ -140,6 +148,10 @@ public class SceneService {
     }
 
     private NotFoundException constructNFE(String name, Long id) {
-        return new NotFoundException(name + " with id '" + id + "' not found");
+        return constructNFE(name, "id", id.toString());
+    }
+
+    private NotFoundException constructNFE(String name, String idType, String id) {
+        return new NotFoundException(name + " with " + idType + " '" + id + "' not found");
     }
 }
