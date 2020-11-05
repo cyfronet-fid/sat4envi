@@ -9,7 +9,6 @@ import {ModalQuery} from '../../../../modal/state/modal.query';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {environment} from '../../../../../environments/environment';
 import {devRestoreFormState, validateAllFormFields} from '../../../../utils/miscellaneous/miscellaneous';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {isSaveConfigModal, SAVE_CONFIG_MODAL_ID, SaveConfigForm} from './save-config-modal.model';
 import {ViewConfigurationEx} from '../../state/view-configuration/view-configuration.model';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';

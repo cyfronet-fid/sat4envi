@@ -30,6 +30,7 @@ export class SceneService {
   get(product: Product, date: string, setActive?: 'last'|'first') {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
     const urlParams = {params: {date, timeZone: timezone()}};
+
     return this.http.get<Scene[]>(url, urlParams)
       .pipe(
         handleHttpRequest$(this.store),

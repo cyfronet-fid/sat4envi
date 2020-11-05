@@ -2,7 +2,7 @@ import { Overlay, UIOverlay } from './overlay.model';
 import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
 import {ImageWMS, TileWMS} from 'ol/source';
 import {InjectorModule} from '../../../../common/injector.module';
-import {ImageWmsLoader} from '../utils/layers-loader.util';
+import {TileLoader} from '../utils/layers-loader.util';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
 import {Tile} from 'ol/layer';
 
@@ -47,9 +47,8 @@ export function getTileWmsFrom(overlay: Partial<Overlay>) {
 
 function handleLoadingOf(source: TileWMS) {
   const loaderService = InjectorModule.Injector.get(NgxUiLoaderService);
-  const imageWmsLoader = new ImageWmsLoader(source);
-  imageWmsLoader.start$.then(() => loaderService.startBackground());
-  imageWmsLoader.end$.then(() => loaderService.stopBackground());
+  const tileLoader = new TileLoader(source);
+  tileLoader.start$.then(() => loaderService.startBackground());
 }
 
 
