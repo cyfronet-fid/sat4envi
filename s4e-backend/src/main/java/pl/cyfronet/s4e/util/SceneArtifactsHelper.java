@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.data.repository.SceneExtendedRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
@@ -27,19 +28,19 @@ public class SceneArtifactsHelper {
         String getS3Path();
     }
 
-    public String getArtifact(Long id, String type) throws NotFoundException {
-        if (type == null) {
-            SceneExtendedProjection sceneExtendedProjection = sceneExtendedRepository.findById(id, SceneExtendedProjection.class)
-                    .orElseThrow(constructNFE(id));
+    public String getArtifact(Long sceneId, String artifactName) throws NotFoundException {
+        if (artifactName == null) {
+            val sceneExtendedProjection = sceneExtendedRepository.findById(sceneId, SceneExtendedProjection.class)
+                    .orElseThrow(constructNFE(sceneId));
             return sceneExtendedProjection.getS3Path();
         }
 
-        SceneProjection sceneProjection = sceneRepository.findById(id, SceneProjection.class)
-                .orElseThrow(constructNFE(id));
+        val sceneProjection = sceneRepository.findById(sceneId, SceneProjection.class)
+                .orElseThrow(constructNFE(sceneId));
         try {
-            return sceneProjection.getSceneContent().get(SCENE_SCHEMA_ARTIFACTS_KEY).get(type).asText().substring(1);
+            return sceneProjection.getSceneContent().get(SCENE_SCHEMA_ARTIFACTS_KEY).get(artifactName).asText().substring(1);
         } catch (NullPointerException e) {
-            return null;
+            throw new NotFoundException("Artifact with name '" + artifactName + "' for Scene with id '" + sceneId + "' not found");
         }
     }
 

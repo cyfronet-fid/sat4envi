@@ -39,15 +39,18 @@ public class ODataController {
                     headers = @Header(name = "Location", description = "The presigned download url")),
             @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
     })
-    @GetMapping(value = "/dhus/odata/v1/Products('{id}')/$value")
-    public ResponseEntity<Void> generateDownloadLinkArchive(@PathVariable Long id)
+    @GetMapping(value = "/dhus/odata/v1/Products('{sceneId}')/$value")
+    public ResponseEntity<Void> generateDownloadLinkArchive(@PathVariable Long sceneId)
             throws NotFoundException, URISyntaxException {
-        URL downloadLink = sceneStorage.generatePresignedGetLinkWithFileType(id, sceneStorage.getPresignedGetTimeout(),
-                sceneFileStorageService.getSceneArtifacts(id)
+        URL downloadLink = sceneStorage.generatePresignedGetLinkWithFileType(
+                sceneId,
+                sceneFileStorageService.getSceneArtifacts(sceneId)
                         .entrySet().stream()
                         .filter(map -> map.getValue().contains(".zip"))
                         .findFirst()
-                        .get().getKey());
+                        .get().getKey(),
+                sceneStorage.getPresignedGetTimeout()
+        );
         return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
     }
 
@@ -55,14 +58,17 @@ public class ODataController {
     @ApiResponses({
             @ApiResponse(responseCode = "302", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
-            @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Scene or artifact not found", content = @Content)
     })
-    @GetMapping(value = "/dhus/odata/v1/Products('{id}')/Nodes('{filename}')/Nodes('{type}')/$value")
-    public ResponseEntity<Void> generateDownloadLinkType(@PathVariable Long id,
-                                                         @PathVariable String filename,
-                                                         @PathVariable String type)
+    @GetMapping(value = "/dhus/odata/v1/Products('{sceneId}')/Nodes('{ignored}')/Nodes('{artifactName}')/$value")
+    public ResponseEntity<Void> generateDownloadLinkType(@PathVariable Long sceneId,
+                                                         @PathVariable String artifactName)
             throws NotFoundException, URISyntaxException {
-        URL downloadLink = sceneStorage.generatePresignedGetLinkWithFileType(id, sceneStorage.getPresignedGetTimeout(), type);
+        URL downloadLink = sceneStorage.generatePresignedGetLinkWithFileType(
+                sceneId,
+                artifactName,
+                sceneStorage.getPresignedGetTimeout()
+        );
         return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
     }
 }
