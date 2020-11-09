@@ -9,7 +9,7 @@ import {LegendService} from '../legend/legend.service';
 import {ProductQuery} from '../product/product.query';
 import {ProductStore} from '../product/product.store';
 import {applyTransaction} from '@datorama/akita';
-import { map, finalize } from 'rxjs/operators';
+import {map, finalize, tap} from 'rxjs/operators';
 import {Product} from '../product/product.model';
 import {timezone} from '../../../../utils/miscellaneous/date-utils';
 import {ActivatedQueue} from '../../../../utils/search/activated-queue.utils';
@@ -30,21 +30,21 @@ export class SceneService {
   get(product: Product, date: string, setActive?: 'last'|'first') {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
     const urlParams = {params: {date, timeZone: timezone()}};
-    const get$ = this.http.get<Scene[]>(url, urlParams)
+    return this.http.get<Scene[]>(url, urlParams)
       .pipe(
         handleHttpRequest$(this.store),
-        map(scenes => scenes.map(scene => ({...scene, layerName: product.layerName})))
-      )
-      .subscribe((scenes) => applyTransaction(() => {
-        this.store.set(scenes);
-        let activeSceneId = null;
-        if (scenes.length > 0) {
+        map(scenes => scenes.map(scene => ({...scene, layerName: product.layerName}))),
+        tap(scenes => applyTransaction(() => {
+          this.store.set(scenes);
+          let activeSceneId = null;
+          if (scenes.length > 0) {
             activeSceneId = setActive === 'last' && scenes[scenes.length - 1].id
               || setActive === 'first' && scenes[0].id
               || null;
-        }
-        this.store.setActive(activeSceneId);
-      }));
+          }
+          this.store.setActive(activeSceneId);
+        }))
+      )
   }
 
   setActive(sceneId: number | null) {

@@ -4,7 +4,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {MapModule} from '../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {RemoteConfigurationTestingProvider} from '../../../app.configuration.spec';
+import {LocalStorageTestingProvider, RemoteConfigurationTestingProvider} from '../../../app.configuration.spec';
 import {SimpleChange} from '@angular/core';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
 import {convertToSceneWithPosition, SceneFactory} from '../state/scene/scene.factory.spec';
@@ -69,8 +69,16 @@ describe('TimelineComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [MapModule, NoopAnimationsModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [RemoteConfigurationTestingProvider]
+      imports: [
+        MapModule,
+        NoopAnimationsModule,
+        HttpClientTestingModule,
+        RouterTestingModule
+      ],
+      providers: [
+        LocalStorageTestingProvider,
+        RemoteConfigurationTestingProvider
+      ]
     })
       .compileComponents();
   }));

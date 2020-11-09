@@ -23,6 +23,8 @@ import {AkitaGuidService} from '../state/search-results/guid.service';
 import {DEFAULT_TIMELINE_RESOLUTION} from '../state/product/product.model';
 import moment from 'moment';
 import {distinctUntilChangedDE} from '../../../utils/rxjs/observable';
+import {TimelineService} from '../state/scene/timeline.service';
+import {SceneQuery} from '../state/scene/scene.query';
 
 export interface Day {
   label: string;
@@ -107,6 +109,9 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
 
   public scenes$: Observable<DataPoint[]>
   public activeStackedPoint: DataPoint | null = null;
+  public isLive$ = this.sceneQuery.selectLoading()
+    .pipe(map(() => this.sceneQuery.getValue().isLiveMode));
+
   private readonly _activeScene$: ReplaySubject<Scene|null> = new ReplaySubject(1);
   private readonly _timelineWidth$: ReplaySubject<number> = new ReplaySubject(1);
   private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(1);
@@ -145,7 +150,9 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     @Inject(LOCALE_ID) private LOCALE_ID: string,
     private renderer: Renderer2,
     private guidService: AkitaGuidService,
-    private element: ElementRef
+    private element: ElementRef,
+    private timelineService: TimelineService,
+    private sceneQuery: SceneQuery
   ) {
     //class name can not start with number
     this.componentId = `D${this.guidService.guid()}`;
@@ -172,18 +179,88 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     return true;
   };
 
-  selectDate($event: { value: Date }) {
+  toggleLiveMode() {
+    this.timelineService.toggleLiveMode();
+  }
+
+  async selectDate($event: { value: Date }) {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
     this.dateSelected.emit(yyyymmdd($event.value));
   }
 
-  monthSelected($event: any) {
+  monthSelected($event: any) {}
+
+  async goToPreviousDay() {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.previousDay.emit();
   }
 
-  setPickerOpenState(state: boolean) {
-    this.pickerState = state;
+  async goToNextDay() {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.nextDay.emit();
+  }
+
+  async goToPreviousScene() {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.previousScene.emit();
+  }
+
+  async goToNextScene() {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.nextScene.emit();
+  }
+
+  async setPickerOpenState(open: boolean) {
+    if (open) {
+      const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+      if (!turnOfLiveMode) {
+        return;
+      }
+    }
+
+    this.pickerState = open;
     if (this.pickerState) {
       this.hackCalendar();
     }
+  }
+
+  async selectScene(scene: Scene) {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.selectedScene.emit(scene);
+    this.activeStackedPoint = null;
+  }
+
+  async goToLastAvailableScene() {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
+    this.lastAvailableScene.emit();
   }
 
   hackCalendar() {

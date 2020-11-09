@@ -18,6 +18,7 @@ import environment from '../../../../../environments/environment';
 import {SceneFactory} from '../scene/scene.factory.spec';
 import {distinctUntilChanged, map, take, toArray} from 'rxjs/operators';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {of} from 'rxjs';
 
 describe('ProductService', () => {
   let productService: ProductService;
@@ -104,7 +105,7 @@ describe('ProductService', () => {
       ).toPromise();
 
       spyOn(productService, 'setSelectedDate')
-      spyOn(sceneService, 'get').and.stub()
+      spyOn(sceneService, 'get').and.returnValue(of(true))
       spyOn(sceneService, 'setActive').and.stub()
 
       productService.getLastAvailableScene();

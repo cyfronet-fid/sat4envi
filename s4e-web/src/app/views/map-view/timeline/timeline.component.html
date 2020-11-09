@@ -1,7 +1,13 @@
 <div>
   <section class="timeline__manager">
+    <div class="timecontrol timecontrol--live">
+      <label for="live" i18n>
+        <p id="live--dot" [ngClass]="{active: isLive$ | async}"></p> <span>Na żywo</span>
+      </label>
+      <input type="checkbox" id="live" name="live" (change)="toggleLiveMode()" />
+    </div>
     <div class="timecontrol timecontrol--date">
-      <span (click)="previousDay.emit()" class="timecontrol__button timecontrol__button--prev"></span>
+      <span (click)="goToPreviousDay()" class="timecontrol__button timecontrol__button--prev"></span>
       <span [owlDateTimeTrigger]="datepicker">{{currentDate}}</span>
       <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays"
              (dateTimeChange)="selectDate($event)"
@@ -14,12 +20,12 @@
                      (afterPickerClosed)="setPickerOpenState(false)"
                      [pickerMode]="'popup'" [pickerType]="'calendar'"
                      (monthSelected)="monthSelected($event)"></owl-date-time>
-      <span (click)="nextDay.emit()" class="timecontrol__button timecontrol__button--next"></span>
+      <span (click)="goToNextDay()" class="timecontrol__button timecontrol__button--next"></span>
     </div>
     <div class="timecontrol timecontrol--clock">
-      <span (click)="previousScene.emit()" class="timecontrol__button timecontrol__button--prev"></span>
+      <span (click)="goToPreviousScene()" class="timecontrol__button timecontrol__button--prev"></span>
       <span>{{activeScene?.timestamp | hour}}</span>
-      <span (click)="nextScene.emit()" class="timecontrol__button timecontrol__button--next"></span>
+      <span (click)="goToNextScene()" class="timecontrol__button timecontrol__button--next"></span>
     </div>
     <div class="timecontrol timecontrol--interval">
       <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
@@ -30,7 +36,7 @@
 
   <ul class="timeline__grid">
     <li class="timeline__item timeline__item--noproduct" *ngIf="!((scenes$ | async)?.length) && !loading" i18n>Brak
-      scen w tym dniu, wybierz inną datę, lub <a href="javascript:void(0)" (click)="lastAvailableScene.emit()">przejdź
+      scen w tym dniu, wybierz inną datę, lub <a href="javascript:void(0)" (click)="goToLastAvailableScene()">przejdź
         do ostatniej zarejestrowanej sceny</a></li>
 
     <ng-container *ngFor="let scenePoint of (scenes$ | async)">
@@ -41,7 +47,7 @@
           [attr.data-active-id]="activeScene?.id"
           [ngClass]="{active: scenePoint.selected}"
           [style.left.%]="scenePoint.points[0].position"
-          (click)="selectedScene.emit(scenePoint.points[0])">
+          (click)="selectScene(scenePoint.points[0])">
         <span>{{ scenePoint.points[0].timestamp | date : 'shortTime' }}</span>
       </li>
       <ng-template #aggregatePoint>
@@ -57,7 +63,7 @@
                   title=""
                   [attr.data-scene-id]="scene.id"
                   [attr.data-hour]="scene.timestamp | hour : true"
-                  (click)="selectedScene.emit(scene); activeStackedPoint = null;">
+                  (click)="selectScene(scene)">
                 {{scene.timestamp | hour : true}}
               </li>
             </ul>

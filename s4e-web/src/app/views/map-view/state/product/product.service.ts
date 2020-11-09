@@ -71,8 +71,8 @@ export class ProductService {
       }
 
       this.setSelectedDate(data.timestamp);
-      this.sceneService.get(product, data.timestamp.substr(0, 10));
-      this.sceneService.setActive(data.sceneId);
+      this.sceneService.get(product, data.timestamp.substr(0, 10))
+        .subscribe(() => this.sceneService.setActive(data.sceneId));
     });
   }
 
@@ -159,7 +159,7 @@ export class ProductService {
       )
       .subscribe(data => {
         this.updateAvailableDays(data);
-        this.sceneService.get(activeProduct, ui.selectedDate);
+        this.sceneService.get(activeProduct, ui.selectedDate).subscribe();
       });
   }
 
@@ -216,14 +216,14 @@ export class ProductService {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.subtract(1, 'day');
     this.setSelectedDate(yyyymmdd(newDate.toDate()));
-    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'last');
+    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'last').subscribe();
   }
 
   nextDay() {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.add(1, 'day');
     this.setSelectedDate(yyyymmdd(newDate.toDate()));
-    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'first');
+    this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'first').subscribe();
   }
 
   moveResolution(direction: -1 | 1) {

@@ -28,6 +28,7 @@ import {ResizeEvent} from 'angular-resizable-element';
 import {InjectorModule} from 'src/app/common/injector.module';
 import {ModalService} from '../../../modal/state/modal.service';
 import {OVERLAY_LIST_MODAL_ID} from './overlay-list-modal/overlay-list-modal.model';
+import {TimelineService} from '../state/scene/timeline.service';
 
 @Component({
   selector: 's4e-view-manager',
@@ -69,7 +70,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     private searchResultsService: SearchResultsService,
     private sessionQuery: SessionQuery,
     private _renderer: Renderer2,
-    private _modalService: ModalService
+    private _modalService: ModalService,
+    private timelineService: TimelineService
   ) {
   }
 
@@ -93,7 +95,12 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     this.searchResultsService.toggleSearchResults(show);
   }
 
-  selectProduct(productId: number) {
+  async selectProduct(productId: number) {
+    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    if (!turnOfLiveMode) {
+      return;
+    }
+
     if (this.productQuery.getActiveId() === productId) {
       productId = null;
     }
