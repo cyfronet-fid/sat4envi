@@ -49,6 +49,10 @@ public class Institution extends CreationAndModificationAudited {
     @ToString.Exclude
     private Institution parent;
 
+    @OneToMany(mappedBy = "parent")
+    @ToString.Exclude
+    private Set<Institution> children;
+
     @OneToMany(mappedBy = "institution", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
     @ToString.Exclude
@@ -67,4 +71,6 @@ public class Institution extends CreationAndModificationAudited {
     private Set<LicenseGrant> licenseGrants;
 
     private boolean eumetsatLicense;
+
+    private boolean zk;
 }

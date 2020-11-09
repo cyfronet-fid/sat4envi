@@ -58,7 +58,7 @@ public class InstitutionController {
     @PostMapping(value = "/institutions", consumes = APPLICATION_JSON_VALUE)
     public BasicInstitutionResponse create(@RequestBody @Valid CreateInstitutionRequest request)
             throws InstitutionCreationException, NotFoundException {
-        val institutionSlug = institutionService.save(request);
+        val institutionSlug = institutionService.create(request);
         return institutionService.findBySlug(institutionSlug, BasicInstitutionResponse.class).get();
     }
 
@@ -90,7 +90,7 @@ public class InstitutionController {
     public BasicInstitutionResponse createChild(@RequestBody @Valid CreateChildInstitutionRequest request,
                             @PathVariable("institution") String institutionSlug)
             throws InstitutionCreationException, NotFoundException {
-        val newInstitutionSlug = institutionService.createChildInstitution(request, institutionSlug).getSlug();
+        val newInstitutionSlug = institutionService.createChild(request, institutionSlug);
         return institutionService.findBySlug(newInstitutionSlug, BasicInstitutionResponse.class).get();
     }
 

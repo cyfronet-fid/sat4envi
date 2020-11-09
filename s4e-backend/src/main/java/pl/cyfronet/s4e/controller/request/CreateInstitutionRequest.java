@@ -30,4 +30,6 @@ public class CreateInstitutionRequest {
     private String phone;
 
     private String secondaryPhone;
+
+    private boolean zk;
 }

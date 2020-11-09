@@ -55,9 +55,6 @@ public class AppUser extends CreationAndModificationAudited {
 
     private boolean enabled;
 
-    @Column(name = "member_zk")
-    private boolean memberZK;
-
     private boolean admin;
 
     private boolean eumetsatLicense;

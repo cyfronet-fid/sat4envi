@@ -22,12 +22,13 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.InvitationHelper;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.AppUser;
-import pl.cyfronet.s4e.bean.Property;
+import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.ExpertHelpRequest;
 import pl.cyfronet.s4e.controller.request.HelpType;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.PropertyRepository;
+import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 
 import javax.mail.internet.MimeMessage;
 
@@ -55,6 +56,12 @@ public class ExpertHelpControllerTest {
     private PropertyRepository propertyRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -71,11 +78,19 @@ public class ExpertHelpControllerTest {
         testDbHelper.clean();
 
         nonZkMember = appUserRepository.save(InvitationHelper.userBuilder().build());
-        zkMember = appUserRepository.save(
-                InvitationHelper.userBuilder()
-                        .memberZK(true)
-                        .build()
-        );
+        zkMember = appUserRepository.save(InvitationHelper.userBuilder().build());
+
+        val institution = institutionRepository.save(Institution.builder()
+                .name("ZK")
+                .slug("zk")
+                .zk(true)
+                .build());
+
+        userRoleRepository.save(UserRole.builder()
+                .institution(institution)
+                .user(zkMember)
+                .role(AppRole.INST_MEMBER)
+                .build());
     }
 
     @Nested

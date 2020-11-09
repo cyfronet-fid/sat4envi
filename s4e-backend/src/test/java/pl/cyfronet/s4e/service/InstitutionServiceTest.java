@@ -27,27 +27,37 @@ import static org.hamcrest.Matchers.*;
 @BasicTest
 @Slf4j
 public class InstitutionServiceTest {
-    public static final String DEFAULT = "default";
     public static final String PROFILE_EMAIL = "get@profile.com";
     public static final String PROFILE_EMAIL2 = "get2@profile.com";
-    public static final String PROFILE_EMAIL3 = "get3@profile.com";
+
     @Autowired
     private InstitutionService institutionService;
+
     @Autowired
     private InstitutionRepository institutionRepository;
+
     @Autowired
     private UserRoleRepository userRoleRepository;
+
     @Autowired
     private AppUserRepository appUserRepository;
+
     @Autowired
     private SlugService slugService;
+
     @Autowired
     private TestDbHelper testDbHelper;
+
     private String testInstitution = "Test Institution - root";
+
     private String testInstitution2 = "Test Institution - lvl1";
+
     private String slugInstitution;
+
     private String slugInstitution2;
+
     private AppUser appUser;
+
     private AppUser appUser2;
 
     @BeforeEach
@@ -105,7 +115,7 @@ public class InstitutionServiceTest {
     @Test
     public void shouldDeleteInstitution() throws InstitutionCreationException {
         Institution institution = Institution.builder().name("Instytycja 15").slug("instytucja-15").build();
-        institutionService.save(institution);
+        institutionService.create(institution);
 
         institutionService.delete("instytucja-15");
         val institutionDB = institutionService.findBySlug("instytucja-15", Institution.class);
@@ -122,7 +132,7 @@ public class InstitutionServiceTest {
         val members = institutionService.getMembers("child-institution", ProjectionWithId.class);
         assertThat(members, hasSize(0));
 
-        institutionService.createChildInstitution(request, slugInstitution2);
+        institutionService.createChild(request, slugInstitution2);
 
         val updatedMembers = institutionService.getMembers("child-institution", ProjectionWithId.class);
         // Two admins from the parent.

@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -87,7 +88,7 @@ public class ErrorHandlerHelper {
     }
 
     private void optionallyAddDevelopmentInformation(Map<String, Object> map, Exception e) {
-        if (Arrays.stream(env.getActiveProfiles()).anyMatch("development"::equals)) {
+        if (env.acceptsProfiles(Profiles.of("development"))) {
             map.put("__exception__", e.getClass().getName());
             map.put("__stacktrace__", getStacktraceString(e));
         }

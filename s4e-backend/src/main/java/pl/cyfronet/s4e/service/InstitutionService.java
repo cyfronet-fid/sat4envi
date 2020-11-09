@@ -11,12 +11,8 @@ import pl.cyfronet.s4e.bean.Institution;
 import pl.cyfronet.s4e.controller.request.CreateChildInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.CreateInstitutionRequest;
 import pl.cyfronet.s4e.controller.request.UpdateInstitutionRequest;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
-import pl.cyfronet.s4e.ex.InstitutionCreationException;
-import pl.cyfronet.s4e.ex.InstitutionUpdateException;
-import pl.cyfronet.s4e.ex.NotFoundException;
-import pl.cyfronet.s4e.ex.S3ClientException;
+import pl.cyfronet.s4e.ex.*;
 import pl.cyfronet.s4e.properties.FileStorageProperties;
 
 import java.util.Base64;
@@ -29,32 +25,49 @@ import java.util.Set;
 @Slf4j
 public class InstitutionService {
     private final InstitutionRepository institutionRepository;
-    private final AppUserRepository appUserRepository;
     private final UserRoleService userRoleService;
-    private final SlugService slugService;
     private final FileStorageProperties fileStorageProperties;
     private final FileStorage fileStorage;
+    private final InstitutionMapper institutionMapper;
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
-    public String save(CreateInstitutionRequest request) throws InstitutionCreationException, NotFoundException {
-        String institutionSlug = slugService.slugify(request.getName());
-        save(Institution.builder()
-                .name(request.getName())
-                .slug(institutionSlug)
-                .parent(null)
-                .address(request.getAddress())
-                .city(request.getCity())
-                .postalCode(request.getPostalCode())
-                .phone(request.getPhone())
-                .secondaryPhone(request.getSecondaryPhone())
-                .build());
-        uploadEmblemIfRequested(institutionSlug, request.getEmblem());
+    public String create(CreateInstitutionRequest request) throws InstitutionCreationException {
+        Institution newInstitution = doSave(institutionMapper.requestToPreEntity(request));
 
-        return institutionSlug;
+        uploadEmblemIfRequested(newInstitution.getSlug(), request.getEmblem());
+
+        return newInstitution.getSlug();
     }
 
     @Transactional(rollbackFor = InstitutionCreationException.class)
-    public Institution save(Institution institution) throws InstitutionCreationException {
+    public String create(Institution institution) throws InstitutionCreationException {
+        return doSave(institution).getSlug();
+    }
+
+    @Transactional(rollbackFor = {InstitutionCreationException.class, NotFoundException.class})
+    public String createChild(CreateChildInstitutionRequest request, String parentInstitutionSlug)
+            throws InstitutionCreationException, NotFoundException {
+        Institution parentInstitution = findBySlug(parentInstitutionSlug, Institution.class)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + parentInstitutionSlug + "'"));
+        Institution newInstitution = doSave(institutionMapper.requestToPreEntity(request));
+        newInstitution.setParent(parentInstitution);
+        newInstitution.setZk(parentInstitution.isZk());
+
+        String newSlug = newInstitution.getSlug();
+
+        uploadEmblemIfRequested(newSlug, request.getEmblem());
+
+        for (val userRole : parentInstitution.getMembersRoles()) {
+            if (userRole.getRole() == AppRole.INST_ADMIN) {
+                // This should be propagated to the member role automatically.
+                userRoleService.addRole(newSlug, userRole.getUser().getId(), AppRole.INST_ADMIN);
+            }
+        }
+
+        return newSlug;
+    }
+
+    private Institution doSave(Institution institution) throws InstitutionCreationException {
         try {
             return institutionRepository.save(institution);
         } catch (DataIntegrityViolationException e) {
@@ -63,31 +76,39 @@ public class InstitutionService {
         }
     }
 
-    @Transactional(rollbackFor = {InstitutionCreationException.class, NotFoundException.class})
-    public Institution createChildInstitution(CreateChildInstitutionRequest request, String parentInstitutionSlug)
-            throws InstitutionCreationException, NotFoundException {
-        Institution parentInstitution = findBySlug(parentInstitutionSlug, Institution.class)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + parentInstitutionSlug + "'"));
-        Institution childInstitution = save(Institution.builder()
-                .name(request.getName())
-                .slug(slugService.slugify(request.getName()))
-                .parent(parentInstitution)
-                .address(request.getAddress())
-                .city(request.getCity())
-                .postalCode(request.getPostalCode())
-                .phone(request.getPhone())
-                .secondaryPhone(request.getSecondaryPhone())
-                .build());
-        uploadEmblemIfRequested(slugService.slugify(request.getName()), request.getEmblem());
+    @Transactional
+    public void setZk(String institutionSlug) throws InstitutionZkException, NotFoundException {
+        val institution = institutionRepository.findBySlug(institutionSlug)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
 
-        for (val userRole : parentInstitution.getMembersRoles()) {
-            if (userRole.getRole() == AppRole.INST_ADMIN) {
-                // This should be propagated to the member role automatically.
-                userRoleService.addRole(childInstitution.getSlug(), userRole.getUser().getId(), AppRole.INST_ADMIN);
-            }
+        if (institution.isZk()) {
+            throw new InstitutionZkException("Institution '" + institutionSlug + "' already is ZK");
         }
 
-        return childInstitution;
+        doSetZk(true, institution);
+    }
+
+    @Transactional
+    public void unsetZk(String institutionSlug) throws NotFoundException, InstitutionZkException {
+        val institution = institutionRepository.findBySlug(institutionSlug)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
+
+        if (!institution.isZk()) {
+            throw new InstitutionZkException("Institution '" + institutionSlug + "' already isn't ZK");
+        }
+        val parent = institution.getParent();
+        if (parent != null && parent.isZk()) {
+            throw new InstitutionZkException(
+                    "Institution '" + institutionSlug + "' parent '" + parent.getSlug() + "' is ZK"
+            );
+        }
+
+        doSetZk(false, institution);
+    }
+
+    private void doSetZk(boolean zk, Institution institution) {
+        institution.setZk(zk);
+        institution.getChildren().forEach(child -> doSetZk(zk, child));
     }
 
     public <T> Set<T> getMembers(String institutionSlug, Class<T> projection) {
@@ -106,25 +127,20 @@ public class InstitutionService {
     public String update(UpdateInstitutionRequest request, String institutionSlug)
             throws NotFoundException, S3ClientException {
         val institution = findBySlug(institutionSlug, Institution.class)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug));
-        String slug = slugService.slugify(request.getName());
-        if (fileStorage.exists(getEmblemKey(institutionSlug))) {
-            fileStorage.delete(getEmblemKey(institutionSlug));
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
+
+        institutionMapper.update(request, institution);
+
+        if (request.getEmblem() != null) {
+            if (fileStorage.exists(getEmblemKey(institutionSlug))) {
+                fileStorage.delete(getEmblemKey(institutionSlug));
+            }
+            uploadEmblemIfRequested(institution.getSlug(), request.getEmblem());
         }
-        uploadEmblemIfRequested(slug, request.getEmblem());
 
-        institution.setName(request.getName());
-        institution.setSlug(slug);
-        institution.setAddress(request.getAddress());
-        institution.setCity(request.getCity());
-        institution.setPostalCode(request.getPostalCode());
-        institution.setPhone(request.getPhone());
-        institution.setSecondaryPhone(request.getSecondaryPhone());
-
-        return slug;
+        return institution.getSlug();
     }
 
-    @Transactional
     public void delete(String slug) {
         institutionRepository.deleteInstitutionBySlug(slug);
     }

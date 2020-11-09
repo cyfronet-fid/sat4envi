@@ -2,7 +2,7 @@ package pl.cyfronet.s4e.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
+import lombok.val;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_READ_AUTHORITY_PREFIX;
 
@@ -46,11 +47,11 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     private Set<SimpleGrantedAuthority> getAuthorities(AppUser appUser) {
-        Set<SimpleGrantedAuthority> roles = new HashSet<>();
+        val sourceAuthorities = new HashSet<String>();
 
         appUser.getRoles().stream()
-                .map(this::toSimpleGrantedAuthority)
-                .forEach(roles::add);
+                .map(this::toRole)
+                .forEach(sourceAuthorities::add);
 
         appUser.getRoles().stream()
                 .map(UserRole::getInstitution)
@@ -60,38 +61,30 @@ public class AppUserDetailsService implements UserDetailsService {
                 .mapToLong(Product::getId)
                 .distinct()
                 .mapToObj(id -> LICENSE_READ_AUTHORITY_PREFIX + id)
-                .map(SimpleGrantedAuthority::new)
-                .forEach(roles::add);
+                .forEach(sourceAuthorities::add);
 
         boolean grantEumetsatLicense = appUser.isEumetsatLicense() || appUser.getRoles().stream()
                         .map(UserRole::getInstitution)
                         .anyMatch(Institution::isEumetsatLicense);
 
         if (grantEumetsatLicense) {
-            roles.add(new SimpleGrantedAuthority("LICENSE_EUMETSAT"));
+            sourceAuthorities.add("LICENSE_EUMETSAT");
         }
 
         if (appUser.isAdmin()) {
-            roles.add(new SimpleGrantedAuthority(toRole("ADMIN")));
+            sourceAuthorities.add("ROLE_ADMIN");
         }
 
-        if (appUser.isMemberZK()) {
-            roles.add(new SimpleGrantedAuthority(toRole("MEMBER_ZK")));
+        if (appUser.getRoles().stream().map(UserRole::getInstitution).anyMatch(Institution::isZk)) {
+            sourceAuthorities.add("ROLE_MEMBER_ZK");
         }
 
-        return roles;
+        return sourceAuthorities.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
-    private SimpleGrantedAuthority toSimpleGrantedAuthority(UserRole userRole) {
-        String role = toRole(
-                userRole.getRole().name(),
-                userRole.getInstitution().getSlug()
-        );
-        return new SimpleGrantedAuthority(role);
-    }
-
-    private String toRole(String... segments) {
-        String[] segmentsWithPrefix = ArrayUtils.addFirst(segments, "ROLE");
-        return String.join("_", segmentsWithPrefix);
+    private String toRole(UserRole userRole) {
+        return "ROLE_" + userRole.getRole().name() + "_" + userRole.getInstitution().getSlug();
     }
 }

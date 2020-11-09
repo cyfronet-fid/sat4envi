@@ -18,13 +18,18 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
-import pl.cyfronet.s4e.controller.response.AppUserResponse;
+import pl.cyfronet.s4e.controller.response.UserMeResponse;
+import pl.cyfronet.s4e.controller.response.UserRoleResponse;
 import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
 import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
 import pl.cyfronet.s4e.event.OnRegistrationDuplicateEvent;
 import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
-import pl.cyfronet.s4e.ex.*;
+import pl.cyfronet.s4e.ex.AppUserDuplicateException;
+import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.ex.RecaptchaException;
+import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
 import pl.cyfronet.s4e.security.AppUserDetails;
+import pl.cyfronet.s4e.service.AppUserMapper;
 import pl.cyfronet.s4e.service.AppUserService;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
@@ -33,6 +38,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -45,6 +51,7 @@ public class AppUserController {
     private final AppUserService appUserService;
     private final RecaptchaValidator recaptchaValidator;
     private final ApplicationEventPublisher eventPublisher;
+    private final AppUserMapper appUserMapper;
 
     @Operation(summary = "Register a new user")
     @Parameters({
@@ -111,6 +118,24 @@ public class AppUserController {
         eventPublisher.publishEvent(new OnEmailConfirmedEvent(requesterEmail, emailVerificationId, LocaleContextHolder.getLocale()));
     }
 
+    public interface UserMeProjection {
+        String getEmail();
+
+        String getName();
+
+        boolean getAdmin();
+
+        String getSurname();
+
+        Set<UserRoleResponse> getRoles();
+
+        String getDomain();
+
+        String getUsage();
+
+        String getCountry();
+    }
+
     @Operation(summary = "Get user profile")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User was retrieved"),
@@ -119,10 +144,11 @@ public class AppUserController {
             @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
     })
     @GetMapping("/users/me")
-    public AppUserResponse getMe() throws NotFoundException {
+    public UserMeResponse getMe() throws NotFoundException {
         AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
-        return appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), AppUserResponse.class)
+        val projection = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), UserMeProjection.class)
                 .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
+        return appUserMapper.projectionToMeResponse(projection);
     }
 
     private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {

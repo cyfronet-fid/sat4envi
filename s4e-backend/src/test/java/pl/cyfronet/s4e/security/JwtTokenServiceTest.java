@@ -34,7 +34,8 @@ class JwtTokenServiceTest {
         String[] authorities = new String[]{
                 "ROLE_1",
                 "OP_CREATE_STH",
-                "LICENSE_READ_123"
+                "LICENSE_READ_123",
+                "ROLE_MEMBER_ZK"
         };
         val token = new TestingAuthenticationToken("test", null, authorities);
 
@@ -49,9 +50,10 @@ class JwtTokenServiceTest {
         assertThat(jwsClaims.getBody().getSubject(), is("test"));
         assertThat(jwsClaims.getBody().getExpiration(), greaterThan(new Date()));
         List<String> jwsAuthorities = jwsClaims.getBody().get(SecurityConstants.JWT_AUTHORITIES_CLAIM, List.class);
-        assertThat(jwsAuthorities, containsInAnyOrder("ROLE_1", "OP_CREATE_STH", "LICENSE_READ_123"));
+        assertThat(jwsAuthorities, containsInAnyOrder(authorities));
         List<String> layers = jwsClaims.getBody().get(SecurityConstants.JWT_LAYERS_CLAIM, List.class);
         assertThat(layers, contains("development:layer_123"));
+        val priorityAccess = jwsClaims.getBody().get(SecurityConstants.JWT_PRIORITY_ACCESS_CLAIM, Boolean.class);
+        assertThat(priorityAccess, is(true));
     }
-
 }
