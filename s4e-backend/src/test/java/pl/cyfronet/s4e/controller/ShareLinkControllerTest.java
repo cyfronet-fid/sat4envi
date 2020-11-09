@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.awaitility.Durations;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -21,9 +20,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
+import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.ShareLinkRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.InstitutionRepository;
+import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.properties.MailProperties;
 
 import javax.mail.internet.MimeMessage;
@@ -53,6 +57,12 @@ public class ShareLinkControllerTest {
     private AppUserRepository appUserRepository;
 
     @Autowired
+    private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -79,13 +89,19 @@ public class ShareLinkControllerTest {
                 .surname("Profile")
                 .password("{noop}password")
                 .enabled(true)
-                .memberZK(true)
                 .build());
-    }
 
-    @AfterEach
-    public void afterEach() {
-        testDbHelper.clean();
+        val institution = institutionRepository.save(Institution.builder()
+                .name("ZK")
+                .slug("zk")
+                .zk(true)
+                .build());
+
+        userRoleRepository.save(UserRole.builder()
+                .institution(institution)
+                .user(appUser)
+                .role(AppRole.INST_MEMBER)
+                .build());
     }
 
     @Test

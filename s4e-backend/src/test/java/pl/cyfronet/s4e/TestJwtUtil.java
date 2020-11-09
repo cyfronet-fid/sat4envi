@@ -68,9 +68,6 @@ public class TestJwtUtil {
         if (user.isAdmin()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
-        if (user.isMemberZK()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER_ZK"));
-        }
         return new AppUserDetails(
                 user.getEmail(),
                 user.getName(),

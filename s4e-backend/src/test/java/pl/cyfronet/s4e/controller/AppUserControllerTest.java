@@ -543,7 +543,13 @@ public class AppUserControllerTest {
     public void shouldReturnProfileWithTokenCookie() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
                 .with(jwtCookieToken(securityAppUser, objectMapper)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("get@profile.com"))
+                .andExpect(jsonPath("$.name").value("Get"))
+                .andExpect(jsonPath("$.surname").value("Profile"))
+                .andExpect(jsonPath("$.admin").value(false))
+                .andExpect(jsonPath("$.memberZK").value(false))
+                .andExpect(jsonPath("$.roles", hasSize(1)));
     }
 
     public static MailFolder getInbox(GreenMailExtension greenMail, GreenMailUser mailUser) throws FolderException {

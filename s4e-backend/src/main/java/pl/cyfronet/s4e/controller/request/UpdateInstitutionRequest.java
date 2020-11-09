@@ -14,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 public class UpdateInstitutionRequest {
     @NotEmpty
     private String name;
+
     @Base64
     @ContentType(pattern = "image/(jpeg|png|gif)")
     @ImageDimensions(maxWidth = 500, maxHeight = 500)

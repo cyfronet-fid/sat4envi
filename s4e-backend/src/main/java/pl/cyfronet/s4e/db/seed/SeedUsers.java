@@ -101,7 +101,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname5")
                         .password(passwordEncoder.encode("zkMember"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -112,7 +111,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname6")
                         .password(passwordEncoder.encode("zkAdmin20"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -135,7 +133,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Nowak")
                         .password(passwordEncoder.encode("zkPLAdmin"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -146,7 +143,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Buda")
                         .password(passwordEncoder.encode("zkPLMember"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -158,7 +154,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Poważny")
                         .password(passwordEncoder.encode("zkMazAdmin"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -169,7 +164,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Kulka")
                         .password(passwordEncoder.encode("zkMazMember"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -181,7 +175,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Zaradny")
                         .password(passwordEncoder.encode("zkWawAdmin"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -192,7 +185,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Duka")
                         .password(passwordEncoder.encode("zkWawMember"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -204,7 +196,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Biały")
                         .password(passwordEncoder.encode("zkMalAdmin"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -215,7 +206,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Bulba")
                         .password(passwordEncoder.encode("zkMalMember"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -227,7 +217,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Kłopotek")
                         .password(passwordEncoder.encode("zkKrAdmin"))
                         .enabled(true)
-                        .memberZK(true)
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())
@@ -238,7 +227,6 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Zamek")
                         .password(passwordEncoder.encode("zkKrMember"))
                         .enabled(true)
-                        .memberZK(true)
                         // Domain, usage and country null until required to be not-null.
                         .domain(null)
                         .usage(null)
@@ -270,34 +258,35 @@ public class SeedUsers implements ApplicationRunner {
         log.info("Seeding Institutions & Roles");
         try {
             String name = "Zarządzenie kryzysowe - PL";
-            Institution zkPlInstitution = institutionService.save(Institution.builder()
+            String zkPlInstitutionSlug = institutionService.create(Institution.builder()
                     .name(name)
                     .slug(slugService.slugify(name))
                     .city("Warszawa")
+                    .zk(true)
                     .build());
             userRoleService.addRole(
-                    zkPlInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkMember@mail.pl").get().getId(),
+                    zkPlInstitutionSlug,
+                    getUserId("zkMember@mail.pl"),
                     AppRole.INST_MEMBER
             );
             userRoleService.addRole(
-                    zkPlInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkAdmin@mail.pl").get().getId(),
+                    zkPlInstitutionSlug,
+                    getUserId("zkAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkPlInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkPLMember@mail.pl").get().getId(),
+                    zkPlInstitutionSlug,
+                    getUserId("zkPLMember@mail.pl"),
                     AppRole.INST_MEMBER
             );
             userRoleService.addRole(
-                    zkPlInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkPLAdmin@mail.pl").get().getId(),
+                    zkPlInstitutionSlug,
+                    getUserId("zkPLAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkPlInstitution.getSlug(),
-                    appUserRepository.findByEmail("admin@mail.pl").get().getId(),
+                    zkPlInstitutionSlug,
+                    getUserId("admin@mail.pl"),
                     AppRole.INST_ADMIN
             );
 
@@ -306,16 +295,16 @@ public class SeedUsers implements ApplicationRunner {
                     .name(name)
                     .city("Warszawa")
                     .build();
-            Institution zkMazInstitution = institutionService
-                    .createChildInstitution(zkMazRequest, zkPlInstitution.getSlug());
+            String zkMazInstitutionSlug = institutionService
+                    .createChild(zkMazRequest, zkPlInstitutionSlug);
             userRoleService.addRole(
-                    zkMazInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkMazAdmin@mail.pl").get().getId(),
+                    zkMazInstitutionSlug,
+                    getUserId("zkMazAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkMazInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkMazMember@mail.pl").get().getId(),
+                    zkMazInstitutionSlug,
+                    getUserId("zkMazMember@mail.pl"),
                     AppRole.INST_MEMBER
             );
 
@@ -324,16 +313,16 @@ public class SeedUsers implements ApplicationRunner {
                     .name(name)
                     .city("Warszawa")
                     .build();
-            Institution zkWawInstitution = institutionService
-                    .createChildInstitution(zkWawRequest, zkMazInstitution.getSlug());
+            String zkWawInstitutionSlug = institutionService
+                    .createChild(zkWawRequest, zkMazInstitutionSlug);
             userRoleService.addRole(
-                    zkWawInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkWawAdmin@mail.pl").get().getId(),
+                    zkWawInstitutionSlug,
+                    getUserId("zkWawAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkWawInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkWawMember@mail.pl").get().getId(),
+                    zkWawInstitutionSlug,
+                    getUserId("zkWawMember@mail.pl"),
                     AppRole.INST_MEMBER
             );
 
@@ -342,16 +331,16 @@ public class SeedUsers implements ApplicationRunner {
                     .name(name)
                     .city("Kraków")
                     .build();
-            Institution zkMalInstitution = institutionService
-                    .createChildInstitution(zkMalRequest, zkPlInstitution.getSlug());
+            String zkMalInstitutionSlug = institutionService
+                    .createChild(zkMalRequest, zkPlInstitutionSlug);
             userRoleService.addRole(
-                    zkMalInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkMalAdmin@mail.pl").get().getId(),
+                    zkMalInstitutionSlug,
+                    getUserId("zkMalAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkMalInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkMalMember@mail.pl").get().getId(),
+                    zkMalInstitutionSlug,
+                    getUserId("zkMalMember@mail.pl"),
                     AppRole.INST_MEMBER
             );
 
@@ -360,16 +349,16 @@ public class SeedUsers implements ApplicationRunner {
                     .name(name)
                     .city("Kraków")
                     .build();
-            Institution zkKrInstitution = institutionService
-                    .createChildInstitution(zkKrRequest, zkMalInstitution.getSlug());
+            String zkKrInstitutionSlug = institutionService
+                    .createChild(zkKrRequest, zkMalInstitutionSlug);
             userRoleService.addRole(
-                    zkKrInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkKrAdmin@mail.pl").get().getId(),
+                    zkKrInstitutionSlug,
+                    getUserId("zkKrAdmin@mail.pl"),
                     AppRole.INST_ADMIN
             );
             userRoleService.addRole(
-                    zkKrInstitution.getSlug(),
-                    appUserRepository.findByEmail("zkKrAdmin@mail.pl").get().getId(),
+                    zkKrInstitutionSlug,
+                    getUserId("zkKrAdmin@mail.pl"),
                     AppRole.INST_MEMBER
             );
 
@@ -378,5 +367,9 @@ public class SeedUsers implements ApplicationRunner {
         } catch (NotFoundException e) {
             log.warn(e.getMessage(), e);
         }
+    }
+
+    private Long getUserId(String email) {
+        return appUserRepository.findByEmail(email).get().getId();
     }
 }
