@@ -50,7 +50,7 @@ export function createSentinelSearchResult(params: SentinelSearchResultResponse)
   return {
     image: null,
     sceneKeyShort: params.sceneKey.match(/([^/]+)\.scene$/)[1],
-    url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.productId}')/$value`,
+    url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.id}')/$value`,
     metadataContent: {},
     artifacts: [],
     footprint: '',
