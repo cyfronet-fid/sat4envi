@@ -1,15 +1,15 @@
 <form [formGroup]="form" (ngSubmit)="accept()">
   <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
-    <div class="s4e-modal-header" i18n>Zapisz widok</div>
+    <div class="s4e-modal-header" i18n>Zapisz konfigurację widoku</div>
     <div class="s4e-modal-body report">
       <aside>
-        <strong i18n>Podgląd widoku konfiguracji</strong>
+        <strong i18n>Podgląd konfiguracji widoku</strong>
         <div #reportTemplate class="report-template">
           <img id="map-miniature" [src]="viewConfig.thumbnail" />
         </div>
       </aside>
       <div class="form">
-        <label i18n>Szczegóły widoku</label>
+        <label i18n>Szczegóły konfiguracji widoku</label>
         <table class="modal__table modal__table--saveconfig">
           <tr>
             <td>Produkt</td>
