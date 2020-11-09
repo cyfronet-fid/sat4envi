@@ -39,11 +39,11 @@ public class SceneStorage extends Storage {
     }
 
     public URL generatePresignedGetLink(Long id, Duration signatureDuration) throws NotFoundException {
-        return generatePresignedGetLinkWithFileType(id, signatureDuration, null);
+        return generatePresignedGetLinkWithFileType(id, null, signatureDuration);
     }
 
-    public URL generatePresignedGetLinkWithFileType(Long id, Duration signatureDuration, String type) throws NotFoundException {
-        String key = sceneArtifactsHelper.getArtifact(id, type);
+    public URL generatePresignedGetLinkWithFileType(Long id, String artifactName, Duration signatureDuration) throws NotFoundException {
+        String key = sceneArtifactsHelper.getArtifact(id, artifactName);
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(s3Properties.getBucket())
                 .key(key)

@@ -409,28 +409,52 @@ public class SceneControllerTest {
         }
     }
 
-    @Test
-    public void shouldRedirectToDownloadLink() throws Exception {
-        val product = productRepository.save(productBuilder().build());
+    @Nested
+    class Download {
+        private AppUser appUser;
 
-        Scene scene = sceneRepository.save(sceneBuilder(product).build());
+        @BeforeEach
+        public void beforeEach() {
+            appUser = appUserRepository.save(AppUser.builder()
+                    .email("get@profile.com")
+                    .name("Get")
+                    .surname("Profile")
+                    .password("{noop}password")
+                    .enabled(true)
+                    .build());
+        }
 
-        String redirectUrl = "https://domain.pl/test?sth=value";
+        @Test
+        public void shouldRedirectToDownloadLink() throws Exception {
+            val product = productRepository.save(productBuilder().build());
 
-        PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
-        when(pgor.isBrowserExecutable()).thenReturn(true);
-        when(pgor.url()).thenReturn(new URL(redirectUrl));
-        when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
+            Scene scene = sceneRepository.save(sceneBuilder(product).build());
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", scene.getId()))
-                .andExpect(status().isFound())
-                .andExpect(redirectedUrl(redirectUrl));
-    }
+            String redirectUrl = "https://domain.pl/test?sth=value";
 
-    @Test
-    public void shouldReturn404IfSceneNotFound() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", 42L))
-                .andExpect(status().isNotFound());
+            PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
+            when(pgor.isBrowserExecutable()).thenReturn(true);
+            when(pgor.url()).thenReturn(new URL(redirectUrl));
+            when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", scene.getId())
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isFound())
+                    .andExpect(redirectedUrl(redirectUrl));
+        }
+
+        @Test
+        public void shouldReturn401IfUnauthenticated() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", -1L))
+                    .andExpect(status().isUnauthorized());
+        }
+
+        @Test
+        public void shouldReturn404IfSceneNotFound() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", -1L)
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isNotFound());
+        }
     }
 
     private LocalDateTime getBaseTime() {

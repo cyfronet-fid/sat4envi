@@ -53,7 +53,7 @@ class SceneArtifactsHelperTest {
     }
 
     @Test
-    public void shouldReturnNullForNonExistentArtifact() throws NotFoundException {
-        assertThat(sceneArtifactsHelper.getArtifact(scene.getId(), "not_existent"), is(nullValue()));
+    public void shouldReturnNullForNonExistentArtifact() {
+        assertThrows(NotFoundException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId(), "not_existent"));
     }
 }
