@@ -11,19 +11,20 @@
     <div class="content" style="background: #F9FCFE; border: 1px solid #DFEAF5;padding: 20px;border-radius: 5px;margin: 10px 0;">
         <h1 style="font-size: 20px; font-weight: bold;">Dzień dobry!</h1>
         <p style="font-size: 16px; font-weight: normal;">
-            Zostałeś zaproszony do instytucji '[( ${institutionName} )]'.<br />
-            Potwierdź klikając 'Dołącz', a następnie zaloguj się lub zarejestruj
+            Zostałeś zaproszony do instytucji <strong>'[( ${institutionName} )]'</strong> w aplikacji Sat4Envi.<br />
+            Potwierdź klikając 'Dołącz', a następnie zaloguj się lub zarejestruj.
         </p>
         <a th:href="${confirmUrl}" style="display: inline-block; border-radius: 50px; color: #fff; font-size: 14px; font-weight: bold;
-        background: darkgreen; text-decoration: none;padding: 10px 25px;text-transform: uppercase;">Dołącz</a>
+        background: darkgreen; text-decoration: none;padding: 7px 20px;text-transform: uppercase;">Dołącz</a>
         <a th:href="${rejectUrl}" style="display: inline-block; border-radius: 50px; color: #fff; font-size: 14px; font-weight: bold;
-        background: darkred; text-decoration: none;padding: 10px 25px;text-transform: uppercase;">Odrzuć</a>
+        background: darkred; text-decoration: none;padding: 7px 20px;text-transform: uppercase;">Odrzuć</a>
         <p>
             Pozdrawiamy,
             Zespół Sat4Envi
         </p>
         <p>
             <small style="font-size: 12px;line-height: 14px;display: block;">
+                Ten email został wygenerowany automatycznie. Prosimy na niego nie odpowiadać. <br />
                 Sat4Envi to aplikacja do przeglądania archiwalnych zdjęć satelitarnych. Sprawdź na <a th:href="${urlDomain}">www.sat4envi.pl</a>
             </small>
         </p>

@@ -11,14 +11,16 @@
 <div class="content" style="background: #F9FCFE; border: 1px solid #DFEAF5;padding: 20px;border-radius: 5px;margin: 10px 0;">
     <h1 style="font-size: 16px; font-weight: bold;">Dzień dobry,</h1>
     <p style="font-weight: normal;">
-        użytkownik [( ${email} )] przesłał do Ciebie wiadomość z aplikacji Sat4Envi o treści:
+        użytkownik [( ${email} )] chce podzielić się z Tobą skonfigurowanym widokiem w aplikacj Sat4Envi dostępnego
+        pod adresem: <br />
+        <a th:href="${url}">[( ${url} )]</a>.
     </p>
     <p>
         <strong>( ${caption} )]</strong><br/>
         [( ${description} )]
     </p>
     <p>
-        Chce również podzielić się z Tobą skonfigurowanym przez siebie widokiem.
+
         Aby go otworzyć <a th:href="${url}">kliknij w link</a>.
     </p>
     <p>
@@ -27,6 +29,7 @@
     </p>
     <p>
         <small style="font-size: 12px;line-height: 14px;display: block;">
+            Ten email został wygenerowany automatycznie. Prosimy na niego nie odpowiadać. <br />
             Sat4Envi to aplikacja do przeglądania archiwalnych zdjęć satelitarnych. Sprawdź na <a th:href="${urlDomain}">www.sat4envi.pl</a>
         </small>
     </p>

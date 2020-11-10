@@ -11,17 +11,18 @@
 <div class="content" style="background: #F9FCFE; border: 1px solid #DFEAF5;padding: 20px;border-radius: 5px;margin: 10px 0;">
     <h1 style="font-size: 20px; font-weight: bold;">Dzień dobry!</h1>
     <p style="font-size: 16px; font-weight: normal;">
-        Twoje konto '[( ${email} )]' zostało utworzone.<br />
-        Potwierdź adres email aby aktywować konto klikając poniższy przycisk
+        Twoje konto <strong>'[( ${email} )]'</strong> zostało utworzone.<br />
+        Potwierdź adres email aby je aktywować klikając poniższy przycisk.
     </p>
     <a th:href="${activationUrl}" style="display: inline-block; border-radius: 50px; color: #fff; font-size: 14px; font-weight: bold;
-        background: #8AC854; text-decoration: none;padding: 10px 25px;text-transform: uppercase;">Tak, potwierdzam</a>
+        background: #8AC854; text-decoration: none;padding: 7px 20px;text-transform: uppercase;">Tak, potwierdzam</a>
     <p>
         Pozdrawiamy,
-        Zespół Sat4Envi
+        Zespół Sat4Envi <br /><br />
     </p>
     <p>
         <small style="font-size: 12px;line-height: 14px;display: block;">
+            Ten email został wygenerowany automatycznie. Prosimy na niego nie odpowiadać. <br />
             Sat4Envi to aplikacja do przeglądania archiwalnych zdjęć satelitarnych. Sprawdź na <a th:href="${urlDomain}">www.sat4envi.pl</a>
         </small>
     </p>
