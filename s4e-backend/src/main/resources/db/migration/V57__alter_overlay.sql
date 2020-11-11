@@ -1,0 +1,1 @@
+ALTER TABLE wms_overlay ALTER COLUMN layer_name DROP NOT NULL;

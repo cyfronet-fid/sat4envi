@@ -21,7 +21,6 @@ export interface Overlay {
   ownerType: OwnerType;
   url: string;
   label: string;
-  layerName: string;
   visible: boolean;
   createdAt: string|null;
 }
@@ -41,13 +40,13 @@ export function convertToUIOverlay(
   // TODO: Remove layers name param from overlay response
   // Merge into PRG overlays dynamic url layers param with it's values
   // Remove layers name from DB
-  const urlAndParams = getBaseUrlAndParamsFrom(overlay.url);
+  const urlAndParams = getBaseUrlAndParamsFrom(overlay);
   const {url, ...urlParams} = !!urlAndParams && urlAndParams || {url: overlay.url};
   const source = new TileWMS({
     crossOrigin: 'Anonymous',
     serverType: 'geoserver',
     url,
-    params: { LAYERS: overlay.layerName, TILED: true, ...urlParams}
+    params: { TILED: true, ...urlParams}
   });
   handleLoadingOf(source);
   return {

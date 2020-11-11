@@ -95,8 +95,7 @@ public class OverlayService {
     private OverlayResponse toOverlayResponse(WMSOverlay overlay, List<Long> nonActiveIds) {
         return OverlayResponse.builder()
                 .id(overlay.getId())
-                .layerName(overlay.getLayerName())
-                .url(getOverlayUrlBy(overlay.getUrl()))
+                .url(getOverlayUrlBy(overlay))
                 .createdAt(overlay.getCreatedAt())
                 .ownerType(overlay.getOwnerType().toString())
                 .label(overlay.getLabel())
@@ -104,7 +103,12 @@ public class OverlayService {
                 .build();
     }
 
-    private String getOverlayUrlBy(String actualUrl) {
-        return actualUrl.isEmpty() ? geoServerProperties.getOutsideBaseUrl() : actualUrl;
+    private String getOverlayUrlBy(WMSOverlay overlay) {
+        val layersParam = overlay.getLayerName() == null || overlay.getLayerName().isEmpty()
+                ? ""
+                : "?LAYERS=" + overlay.getLayerName();
+        return overlay.getUrl().isEmpty()
+                ? geoServerProperties.getOutsideBaseUrl() + layersParam
+                : overlay.getUrl();
     }
 }

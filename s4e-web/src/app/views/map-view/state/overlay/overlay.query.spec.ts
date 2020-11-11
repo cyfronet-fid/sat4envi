@@ -37,8 +37,7 @@ describe('OverlayQuery', () => {
       const overlay = OverlayFactory.build({
         label: 'test',
         ownerType: GLOBAL_OWNER_TYPE,
-        id: 'test-overlay-id',
-        layerName: 'test'
+        id: 'test-overlay-id'
       });
       store.add(overlay);
       query.selectVisibleAsUIOverlays().subscribe(overlays => {
@@ -47,15 +46,12 @@ describe('OverlayQuery', () => {
 
         expect((overlays[0].olLayer as any).values_.source.urls[0])
           .toEqual(overlay.url);
-        expect((overlays[0].olLayer as any).values_.source.params_.LAYERS)
-          .toEqual('test');
 
         expect(overlays.map(o => ({...o, olLayer: undefined}))).toEqual([
           {
             id: 'test-overlay-id',
             label: 'test',
             ownerType: GLOBAL_OWNER_TYPE,
-            layerName: 'test',
             cid: 'test-overlay-id',
             active: false,
             favourite: false,
