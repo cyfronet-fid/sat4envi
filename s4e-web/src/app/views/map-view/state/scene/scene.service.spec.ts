@@ -84,7 +84,7 @@ describe('SceneService', () => {
           done();
         });
 
-      sceneService.get(product, dateF);
+      sceneService.get(product, dateF).subscribe();
 
       const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
@@ -96,7 +96,7 @@ describe('SceneService', () => {
       const productId = 1;
       const product = ProductFactory.build({id: productId});
       const dateF = '2019-10-01';
-      sceneService.get(product, dateF);
+      sceneService.get(product, dateF).subscribe();
 
       const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;
@@ -119,7 +119,7 @@ describe('SceneService', () => {
           done();
         });
 
-      sceneService.get(product, dateF);
+      sceneService.get(product, dateF).subscribe();
 
       const urlParams = `date=${dateF}&timeZone=${timezone()}`;
       const url = `${environment.apiPrefixV1}/products/${product.id}/scenes?${urlParams}`;

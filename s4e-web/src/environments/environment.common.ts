@@ -5,6 +5,12 @@ export const commonEnvironmentVariables = {
   projection: {toProjection: 'EPSG:3857', coordinates: [19, 52] as [number, number]},
   maxZoom: 12,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+
+  /*
+  * IMPORTANT!!! Too large frequency can provide to drastically slow down of application
+  * Every nth MS UI will send request to API for latest scene
+  * */
+  liveSceneUpdateRateInMs: 60000
 };
 
 export default commonEnvironmentVariables;
