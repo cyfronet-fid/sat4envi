@@ -1,10 +1,10 @@
-import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import {Injectable} from '@angular/core';
 import {QueryEntity} from '@datorama/akita';
 import {OverlayState, OverlayStore} from './overlay.store';
-import {convertToUIOverlay, Overlay, OverlayUI, OverlayUIState, UIOverlay} from './overlay.model';
+import {Overlay, OverlayUI, OverlayUIState, UIOverlay} from './overlay.model';
 import {combineLatest, Observable} from 'rxjs';
-import {filter, map, tap} from 'rxjs/operators';
+import {map} from 'rxjs/operators';
+import { convertToUIOverlay } from './overlay.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,7 @@ export class OverlayQuery extends QueryEntity<OverlayState, Overlay> {
   public readonly ui: QueryEntity<OverlayUIState, OverlayUI>;
 
   constructor(
-    protected _store: OverlayStore,
-    private _remoteConfiguration: RemoteConfiguration
+    protected _store: OverlayStore
   )  {
     super(_store);
     this.createUIQuery();

@@ -175,8 +175,7 @@ export class MapComponent implements OnInit, OnDestroy {
       const utcTime = moment(scene.timestamp).utc();
 
       // IMPORTANT!!!
-      // Due to change in geo-server we need floor timestamp to seconds
-      // If not, it will not respond correctly
+      // Due to invalid response from geo-server is needed to floor timestamp to seconds
       const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
       const source = new TileWMS({
         crossOrigin: 'Anonymous',
@@ -201,26 +200,11 @@ export class MapComponent implements OnInit, OnDestroy {
           () => this._handleLoadError()
         );
 
-      // Event though header based authentication is not used this custom XHRrequest is required
-      // because default OpenLayer image loading does not send cookies when used on SAFARI browser
-      const image = new Tile({ source });
-      mapLayers.push(image);
-      source.setTileLoadFunction(this._getTileLoadFunction());
       mapLayers.push(new Tile({ source }));
     }
 
     for (const overlay of this.overlays.filter(ol => ol.active)) {
       mapLayers.push(overlay.olLayer);
     }
-  }
-
-  private _getTileLoadFunction() {
-    return (tile, src) => {
-      const xhr = getImageXhr(src);
-      xhr.onload = () => ((tile.getImage() as HTMLImageElement).src = ImageBase64.getFromXhr(xhr));
-      xhr.send();
-
-      return xhr;
-    };
   }
 }
