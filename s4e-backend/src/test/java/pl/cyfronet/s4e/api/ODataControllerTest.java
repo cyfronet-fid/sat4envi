@@ -108,7 +108,7 @@ public class ODataControllerTest {
 
                 mockMvc.perform(get(DEFAULT_DOWNLOAD_URL_TEMPLATE, scene.getId())
                         .with(jwtBearerToken(appUser, objectMapper)))
-                        .andExpect(status().isFound())
+                        .andExpect(status().isSeeOther())
                         .andExpect(redirectedUrl(redirectUrl));
             }
 
@@ -142,7 +142,7 @@ public class ODataControllerTest {
 
                 mockMvc.perform(get(SPECIFIC_DOWNLOAD_URL_TEMPLATE, scene.getId(), "manifest")
                         .with(jwtBearerToken(appUser, objectMapper)))
-                        .andExpect(status().isFound())
+                        .andExpect(status().isSeeOther())
                         .andExpect(redirectedUrl(redirectUrl));
             }
 

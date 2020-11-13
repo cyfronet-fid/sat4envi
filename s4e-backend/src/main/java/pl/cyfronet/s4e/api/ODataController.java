@@ -35,7 +35,7 @@ public class ODataController {
 
     @Operation(summary = "Redirect to a presigned download url for an archive")
     @ApiResponses({
-            @ApiResponse(responseCode = "302", description = "Redirect to the presigned download url", content = @Content,
+            @ApiResponse(responseCode = "303", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
             @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
     })
@@ -51,12 +51,12 @@ public class ODataController {
                         .get().getKey(),
                 sceneStorage.getPresignedGetTimeout()
         );
-        return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadLink.toURI()).build();
     }
 
     @Operation(summary = "Redirect to a presigned download url")
     @ApiResponses({
-            @ApiResponse(responseCode = "302", description = "Redirect to the presigned download url", content = @Content,
+            @ApiResponse(responseCode = "303", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
             @ApiResponse(responseCode = "404", description = "Scene or artifact not found", content = @Content)
     })
@@ -69,6 +69,6 @@ public class ODataController {
                 artifactName,
                 sceneStorage.getPresignedGetTimeout()
         );
-        return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadLink.toURI()).build();
     }
 }

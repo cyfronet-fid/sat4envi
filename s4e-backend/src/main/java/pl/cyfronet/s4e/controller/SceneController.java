@@ -104,16 +104,20 @@ public class SceneController {
                 .orElseGet(() -> MostRecentSceneResponse.builder().build());
     }
 
-    @Operation(summary = "Redirect to a presigned download url for a scene")
+    @Operation(summary = "Redirect to a presigned download url for a scene's artifact")
     @ApiResponses({
-            @ApiResponse(responseCode = "302", description = "Redirect to the presigned download url", content = @Content,
+            @ApiResponse(responseCode = "303", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
-            @ApiResponse(responseCode = "404", description = "Scene not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Scene or artifact not found", content = @Content)
     })
-    @GetMapping(value = "/scenes/{id}/download")
-    public ResponseEntity<Void> generateDownloadLink(@PathVariable Long id)
+    @GetMapping(value = "/scenes/{id}/download/{artifactName}")
+    public ResponseEntity<Void> generateDownloadLink(@PathVariable Long id, @PathVariable String artifactName)
             throws NotFoundException, URISyntaxException {
-        URL downloadLink = sceneStorage.generatePresignedGetLink(id, sceneStorage.getPresignedGetTimeout());
-        return ResponseEntity.status(HttpStatus.FOUND).location(downloadLink.toURI()).build();
+        URL downloadUrl = sceneStorage.generatePresignedGetLinkWithFileType(
+                id,
+                artifactName,
+                sceneStorage.getPresignedGetTimeout()
+        );
+        return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadUrl.toURI()).build();
     }
 }
