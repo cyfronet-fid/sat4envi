@@ -13,9 +13,12 @@ import {assertModalType} from '../../../../modal/utils/modal/misc';
 import {ReportGenerator} from './report-generator';
 import {HttpClient} from "@angular/common/http";
 import {combineLatest, Observable} from "rxjs";
-import {map} from "rxjs/operators";
+import {filter, map} from 'rxjs/operators';
 import moment from "moment";
 import Cropper from 'cropperjs';
+import {ReportTemplateService} from '../state/report-templates/report-template.service';
+import {ReportTemplateQuery} from '../state/report-templates/report-template.query';
+import {ReportTemplate} from '../state/report-templates/report-template.model';
 
 
 @Component({
@@ -44,7 +47,9 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
               modalService: ModalService,
               @Inject(MODAL_DEF) modal: ReportModal,
               modalQuery: ModalQuery,
-              fm: AkitaNgFormsManager<FormState>) {
+              fm: AkitaNgFormsManager<FormState>,
+              private _reportTemplateService: ReportTemplateService,
+              private _reportTemplateQuery: ReportTemplateQuery) {
     super(fm, modalService, modalQuery, modal.id, 'report');
 
     assertModalType(isReportModal, modal);
@@ -64,6 +69,18 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
     super.ngOnInit();
     this.disabled$ = combineLatest([this.reportGenerator.working$, this.reportGenerator.loading$])
       .pipe(map(([w, l]) => w || l));
+
+    this._reportTemplateQuery.selectActiveId()
+      .pipe(
+        untilDestroyed(this),
+        map(() => this._reportTemplateQuery.getActive() as ReportTemplate),
+        filter(activeTemplate => !!activeTemplate)
+      )
+      .subscribe(activeTemplate => {
+          const {caption, notes, ...otherValues} = activeTemplate;
+          this.form.setValue({caption, notes});
+        }
+      )
   }
 
   ngAfterViewInit(): void {
@@ -104,5 +121,17 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
       )
       .pipe(untilDestroyed(this))
       .subscribe(() => this.dismiss());
+  }
+
+  saveAsTemplate() {
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    this._reportTemplateService.create$(this.form.value)
+      .pipe(untilDestroyed(this))
+      .subscribe();
   }
 }

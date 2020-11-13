@@ -56,6 +56,8 @@ import { EventsModule } from 'src/app/utils/search/events.module';
 import {OVERLAY_LIST_MODAL_ID} from './view-manager/overlay-list-modal/overlay-list-modal.model';
 import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overlay-list-modal.component';
 import {SearchResultsComponent} from './sentinel-search/search-results/search-results.component';
+import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-templates-modal.component';
+import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 
 @NgModule({
   declarations: [
@@ -78,7 +80,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     OverlayListModalComponent,
     SearchResultsComponent,
     JwtTokenModalComponent,
-    ExpertHelpModalComponent
+    ExpertHelpModalComponent,
+    ReportTemplatesModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -124,7 +127,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent),
     makeModalProvider(OVERLAY_LIST_MODAL_ID, OverlayListModalComponent),
     makeModalProvider(JWT_TOKEN_MODAL_ID, JwtTokenModalComponent),
-    makeModalProvider(EXPERT_HELP_MODAL_ID, ExpertHelpModalComponent)
+    makeModalProvider(EXPERT_HELP_MODAL_ID, ExpertHelpModalComponent),
+    makeModalProvider(REPORT_TEMPLATES_MODAL_ID, ReportTemplatesModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
@@ -134,7 +138,8 @@ import {SearchResultsComponent} from './sentinel-search/search-results/search-re
     SearchResultModalComponent,
     OverlayListModalComponent,
     JwtTokenModalComponent,
-    ExpertHelpModalComponent
+    ExpertHelpModalComponent,
+    ReportTemplatesModalComponent
   ]
 })
 export class MapModule {

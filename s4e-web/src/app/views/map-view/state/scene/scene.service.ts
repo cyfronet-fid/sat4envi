@@ -45,7 +45,7 @@ export class SceneService {
           }
           this.store.setActive(activeSceneId);
         }))
-      )
+      );
   }
 
   setActive(sceneId: number | null) {

@@ -7,6 +7,7 @@ import {MapModule} from '../../map.module';
 import {filter, take} from 'rxjs/operators';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
+import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
 describe('ReportModalComponent', () => {
   let component: ReportModalComponent;
@@ -24,7 +25,8 @@ describe('ReportModalComponent', () => {
             mapWidth: 300,
             mapImage: 'data:image/png;base64,00',
           }
-        }
+        },
+        LocalStorageTestingProvider
       ]
     })
       .compileComponents();

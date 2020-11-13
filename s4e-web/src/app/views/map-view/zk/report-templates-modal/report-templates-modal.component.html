@@ -1,0 +1,59 @@
+<s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
+  <div class="s4e-modal-header" i18n>Szblony raportów</div>
+  <div class="s4e-modal-body">
+    <ul
+      *ngIf="(reportsTemplates$ | async).length > 0; else noReportsTemplatesMessage"
+    >
+      <li
+        *ngFor="let reportTemplate of reportsTemplates$ | async"
+        class="report-template-details"
+      >
+        <div>
+          <div>
+            <p><strong>Tytuł: </strong> <span>{{reportTemplate.caption}}</span></p>
+            <p *ngIf="!!reportTemplate.createdAt">
+              <small>Data utworzenia: {{  reportTemplate.createdAt | S4EDate}}</small>
+            </p>
+          </div>
+          <div class="right-details">
+            <button
+              class="button button--primary button--small"
+              type="button"
+              (click)="load(reportTemplate)"
+              i18n
+            >
+              Wczytaj
+            </button>
+            <button
+              class="button button--small"
+              type="button"
+              (click)="delete(reportTemplate)"
+              i18n
+            >
+              <img _ngcontent-c103="" alt="Delete" src="/assets/images/ico_delete.svg" width="15">
+            </button>
+          </div>
+        </div>
+        <p>
+          <strong i18n>Notatka:</strong>
+          <br />
+          <span>{{reportTemplate.notes}}</span>
+        </p>
+      </li>
+    </ul>
+
+    <ng-template #noReportsTemplatesMessage>
+      <p>Nie posiadasz żadnych szbalonów raportów. Wejdź w zakładkę `Wygeneruj raport (PDF)`, by dodać nowy szablon.</p>
+    </ng-template>
+  </div>
+  <div class="s4e-modal-footer">
+    <button
+      class="button button--cancel button--small"
+      type="button"
+      (click)="dismiss()"
+      i18n
+    >
+      Zamknij
+    </button>
+  </div>
+</s4e-generic-modal>
