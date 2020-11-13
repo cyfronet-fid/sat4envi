@@ -32,8 +32,31 @@
       </div>
     </div>
     <div class="s4e-modal-footer">
-      <button class="button button--primary button--small"  type="submit" [disabled]="disabled$ | async" (click)="accept()" i18n>Zapisz raport na dysk</button>
-      <button class="button button--cancel button--small" type="button" [disabled]="disabled$ | async" (click)="dismiss()" i18n>Anuluj</button>
+      <button
+        class="button button--primary button--small"
+        type="submit" [disabled]="disabled$ | async"
+        (click)="accept()"
+        i18n
+      >
+        Zapisz raport na dysk
+      </button>
+      <button
+        class="button button--primary button--small"
+        type="submit" [disabled]="disabled$ | async"
+        (click)="saveAsTemplate()"
+        i18n
+      >
+        Zapisz jako template
+      </button>
+      <button
+        class="button button--cancel button--small"
+        type="button"
+        [disabled]="disabled$ | async"
+        (click)="dismiss()"
+        i18n
+      >
+        Anuluj
+      </button>
     </div>
   </s4e-generic-modal>
 </form>

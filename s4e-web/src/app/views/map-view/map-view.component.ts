@@ -31,11 +31,13 @@ import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {delay, map, switchMap, take} from 'rxjs/operators';
+import {delay, filter, map, switchMap, take} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
+import {ReportTemplateQuery} from './zk/state/report-templates/report-template.query';
 
 
 @Component({
@@ -105,7 +107,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private legendService: LegendService,
     private searchResultsQuery: LocationSearchResultsQuery,
     private modalService: ModalService,
-    private viewConfigurationQuery: ViewConfigurationQuery
+    private viewConfigurationQuery: ViewConfigurationQuery,
+    private reportTemplateQuery: ReportTemplateQuery
   ) {}
 
   ngOnInit(): void {
@@ -165,6 +168,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
     this.productService.get();
     this.overlayService.get();
+
+    this.reportTemplateQuery.selectActiveId()
+      .pipe(filter(activeId => !!activeId))
+      .subscribe(() => this.openReportModal());
   }
 
   selectProduct(productId: number | null) {
@@ -283,6 +290,14 @@ export class MapViewComponent implements OnInit, OnDestroy {
   openJwtTokenModal() {
     this.modalService.show<Modal>({
       id: JWT_TOKEN_MODAL_ID,
+      size: 'lg'
+    });
+    this.toggleZKOptions(false);
+  }
+
+  openReportTemplatesModal() {
+    this.modalService.show<Modal>({
+      id: REPORT_TEMPLATES_MODAL_ID,
       size: 'lg'
     });
     this.toggleZKOptions(false);
