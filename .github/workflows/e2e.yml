@@ -1,78 +1,25 @@
-name: Build & Test
+name: Test E2E
 
 on: [push]
 jobs:
-  backend:
+  web-e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.8
-      - name: Cache backend
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.m2/repository
-          key: ${{ runner.os }}-backend-${{ hashFiles('pom.xml', 's4e-backend/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-backend-
-      - name: Maven package
-        run: ../mvnw clean package -DskipTests
-        working-directory: s4e-backend
-      - name: Start containers
-        run: docker-compose -f docker-compose-test.yml up -d db-test broker-test minio-test geoserver-test
-      - name: Maven test and verify
-        run: ../mvnw verify
-        working-directory: s4e-backend
-      - name: Containers logs
-        if: failure()
-        run: docker-compose -f docker-compose-test.yml logs
-      - name: Stop containers
-        run: docker-compose -f docker-compose-test.yml down
-
-  gs-gateway:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11.0.8
-      - name: Cache gs-gateway
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.m2/repository
-          key: ${{ runner.os }}-gs-gateway-${{ hashFiles('pom.xml', 'gs-gateway/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-gs-gateway-
-      - name: Maven package
-        run: ../mvnw clean package -DskipTests
-        working-directory: gs-gateway
-      - name: Maven test
-        run: ../mvnw test
-        working-directory: gs-gateway
-
-  web:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11.0.8
-      - name: Cache web
+          java-version: 11.0.9
+      - name: Cache web-e2e
         uses: actions/cache@v2
         with:
           path: |
             ~/.m2/repository
             ~/.npm
             ~/.cache/Cypress
-          key: ${{ runner.os }}-web-${{ hashFiles('**/pom.xml', '**/package-lock.json') }}
+          key: ${{ runner.os }}-web-e2e-${{ hashFiles('**/pom.xml', '**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-web-
+            ${{ runner.os }}-web-e2e-
 #       For now, install jq 1.6, as the jq 1.5 provided by ubuntu 18.04 has some bugs. When github updates ubuntu-latest
 #       to 20.04 it will be obsolete.
       - name: Install jq 1.6
@@ -85,9 +32,6 @@ jobs:
         run: docker-compose -f docker-compose-test.yml up -d
         env:
           BACKEND_E2E_JAR_PATH: ./s4e-backend/target/s4e-backend-0.0.0-${{ github.sha }}-SNAPSHOT.jar
-      - name: Maven test
-        run: ../mvnw test
-        working-directory: s4e-web
       - name: Seed products for E2E tests
         run: src/scripts/seed.sh http://localhost:4203 seed-configs/seed-1
         working-directory: s4e-backend
