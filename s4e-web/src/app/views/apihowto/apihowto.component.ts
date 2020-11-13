@@ -1,4 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
+import {LOCATION} from '../../app.providers';
+import environment from '../../../environments/environment';
 
 @Component({
   templateUrl: './apihowto.component.html',
@@ -6,6 +8,15 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 })
 
 export class ApihowtoComponent implements OnInit, OnDestroy {
-  ngOnInit(){}
-  ngOnDestroy(){}
+  public readonly API_BASE: string;
+
+  constructor(@Inject(LOCATION) location: Location) {
+    this.API_BASE = location.origin + '/' + environment.apiPrefixV1;
+  }
+
+  ngOnInit() {
+  }
+
+  ngOnDestroy() {
+  }
 }
