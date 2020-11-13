@@ -29,7 +29,7 @@ import {NotificationsModule} from 'notifications';
 import {ErrorsModule} from './errors/errors.module';
 import {NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
-import {LocalStorage} from './app.providers';
+import {LocalStorage, LOCATION} from './app.providers';
 
 registerLocaleData(localePl, 'pl');
 
@@ -82,6 +82,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'},
     {provide: LocalStorage, useValue: window.localStorage},
+    {provide: LOCATION, useValue: window.location},
   ],
   bootstrap: [RootComponent],
   exports: [LoginComponent],

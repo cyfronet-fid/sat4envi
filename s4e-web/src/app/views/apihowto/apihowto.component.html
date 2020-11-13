@@ -1,7 +1,23 @@
 <main>
   <h1> Jak skorzystać z API Sat4Envi</h1>
-
-      HOST: https://sok.grid.cyfronet.pl/api/v1
+  <p>Informacje:</p>
+  <p>
+    Składnia curl:<br>
+    curl [OPCJE]... [URL]...<br><br>
+    BŁĄD:<br>
+    curl: (60) SSL certificate problem: unable to get local issuer certificate More details here: https://curl.haxx.se/docs/sslcerts.html<br>
+    Aby połączyć się z HOST w sposób niebezpieczny, można użyć `-k'.
+  </p>
+  <p>
+    Składnia wget:<br>
+    wget [OPCJE]... [URL]...<br><br>
+    BŁĄD: błąd kontroli certyfikatu dla HOST, wystawionego przez `CN=GEANT OV RSA CA 4,O=GEANT Vereniging,C=NL':<br>
+    Błąd lokalnej kontroli centrum certyfikacji.<br>
+    Aby połączyć się z HOST w sposób niebezpieczny, można użyć `--no-check-certificate'.
+  </p>
+  <p>
+    HOST: {{API_BASE}}
+  </p>
 
   <h2>Pobranie tokenu</h2>
 
@@ -15,7 +31,10 @@
 
   <label>Przykład:</label>
   <code>
-      curl --location --request POST 'https://sok.grid.cyfronet.pl/api/v1/token' --header 'Content-Type: application/json' --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+    curl -LX POST '{{API_BASE}}/token' -H 'Content-Type: application/json' --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+  </code>
+  <code>
+    wget --method POST "{{API_BASE}}/token" --header 'Content-Type: application/json' --body-data '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
   </code>
 
   <label>Response:</label>
@@ -89,7 +108,10 @@
   </ul>
   <label>przykład:</label>
   <code>
-    curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/search?rows=10&start=0&orderby=beginposition DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW' --header 'Authorization: Bearer ...'
+    curl -LX GET "{{API_BASE}}/dhus/search?rows=10&start=0&orderby=beginposition%20DESC&q=relativeorbitnumber:22%20AND%20sensoroperationalmode:IW" -H 'Cookie: token=TOKEN'
+  </code>
+  <code>
+    wget --method GET "{{API_BASE}}/dhus/search?rows=10&start=0&orderby=beginposition DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW" --header 'Cookie: token=TOKEN'
   </code>
 
   <p><i>wymaga dodania tokenu autoryzacyjnego</i></p>
@@ -105,7 +127,10 @@
   </p>
   <label>przykład:</label>
   <code>
-    curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/odata/v1/Products('550')/\$value' --header 'Authorization: Bearer ...'
+    curl -LX GET "{{API_BASE}}/dhus/odata/v1/Products('550')/\$value" -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
+  </code>
+  <code>
+    wget --method GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/\$value" --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
   </code>
 
 
@@ -118,7 +143,10 @@
   </ul>
   <label>przykład:</label>
   <code>
-      curl --location --request GET 'https://sok.grid.cyfronet.pl/api/v1/dhus/odata/v1/Products('550')/Nodes('filename')/Nodes('&#123;type&#125;')/\$value' --header 'Authorization: Bearer ...'
+    curl -LX GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value" -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
+  </code>
+  <code>
+    wget --method GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value" --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
   </code>
   <p>
     <i>wymaga dodania tokenu autoryzacyjnego</i>
