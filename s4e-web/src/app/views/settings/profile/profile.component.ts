@@ -14,6 +14,8 @@ export class ProfileComponent {
   public MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY = 10;
 
   public userEmail$: Observable<string> = this._sessionQuery.select(state => state.email);
+  public userName$: Observable<string> = this._sessionQuery.select(state => state.name);
+  public userSurname$: Observable<string> = this._sessionQuery.select(state => state.surname);
 
   public administrationInstitutions$: Observable<Institution[]> = this._institutionQuery
     .getAdministrationInstitutions$();
