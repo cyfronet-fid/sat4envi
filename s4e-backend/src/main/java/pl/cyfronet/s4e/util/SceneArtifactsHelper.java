@@ -4,37 +4,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.data.repository.SceneExtendedRepository;
+import org.springframework.validation.annotation.Validated;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.function.Supplier;
 
 import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class SceneArtifactsHelper {
     private final SceneRepository sceneRepository;
-    private final SceneExtendedRepository sceneExtendedRepository;
 
     interface SceneProjection {
         Long getId();
         JsonNode getSceneContent();
     }
 
-    interface SceneExtendedProjection {
-        Long getId();
-        String getS3Path();
-    }
-
-    public String getArtifact(Long sceneId, String artifactName) throws NotFoundException {
-        if (artifactName == null) {
-            val sceneExtendedProjection = sceneExtendedRepository.findById(sceneId, SceneExtendedProjection.class)
-                    .orElseThrow(constructNFE(sceneId));
-            return sceneExtendedProjection.getS3Path();
-        }
-
+    public String getArtifact(@NotNull Long sceneId, @NotBlank String artifactName) throws NotFoundException {
         val sceneProjection = sceneRepository.findById(sceneId, SceneProjection.class)
                 .orElseThrow(constructNFE(sceneId));
         try {

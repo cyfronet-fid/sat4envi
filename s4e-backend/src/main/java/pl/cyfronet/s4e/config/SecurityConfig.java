@@ -129,7 +129,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(DELETE, prefix("/products/{id}/favourite"))
                     .access("isAuthenticated() && @licensePermissionEvaluator.allowProductRead(#id, principal)")
 
-                .mvcMatchers(GET, prefix("/scenes/{id}/download"))
+                .mvcMatchers(GET, prefix("/scenes/{id}/download/{artifactName}"))
                     .access("isAuthenticated() && @licensePermissionEvaluator.allowSceneRead(#id, principal)")
 
                 .mvcMatchers(GET, prefix("/search")).permitAll()

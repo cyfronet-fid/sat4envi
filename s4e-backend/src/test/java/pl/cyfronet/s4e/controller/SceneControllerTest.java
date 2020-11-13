@@ -89,6 +89,18 @@ public class SceneControllerTest {
     }
 
     @Test
+    public void shouldReturnScenesWithArtifactsNames() throws Exception {
+        val product = productRepository.save(productBuilder().build());
+        sceneRepository.save(sceneBuilder(product, LocalDateTime.of(2019, 10, 11, 12, 13)).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .param("date", "2019-10-11"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(1))))
+                .andExpect(jsonPath("$[0].artifactNames", containsInAnyOrder("default_artifact", "other_artifact")));
+    }
+
+    @Test
     public void shouldReturnFilteredScenes() throws Exception {
         val product = productRepository.save(productBuilder().build());
 
@@ -98,8 +110,8 @@ public class SceneControllerTest {
                 LocalDateTime.of(2019, 10, 2, 0, 0)
         )
                 .map(toScene(product))
+                .map(sceneRepository::save)
                 .collect(Collectors.toList());
-        sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-10-01"))
@@ -121,8 +133,8 @@ public class SceneControllerTest {
                 LocalDateTime.of(2019, 12, 2, 23, 0)
         )
                 .map(toScene(product))
+                .map(sceneRepository::save)
                 .collect(Collectors.toList());
-        sceneRepository.saveAll(scenes);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-12-02")
@@ -164,7 +176,7 @@ public class SceneControllerTest {
     public void shouldReturnZonedTimestampsAroundDST() throws Exception {
         val product = productRepository.save(productBuilder().build());
 
-        val scenes = Stream.of(
+        Stream.of(
                 LocalDateTime.of(2019, 3, 31, 0, 59),
                 LocalDateTime.of(2019, 3, 31, 1, 0),
                 LocalDateTime.of(2019, 3, 31, 1, 1),
@@ -173,8 +185,7 @@ public class SceneControllerTest {
                 LocalDateTime.of(2019, 10, 27, 1, 1)
         )
                 .map(toScene(product))
-                .collect(Collectors.toList());
-        sceneRepository.saveAll(scenes);
+                .forEach(sceneRepository::save);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
                 .param("date", "2019-03-31")
@@ -214,7 +225,7 @@ public class SceneControllerTest {
            Sep | Oct     | Nov
               *|**      *|*
          */
-        val scenes = Stream.of(
+        Stream.of(
                 LocalDateTime.of(2019, 9, 30, 23, 59, 59),
                 LocalDateTime.of(2019, 10, 1, 0, 0),
                 LocalDateTime.of(2019, 10, 2, 0, 0),
@@ -223,8 +234,7 @@ public class SceneControllerTest {
                 LocalDateTime.of(2019, 11, 1, 0, 0)
         )
                 .map(toScene(product))
-                .collect(Collectors.toList());
-        sceneRepository.saveAll(scenes);
+                .forEach(sceneRepository::save);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
                 .param("yearMonth", "2019-10"))
@@ -242,7 +252,7 @@ public class SceneControllerTest {
            Sep | Oct     | Nov
               *|**      *|*
          */
-        val scenes = Stream.of(
+        Stream.of(
                 LocalDateTime.of(2019, 9, 30, 21, 59, 59),
                 LocalDateTime.of(2019, 9, 30, 22, 0),
                 LocalDateTime.of(2019, 10, 2, 0, 0),
@@ -250,8 +260,7 @@ public class SceneControllerTest {
                 LocalDateTime.of(2019, 10, 31, 21, 59, 59)
         )
                 .map(toScene(product))
-                .collect(Collectors.toList());
-        sceneRepository.saveAll(scenes);
+                .forEach(sceneRepository::save);
 
         mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes/available")
                 .param("yearMonth", "2019-10")
@@ -437,21 +446,28 @@ public class SceneControllerTest {
             when(pgor.url()).thenReturn(new URL(redirectUrl));
             when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
 
-            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", scene.getId())
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", scene.getId(), "default_artifact")
                     .with(jwtBearerToken(appUser, objectMapper)))
-                    .andExpect(status().isFound())
+                    .andExpect(status().isSeeOther())
                     .andExpect(redirectedUrl(redirectUrl));
         }
 
         @Test
         public void shouldReturn401IfUnauthenticated() throws Exception {
-            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", -1L))
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", -1L, "default_artifact"))
                     .andExpect(status().isUnauthorized());
         }
 
         @Test
         public void shouldReturn404IfSceneNotFound() throws Exception {
-            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download", -1L)
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", -1L, "default_artifact")
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isNotFound());
+        }
+
+        @Test
+        public void shouldReturn404IfArtifactNotFound() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", -1L, "non_existent")
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isNotFound());
         }

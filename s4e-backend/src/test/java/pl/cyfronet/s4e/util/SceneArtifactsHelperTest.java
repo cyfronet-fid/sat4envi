@@ -12,6 +12,8 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,18 +44,26 @@ class SceneArtifactsHelperTest {
 
     @Test
     public void shouldWork() throws NotFoundException {
-        assertThat(sceneArtifactsHelper.getArtifact(scene.getId(), null), is(equalTo("some/path")));
+        assertThat(sceneArtifactsHelper.getArtifact(scene.getId(), "default_artifact"), is(equalTo("some/path")));
         assertThat(sceneArtifactsHelper.getArtifact(scene.getId(), "other_artifact"), is(equalTo("some/other/path")));
     }
 
     @Test
+    public void shouldProhibitNullArguments() {
+        assertThrows(ConstraintViolationException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId(), null));
+        assertThrows(ConstraintViolationException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId(), " "));
+        assertThrows(ConstraintViolationException.class, () -> sceneArtifactsHelper.getArtifact(null, "some_artifact"));
+        assertThrows(ConstraintViolationException.class, () -> sceneArtifactsHelper.getArtifact(null, null));
+        assertThrows(ConstraintViolationException.class, () -> sceneArtifactsHelper.getArtifact(null, " "));
+    }
+
+    @Test
     public void shouldThrowNFEIfSceneDoesntExist() {
-        assertThrows(NotFoundException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId() + 1, null));
         assertThrows(NotFoundException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId() + 1, "other_artifact"));
     }
 
     @Test
-    public void shouldReturnNullForNonExistentArtifact() {
+    public void shouldThrowNFEForNonExistentArtifact() {
         assertThrows(NotFoundException.class, () -> sceneArtifactsHelper.getArtifact(scene.getId(), "not_existent"));
     }
 }
