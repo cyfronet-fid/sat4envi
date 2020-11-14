@@ -7,8 +7,10 @@ import {RegisterFormState} from './state/register.model';
 import {RegisterQuery} from './state/register.query';
 import {RegisterService} from './state/register.service';
 import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
+import {map} from 'rxjs/operators';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {
@@ -38,6 +40,7 @@ export function MustMatch(controlName: string, matchingControlName: string) {
 export class RegisterComponent extends GenericFormComponent<RegisterQuery, RegisterFormState> {
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
+              private activatedRoute: ActivatedRoute,
               public remoteConfiguration: RemoteConfiguration,
               private registerService: RegisterService,
               private registerQuery: RegisterQuery) {
@@ -63,7 +66,14 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
       return;
     }
 
-    const {recaptcha, passwordRepeat, ...request} = this.form.value;
-    this.registerService.register(request, recaptcha);
+    this.activatedRoute.queryParams
+      .pipe(
+        untilDestroyed(this),
+        map(params => params.token)
+      )
+      .subscribe((token: string | null) => {
+        let {recaptcha, passwordRepeat, ...request} = this.form.value;
+        this.registerService.register(request, recaptcha, token);
+      });
   }
 }

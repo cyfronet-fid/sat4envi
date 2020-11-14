@@ -9,8 +9,9 @@ import {SessionService, BACK_LINK_QUERY_PARAM} from '../../state/session/session
 import {LoginFormState} from '../../state/session/session.model';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
-import { filter, map } from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import { InvitationService, TOKEN_QUERY_PARAMETER, REJECTION_QUERY_PARAMETER } from '../settings/people/state/invitation/invitation.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 's4e-login',
@@ -49,7 +50,20 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
       return;
     }
 
-    this._sessionService.login(this.form.value, this._activatedRoute);
+    this._sessionService.login$(this.form.value)
+      .pipe(
+        untilDestroyed(this),
+        switchMap(() => this._activatedRoute.queryParamMap),
+        tap((params) => {
+          if (!params.has(TOKEN_QUERY_PARAMETER)) {
+            return;
+          }
+
+          const token = params.get(TOKEN_QUERY_PARAMETER);
+          this._invitationService.confirm(token);
+        })
+      )
+      .subscribe();
   }
 
   protected _loadBackLink() {
@@ -68,6 +82,7 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
         if (params.has(REJECTION_QUERY_PARAMETER)) {
           const token = params.get(TOKEN_QUERY_PARAMETER);
           this._invitationService.reject(token);
+          return;
         }
 
         const content = 'Zaloguj się lub zarejestruj, żeby dołączyć do instytucji';

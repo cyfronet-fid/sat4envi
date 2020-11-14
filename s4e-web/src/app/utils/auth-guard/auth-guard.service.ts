@@ -31,7 +31,6 @@ export class IsNotLoggedIn extends IsLoggedIn implements CanActivate {
     if (this._sessionQuery.isLoggedIn()) {
       if (next.queryParamMap.has(TOKEN_QUERY_PARAMETER)) {
         this._invitationService.handleInvitation(next);
-        return this._router.parseUrl('');
       }
 
       return this._router.parseUrl('/map/products');

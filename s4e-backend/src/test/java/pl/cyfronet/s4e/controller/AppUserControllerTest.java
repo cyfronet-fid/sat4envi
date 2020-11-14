@@ -27,17 +27,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.InvitationHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.EmailVerificationRepository;
-import pl.cyfronet.s4e.data.repository.InstitutionRepository;
-import pl.cyfronet.s4e.data.repository.UserRoleRepository;
-import pl.cyfronet.s4e.event.OnEmailConfirmedEvent;
-import pl.cyfronet.s4e.event.OnRegistrationCompleteEvent;
-import pl.cyfronet.s4e.event.OnRegistrationDuplicateEvent;
-import pl.cyfronet.s4e.event.OnResendRegistrationTokenEvent;
+import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.event.*;
 import pl.cyfronet.s4e.properties.MailProperties;
 import pl.cyfronet.s4e.service.SlugService;
 
@@ -113,6 +108,9 @@ public class AppUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private InvitationRepository invitationRepository;
+
     private AppUser securityAppUser;
 
     private String slugInstitution;
@@ -175,6 +173,70 @@ public class AppUserControllerTest {
         @EventListener
         public void handle(OnRegistrationDuplicateEvent event) {
         }
+
+        @EventListener
+        public void handle(OnConfirmInvitationEvent event) {
+
+        }
+    }
+
+    @Test
+    public void shouldCreateUserAddedToInstitution() throws Exception {
+        val invitation = invitationRepository
+                .save(InvitationHelper.invitationBuilder(institution).build());
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
+                .password("admin123")
+                .domain(AppUser.ScientificDomain.ATMOSPHERE)
+                .usage(AppUser.Usage.RESEARCH)
+                .country("PL")
+                .build();
+
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
+
+        mockMvc.perform(post(API_PREFIX_V1 + "/register?token=" + invitation.getToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(registerRequest)))
+                .andExpect(status().isOk());
+
+        // User should have roles in institution
+        val userInstitutionRoles = userRoleRepository
+                .findUserRolesInInstitution(
+                        registerRequest.getEmail(),
+                        invitation.getInstitution().getSlug()
+
+                )
+                .stream()
+                .map(role -> role.getRole().name())
+                .toArray();
+        assertThat(userInstitutionRoles, is(new String[]{AppRole.INST_MEMBER.name()}));
+
+        // Should send confirmation email
+        verify(testListener).handle(any(OnConfirmInvitationEvent.class));
+    }
+
+    @Test
+    public void shouldCreateUserOnInvalidToken() throws Exception {
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .email("some@email.pl")
+                .name("Name")
+                .surname("Surname")
+                .password("admin123")
+                .domain(AppUser.ScientificDomain.ATMOSPHERE)
+                .usage(AppUser.Usage.RESEARCH)
+                .country("PL")
+                .build();
+
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
+
+        mockMvc.perform(post(API_PREFIX_V1 + "/register?token=test")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(registerRequest)))
+                .andExpect(status().isOk());
+
+        assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isPresent());
     }
 
     @Test

@@ -6,10 +6,12 @@ import { NotificationService } from 'notifications';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
-import { tap, finalize } from 'rxjs/operators';
+import {tap, finalize, switchMap} from 'rxjs/operators';
 import { Invitation, InvitationResendRequest } from './invitation.model';
 import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {Observable} from 'rxjs';
+import {SessionService} from '../../../../../state/session/session.service';
+import {InjectorModule} from '../../../../../common/injector.module';
 
 export const TOKEN_QUERY_PARAMETER = 'token';
 export const REJECTION_QUERY_PARAMETER = 'reject';
@@ -22,7 +24,8 @@ export class InvitationService {
     private _http: HttpClient,
     private _notificationService: NotificationService,
     private _router: Router,
-    private _store: InvitationStore
+    private _store: InvitationStore,
+    private _sessionService: SessionService
   ) {}
 
   public getBy(institution: Institution): void {
@@ -90,7 +93,8 @@ export class InvitationService {
         tap(institution => this._notificationService.addGeneral({
           content: notificationMessage,
           type: 'success'
-        }))
+        })),
+        switchMap(() => this._sessionService.getProfile$())
       )
       .subscribe();
   }
@@ -106,7 +110,7 @@ export class InvitationService {
             content: notificationMessage,
             type: 'success'
           });
-          this._router.navigate(['.']);
+          this._router.navigateByUrl('/map/products');
         })
       )
       .subscribe();
