@@ -1,7 +1,7 @@
 import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
 import { environment } from './../../../../environments/environment';
 import {NotificationService} from 'notifications';
-import {ImageWmsLoader} from '../state/utils/layers-loader.util';
+import {TileLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
 import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
 import Map from 'ol/Map';
@@ -11,13 +11,12 @@ import {TileWMS, OSM} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
-import {BehaviorSubject, combineLatest, Observable, ReplaySubject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {distinctUntilChanged} from 'rxjs/operators';
+import {distinctUntilChanged, finalize, switchMap} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
-import {getImageXhr, ImageBase64} from '../../settings/manage-institutions/institution-form/files.utils';
 
 @Component({
   selector: 's4e-map',
@@ -82,6 +81,13 @@ export class MapComponent implements OnInit, OnDestroy {
         maxZoom: environment.maxZoom
       }),
     });
+    this.map.on(
+      'rendercomplete',
+      () => setTimeout(
+        () => this._loaderService.stopBackground(),
+        500
+      )
+    );
 
     const source = new OSM({url: '/osm/{z}/{x}/{y}.png', crossOrigin: 'Anonymous'});
     this.baseLayer = new Tile({source});
@@ -149,14 +155,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.updateSize();
   }
 
-  protected _handleLoadError() {
-    this._loaderService.stopBackground();
-    this._notificationService.addGeneral({
-      type: 'error',
-      content: 'Wczytanie sceny nie powiodło się'
-    });
-  }
-
   private setView(view: ViewPosition): void {
     if (view.centerCoordinates != null) {
       this.map.getView().setCenter(view.centerCoordinates);
@@ -172,39 +170,36 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.push(this.baseLayer);
 
     if (scene != null) {
-      const utcTime = moment(scene.timestamp).utc();
-
-      // IMPORTANT!!!
-      // Due to invalid response from geo-server is needed to floor timestamp to seconds
-      const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
-      const source = new TileWMS({
-        crossOrigin: 'Anonymous',
-        url: this._remoteConfiguration.get().geoserverUrl,
-        serverType: 'geoserver',
-        params: {
-          'LAYERS': this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
-          'TIME': isoTimeWithoutMs,
-          'TILED': true,
-        },
-      });
-
-      const imageWmsLoader = new ImageWmsLoader(source);
-      imageWmsLoader.start$
-        .then(
-          () => this._loaderService.startBackground(),
-          () => this._handleLoadError()
-        );
-      imageWmsLoader.end$
-        .then(
-          () => this._loaderService.stopBackground(),
-          () => this._handleLoadError()
-        );
-
-      mapLayers.push(new Tile({ source }));
+      const sceneTiles = new Tile({ source: this._getTileWmsFrom(scene)});
+      mapLayers.push(sceneTiles);
     }
 
-    for (const overlay of this.overlays.filter(ol => ol.active)) {
-      mapLayers.push(overlay.olLayer);
-    }
+    const activeLayers = this.overlays
+      .filter(overlay => overlay.active)
+      .map(overlay => overlay.olLayer);
+    mapLayers.extend(activeLayers);
+  }
+
+  private _getTileWmsFrom(scene: Scene) {
+    const utcTime = moment(scene.timestamp).utc();
+
+    // IMPORTANT!!!
+    // Due to change in geo-server we need floor timestamp to seconds
+    // If not, it will not respond correctly
+    const isoTimeWithoutMs = utcTime.format('YYYY-MM-DD[T]HH:mm:ss[Z]');
+    const source = new TileWMS({
+      crossOrigin: 'Anonymous',
+      url: this._remoteConfiguration.get().geoserverUrl,
+      serverType: 'geoserver',
+      params: {
+        'LAYERS': this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
+        'TIME': isoTimeWithoutMs,
+        'TILED': true,
+      },
+    });
+
+    new TileLoader(source).start$.then(() => this._loaderService.startBackground());
+
+    return source;
   }
 }

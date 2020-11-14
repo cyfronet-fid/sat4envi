@@ -143,8 +143,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
     this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
     this.showProductDescription$ = this.mapQuery.select('productDescriptionOpened');
-    this.timelineResolution$ = this.productQuery.selectTimelineResolution()
-    this.sidebarOpen$.pipe(delay(0),untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize())
+    this.timelineResolution$ = this.productQuery.selectTimelineResolution();
+    this.sidebarOpen$.pipe(delay(0), untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize());
 
     this.productService.get();
     this.overlayService.get();
