@@ -37,10 +37,10 @@
     z-index: 1;
 
     &--zk {
-      background: url(/../assets/images/ico_bolt.svg) $color-white no-repeat center;
+      background: url(/../assets/images/ico_list.svg) $color-white no-repeat center;
       top: 12px;
       right: 150px;
-      background-size: 16px;
+      background-size: 25px;
     }
 
     &--login, &--loginactive {
@@ -59,6 +59,10 @@
       top: 12px;
       left: 460px;
       background-size: 10px;
+
+      &.closed {
+        left: 70px;
+      }
     }
 
     &--products {
@@ -94,6 +98,10 @@
       left: 460px;
       width: 350px;
 
+      &.closed {
+        left: 70px;
+      }
+
       .dropdown__header {
         padding: 0;
         padding-left: 55px;
@@ -123,10 +131,6 @@
           cursor: pointer;
           color: $color-grey;
           font-size: 0.875rem;
-
-          &:hover {
-            color: $color-black;
-          }
 
           &.disabled {
             opacity: 0.4;

@@ -491,6 +491,29 @@ input.checkbox-slide:checked + .slider:after
     }
   }
 
+  &--poligon {
+    font-size: 0.82rem;
+    position: relative;
+    padding-left: 70px;
+    background: $color-white;
+    font-weight: 500;
+    line-height: 1rem;
+
+    display: none;
+    //This box is waiting for poligon functionality, that's why display:none;
+
+    &:before {
+      position: absolute;
+      width: 40px;
+      height: 100%;
+      display: block;
+      content: " ";
+      background: url(/../assets/images/ico_poligon.svg) $color-bluish no-repeat 10px;
+      padding: 10px;
+      left: 0;
+    }
+  }
+
   &--addlayer {
     display: block;
     margin-top: $space-small;

@@ -46,9 +46,11 @@
 
   .dropdown {
     &__button {
-      &--login {
+      &--login,
+      &--loginactive{
         right: 20px !important;
       }
+
 
       &--products {
         display: block;
@@ -85,12 +87,10 @@
 
   /* TIMELINE */
   .timeline {
-    position: absolute;
-    left: 15px;
-    right: 15px;
-    bottom: 50px;
-    width: auto;
-    max-width: 100%;
+
+      width: 100%;
+      left: 0;
+      margin: 0;
 
     &__manager {
 
@@ -227,4 +227,38 @@
     width: 97% !important;
     margin: 5px;
   }
+
+
+/* AUTH */
+.container {
+  .content {
+    button.button {
+      margin-top: 10px;
+    }
+  }
+
+  .logo__partners {
+    margin: 0 auto !important;
+  }
+
+  .content__switch {
+    &--left {
+      bottom: 20px;
+      left: 0;
+      a {
+        width: 100%;
+        padding: 15px 20px;
+        display: inline-block;
+        text-align: center;
+        position: fixed;
+        color: $color-white;
+        background: $color-secondary;
+
+        &:before {
+          display: none;
+        }
+        }
+    }
+  }
+}
 }

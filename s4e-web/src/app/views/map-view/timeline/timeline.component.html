@@ -1,8 +1,8 @@
 <div>
   <section class="timeline__manager">
-    <div class="timecontrol timecontrol--live">
-      <label for="live" i18n>
-        <p id="live--dot" [ngClass]="{active: isLive$ | async}"></p> <span>Na żywo</span>
+    <div class="timecontrol timecontrol--live button button--small button--default">
+      <label for="live" [ngClass]="{active: isLive$ | async}"i18n>
+        <span class="live--dot"></span><span>Na żywo</span>
       </label>
       <input type="checkbox" id="live" name="live" (change)="toggleLiveMode()" />
     </div>

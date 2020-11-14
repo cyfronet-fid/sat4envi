@@ -1,3 +1,4 @@
+
 <div class="section sidebar" [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'">
   <div class="collapse" (click)="mapService.toggleSidebar()" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"></div>
   <ul class="switch">
@@ -37,7 +38,9 @@
               (previousDay)="previousDay()"
               [loading]="scenesAreLoading$ | async"
               [activeScene]="activeScene$ | async"
-              (selectedScene)="selectScene($event?.id)">
+              (selectedScene)="selectScene($event?.id)"
+              [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+>
 </s4e-timeline>
 
 <s4e-map class="section map"
@@ -113,7 +116,7 @@
   </button>
   <ng-container *ngIf="showZKOptions$ | async">
     <div class="dropdown__content dropdown__content--zk">
-      <span class="dropdown__header">Zarządzanie kryzysowe</span>
+      <span class="dropdown__header">Dodatkowe funkcjonalności</span>
       <div class="dropdown__close dropdown" (click)="toggleZKOptions(false)"></div>
       <ul>
         <li><a
@@ -183,10 +186,11 @@
 <button *ngIf="activeProducts$ | async"
         (click)="toggleProductDescription()"
         id="product-description-button"
-        class="dropdown__button dropdown__button--product">
+        class="dropdown__button dropdown__button--product"
+        [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'">
 </button>
 <ng-container *ngIf="showProductDescription$ | async">
-  <div class="dropdown__content dropdown__content--product">
+  <div class="dropdown__content dropdown__content--product" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'">
     <span class="dropdown__header" i18n>Opis produktu</span>
     <div class="dropdown__close dropdown" (click)="toggleProductDescription(false)"></div>
     <h2>{{(activeProducts$ | async).displayName}}</h2>
