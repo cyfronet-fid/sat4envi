@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.bean.Invitation;
 import pl.cyfronet.s4e.controller.request.InvitationRequest;
@@ -73,7 +72,6 @@ public class InvitationController {
         return invitationService.findByToken(token, BasicInvitationResponse.class).get();
     }
 
-    @Transactional
     @Operation(summary = "Resend invitation and delete last one")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Invitation was resend"),
@@ -91,10 +89,7 @@ public class InvitationController {
             @RequestBody @Valid InvitationResendInvitation request,
             @PathVariable("institution") String institutionSlug
     ) throws Exception {
-        val invitation = invitationService
-                .findByEmailAndInstitutionSlug(request.getOldEmail(), institutionSlug, Invitation.class)
-                .orElseThrow(() -> new NotFoundException("Invitation couldn't be found"));
-        invitationService.deleteBy(invitation.getToken());
+        invitationService.deleteBy(request.getOldEmail(), institutionSlug);
 
         val newToken = invitationService.createInvitationFrom(
                 request.getNewEmail(),
@@ -107,7 +102,6 @@ public class InvitationController {
         return invitationService.findByToken(newToken, BasicInvitationResponse.class).get();
     }
 
-    @Transactional
     @Operation(summary = "Delete invitation")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Invitation have been removed"),

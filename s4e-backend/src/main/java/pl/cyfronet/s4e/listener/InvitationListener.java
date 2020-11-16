@@ -47,7 +47,7 @@ public class InvitationListener {
         val invitation = invitationService.findByToken(event.getToken(), Invitation.class)
                 .orElseThrow(() -> new NotFoundException("Invitation with your token doesn't exist"));
         this.sendConfirmation(invitation, event.getLocale());
-        this.invitationService.deleteBy(event.getToken());
+        this.invitationService.deleteByToken(event.getToken());
     }
 
     @Async
@@ -66,7 +66,7 @@ public class InvitationListener {
         val invitation = invitationService.findByToken(event.getToken(), Invitation.class)
                 .orElseThrow(() -> new NotFoundException("Invitation with your token doesn't exist"));
         this.sendDeletion(invitation, event.getLocale());
-        this.invitationService.deleteBy(event.getToken());
+        this.invitationService.deleteByToken(event.getToken());
     }
 
     private void send(Invitation invitation, Locale locale) {

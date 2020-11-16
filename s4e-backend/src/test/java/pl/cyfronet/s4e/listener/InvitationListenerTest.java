@@ -68,7 +68,7 @@ public class InvitationListenerTest {
         listener.handle(new OnConfirmInvitationEvent(invitation.getToken(), null));
 
         verify(mailService).sendEmail(eq(invitation.getEmail()), any(), any(), any());
-        verify(invitationService).deleteBy(eq(invitation.getToken()));
+        verify(invitationService).deleteByToken(eq(invitation.getToken()));
     }
 
     @Test
@@ -96,6 +96,6 @@ public class InvitationListenerTest {
         listener.handle(new OnDeleteInvitationEvent(invitation.getToken(), null));
 
         verify(mailService).sendEmail(eq(invitation.getEmail()), any(), any(), any());
-        verify(invitationService).deleteBy(eq(invitation.getToken()));
+        verify(invitationService).deleteByToken(eq(invitation.getToken()));
     }
 }
