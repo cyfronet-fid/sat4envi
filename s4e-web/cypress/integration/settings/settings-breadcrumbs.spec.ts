@@ -1,6 +1,6 @@
 import { SideNav } from './../../page-objects/settings/settings-side-nav.po';
 import { AdminDashboard } from './../../page-objects/settings/settings-dashboard.po';
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { Breadcrumbs } from '../../page-objects/settings/settings-breadcrumbs.po';
 
 context('Breadcrumbs', () => {

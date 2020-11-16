@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 
 import {InstitutionFactory} from '../../../src/app/views/settings/state/institution/institution.factory.spec';
-import {Login} from '../../page-objects/login/login.po';
+import {Login} from '../../page-objects/auth/login.po';
 import {InstitutionList} from '../../page-objects/settings/settings-institution-list.po';
 import promisify from 'cypress-promise';
 import { InstitutionSearch } from './../../page-objects/settings/settings-institution-search.po';

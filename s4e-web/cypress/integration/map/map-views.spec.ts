@@ -1,12 +1,12 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { MapViews } from '../../page-objects/map/map-views.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { Layers } from '../../page-objects/map/map-layers.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
-context('Map Views', () => {
+/*context('Map Views', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
@@ -51,4 +51,4 @@ context('Map Views', () => {
       .acceptAndChangeContextTo(GeneralModal)
       .closeAndChangeContext(MapViews);
   });
-});
+});*/

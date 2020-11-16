@@ -9,5 +9,7 @@
   },
   "video": false,
   "videoUploadOnPasses": false,
-  "watchForFileChanges": false
+  "watchForFileChanges": false,
+  "chromeWebSecurity": false
+  
 }

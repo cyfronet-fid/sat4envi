@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { Layers } from '../../page-objects/map/map-layers.po';
 import promisify from 'cypress-promise';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';

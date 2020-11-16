@@ -1,8 +1,8 @@
 import { AdminDashboard, SuperAdminDashboard } from './settings-dashboard.po';
-import { User } from './../login/login.po';
+import { User } from '../auth/login.po';
 import { InstitutionSearch } from './settings-institution-search.po';
 import { InstitutionProfile } from './settings-institution-profile.po';
-import { Login } from '../login/login.po';
+import { Login } from '../auth/login.po';
 import {InstitutionList} from './settings-institution-list.po';
 import { Core } from '../core.po';
 import { AddInstitutionForm } from './settings-add-institution-form.po';

@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/login/login.po';
+import { Login } from '../../page-objects/auth/login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
 context('Map Locations Search', () => {
