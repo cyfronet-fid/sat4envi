@@ -98,7 +98,14 @@ public class InvitationService {
     }
 
     @Transactional
-    public void deleteBy(String token) throws NotFoundException {
+    public void deleteBy(String oldEmail, String institutionSlug) throws NotFoundException {
+        val invitation = findByEmailAndInstitutionSlug(oldEmail, institutionSlug, Invitation.class)
+                .orElseThrow(() -> new NotFoundException("Invitation couldn't be found"));
+        invitationRepository.delete(invitation);
+    }
+
+    @Transactional
+    public void deleteByToken(String token) throws NotFoundException {
         val invitation = invitationRepository.findByToken(token, Invitation.class)
                 .orElseThrow(() -> constructNFE("token: ", token));
         invitationRepository.delete(invitation);
