@@ -1,6 +1,6 @@
 import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import {Component, ElementRef, Inject, ViewChild, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild, OnInit, AfterViewInit} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
@@ -11,10 +11,10 @@ import {FormState} from '../../../../state/form/form.model';
 import {ModalQuery} from '../../../../modal/state/modal.query';
 import {assertModalType} from '../../../../modal/utils/modal/misc';
 import {ReportGenerator} from './report-generator';
-import {HttpClient} from "@angular/common/http";
-import {combineLatest, Observable} from "rxjs";
+import {HttpClient} from '@angular/common/http';
+import {combineLatest, Observable} from 'rxjs';
 import {filter, map} from 'rxjs/operators';
-import moment from "moment";
+import moment from 'moment';
 import Cropper from 'cropperjs';
 import {ReportTemplateService} from '../state/report-templates/report-template.service';
 import {ReportTemplateQuery} from '../state/report-templates/report-template.query';
@@ -77,10 +77,10 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
         filter(activeTemplate => !!activeTemplate)
       )
       .subscribe(activeTemplate => {
-          const {caption, notes, ...otherValues} = activeTemplate;
+          const {caption, notes} = activeTemplate;
           this.form.setValue({caption, notes});
         }
-      )
+      );
   }
 
   ngAfterViewInit(): void {
@@ -95,7 +95,7 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
         cropBoxMovable: false,
         cropBoxResizable: false
       });
-    this.cropper.replace(this.image)
+    this.cropper.replace(this.image);
   }
 
   async accept() {
@@ -106,8 +106,8 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
     }
 
     const imageData = this.cropper.getCroppedCanvas({height: 2048, width: 2048}).toDataURL();
-    const imageWidth = this.cropper.getCropBoxData().width
-    const imageHeight = this.cropper.getCropBoxData().height
+    const imageWidth = this.cropper.getCropBoxData().width;
+    const imageHeight = this.cropper.getCropBoxData().height;
 
     this.reportGenerator
       .generate(

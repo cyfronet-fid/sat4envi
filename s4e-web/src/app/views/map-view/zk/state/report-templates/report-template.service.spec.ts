@@ -5,7 +5,6 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ReportTemplateStore} from './report-template.store';
-import {ReportTemplate} from './report-template.model';
 import {NotificationService} from 'notifications';
 import {ProductQuery} from '../../../state/product/product.query';
 import {OverlayQuery} from '../../../state/overlay/overlay.query';
@@ -53,7 +52,7 @@ describe('Report template Service', () => {
     reportTemplatesService.delete$(reportTemplateToRemove)
       .subscribe(() => {
         expect(spyHttp).toHaveBeenCalled();
-        expect(spyStoreRemove).toHaveBeenCalledWith(reportTemplateToRemove.id);
+        expect(spyStoreRemove).toHaveBeenCalledWith(reportTemplateToRemove.uuid);
         expect(spyNotifications).toHaveBeenCalled();
       });
   });
@@ -87,7 +86,7 @@ describe('Report template Service', () => {
 
     expect(spyProductServiceSetActive).toHaveBeenCalledWith(reportTemplate.productId);
     expect(spyProductServiceGetLastScene).toHaveBeenCalled();
-    expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(reportTemplate.overlaysIds);
-    expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.id);
+    expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(reportTemplate.overlayIds);
+    expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.uuid);
   });
 });

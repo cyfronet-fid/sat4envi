@@ -1,5 +1,5 @@
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
-  <div class="s4e-modal-header" i18n>Szblony raportów</div>
+  <div class="s4e-modal-header" i18n>Szablony raportów</div>
   <div class="s4e-modal-body">
     <ul
       *ngIf="(reportsTemplates$ | async).length > 0; else noReportsTemplatesMessage"
@@ -43,7 +43,7 @@
     </ul>
 
     <ng-template #noReportsTemplatesMessage>
-      <p>Nie posiadasz żadnych szbalonów raportów. Wejdź w zakładkę `Wygeneruj raport (PDF)`, by dodać nowy szablon.</p>
+      <p>Nie posiadasz żadnych szablonów raportów. Wejdź w zakładkę `Wygeneruj raport (pdf)`, by dodać nowy szablon.</p>
     </ng-template>
   </div>
   <div class="s4e-modal-footer">

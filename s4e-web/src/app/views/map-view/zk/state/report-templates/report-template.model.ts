@@ -1,8 +1,8 @@
 export interface ReportTemplate {
-  id: number;
+  uuid: string;
   caption: string;
   notes: string;
-  overlaysIds: number[];
+  overlayIds: number[];
 
   createdAt?: string;
   productId?: number;
