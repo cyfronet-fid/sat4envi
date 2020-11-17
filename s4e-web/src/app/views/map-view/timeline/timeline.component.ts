@@ -169,7 +169,7 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   @Input('currentDate') set _currentDate(v: string) {
-    this.currentDate = v;
+    this.currentDate = moment(v).utc().format('YYYY-MM-DD');
     this.startAt = v;
   }
 

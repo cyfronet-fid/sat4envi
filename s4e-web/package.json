@@ -86,7 +86,7 @@
     "cropperjs": "^1.5.9",
     "date-fns": "^2.0.0-alpha.27",
     "jspdf": "^1.5.3",
-    "moment": "^2.24.0",
+    "moment": "^2.29.1",
     "moment-timezone": "^0.5.31",
     "ng-pick-datetime": "^7.0.0",
     "ng-recaptcha": "^5.0.0",

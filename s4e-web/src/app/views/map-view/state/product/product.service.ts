@@ -173,7 +173,7 @@ export class ProductService {
         selectedMonth: date.getMonth(),
         selectedYear: date.getFullYear(),
         selectedDay: date.getDate(),
-        selectedDate: yyyymmdd(date),
+        selectedDate: moment(date).utc().format('YYYY-MM-DD[T]HH:mm:ss[Z]'),
       }
     }));
   }

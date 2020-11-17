@@ -7,6 +7,7 @@ import {distinctUntilChanged, map} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ProductQuery} from '../product/product.query';
 import {SceneQuery} from '../scene/scene.query';
+import * as moment from 'moment';
 
 @Injectable({providedIn: 'root'})
 export class MapQuery extends Query<MapState> {
@@ -28,7 +29,8 @@ export class MapQuery extends Query<MapState> {
         overlays: overlays.length === 0 ? null : overlays,
         product: product == null ? null : product.active,
         scene: scene == null ? null : scene.id,
-        date: product.ui.selectedDate,
+        date: !!scene && moment(scene.timestamp).format('YYYY-MM-DD[T]HH:mm:ss[Z]')
+          || moment(product.ui.selectedDate).format('YYYY-MM-DD'),
         zoom: zoom.zoomLevel,
         centerx: zoom.centerCoordinates[0],
         centery: zoom.centerCoordinates[1]

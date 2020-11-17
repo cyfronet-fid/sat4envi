@@ -19,7 +19,12 @@ export class ViewConfigurationService {
 
   add$(viewConfiguration: ViewConfiguration): Observable<boolean> {
     const url = `${environment.apiPrefixV1}/saved-views`;
-    const post$ = this.http.post<ViewConfiguration>(url, viewConfiguration)
+    const post$ = this.http.post<ViewConfiguration>(
+      url,
+      {
+        ...viewConfiguration
+      }
+    )
       .pipe(
         handleHttpRequest$(this.store),
         map(r => true)

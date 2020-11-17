@@ -1,6 +1,7 @@
 import {Legend} from '../legend/legend.model';
 import {ActiveState, EntityState} from '@datorama/akita';
 import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
+import * as moment from 'moment';
 
 export const COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY = 'collapsedCategories'
 export const PRODUCT_MODE_QUERY_KEY = 'pmode';
@@ -70,7 +71,7 @@ export function createProductState(state: Partial<ProductState> = {}): ProductSt
         loading: true,
         ui: {
             loadedMonths: [],
-            selectedDate: yyyymmdd(now),
+            selectedDate: moment(now).format('YYYY-MM-DD'),
             selectedDay: now.getDate(),
             selectedYear: now.getFullYear(),
             selectedMonth: now.getMonth(),

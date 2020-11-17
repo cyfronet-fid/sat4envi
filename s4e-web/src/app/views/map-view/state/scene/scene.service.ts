@@ -13,6 +13,7 @@ import {map, finalize, tap} from 'rxjs/operators';
 import {Product} from '../product/product.model';
 import {timezone} from '../../../../utils/miscellaneous/date-utils';
 import {ActivatedQueue} from '../../../../utils/search/activated-queue.utils';
+import * as moment from 'moment';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
@@ -29,7 +30,10 @@ export class SceneService {
 
   get(product: Product, date: string, setActive?: 'last'|'first') {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
-    const urlParams = {params: {date, timeZone: timezone()}};
+    const urlParams = {params: {
+      date: moment(date).format('YYYY-MM-DD'),
+      timeZone: timezone()
+    }};
 
     return this.http.get<Scene[]>(url, urlParams)
       .pipe(
