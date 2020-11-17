@@ -59,6 +59,7 @@
         <button
           class="button button--secondary button--small"
           [routerLink]="['/settings/people']"
+          [queryParams]="{'institution': (activeInstitution$ | async).slug}"
         >
           Osoby w tej instytucji
         </button>
