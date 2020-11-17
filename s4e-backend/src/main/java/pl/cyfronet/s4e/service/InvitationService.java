@@ -56,12 +56,12 @@ public class InvitationService {
     }
 
     @Transactional(rollbackFor = NotFoundException.class)
-    public void confirmInvitation(String token) throws NotFoundException {
+    public void confirmInvitation(String userEmail, String token) throws NotFoundException {
         val invitation = invitationRepository.findByToken(token, Invitation.class)
                 .orElseThrow(() -> constructNFE("token: " + token));
         val institution = invitation.getInstitution();
 
-        val user = appUserRepository.findByEmail(AppUserDetailsSupplier.get().getEmail())
+        val user = appUserRepository.findByEmail(userEmail)
                 .orElseThrow(() -> constructNFE("token: " + token));
 
         addRoles(user, institution, invitation.isForAdmin());

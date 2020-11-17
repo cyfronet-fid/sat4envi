@@ -43,14 +43,11 @@ describe('InstitutionFormComponent', () => {
       ]
     })
     .compileComponents();
-  }));
-
-  beforeEach(() => {
     fixture = TestBed.createComponent(InstitutionFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     institutionService = TestBed.get(InstitutionService);
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

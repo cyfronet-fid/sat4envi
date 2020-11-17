@@ -29,6 +29,7 @@ import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
       .acceptAndChangeContextTo(GeneralModal)
       .closeAndChangeContext(MapViews);
   });
+<<<<<<< HEAD
   it('should display view', () => {
     Layers
       .selectNthSidebarLayer(1)

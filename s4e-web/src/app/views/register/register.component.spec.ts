@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import {RegisterComponent} from './register.component';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -9,11 +9,14 @@ import {By} from '@angular/platform-browser';
 import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
 import { RegisterFactory } from './register.factory.spec';
 import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
+import {ActivatedRoute} from '@angular/router';
+import {of} from 'rxjs';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let registerService: RegisterService;
+  let activatedRoute: ActivatedRoute;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,6 +38,7 @@ describe('RegisterComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     registerService = TestBed.get(RegisterService);
+    activatedRoute = TestBed.get(ActivatedRoute);
   });
 
   it('should create', () => {
@@ -81,16 +85,20 @@ describe('RegisterComponent', () => {
     expect(spy).toBeCalledWith();
   });
 
-  it('should call RegisterService.register on submit', () => {
+  it('should call RegisterService.register on submit', fakeAsync(() => {
     const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
+    spyOn(activatedRoute, 'queryParams')
+      .and.returnValue(of());
 
     const userRegister = RegisterFactory.build();
     component.form.setValue(userRegister);
     component.register();
 
+    tick();
+
     const {recaptcha, passwordRepeat, ...request} = userRegister;
-    expect(spy).toHaveBeenCalledWith(request, recaptcha);
-  });
+    expect(spy).toHaveBeenCalledWith(request, recaptcha, undefined);
+  }));
 
   it('should not call RegisterService.register on submit if form is not valid', () => {
     const userRegister = RegisterFactory.build();

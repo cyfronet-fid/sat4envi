@@ -46,7 +46,7 @@ describe('RegisterService', () => {
 
     it('should redirect on success', fakeAsync(() => {
       const router = TestBed.get(Router);
-      const spy = spyOn(router, 'navigate').and.stub();
+      const spy = spyOn(router, 'navigateByUrl').and.stub();
 
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
@@ -56,7 +56,23 @@ describe('RegisterService', () => {
 
       tick(1000);
       http.verify();
-      expect(spy).toBeCalledWith(['/'], {queryParamsHandling: 'merge'});
+      expect(spy).toBeCalledWith('/register-confirmation');
+    }));
+
+    it('should redirect on success with invite to institution', fakeAsync(() => {
+      const router = TestBed.get(Router);
+      const spy = spyOn(router, 'navigateByUrl').and.stub();
+
+      const userRegister = RegisterFactory.build();
+      const {recaptcha, passwordRepeat, ...request} = userRegister;
+      const token = 'ddddddddddddddd'
+      registerService.register(request, recaptcha, token);
+      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}&token=${token}`);
+      req.flush({});
+
+      tick(1000);
+      http.verify();
+      expect(spy).toBeCalledWith('/register-confirmation');
     }));
 
     it('should handle error 400', (done) => {

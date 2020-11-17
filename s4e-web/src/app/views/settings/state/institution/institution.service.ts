@@ -155,6 +155,7 @@ export class InstitutionService {
           roots.push(node);
         }
       }
+
       return roots;
     }
 

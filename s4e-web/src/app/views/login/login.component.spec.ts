@@ -5,6 +5,7 @@ import {ShareModule} from '../../common/share.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {SessionService} from '../../state/session/session.service';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
+import {of} from 'rxjs';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -31,13 +32,13 @@ describe('LoginComponent', () => {
   });
 
   it('should not send non valid form', () => {
-    const spy = spyOn(sessionService, 'login');
+    const spy = spyOn(sessionService, 'login$');
     component.login();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(sessionService, 'login');
+    const spy = spyOn(sessionService, 'login$').and.returnValue(of());
     component.form.setValue({email: 'user@domain', password: 'pass'});
     component.login();
     expect(spy).toHaveBeenCalled();

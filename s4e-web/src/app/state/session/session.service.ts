@@ -18,14 +18,12 @@ export const BACK_LINK_QUERY_PARAM = 'back_link';
 
 @Injectable({providedIn: 'root'})
 export class SessionService {
-  private router: Router;
   private _backLink: string;
 
   constructor(
     private _store: SessionStore,
     private _notificationService: NotificationService,
     private _http: HttpClient,
-    private _invitationService: InvitationService,
     private _router: Router,
     private _remoteConfiguration: RemoteConfiguration
   ) {
@@ -66,25 +64,15 @@ export class SessionService {
   }
 
   @action('login')
-  login(request: LoginFormState, activatedRoute: ActivatedRoute) {
+  login$(request: LoginFormState) {
     const url = `${environment.apiPrefixV1}/login`;
-    this._http.post<LoginFormState>(url, request)
+    return this._http.post<LoginFormState>(url, request)
       .pipe(
         handleHttpRequest$(this._store),
         switchMap(data => this.getProfile$()),
         tap(() => this._store.update({email: request.email})),
-        tap(() => this._navigateToApplication()),
-        switchMap(() => activatedRoute.queryParamMap),
-        tap((params) => {
-          if (!params.has(TOKEN_QUERY_PARAMETER)) {
-            return;
-          }
-
-          const token = params.get(TOKEN_QUERY_PARAMETER);
-          this._invitationService.confirm(token);
-        })
-      )
-      .subscribe();
+        tap(() => this._navigateToApplication())
+      );
   }
 
   @action('logout')

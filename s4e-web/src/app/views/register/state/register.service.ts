@@ -4,9 +4,10 @@ import { handleHttpRequest$ } from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {RegisterStore} from './register.store';
-import {delay, finalize, tap} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
 import { RegisterFormState } from './register.model';
+import {tokenize} from '@angular/compiler/src/ml_parser/lexer';
 
 @Injectable({providedIn: 'root'})
 export class RegisterService {
@@ -18,16 +19,22 @@ export class RegisterService {
     private _http: HttpClient
   ) {}
 
-  register(request: Partial<RegisterFormState>, recaptcha: string) {
-    const captchaQuery = `g-recaptcha-response=${recaptcha}`;
-    const url = `${environment.apiPrefixV1}/register?` + captchaQuery;
-    this._http.post<RegisterFormState>(url, request)
+  register(request: Partial<RegisterFormState>, recaptcha: string, token?: string) {
+    const captchaQueryParam = `g-recaptcha-response=${recaptcha}`;
+    let url = `${environment.apiPrefixV1}/register?${captchaQueryParam}`;
+
+    if (!!token) {
+      const tokenQueryParam = `token=${token}`;
+      url = `${url}&${tokenQueryParam}`;
+    }
+
+    this._http.post<RegisterFormState>(url, {...request})
       .pipe(
         handleHttpRequest$(this._store),
-        tap(() => this._router.navigate(['/'], { queryParamsHandling: 'merge' }))
+        tap(() => this._router.navigateByUrl('/'))
       )
       .subscribe(
-        () => this._router.navigate(['/register-confirmation'], { queryParamsHandling: 'merge' }),
+        () => this._router.navigateByUrl('/register-confirmation'),
         errorResponse => {
           const errorMessage = errorResponse.status === 400
             ? errorResponse.error

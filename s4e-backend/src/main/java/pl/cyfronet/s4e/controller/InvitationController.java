@@ -21,6 +21,7 @@ import pl.cyfronet.s4e.event.OnRejectInvitationEvent;
 import pl.cyfronet.s4e.event.OnSendInvitationEvent;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.InvitationService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import javax.validation.Valid;
 import java.util.Set;
@@ -136,7 +137,7 @@ public class InvitationController {
     })
     @PostMapping(value = "/invitations/{token}/confirm")
     public BasicInstitutionResponse confirm(@PathVariable String token) throws NotFoundException {
-        invitationService.confirmInvitation(token);
+        invitationService.confirmInvitation(AppUserDetailsSupplier.get().getEmail(), token);
         val institution = invitationService.findInstitutionBy(token, BasicInstitutionResponse.class)
                 .orElseThrow(() -> new NotFoundException("Institution couldn't be found"));
         val confirmInvitationEvent = new OnConfirmInvitationEvent(token, LocaleContextHolder.getLocale());
