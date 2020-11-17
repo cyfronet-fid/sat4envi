@@ -4,17 +4,16 @@ import {HttpClient} from '@angular/common/http';
 import {ReportTemplateStore} from './report-template.store';
 import {handleHttpRequest$} from '../../../../../common/store.util';
 import {ReportTemplate} from './report-template.model';
-import {finalize, tap} from 'rxjs/operators';
+import {tap} from 'rxjs/operators';
 import {NotificationService} from 'notifications';
 import {ProductQuery} from '../../../state/product/product.query';
 import {OverlayQuery} from '../../../state/overlay/overlay.query';
 import {ProductService} from '../../../state/product/product.service';
-import {SceneService} from '../../../state/scene/scene.service';
 import {OverlayService} from '../../../state/overlay/overlay.service';
 
 @Injectable({providedIn: 'root'})
 export class ReportTemplateService {
-  static URL_BASE = `${environment.apiPrefixV1}/report-template`;
+  static URL_BASE = `${environment.apiPrefixV1}/report-templates`;
 
   constructor(
     private _http: HttpClient,
@@ -32,18 +31,18 @@ export class ReportTemplateService {
     return this._http.get<ReportTemplate[]>(ReportTemplateService.URL_BASE)
       .pipe(
         handleHttpRequest$(this._store),
-        tap((reportsTemplates: ReportTemplate[]) => this._store.set(reportsTemplates))
+        tap((reportTemplates: ReportTemplate[]) => this._store.set(reportTemplates))
       );
   }
 
   public delete$(reportTemplate: ReportTemplate) {
-    const url = ReportTemplateService.URL_BASE + '/' + reportTemplate.id;
+    const url = ReportTemplateService.URL_BASE + '/' + reportTemplate.uuid;
     return this._http.delete(url)
       .pipe(
         handleHttpRequest$(this._store),
-        tap(() => this._store.remove(reportTemplate.id)),
+        tap(() => this._store.remove(reportTemplate.uuid)),
         tap(() => this._notificationService.addGeneral({
-          content: 'Report template has been removed',
+          content: 'Szablon raportu został usunięty',
           type: 'success'
         }))
       );
@@ -56,15 +55,15 @@ export class ReportTemplateService {
     }
 
     const activeOverlaysIds = this._overlayQuery.getActive()
-      .map(overlay => parseInt(overlay.id));
-    reportTemplate = {...reportTemplate, overlaysIds: activeOverlaysIds};
+      .map(overlay => parseInt(overlay.id, 10));
+    reportTemplate = {...reportTemplate, overlayIds: activeOverlaysIds};
 
     return this._http.post(ReportTemplateService.URL_BASE, reportTemplate)
       .pipe(
         handleHttpRequest$(this._store),
         tap((createdReportTemplate: ReportTemplate) => this._store.add(createdReportTemplate)),
         tap(() => this._notificationService.addGeneral({
-          content: 'Report template has been created',
+          content: 'Szablon raportu został zapisany',
           type: 'success'
         }))
       );
@@ -77,8 +76,8 @@ export class ReportTemplateService {
       this._productService.getLastAvailableScene();
     }
 
-    this._overlayService.setAllActive(reportTemplate.overlaysIds as any[]);
+    this._overlayService.setAllActive(reportTemplate.overlayIds as any[]);
 
-    this._store.setActive(reportTemplate.id);
+    this._store.setActive(reportTemplate.uuid);
   }
 }

@@ -119,6 +119,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(DELETE, prefix("/saved-views/{uuid}"))
                     .access("isAuthenticated() && @savedViewService.canDelete(#uuid, authentication)")
 
+                .mvcMatchers(POST, prefix("/report-templates")).authenticated()
+                .mvcMatchers(GET, prefix("/report-templates")).authenticated()
+                .mvcMatchers(DELETE, prefix("/report-templates/{uuid}"))
+                    .access("isAuthenticated() && @reportTemplateService.canDelete(#uuid, authentication)")
+
                 .mvcMatchers(POST, prefix("/share-link")).hasRole("MEMBER_ZK")
 
                 .mvcMatchers(GET, prefix("/schemas", "/schemas/{name}")).permitAll()
