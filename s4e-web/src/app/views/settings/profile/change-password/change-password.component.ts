@@ -28,8 +28,8 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
 
   ngOnInit(): void {
     this.form = new FormGroup<PasswordChangeFormState>({
-      oldPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(6)]),
-      newPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(6)])
+      oldPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(8)]),
+      newPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(8)])
     });
     super.ngOnInit();
   }

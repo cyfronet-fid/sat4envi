@@ -121,6 +121,7 @@ h3 {
     border: 1px solid $color-grey-secondary;
     padding: 10px;
     vertical-align: middle;
+    word-wrap: anywhere;
 
     &:first-child {
       font-weight: bold;

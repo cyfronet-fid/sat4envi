@@ -1,5 +1,10 @@
 @media only screen and (min-width: 701px) and (max-width: 1050px){
 
+  .testinfo {
+    left: 42% !important;
+    width: 150px !important;
+  }
+
   .sidebar {
     &.open {
       display: block !important;
@@ -32,19 +37,24 @@
         z-index: 5 !important;
       }
 
-      &--zk {
-        right: 80px !important;
-      }
-
       &--product {
         left: 80px !important;
+      }
+
+      &--login,
+      &--loginactive{
+        right: 70px !important;
+      }
+
+      &--zk {
+        right: 130px !important;
       }
 
     }
 
     &__content {
       &--zk {
-        right: 78px !important;
+        right: 130px !important;
       }
 
       &--product {
