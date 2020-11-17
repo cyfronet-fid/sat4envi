@@ -36,7 +36,7 @@
 
           <p>
             Parametry akceptowalne i ich wartości,
-            usuwane podczas prztwarzania URL dla prawidłowego wyświetlania obrazu:
+            usuwane podczas przetwarzania URL dla prawidłowego wyświetlania obrazu:
           </p>
           <ol>
             <li><b>VERSION=</b> z wartościami numerycznymi w formacie x.y.z</li>
@@ -171,7 +171,7 @@
               <th i18n>URL nakładki</th>
               <th i18n>Pokaż w panelu</th>
               <th i18n>Data dodania</th>
-              <th></th>
+              <th *ngIf="isPersonal(overlays$)"></th>
             </tr>
           </thead>
           <tbody>
@@ -201,8 +201,8 @@
                   <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
                 </ng-template>
               </td>
-              <td>{{overlay.createdAt | S4EDate}}</td>
-              <td>
+              <td align="center">{{overlay.createdAt | S4EDate}}</td>
+              <td *ngIf="isPersonal(overlay)">
                 <button
                   *ngIf="isPersonal(overlay)"
                   [disabled]="overlay.loadingDelete"

@@ -1,5 +1,10 @@
 @media only screen and (max-width: 700px) {
 
+  .testinfo {
+    left: 32% !important;
+    max-width: 150px;
+  }
+
   /* MAP */
   .sidebar {
 
@@ -261,4 +266,17 @@
     }
   }
 }
+
+/* MODALS */
+
+  .s4e-modal-body.report {
+    flex-direction: column-reverse;
+
+    aside {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+
 }
