@@ -3,7 +3,7 @@ import { InstitutionsSearchResultsStore } from './state/institutions-search/inst
 import {InstitutionService} from './state/institution/institution.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
-import {filter, finalize, map, tap} from 'rxjs/operators';
+import {filter, finalize, map, switchMap} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -73,6 +73,30 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this._institutionService.get();
+
+    this.isInstitutionActive$
+      .pipe(
+        untilDestroyed(this),
+        filter(isActive => !isActive)
+      )
+      .subscribe(() => this.selectInstitution(null));
+
+    this.isInstitutionActive$
+      .pipe(
+        untilDestroyed(this),
+        filter(isActive => isActive),
+        switchMap(() => this._institutionQuery.selectHasOnlyOneAdministrationInstitution()),
+        switchMap(() => this._router.navigate(
+        ['/settings/dashboard'],
+        {
+          relativeTo: this._activatedRoute,
+          queryParams: {
+            institution: this._institutionQuery.getAdministrationInstitutions()[0].slug
+          },
+          queryParamsHandling: 'merge'
+        }))
+      )
+      .subscribe();
   }
 
   searchForInstitutions(partialInstitutionName: string) {

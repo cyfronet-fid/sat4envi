@@ -1,6 +1,6 @@
 import { SearchComponent } from './../../../components/search/search.component';
 import { By } from '@angular/platform-browser';
-import { of, Subject, ReplaySubject } from 'rxjs';
+import {of, Subject, ReplaySubject, Observable} from 'rxjs';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AdminDashboardModule } from './admin-dashboard.module';
 import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
@@ -27,7 +27,9 @@ describe('AdminDashboardComponent', () => {
   let de: DebugElement;
   const router = {
     navigate: jasmine.createSpy('navigate'),
-    events: new ReplaySubject(1)
+    events: new ReplaySubject(1),
+    createUrlTree: (commands, navExtras = {}) => {},
+    serializeUrl: (...args) => ''
   };
   let activatedRoute: ActivatedRouteStub;
 
@@ -38,7 +40,7 @@ describe('AdminDashboardComponent', () => {
         RouterTestingModule.withRoutes([]),
         AdminDashboardModule,
         HttpClientTestingModule,
-        RouterTestingModule
+        RouterTestingModule.withRoutes([])
       ],
       providers: [
         {provide: ActivatedRoute, useClass: ActivatedRouteStub},

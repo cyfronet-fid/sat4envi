@@ -1,4 +1,4 @@
-import { ActivatedRoute } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { Observable } from 'rxjs';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InstitutionsSearchResultsQuery } from '../state/institutions-search/institutions-search-results.query';
@@ -12,7 +12,7 @@ import { InstitutionQuery } from '../state/institution/institution.query';
 })
 export class DashboardComponent {
   public isInstitutionActive$: Observable<boolean> = this._institutionsSearchResultsQuery
-  .isAnyInstitutionActive$(this._activatedRoute);;
+    .isAnyInstitutionActive$(this._activatedRoute);
   public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery
     .selectActive$(this._activatedRoute);
   public isManagerOfActive$ = this._institutionQuery
@@ -21,6 +21,7 @@ export class DashboardComponent {
   constructor(
     private _institutionsSearchResultsQuery: InstitutionsSearchResultsQuery,
     private _activatedRoute: ActivatedRoute,
-    private _institutionQuery: InstitutionQuery
+    private _institutionQuery: InstitutionQuery,
+    private _router: Router
   ) {}
 }

@@ -9,19 +9,7 @@ context('Breadcrumbs', () => {
     cy.fixture('users/zkAdmin.json').as('zkAdmin');
     cy.fixture('users/admin.json').as('admin');
   });
-
-  it('should display admin user profile breadcrumb and go to start page', function () {
-    Login
-      .loginAs(this.zkAdmin)
-      .goToSettingsAs(this.zkAdmin)
-      .goToUserProfile()
-      .changeContextTo(Breadcrumbs)
-      .shouldHaveTexts('Tablica menedżera', 'Mój profil')
-      .goToBreadcrumbWithLabel('Tablica menedżera', '/settings/dashboard', AdminDashboard)
-      .changeContextTo(SideNav)
-      .logout();
-  });
-  it('should display super admin user profile breadcrumb and go to start page', function () {
+  it('should display administrator of multiple institutions breadcrumb and go to start page', function () {
     Login
       .loginAs(this.admin)
       .goToSettingsAs(this.admin)

@@ -18,12 +18,12 @@ export class ProfileComponent {
   public userSurname$: Observable<string> = this._sessionQuery.select(state => state.surname);
 
   public administrationInstitutions$: Observable<Institution[]> = this._institutionQuery
-    .getAdministrationInstitutions$();
+    .selectAdministrationInstitutions$();
   public hasMoreAdministrationInstitutionsThanMax$ = this.administrationInstitutions$
     .pipe(map(institutions => institutions.length > this.MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY));
 
   public memberInstitutions$: Observable<Institution[]> = this._institutionQuery
-    .getMemberInstitutions$();
+    .selectMemberInstitutions$();
 
   constructor(
     private _sessionQuery: SessionQuery,
