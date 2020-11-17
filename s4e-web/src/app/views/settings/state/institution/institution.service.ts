@@ -148,7 +148,7 @@ export class InstitutionService {
 
       for (let i = 0; i < list.length; i += 1) {
         node = listWithChildren[i];
-        if (node.parentSlug != null) {
+        if (node.parentSlug != null && !!listWithChildren[map[node.parentSlug]]) {
           // if you have dangling branches check that map[node.parentId] exists
           listWithChildren[map[node.parentSlug]].children.push(node);
         } else {
