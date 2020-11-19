@@ -16,6 +16,13 @@ public abstract class QueryDecorator implements QueryBuilder {
                                                         StringBuilder resultQuery,
                                                         Errors errors);
 
+    protected void doPrepareCountQueryAndParameters(Map<String, Object> params,
+                                                        List<Object> parameters,
+                                                        StringBuilder resultQuery,
+                                                        Errors errors){
+        doPrepareQueryAndParameters(params, parameters, resultQuery, errors);
+    }
+
     @Override
     public final void prepareQueryAndParameters(Map<String, Object> params,
                                                 List<Object> parameters,
@@ -23,5 +30,14 @@ public abstract class QueryDecorator implements QueryBuilder {
                                                 Errors errors) {
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery, errors);
         doPrepareQueryAndParameters(params, parameters, resultQuery, errors);
+    }
+
+    @Override
+    public final void prepareCountQueryAndParameters(Map<String, Object> params,
+                                                List<Object> parameters,
+                                                StringBuilder resultQuery,
+                                                Errors errors) {
+        queryBuilder.prepareCountQueryAndParameters(params, parameters, resultQuery, errors);
+        doPrepareCountQueryAndParameters(params, parameters, resultQuery, errors);
     }
 }

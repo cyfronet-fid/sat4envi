@@ -10,4 +10,5 @@ import java.util.Map;
 //an interface with the methods you wish to use with EntityManger.
 public interface SceneRepositoryExt {
     List<MappedScene> findAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException;
+    Long countAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException;
 }

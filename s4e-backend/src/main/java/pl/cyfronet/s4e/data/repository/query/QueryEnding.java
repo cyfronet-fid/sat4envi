@@ -28,6 +28,11 @@ public class QueryEnding extends QueryDecorator {
         parameters.add(getOffset(params, errors));
     }
 
+    @Override
+    protected void doPrepareCountQueryAndParameters(Map<String, Object> params, List<Object> parameters, StringBuilder resultQuery, Errors errors) {
+        resultQuery.append(" ;");
+    }
+
     private String getOrderByField(Map<String, Object> params,
                                    Errors errors) {
         switch (String.valueOf(params.getOrDefault(SORT_BY, "id"))) {

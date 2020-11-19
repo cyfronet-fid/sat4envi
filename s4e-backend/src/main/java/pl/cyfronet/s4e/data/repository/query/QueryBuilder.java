@@ -10,4 +10,9 @@ public interface QueryBuilder {
                                    List<Object> parameters,
                                    StringBuilder resultQuery,
                                    Errors errors);
+
+    void prepareCountQueryAndParameters(Map<String, Object> params,
+                                        List<Object> parameters,
+                                        StringBuilder resultQuery,
+                                        Errors errors);
 }

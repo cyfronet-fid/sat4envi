@@ -67,10 +67,27 @@ public class SceneRepositoryImpl implements SceneRepositoryExt {
         }
     }
 
+    public Long countAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException {
+        PreparedStatement preparedStatement = prepareCountQuery(params);
+        try {
+            return jdbcTemplate.query(connection -> preparedStatement, (rs, rowNum) -> rs.getLong(1)).get(0);
+        } catch (DataAccessException e) {
+            MapBindingResult mapBindingResult = new MapBindingResult(new HashMap<>(), "params");
+            mapBindingResult.addError(
+                    new ObjectError("params", "Cannot execute query" + e.getMessage()));
+            throw new QueryException(mapBindingResult);
+        }
+    }
+
     private PreparedStatement prepareQuery(Map<String, Object> params) throws SQLException, QueryException {
         PreparedStatement ps = preparedStatementBuilder.preparedStatement(connection, params);
         log.trace(ps.toString());
         return ps;
     }
 
+    private PreparedStatement prepareCountQuery(Map<String, Object> params) throws SQLException, QueryException {
+        PreparedStatement ps = preparedStatementBuilder.preparedCountStatement(connection, params);
+        log.trace(ps.toString());
+        return ps;
+    }
 }

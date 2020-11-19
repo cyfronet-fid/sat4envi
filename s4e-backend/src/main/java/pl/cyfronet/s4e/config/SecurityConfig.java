@@ -133,7 +133,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("isAuthenticated() && @licensePermissionEvaluator.allowSceneRead(#id, principal)")
 
                 .mvcMatchers(GET, prefix("/search")).permitAll()
+                .mvcMatchers(GET, prefix("/search/count")).permitAll()
                 .mvcMatchers(GET, prefix("/dhus/search")).authenticated()
+                .mvcMatchers(GET, prefix("/dhus/search/count")).authenticated()
                 // This rule calling allowSceneRead is correct: in OData DHUS nomenclature a Product is our Scene.
                 .mvcMatchers(GET, prefix("/dhus/odata/v1/Products('{sceneId}')/**"))
                     .access("isAuthenticated() && @licensePermissionEvaluator.allowSceneRead(#sceneId, principal)")

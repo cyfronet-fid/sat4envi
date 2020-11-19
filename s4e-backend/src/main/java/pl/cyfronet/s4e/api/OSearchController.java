@@ -34,10 +34,11 @@ public class OSearchController {
     private final SearchService searchService;
     private final ResponseExtender responseExtender;
 
-    @Operation(summary = "View a list of scenes")
+    @Operation(summary = "List scenes for query")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
     })
     @GetMapping("/dhus/search")
     public List<SearchResponse> getScenesDHusStyle(
@@ -53,6 +54,27 @@ public class OSearchController {
             return searchService.getScenesBy(searchService.parseToParamMap(rowsSize, rowStart, orderby, query)).stream()
                     .map(scene -> responseExtender.toResponse(scene, timeZone.getZoneId()))
                     .collect(Collectors.toList());
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException("Cannot parse date: " + e.getParsedString());
+        } catch (IllegalArgumentException iae) {
+            throw new BadRequestException("Cannot parse query: " + iae.getMessage());
+        }
+    }
+
+    @Operation(summary = "Count scenes for query")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved count"),
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
+    })
+    @GetMapping("/dhus/search/count")
+    public Long getCountDHusStyle(
+            @RequestParam(value = "q", required = false) String query,
+            @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
+    ) throws BadRequestException, SQLException, QueryException {
+        // TODO: format
+        try {
+            return searchService.getCountBy(searchService.countParseToParamMap(query));
         } catch (DateTimeParseException e) {
             throw new BadRequestException("Cannot parse date: " + e.getParsedString());
         } catch (IllegalArgumentException iae) {
