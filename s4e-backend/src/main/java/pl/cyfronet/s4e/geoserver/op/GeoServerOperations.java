@@ -13,18 +13,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.cyfronet.s4e.util.ResourceReader;
 import pl.cyfronet.s4e.geoserver.op.request.CreateS3CoverageRequest;
 import pl.cyfronet.s4e.geoserver.op.request.CreateStyleRequest;
 import pl.cyfronet.s4e.geoserver.op.request.CreateWorkspaceRequest;
 import pl.cyfronet.s4e.geoserver.op.request.SetLayerDefaultStyleRequest;
 import pl.cyfronet.s4e.geoserver.op.response.LayerResponse;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.util.ResourceReader;
 
 import java.io.*;
 import java.net.URI;
@@ -226,7 +225,7 @@ public class GeoServerOperations {
         try {
             ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
             return responseEntity.getStatusCode().is2xxSuccessful();
-        } catch (HttpClientErrorException.NotFound e) {
+        } catch (RestClientResponseException e) {
             return false;
         }
     }
@@ -266,7 +265,7 @@ public class GeoServerOperations {
         try {
             ResponseEntity<String> responseEntity = restTemplate().getForEntity(url, String.class);
             return responseEntity.getStatusCode().is2xxSuccessful();
-        } catch (HttpServerErrorException.InternalServerError e) {
+        } catch (RestClientResponseException e) {
             return false;
         }
     }
