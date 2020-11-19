@@ -26,11 +26,32 @@ public class PreparedStatementBuilder {
         return ps;
     }
 
+    public PreparedStatement preparedCountStatement(Connection connection,
+                                               Map<String, Object> params) throws SQLException, QueryException {
+        List<Object> parameters = new ArrayList<>();
+        PreparedStatement ps = connection.prepareStatement(prepareCountQueryAndParameters(params, parameters));
+        addParametersToStatement(ps, parameters);
+        return ps;
+    }
+
     private String prepareQueryAndParameters(Map<String, Object> params,
                                              List<Object> parameters) throws QueryException {
         StringBuilder resultQuery = new StringBuilder();
         MapBindingResult errors = new MapBindingResult(new HashMap<>(), "params");
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery, errors);
+        if (errors.hasErrors()) {
+            throw new QueryException(errors);
+        }
+        // [] inputAuxiliaryFiles -> ...
+        // [] polygon -> field[footprint]
+        return resultQuery.toString();
+    }
+
+    private String prepareCountQueryAndParameters(Map<String, Object> params,
+                                                  List<Object> parameters) throws QueryException {
+        StringBuilder resultQuery = new StringBuilder();
+        MapBindingResult errors = new MapBindingResult(new HashMap<>(), "params");
+        queryBuilder.prepareCountQueryAndParameters(params, parameters, resultQuery, errors);
         if (errors.hasErrors()) {
             throw new QueryException(errors);
         }

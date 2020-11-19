@@ -30,4 +30,9 @@ public class QueryBuilderImpl implements QueryBuilder {
         resultQuery.append(String.join(",", columns));
         resultQuery.append(" FROM Scene WHERE true ");
     }
+
+    @Override
+    public void prepareCountQueryAndParameters(Map<String, Object> params, List<Object> parameters, StringBuilder resultQuery, Errors errors) {
+        resultQuery.append("SELECT COUNT(*) FROM Scene WHERE true ");
+    }
 }

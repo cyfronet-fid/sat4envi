@@ -41,8 +41,19 @@ public class SearchController {
     public List<SearchResponse> getScenes(@RequestParam Map<String, Object> params)
             throws SQLException, QueryException {
         ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
-            return searchService.getScenesBy(params).stream()
-                    .map(scene -> responseExtender.toResponse(scene, zoneId))
-                    .collect(Collectors.toList());
+        return searchService.getScenesBy(params).stream()
+                .map(scene -> responseExtender.toResponse(scene, zoneId))
+                .collect(Collectors.toList());
+    }
+
+    @Operation(summary = "View a list of scenes")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved count"),
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+    })
+    @GetMapping("/search/count")
+    public Long getCount(@RequestParam Map<String, Object> params)
+            throws SQLException, QueryException {
+        return searchService.getCountBy(params);
     }
 }

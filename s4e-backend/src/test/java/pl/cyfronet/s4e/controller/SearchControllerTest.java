@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -76,41 +77,6 @@ public class SearchControllerTest {
         return scene;
     }
 
-    @Test
-    public void shouldGetSceneBySearchEndpoint() throws Exception {
-        // default limit is 20
-        int limit = 20;
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC")
-                .param("limit", String.valueOf(limit)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(limit))))
-                .andExpect(jsonPath("$[0].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].productId").isNotEmpty())
-                .andExpect(jsonPath("$[0].sceneKey", startsWith("path/to/")))
-                .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder(
-                        "RGB_16b", "RGBs_8b", "checksum", "manifest", "metadata", "quicklook", "product_archive"
-                )))
-                .andExpect(jsonPath("$[0].timestamp").value("2019-11-03T05:07:42.047432Z"));
-    }
-
-    @Test
-    public void shouldntReturnErrorByTooLargeLimit() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("limit", "1000"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void shouldReturnErrorsForParam(String param, String value, String text) throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param(param, value))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$." + param, is(Arrays.asList(text))));
-    }
-
     private static Stream<Arguments> shouldReturnErrorsForParam() {
         return Stream.of(
                 Arguments.of(LIMIT, "abc", "Limit musi być liczbą dodatnią"),
@@ -125,148 +91,354 @@ public class SearchControllerTest {
         );
     }
 
-    @Test
-    public void shouldGetSceneBySensingTime() throws Exception {
+    @ParameterizedTest
+    @MethodSource
+    public void shouldReturnErrorsForParam(String param, String value, String text) throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC")
-                .param("sensingFrom", "2019-11-07T00:00:00.000000-07:00")
-                .param("sensingTo", "2019-11-12T00:00:00.000000+00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(6))));
-    }
-
-    @Test
-    public void shouldntGetSceneBySensingTimeWrongFormat() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC")
-                .param("sensingFrom", "2019-11-08")
-                .param("sensingTo", "2019-11-12"))
+                .param(param, value))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.sensingTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
-                .andExpect(jsonPath("$.sensingFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+                .andExpect(jsonPath("$." + param, is(Arrays.asList(text))));
     }
 
-    @Test
-    public void shouldGetSceneByIngestionTime() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search?timeZone=UTC&collection=S1B_24AU")
-                .param("timeZone", "UTC")
-                .param("ingestionFrom", "2019-11-08T00:00:00.000000-07:00")
-                .param("ingestionTo", "2019-11-12T00:00:00.000000+00:00"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(3))));
+    @Nested
+    class Search {
+        @Test
+        public void shouldGetSceneBySearchEndpoint() throws Exception {
+            // default limit is 20
+            int limit = 20;
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("timeZone", "UTC")
+                    .param("limit", String.valueOf(limit)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(limit))))
+                    .andExpect(jsonPath("$[0].id").isNotEmpty())
+                    .andExpect(jsonPath("$[0].productId").isNotEmpty())
+                    .andExpect(jsonPath("$[0].sceneKey", startsWith("path/to/")))
+                    .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder(
+                            "RGB_16b", "RGBs_8b", "checksum", "manifest", "metadata", "quicklook", "product_archive"
+                    )))
+                    .andExpect(jsonPath("$[0].timestamp").value("2019-11-03T05:07:42.047432Z"));
+        }
+
+        @Test
+        public void shouldntReturnErrorByTooLargeLimit() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("limit", "1000"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneBySensingTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("timeZone", "UTC")
+                    .param("sensingFrom", "2019-11-07T00:00:00.000000-07:00")
+                    .param("sensingTo", "2019-11-12T00:00:00.000000+00:00"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(6))));
+        }
+
+        @Test
+        public void shouldntGetSceneBySensingTimeWrongFormat() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("timeZone", "UTC")
+                    .param("sensingFrom", "2019-11-08")
+                    .param("sensingTo", "2019-11-12"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.sensingTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                    .andExpect(jsonPath("$.sensingFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+        }
+
+        @Test
+        public void shouldGetSceneByIngestionTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search?timeZone=UTC&collection=S1B_24AU")
+                    .param("timeZone", "UTC")
+                    .param("ingestionFrom", "2019-11-08T00:00:00.000000-07:00")
+                    .param("ingestionTo", "2019-11-12T00:00:00.000000+00:00"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldntGetSceneByIngestionTimeWrongFormat() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("timeZone", "UTC")
+                    .param("ingestionFrom", "2019-11-08")
+                    .param("ingestionTo", "2019-11-12"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.ingestionTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                    .andExpect(jsonPath("$.ingestionFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+        }
+
+        @Test
+        public void shouldGetSceneBySatellitePlatform() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("satellitePlatform", "Sentinel-1A")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByProductType() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("productType", "GRDH")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByPolarisation() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("polarisation", "VV VH")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneBySensorMode() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("sensorMode", "IW")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByCollection() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("collection", "S1B_24AU")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneByByCloudCover() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("cloudCover", "0.4f")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(1))));
+        }
+
+        @Test
+        public void shouldGetSceneByByTimeliness() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("timeliness", "Near Real Time")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneByProcessingLevel() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("processingLevel", "2LC")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldGetSceneByProductLevel() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("productLevel", "L2")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldGetSceneWithSortBySensingTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("sortBy", "sensingTime")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneWithSortByIngestionTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search")
+                    .param("sortBy", "ingestionTime")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(30))));
+        }
     }
 
-    @Test
-    public void shouldntGetSceneByIngestionTimeWrongFormat() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeZone", "UTC")
-                .param("ingestionFrom", "2019-11-08")
-                .param("ingestionTo", "2019-11-12"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.ingestionTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
-                .andExpect(jsonPath("$.ingestionFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+    @Nested
+    class Count {
+        @Test
+        public void shouldGetSceneBySearchEndpoint() throws Exception {
+            // default limit is 20
+            int limit = 20;
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeZone", "UTC")
+                    .param("limit", String.valueOf(limit)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldntReturnErrorByTooLargeLimit() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("limit", "1000"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneBySensingTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeZone", "UTC")
+                    .param("sensingFrom", "2019-11-07T00:00:00.000000-07:00")
+                    .param("sensingTo", "2019-11-12T00:00:00.000000+00:00"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(6))));
+        }
+
+        @Test
+        public void shouldntGetSceneBySensingTimeWrongFormat() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeZone", "UTC")
+                    .param("sensingFrom", "2019-11-08")
+                    .param("sensingTo", "2019-11-12"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.sensingTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                    .andExpect(jsonPath("$.sensingFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+        }
+
+        @Test
+        public void shouldGetSceneByIngestionTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeZone", "UTC")
+                    .param("ingestionFrom", "2019-11-08T00:00:00.000000-07:00")
+                    .param("ingestionTo", "2019-11-12T00:00:00.000000+00:00"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldntGetSceneByIngestionTimeWrongFormat() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeZone", "UTC")
+                    .param("ingestionFrom", "2019-11-08")
+                    .param("ingestionTo", "2019-11-12"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.ingestionTo", is(Arrays.asList("Zły format daty: `2019-11-12`"))))
+                    .andExpect(jsonPath("$.ingestionFrom", is(Arrays.asList("Zły format daty: `2019-11-08`"))));
+        }
+
+        @Test
+        public void shouldGetSceneBySatellitePlatform() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("satellitePlatform", "Sentinel-1A")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByProductType() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("productType", "GRDH")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByPolarisation() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("polarisation", "VV VH")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneBySensorMode() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("sensorMode", "IW")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))))
+                    .andReturn();
+        }
+
+        @Test
+        public void shouldGetSceneByCollection() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("collection", "S1B_24AU")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneByByCloudCover() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("cloudCover", "0.4f")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(1))));
+        }
+
+        @Test
+        public void shouldGetSceneByByTimeliness() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("timeliness", "Near Real Time")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneByProcessingLevel() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("processingLevel", "2LC")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldGetSceneByProductLevel() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("productLevel", "L2")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(3))));
+        }
+
+        @Test
+        public void shouldGetSceneWithSortBySensingTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("sortBy", "sensingTime")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
+
+        @Test
+        public void shouldGetSceneWithSortByIngestionTime() throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
+                    .param("sortBy", "ingestionTime")
+                    .param("limit", "30"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(30))));
+        }
     }
 
-    @Test
-    public void shouldGetSceneBySatellitePlatform() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("satellitePlatform", "Sentinel-1A")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldGetSceneByProductType() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("productType", "GRDH")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldGetSceneByPolarisation() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("polarisation", "VV VH")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldGetSceneBySensorMode() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("sensorMode", "IW")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))))
-                .andReturn();
-    }
-
-    @Test
-    public void shouldGetSceneByCollection() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("collection", "S1B_24AU")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))));
-    }
-
-    @Test
-    public void shouldGetSceneByByCloudCover() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("cloudCover", "0.4f")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(1))));
-    }
-
-    @Test
-    public void shouldGetSceneByByTimeliness() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("timeliness", "Near Real Time")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))));
-    }
-
-    @Test
-    public void shouldGetSceneByProcessingLevel() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("processingLevel", "2LC")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(3))));
-    }
-
-    @Test
-    public void shouldGetSceneByProductLevel() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("productLevel", "L2")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(3))));
-    }
-
-    @Test
-    public void shouldGetSceneWithSortBySensingTime() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("sortBy", "sensingTime")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))));
-    }
-
-    @Test
-    public void shouldGetSceneWithSortByIngestionTime() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                .param("sortBy", "ingestionTime")
-                .param("limit", "30"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(equalTo(30))));
-    }
 }

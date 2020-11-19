@@ -22,6 +22,18 @@ public class SearchService {
         return repository.findAllByParamsMap(params);
     }
 
+    public Long getCountBy(Map<String, Object> params) throws SQLException, QueryException {
+        return repository.countAllByParamsMap(params);
+    }
+
+    public Map<String, Object> countParseToParamMap(String query) {
+        Map<String, Object> result = new HashMap<>();
+        if (query != null) {
+            result.putAll(converter.convert(query));
+        }
+        return result;
+    }
+
     public Map<String, Object> parseToParamMap(String rowsSize, String rowStart, String orderby, String query) {
         Map<String, Object> result = new HashMap<>();
         if (query != null) {
