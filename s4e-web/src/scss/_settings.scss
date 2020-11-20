@@ -5,12 +5,6 @@ body {
 }
 
 s4e-settings {
-.settings {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-}
 
   .alerts {
     margin-bottom: $space-xlarge;
@@ -18,190 +12,121 @@ s4e-settings {
     font-size: 0.875rem;
   }
 
-  &__open--mobile {
-    display: none;
-  }
-
   .logo {
     background: url("/../assets/images/logo_s4e_color.png") no-repeat;
     background-size: contain;
-    width: 120px;
-    margin-bottom: 40px;
-    margin-left: 10px;
+    height: 38px;
+    width: 101px;
+    margin-right: $space-xlarge;
 
   }
 
 .navigation {
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  width: 360px;
-  height: 100%;
-  padding: 30px $space-default;
+  padding: $space-small $space-xlarge;
   color: $color-black;
   box-sizing: border-box;
-  position: absolute;
-  z-index: 1;
   font-family: $font-secondary;
   font-weight: bold;
-  border-right: 1px solid $color-bluish;
+  border-bottom: 1px solid $color-bluish;
+  background: $color-white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: $space-large * 2;
+
+  &--mobile {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 12;
+    background: $color-white;
+
+    .navigation__list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      li {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: $space-xlarge * 3;
+      }
+    }
+  }
+
+  &__open--mobile {
+    width: 50px;
+    height: 50px;
+    position: fixed;
+    z-index: 100;
+    background: url(/../assets/images/ico_menu.svg) $color-white no-repeat center;
+    background-size: 25px;
+    border-radius: $border-radius-circle;
+    box-shadow: $shadow-primary;
+    text-indent: -9999px;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    display: none;
+
+    &.open {
+      background-image: url("/../assets/images/ico_close.svg");
+    }
+  }
 
 
-  header {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: $space-small;
-    padding-left: $space-default;
-    text-transform: uppercase;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: $color-black;
-    align-items: center;
-    margin-top: 45px;
 
-    img {
-      margin-right: $space-small;
-      filter: grayscale(100) ;
+  &__institution {
+    span {
+      color: $color-grey-quaternary;
+      margin-bottom: $space-small / 2;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      display: block;
     }
 
-    span {
-      display: block;
+    p {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: $space-small / 2;
     }
   }
 
   &__list {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-left: 10px;
-
-    &:first-child {
-      margin-bottom: $space-xlarge*2;
-    }
-
+    margin-left: auto;
     li {
-      margin: $space-xlarge 0;
-      display: block;
+      display: inline-block;
+      margin-left: $space-default;
+      font-size: 0.9rem;
 
-      &.active:after {
-        background: url("/../assets/images/ico_arrow_right.svg") right no-repeat;
-        background-size: 15px;
-        padding-right: $space-xlarge;
-        content: " ";
-        margin-left: $space-xlarge;
-      }
-
-      &:hover {
-        a {
-          color: $color-grey;
-        }
+      a {
+        color: $color-text;
+        display: block;
+        font-weight: 500;
       }
     }
-
-    &--institution {
-      border-top: 1px solid $color-bluish;
-      border-bottom: 1px solid $color-bluish;
-      margin: 0 -15px 40px -15px;
-      padding: 0 20px 5px 25px;
-
-
-      .section.search {
-        position: relative;
-        cursor: pointer;
-
-        &:before {
-          content: " ";
-          background: url('/../assets/images/ico_chevron.svg') no-repeat;
-          width: 12px;
-          height: 10px;
-          background-size: contain;
-          position: absolute;
-          right: 20px;
-          top: 18px;
-          }
-        }
-
-
-      .reset_search_button {
-        margin-right: 0 !important;
-        width: auto !important;
-        background-color: $color-white;
-      }
-
-      .searchResults {
-        width: 314px;
-
-        li {
-          font-size: 1rem;
-
-          &:first-child {
-            padding-left: 0;
-            list-style-type: none;
-            margin-top: 0;
-          }
-
-          &:after {
-            display: none;
-          }
-        }
-      }
-    }
-
   }
+}
 
-  a {
-    color: $color-black;
-    font-weight: 500;
-  }
-
-  .login {
-    position: fixed;
-    bottom: 30px;
-    align-self: center;
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 0.875rem;
-
-    button.button {
-      font-size: 0.875rem;
-      margin-bottom: $space-default;
-      border-radius: $border-radius-circle;
-    }
-
-    a {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      font-weight: bold;
-      font-family: $font-base;
-      color: $color-grey;
-    }
-  }
-
-  .section.search {
-    padding: 10px 15px;
-
-    .search__button,
-    .reset_search_button:before {
-      display: none !important;
-    }
-  }
-} // end navigation
-
-
+  // end navigation
 
 p {
   line-height: 1.25rem;
 }
 
-.dashboard {
+s4e-tiles-dashboard {
   display: flex;
   align-content: center;
   flex-direction: column;
-  height: 100%;
   justify-content: center;
-  margin-top: -100px;
 
   .content__header {
-    margin-bottom: $space-xlarge * 3;
+    margin-bottom: $space-xlarge;
     text-align: center;
 
     p {
@@ -265,12 +190,11 @@ p {
 } // end panel
 
 .content {
-  padding: $space-xlarge;
-  margin-left: 400px;
-  margin-right: 40px;
   color: $color-grey-tertiary;
-  width: 100%;
-  padding-bottom: $space-large;
+  max-width: 1200px;
+  min-width: 700px;
+  margin: 0 auto;
+  padding: 0 $space-xlarge;
 
   &__image {
     width: 600px;
@@ -297,13 +221,35 @@ p {
     }
   }
 
+  &__tabs {
+    margin-bottom: $space-default * 2;
+    opacity: 0.8;
+    li {
+      display: inline-block;
+      margin-right: $space-xlarge;
+      position: relative;
+      padding-left: 20px;
+      font-size: 1rem;
+      &.active:before {
+        content: " ";
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 15px;
+        height: 15px;
+        background: url('/../assets/images/ico_arrow_right.svg') no-repeat;
+      }
+
+    }
+  }
+
   &__header {
     margin-bottom: $space-xlarge;
     position: relative;
 
     h1 {
       font-size: 2.5rem;
-      font-weight: 700;
+      font-weight: 500;
       margin-bottom: $space-default;
       font-family: $font-secondary;
     }
@@ -311,6 +257,12 @@ p {
     p {
       font-family: $font-secondary;
       font-size: 0.875rem;
+    }
+
+    button {
+      position: absolute;
+      top: 2px;
+      right: 0;
     }
 
   }
@@ -321,7 +273,8 @@ p {
     margin-bottom: $space-default;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-radius: $border-radius-default;
-    min-width: 400px;
+    position: relative;
+    z-index: 2;
 
 
     &--50 {
@@ -584,6 +537,7 @@ p {
 .breadcrumb {
   font-size: 0.75rem;
   margin-bottom: $space-xlarge;
+  display: none;
 
   li {
     display: inline-block;
@@ -665,6 +619,10 @@ p {
     padding: $space-xlarge;
     padding-bottom: 0;
     border-top: 1px solid $color-grey-primary;
+
+    button {
+      margin-bottom: $space-small / 2;
+    }
   }
 }
 } //end s4e-settings

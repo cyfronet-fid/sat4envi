@@ -1,7 +1,15 @@
+<ul class="content__tabs">
+  <li class="active">
+    Profil instytucji
+  </li>
+  <li>
+    <a href="">Osoby w instytucji</a>
+  </li>
+</ul>
 <header class="content__header">
   <h1 i18n>Profil instytucji</h1>
 </header>
-<section class="content__details content__details--75 profile">
+<section class="content__details profile">
   <ng-container *ngIf="(activeInstitution$ | async) as institution">
     <div
       class="profile__content"
