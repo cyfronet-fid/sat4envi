@@ -4,12 +4,13 @@ import {HttpClient} from '@angular/common/http';
 import {ReportTemplateStore} from './report-template.store';
 import {handleHttpRequest$} from '../../../../../common/store.util';
 import {ReportTemplate} from './report-template.model';
-import {tap} from 'rxjs/operators';
+import {finalize, switchMap, tap} from 'rxjs/operators';
 import {NotificationService} from 'notifications';
 import {ProductQuery} from '../../../state/product/product.query';
 import {OverlayQuery} from '../../../state/overlay/overlay.query';
 import {ProductService} from '../../../state/product/product.service';
 import {OverlayService} from '../../../state/overlay/overlay.service';
+import {ProductStore} from '../../../state/product/product.store';
 
 @Injectable({providedIn: 'root'})
 export class ReportTemplateService {
@@ -22,6 +23,7 @@ export class ReportTemplateService {
 
     private _productService: ProductService,
     private _productQuery: ProductQuery,
+    private _productStore: ProductStore,
 
     private _overlayService: OverlayService,
     private _overlayQuery: OverlayQuery
@@ -69,15 +71,18 @@ export class ReportTemplateService {
       );
   }
 
-  public load(reportTemplate: ReportTemplate) {
-    const activeProductId = !!reportTemplate.productId ? reportTemplate.productId : null;
-    this._productService.setActive(activeProductId);
-    if (!!reportTemplate.productId) {
-      this._productService.getLastAvailableScene();
-    }
-
+  public load$(reportTemplate: ReportTemplate) {
     this._overlayService.setAllActive(reportTemplate.overlayIds as any[]);
 
-    this._store.setActive(reportTemplate.uuid);
+    const activeProductId = !!reportTemplate.productId ? reportTemplate.productId : null;
+    return this._productService.setActive$(activeProductId)
+      .pipe(
+        switchMap(() => this._productService.getLastAvailableScene$()),
+        finalize(() => this._store.setActive(reportTemplate.uuid))
+      );
+  }
+
+  public setActive(active: string | ReportTemplate | null) {
+    this._store.setActive(active);
   }
 }

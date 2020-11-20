@@ -17,6 +17,8 @@ import {distinctUntilChanged, finalize, switchMap} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
+import {MapQuery} from '../state/map/map.query';
+import {MapStore} from '../state/map/map.store';
 
 @Component({
   selector: 's4e-map',
@@ -27,8 +29,7 @@ export class MapComponent implements OnInit, OnDestroy {
   static readonly DEFAULT_ZOOM_LEVEL = 10;
   @Output() viewChanged = new EventEmitter<ViewPosition>();
   @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
-  @Input() isWorking: boolean = false;
-  @Output() working = new EventEmitter<boolean>();
+
   activeView$ = new BehaviorSubject<ViewPosition>({
     centerCoordinates: environment.projection.coordinates,
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
@@ -42,7 +43,7 @@ export class MapComponent implements OnInit, OnDestroy {
     private _remoteConfiguration: RemoteConfiguration,
     private _loaderService: NgxUiLoaderService,
     private _notificationService: NotificationService,
-    private _sessionQuery: SessionQuery
+    private _sessionQuery: SessionQuery,
   ) {
   }
 
@@ -124,8 +125,11 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   };
 
-  public getMapData(): Observable<MapData> {
-    this.working.emit(true);
+  public getMapData(): Observable<MapData | null> {
+    if (!this.map) {
+      return of(null);
+    }
+
     const mapCanvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
 
     const r = new ReplaySubject<MapData>(1);
@@ -134,7 +138,6 @@ export class MapComponent implements OnInit, OnDestroy {
     this.map.once('rendercomplete', () => {
       const data = mapCanvas.toDataURL('image/png');
       r.next({image: data, width: mapCanvas.width, height: mapCanvas.height});
-      this.working.emit(false);
       r.complete();
     });
     this.map.renderSync();

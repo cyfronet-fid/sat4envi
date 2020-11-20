@@ -31,13 +31,15 @@ import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {delay, filter, map, switchMap, take} from 'rxjs/operators';
+import {delay, filter, map, switchMap, take, tap} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 import {ReportTemplateQuery} from './zk/state/report-templates/report-template.query';
+import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
+import {ReportTemplate} from './zk/state/report-templates/report-template.model';
 
 
 @Component({
@@ -64,7 +66,6 @@ import {ReportTemplateQuery} from './zk/state/report-templates/report-template.q
 export class MapViewComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
 
-  public loading$: Observable<boolean>;
   public activeScene$: Observable<Scene>;
   public activeSceneUrl$: Observable<string>;
   public activeProducts$: Observable<Product | null>;
@@ -108,12 +109,12 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private searchResultsQuery: LocationSearchResultsQuery,
     private modalService: ModalService,
     private viewConfigurationQuery: ViewConfigurationQuery,
-    private reportTemplateQuery: ReportTemplateQuery
+    private reportTemplateQuery: ReportTemplateQuery,
+    private reportTemplateStore: ReportTemplateStore
   ) {}
 
   ngOnInit(): void {
     this.userIsZK$ = this.sessionQuery.selectMemberZK();
-    this.loading$ = this.mapQuery.selectLoading();
     this.currentTimelineDate$ = this.productQuery.selectSelectedDate();
     this.activeScene$ = this.sceneQuery.selectActive();
     this.activeSceneUrl$ = this.activeScene$
@@ -169,13 +170,12 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.productService.get();
     this.overlayService.get();
 
-    this.reportTemplateQuery.selectActiveId()
-      .pipe(filter(activeId => !!activeId))
+    (this.reportTemplateQuery.selectActive() as Observable<ReportTemplate>)
+      .pipe(
+        untilDestroyed(this),
+        filter(activeId => !!activeId)
+      )
       .subscribe(() => this.openReportModal());
-  }
-
-  selectProduct(productId: number | null) {
-    this.productService.toggleActive(productId);
   }
 
   selectScene(sceneId: number) {
@@ -192,7 +192,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   loadAvailableDates($event: string) {
-    this.productService.fetchAvailableDays($event);
+    this.productService.fetchAvailableDays$($event).subscribe();
   }
 
   toggleZKOptions(show: boolean = true) {
@@ -226,6 +226,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
       this.productQuery.selectActive().pipe(map(p => p == null ? null : p.name), take(1)),
       this.sceneQuery.selectActive().pipe(map(s => s == null ? null : s.timestamp), take(1))
     ])
+      .pipe(
+        untilDestroyed(this),
+        filter(([mapData, productName, sceneDate]) => !!mapData)
+      )
       .subscribe(([mapData, productName, sceneDate]) => this.modalService.show<ReportModal>({
         id: REPORT_MODAL_ID,
         size: 'lg',
@@ -308,7 +312,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   getLastAvailableScene() {
-    this.productService.getLastAvailableScene();
+    this.productService.getLastAvailableScene$()
+      .pipe(untilDestroyed(this))
+      .subscribe();
   }
 
   nextScene() {

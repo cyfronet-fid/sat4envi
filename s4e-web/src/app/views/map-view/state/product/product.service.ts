@@ -10,10 +10,10 @@ import {
   PRODUCT_MODE_QUERY_KEY,
   TIMELINE_RESOLUTION_QUERY_KEY
 } from './product.model';
-import {catchError, finalize, take, tap} from 'rxjs/operators';
+import {catchError, filter, finalize, map, subscribeOn, switchMap, take, tap, zip} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {LegendService} from '../legend/legend.service';
-import {Observable, of, throwError} from 'rxjs';
+import {forkJoin, Observable, of, pipe, throwError} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction, arrayRemove, arrayUpsert} from '@datorama/akita';
@@ -52,54 +52,62 @@ export class ProductService {
       .subscribe((data) => this.store.set(data));
   }
 
-  getLastAvailableScene() {
+  getLastAvailableScene$() {
     const product = this.query.getActive();
-
-    if (product == null) {
-      return;
+    if (!product) {
+      return of();
     }
 
-    this.store.ui.update(product.id, state => ({...state, isLoading: true}));
-    this.http.get<MostRecentScene>(`${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent`,
-      {params: {timeZone: timezone()}}
-    ).pipe(
-      finalize(() => this.store.ui.update(product.id, state => ({...state, isLoading: false})))
-    ).subscribe((data: MostRecentScene) => {
-      if (data.sceneId == null) {
-        this._notificationService.addGeneral({type: 'info', content: 'Ten produkt nie posiada jeszcze scen'});
-        return;
-      }
+    const url = `${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent`;
+    const params = {params: {timeZone: timezone()}};
 
-      this.setSelectedDate(data.timestamp);
-      this.sceneService.get(product, data.timestamp.substr(0, 10))
-        .subscribe(() => this.sceneService.setActive(data.sceneId));
-    });
+    return this.http.get<MostRecentScene>(url, params)
+      .pipe(
+        tap(() =>  this.store.ui.update(product.id, state => ({...state, isLoading: true}))),
+        filter(data => {
+          if (data.sceneId == null) {
+            this._notificationService.addGeneral({type: 'info', content: 'Ten produkt nie posiada jeszcze scen'});
+          }
+
+          return !!data.sceneId;
+        }),
+        tap(data => this.setSelectedDate(data.timestamp)),
+        switchMap(data => forkJoin([of(data), this.sceneService.get(product, data.timestamp.substr(0, 10))])),
+        tap(([data]) => this.sceneService.setActive(data.sceneId)),
+        tap(() => this.store.ui.update(product.id, state => ({...state, isLoading: false})))
+      );
   }
 
-  setActive(productId: number | null) {
+  setActive$(productId: number | null) {
     this.store.ui.update({isLoading: false});
-
-    if (productId != null) {
-      this.store.ui.update(productId, {isLoading: true});
-      const product = this.query.getEntity(productId);
-      this.getSingle$(product)
-        .pipe(
-          finalize(() => this.store.ui.update(productId, {isLoading: false}))
-        ).subscribe(product => {
-        applyTransaction(() => {
-          this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
-          this.store.setActive(productId);
-        });
-        this.getAvailableDays();
-      });
-    } else {
-      applyTransaction(() => {
+    if (productId == null) {
+      return of(applyTransaction(() => {
         this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
         this.store.setActive(null);
         this.sceneStore.setActive(null);
         this.legendService.set(null);
-      });
+      }));
     }
+
+    return this.query.selectEntity(productId)
+      .pipe(
+        tap(() => this.store.ui.update(productId, {isLoading: true})),
+        switchMap(product => forkJoin([of(product), this.getSingle$(product)])),
+        tap(() => applyTransaction(() => {
+          this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
+          this.store.setActive(productId);
+        })),
+        switchMap(([product, any]) => {
+          const ui = this.query.getValue().ui;
+          const date = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
+          return forkJoin([of(product), this.fetchAvailableDays$(date)]);
+        }),
+        switchMap(([product, any]) => {
+          const ui = this.query.getValue().ui;
+          return this.sceneService.get(product, ui.selectedDate);
+        }),
+        tap(() => this.store.ui.update(productId, {isLoading: false}))
+      );
   }
 
   setDateRange(month: number, year: number) {
@@ -126,41 +134,20 @@ export class ProductService {
       .subscribe();
   }
 
-  fetchAvailableDays(dateF: string) {
+  fetchAvailableDays$(dateF: string) {
     const loadedMonths = this.query.getValue().ui.loadedMonths;
     if (loadedMonths.includes(dateF)) {
-      return;
+      return of([]);
     }
+
     this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [...state.ui.loadedMonths, dateF]}}));
-    this.http.get<string[]>(`${environment.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`, {
-      params: {tz: timezone(), yearMonth: dateF}
-    })
-      .subscribe(data => this.updateAvailableDays(data));
-  }
-
-  getAvailableDays() {
-    const activeProduct: Product = this.query.getActive();
-    if (activeProduct == null) {
-      return;
-    }
-
-    const ui = this.query.getValue().ui;
-
-    const dateF = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
-
-    this.http.get<string[]>(`${environment.apiPrefixV1}/products/${activeProduct.id}/scenes/available`,
-      {params: {timeZone: environment.timezone, yearMonth: dateF}})
+    const url = `${environment.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`;
+    const params = {params: {tz: timezone(), yearMonth: dateF}};
+    return this.http.get<string[]>(url, params)
       .pipe(
-        finalize(() => this.store.setLoading(false)),
-        catchError(error => {
-          this.store.setError(error);
-          return throwError(error);
-        }),
-      )
-      .subscribe(data => {
-        this.updateAvailableDays(data);
-        this.sceneService.get(activeProduct, ui.selectedDate).subscribe();
-      });
+        handleHttpRequest$(this.store),
+        tap(data => this.updateAvailableDays(data))
+      );
   }
 
   setSelectedDate(dateString: string) {
@@ -183,14 +170,6 @@ export class ProductService {
       const days = [...data.filter(d => !state.ui.availableDays.includes(d)), ...state.ui.availableDays];
       return {...state, ui: {...state.ui, availableDays: days}};
     });
-  }
-
-  toggleActive(productId: number) {
-    if (this.query.getActiveId() == productId) {
-      this.setActive(null);
-    } else {
-      this.setActive(productId);
-    }
   }
 
   setFavouriteMode(favourite: boolean) {

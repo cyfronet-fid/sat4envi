@@ -36,8 +36,9 @@ export class ReportTemplatesModalComponent extends ModalComponent implements OnD
   }
 
   load(reportTemplate: ReportTemplate) {
-    this._reportTemplateService.load(reportTemplate);
-    this.dismiss();
+    this._reportTemplateService.load$(reportTemplate)
+      .pipe(untilDestroyed(this))
+      .subscribe(() => this.dismiss());
   }
 
   delete(reportTemplate: ReportTemplate) {

@@ -30,20 +30,25 @@ describe('SceneService', () => {
   });
 
   it('should turn on live mode', () => {
-    const spyLoadingLatestScene = spyOn(productService, 'getLastAvailableScene')
+    const spyLoadingLatestScene = spyOn(productService, 'getLastAvailableScene$')
       .and.returnValue(null);
     timelineService.toggleLiveMode();
     expect(spyLoadingLatestScene).toHaveBeenCalled();
     expect((timelineService as any)._updaterIntervalID).not.toBe(null);
   });
   it('should turn off live mode', () => {
-    const spyLoadingLatestScene = spyOn(productService, 'getLastAvailableScene')
+    const spyLoadingLatestScene = spyOn(productService, 'getLastAvailableScene$')
       .and.returnValue(null);
+    (timelineService as any)._handleUpdater$
+      .subscribe((isLiveMode) => {
+        if (isLiveMode) {
+          expect(spyLoadingLatestScene).toHaveBeenCalled();
+          expect((timelineService as any)._latestSceneSubscription$).not.toBe(null);
+          return;
+        }
+        expect((timelineService as any)._latestSceneSubscription$).toBe(null);
+      })
     timelineService.toggleLiveMode();
-    expect(spyLoadingLatestScene).toHaveBeenCalled();
-    expect((timelineService as any)._updaterIntervalID).not.toBe(null);
-
     timelineService.toggleLiveMode();
-    expect((timelineService as any)._updaterIntervalID).toBe(null);
   });
 });

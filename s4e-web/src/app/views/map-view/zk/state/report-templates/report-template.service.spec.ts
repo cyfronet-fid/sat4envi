@@ -76,17 +76,20 @@ describe('Report template Service', () => {
       });
   });
   it('should load template', () => {
-    const spyProductServiceSetActive = spyOn(productService, 'setActive');
-    const spyProductServiceGetLastScene = spyOn(productService, 'getLastAvailableScene');
+    const spyProductServiceSetActive = spyOn(productService, 'setActive$')
+      .and.returnValue(of());;
+    const spyProductServiceGetLastScene = spyOn(productService, 'getLastAvailableScene$')
+      .and.returnValue(of());;
     const spyOverlayServiceSetActive = spyOn(overlayService, 'setAllActive');
     const spyStoreSetActive = spyOn(store, 'setActive');
 
     const reportTemplate = ReportTemplateFactory.build();
-    reportTemplatesService.load(reportTemplate);
-
-    expect(spyProductServiceSetActive).toHaveBeenCalledWith(reportTemplate.productId);
-    expect(spyProductServiceGetLastScene).toHaveBeenCalled();
-    expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(reportTemplate.overlayIds);
-    expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.uuid);
+    reportTemplatesService.load$(reportTemplate)
+      .subscribe(() => {
+        expect(spyProductServiceSetActive).toHaveBeenCalledWith(reportTemplate.productId);
+        expect(spyProductServiceGetLastScene).toHaveBeenCalled();
+        expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(reportTemplate.overlayIds);
+        expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.uuid);
+      });
   });
 });

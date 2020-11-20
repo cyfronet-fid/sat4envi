@@ -45,10 +45,6 @@ export class MapService {
     this.store.update({productDescriptionOpened: open});
   }
 
-  setWorking($event: boolean) {
-    this.store.setLoading($event);
-  }
-
   setView(view: ViewPosition): void {
     this.store.update({view});
   }
@@ -102,11 +98,13 @@ export class MapService {
   public updateStoreByView(viewConfig: ViewRouterConfig) {
     this.setView(viewConfig.viewPosition);
     this.overlayService.setAllActive(viewConfig.overlays);
-    this.productService.setActive(viewConfig.productId);
-    if (viewConfig.date) {
-      this.productService.setSelectedDate(viewConfig.date);
-    }
-    this.sceneService.setActive(viewConfig.sceneId);
+    this.productService.setActive$(viewConfig.productId)
+      .subscribe(() => {
+        if (viewConfig.date) {
+          this.productService.setSelectedDate(viewConfig.date);
+        }
+        this.sceneService.setActive(viewConfig.sceneId);
+      });
   }
 
   public connectStoreToRouter() {

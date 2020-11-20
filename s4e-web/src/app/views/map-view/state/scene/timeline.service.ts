@@ -1,21 +1,23 @@
 import { Injectable } from '@angular/core';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {filter, map, tap} from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {ProductService} from '../product/product.service';
 import Timer = NodeJS.Timer;
 import {SceneStore} from './scene.store.service';
 import {SceneQuery} from './scene.query';
 import environment from '../../../../../environments/environment';
+import {interval, Subscription} from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TimelineService {
-  private _updaterIntervalID: Timer;
   private _handleUpdater$ = this._sceneQuery.selectLoading()
     .pipe(
       filter(isLoading => !isLoading),
       map(() => this._sceneQuery.getValue().isLiveMode),
       tap(isLiveMode => isLiveMode ? this._turnOnUpdater() : this._turnOffUpdater())
     );
+
+  private _intervalSubscription: Subscription;
 
   constructor(
     private _sceneStore: SceneStore,
@@ -58,23 +60,24 @@ export class TimelineService {
   }
 
   private _turnOnUpdater() {
-    if (!!this._updaterIntervalID) {
+    if (!!this._intervalSubscription) {
       return;
     }
 
-    this._productService.getLastAvailableScene();
-    this._updaterIntervalID = setInterval(
-      () => this._productService.getLastAvailableScene(),
-      environment.liveSceneUpdateRateInMs
-    );
+    this._intervalSubscription = this._productService.getLastAvailableScene$()
+      .pipe(
+        switchMap(() => interval(environment.liveSceneUpdateRateInMs)),
+        switchMap(() => this._productService.getLastAvailableScene$())
+      )
+    .subscribe();
   }
 
   private _turnOffUpdater() {
-    if (!this._updaterIntervalID) {
+    if (!this._intervalSubscription) {
       return;
     }
 
-    clearInterval(this._updaterIntervalID);
-    this._updaterIntervalID = null;
+    this._intervalSubscription.unsubscribe();
+    this._intervalSubscription = null;
   }
 }
