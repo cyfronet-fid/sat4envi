@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -107,6 +106,11 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
     }
 
+    @ExceptionHandler(LicenseGrantException.class)
+    public ResponseEntity<?> handle(LicenseGrantException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
+    }
+
     @ExceptionHandler(InvitationCreationException.class)
     public ResponseEntity<?> handle(InvitationCreationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorHandlerHelper.toResponseMap(e));
@@ -119,11 +123,6 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        BindingResult bindingResult = e.getBindingResult();
-        if (bindingResult == null) {
-            // no BindingResult, just return an error code 400 without further info
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.badRequest().body(errorHandlerHelper.toResponseMap(e));
     }
 }

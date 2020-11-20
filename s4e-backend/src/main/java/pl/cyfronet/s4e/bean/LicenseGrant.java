@@ -23,4 +23,6 @@ public class LicenseGrant extends CreationAndModificationAudited {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Product product;
+
+    private boolean owner;
 }

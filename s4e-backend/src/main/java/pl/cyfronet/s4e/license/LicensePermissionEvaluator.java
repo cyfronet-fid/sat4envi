@@ -8,6 +8,7 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.license.types.ProductGranularLicense;
 import pl.cyfronet.s4e.license.types.TimestampGranularLicense;
+import pl.cyfronet.s4e.license.types.WritableLicense;
 import pl.cyfronet.s4e.security.AppUserDetails;
 
 import java.util.Map;
@@ -18,13 +19,22 @@ public class LicensePermissionEvaluator {
     private final ProductRepository productRepository;
     private final SceneRepository sceneRepository;
 
+    public boolean allowProductWrite(Long productId, Object principal) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            return false;
+        }
+        AppUserDetails userDetails = getNullableUserDetails(principal);
+        return decideWrite(userDetails, product);
+    }
+
     public boolean allowProductRead(Long productId, Object principal) {
         Product product = productRepository.findById(productId).orElse(null);
         if (product == null) {
             return true;
         }
         AppUserDetails userDetails = getNullableUserDetails(principal);
-        return decide(userDetails, product);
+        return decideRead(userDetails, product);
     }
 
     public boolean allowSceneRead(Long sceneId, Object principal) {
@@ -33,7 +43,23 @@ public class LicensePermissionEvaluator {
             return true;
         }
         AppUserDetails userDetails = getNullableUserDetails(principal);
-        return decide(userDetails, scene);
+        return decideRead(userDetails, scene);
+    }
+
+    /**
+     * Decide whether to allow write access to {@code product} given authorities in {@code userDetails}.
+     *
+     * @param userDetails the user details
+     * @param product product to authorize
+     * @return If given the authorities from {@code userDetails} to allow write access to {@code product}.
+     */
+    private boolean decideWrite(AppUserDetails userDetails, Product product) {
+        ProductGranularLicense license = productLicenses.get(product.getAccessType());
+        if (license instanceof WritableLicense) {
+            return ((WritableLicense) license).canWrite(product, userDetails);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -43,7 +69,7 @@ public class LicensePermissionEvaluator {
      * @param product product to authorize
      * @return If given the authorities from {@code userDetails} to allow read access to {@code product}.
      */
-    private boolean decide(AppUserDetails userDetails, Product product) {
+    private boolean decideRead(AppUserDetails userDetails, Product product) {
         ProductGranularLicense license = productLicenses.get(product.getAccessType());
         return license.canRead(product, userDetails);
     }
@@ -60,12 +86,12 @@ public class LicensePermissionEvaluator {
      * @param scene scene to authorize
      * @return If given the authorities from {@code userDetails} to allow read access to {@code scene}
      */
-    private boolean decide(AppUserDetails userDetails, Scene scene) {
+    private boolean decideRead(AppUserDetails userDetails, Scene scene) {
         Product product = scene.getProduct();
         ProductGranularLicense license = productLicenses.get(product.getAccessType());
 
         // Verify access to product.
-        if (!decide(userDetails, product)) {
+        if (!decideRead(userDetails, product)) {
             return false;
         }
 
