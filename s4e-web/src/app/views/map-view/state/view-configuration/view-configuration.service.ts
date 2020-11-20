@@ -40,8 +40,6 @@ export class ViewConfigurationService {
   }
 
   get() {
-    this.store.setError(null);
-    this.store.setLoading(true);
     const url = `${environment.apiPrefixV1}/saved-views`;
     const headers = {'Content-Type': 'application/json'};
     this.http.get<IPageableResponse<ViewConfiguration>>(url, {headers})
@@ -50,5 +48,11 @@ export class ViewConfigurationService {
         map(data => data.content)
       )
       .subscribe((data) => this.store.set(data));
+  }
+
+  setActive(configuration: string | ViewConfiguration | null) {
+    this.store.setLoading(true);
+    this.store.setActive(configuration);
+    this.store.setLoading(false);
   }
 }
