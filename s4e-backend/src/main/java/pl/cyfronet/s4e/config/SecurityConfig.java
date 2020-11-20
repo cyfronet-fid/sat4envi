@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static String[] prefix(String... paths) {
         return Arrays.stream(paths)
                 .map(path -> API_PREFIX_V1 + path)
-                .toArray(n -> new String[n]);
+                .toArray(String[]::new);
     }
 
     @Override
@@ -104,6 +104,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .access("hasRole('ADMIN') || @ish.isAdmin(#institution)")
                 .mvcMatchers(GET, prefix("/institutions")).authenticated()
                 .mvcMatchers(prefix("/institutions")).hasRole("ADMIN")
+
+                .mvcMatchers(GET, prefix("/license-grants/institution/{institutionSlug}"))
+                    .access("hasRole('ADMIN') || @ish.isMember(#institutionSlug)")
+                .mvcMatchers(prefix(
+                        "/license-grants/product/{productId}",
+                        "/license-grants/product/{productId}/**"
+                )).access("@licensePermissionEvaluator.allowProductWrite(#productId, principal)")
 
                 .mvcMatchers(prefix("/user-role")).hasRole("ADMIN")
 

@@ -2,8 +2,9 @@ package pl.cyfronet.s4e.ex.product;
 
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
+import pl.cyfronet.s4e.ex.BindingResultException;
 
-public class ProductValidationException extends ProductException {
+public class ProductValidationException extends ProductException implements BindingResultException {
     @Getter
     private final BindingResult bindingResult;
 

@@ -3,7 +3,7 @@ package pl.cyfronet.s4e.ex;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
-public class QueryException extends Exception {
+public class QueryException extends Exception implements BindingResultException {
     @Getter
     private final BindingResult bindingResult;
 

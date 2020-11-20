@@ -15,6 +15,8 @@ import java.util.Set;
 public interface InstitutionRepository extends CrudRepository<Institution, Long> {
     <T> Optional<T> findById(Long id, Class<T> projection);
 
+    boolean existsBySlug(String institutionSlug);
+
     <T> List<T> findAllBy(Class<T> projection);
 
     Optional<Institution> findBySlug(String slug);
@@ -22,8 +24,6 @@ public interface InstitutionRepository extends CrudRepository<Institution, Long>
     <T> Optional<T> findBySlug(String slug, Class<T> projection);
 
     Set<Institution> findAllByParentId(Long ParentId);
-
-    <T> Set<T> findAllByParentId(Long ParentId, Class<T> projection);
 
     @Query(value = "SELECT i.* " +
             "FROM Institution i " +

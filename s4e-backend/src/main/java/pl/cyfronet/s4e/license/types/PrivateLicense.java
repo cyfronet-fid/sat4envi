@@ -6,19 +6,34 @@ import pl.cyfronet.s4e.security.AppUserDetails;
 
 import static pl.cyfronet.s4e.security.AppUserDetailsUtil.isAdmin;
 import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_READ_AUTHORITY_PREFIX;
+import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_WRITE_AUTHORITY_PREFIX;
 
-public class PrivateLicense implements ProductGranularLicense {
+public class PrivateLicense implements WritableLicense {
+    @Override
+    public boolean canWrite(Product product, AppUserDetails userDetails) {
+        if (isAdmin(userDetails)) {
+            return true;
+        }
+
+        return hasWriteLicense(userDetails, product);
+    }
+
     @Override
     public boolean canRead(Product product, AppUserDetails userDetails) {
         if (isAdmin(userDetails)) {
             return true;
         }
 
-        return hasLicense(userDetails, product);
+        return hasReadLicense(userDetails, product);
     }
 
-    private boolean hasLicense(AppUserDetails userDetails, Product product) {
+    private boolean hasReadLicense(AppUserDetails userDetails, Product product) {
         return userDetails != null && userDetails.getAuthorities()
                 .contains(new SimpleGrantedAuthority(LICENSE_READ_AUTHORITY_PREFIX + product.getId().toString()));
+    }
+
+    private boolean hasWriteLicense(AppUserDetails userDetails, Product product) {
+        return userDetails != null && userDetails.getAuthorities()
+                .contains(new SimpleGrantedAuthority(LICENSE_WRITE_AUTHORITY_PREFIX + product.getId().toString()));
     }
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_READ_AUTHORITY_PREFIX;
+import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_WRITE_AUTHORITY_PREFIX;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
@@ -61,6 +62,18 @@ public class AppUserDetailsService implements UserDetailsService {
                 .mapToLong(Product::getId)
                 .distinct()
                 .mapToObj(id -> LICENSE_READ_AUTHORITY_PREFIX + id)
+                .forEach(sourceAuthorities::add);
+
+        appUser.getRoles().stream()
+                .filter(userRole -> userRole.getRole() == AppRole.INST_ADMIN)
+                .map(UserRole::getInstitution)
+                .map(Institution::getLicenseGrants)
+                .flatMap(Collection::stream)
+                .filter(LicenseGrant::isOwner)
+                .map(LicenseGrant::getProduct)
+                .mapToLong(Product::getId)
+                .distinct()
+                .mapToObj(id -> LICENSE_WRITE_AUTHORITY_PREFIX + id)
                 .forEach(sourceAuthorities::add);
 
         boolean grantEumetsatLicense = appUser.isEumetsatLicense() || appUser.getRoles().stream()
