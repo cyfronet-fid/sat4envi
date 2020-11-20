@@ -16,10 +16,24 @@
     <name>gs-gateway</name>
     <description>GeoServer Gateway</description>
 
-    <properties>
-        <spring-cloud.version>2020.0.0-M4</spring-cloud.version>
+    <repositories>
+        <repository>
+            <id>repository.spring.milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
 
-        <spring-boot.version>2.4.0-M4</spring-boot.version>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository.spring.milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <spring-cloud.version>2020.0.0-M5</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
