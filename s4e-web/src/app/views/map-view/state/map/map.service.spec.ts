@@ -112,7 +112,7 @@ describe('MapService', () => {
       const mapQuery: MapQuery = TestBed.get(MapQuery);
       const overlayServiceSpy = spyOn(TestBed.get(OverlayService) as OverlayService, 'setAllActive');
       const overlayStore: OverlayStore = TestBed.get(OverlayStore);
-      const productServiceSpy = spyOn(TestBed.get(ProductService) as ProductService, 'setActive');
+      const productServiceSpy = spyOn(TestBed.get(ProductService) as ProductService, 'setActive$');
       const productServiceSpy2 = spyOn(TestBed.get(ProductService) as ProductService, 'setSelectedDate');
       const productStore: ProductStore = TestBed.get(ProductStore);
       const sceneServiceSpy = spyOn(TestBed.get(SceneService) as SceneService, 'setActive');
@@ -134,16 +134,18 @@ describe('MapService', () => {
       overlayStore.setLoading(false);
       productStore.setLoading(false);
 
-      await service.connectRouterToStore(route).toPromise();
-      expect(mapQuery.getValue().view).toEqual({
-        centerCoordinates: [Number(queryParams.centerx), Number(queryParams.centery)],
-        zoomLevel: Number(queryParams.zoom)
-      });
+      await service.connectRouterToStore(route)
+        .subscribe(() => {
+          expect(mapQuery.getValue().view).toEqual({
+            centerCoordinates: [Number(queryParams.centerx), Number(queryParams.centery)],
+            zoomLevel: Number(queryParams.zoom)
+          });
 
-      expect(overlayServiceSpy).toBeCalledWith(queryParams.overlays);
-      expect(productServiceSpy).toBeCalledWith(Number(queryParams.product));
-      expect(productServiceSpy2).toBeCalledWith(queryParams.date);
-      expect(sceneServiceSpy).toBeCalledWith(Number(queryParams.scene));
+          expect(overlayServiceSpy).toBeCalledWith(queryParams.overlays);
+          expect(productServiceSpy).toBeCalledWith(Number(queryParams.product));
+          expect(productServiceSpy2).toBeCalledWith(queryParams.date);
+          expect(sceneServiceSpy).toBeCalledWith(Number(queryParams.scene));
+        })
     });
 
     it('should work not do anything and raise error if params are incomplete', async () => {

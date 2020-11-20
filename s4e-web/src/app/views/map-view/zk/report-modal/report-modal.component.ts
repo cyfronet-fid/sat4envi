@@ -1,6 +1,6 @@
 import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import {Component, ElementRef, Inject, ViewChild, OnInit, AfterViewInit} from '@angular/core';
+import {Component, ElementRef, Inject, ViewChild, OnInit, AfterViewInit, OnDestroy} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
@@ -26,7 +26,7 @@ import {ReportTemplate} from '../state/report-templates/report-template.model';
   templateUrl: './report-modal.component.html',
   styleUrls: ['./report-modal.component.scss']
 })
-export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit, AfterViewInit {
+export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit, AfterViewInit, OnDestroy {
   image: string = '';
   public disabled$: Observable<boolean>;
   public reportGenerator: ReportGenerator;
@@ -133,5 +133,10 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
     this._reportTemplateService.create$(this.form.value)
       .pipe(untilDestroyed(this))
       .subscribe();
+  }
+
+  ngOnDestroy() {
+    this._reportTemplateService.setActive(null);
+    super.ngOnDestroy();
   }
 }

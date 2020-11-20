@@ -45,8 +45,6 @@
 
 <s4e-map class="section map"
          #map
-         [isWorking]="loading$ | async"
-         (working)="mapService.setWorking($event)"
          [overlays]="overlays$ | async"
          [activeScene]="activeScene$ | async"
          [activeView]="activeView$ | async"

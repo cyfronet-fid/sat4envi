@@ -29,6 +29,7 @@ import {InjectorModule} from 'src/app/common/injector.module';
 import {ModalService} from '../../../modal/state/modal.service';
 import {OVERLAY_LIST_MODAL_ID} from './overlay-list-modal/overlay-list-modal.model';
 import {TimelineService} from '../state/scene/timeline.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
 
 @Component({
   selector: 's4e-view-manager',
@@ -105,7 +106,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
       productId = null;
     }
 
-    this.productService.setActive(productId);
+    this.productService.setActive$(productId)
+      .pipe(untilDestroyed(this))
+      .subscribe();
   }
 
   selectOverlay(overlayId: string) {

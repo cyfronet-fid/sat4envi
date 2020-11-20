@@ -58,7 +58,7 @@ describe('ProductService', () => {
       const spy2 = spyOn(legendService, 'set').and.stub();
       const spy3 = spyOn(productStore, 'setActive').and.stub();
 
-      productService.setActive(null);
+      productService.setActive$(null);
 
       expect(spy1).toHaveBeenCalledWith(null);
       expect(spy2).toHaveBeenCalledWith(null);
@@ -87,10 +87,10 @@ describe('ProductService', () => {
     it('should handle active product == null', () => {
       productStore.set([ProductFactory.build()])
       productStore.setActive(null);
-      expect(() => productService.getLastAvailableScene()).not.toThrow();
+      expect(() => productService.getLastAvailableScene$()).not.toThrow();
     });
 
-    it('should get last available', async () => {
+    it('should get last available', () => {
       spyOn(dateUtils, 'timezone').and.returnValue('Europe/Warsaw')
       const product = ProductFactory.build();
       const scene = SceneFactory.build()
@@ -108,18 +108,19 @@ describe('ProductService', () => {
       spyOn(sceneService, 'get').and.returnValue(of(true))
       spyOn(sceneService, 'setActive').and.stub()
 
-      productService.getLastAvailableScene();
+      productService.getLastAvailableScene$()
+        .subscribe(async () => {
+          const req = http.expectOne(`${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent?timeZone=${dateUtils.timezone()}`)
+          expect(req.request.method).toBe('GET');
+          req.flush({sceneId: scene.id, timestamp: scene.timestamp});
 
-      const req = http.expectOne(`${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent?timeZone=${dateUtils.timezone()}`)
-      expect(req.request.method).toBe('GET');
-      req.flush({sceneId: scene.id, timestamp: scene.timestamp});
+          expect(productService.setSelectedDate).toHaveBeenCalledWith(scene.timestamp);
+          expect(sceneService.get).toHaveBeenCalledWith(product, scene.timestamp.substr(0, 10));
+          expect(sceneService.setActive).toHaveBeenCalledWith(scene.id);
 
-      expect(productService.setSelectedDate).toHaveBeenCalledWith(scene.timestamp);
-      expect(sceneService.get).toHaveBeenCalledWith(product, scene.timestamp.substr(0, 10));
-      expect(sceneService.setActive).toHaveBeenCalledWith(scene.id);
-
-      expect(await promise).toEqual([false, true, false]);
-      http.verify();
+          expect(await promise).toEqual([false, true, false]);
+          http.verify();
+        });
     });
   });
 });
