@@ -3,10 +3,10 @@ import { InstitutionsSearchResultsStore } from './state/institutions-search/inst
 import {InstitutionService} from './state/institution/institution.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {filter, finalize, map, tap} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Institution} from './state/institution/institution.model';
 import {environment} from 'src/environments/environment';
 import {SessionQuery} from '../../state/session/session.query';
@@ -59,6 +59,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.hasBeenSelected = false;
         }
       });
+
+    // Set page scroll at initial place
+    window.scrollTo(0, 0);
+    this._router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(event => (event as NavigationEnd).url),
+        filter(url => url.indexOf('/settings') > -1),
+        finalize(() => window.scrollTo(0, 0))
+      )
+      .pipe(untilDestroyed(this))
+      .subscribe();
 
     this._institutionService.get();
   }
