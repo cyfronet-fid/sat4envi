@@ -89,7 +89,7 @@ public class SceneControllerTest {
     }
 
     @Test
-    public void shouldReturnScenesWithArtifactsNames() throws Exception {
+    public void shouldReturnScenesWithArtifacts() throws Exception {
         val product = productRepository.save(productBuilder().build());
         sceneRepository.save(sceneBuilder(product, LocalDateTime.of(2019, 10, 11, 12, 13)).build());
 
@@ -97,7 +97,7 @@ public class SceneControllerTest {
                 .param("date", "2019-10-11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
-                .andExpect(jsonPath("$[0].artifactNames", containsInAnyOrder("default_artifact", "other_artifact")));
+                .andExpect(jsonPath("$[0].artifacts", containsInAnyOrder("default_artifact", "other_artifact")));
     }
 
     @Test
