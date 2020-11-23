@@ -35,6 +35,7 @@ public abstract class AppUserMapper {
     }
 
 
+    @Mapping(target = "id", source = "projection.id")
     @Mapping(target = "email", source = "projection.email")
     @Mapping(target = "name", source = "projection.name")
     @Mapping(target = "surname", source = "projection.surname")

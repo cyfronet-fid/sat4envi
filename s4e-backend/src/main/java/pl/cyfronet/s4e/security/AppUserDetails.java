@@ -10,6 +10,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AppUserDetails implements UserDetails {
     @Getter
+    private final long id;
+
+    @Getter
     private final String email;
 
     @Getter

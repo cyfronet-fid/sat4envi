@@ -67,6 +67,7 @@ public class SecurityTest {
     @Test
     public void shouldReturn401ForUserWithBadAuthentication() throws Exception {
         AppUser appUser = AppUser.builder()
+                .id(Long.MAX_VALUE)
                 .email("badCredentials@profile.com")
                 .name("Get")
                 .surname("Profile")

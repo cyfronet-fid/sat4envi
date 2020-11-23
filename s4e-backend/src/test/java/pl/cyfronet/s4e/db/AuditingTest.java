@@ -41,8 +41,8 @@ public class AuditingTest {
 
     @Test
     public void shouldRecordSave() {
-        String creator = "someOther@guy.pl";
-        authenticateAs(creator);
+        Long creatorId = 1000L;
+        authenticateAs(creatorId);
 
         LocalDateTime beforeSave = LocalDateTime.now();
 
@@ -51,9 +51,9 @@ public class AuditingTest {
         LocalDateTime afterSave = LocalDateTime.now();
 
         assertThat(appUser.getCreatedAt(), isInRange(beforeSave, afterSave));
-        assertThat(appUser.getCreatedBy(), is(equalTo(creator)));
+        assertThat(appUser.getCreatedBy(), is(equalTo(creatorId)));
         assertThat(appUser.getLastModifiedAt(), isInRange(beforeSave, afterSave));
-        assertThat(appUser.getLastModifiedBy(), is(equalTo(creator)));
+        assertThat(appUser.getLastModifiedBy(), is(equalTo(creatorId)));
     }
 
     @Test
@@ -73,11 +73,11 @@ public class AuditingTest {
     @Test
     public void shouldRecordUpdate() {
         String userEmail = "test@some.pl";
-        String creator = "some@guy.pl";
-        String modifier = "someOther@guy.pl";
-        authenticateAs(creator);
+        Long creatorId = 1000L;
+        Long modifierId = 100L;
+        authenticateAs(creatorId);
         saveAppUser(userEmail);
-        authenticateAs(modifier);
+        authenticateAs(modifierId);
 
         LocalDateTime beforeModification = LocalDateTime.now();
 
@@ -86,9 +86,9 @@ public class AuditingTest {
         LocalDateTime afterModification = LocalDateTime.now();
 
         assertThat(appUser.getCreatedAt(), is(lessThan(beforeModification)));
-        assertThat(appUser.getCreatedBy(), is(equalTo(creator)));
+        assertThat(appUser.getCreatedBy(), is(equalTo(creatorId)));
         assertThat(appUser.getLastModifiedAt(), isInRange(beforeModification, afterModification));
-        assertThat(appUser.getLastModifiedBy(), is(equalTo(modifier)));
+        assertThat(appUser.getLastModifiedBy(), is(equalTo(modifierId)));
     }
 
     private AppUser saveAppUser(String email) {
@@ -114,9 +114,9 @@ public class AuditingTest {
                 .build();
     }
 
-    private void authenticateAs(String email) {
+    private void authenticateAs(Long id) {
         AppUserDetails appUserDetails = mock(AppUserDetails.class);
-        when(appUserDetails.getUsername()).thenReturn(email);
+        when(appUserDetails.getId()).thenReturn(id);
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.isAuthenticated()).thenReturn(true);

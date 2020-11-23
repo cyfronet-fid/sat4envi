@@ -17,7 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
+import pl.cyfronet.s4e.controller.request.ForgetUserRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.response.UserMeResponse;
 import pl.cyfronet.s4e.controller.response.UserRoleResponse;
@@ -168,6 +170,23 @@ public class AppUserController {
         val projection = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), UserMeProjection.class)
                 .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
         return appUserMapper.projectionToMeResponse(projection, appUserDetails);
+    }
+
+    @Operation(summary = "Forget me")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User forgotten"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found", content = @Content)
+    })
+    @PostMapping("/users/forget-me")
+    public void forgetMe(@RequestBody @Valid ForgetUserRequest forgetUserRequest) throws NotFoundException {
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+        if (!(appUserDetails.getEmail().equals(forgetUserRequest.getEmail()) &&
+                appUserService.matches(forgetUserRequest.getPassword(), appUserDetails.getPassword()))) {
+            throw new AccessDeniedException("Access Denied");
+        }
+        appUserService.forgetUser(forgetUserRequest);
     }
 
     private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {

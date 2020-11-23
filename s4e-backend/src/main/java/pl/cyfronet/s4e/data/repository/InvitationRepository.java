@@ -14,4 +14,5 @@ public interface InvitationRepository extends CrudRepository<Invitation, Long> {
     <T> Optional<T> findByToken(String token, Class<T> projection);
     <T> Optional<T> findById(Long id, Class<T> projection);
     <T> Set<T> findAllByInstitutionSlug(String institutionSlug, Class<T> projection);
+    <T> Set<T> findAllByEmail(String email, Class<T> projection);
 }

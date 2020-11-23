@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(prefix("/users/authority/{authority}"))
                     .access("hasRole('ADMIN') || hasAuthority('OP_GRANT_' + #authority)")
 
+                .mvcMatchers(POST, prefix("/users/forget-me")).authenticated()
                 .mvcMatchers(POST, prefix(
                         "/register",
                         "/resend-registration-token-by-email",
