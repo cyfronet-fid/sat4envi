@@ -20,7 +20,7 @@ export class GeneralModal extends Core {
   static isVisible() {
     GeneralModal
       .pageObject
-      .getModalContainer()
+      .getModalContainer() 
       .should('be.visible');
   }
 

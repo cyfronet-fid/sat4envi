@@ -2,16 +2,16 @@ import { Core } from './../core.po';
 
 export class MapProducts extends Core {
   static pageObject = {
-    getNonFavoritesBtns: () => cy.get(".e2e-non-favourite-btn"),
+    getNonFavoritesBtns: () => cy.get(".e2e-non-favourite-btn"), //start icon
     favoritesBtnClass: ".e2e-favourite-btn",
     getFavoritesBtns: () => cy.get(MapProducts.pageObject.favoritesBtnClass),
-    getFavouriteTab: () => cy.get('[data-e2e="favourite-list"]'),
-    getProductsTab: () => cy.get('[data-e2e="product-list"]'),
-    getFavouriteCount: () => cy.get('[data-e2e="favourite-count"]'),
-    getProducts: () => cy.get(".products-list .products__item"),
-    getProductList: () => cy.get(".products-list"),
+    getFavouriteTab: () => cy.get('[data-e2e="favourite-list"]'), // link favorite
+    getProductsTab: () => cy.get('[data-e2e="product-list"]'), // link list of products
+    getFavouriteCount: () => cy.get('[data-e2e="favourite-count"]'), // count of favorite
+    getProducts: () => cy.get(".products-list .products__item"), // all procucts
+    getProductList: () => cy.get(".products-list"), // list od prodcts (one element)
     getProductsBtns: () =>
-      cy.get('s4e-items-picker.section.products .products__name'),
+      cy.get('s4e-items-picker.section.products .products__name'), // button for select every product
   }
 
   static selectProductBy(partialName: string) {

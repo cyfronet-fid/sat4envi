@@ -3,12 +3,12 @@ import { Core } from '../core.po';
 export class LocationsSearch extends Core {
   static pageObject = {
     getSearch: () => cy.get('[data-e2e="search-input"]'),
-    getSearchResults: () => cy.get('[data-e2e="search-result"]'),
-    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'),
+    getSearchResults: () => cy.get('[data-e2e="search-result"]'), //every city separetly
+    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'), // list of city
     getSearchResultsType: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.type'),
     getSearchResultsVoivodeship: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.voivodeship'),
-    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'),
-    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]')
+    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'), // X buttom
+    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]') //serach icon
   };
 
   static type(value: string) {

@@ -17,88 +17,96 @@ context('Map Layers', () => {
     Login.loginAs(this.zkMember);
   });
 
-  context('Image WMS URL validation', () => {
-    before(function () {
-      cy.server({
-        method: 'GET',
-        delay: 500,
-        status: 200,
-        response: this.imageWms
-      });
-    });
+  // context('Image WMS URL validation', () => {
+  //   before(function () {
+  //     cy.server({
+  //       method: 'GET',
+  //       delay: 500,
+  //       status: 200,
+  //       response: this.imageWms
+  //     });
+  //   });
 
-    it('should display selected layer', () => {
-      Layers
-        .selectNthSidebarLayer(0)
-        .activeLayersCountShouldBe(1)
-        .selectNthSidebarLayer(0)
-        .activeLayersCountShouldBe(0);
-    });
-    it('should display url errors', function () {
-      const label = 'Test';
-      const url = [
-        'https://test-page.pl/?SERVICE=unknown',
-        'REQUEST=unknown',
-        'LAYERS=unkn?own',
-        'STYLES=unkn?own',
-        'FORMAT=image/unknown',
-        'TRANSPARENT=none',
-        'VERSION=x.y.z',
-        'HEIGHT=none',
-        'WIDTH=none',
-        'CRS=unknown',
-        'BBOX=unknown,unknown,unknown,unknown'
-      ].join('&');
+    // it('should display selected layer', () => {
+    //   Layers
+    //     .selectNthSidebarLayer(0)
+    //     .activeLayersCountShouldBe(1)
+    //     .unselectNthSidebarLayer(0)
+    //     .activeLayersCountShouldBe(0);
+    // });
+    // it('should display url errors', function () {
+    //   const label = 'Test';
+    //   const url = [
+    //     'https://test-page.pl/?SERVICE=unknown',
+    //     'REQUEST=unknown',
+    //     'LAYERS=unkn?own',
+    //     'STYLES=unkn?own',
+    //     'FORMAT=image/unknown',
+    //     'TRANSPARENT=none',
+    //     'VERSION=x.y.z',
+    //     'HEIGHT=none',
+    //     'WIDTH=none',
+    //     'CRS=unknown',
+    //     'BBOX=unknown,unknown,unknown,unknown'
+    //   ].join('&');
 
-      Layers
-        .openManagementModal()
-        .addNew(label, url)
-        .errorsCountShouldBe(6);
-    });
+    //   Layers
+    //     .openManagementModal()
+    //     .addNew(label, url)
+    //     .errorsCountShouldBe(6);
+    // });
+
     it.only('should add and remove from panel', async () => {
       const label = 'Test';
-      const url = 'http://localhost:5000/wms';
-      cy.route(url + '**');
+      const url = '/wms?LAYERS=development:powiaty';
+      //cy.server();
+      //cy.route(url + '**');
 
-      const initialSize = (await promisify(Layers.pageObject.getSidebarLayers())).length;
+      
+      const initialSize = Layers.pageObject.getSidebarLayers()
+    
+      const count = Cypress.$('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').length
+      
       Layers
         .openManagementModal()
         .addNew(label, url)
         .changeContextTo(GeneralModal)
         .closeAndChangeContext(Layers)
-        .sidebarLayersCountShouldBe(initialSize + 1)
+        .sidebarLayersCountShouldBe(count + 1)
 
-        .openManagementModal()
-        .toggleNthInPanelDisplay(initialSize)
-        .changeContextTo(GeneralModal)
-        .closeAndChangeContext(Layers)
-        .sidebarLayersCountShouldBe(initialSize)
+        // .openManagementModal()
+        // .toggleNthInPanelDisplay(count)
+        // .changeContextTo(GeneralModal)
+        // .closeAndChangeContext(Layers)
+        // .sidebarLayersCountShouldBe(count)
 
-        .openManagementModal()
-        .removeNthWithPermission(0)
-        .changeContextTo(ConfirmModal)
-        .accept();
+        // .openManagementModal()
+        // .removeNthWithPermission(0)
+        // .changeContextTo(ConfirmModal)
+        // .accept();
     });
-    it('should add new layer and remove it', async () => {
-      const label = 'Test';
-      const url = '/test**';
-      cy.route(url + '**');
 
-      const initialSize = (await promisify(
-        Layers
-          .openManagementModal()
-          .pageObject
-          .getManagementLayers()
-      )).length;
-      Layers
-        .addNew(label, url)
-        .managementLayersCountShouldBe(initialSize + 1)
-        .removeNthWithPermission(0)
-        .changeContextTo(ConfirmModal)
-        .acceptAndChangeContextTo(Layers)
-        .managementLayersCountShouldBe(initialSize)
-        .changeContextTo(GeneralModal)
-        .closeAndChangeContext(Layers);
-    });
+
+    // it('should add new layer and remove it', async () => {
+    //   const label = 'Test';
+    //   const url = '/test**';
+    //   cy.route(url + '**');
+
+    //   const initialSize = (await promisify(
+    //     Layers
+    //       .openManagementModal()
+    //       .pageObject
+    //       .getManagementLayers()
+    //   )).length;
+    //   Layers
+    //     .addNew(label, url)
+    //     .managementLayersCountShouldBe(initialSize + 1)
+    //     .removeNthWithPermission(0)
+    //     .changeContextTo(ConfirmModal)
+    //     .acceptAndChangeContextTo(Layers)
+    //     .managementLayersCountShouldBe(initialSize)
+    //     .changeContextTo(GeneralModal)
+    //     .closeAndChangeContext(Layers);
+    // });
   });
-});
+//});

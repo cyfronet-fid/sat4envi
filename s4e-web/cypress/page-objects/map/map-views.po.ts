@@ -2,14 +2,14 @@ import { Core } from './../core.po';
 
 export class MapViews extends Core {
   static pageObject = {
-    getZkOptionsBtn: () => cy.get('[data-e2e="zk-options-btn"]'),
-    getOpenSaveViewsBtn: () => cy.get('[data-e2e="open-save-view-modal-btn"]'),
-    getOpenViewsBtn: () => cy.get('[data-e2e="open-views-modal-btn"]'),
-    getViews: () => cy.get('[data-e2e="view"]'),
-    getViewsDeleteBtns: () => cy.get('[data-e2e="view-delete-btn"]'),
-    getViewLabelInput: () => cy.get('[data-e2e="view-label"]').find('input'),
-    getAddBtn: () => cy.get('[data-e2e="add-view-btn"]'),
-    getViewLoadBtns: () => cy.get('[data-e2e="view-load-btn"]')
+    getZkOptionsBtn: () => cy.get('[data-e2e="zk-options-btn"]'), // button zkOptions
+    getOpenSaveViewsBtn: () => cy.get('[data-e2e="open-save-view-modal-btn"]'), // button "zapisz konfiguracje widoku lista"
+    getOpenViewsBtn: () => cy.get('[data-e2e="open-views-modal-btn"]'), // button "wczytaj zapisana konfegeracje lista"
+    getViews: () => cy.get('[data-e2e="view"]'), // "wczytaj konfiguracje" window
+    getViewsDeleteBtns: () => cy.get('[data-e2e="view-delete-btn"]'), // delete configuration
+    getViewLabelInput: () => cy.get('[data-e2e="view-label"]').find('input'), // label of name configuration
+    getAddBtn: () => cy.get('[data-e2e="add-view-btn"]'), // save configuration
+    getViewLoadBtns: () => cy.get('[data-e2e="view-load-btn"]')//wczytaj
   };
 
   static openSaveViewsModal() {

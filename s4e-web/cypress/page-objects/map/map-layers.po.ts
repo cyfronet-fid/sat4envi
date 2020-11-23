@@ -3,19 +3,19 @@ import { GeneralModal } from '../modal/general-modal.po';
 
 export class Layers extends Core {
   static pageObject = {
-    getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'),
-    getSidebarLayers: () => cy.get('[data-e2e="layers-list"]').find('[data-e2e="picker-item-label"]'),
-    getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'),
+    getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'), //Configuration WMS
+    getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'), //Products 
+    getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'), 
 
-    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'),
-    getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'),
-    getDisplayInPanelBtns: () => cy.get('[data-e2e="display-in-panel-btn"]'),
+    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'), // Modal WMS layers
+    getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'), 
+    getDisplayInPanelBtns: () => cy.get('[data-e2e="display-in-panel-btn"]'), // Visible YES/NO
 
-    getAddBtn: () => cy.get('[data-e2e="add-layer-btn"]'),
-    getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
-    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
-    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
-    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]')
+    getAddBtn: () => cy.get('[data-e2e="add-layer-btn"]'), //dodaj nakladke
+    getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'), // Add Layer button
+    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'), 
+    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'), 
+    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]') 
   };
 
   static activeLayersCountShouldBe(count: number) {
@@ -47,7 +47,7 @@ export class Layers extends Core {
       .getSidebarManagementBtn()
       .click({ force: true });
 
-    GeneralModal.isVisible();
+    GeneralModal.isVisible(); // find 3 elements
 
     return Layers;
   }
