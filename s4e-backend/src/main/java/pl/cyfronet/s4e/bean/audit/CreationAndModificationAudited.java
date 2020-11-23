@@ -16,5 +16,5 @@ public abstract class CreationAndModificationAudited extends CreationAudited {
     private LocalDateTime lastModifiedAt;
 
     @LastModifiedBy
-    private String lastModifiedBy;
+    private Long lastModifiedBy;
 }

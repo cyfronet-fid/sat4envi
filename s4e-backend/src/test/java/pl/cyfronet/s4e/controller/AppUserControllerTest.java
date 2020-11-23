@@ -12,16 +12,19 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -30,6 +33,7 @@ import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.InvitationHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.controller.request.ForgetUserRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.event.*;
@@ -40,6 +44,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
@@ -74,6 +79,12 @@ public class AppUserControllerTest {
 
     @Autowired
     private InstitutionRepository institutionRepository;
+
+    @Autowired
+    private WMSOverlayRepository wmsOverlayRepository;
+
+    @Autowired
+    private ReportTemplateRepository reportTemplateRepository;
 
     @Autowired
     private UserRoleRepository userRoleRepository;
@@ -612,6 +623,153 @@ public class AppUserControllerTest {
                 .andExpect(jsonPath("$.admin").value(false))
                 .andExpect(jsonPath("$.memberZK").value(false))
                 .andExpect(jsonPath("$.roles", hasSize(1)));
+    }
+
+    @Nested
+    class ForgetMe {
+        @Test
+        public void shouldBeSecured() throws Exception {
+            ForgetUserRequest request = ForgetUserRequest.builder()
+                    .email(securityAppUser.getEmail())
+                    .password("password")
+                    .build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request)))
+                    .andExpect(status().isUnauthorized());
+
+            request = ForgetUserRequest.builder()
+                    .email("mail@mail.pl")
+                    .password("password")
+                    .build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isForbidden());
+
+            request = ForgetUserRequest.builder()
+                    .email(securityAppUser.getEmail())
+                    .password("not a password")
+                    .build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        public void shouldWork() throws Exception {
+            String email = securityAppUser.getEmail();
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
+
+        @Test
+        public void shouldWorkWithInstitution() throws Exception {
+            assertThat(institutionRepository.findAllMembers(institution.getSlug(), Institution.class), hasSize(1));
+            assertThat(institutionRepository.isMemberBySlugAndEmail(institution.getSlug(), securityAppUser.getEmail()), is(true));
+
+            String email = securityAppUser.getEmail();
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(institutionRepository.findAllMembers(institution.getSlug(), Institution.class), empty());
+            assertThat(institutionRepository.isMemberBySlugAndEmail(institution.getSlug(), securityAppUser.getEmail()), is(false));
+            assertThat(institutionRepository.isMemberBySlugAndEmail(institution.getSlug(), Long.toString(securityAppUser.getId())), is(false));
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
+
+        @Test
+        public void shouldWorkWithOverlays() throws Exception {
+            wmsOverlayRepository.save(WMSOverlay.builder()
+                    .appUser(securityAppUser)
+                    .ownerType(OverlayOwner.PERSONAL)
+                    .label("label")
+                    .url("url")
+                    .build());
+            assertThat(wmsOverlayRepository.findAllPersonal(securityAppUser.getId(), OverlayOwner.PERSONAL), hasSize(1));
+            assertThat(IterableUtils.size(wmsOverlayRepository.findAll()), is(equalTo(1)));
+
+            String email = securityAppUser.getEmail();
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(wmsOverlayRepository.findAllPersonal(securityAppUser.getId(), OverlayOwner.PERSONAL), hasSize(0));
+            assertThat(IterableUtils.size(wmsOverlayRepository.findAll()), is(equalTo(0)));
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
+
+        @Test
+        public void shouldWorkWithReports() throws Exception {
+            reportTemplateRepository.save(ReportTemplate.builder().owner(securityAppUser).build());
+            assertThat(reportTemplateRepository.findAllByOwnerEmail(securityAppUser.getEmail(), Sort.by("createdAt"), ReportTemplate.class), hasSize(1));
+            assertThat(IterableUtils.size(reportTemplateRepository.findAll()), is(equalTo(1)));
+
+            String email = securityAppUser.getEmail();
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(IterableUtils.size(reportTemplateRepository.findAll()), is(equalTo(0)));
+            assertThat(reportTemplateRepository.findAllByOwnerEmail(securityAppUser.getEmail(), Sort.by("createdAt"), ReportTemplate.class), hasSize(0));
+            assertThat(reportTemplateRepository.findAllByOwnerEmail(Long.toString(securityAppUser.getId()), Sort.by("createdAt"), ReportTemplate.class), hasSize(0));
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
+
+        @Test
+        public void shouldWorkWithInvitations() throws Exception {
+            assertThat(invitationRepository.findAllByEmail(securityAppUser.getEmail(), Invitation.class), empty());
+            invitationRepository.save(Invitation.builder()
+                    .email(securityAppUser.getEmail())
+                    .institution(institution)
+                    .status(InvitationStatus.WAITING)
+                    .token(UUID.randomUUID().toString()).build());
+
+
+            assertThat(invitationRepository.findAllByEmail(securityAppUser.getEmail(), Invitation.class), hasSize(1));
+            String email = securityAppUser.getEmail();
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(securityAppUser, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(invitationRepository.findAllByEmail(securityAppUser.getEmail(), Invitation.class), empty());
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
     }
 
     public static MailFolder getInbox(GreenMailExtension greenMail, GreenMailUser mailUser) throws FolderException {

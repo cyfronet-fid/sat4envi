@@ -39,6 +39,7 @@ public class AppUserDetailsService implements UserDetailsService {
         }
 
         return new AppUserDetails(
+                appUser.getId(),
                 appUser.getEmail(),
                 appUser.getName(),
                 appUser.getSurname(),

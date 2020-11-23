@@ -63,6 +63,7 @@ public class TestJwtUtil {
 
     private static AppUserDetails createAppUserDetails(AppUser user) {
         return new AppUserDetails(
+                user.getId(),
                 user.getEmail(),
                 user.getName(),
                 user.getSurname(),

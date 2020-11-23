@@ -19,5 +19,5 @@ public abstract class CreationAudited {
     private LocalDateTime createdAt;
 
     @CreatedBy
-    private String createdBy;
+    private Long createdBy;
 }

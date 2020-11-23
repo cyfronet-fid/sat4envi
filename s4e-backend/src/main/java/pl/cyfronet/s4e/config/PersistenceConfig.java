@@ -13,8 +13,8 @@ import java.util.Optional;
 @EnableJpaAuditing
 public class PersistenceConfig {
     @Bean
-    public AuditorAware<String> auditorAware() {
+    public AuditorAware<Long> auditorAware() {
         return () -> Optional.ofNullable(AppUserDetailsSupplier.get())
-                .map(AppUserDetails::getUsername);
+                .map(AppUserDetails::getId);
     }
 }
