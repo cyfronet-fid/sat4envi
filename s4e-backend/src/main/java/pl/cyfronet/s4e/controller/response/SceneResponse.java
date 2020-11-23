@@ -21,24 +21,30 @@ import static pl.cyfronet.s4e.bean.Schema.SCENE_SCHEMA_ARTIFACTS_KEY;
 @Builder
 public class SceneResponse {
     public interface Projection extends ProjectionWithId {
+        String getSceneKey();
         LocalDateTime getTimestamp();
         Legend getLegend();
         JsonNode getSceneContent();
+        JsonNode getMetadataContent();
     }
 
     private Long id;
     private Long productId;
-    private ZonedDateTime timestamp;
+    private String sceneKey;
     private Legend legend;
-    private Set<String> artifactNames;
+    private Set<String> artifacts;
+    private JsonNode metadataContent;
+    private ZonedDateTime timestamp;
 
     public static SceneResponse of(Long productId, Projection scene, Function<LocalDateTime, ZonedDateTime> timestampConverter) {
         return SceneResponse.builder()
                 .id(scene.getId())
                 .productId(productId)
+                .sceneKey(scene.getSceneKey())
                 .timestamp(timestampConverter.apply(scene.getTimestamp()))
                 .legend(scene.getLegend())
-                .artifactNames(getArtifactNames(scene))
+                .artifacts(getArtifactNames(scene))
+                .metadataContent(scene.getMetadataContent())
                 .build();
     }
 
