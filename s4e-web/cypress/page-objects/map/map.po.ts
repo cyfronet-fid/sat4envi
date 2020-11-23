@@ -1,8 +1,8 @@
 import { JwtTokenModal } from './map-jwt-token-modal.po';
 import { Core } from './../core.po';
-import { User, Login } from '../auth/login.po';
+import { User, Login } from '../auth/auth-login.po';
 import { SideNav } from '../settings/settings-side-nav.po';
-import { MapProducts } from './map-products.po';
+import { MapFavorities } from './map-favoritie-products.po';
 
 export class Map extends Core {
   static pageObject = {
@@ -17,7 +17,7 @@ export class Map extends Core {
 
     // Date selection
     getDateChangeBtn: () => cy.get(".timeline__changedate"),
-    getYearSelectionBtn: () => cy.get(".owl-dt-control-period-button"),
+    getYearSelectionBtn: () => cy.get(".owl-dt-control-period-button"), 
     getYearBtn: (year: number) =>
       cy.get(".owl-dt-calendar-cell-content").contains(year),
     getMonthBtn: (month: number) =>
@@ -28,6 +28,8 @@ export class Map extends Core {
       cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {timeout: 5000}),
     getHourBtnInPopup: (hour: number) =>
       cy.get(`li[data-hour="${hour < 10 ? '0' + hour : hour}:00:00"]`, {timeout: 5000}),
+    getHourBtnInPopupNumber: () => cy.get('.multiple__popup ul li'),
+    getStackedHourNumberBtn: () => cy.get('.timeline__item'),
     getStackedHourBtn: (hourStart: number, hourEnd: number) =>
       cy.get(`.timeline__item--multiple[title="${hourStart < 10 ? '0' + hourStart : hourStart}:00 - ${hourEnd < 10 ? '0' + hourEnd : hourEnd}:00"]`,
         {timeout: 5000}),
@@ -102,6 +104,11 @@ export class Map extends Core {
     Map.pageObject.getStackedHourBtn(hourStart, hourEnd).should("be.visible").click();
     Map.pageObject.getHourBtnInPopup(hourStart).click();
     return Map;
+  }
+
+  static selectStackedDataPointNumber(stackedHourNumber:number, hour:number){
+    Map.pageObject.getStackedHourNumberBtn().eq(stackedHourNumber).click();
+    Map.pageObject.getHourBtnInPopupNumber().eq(hour).click()
   }
 
   static increaseResolution() {

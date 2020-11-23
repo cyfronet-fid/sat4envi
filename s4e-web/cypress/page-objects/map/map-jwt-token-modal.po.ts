@@ -1,4 +1,4 @@
-import { User } from '../auth/login.po';
+import { User } from '../auth/auth-login.po'
 import { Core } from '../core.po';
 import promisify from 'cypress-promise';
 
@@ -8,7 +8,8 @@ export class JwtTokenModal extends Core {
       .find('input'),
     getLoadTokenBtn: () => cy.get('[data-e2e="load-jwt-token-btn"]'),
     getTokenTextarea: () => cy.get('[data-e2e="jwt-token-txt"]'),
-    getCopyToClipboardBtn: () => cy.get('[data-e2e="copy-to-clipboard"]')
+    getCopyToClipboardBtn: () => cy.get('[data-e2e="copy-to-clipboard"]'),
+    getApiManual: () => cy.get('a').contains("Przeczytaj przewodnik")
   };
 
   static authenticateAs(user: User) {
@@ -45,5 +46,17 @@ export class JwtTokenModal extends Core {
       .should('be.visible');
 
     return JwtTokenModal;
+  }
+
+  static goToApiManula(){
+      JwtTokenModal
+      .pageObject
+      .getApiManual()
+      .invoke('removeAttr', 'target')
+      .click()
+
+      cy.location('pathname').should('eq', '/howto')
+
+      return JwtTokenModal
   }
 }

@@ -1,22 +1,22 @@
 /// <reference types="Cypress" />
 
 import {InstitutionFactory} from '../../../src/app/views/settings/state/institution/institution.factory.spec';
-import {Login} from '../../page-objects/auth/login.po';
+import {Login} from '../../page-objects/auth/auth-login.po';
 import {InstitutionList} from '../../page-objects/settings/settings-institution-list.po';
 import promisify from 'cypress-promise';
 import { InstitutionSearch } from './../../page-objects/settings/settings-institution-search.po';
 
-context.skip('Settings institutions list', () => {
-  beforeEach(() => {
-    cy.fixture('users/zkAdmin.json').as('zkAdmin');
-  });
+// context.skip('Settings institutions list', () => {
+//   beforeEach(() => {
+//     cy.fixture('users/zkAdmin.json').as('zkAdmin');
+//   });
 
-  beforeEach(function () {
-    Login
-      .loginAs(this.zkAdmin)
-      .goToSettingsAs(this.zkAdmin)
-      .goToInstitutionList();
-  });
+//   beforeEach(function () {
+//     Login
+//       .loginAs(this.zkAdmin)
+//       .goToSettingsAs(this.zkAdmin)
+//       .goToInstitutionList();
+//   });
 
   // TODO: Repair errors and refactor
   // clicking on institution input provide to start page, it should stay at the same
@@ -45,13 +45,13 @@ context.skip('Settings institutions list', () => {
   //   InstitutionList.getEntries().should('have.length', 5);
   // });
 
-  it('should go to Profile', async () => {
-    const institutionName = await InstitutionList.getNthInstitutionName(0);
-    InstitutionList
-      .goToInstitutionProfile(0)
-      .changeContextTo(InstitutionSearch)
-      .shouldHaveValue(institutionName);
-  });
-});
+//   it('should go to Profile', async () => {
+//     const institutionName = await InstitutionList.getNthInstitutionName(0);
+//     InstitutionList
+//       .goToInstitutionProfile(0)
+//       .changeContextTo(InstitutionSearch)
+//       .shouldHaveValue(institutionName);
+//   });
+// });
 
 

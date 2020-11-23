@@ -40,31 +40,31 @@
         <ul class="form__list">
           <li class="form__element" class="form__element--50">
             <label for="registration-name" i18n>Imię</label>
-            <input class="form-control" formControlName="name" id="registration-name" type="text">
+            <input class="form-control" formControlName="name" id="registration-name" data-e2e="registration-name" type="text">
             <ul s4e-form-error [control]="form.controls.name"></ul>
           </li>
           <li class="form__element" class="form__element--50">
             <label for="registration-surname" i18n>Nazwisko</label>
-            <input class="form-control" formControlName="surname" id="registration-surname" type="text">
+            <input class="form-control" formControlName="surname" id="registration-surname" data-e2e="registration-surname" type="text">
             <ul s4e-form-error [control]="form.controls.surname"></ul>
           </li>
           <li class="form__element" class="form__element--clear">
             <label for="registration-login" i18n>Email</label>
-            <input class="form-control" formControlName="email" id="registration-login" autocomplete="new-password"
+            <input class="form-control" formControlName="email" id="registration-login" data-e2e="registration-email" autocomplete="new-password"
                    type="text">
             <ul s4e-form-error [control]="form.controls.email"></ul>
           </li>
 
           <li class="form__element">
             <label for="registration-password" i18n>Hasło</label>
-            <input class="form-control" formControlName="password" id="registration-password" type="password"
+            <input class="form-control" formControlName="password" id="registration-password" data-e2e="registration-password" type="password"
                    autocomplete="new-password">
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
 
           <li class="form__element">
             <label for="registration-password-repeat" i18n>Powtórz hasło</label>
-            <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat"
+            <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat" data-e2e="registration-password-repeat"
                    type="password">
             <ul s4e-form-error [control]="form.controls.passwordRepeat"></ul>
           </li>
@@ -75,6 +75,7 @@
               class="form-control"
               formControlName="domain"
               id="registration-domain"
+              data-e2e="registration-domain"
             >
               <option *ngFor="let domain of scientificDomainTypes" [value]="domain.value">
                 {{ domain.label }}
@@ -89,6 +90,7 @@
               class="form-control"
               formControlName="usage"
               id="registration-usage"
+              data-e2e="registration-usage"
             >
               <option *ngFor="let usage of appUsageTypes" [value]="usage.value">
                 {{ usage.label }}
@@ -103,6 +105,7 @@
               class="form-control"
               formControlName="country"
               id="registration-country"
+              data-e2e="registration-country"
             >
               <option *ngFor="let country of countries" [value]="country.code">
                 {{ country.name_pl }}
@@ -117,6 +120,7 @@
               class="form-control"
               formControlName="policy"
               id="registration-policy"
+              data-e2e="registration-policy"
             >
             <label for="registration-policy" i18n>
               Akceptuję <a href="https://sat4envi.imgw.pl/?page_id=506" target="_blank">politykę prywatności</a>
@@ -129,7 +133,7 @@
           </li>
 
           <li class="form__element">
-            <button class="button button--primary" type="submit">
+            <button class="button button--primary" data-e2e="btn-submit" type="submit">
               <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
               <ng-container i18n>Utwórz konto</ng-container>
             </button>

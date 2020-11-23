@@ -1,4 +1,4 @@
-<div class="dropdown__content dropdown__content--login">
+<div class="dropdown__content dropdown__content--login" data-e2e="options-dropdown">
   <div class="dropdown__header">
     <img src="/assets/images/logo_s4e_color.png" width="60" i18n-alt alt="Logo Sat4Envi"/>
   </div>
@@ -111,10 +111,10 @@
       </dd>
       <ng-template #loggedInRef>
         <dd class="dropdown__login">
-          <a routerLink="/logout" class="button button--small button--primary" i18n>Wyloguj</a>
+          <a routerLink="/logout" class="button button--small button--primary" data-e2e="logout-btn" i18n>Wyloguj</a>
         </dd>
       </ng-template>
-      <ng-container *ngIf="!userLoggedIn; else loggedInRef">
+      <ng-container *ngIf="!userLoggedIn; else loggedInRef"> 
         <dd class="dropdown__login">
           <a routerLink="/login" class="button button--small button--primary" i18n>
             Zaloguj / Zarejestruj
