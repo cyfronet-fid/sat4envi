@@ -1,59 +1,49 @@
 /// <reference types="Cypress" />
 
-import promisify from 'cypress-promise';
-import { Map } from '../../page-objects/map/map.po';
-import { Login } from '../../page-objects/auth/login.po';
-import { MapProducts } from '../../page-objects/map/map-products.po';
-import { Core } from './../../page-objects/core.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
+import { MapFavorities } from '../../page-objects/map/map-favoritie-products.po';
 
 describe('Map favorite products', () => {
-  beforeEach(function () {
-    cy.fixture('users/zkMember.json').as('zkMember');
-  });
 
-  beforeEach(function () {
-    Login.loginAs(this.zkMember);
+  context("Favorites for not logged in user", () => {
 
-    cy.wait(500).get('body').then(body => {
-      if (body.find(MapProducts.pageObject.favoritesBtnClass).length > 0) {
-        MapProducts.unselectAllFavorites();
-      }
+    before(() => {
+      cy.visit('/login')
+      MapFavorities
+        .waitForProductsAndUnselectFavorites()
+    });
+
+    it('favourites shouldn\'t be visible without authentication', () => {
+      Login.
+        goToMapWithoutLogin()
+      MapFavorities
+        .favouritesAreNotVisible();
     });
   });
 
-  it('favourites shouldn\'t be visible without authentication', () => {
-    Map
-      .logout()
-      .goTo(Login.pageObject.getGoToMapBtn, '/map/products', Map)
-      .changeContextTo(MapProducts)
-      .favouritesAreNotVisible();
-  });
-  it('Favourite tab should work', async () => {
-    MapProducts
-      .favouritesCountShouldBe(0)
-      .selectFirstAsFavorite()
-      .favouritesCountShouldBe(1);
-    const selectedProductLabel = await promisify(
-      MapProducts
-        .pageObject
-        .getProducts()
-        .first()
-        .invoke('text')
-    );
-    MapProducts
-      .goToFavourites()
-      .productsCountShouldBe(1)
-      .callAndChangeContextTo(
-        MapProducts
-          .pageObject
-          .getProducts()
-          .first()
-          .should('have.text', selectedProductLabel),
-        MapProducts
-      )
-      .unselectAllFavorites()
-      .favouritesShouldBeEmpty()
-      .callAndChangeContextTo(cy.reload(), MapProducts)
-      .isFavouriteActive();
+  context("Favorities for logged in user", () => {
+
+    beforeEach(function () {
+      cy.fixture('users/zkMember.json').as('zkMember');
+    });
+
+    beforeEach(function () {
+      cy.visit('/login')
+      Login
+        .loginAs(this.zkMember)
+    });
+
+    it("Add and remove products from the favorities", () => {
+      MapFavorities
+        .goToFavourites()
+        .favouritesCountShouldBe(0)
+        .goToProducts()
+        .selectNthAsFavorite(0)
+        .favouritesCountShouldBe(1)
+        .selectNthAsFavorite(3)
+        .favouritesCountShouldBe(2)
+        .unselectAllFavorites()
+        .favouritesCountShouldBe(0)
+    });
   });
 });

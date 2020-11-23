@@ -2,13 +2,13 @@ import { Core } from './../core.po';
 
 export class MapViews extends Core {
   static pageObject = {
-    getZkOptionsBtn: () => cy.get('[data-e2e="zk-options-btn"]'),
-    getOpenSaveViewsBtn: () => cy.get('[data-e2e="open-save-view-modal-btn"]'),
-    getOpenViewsBtn: () => cy.get('[data-e2e="open-views-modal-btn"]'),
+    getZkOptionsBtn: () => cy.get('[data-e2e="zk-options-btn"]'), 
+    getOpenSaveViewsBtn: () => cy.get('[data-e2e="open-save-view-modal-btn"]'), 
+    getOpenViewsBtn: () => cy.get('[data-e2e="open-views-modal-btn"]'), 
     getViews: () => cy.get('[data-e2e="view"]'),
-    getViewsDeleteBtns: () => cy.get('[data-e2e="view-delete-btn"]'),
-    getViewLabelInput: () => cy.get('[data-e2e="view-label"]').find('input'),
-    getAddBtn: () => cy.get('[data-e2e="add-view-btn"]'),
+    getViewsDeleteBtns: () => cy.get('[data-e2e="view-delete-btn"]'), 
+    getViewLabelInput: () => cy.get('[data-e2e="view-label"]').find('input'), 
+    getAddBtn: () => cy.get('[data-e2e="add-view-btn"]'), 
     getViewLoadBtns: () => cy.get('[data-e2e="view-load-btn"]')
   };
 
@@ -22,8 +22,6 @@ export class MapViews extends Core {
       .pageObject
       .getOpenSaveViewsBtn()
       .click({ force: true });
-
-    cy.wait(500);
 
     return MapViews;
   }
@@ -46,6 +44,7 @@ export class MapViews extends Core {
     MapViews
       .pageObject
       .getViewLabelInput()
+      .should("be.visible")
       .clear({ force: true })
       .type(label, { force: true });
 

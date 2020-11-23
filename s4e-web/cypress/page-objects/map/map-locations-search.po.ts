@@ -4,11 +4,11 @@ export class LocationsSearch extends Core {
   static pageObject = {
     getSearch: () => cy.get('[data-e2e="search-input"]'),
     getSearchResults: () => cy.get('[data-e2e="search-result"]'),
-    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'),
+    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'), 
     getSearchResultsType: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.type'),
     getSearchResultsVoivodeship: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.voivodeship'),
-    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'),
-    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]')
+    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'), 
+    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]') 
   };
 
   static type(value: string) {
@@ -107,5 +107,13 @@ export class LocationsSearch extends Core {
       .click({ force: true });
 
     return LocationsSearch;
+  }
+
+  static waitForCitiesList() {
+    cy.server()
+    cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
+    cy.wait('@getCityList').its('status').should('eq', 200)
+
+    return LocationsSearch
   }
 }
