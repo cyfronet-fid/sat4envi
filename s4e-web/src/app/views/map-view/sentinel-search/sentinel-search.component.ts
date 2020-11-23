@@ -76,6 +76,11 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.service.setLoaded(false);
+    this.service.setHovered(null);
+  }
+
+  setHovered(hovered: string | number | null) {
+    this.service.setHovered(hovered);
   }
 
   search() {

@@ -9,7 +9,7 @@ import {
 } from './sentinel-search.model';
 import {combineLatest, Observable} from 'rxjs';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {map} from 'rxjs/operators';
+import {filter, map} from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 
 @Injectable({
@@ -68,6 +68,14 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
 
   isSentinelVisible(sentinelId: string): boolean {
     return this.getVisibleSentinels().indexOf(sentinelId) >= 0;
+  }
+
+  selectHovered() {
+    return this.selectLoading()
+      .pipe(
+        filter(isLoading => !isLoading),
+        map(() => this.getEntity(this.getValue().hoveredId))
+      );
   }
 
   selectIsActiveFirst() {

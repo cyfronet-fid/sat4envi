@@ -9,6 +9,7 @@ import {SentinelSearchResult} from '../../state/sentinel-search/sentinel-search.
 export class SearchResultsComponent {
   @Input() searchResults: SentinelSearchResult[] = [];
   @Input() isLoading: boolean = false;
+
   @Input() error: any | null = null;
   @Input() isUserLoggedIn: boolean = false;
   @Output() close = new EventEmitter<void>();
@@ -21,4 +22,7 @@ export class SearchResultsComponent {
     this.forbiddenAction.emit();
     $event.preventDefault();
   }
+
+  @Output() mouseenter = new EventEmitter<string | number>();
+  @Output() mouseleave = new EventEmitter<void>();
 }

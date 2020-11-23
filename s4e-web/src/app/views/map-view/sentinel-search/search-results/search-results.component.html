@@ -19,7 +19,12 @@
     <ng-container *ngIf="!error; else errorRef">
     <span i18n>Wyniki wyszukiwania</span>
     <ul class="search-result">
-      <li *ngFor="let result of searchResults" data-test="search-result-entry">
+      <li
+        *ngFor="let result of searchResults"
+        data-test="search-result-entry"
+        (mouseenter)="mouseenter.emit(result.id)"
+        (mouseleave)="mouseleave.emit()"
+      >
         <div class="search-result__package">
           <strong class="package-name">{{result.sceneKeyShort}}</strong>
         </div>

@@ -66,4 +66,7 @@ export interface SentinelSearchState extends EntityState<SentinelSearchResult>, 
   metadataLoading: boolean;
   metadataLoaded: boolean;
   loaded: boolean;
+  showSearchResults: boolean;
+
+  hoveredId: string | number | null;
 }

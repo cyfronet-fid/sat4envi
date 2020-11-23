@@ -154,4 +154,10 @@ export class SentinelSearchService {
     this.notificationService.addGeneral({type: 'warning', duration: 10000, content: 'Zaloguj się by uzyskać dostęp do zasobu'})
     this.router.navigate(['/login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: this.routerQuery.getValue().state.url}})
   }
+
+  setHovered(resultId: string | number | null) {
+    this.store.setLoading(true);
+    this.store.update({hoveredId: resultId});
+    this.store.setLoading(false);
+  }
 }
