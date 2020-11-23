@@ -1,5 +1,5 @@
-import { RemoteConfiguration } from 'src/app/utils/initializer/config.service';
-import { environment } from './../../../../environments/environment';
+import {RemoteConfiguration} from 'src/app/utils/initializer/config.service';
+import {environment} from './../../../../environments/environment';
 import {NotificationService} from 'notifications';
 import {TileLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
@@ -7,22 +7,24 @@ import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, V
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {Layer, Tile} from 'ol/layer';
-import {TileWMS, OSM} from 'ol/source';
+import {OSM, TileWMS} from 'ol/source';
 import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {distinctUntilChanged, filter, finalize, switchMap, map} from 'rxjs/operators';
+import {distinctUntilChanged, filter, tap, map} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
-import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
-import {WKT} from 'ol/format';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
+import {Draw, Modify, Snap} from 'ol/interaction';
+import GeometryType from 'ol/geom/GeometryType';
+import {WKT} from 'ol/format';
+import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
+import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
 import BaseLayer from 'ol/layer/Base';
-
 @Component({
   selector: 's4e-map',
   templateUrl: './map.component.html',
@@ -38,20 +40,44 @@ export class MapComponent implements OnInit, OnDestroy {
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
   });
 
+  @Input()
+  set isSentinelSearch(isSentinelSearch: boolean) {
+    if (!this.map) {
+      return;
+    }
+
+    this._isSentinelSearch = isSentinelSearch;
+
+    if (!isSentinelSearch) {
+      this._clearPolygonDrawing();
+    }
+  }
+
+  private _isSentinelSearch = true;
+  private _removePolygon = false;
+
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
   private baseLayer: Layer;
   private map: Map;
   private activeScene$ = new ReplaySubject<Scene | null>(1);
   private _sentinelPolygonVectorLayer: BaseLayer;
 
+  private _polygonDrawing = {
+    layer: new VectorLayer({
+      source: new VectorSource()
+    }),
+    drawing: null,
+    polygon: null
+  };
+
   constructor(
     private _remoteConfiguration: RemoteConfiguration,
     private _loaderService: NgxUiLoaderService,
     private _notificationService: NotificationService,
     private _sessionQuery: SessionQuery,
-    private _sentinelSearchQuery: SentinelSearchQuery
-  ) {
-  }
+    private _sentinelSearchQuery: SentinelSearchQuery,
+    private _sentinelSearchService: SentinelSearchService
+  ) {}
 
   private _overlays: UIOverlay[] = [];
 
@@ -145,6 +171,37 @@ export class MapComponent implements OnInit, OnDestroy {
       .subscribe(polygonVector => this.map.addLayer(polygonVector));
 
     this.map.on('moveend', this.onMoveEnd);
+    this.map.on('click', () => {
+      if (!this._isSentinelSearch) {
+        return;
+      }
+
+      const hasDrawingLayer = this.map.getLayers().getArray()
+        .includes(this._polygonDrawing.layer);
+      if (!hasDrawingLayer) {
+        this._addPolygonDrawing();
+        return;
+      }
+
+      if (this._removePolygon) {
+        this._clearPolygonDrawing();
+        this._removePolygon = false;
+        return;
+      }
+
+      const isDrawing = this.map.getInteractions().getArray()
+        .includes(this._polygonDrawing.drawing);
+      if (isDrawing) {
+        return;
+      }
+
+      const hasPolygon = this.map.getLayers().getArray()
+        .includes(this._polygonDrawing.polygon);
+      if (!this._removePolygon && hasPolygon) {
+        this._removePolygon = true;
+        return;
+      }
+    });
     this.activeView$.pipe(untilDestroyed(this)).subscribe(view => this.setView(view));
   }
 
@@ -240,5 +297,60 @@ export class MapComponent implements OnInit, OnDestroy {
     new TileLoader(source).start$.then(() => this._loaderService.startBackground());
 
     return source;
+  }
+
+  private _addPolygonDrawing() {
+    this.map.getLayers().push(this._polygonDrawing.layer);
+    this._polygonDrawing.drawing = new Draw({
+      source: this._polygonDrawing.layer.getSource(),
+      type: GeometryType.POLYGON
+    });
+    this.map.addInteraction(this._polygonDrawing.drawing);
+    this._polygonDrawing.drawing
+      .on('drawstart', () => {
+        this._polygonDrawing.layer.getSource()
+          .forEachFeature(feature => this._polygonDrawing.layer.getSource().removeFeature(feature));
+        if (!!this._polygonDrawing.polygon) {
+          this.map.removeLayer(this._polygonDrawing.polygon);
+        }
+      });
+    this._polygonDrawing.drawing
+      .on('drawend', (event) => {
+        const polygonGeometry = event.feature.getGeometry();
+        const polygonWkt = new WKT().writeGeometry(polygonGeometry, {
+          dataProjection: 'EPSG:4326',
+          featureProjection: 'EPSG:3857'
+        });
+        this._sentinelSearchService.setFootprint(polygonWkt);
+        this._polygonDrawing.polygon = new VectorLayer({
+          source: new VectorSource({
+            features: [new WKT().readFeature(
+              polygonWkt,
+              {
+                dataProjection: 'EPSG:4326',
+                featureProjection: 'EPSG:3857'
+              }
+            )],
+          }),
+        });
+        this.map.addLayer(this._polygonDrawing.polygon);
+        this.map.removeInteraction(this._polygonDrawing.drawing)
+      });
+  }
+
+  private _clearPolygonDrawing() {
+    if (!!this._polygonDrawing.layer) {
+      this.map.removeLayer(this._polygonDrawing.layer);
+      this._polygonDrawing.layer.getSource()
+        .forEachFeature(feature => this._polygonDrawing.layer.getSource().removeFeature(feature));
+    }
+
+    if (!!this._polygonDrawing.polygon) {
+      this.map.removeLayer(this._polygonDrawing.polygon);
+    }
+
+    if (!!this._polygonDrawing.drawing) {
+      this.map.removeInteraction(this._polygonDrawing.drawing);
+    }
   }
 }

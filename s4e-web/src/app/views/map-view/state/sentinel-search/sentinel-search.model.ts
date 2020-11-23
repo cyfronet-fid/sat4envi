@@ -81,8 +81,10 @@ export interface SentinelSearchState extends EntityState<SentinelSearchResult>, 
   metadata: SentinelSearchMetadata;
   metadataLoading: boolean;
   metadataLoaded: boolean;
-  resultPagesCount: number|null;
-  resultTotalCount: number|null;
+  resultPagesCount: number | null;
+  resultTotalCount: number | null;
   loaded: boolean;
   hoveredId: string | number | null;
+  showSearchResults: boolean;
+  footprint: string | null;
 }

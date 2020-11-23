@@ -4,6 +4,7 @@ import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {Tile} from 'ol/layer';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -12,7 +13,8 @@ describe('MapComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ShareModule
+        ShareModule,
+        RouterTestingModule
       ],
       declarations: [MapComponent]
     })

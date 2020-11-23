@@ -49,6 +49,7 @@
 
 <s4e-map class="section map"
          #map
+         [isSentinelSearch]="isLinkActive('sentinel-search')"
          [overlays]="overlays$ | async"
          [activeScene]="activeScene$ | async"
          [activeView]="activeView$ | async"

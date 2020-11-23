@@ -18,7 +18,8 @@ export class SentinelSearchStore extends EntityStore<SentinelSearchState, Sentin
           params: []
         },
         sections: []
-      }
+      },
+      footprint: null
     });
   }
 
