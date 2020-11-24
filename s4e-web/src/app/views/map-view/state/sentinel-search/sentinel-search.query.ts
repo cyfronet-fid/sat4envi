@@ -89,6 +89,6 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
   }
 
   selectShowSearchResults() {
-    return this.select('showSearchResults');
+    return this._routerQuery.selectQueryParams('showSearchResults').pipe(map(showSearchResults => showSearchResults === '1'))
   }
 }

@@ -7,15 +7,15 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {createSentinelSearchResult, SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBLE_QUERY_KEY} from './sentinel-search.model';
 import {ReplaySubject, Subject} from 'rxjs';
-import {take} from 'rxjs/operators';
+import {take, toArray} from 'rxjs/operators';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
-import environment from 'src/environments/environment';
 
 describe('SentinelSearchResultQuery', () => {
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
   let routerQuery: RouterQuery;
   let queryParams$: Subject<string>;
+  let selectQueryParamsSpy;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -26,7 +26,7 @@ describe('SentinelSearchResultQuery', () => {
     store = TestBed.get(SentinelSearchStore);
     routerQuery = TestBed.get(RouterQuery);
     queryParams$ = new ReplaySubject<string>(1);
-    spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
+    selectQueryParamsSpy = spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
   });
 
   it('should create an instance', () => {
@@ -146,5 +146,14 @@ describe('SentinelSearchResultQuery', () => {
     expect(await query.selectIsActiveLast().pipe(take(1)).toPromise()).toBeFalsy();
     store.setActive(results[2].id);
     expect(await query.selectIsActiveLast().pipe(take(1)).toPromise()).toBeTruthy();
+  });
+
+  it('selectShowSearchResults', async () => {
+    const params$ = new ReplaySubject(2);
+    const promise = query.selectShowSearchResults().pipe(take(2), toArray()).toPromise()
+    queryParams$.next(undefined);
+    queryParams$.next('1');
+    expect(await promise).toEqual([false, true]);
+    expect(selectQueryParamsSpy).toHaveBeenCalledWith('showSearchResults');
   });
 });

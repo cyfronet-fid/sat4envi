@@ -6,12 +6,22 @@ import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {SentinelSearchQuery} from './sentinel-search.query';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
-import {createSentinelSearchResult, SENTINEL_SELECTED_QUERY_KEY, SENTINEL_VISIBLE_QUERY_KEY} from './sentinel-search.model';
+import {
+  createSentinelSearchResult,
+  SENTINEL_SEARCH_PARAMS_QUERY_KEY,
+  SENTINEL_SELECTED_QUERY_KEY,
+  SENTINEL_VISIBLE_QUERY_KEY
+} from './sentinel-search.model';
 import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import environment from 'src/environments/environment';
+import {FormControl, FormGroup} from '@angular/forms';
+import {of, ReplaySubject} from 'rxjs';
+import {BACK_LINK_QUERY_PARAM} from '../../../../state/session/session.service';
+import {RouterQuery} from '@datorama/akita-ng-router-store';
+import Spy = jasmine.Spy;
 
 describe('SentinelSearchResultService', () => {
   let service: SentinelSearchService;
@@ -71,14 +81,14 @@ describe('SentinelSearchResultService', () => {
   describe('getSentinels', () => {
     it('should not call http.get if query.isMetadataLoaded() is true', () => {
       store.setMetadataLoaded();
-      service.getSentinels();
+      service.getSentinels$();
       http.expectNone(`${environment.apiPrefixV1}/config/sentinel-search`);
       http.verify();
     });
 
     it('should call http and set loadings', async () => {
       const metadata = SentinelSearchMetadataFactory.build();
-      const promise = service.getSentinels();
+      const promise = service.getSentinels$().toPromise();
       const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/config/sentinel-search`});
       expect(query.isMetadataLoading()).toBeTruthy();
       r.flush(metadata);
@@ -99,13 +109,21 @@ describe('SentinelSearchResultService', () => {
 
   describe('search', () => {
     it('should work', async () => {
-      const params = {param1: 'abc'};
+      const form = new FormGroup({common: new FormControl({})});
+      form.get('common').setValue({param1: 'abc'});
+      const router = TestBed.get(Router);
+      const redirectPromise = of(null).toPromise();
+      const spyRouter = spyOn(router, 'navigate').and.returnValue(redirectPromise);
       const searchResults = SentinelSearchFactory.buildList(3);
-      const promise = service.search(params).toPromise();
+      const promise = service.search(form).toPromise();
+      await redirectPromise;
       const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search?param1=abc`});
       r.flush(searchResults);
       await promise;
-      expect(query.getValue().showSearchResults).toBeTruthy();
+      expect(spyRouter).toHaveBeenCalledWith([], {
+        queryParams: {searchParams: JSON.stringify({common: {param1: 'abc'}}), showSearchResults: '1'},
+        queryParamsHandling: 'merge'
+      });
       expect(query.getValue().loaded).toBeTruthy();
       expect(query.getValue().loading).toBeFalsy();
       expect(query.getAll()).toEqual(searchResults.map(el => createSentinelSearchResult(el)));
@@ -114,11 +132,19 @@ describe('SentinelSearchResultService', () => {
 
     it('should set errors and show notification', async () => {
       const notificationService = TestBed.get(NotificationService);
+      const router = TestBed.get(Router);
+      const redirectPromise = of(null).toPromise();
+      const spyRouter = spyOn(router, 'navigate').and.returnValue(redirectPromise);
       const spy = spyOn(notificationService, 'addGeneral').and.stub();
-      const promise = service.search({}).toPromise();
+      const promise = service.search(new FormGroup({})).toPromise();
+      await redirectPromise;
       const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search`});
       r.flush({}, {status: 400, statusText: 'Bad Request'});
       await promise.catch(() => {});
+      expect(spyRouter).toHaveBeenCalledWith([], {
+        queryParams: {searchParams: '{}', showSearchResults: '1'},
+        queryParamsHandling: 'merge'
+      });
       expect(query.getValue().loaded).toBeFalsy();
       expect(query.getValue().loading).toBeFalsy();
       expect(query.getValue().error).not.toBeNull();
@@ -132,7 +158,7 @@ describe('SentinelSearchResultService', () => {
 
     it('should clear search results', () => {
       store.set([createSentinelSearchResult(SentinelSearchFactory.build())]);
-      service.search({});
+      service.search(new FormGroup({}));
       expect(query.getAll().length).toBe(0);
     });
   });
@@ -173,10 +199,69 @@ describe('SentinelSearchResultService', () => {
   });
 
   it('clearResults', () => {
+    const router: Router = TestBed.get(Router);
     store.set(SentinelSearchFactory.buildListSearchResult(2));
-    store.update({showSearchResults: true});
+    const spy = spyOn(router, 'navigate');
+
     service.clearResults();
-    expect(query.getValue().showSearchResults).toBeFalsy();
+    expect(spy).toHaveBeenCalledWith([], {queryParamsHandling: 'merge', queryParams: {showSearchResults: undefined}})
     expect(query.getAll().length).toBe(0);
+  });
+
+  it('redirectToLoginPage', () => {
+    const router: Router = TestBed.get(Router);
+    const notificationService: NotificationService = TestBed.get(NotificationService);
+
+    const spyRouter = spyOn(router, 'navigate');
+    const spyNotification = spyOn(notificationService, 'addGeneral');
+    const spyRouterQuery = spyOn((service as any).routerQuery as RouterQuery, 'getValue').and.returnValue({state: {url: '/map/abc'}});
+    service.redirectToLoginPage();
+
+    expect(spyRouter).toHaveBeenCalledWith(['/login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: '/map/abc'}});
+    expect(spyNotification).toHaveBeenCalledWith({type: 'warning', duration: 10000, content: 'Zaloguj się by uzyskać dostęp do zasobu'});
+  });
+
+  describe('connectQueryToForm', () => {
+    let form: FormGroup;
+    let routerQuery: RouterQuery;
+    let params$: ReplaySubject<string>;
+    let selectShowSearchResults$: ReplaySubject<boolean>;
+    let spy: Spy;
+    let spySearch: Spy;
+    let searchParams: object;
+
+    beforeEach(() => {
+      form = new FormGroup({common: new FormControl({})});
+      routerQuery = TestBed.get(RouterQuery);
+      params$ = new ReplaySubject(1);
+      selectShowSearchResults$ = new ReplaySubject(1);
+      spyOn(query, 'selectShowSearchResults').and.returnValue(selectShowSearchResults$);
+      selectShowSearchResults$.next(true);
+      spy = spyOn(routerQuery, 'selectQueryParams').and.returnValue(params$);
+      spySearch = spyOn(service, 'search').and.returnValue(of(null));
+      searchParams = {common: {param1: 'abc'}};
+      params$.next(JSON.stringify(searchParams));
+    });
+
+    it('success', async () => {
+      await service.connectQueryToForm(form).toPromise()
+      expect(form.value).toEqual(searchParams)
+      expect(spySearch).toHaveBeenCalledWith(form)
+      expect(spy).toHaveBeenCalledWith(SENTINEL_SEARCH_PARAMS_QUERY_KEY);
+    });
+
+    it('broken JSON', async () => {
+      params$.next('.broken / json');
+      await service.connectQueryToForm(form).toPromise()
+      expect(form.value).toEqual({common: {}})
+      expect(spySearch).toHaveBeenCalledWith(form)
+      expect(spy).toHaveBeenCalledWith(SENTINEL_SEARCH_PARAMS_QUERY_KEY);
+    });
+
+    it('should not search if drawer is not open', async () => {
+      selectShowSearchResults$.next(false)
+      await service.connectQueryToForm(form).toPromise()
+      expect(spySearch).not.toHaveBeenCalled()
+    });
   });
 });

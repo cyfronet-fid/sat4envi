@@ -14,6 +14,7 @@ import {
 } from '../../errors/errors.model';
 import {HttpErrorHelper} from './error.helper';
 import {NotificationService} from 'notifications';
+import {BACK_LINK_QUERY_PARAM} from '../../state/session/session.service';
 
 
 @Injectable({
@@ -64,7 +65,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           type: 'error',
           content: 'Wystąpił błąd: Nie jesteś zalogowany lub twoja sesja się przedawniła'
         });
-        this._router.navigate(['login'], {queryParams: {back_link: this._backLink}});
+        this._router.navigate(['login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: this._backLink}});
         break;
       case HTTP_101_TIMEOUT:
       case HTTP_404_BAD_REQUEST:
@@ -78,7 +79,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       case HTTP_502_BAD_GATEWAY:
       case HTTP_500_INTERNAL_SERVER_ERROR:
-        this._router.navigate(['errors', error.status], {queryParams: {back_link: this._backLink}});
+        this._router.navigate(['errors', error.status], {queryParams: {[BACK_LINK_QUERY_PARAM]: this._backLink}});
         break;
       default:
         this._notificationService.addGeneral({
