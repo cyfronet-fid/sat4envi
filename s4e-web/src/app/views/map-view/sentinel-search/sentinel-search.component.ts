@@ -10,7 +10,7 @@ import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {Router} from '@angular/router';
 import {FormState} from '../../../state/form/form.model';
 import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.metadata.model';
-import {debounceTime, delay, map, switchMap} from 'rxjs/operators';
+import {debounceTime, delay, map, shareReplay, switchMap} from 'rxjs/operators';
 import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
 import {SessionQuery} from '../../../state/session/session.query';
@@ -64,14 +64,18 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
       this.query.selectSelectedSentinels().pipe(map(sentinels => sentinels.length === 0))
     ]).pipe(mapAnyTrue());
 
-    this.service.getSentinels$()
+    const componentRequirementsLoaded$ = this.service.getSentinels$()
       .pipe(
         map(metadata => this._makeFormFromMetadata(metadata)),
         switchMap((form) => this.service.connectQueryToForm(form)),
         switchMap(() => this.loading$),
         debounceTime(50),
+        shareReplay(1),
         untilDestroyed(this)
-      ).subscribe((loading) => disableEnableForm(loading, this.form));
+      )
+
+    componentRequirementsLoaded$.subscribe((loading) => disableEnableForm(loading, this.form));
+    componentRequirementsLoaded$.pipe(switchMap(() => this.service.connectQueryToActiveModal())).subscribe()
   }
 
   ngOnDestroy(): void {

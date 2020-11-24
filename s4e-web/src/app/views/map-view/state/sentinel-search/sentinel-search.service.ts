@@ -4,13 +4,13 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SentinelSearchStore} from './sentinel-search.store';
 import {
-  createSentinelSearchResult, SENTINEL_SEARCH_PARAMS_QUERY_KEY,
+  createSentinelSearchResult, SENTINEL_SEARCH_ACTIVE_ID, SENTINEL_SEARCH_PARAMS_QUERY_KEY,
   SENTINEL_SELECTED_QUERY_KEY, SENTINEL_SHOW_RESULTS_QUERY_KEY,
   SENTINEL_VISIBLE_QUERY_KEY,
   SentinelSearchResultResponse,
 } from './sentinel-search.model';
 import {SentinelSearchQuery} from './sentinel-search.query';
-import {catchError, delay, map, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, delay, filter, map, merge, pairwise, switchMap, take, tap} from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {HashMap} from '@datorama/akita';
@@ -18,12 +18,13 @@ import {NotificationService} from 'notifications';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import {ActivatedQueue} from 'src/app/utils/search/activated-queue.utils';
-import {Observable, of, throwError} from 'rxjs';
+import {combineLatest, Observable, of, throwError} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {FormGroup} from '@angular/forms';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {filterTrue} from '../../../../utils/rxjs/observable';
+import {filterNotNull, filterTrue, logIt} from '../../../../utils/rxjs/observable';
 import {BACK_LINK_QUERY_PARAM} from '../../../../state/session/session.service';
+import {ModalQuery} from '../../../../modal/state/modal.query';
 
 @Injectable({providedIn: 'root'})
 export class SentinelSearchService {
@@ -36,6 +37,7 @@ export class SentinelSearchService {
     private router: Router,
     private notificationService: NotificationService,
     private modalService: ModalService,
+    private modalQuery: ModalQuery,
     private routerQuery: RouterQuery
   ) {
     this._activatedQueue = new ActivatedQueue(this.query, this.store);
@@ -112,21 +114,43 @@ export class SentinelSearchService {
   }
 
   openModalForResult(resultId: string) {
-    this.store.setActive(resultId);
-    this.modalService.show({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+    this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: resultId}});
   }
 
   nextActive() {
     this._activatedQueue.next();
+    this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}});
   }
 
   previousActive() {
     this._activatedQueue.previous();
+    this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}});
   }
 
   clearResults() {
     this.store.set([]);
     this._clearSentinelSearchFromQuery();
+  }
+
+  connectQueryToActiveModal(): Observable<any> {
+    return of(null)
+      .pipe(
+        merge(this.routerQuery.selectQueryParams(SENTINEL_SEARCH_ACTIVE_ID)),
+        pairwise(),
+        filter(([prevResultId, curResultId]) => curResultId != null && prevResultId == null),
+        map(([prevResultId, curResultId]) => {
+          try {
+            return parseInt(curResultId);
+          } catch(e) {
+            return null;
+          }
+        }),
+        filterNotNull(),
+        tap(resultId => {
+          this.store.setActive(resultId);
+          this.modalService.show({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+        })
+      )
   }
 
   connectQueryToForm(form: FormGroup): Observable<any> {

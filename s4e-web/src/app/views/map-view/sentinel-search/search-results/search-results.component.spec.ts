@@ -52,6 +52,19 @@ describe('SearchResultsComponent', () => {
       expect(de.queryAll(By.css('[data-test="search-result-entry"]')).length).toBe(1);
     });
 
+    it('should have thumbnail', () => {
+      expect(de.query(By.css('.search-result__quicklook')).styles)
+        .toEqual({background: `url(api/v1/scenes/${result.id}/download/thumbnail)`})
+    });
+
+    it('should have empty thumbnail', () => {
+      result.image = null;
+      component.searchResults = [result];
+      fixture.detectChanges()
+      expect(de.query(By.css('.search-result__quicklook')).styles)
+        .toEqual({background: ''})
+    });
+
     it('should emit showDetails when details button is clicked', async () => {
       const showDetailsEmitted = component.showDetails.pipe(take(1)).toPromise();
       de.query(By.css('[data-test="search-result-entry"]:first-child [data-test="show-details-button"]')).nativeElement.click();
