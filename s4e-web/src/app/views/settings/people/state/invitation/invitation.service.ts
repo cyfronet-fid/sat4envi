@@ -1,17 +1,15 @@
-import { environment } from './../../../../../../environments/environment';
-import { InvitationStore } from './invitation.store';
-import { Institution } from './../../../state/institution/institution.model';
-import { NotificationService } from 'notifications';
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
-import {tap, finalize, switchMap} from 'rxjs/operators';
-import { Invitation, InvitationResendRequest } from './invitation.model';
-import { handleHttpRequest$ } from 'src/app/common/store.util';
+import {environment} from '../../../../../../environments/environment';
+import {InvitationStore} from './invitation.store';
+import {Institution} from '../../../state/institution/institution.model';
+import {NotificationService} from 'notifications';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ActivatedRouteSnapshot, Router} from '@angular/router';
+import {finalize, switchMap, tap} from 'rxjs/operators';
+import {Invitation, InvitationResendRequest} from './invitation.model';
+import {handleHttpRequest$} from 'src/app/common/store.util';
 import {Observable} from 'rxjs';
 import {SessionService} from '../../../../../state/session/session.service';
-import {InjectorModule} from '../../../../../common/injector.module';
 
 export const TOKEN_QUERY_PARAMETER = 'token';
 export const REJECTION_QUERY_PARAMETER = 'reject';
@@ -26,7 +24,8 @@ export class InvitationService {
     private _router: Router,
     private _store: InvitationStore,
     private _sessionService: SessionService
-  ) {}
+  ) {
+  }
 
   public getBy(institution: Institution): void {
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations`;
@@ -81,7 +80,7 @@ export class InvitationService {
             type: 'success'
           });
         })
-      )
+      );
   }
 
   public confirm(token: string): void {
@@ -94,7 +93,7 @@ export class InvitationService {
           content: notificationMessage,
           type: 'success'
         })),
-        switchMap(() => this._sessionService.getProfile$())
+        switchMap(() => this._sessionService.loadProfile$())
       )
       .subscribe();
   }

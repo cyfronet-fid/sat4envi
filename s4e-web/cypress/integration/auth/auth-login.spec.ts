@@ -4,7 +4,7 @@ import { Login } from '../../page-objects/auth/login.po';
 
 
 describe('Auth', () => {
-  
+
   before(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
     cy.fixture('users/zkAdmin.json').as('zkAdmin');
@@ -17,7 +17,7 @@ describe('Auth', () => {
   });
 
   context('Auth login', () => {
-    
+
     it('should login as superAdmin', function () {
       Login
         .loginAs(this.superAdmin)
@@ -55,6 +55,12 @@ describe('Auth', () => {
       Login
         .fillForm({ ...this.userToRegister, email: 'wrongFormat' })
         .errorsCountShouldBe(1);
-    })
+    });
+
+    it('should not allow login page for user with session', function () {
+      Login.loginAs(this.superAdmin)
+      cy.visit('/login')
+      cy.url().should('not.contain', '/login');
+    });
   });
 });

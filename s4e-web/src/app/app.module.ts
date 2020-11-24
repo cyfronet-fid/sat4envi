@@ -30,11 +30,16 @@ import {ErrorsModule} from './errors/errors.module';
 import {NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {LocalStorage, LOCATION} from './app.providers';
+import {ProfileLoaderService} from './state/session/session.service';
 
 registerLocaleData(localePl, 'pl');
 
 export function initializeConfiguration(loader: ConfigurationLoader): () => Promise<any> {
   return () => loader.load$();
+}
+
+export function initializeProfile(profileLoaderService: ProfileLoaderService): () => Promise<any> {
+  return () => profileLoaderService.loadProfile$().toPromise();
 }
 
 const ngxUiLoaderConfig: NgxUiLoaderConfig = {
@@ -79,6 +84,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   providers: [
     ConfigurationLoader,
     {provide: APP_INITIALIZER, useFactory: initializeConfiguration, deps: [ConfigurationLoader], multi: true},
+    {provide: APP_INITIALIZER, useFactory: initializeProfile, deps: [ProfileLoaderService], multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'},
     {provide: LocalStorage, useValue: window.localStorage},
