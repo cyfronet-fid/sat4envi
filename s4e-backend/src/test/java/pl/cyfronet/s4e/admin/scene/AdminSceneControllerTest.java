@@ -75,7 +75,7 @@ public class AdminSceneControllerTest {
                 .surname("Smith")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()

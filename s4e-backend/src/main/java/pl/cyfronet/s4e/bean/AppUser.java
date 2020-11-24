@@ -9,11 +9,13 @@ import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * If you delete user, you will also delete password_reset and email_verification entries
  */
 @Entity
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -55,9 +57,24 @@ public class AppUser extends CreationAndModificationAudited {
 
     private boolean enabled;
 
-    private boolean admin;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "authority")
+    @Singular
+    private Set<String> authorities;
 
-    private boolean eumetsatLicense;
+    public boolean addAuthority(String authority) {
+        val mutableAuthorities = new HashSet<>(authorities);
+        val out = mutableAuthorities.add(authority);
+        authorities = mutableAuthorities.stream().collect(Collectors.toUnmodifiableSet());
+        return out;
+    }
+
+    public boolean removeAuthority(String authority) {
+        val mutableAuthorities = new HashSet<>(authorities);
+        val out = mutableAuthorities.remove(authority);
+        authorities = mutableAuthorities.stream().collect(Collectors.toUnmodifiableSet());
+        return out;
+    }
 
     @Enumerated(EnumType.STRING)
     private ScientificDomain domain;

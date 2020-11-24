@@ -48,7 +48,7 @@ public class AppUserDetailsService implements UserDetailsService {
     }
 
     private Set<SimpleGrantedAuthority> getAuthorities(AppUser appUser) {
-        val sourceAuthorities = new HashSet<String>();
+        val sourceAuthorities = new HashSet<>(appUser.getAuthorities());
 
         appUser.getRoles().stream()
                 .map(this::toRole)
@@ -76,16 +76,12 @@ public class AppUserDetailsService implements UserDetailsService {
                 .mapToObj(id -> LICENSE_WRITE_AUTHORITY_PREFIX + id)
                 .forEach(sourceAuthorities::add);
 
-        boolean grantEumetsatLicense = appUser.isEumetsatLicense() || appUser.getRoles().stream()
-                        .map(UserRole::getInstitution)
-                        .anyMatch(Institution::isEumetsatLicense);
+        boolean grantEumetsatLicense = appUser.getRoles().stream()
+                .map(UserRole::getInstitution)
+                .anyMatch(Institution::isEumetsatLicense);
 
         if (grantEumetsatLicense) {
             sourceAuthorities.add("LICENSE_EUMETSAT");
-        }
-
-        if (appUser.isAdmin()) {
-            sourceAuthorities.add("ROLE_ADMIN");
         }
 
         if (appUser.getRoles().stream().map(UserRole::getInstitution).anyMatch(Institution::isZk)) {

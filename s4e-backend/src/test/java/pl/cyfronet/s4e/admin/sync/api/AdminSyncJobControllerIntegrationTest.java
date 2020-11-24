@@ -35,7 +35,7 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 })
 @Slf4j
 public class AdminSyncJobControllerIntegrationTest {
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -73,7 +73,7 @@ public class AdminSyncJobControllerIntegrationTest {
                 .surname(faker.name().lastName())
                 .password("{noop}" + faker.internet().password())
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
     }
 
@@ -128,7 +128,7 @@ public class AdminSyncJobControllerIntegrationTest {
     @Order(5)
     public void showJob() throws Exception {
         SyncJob syncJob = syncJobStore.find("test-1").get();
-        await().until(() -> syncJob.getState(), is(equalTo(SyncJob.State.FINISHED)));
+        await().until(syncJob::getState, is(equalTo(SyncJob.State.FINISHED)));
 
         mockMvc.perform(get(ADMIN_PREFIX + "/sync-jobs/{name}", "test-1")
                 .with(jwtBearerToken(admin, objectMapper)))

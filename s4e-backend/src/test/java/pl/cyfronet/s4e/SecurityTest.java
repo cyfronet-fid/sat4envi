@@ -91,7 +91,7 @@ public class SecurityTest {
     // 404
     @Test
     public void shouldReturn404ForAuthenticatedAndAuthorizedUserNoResource() throws Exception {
-        securityAppUser.setAdmin(true);
+        securityAppUser.addAuthority("ROLE_ADMIN");
         appUserRepository.save(securityAppUser);
         DeleteUserRoleRequest userRoleRequest = DeleteUserRoleRequest.builder()
                 .email("profile@email")

@@ -18,7 +18,6 @@ import pl.cyfronet.s4e.controller.request.CreateUserRoleRequest;
 import pl.cyfronet.s4e.controller.request.DeleteUserRoleRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
-import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.service.SlugService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,9 +36,6 @@ public class UserRoleControllerTest {
 
     @Autowired
     private AppUserRepository appUserRepository;
-
-    @Autowired
-    private UserRoleRepository userRoleRepository;
 
     @Autowired
     private InstitutionRepository institutionRepository;
@@ -67,12 +63,12 @@ public class UserRoleControllerTest {
                 .surname("Profile")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         String test_institution = "Test Institution";
         slugInstitution = slugService.slugify(test_institution);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(test_institution)
                 .slug(slugInstitution)
                 .build());

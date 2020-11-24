@@ -59,7 +59,7 @@ class AdminPropertyControllerTest {
                 .surname("Smith")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         user = appUserRepository.save(AppUser.builder()
@@ -72,7 +72,7 @@ class AdminPropertyControllerTest {
     }
 
     @Nested
-    public class Put {
+    public class PutEndpoint {
         private final String URL = Constants.ADMIN_PREFIX + "/properties/{name}";
 
         @Test
@@ -132,7 +132,7 @@ class AdminPropertyControllerTest {
     }
 
     @Nested
-    class List {
+    class ListEndpoint {
         private final String URL = Constants.ADMIN_PREFIX + "/properties";
 
         @BeforeEach
@@ -170,7 +170,7 @@ class AdminPropertyControllerTest {
     }
 
     @Nested
-    class Delete {
+    class DeleteEndpoint {
         private static final String URL = Constants.ADMIN_PREFIX + "/properties/{name}";
 
         @BeforeEach

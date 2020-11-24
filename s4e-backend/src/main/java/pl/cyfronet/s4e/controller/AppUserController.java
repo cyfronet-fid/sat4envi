@@ -18,7 +18,6 @@ import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.response.UserMeResponse;
 import pl.cyfronet.s4e.controller.response.UserRoleResponse;
@@ -135,6 +134,8 @@ public class AppUserController {
     }
 
     public interface UserMeProjection {
+        Long getId();
+
         String getEmail();
 
         String getName();
@@ -142,6 +143,8 @@ public class AppUserController {
         boolean getAdmin();
 
         String getSurname();
+
+        List<String> getAuthorities();
 
         Set<UserRoleResponse> getRoles();
 
@@ -164,7 +167,7 @@ public class AppUserController {
         AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
         val projection = appUserService.findByEmailWithRolesAndGroupsAndInstitution(appUserDetails.getUsername(), UserMeProjection.class)
                 .orElseThrow(() -> new NotFoundException("User not found for email: '" + appUserDetails.getUsername() + "'"));
-        return appUserMapper.projectionToMeResponse(projection);
+        return appUserMapper.projectionToMeResponse(projection, appUserDetails);
     }
 
     private void validateRecaptcha(HttpServletRequest request) throws RecaptchaException {

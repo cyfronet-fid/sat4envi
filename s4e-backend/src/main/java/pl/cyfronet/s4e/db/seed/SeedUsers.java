@@ -121,7 +121,7 @@ public class SeedUsers implements ApplicationRunner {
                         .surname("Surname7")
                         .password(passwordEncoder.encode("adminPass20"))
                         .enabled(true)
-                        .admin(true)
+                        .authority("ROLE_ADMIN")
                         .domain(nextDomain())
                         .usage(nextUsage())
                         .country(nextCountry())

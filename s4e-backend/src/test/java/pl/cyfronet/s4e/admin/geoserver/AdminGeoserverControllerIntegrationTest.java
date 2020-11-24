@@ -29,7 +29,7 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @IntegrationTest
 @AutoConfigureMockMvc
 class AdminGeoserverControllerIntegrationTest {
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     @Autowired
     private GeoServerOperations geoServerOperations;
@@ -76,7 +76,7 @@ class AdminGeoserverControllerIntegrationTest {
                 .surname(faker.name().lastName())
                 .password("{noop}" + faker.internet().password())
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         for (String workspace : geoServerOperations.listWorkspaces()) {

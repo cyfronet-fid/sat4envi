@@ -72,7 +72,7 @@ public class OverlayControllerTest {
     public void beforeEach() {
         testDbHelper.clean();
 
-        superAdmin = appUserRepository.save(InvitationHelper.userBuilder().admin(true).build());
+        superAdmin = appUserRepository.save(InvitationHelper.userBuilder().authority("ROLE_ADMIN").build());
 
         institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
 

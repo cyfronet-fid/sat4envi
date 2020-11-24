@@ -8,12 +8,14 @@ import java.util.Set;
 @Getter
 @Setter
 public class UserMeResponse {
+    Long id;
     String email;
     String name;
     String surname;
 
     boolean admin;
     boolean memberZK;
+    Set<String> authorities;
 
     Set<UserRoleResponse> roles;
 
