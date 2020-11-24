@@ -3,7 +3,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import environment from 'src/environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import {switchMap, tap} from 'rxjs/operators';
+import {SessionService} from '../../state/session/session.service';
 
 @Injectable({providedIn: 'root'})
 export class RemoteConfiguration {
@@ -30,13 +31,14 @@ export class RemoteConfiguration {
 export class ConfigurationLoader {
   constructor(
     private _http: HttpClient,
-    private _remoteConfiguration: RemoteConfiguration
+    private _remoteConfiguration: RemoteConfiguration,
   ) {}
 
   load$(): Promise<any> {
     const url = `${environment.apiPrefixV1}/config`;
     return this._http.get<IRemoteConfiguration>(url)
-      .pipe(tap(configuration => this._remoteConfiguration.set(configuration)))
-      .toPromise();
+      .pipe(
+        tap(configuration => this._remoteConfiguration.set(configuration)),
+      ).toPromise();
   }
 }

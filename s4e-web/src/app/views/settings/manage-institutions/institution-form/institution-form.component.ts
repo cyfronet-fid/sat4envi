@@ -1,4 +1,4 @@
-import {InvitationService} from './../../people/state/invitation/invitation.service';
+import {InvitationService} from '../../people/state/invitation/invitation.service';
 import {IBreadcrumb} from '../../breadcrumb/breadcrumb.model';
 import {BreadcrumbService} from '../../breadcrumb/breadcrumb.service';
 import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
@@ -149,7 +149,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
         switchMap((updatedInstitution: Institution) =>
           (adminsEmailsList.length > 0) ? forkJoin(adminsEmailsList.map(email => this._invitationService.send(updatedInstitution.slug, email, true))) : of([])
         ),
-        switchMap(() => this._sessionService.getProfile$())
+        switchMap(() => this._sessionService.loadProfile$())
       ).subscribe();
   }
 
