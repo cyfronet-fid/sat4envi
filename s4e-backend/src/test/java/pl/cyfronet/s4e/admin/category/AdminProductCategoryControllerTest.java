@@ -55,7 +55,7 @@ public class AdminProductCategoryControllerTest {
                 .surname("Smith")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         user = appUserRepository.save(AppUser.builder()

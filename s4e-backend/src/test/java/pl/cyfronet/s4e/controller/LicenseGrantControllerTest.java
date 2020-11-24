@@ -129,7 +129,7 @@ public class LicenseGrantControllerTest {
                 .surname("Smith")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
     }
 

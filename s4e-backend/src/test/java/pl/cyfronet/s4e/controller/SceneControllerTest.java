@@ -336,7 +336,7 @@ public class SceneControllerTest {
                         .surname("Profile")
                         .password("{noop}password")
                         .enabled(true)
-                        .eumetsatLicense(true)
+                        .authority("LICENSE_EUMETSAT")
                         .build());
 
                 product1.setAccessType(Product.AccessType.EUMETSAT);

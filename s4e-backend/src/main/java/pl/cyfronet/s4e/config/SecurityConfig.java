@@ -66,6 +66,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )).permitAll()
 
                 .mvcMatchers(GET, prefix("/users/me")).authenticated()
+                .mvcMatchers(prefix("/users/authority/{authority}"))
+                    .access("hasRole('ADMIN') || hasAuthority('OP_GRANT_' + #authority)")
+
                 .mvcMatchers(POST, prefix(
                         "/register",
                         "/resend-registration-token-by-email",
@@ -99,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(GET, prefix("/institutions/{institution}"))
                     .access("hasRole('ADMIN') || @ish.isMember(#institution)")
                 .mvcMatchers(DELETE, prefix("/institutions/{institution}"))
-                    .access("hasRole('ADMIN')")
+                    .access("hasRole('ADMIN') || (hasAuthority('OP_INSTITUTION_DELETE') && @ish.isAdmin(#institution))")
                 .mvcMatchers(prefix("/institutions/{institution}", "/institutions/{institution}/**"))
                     .access("hasRole('ADMIN') || @ish.isAdmin(#institution)")
                 .mvcMatchers(GET, prefix("/institutions")).authenticated()

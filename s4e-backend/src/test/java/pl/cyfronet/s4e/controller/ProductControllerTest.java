@@ -206,7 +206,7 @@ public class ProductControllerTest {
         class ByAdmin {
             @BeforeEach
             public void beforeEach() {
-                appUser.setAdmin(true);
+                appUser.addAuthority("ROLE_ADMIN");
                 appUserRepository.save(appUser);
             }
 

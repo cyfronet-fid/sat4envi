@@ -12,7 +12,7 @@ import pl.cyfronet.s4e.config.MapStructCentralConfig;
 import pl.cyfronet.s4e.controller.AppUserController;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
 import pl.cyfronet.s4e.controller.response.UserMeResponse;
-import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
+import pl.cyfronet.s4e.security.AppUserDetails;
 
 @Mapper(config = MapStructCentralConfig.class)
 @Slf4j
@@ -24,8 +24,8 @@ public abstract class AppUserMapper {
     @Mapping(target = "password", qualifiedByName = "password")
     @Mapping(target = "roles", ignore = true)
     @Mapping(target = "enabled", ignore = true)
-    @Mapping(target = "admin", ignore = true)
-    @Mapping(target = "eumetsatLicense", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    @Mapping(target = "authority", ignore = true)
     @Mapping(target = "preferences", ignore = true)
     public abstract AppUser requestToPreEntity(RegisterRequest registerRequest);
 
@@ -34,11 +34,29 @@ public abstract class AppUserMapper {
         return passwordEncoder.encode(password);
     }
 
-    @Mapping(target = "memberZK", source = "name", qualifiedByName = "memberZK")
-    public abstract UserMeResponse projectionToMeResponse(AppUserController.UserMeProjection projection);
+
+    @Mapping(target = "email", source = "projection.email")
+    @Mapping(target = "name", source = "projection.name")
+    @Mapping(target = "surname", source = "projection.surname")
+    @Mapping(target = "admin", source = "userDetails", qualifiedByName = "admin")
+    @Mapping(target = "memberZK", source = "userDetails", qualifiedByName = "memberZK")
+    @Mapping(target = "authorities", source = "projection.authorities")
+    public abstract UserMeResponse projectionToMeResponse(
+            AppUserController.UserMeProjection projection,
+            AppUserDetails userDetails
+    );
+
+    @Named("admin")
+    protected boolean admin(AppUserDetails userDetails) {
+        return containsAuthority(userDetails, "ROLE_ADMIN");
+    }
 
     @Named("memberZK")
-    protected boolean memberZK(String name) {
-        return AppUserDetailsSupplier.get().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MEMBER_ZK"));
+    protected boolean memberZK(AppUserDetails userDetails) {
+        return containsAuthority(userDetails, "ROLE_MEMBER_ZK");
+    }
+
+    private boolean containsAuthority(AppUserDetails userDetails, String authority) {
+        return userDetails.getAuthorities().contains(new SimpleGrantedAuthority(authority));
     }
 }

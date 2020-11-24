@@ -35,7 +35,6 @@ public class InvitationHelper {
                 .name(name)
                 .surname(name)
                 .password(password)
-                .admin(false)
                 .enabled(true);
     }
 

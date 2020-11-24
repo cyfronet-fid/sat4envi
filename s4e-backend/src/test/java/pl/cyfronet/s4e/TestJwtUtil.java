@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonSerializer;
-import lombok.val;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
@@ -17,7 +16,6 @@ import pl.cyfronet.s4e.security.SecurityConstants;
 import javax.servlet.http.Cookie;
 import java.security.KeyPair;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static pl.cyfronet.s4e.security.SecurityConstants.JWT_AUTHORITIES_CLAIM;
@@ -64,15 +62,13 @@ public class TestJwtUtil {
     }
 
     private static AppUserDetails createAppUserDetails(AppUser user) {
-        val authorities = new HashSet<SimpleGrantedAuthority>();
-        if (user.isAdmin()) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
         return new AppUserDetails(
                 user.getEmail(),
                 user.getName(),
                 user.getSurname(),
-                authorities,
+                user.getAuthorities().stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toUnmodifiableSet()),
                 user.getPassword(),
                 user.isEnabled());
     }

@@ -5,13 +5,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppRole;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.UserRole;
 import pl.cyfronet.s4e.controller.request.AddMemberRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
 import pl.cyfronet.s4e.data.repository.InstitutionRepository;
@@ -29,9 +34,6 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @BasicTest
 @AutoConfigureMockMvc
 public class InstitutionControllerTest {
-    public static final String PROFILE_EMAIL = "get@profile.com";
-    public static final String ADMIN_EMAIL = "admin@profile.com";
-
     @Autowired
     private AppUserRepository appUserRepository;
 
@@ -57,14 +59,23 @@ public class InstitutionControllerTest {
     private AppUser instAdmin;
     private AppUser admin;
 
-    private String testInstitution = "Test Institution";
+    private final String testInstitution = "Test Institution";
     private String slugInstitution;
+    private Institution institution;
 
     @BeforeEach
     public void beforeEach() {
         testDbHelper.clean();
         appUser = appUserRepository.save(AppUser.builder()
-                .email(PROFILE_EMAIL)
+                .email("user@mail.pl")
+                .name("Get")
+                .surname("Profile")
+                .password("{noop}password")
+                .enabled(true)
+                .build());
+
+        instAdmin = appUserRepository.save(AppUser.builder()
+                .email("instAdmin@mail.pl")
                 .name("Get")
                 .surname("Profile")
                 .password("{noop}password")
@@ -72,32 +83,30 @@ public class InstitutionControllerTest {
                 .build());
 
         admin = appUserRepository.save(AppUser.builder()
-                .email(ADMIN_EMAIL)
+                .email("admin@mail.pl")
                 .name("Get")
                 .surname("Profile")
                 .password("{noop}password")
                 .enabled(true)
-                .admin(true)
-                .build());
-
-        instAdmin = appUserRepository.save(AppUser.builder()
-                .email("noop@mail.pl")
-                .name("Get")
-                .surname("Profile")
-                .password("{noop}password")
-                .enabled(true)
+                .authority("ROLE_ADMIN")
                 .build());
 
         slugInstitution = slugService.slugify(testInstitution);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institution = institutionRepository.save(Institution.builder()
                 .name(testInstitution)
                 .slug(slugInstitution)
                 .build());
 
-        UserRole userRole = UserRole.builder().role(AppRole.INST_ADMIN).user(instAdmin).institution(institution).build();
-        UserRole userRole2 = UserRole.builder().role(AppRole.INST_MEMBER).user(instAdmin).institution(institution).build();
-        userRoleRepository.save(userRole);
-        userRoleRepository.save(userRole2);
+        userRoleRepository.save(UserRole.builder()
+                .role(AppRole.INST_MEMBER)
+                .user(instAdmin)
+                .institution(institution)
+                .build());
+        userRoleRepository.save(UserRole.builder()
+                .role(AppRole.INST_ADMIN)
+                .user(instAdmin)
+                .institution(institution)
+                .build());
     }
 
     @AfterEach
@@ -157,7 +166,7 @@ public class InstitutionControllerTest {
 
         String testInstitutionPAK = "Test Institution PAK";
         String slugInstitutionPAK = slugService.slugify(testInstitutionPAK);
-        institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionPAK)
                 .slug(slugInstitutionPAK)
                 .build());
@@ -180,7 +189,7 @@ public class InstitutionControllerTest {
 
         String testInstitutionZK_MAZ = "Test Institution ZK - Mazowieckie";
         String slugInstitutionZK_MAZ = slugService.slugify(testInstitutionZK_MAZ);
-        Institution institution2 = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionZK_MAZ)
                 .slug(slugInstitutionZK_MAZ)
                 .parent(institution)
@@ -188,7 +197,7 @@ public class InstitutionControllerTest {
 
         String testInstitutionPAK = "Test Institution PAK";
         String slugInstitutionPAK = slugService.slugify(testInstitutionPAK);
-        institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionPAK)
                 .slug(slugInstitutionPAK)
                 .build());
@@ -204,7 +213,7 @@ public class InstitutionControllerTest {
     public void shouldGetInstitutionForAdmin() throws Exception {
         String testInstitutionZK = "Test Institution ZK";
         String slugInstitutionZK = slugService.slugify(testInstitutionZK);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionZK)
                 .slug(slugInstitutionZK)
                 .build());
@@ -221,7 +230,7 @@ public class InstitutionControllerTest {
     public void shouldGetInstitutionForMember() throws Exception {
         String testInstitutionZK = "Test Institution ZK";
         String slugInstitutionZK = slugService.slugify(testInstitutionZK);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionZK)
                 .slug(slugInstitutionZK)
                 .build());
@@ -238,12 +247,12 @@ public class InstitutionControllerTest {
     public void shouldReturnUnauthorizedForInstitution() throws Exception {
         String testInstitutionZK = "Test Institution ZK";
         String slugInstitutionZK = slugService.slugify(testInstitutionZK);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionZK)
                 .slug(slugInstitutionZK)
                 .build());
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{intitution}", slugInstitutionZK)
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitutionZK)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
@@ -259,12 +268,12 @@ public class InstitutionControllerTest {
     public void shouldReturnForbiddenForInstitution() throws Exception {
         String testInstitutionZK = "Test Institution ZK";
         String slugInstitutionZK = slugService.slugify(testInstitutionZK);
-        Institution institution = institutionRepository.save(Institution.builder()
+        institutionRepository.save(Institution.builder()
                 .name(testInstitutionZK)
                 .slug(slugInstitutionZK)
                 .build());
 
-        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{intitution}", slugInstitutionZK)
+        mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitutionZK)
                 .with(jwtBearerToken(appUser, objectMapper)))
                 .andExpect(status().isForbidden());
     }
@@ -284,7 +293,7 @@ public class InstitutionControllerTest {
         public void shouldReturnEmptyIfNoMembers() throws Exception {
             String testInstitutionZK = "Test Institution ZK";
             String slugInstitutionZK = slugService.slugify(testInstitutionZK);
-            Institution institution = institutionRepository.save(Institution.builder()
+            institutionRepository.save(Institution.builder()
                     .name(testInstitutionZK)
                     .slug(slugInstitutionZK)
                     .build());
@@ -386,10 +395,38 @@ public class InstitutionControllerTest {
 
     @Nested
     class DeleteInstitution {
-        @Test
-        public void shouldWorkChild() throws Exception {
+        @BeforeEach
+        public void beforeEach() {
+            AppUser instAdminDeleter = appUserRepository.save(AppUser.builder()
+                    .email("instAdminDeleter@mail.pl")
+                    .name("Get")
+                    .surname("Profile")
+                    .password("{noop}password")
+                    .enabled(true)
+                    .authority("OP_INSTITUTION_DELETE")
+                    .build());
+
+            userRoleRepository.save(UserRole.builder()
+                    .role(AppRole.INST_MEMBER)
+                    .user(instAdminDeleter)
+                    .institution(institution)
+                    .build());
+            userRoleRepository.save(UserRole.builder()
+                    .role(AppRole.INST_ADMIN)
+                    .user(instAdminDeleter)
+                    .institution(institution)
+                    .build());
+        }
+
+        private AppUser user(String name) {
+            return appUserRepository.findByEmail(name + "@mail.pl").get();
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = { "admin" })
+        public void shouldAllowChild(String user) throws Exception {
             String childSlugInstitution = slugService.slugify(testInstitution+" child");
-            Institution institution = institutionRepository.save(Institution.builder()
+            institutionRepository.save(Institution.builder()
                     .name(testInstitution+" child")
                     .slug(childSlugInstitution)
                     .parent(institutionRepository.findBySlug(slugInstitution, Institution.class).get())
@@ -397,7 +434,7 @@ public class InstitutionControllerTest {
 
             mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .with(jwtBearerToken(admin, objectMapper)))
+                    .with(jwtBearerToken(user(user), objectMapper)))
                     .andExpect(status().isOk());
 
             mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
@@ -411,10 +448,37 @@ public class InstitutionControllerTest {
                     .andExpect(status().isNotFound());
         }
 
-        @Test
-        public void shouldWorkParent() throws Exception {
+        @ParameterizedTest
+        @ValueSource(strings = { "instAdminDeleter" })
+        public void shouldForbidChild(String user) throws Exception {
             String childSlugInstitution = slugService.slugify(testInstitution+" child");
-            Institution institution = institutionRepository.save(Institution.builder()
+            institutionRepository.save(Institution.builder()
+                    .name(testInstitution+" child")
+                    .slug(childSlugInstitution)
+                    .parent(institutionRepository.findBySlug(slugInstitution, Institution.class).get())
+                    .build());
+
+            mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(user(user), objectMapper)))
+                    .andExpect(status().isForbidden());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", childSlugInstitution)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(jwtBearerToken(admin, objectMapper)))
+                    .andExpect(status().isOk());
+        }
+
+        @ParameterizedTest
+        @ValueSource(strings = { "admin", "instAdminDeleter" })
+        public void shouldAllowParent(String user) throws Exception {
+            String childSlugInstitution = slugService.slugify(testInstitution+" child");
+            institutionRepository.save(Institution.builder()
                     .name(testInstitution+" child")
                     .slug(childSlugInstitution)
                     .parent(institutionRepository.findBySlug(slugInstitution, Institution.class).get())
@@ -422,7 +486,7 @@ public class InstitutionControllerTest {
 
             mockMvc.perform(delete(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .with(jwtBearerToken(admin, objectMapper)))
+                    .with(jwtBearerToken(user(user), objectMapper)))
                     .andExpect(status().isOk());
 
             mockMvc.perform(get(API_PREFIX_V1 + "/institutions/{institution}", slugInstitution)

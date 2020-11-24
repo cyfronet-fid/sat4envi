@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.AppUser;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
@@ -33,6 +34,12 @@ public interface AppUserRepository extends CrudRepository<AppUser, Long> {
             "LEFT JOIN FETCH r.institution i " +
             "WHERE u.email = :email")
     <T> Optional<T> findByEmailWithRolesAndInstitution(String email, Class<T> projection);
+
+    @Query("SELECT u " +
+            "FROM AppUser u " +
+            "LEFT JOIN u.authorities ua " +
+            "WHERE ua = :authority")
+    <T> List<T> findAllByAuthority(String authority, Class<T> projection);
 
     boolean existsByEmail(String email);
 }

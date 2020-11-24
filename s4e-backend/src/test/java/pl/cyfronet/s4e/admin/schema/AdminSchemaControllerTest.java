@@ -35,7 +35,7 @@ public class AdminSchemaControllerTest {
     private static final String S1_SCENE_SCHEMA_PATH = "classpath:schema/Sentinel-1.scene.v1.json";
     private static final String S2_SCENE_SCHEMA_PATH = "classpath:schema/Sentinel-2.scene.v1.json";
 
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     @Autowired
     private AppUserRepository appUserRepository;
@@ -73,7 +73,7 @@ public class AdminSchemaControllerTest {
                 .surname(faker.name().lastName())
                 .password("{noop}" + faker.internet().password())
                 .enabled(true)
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .build());
     }
 

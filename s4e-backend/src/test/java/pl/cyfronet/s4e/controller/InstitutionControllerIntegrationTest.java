@@ -24,7 +24,6 @@ import pl.cyfronet.s4e.data.repository.InstitutionRepository;
 import pl.cyfronet.s4e.data.repository.UserRoleRepository;
 import pl.cyfronet.s4e.properties.FileStorageProperties;
 import pl.cyfronet.s4e.service.SlugService;
-import pl.cyfronet.s4e.service.UserRoleService;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
@@ -55,9 +54,6 @@ public class InstitutionControllerIntegrationTest {
     private UserRoleRepository userRoleRepository;
 
     @Autowired
-    private UserRoleService userRoleService;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     @Autowired
@@ -80,7 +76,7 @@ public class InstitutionControllerIntegrationTest {
 
     private AppUser appUser;
     private String parentSlug;
-    private String testInstitution = "Test Institution - ZKPL";
+    private final String testInstitution = "Test Institution - ZKPL";
 
     @BeforeEach
     public void beforeEach() {
@@ -91,7 +87,7 @@ public class InstitutionControllerIntegrationTest {
                 .name("Get")
                 .surname("Profile")
                 .password("{noop}password")
-                .admin(true)
+                .authority("ROLE_ADMIN")
                 .enabled(true)
                 .build());
         //1st lvl institution
