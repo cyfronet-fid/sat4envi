@@ -43,7 +43,7 @@
           </div>
           <div class="search-result__actions">
             <button data-test="show-details-button" class="show-details" (click)="showDetails.emit(result)"></button>
-            <a [attr.href]="result.url" target="_blank" class="download-link download"></a>
+            <a [attr.href]="result.url" (click)="isUserLoggedIn || interceptDownload($event)" target="_blank" class="download-link download"></a>
           </div>
         </section>
       </li>
@@ -51,7 +51,9 @@
     </ul>
     </ng-container>
     <ng-template #errorRef>
-      <div class="error" data-test="error-container" i18n>Wystąpił błąd podczas pobierania wyników, <a href="javascript:void" data-test="reload" (click)="reload.emit()">kliknij by ponówić próbę</a></div>
+      <div class="error" data-test="error-container" i18n>Wystąpił błąd podczas pobierania wyników,
+        <a href="javascript:undefined" data-test="reload" (click)="reload.emit()">kliknij by ponówić próbę</a>
+      </div>
     </ng-template>
   </section>
 

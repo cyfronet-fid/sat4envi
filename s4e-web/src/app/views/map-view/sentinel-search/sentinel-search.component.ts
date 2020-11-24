@@ -10,10 +10,10 @@ import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {Router} from '@angular/router';
 import {FormState} from '../../../state/form/form.model';
 import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.metadata.model';
-import {HashMap} from '@datorama/akita';
-import {debounceTime, delay, filter, map} from 'rxjs/operators';
-import {logIt, mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
+import {debounceTime, delay, map, switchMap} from 'rxjs/operators';
+import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
+import {SessionQuery} from '../../../state/session/session.query';
 
 @Component({
   selector: 's4e-sentinel-search',
@@ -34,12 +34,14 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   loadingMetadata$: Observable<boolean>;
   showSearchResults$: Observable<boolean> = this.query.selectShowSearchResults();
   error$: Observable<any>;
+  isLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
 
 
   constructor(private fm: AkitaNgFormsManager<FormState>,
               private router: Router,
               private query: SentinelSearchQuery,
               private service: SentinelSearchService,
+              private sessionQuery: SessionQuery,
               private modalService: ModalService) {
   }
 
@@ -62,21 +64,14 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
       this.query.selectSelectedSentinels().pipe(map(sentinels => sentinels.length === 0))
     ]).pipe(mapAnyTrue());
 
-    combineLatest([
-      this.loading$,
-      this.sentinels$.pipe(map(metadata => {
-        this.form = new AngularFormGroup({
-          common: new AngularFormControl({})
-        });
-        metadata.sections.forEach(sentinel => this.form.setControl(sentinel.name, new AngularFormControl({})));
-        return this.form;
-      }))
-    ]).pipe(debounceTime(50), untilDestroyed(this))
-      .subscribe(
-      ([loading, form]) => disableEnableForm(loading, form)
-    )
-
-    this.service.getSentinels();
+    this.service.getSentinels$()
+      .pipe(
+        map(metadata => this._makeFormFromMetadata(metadata)),
+        switchMap((form) => this.service.connectQueryToForm(form)),
+        switchMap(() => this.loading$),
+        debounceTime(50),
+        untilDestroyed(this)
+      ).subscribe((loading) => disableEnableForm(loading, this.form));
   }
 
   ngOnDestroy(): void {
@@ -88,8 +83,7 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const query: HashMap<any> = Object.values(this.form.value).reduce((prev, current) => Object.assign(prev, current), {});
-    this.service.search(query);
+    this.service.search(this.form).subscribe();
   }
 
   openSearchResultModal(result: SentinelSearchResult) {
@@ -98,5 +92,18 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
 
   clearResults() {
     this.service.clearResults();
+  }
+
+  redirectToLoginPage() {
+    this.service.redirectToLoginPage();
+  }
+
+  private _makeFormFromMetadata(metadata: SentinelSearchMetadata): AngularFormGroup {
+    const form = new AngularFormGroup({
+      common: new AngularFormControl({})
+    });
+    metadata.sections.forEach(sentinel => form.setControl(sentinel.name, new AngularFormControl({})));
+    this.form = form;
+    return form;
   }
 }

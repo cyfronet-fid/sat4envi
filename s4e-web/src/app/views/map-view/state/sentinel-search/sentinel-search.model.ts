@@ -1,12 +1,13 @@
-import { environment } from './../../../../../environments/environment';
-import {ActiveState, EntityState, HashMap} from '@datorama/akita';
+import {environment} from '../../../../../environments/environment';
+import {ActiveState, EntityState} from '@datorama/akita';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 
 export const SENTINEL_VISIBLE_QUERY_KEY = 'visible_sent';
 export const SENTINEL_SELECTED_QUERY_KEY = 'selected_sent';
+export const SENTINEL_SHOW_RESULTS_QUERY_KEY = 'showSearchResults';
+export const SENTINEL_SEARCH_PARAMS_QUERY_KEY = 'searchParams';
 
 export interface SentinelSearchResultMetadata {
-  [key: string]: string;
   format: string;
   ingestion_time: string;
   polarisation: string;
@@ -18,6 +19,8 @@ export interface SentinelSearchResultMetadata {
   sensing_time: string;
   sensor_mode: string;
   spacecraft: string;
+
+  [key: string]: string;
 }
 
 /**
@@ -63,5 +66,4 @@ export interface SentinelSearchState extends EntityState<SentinelSearchResult>, 
   metadataLoading: boolean;
   metadataLoaded: boolean;
   loaded: boolean;
-  showSearchResults: boolean;
 }

@@ -6,8 +6,7 @@ import {Observable} from 'rxjs';
 import {SentinelSearchResult} from '../../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
 import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search.service';
-import { SentinelSearchStore } from '../../state/sentinel-search/sentinel-search.store';
-import { ActivatedQueue } from 'src/app/utils/search/activated-queue.utils';
+import {SessionQuery} from '../../../../state/session/session.query';
 
 @Component({
   selector: 's4e-search-result-modal',
@@ -22,7 +21,8 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   constructor(
     modalService: ModalService,
     private _sentinelSearchService: SentinelSearchService,
-    private _sentinelSearchQuery: SentinelSearchQuery
+    private _sentinelSearchQuery: SentinelSearchQuery,
+    private _sessionQuery: SessionQuery
   ) {
     super(modalService, SENTINEL_SEARCH_RESULT_MODAL_ID);
   }
@@ -33,10 +33,6 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
     this.isLast$ = this._sentinelSearchQuery.selectIsActiveLast();
   }
 
-  download() {
-
-  }
-
   previousResult() {
     this._sentinelSearchService.previousActive();
   }
@@ -45,5 +41,14 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
     this._sentinelSearchService.nextActive();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
+
+  interceptDownload($event: MouseEvent) {
+    this.dismiss();
+    if (!this._sessionQuery.isLoggedIn()) {
+      $event.preventDefault();
+      this._sentinelSearchService.redirectToLoginPage();
+    }
+  }
 }

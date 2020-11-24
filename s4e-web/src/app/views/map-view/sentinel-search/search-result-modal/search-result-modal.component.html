@@ -28,7 +28,7 @@
   </div>
   <div class="s4e-modal-footer">
     <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Zamknij</button>
-    <a [attr.href]="(searchResult$ | async)?.url" target="_blank" (click)="dismiss()"
+    <a [attr.href]="(searchResult$ | async)?.url" target="_blank" (click)="interceptDownload($event)"
        class="button button--secondary button--small" type="button" i18n>Pobierz Plik</a>
   </div>
 </s4e-generic-modal>
