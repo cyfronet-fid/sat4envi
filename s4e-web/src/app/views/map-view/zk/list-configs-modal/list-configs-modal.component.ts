@@ -55,5 +55,9 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
     this.dismiss();
   }
 
-  sendTo(configuration: ViewConfiguration) {}
+  sendTo(configuration: ViewConfiguration) {
+    this.mapService.updateStoreByView(configuration.configuration);
+    this.dismiss();
+    this.configurationService.setActive(configuration.uuid);
+  }
 }

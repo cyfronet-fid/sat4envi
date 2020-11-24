@@ -31,7 +31,7 @@ import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {delay, filter, map, switchMap, take, tap} from 'rxjs/operators';
+import {delay, filter, finalize, map, switchMap, take, tap} from 'rxjs/operators';
 import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
@@ -40,6 +40,7 @@ import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-temp
 import {ReportTemplateQuery} from './zk/state/report-templates/report-template.query';
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
 import {ReportTemplate} from './zk/state/report-templates/report-template.model';
+import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
 
 
 @Component({
@@ -110,7 +111,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private modalService: ModalService,
     private viewConfigurationQuery: ViewConfigurationQuery,
     private reportTemplateQuery: ReportTemplateQuery,
-    private reportTemplateStore: ReportTemplateStore
+    private reportTemplateStore: ReportTemplateStore,
+    private viewConfigurationService: ViewConfigurationService
   ) {}
 
   ngOnInit(): void {
@@ -164,6 +166,16 @@ export class MapViewComponent implements OnInit, OnDestroy {
       .pipe(
         untilDestroyed(this),
         switchMap(() => this.mapService.connectStoreToRouter())
+      )
+      .subscribe();
+
+    this.viewConfigurationQuery.selectLoading()
+      .pipe(
+        filter(isLoading => !isLoading),
+        map(() => this.viewConfigurationQuery.getActive()),
+        filter(config => !!config),
+        switchMap(() => this._openShareViewModal$()),
+        tap(() => this.viewConfigurationService.setActive(null))
       )
       .subscribe();
 
@@ -258,24 +270,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openShareViewModal() {
-    const createUrl = (query) => this.router.createUrlTree([], {queryParams: query});
-    const serializeUrl = (query) => this.router.serializeUrl(createUrl(query));
-    const mapData$ = this.mapComponent
-      .getMapData()
-      .pipe(switchMap(data => resizeImage(data.image, 400, 247)));
-    const path$ = this.mapQuery
-      .selectQueryParamsFromStore()
-      .pipe(
-        take(1),
-        map(query => serializeUrl(query))
-      );
-    combineLatest(mapData$, path$)
-      .subscribe(([mapData, path]) => this.modalService.show<ConfigurationModal>({
-        id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
-        mapImage: mapData,
-        configurationUrl: path
-      }));
-    this.toggleZKOptions(false);
+    this._openShareViewModal$().subscribe();
   }
 
   viewChanged($event: ViewPosition) {
@@ -339,5 +334,28 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   decreaseResolution() {
     this.productService.moveResolution(1);
+  }
+
+  private _openShareViewModal$() {
+    const createUrl = (query) => this.router.createUrlTree([], {queryParams: query});
+    const serializeUrl = (query) => this.router.serializeUrl(createUrl(query));
+    const mapData$ = this.mapComponent
+      .getMapData()
+      .pipe(switchMap(data => resizeImage(data.image, 400, 247)));
+    const path$ = this.mapQuery
+      .selectQueryParamsFromStore()
+      .pipe(
+        take(1),
+        map(query => serializeUrl(query))
+      );
+    return combineLatest(mapData$, path$)
+      .pipe(
+        tap(([mapData, path]) => this.modalService.show<ConfigurationModal>({
+          id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
+          mapImage: mapData,
+          configurationUrl: path
+        })),
+        finalize(() => this.toggleZKOptions(false))
+      );
   }
 }
