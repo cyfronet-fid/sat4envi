@@ -7,7 +7,7 @@ import { InstitutionProfile } from '../../page-objects/settings/settings-institu
 import promisify from 'cypress-promise';
 import { InstitutionFactory } from '../../../src/app/views/settings/state/institution/institution.factory.spec';
 
-context('Settings institution profile', () => {
+context.skip('Settings institution profile', () => {
   beforeEach(() => {
     cy.fixture('users/zkAdmin.json').as('zkAdmin');
   });

@@ -9,21 +9,29 @@
   <nav
     class="navigation"
   >
-    <div class="logo">
-    </div>
-    <header class="navigation__institution">
+    <a routerLink="/settings">
+      <div class="logo"></div>
+    </a>
+    <header *ngIf="hasAnyAdminInstitution$ | async" class="navigation__institution">
       <span>Wybrana instytucja</span>
-      <p *ngIf="showInstitutions$ | async">Straż pożarna OHP</p>
-      <a [routerLink]="['./institutions']"
-         queryParamsHandling="merge"
-         i18n>Zmień</a>
+      <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)">
+        {{ (activeInstitution$ | async)?.name }}
+      </p>
+      <a *ngIf="!(isAdminOfOneInstitution$ | async)"
+        routerLink="/settings/institutions"
+         i18n
+      >
+        {{
+          !!(activeInstitution$ | async)
+            ? 'Zmień'
+            : 'Wybierz'
+        }}
+      </a>
     </header>
     <ul class="navigation__list">
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
+      <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
           data-e2e="institutions">
-        <a [routerLink]="['./institutions']"
-           queryParamsHandling="merge"
-           i18n>Lista instytucji</a>
+        <a routerLink="/settings/institutions" i18n>Lista instytucji</a>
       </li>
       <li routerLinkActive="active" data-e2e="profile">
         <a
@@ -47,21 +55,30 @@
     <ul class="navigation__list">
       <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
           data-e2e="institutions">
-        <a [routerLink]="['./institutions']"
-           queryParamsHandling="merge"
-           i18n>Lista instytucji</a>
+        <a *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)"
+          routerLink="/settings/institutions"
+           i18n
+           (click)="isMobileSidebarOpen = false"
+        >Lista instytucji</a>
       </li>
       <li routerLinkActive="active" data-e2e="profile">
         <a
           [routerLink]="['./profile']"
           queryParamsHandling="merge"
           i18n
+          (click)="isMobileSidebarOpen = false"
         >
           Twój profil
         </a>
       </li>
       <li>
-        <button [routerLink]="['/map/products']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
+        <button
+          [routerLink]="['/map/products']"
+          i18n
+          class="button button--borderPrimary button--small"
+        >
+          Wróć do mapy
+        </button>
       </li>
       <li>
         <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>

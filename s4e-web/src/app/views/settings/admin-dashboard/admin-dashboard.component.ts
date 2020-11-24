@@ -29,18 +29,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.isInstitutionActive$
-      .pipe(
-        untilDestroyed(this),
-        filter(isActive => !isActive),
-        skip(1)
-      )
-      .subscribe(() => this.selectInstitution(null));
-
-    if (environment.hmr) {
-      const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;
-      this.searchValue = !!searchResult ? searchResult.name : '';
-    }
+    this.searchValue = '';
   }
 
   searchForInstitutions(partialInstitutionName: string) {

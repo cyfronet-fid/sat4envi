@@ -52,7 +52,7 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     return new FormGroup<InvitationForm>({
       email: new FormControl<string>(
         !!this.invitation ? this.invitation.email : null,
-        Validators.required
+        [Validators.required, Validators.email]
       ),
       forAdmin: new FormControl<boolean>(false)
     });

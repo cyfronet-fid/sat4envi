@@ -90,18 +90,4 @@ describe('AdminDashboardComponent', () => {
       }
     }
   }));
-
-  it('should disable buttons when institution param is not known', fakeAsync( () => {
-    activatedRoute.queryParamMap.next(convertToParamMap({}));
-    tick();
-    fixture.detectChanges();
-
-    const tiles = de.queryAll(By.directive(TileComponent));
-    for (let tile of tiles) {
-      const groupsBtn = tile.query(By.css('.panel__footer .button'));
-      if (groupsBtn) {
-        expect(groupsBtn.nativeElement.disabled).toBeTruthy();
-      }
-    }
-  }));
 });

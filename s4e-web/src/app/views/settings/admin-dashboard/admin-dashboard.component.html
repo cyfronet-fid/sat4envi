@@ -31,9 +31,7 @@
       <p i18n tile-description>Lista wszystkich instytucji. W tym miejscu możesz je edytować.</p>
       <button
         routerLink="/settings/institutions"
-        queryParamsHandling="merge"
         class="button button--secondary button--small"
-        [disabled]="!(isInstitutionActive$ | async)"
         footer-navigation
       >
         Zarządzaj

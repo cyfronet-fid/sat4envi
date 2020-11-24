@@ -6,24 +6,12 @@ import {InstitutionQuery} from './state/institution/institution.query';
 
 export function multipleInstitutionAdminDashboardMatcher(url: UrlSegment[]) {
   const institutionQuery = InjectorModule.Injector.get(InstitutionQuery);
-  const settingsRoutes = InjectorModule.Injector.get(BreadcrumbService).getMainRoutes();
-
-  const redirectToManyInstitutionsDashboard = (isDashboardUrl(url) || isEmptyUrl(url))
-    && institutionQuery.getAdministrationInstitutions().length > 1;
-  if (!redirectToManyInstitutionsDashboard) {
+  const isMultipleInstitutionDashboard = institutionQuery.getAdministrationInstitutions().length > 1
+    && (isDashboardUrl(url) || isEmptyUrl(url));
+  if (!isMultipleInstitutionDashboard) {
     return null;
   }
 
-  // set default breadcrumb
-  const breadcrumbService: BreadcrumbService = InjectorModule.Injector.get(BreadcrumbService);
-  const adminDashboardRoute = settingsRoutes
-    .reduce((routes, route) => routes = [...routes, route, ...route.children], [])
-    .find(route => !!route.data && route.data.isAdminDashboard);
-  breadcrumbService.defaultRoute = !!adminDashboardRoute
-    ? adminDashboardRoute
-    : breadcrumbService.defaultRoute;
-
-  // redirect
   const lastUrlSegment = url[0];
   const nextUrl = isEmptyUrl(url)
     && new UrlSegment('dashboard', {})
@@ -33,23 +21,12 @@ export function multipleInstitutionAdminDashboardMatcher(url: UrlSegment[]) {
 
 export function singleInstitutionAdminDashboardMatcher(url: UrlSegment[]) {
   const institutionQuery = InjectorModule.Injector.get(InstitutionQuery);
-  const settingsRoutes = InjectorModule.Injector.get(BreadcrumbService).getMainRoutes();
-
   const administrativeInstitutions = institutionQuery.getAdministrationInstitutions();
   const redirectToSingleInstitutionDashboard = (isDashboardUrl(url) || isEmptyUrl(url))
     && administrativeInstitutions.length === 1;
   if (!redirectToSingleInstitutionDashboard) {
     return null;
   }
-
-  // Set default dashboard
-  const breadcrumbService: BreadcrumbService = InjectorModule.Injector.get(BreadcrumbService);
-  const managerDashboardRoute = settingsRoutes
-    .reduce((routes, route) => routes = [...routes, route, ...route.children], [])
-    .find(route => !!route.data && 'isAdminDashboard' in route.data && !route.data.isAdminDashboard);
-  breadcrumbService.defaultRoute = !!managerDashboardRoute
-    ? managerDashboardRoute
-    : breadcrumbService.defaultRoute;
 
   // redirect
   const lastUrlSegment = url[0];
@@ -62,6 +39,7 @@ export function singleInstitutionAdminDashboardMatcher(url: UrlSegment[]) {
 function isDashboardUrl(url: UrlSegment[]) {
   const lastUrlSegment = url[0];
   const isOneSegmentUrl = url.length === 1;
+
   return !!lastUrlSegment
     && isOneSegmentUrl
     && lastUrlSegment.path === 'dashboard';

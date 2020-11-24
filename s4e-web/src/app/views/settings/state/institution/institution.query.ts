@@ -19,7 +19,7 @@ export class InstitutionQuery extends QueryEntity<InstitutionState, Institution>
 
   public selectHasOnlyOneAdministrationInstitution() {
     return this.selectAdministrationInstitutions$()
-      .pipe(filter(insitutions => insitutions.length === 1));
+      .pipe(map(insitutions => insitutions.length === 1));
   }
   public selectAdministrationInstitutions$(): Observable<Institution[]> {
     return this.selectAll()

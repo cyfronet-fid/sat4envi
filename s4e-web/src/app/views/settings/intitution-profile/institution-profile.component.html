@@ -1,9 +1,6 @@
 <ul class="content__tabs">
-  <li class="active">
+  <li class="active" routerLink="/settings/institution" queryParamsHandling="merge">
     Profil instytucji
-  </li>
-  <li>
-    <a href="">Osoby w instytucji</a>
   </li>
 </ul>
 <header class="content__header">
@@ -67,9 +64,9 @@
         <button
           class="button button--secondary button--small"
           [routerLink]="['/settings/people']"
-          [queryParams]="{'institution': (activeInstitution$ | async).slug}"
+          queryParamsHandling="merge"
         >
-          Osoby w tej instytucji
+          Zarządzaj ludźmi
         </button>
       </ng-container>
     </ng-container>

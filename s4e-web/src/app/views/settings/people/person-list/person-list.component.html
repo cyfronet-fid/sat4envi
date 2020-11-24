@@ -1,6 +1,8 @@
 <ul class="content__tabs">
   <li>
-    <a href="">Profil instytucji</a>
+    <a routerLink="/settings/institution" queryParamsHandling="merge">
+      Profil instytucji
+    </a>
   </li>
   <li class="active">
     Osoby w instytucji
@@ -25,7 +27,7 @@
   <ng-container search-label i18n>Szukaj ludzi:</ng-container>
   <ng-container description>
     W tym miejscu masz możliwość edytowania, dodawania i usuwania osób,
-    które mają dostęp do zasobów ustalonych dla Urzędu Miasta Kraków
+    które mają dostęp do zasobów ustalonych dla {{ (activeInstitution$ | async)?.name }}
   </ng-container>
   <ng-container table-header>
     <th i18n>Imię i nazwisko</th>
@@ -45,6 +47,7 @@
         [checked]="isAdmin(user)"
       />
     </td>
+    <td *ngIf="isInvitation(user)"></td>
     <td class="text--center">
       <ng-container *ngIf="isInvitation(user)">
         <button

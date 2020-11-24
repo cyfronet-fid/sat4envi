@@ -21,7 +21,8 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
     router: Router,
     _sessionQuery: SessionQuery,
     private _sessionService: SessionService,
-    private _notificationService: NotificationService
+    private _notificationService: NotificationService,
+    private _router: Router
   ) {
     super(fm, router, _sessionQuery, 'resetPassword');
   }
@@ -52,8 +53,14 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
     }
   }
 
-  reset() {
+  async reset() {
     this.form.reset();
     this._sessionService.clearError();
+    await this._router.navigate(
+      ['/settings/profile'],
+      {
+        queryParamsHandling: 'merge'
+      }
+    );
   }
 }

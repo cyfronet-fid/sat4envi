@@ -5,7 +5,7 @@ import promisify from 'cypress-promise';
 import { Login } from '../../page-objects/auth/login.po';
 import { UserProfile } from '../../page-objects/settings/settings-user-profile.po';
 
-context('Settings user profile', () => {
+context.skip('Settings user profile', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
@@ -17,11 +17,11 @@ context('Settings user profile', () => {
       .goToUserProfile();
   });
 
-  it('should display and navigate to change password', function () {
-    UserProfile
-      .userDetailsShouldContain(this.zkMember.email)
-      .goToPasswordChange();
-  });
+  // it.skip('should display and navigate to change password', function () {
+  //   UserProfile
+  //     .userDetailsShouldContain(this.zkMember.email)
+  //     .goToPasswordChange();
+  // });
   it('should display and navigate to institutions', function () {
     UserProfile
       .goToNthMemberInstitution(0)

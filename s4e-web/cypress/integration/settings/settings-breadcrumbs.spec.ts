@@ -3,7 +3,9 @@ import { AdminDashboard } from './../../page-objects/settings/settings-dashboard
 import { Login } from '../../page-objects/auth/login.po';
 import { Breadcrumbs } from '../../page-objects/settings/settings-breadcrumbs.po';
 
-context('Breadcrumbs', () => {
+// IMPORTANT!!! Breadcrumbs functionality have been changed to manual one!!!
+// Will be skipped until reparation of it
+context.skip('Breadcrumbs', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
     cy.fixture('users/zkAdmin.json').as('zkAdmin');

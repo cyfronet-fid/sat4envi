@@ -37,6 +37,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this._personQuery.selectError(),
     this._invitationQuery.selectError()
   );
+  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery
+    .selectActive$(this._activatedRoute);
 
   private _institution$ = this._institutionsSearchResultsQuery
     .selectActive$(this._activatedRoute)
