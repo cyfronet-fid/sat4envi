@@ -92,7 +92,7 @@ class _SentinelSearchFactory extends Factory.Factory<SentinelSearchResultRespons
       productId: Factory.each(i => i),
       timestamp: '2020-06-25T22:45:26.576Z',
       footprint: 'POLYGON((20.602945 46.652897,17.222746 47.056656,17.563738 48.554222,21.041603 48.14983,20.602945 46.652897))',
-      artifacts: ['metadata', 'manifest', 'checksum', 'RGBs_8b', 'RGB_16b', 'quicklook', 'product_archive'],
+      artifacts: ['thumbnail', 'metadata', 'manifest', 'checksum', 'RGBs_8b', 'RGB_16b', 'quicklook', 'product_archive'],
       sceneKey: 'Sentinel-1/SLC_/2020-02-01/S1A_IW_SLC__1SDV_20200201T042809_20200201T042837_031054_039147_B63E.scene',
       metadataContent: {
         format: 'GeoTiff',

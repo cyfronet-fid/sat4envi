@@ -17,6 +17,7 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   searchResult$: Observable<SentinelSearchResult>;
   isFirst$: Observable<boolean>;
   isLast$: Observable<boolean>;
+  xclicked = () => this.dismiss();
 
   constructor(
     modalService: ModalService,
@@ -44,11 +45,19 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   ngOnDestroy(): void {
   }
 
-  interceptDownload($event: MouseEvent) {
-    this.dismiss();
+  interceptDownload($event: MouseEvent, dismiss: boolean = true) {
+    if (dismiss) {
+      this.dismiss();
+    }
+
     if (!this._sessionQuery.isLoggedIn()) {
       $event.preventDefault();
       this._sentinelSearchService.redirectToLoginPage();
     }
+  }
+
+  dismiss(returnValue?: void) {
+    this._sentinelSearchService.openModalForResult(null);
+    super.dismiss(returnValue);
   }
 }

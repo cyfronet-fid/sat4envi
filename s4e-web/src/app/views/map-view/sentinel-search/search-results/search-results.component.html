@@ -29,9 +29,10 @@
           <strong class="package-name">{{result.sceneKeyShort}}</strong>
         </div>
         <section class="search-result__content">
-          <div class="search-result__quicklook" (click)="showDetails.emit(result)">
-            <img *ngIf="result.image" [attr.src]="result.image">
-            <strong>Brak podglądu</strong>
+          <div class="search-result__quicklook"
+               [ngStyle]="{'background': result.image ? ('url(' + result.image + ')') : ''}"
+               (click)="showDetails.emit(result)">
+            <strong *ngIf="!result.image">Brak podglądu</strong>
           </div>
           <div class="search-result__details">
             <span class="search-result__timestamp">{{result.timestamp}}</span>
