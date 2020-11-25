@@ -31,4 +31,7 @@
                     (close)="clearResults()"
                     (forbiddenAction)="redirectToLoginPage()"
                     (showDetails)="openSearchResultModal($event)"
-                    [searchResults]="searchResults$ | async"></s4e-search-results>
+                    [searchResults]="searchResults$ | async"
+                    (mouseenter)="setHovered($event)"
+                    (mouseleave)="setHovered(null)"
+></s4e-search-results>

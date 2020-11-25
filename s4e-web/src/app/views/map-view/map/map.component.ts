@@ -13,12 +13,15 @@ import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {distinctUntilChanged, finalize, switchMap} from 'rxjs/operators';
+import {distinctUntilChanged, filter, finalize, switchMap, map} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
-import {MapQuery} from '../state/map/map.query';
-import {MapStore} from '../state/map/map.store';
+import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
+import {WKT} from 'ol/format';
+import VectorSource from 'ol/source/Vector';
+import VectorLayer from 'ol/layer/Vector';
+import BaseLayer from 'ol/layer/Base';
 
 @Component({
   selector: 's4e-map',
@@ -34,16 +37,19 @@ export class MapComponent implements OnInit, OnDestroy {
     centerCoordinates: environment.projection.coordinates,
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
   });
+
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
   private baseLayer: Layer;
   private map: Map;
   private activeScene$ = new ReplaySubject<Scene | null>(1);
+  private _sentinelPolygonVectorLayer: BaseLayer;
 
   constructor(
     private _remoteConfiguration: RemoteConfiguration,
     private _loaderService: NgxUiLoaderService,
     private _notificationService: NotificationService,
     private _sessionQuery: SessionQuery,
+    private _sentinelSearchQuery: SentinelSearchQuery
   ) {
   }
 
@@ -107,6 +113,36 @@ export class MapComponent implements OnInit, OnDestroy {
         this.overlays = overlays;
         this.updateLayers(gr);
       });
+
+    this._sentinelSearchQuery.selectHovered()
+      .pipe(
+        untilDestroyed(this),
+        filter(hovered => !!hovered || !!this._sentinelPolygonVectorLayer),
+        filter(hovered => {
+          if (!hovered) {
+            this.map.removeLayer(this._sentinelPolygonVectorLayer);
+            this._sentinelPolygonVectorLayer = null;
+          }
+
+          return !!hovered;
+        }),
+        map(hovered => new WKT().readFeature(
+          hovered.footprint,
+          {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+          }
+        )),
+        map(polygonFeature => {
+          this._sentinelPolygonVectorLayer = new VectorLayer({
+            source: new VectorSource({
+              features: [polygonFeature],
+            }),
+          });
+          return this._sentinelPolygonVectorLayer;
+        })
+      )
+      .subscribe(polygonVector => this.map.addLayer(polygonVector));
 
     this.map.on('moveend', this.onMoveEnd);
     this.activeView$.pipe(untilDestroyed(this)).subscribe(view => this.setView(view));
