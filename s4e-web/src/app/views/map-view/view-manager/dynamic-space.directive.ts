@@ -4,11 +4,10 @@ import {Directive, Input, ElementRef, Renderer2} from '@angular/core';
   selector: '[s4eDynamicSpace]'
 })
 export class DynamicSpaceDirective {
-  @Input('s4eDynamicSpace')
-  set mimicElement(element: ElementRef) {
-    const mimicElementHeight = !!element && !!element.nativeElement && element.nativeElement.offsetHeight || null;
-    const newHeightInPx = `${mimicElementHeight}px`;
-    this._renderer.setStyle(this._self.nativeElement, 'height', newHeightInPx);
+  @Input('resize')
+  set mimicElement(height: number) {
+    height = !height || height < 0 ? 0 : height;
+    this._renderer.setStyle(this._self.nativeElement, 'height', `${height}px`);
   }
 
   constructor(
