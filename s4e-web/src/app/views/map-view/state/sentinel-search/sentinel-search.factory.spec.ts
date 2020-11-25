@@ -88,7 +88,7 @@ export const SentinelSearchMetadataFactory = Factory.makeFactory<SentinelSearchM
 class _SentinelSearchFactory extends Factory.Factory<SentinelSearchResultResponse> {
   constructor() {
     super({
-      id: Factory.each(i => `scene-${i}`),
+      id: Factory.each(i => i),
       productId: Factory.each(i => i),
       timestamp: '2020-06-25T22:45:26.576Z',
       footprint: 'POLYGON((20.602945 46.652897,17.222746 47.056656,17.563738 48.554222,21.041603 48.14983,20.602945 46.652897))',

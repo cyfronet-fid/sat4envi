@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 import {FormState} from '../../../state/form/form.model';
 import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.metadata.model';
 import {debounceTime, delay, map, shareReplay, switchMap} from 'rxjs/operators';
-import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
+import {logIt, mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
 import {SessionQuery} from '../../../state/session/session.query';
 
@@ -35,6 +35,9 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   showSearchResults$: Observable<boolean> = this.query.selectShowSearchResults();
   error$: Observable<any>;
   isLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
+  resultPagesCount$ = this.query.select('resultPagesCount');
+  resultTotalCount$ = this.query.select('resultTotalCount');
+  currentPage$ = this.query.selectCurrentPage();
 
 
   constructor(private fm: AkitaNgFormsManager<FormState>,
@@ -67,15 +70,24 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
     const componentRequirementsLoaded$ = this.service.getSentinels$()
       .pipe(
         map(metadata => this._makeFormFromMetadata(metadata)),
+        shareReplay(1)
+      )
+
+    componentRequirementsLoaded$
+      .pipe(
         switchMap((form) => this.service.connectQueryToForm(form)),
         switchMap(() => this.loading$),
         debounceTime(50),
-        shareReplay(1),
         untilDestroyed(this)
       )
+      .subscribe((loading) => disableEnableForm(loading, this.form));
 
-    componentRequirementsLoaded$.subscribe((loading) => disableEnableForm(loading, this.form));
-    componentRequirementsLoaded$.pipe(switchMap(() => this.service.connectQueryToActiveModal())).subscribe()
+    componentRequirementsLoaded$
+      .pipe(
+        debounceTime(50),
+        switchMap(() => this.service.connectQueryToActiveModal()),
+        untilDestroyed(this)
+      ).subscribe()
   }
 
   ngOnDestroy(): void {
@@ -114,5 +126,9 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
     metadata.sections.forEach(sentinel => form.setControl(sentinel.name, new AngularFormControl({})));
     this.form = form;
     return form;
+  }
+
+  changePage(pageIndex: number) {
+    this.service.search(this.form, pageIndex, false).subscribe();
   }
 }

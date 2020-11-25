@@ -1,7 +1,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {SearchResultsComponent} from './search-results.component';
 import {MapModule} from '../../map.module';
-import {take} from 'rxjs/operators';
+import {take, toArray} from 'rxjs/operators';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -37,13 +37,13 @@ describe('SearchResultsComponent', () => {
   it('should display loading', () => {
     component.isLoading = true;
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.loading.loading--results')).length).not.toBe(0)
+    expect(de.queryAll(By.css('.loading.loading--results')).length).not.toBe(0);
   });
 
   describe('results', () => {
-    let result: SentinelSearchResult
+    let result: SentinelSearchResult;
     beforeEach(() => {
-      result = SentinelSearchFactory.buildSearchResult()
+      result = SentinelSearchFactory.buildSearchResult();
       component.searchResults = [result];
       fixture.detectChanges();
     });
@@ -54,21 +54,21 @@ describe('SearchResultsComponent', () => {
 
     it('should have thumbnail', () => {
       expect(de.query(By.css('.search-result__quicklook')).styles)
-        .toEqual({background: `url(api/v1/scenes/${result.id}/download/thumbnail)`})
+        .toEqual({background: `url(api/v1/scenes/${result.id}/download/thumbnail)`});
     });
 
     it('should have empty thumbnail', () => {
       result.image = null;
       component.searchResults = [result];
-      fixture.detectChanges()
+      fixture.detectChanges();
       expect(de.query(By.css('.search-result__quicklook')).styles)
-        .toEqual({background: ''})
+        .toEqual({background: ''});
     });
 
     it('should emit showDetails when details button is clicked', async () => {
       const showDetailsEmitted = component.showDetails.pipe(take(1)).toPromise();
       de.query(By.css('[data-test="search-result-entry"]:first-child [data-test="show-details-button"]')).nativeElement.click();
-      expect(await showDetailsEmitted).toEqual(result)
+      expect(await showDetailsEmitted).toEqual(result);
     });
 
     it('download link should have result.url as href', () => {
@@ -86,29 +86,83 @@ describe('SearchResultsComponent', () => {
   it('should emit close when clicking back button', async () => {
     const closeEmitted = component.close.pipe(take(1)).toPromise();
     de.query(By.css('[data-test="back-button"]')).nativeElement.click();
-    expect(await closeEmitted).toBeUndefined()
+    expect(await closeEmitted).toBeUndefined();
   });
 
   it('should emit close when clicking close button', async () => {
     const closeEmitted = component.close.pipe(take(1)).toPromise();
     de.query(By.css('[data-test="close-button"]')).nativeElement.click();
-    expect(await closeEmitted).toBeUndefined()
+    expect(await closeEmitted).toBeUndefined();
   });
 
   describe('error', () => {
     beforeEach(() => {
       component.error = {__general__: ['some error']};
-      fixture.detectChanges()
+      fixture.detectChanges();
     });
 
     it('should emit reload when clicking close button', async () => {
       const reloadEmitted = component.reload.pipe(take(1)).toPromise();
       de.query(By.css('[data-test="reload"]')).nativeElement.click();
-      expect(await reloadEmitted).toBeUndefined()
+      expect(await reloadEmitted).toBeUndefined();
     });
 
     it('should display error', () => {
       expect(de.query(By.css('[data-test="error-container"]'))).toBeTruthy();
     });
-  })
+  });
+
+  describe('pagination', () => {
+    let results: SentinelSearchResult[];
+
+    beforeEach(() => {
+      results = SentinelSearchFactory.buildListSearchResult(100);
+      component.searchResults = results.slice(0, 25);
+      component.totalCount = results.length;
+      component.currentPage = 0;
+      component.resultPagesCount = 4;
+      fixture.detectChanges();
+    });
+
+    it('should work', () => {
+      expect(de.query(By.css('.pagination'))).not.toBeUndefined();
+    });
+
+    it('should have 4 pages + prev & next', () => {
+      expect(de.queryAll(By.css('.pagination > li')).length).toBe(6);
+    });
+
+    it('clicking on page should emit changePage', async () => {
+      const changePage$ = component.changePage.asObservable().pipe(take(4), toArray()).toPromise();
+      de.queryAll(By.css('.pagination > li'))[1].query(By.css('a')).nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[2].query(By.css('a')).nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[3].query(By.css('a')).nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[4].query(By.css('a')).nativeElement.click();
+      expect(await changePage$).toEqual([0, 1, 2, 3]);
+    });
+
+    it('prev should be disabled on first page', async() => {
+      const changePage$ = component.changePage.asObservable().pipe(take(1)).toPromise();
+      const prevA = de.query(By.css('.pagination > li:first-child > a'))
+      expect(prevA.classes.disabled).toBeTruthy();
+      prevA.nativeElement.click();
+      component.currentPage = 1;
+      fixture.detectChanges();
+      prevA.nativeElement.click();
+      expect(await changePage$).toEqual(0);
+    });
+
+    it('next should be disabled on last page', async () => {
+      component.currentPage = 3;
+      fixture.detectChanges();
+      const changePage$ = component.changePage.asObservable().pipe(take(1)).toPromise();
+      const nextA = de.query(By.css('.pagination > li:last-child > a'))
+      expect(nextA.classes.disabled).toBeTruthy();
+      nextA.nativeElement.click();
+      component.currentPage = 2;
+      fixture.detectChanges();
+      nextA.nativeElement.click();
+      expect(await changePage$).toEqual(3);
+    });
+  });
 });

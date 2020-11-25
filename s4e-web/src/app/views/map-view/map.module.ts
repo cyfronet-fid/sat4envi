@@ -55,7 +55,7 @@ import { ResizableModule } from 'angular-resizable-element';
 import { EventsModule } from 'src/app/utils/search/events.module';
 import {OVERLAY_LIST_MODAL_ID} from './view-manager/overlay-list-modal/overlay-list-modal.model';
 import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overlay-list-modal.component';
-import {SearchResultsComponent} from './sentinel-search/search-results/search-results.component';
+import {SearchResultsComponent, ToPaginationArrayPipe} from './sentinel-search/search-results/search-results.component';
 import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-templates-modal.component';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 
@@ -81,7 +81,8 @@ import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-temp
     SearchResultsComponent,
     JwtTokenModalComponent,
     ExpertHelpModalComponent,
-    ReportTemplatesModalComponent
+    ReportTemplatesModalComponent,
+    ToPaginationArrayPipe
   ],
   exports: [
     MapViewComponent,

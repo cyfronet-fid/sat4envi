@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueryEntity } from '@datorama/akita';
 import { SentinelSearchStore} from './sentinel-search.store';
 import {
+  SENTINEL_PAGE_INDEX_QUERY_KEY,
   SENTINEL_SELECTED_QUERY_KEY,
   SENTINEL_VISIBLE_QUERY_KEY,
   SentinelSearchResult,
@@ -71,11 +72,7 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
   }
 
   selectHovered() {
-    return this.selectLoading()
-      .pipe(
-        filter(isLoading => !isLoading),
-        map(() => this.getEntity(this.getValue().hoveredId))
-      );
+    return this.select('hoveredId').pipe(map(id => this.getEntity(id)))
   }
 
   selectIsActiveFirst() {
@@ -98,5 +95,16 @@ export class SentinelSearchQuery extends QueryEntity<SentinelSearchState, Sentin
 
   selectShowSearchResults() {
     return this._routerQuery.selectQueryParams('showSearchResults').pipe(map(showSearchResults => showSearchResults === '1'))
+  }
+
+  selectCurrentPage() {
+    return this._routerQuery.selectQueryParams(SENTINEL_PAGE_INDEX_QUERY_KEY)
+      .pipe(map(page => {
+        try {
+          return parseInt(page as string);
+        } catch(e) {
+          return 0;
+        }
+      }));
   }
 }

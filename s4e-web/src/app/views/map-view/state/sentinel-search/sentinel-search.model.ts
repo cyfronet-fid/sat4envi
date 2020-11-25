@@ -6,7 +6,9 @@ export const SENTINEL_VISIBLE_QUERY_KEY = 'visible_sent';
 export const SENTINEL_SELECTED_QUERY_KEY = 'selected_sent';
 export const SENTINEL_THUMBNAIL_ARTIFACT_NAME = 'thumbnail';
 export const SENTINEL_SHOW_RESULTS_QUERY_KEY = 'showSearchResults';
+export const SENTINEL_PAGE_INDEX_QUERY_KEY = 'page';
 export const SENTINEL_SEARCH_PARAMS_QUERY_KEY = 'searchParams';
+export const SENTINEL_PAGE_SIZE = 15;
 export const SENTINEL_SEARCH_ACTIVE_ID = 'search_active_id';
 
 export interface SentinelSearchResultMetadata {
@@ -29,7 +31,7 @@ export interface SentinelSearchResultMetadata {
  * This is result returned from the server
  */
 export interface SentinelSearchResultResponse {
-  id: string;
+  id: number;
   productId: number;
   timestamp: string;
   artifacts: string[];
@@ -50,7 +52,7 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
   url: string;
 }
 
-export function artifactDownloadLink(id: string, artifact: string): string {
+export function artifactDownloadLink(id: number, artifact: string): string {
   return `${environment.apiPrefixV1}/scenes/${id}/download/${artifact}`;
 }
 
@@ -79,8 +81,8 @@ export interface SentinelSearchState extends EntityState<SentinelSearchResult>, 
   metadata: SentinelSearchMetadata;
   metadataLoading: boolean;
   metadataLoaded: boolean;
+  resultPagesCount: number|null;
+  resultTotalCount: number|null;
   loaded: boolean;
-  showSearchResults: boolean;
-
   hoveredId: string | number | null;
 }
