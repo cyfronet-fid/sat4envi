@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @BasicTest
 @AutoConfigureMockMvc
@@ -16,7 +17,7 @@ public class SwaggerTest {
 
     @Test
     public void test() throws Exception {
-        mockMvc.perform(get("/v3/api-docs"))
+        mockMvc.perform(get(API_PREFIX_V1 + "/docs"))
             .andExpect(status().isOk());
     }
 }
