@@ -49,7 +49,7 @@ export class ParentInstitutionModalComponent extends ModalComponent<Partial<Inst
 
   ngOnInit() {
     combineLatest(
-      this._institutionQuery.getAdministrationInstitutions$(),
+      this._institutionQuery.selectAdministrationInstitutions$(),
       this.institutionsSearch.valueChanges
     )
     .pipe(untilDestroyed(this))

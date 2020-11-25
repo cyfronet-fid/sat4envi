@@ -1,7 +1,11 @@
 <s4e-tiles-dashboard>
   <h1 dashboard-title>Witamy w panelu administratora Sat4Envi</h1>
   <p dashboard-description>
-    Jesteś administratorem zasobów i dostępów Sat4Envi w Urzędzie Miasta <br />
+    Jesteś administratorem zasobów i dostępów Sat4Envi w
+    <a routerLink="/settings/institution" queryParamsHandling="merge">
+      {{ (activeInstitution$ | async)?.name }}
+    </a>
+    <br />
     Zobacz jakie masz uprawnienia:
   </p>
   <ng-container dashboard-tiles>

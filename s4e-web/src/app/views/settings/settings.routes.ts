@@ -11,7 +11,7 @@ import {IsManagerGuard} from './guards/is-manager/is-manager.guard';
 import {InstitutionListComponent} from './manage-institutions/institution-list/institution-list.component';
 import {InstitutionProfileComponent} from './intitution-profile/institution-profile.component';
 import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH, SETTINGS_PATH} from './settings.breadcrumbs';
-import {adminDashboardMatcher, managerDashboardMatcher} from './dashboards.routes';
+import {multipleInstitutionAdminDashboardMatcher, singleInstitutionAdminDashboardMatcher} from './dashboards.routes';
 
 export const settingsRoutes: Routes = [
   {
@@ -20,7 +20,7 @@ export const settingsRoutes: Routes = [
     canActivate: [IsLoggedIn],
     children: [
       {
-        matcher: adminDashboardMatcher,
+        matcher: multipleInstitutionAdminDashboardMatcher,
         component: AdminDashboardComponent,
         data: {
           isAdminDashboard: true,
@@ -33,13 +33,13 @@ export const settingsRoutes: Routes = [
         }
       },
       {
-        matcher: managerDashboardMatcher,
+        matcher: singleInstitutionAdminDashboardMatcher,
         component: DashboardComponent,
         data: {
           isAdminDashboard: false,
           breadcrumbs: [
             {
-              label: 'Tablica menedżera',
+              label: 'Tablica administratora',
               url: 'dashboard'
             }
           ]

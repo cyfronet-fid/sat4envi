@@ -1,21 +1,22 @@
-import { InstitutionService } from './../state/institution/institution.service';
 import { InstitutionsSearchResultsQuery } from './../state/institutions-search/institutions-search-results.query';
 import { InstitutionsSearchResultsService } from './../state/institutions-search/institutions-search-results.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Component, OnInit, OnDestroy, ViewChild, HostListener } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Institution } from '../state/institution/institution.model';
 import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
 import { InstitutionsSearchResultsStore } from '../state/institutions-search/institutions-search-results.store';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {filter, skip} from 'rxjs/operators';
 
 @Component({
   selector: 's4e-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
-export class AdminDashboardComponent implements OnInit {
-  public isInstitutionActive$: Observable<boolean>;
+export class AdminDashboardComponent implements OnInit, OnDestroy {
+  public isInstitutionActive$ = this.institutionsSearchResultsQuery
+    .isAnyInstitutionActive$(this._activatedRoute);
   public searchValue: string = '';
 
   constructor(
@@ -28,13 +29,7 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.isInstitutionActive$ = this.institutionsSearchResultsQuery
-      .isAnyInstitutionActive$(this._activatedRoute);
-
-    if (environment.hmr) {
-      const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;
-      this.searchValue = !!searchResult ? searchResult.name : '';
-    }
+    this.searchValue = '';
   }
 
   searchForInstitutions(partialInstitutionName: string) {
@@ -50,7 +45,7 @@ export class AdminDashboardComponent implements OnInit {
     this._institutionsSearchResultsService.setSelectedInstitution(institution);
 
     this._router.navigate(
-      !!institution ? [] : ['/settings'],
+      ['/settings/institution'],
       {
         relativeTo: this._activatedRoute,
         queryParams: {
@@ -60,4 +55,6 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
+  ngOnDestroy() {}
 }

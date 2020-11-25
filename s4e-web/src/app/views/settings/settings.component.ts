@@ -3,7 +3,7 @@ import { InstitutionsSearchResultsStore } from './state/institutions-search/inst
 import {InstitutionService} from './state/institution/institution.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
-import {filter, finalize, map, tap} from 'rxjs/operators';
+import {filter, finalize, map, switchMap} from 'rxjs/operators'
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -22,6 +22,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public searchValue: string;
   public hasBeenSelected = false;
 
+  public hasAnyAdminInstitution$ = this._institutionQuery
+    .selectAdministrationInstitutions$()
+    .pipe(filter(institutions => !!institutions && institutions.length > 0));
   public showInstitutions$: Observable<boolean> = this._sessionQuery
     .selectCanSeeInstitutions();
   public isInstitutionActive$: Observable<boolean> = this.institutionsSearchResultsQuery
@@ -30,6 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     .selectActive$(this._activatedRoute);
   public isManagerOfActive$ = this._institutionQuery
     .isManagerOf$(this.activeInstitution$);
+  public isAdminOfOneInstitution$ = this._institutionQuery
+    .selectHasOnlyOneAdministrationInstitution();
 
   constructor(
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
@@ -44,22 +49,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    if (environment.hmr) {
-      const searchResult = this.institutionsSearchResultsQuery.getValue().searchResult;
-      this.searchValue = !!searchResult ? searchResult.name : '';
-    }
-    this.institutionsSearchResultsQuery
-      .selectActive$(this._activatedRoute)
-      .pipe(untilDestroyed(this))
-      .subscribe(institution => {
-        const isSearchValueActiveInstitution = !!this.searchValue
-          && this.searchValue === institution.name;
-        if (!isSearchValueActiveInstitution) {
-          this.searchValue = institution.name;
-          this.hasBeenSelected = false;
-        }
-      });
-
     // Set page scroll at initial place
     window.scrollTo(0, 0);
     this._router.events
@@ -73,6 +62,23 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this._institutionService.get();
+    this.isInstitutionActive$
+      .pipe(
+        untilDestroyed(this),
+        filter(isActive => !isActive),
+        switchMap(() => this._institutionQuery.selectHasOnlyOneAdministrationInstitution()),
+        filter(hasOneAdminInstitution => hasOneAdminInstitution),
+        switchMap(() => this._router.navigate(
+        [],
+        {
+          relativeTo: this._activatedRoute,
+          queryParams: {
+            institution: this._institutionQuery.getAdministrationInstitutions()[0].slug
+          },
+          skipLocationChange: true
+        }))
+      )
+      .subscribe();
   }
 
   searchForInstitutions(partialInstitutionName: string) {

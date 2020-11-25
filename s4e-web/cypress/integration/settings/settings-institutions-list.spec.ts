@@ -6,7 +6,7 @@ import {InstitutionList} from '../../page-objects/settings/settings-institution-
 import promisify from 'cypress-promise';
 import { InstitutionSearch } from './../../page-objects/settings/settings-institution-search.po';
 
-context('Settings institutions list', () => {
+context.skip('Settings institutions list', () => {
   beforeEach(() => {
     cy.fixture('users/zkAdmin.json').as('zkAdmin');
   });
@@ -41,9 +41,9 @@ context('Settings institutions list', () => {
   //   await InstitutionList.deleteNth(1);
   // });
 
-  it('Should show institutions', () => {
-    InstitutionList.getEntries().should('have.length', 5);
-  });
+  // it.skip('Should show institutions', () => {
+  //   InstitutionList.getEntries().should('have.length', 5);
+  // });
 
   it('should go to Profile', async () => {
     const institutionName = await InstitutionList.getNthInstitutionName(0);

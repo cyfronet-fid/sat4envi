@@ -2,28 +2,36 @@
   <button
     id="settings-menu-button"
     class="navigation__open--mobile"
+    [ngClass]="{'open': isMobileSidebarOpen}"
     (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
   ></button>
 
   <nav
     class="navigation"
-    [ngClass]="{'open': isMobileSidebarOpen}"
   >
-    <div class="logo">
-
-    </div>
+    <a routerLink="/settings">
+      <div class="logo"></div>
+    </a>
+    <header *ngIf="hasAnyAdminInstitution$ | async" class="navigation__institution">
+      <span>Wybrana instytucja</span>
+      <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)">
+        {{ (activeInstitution$ | async)?.name }}
+      </p>
+      <a *ngIf="!(isAdminOfOneInstitution$ | async)"
+        routerLink="/settings/institutions"
+         i18n
+      >
+        {{
+          !!(activeInstitution$ | async)
+            ? 'Zmień'
+            : 'Wybierz'
+        }}
+      </a>
+    </header>
     <ul class="navigation__list">
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
-          data-e2e="go-to-dashboard">
-        <a [routerLink]="['./dashboard']"
-           queryParamsHandling="merge"
-           i18n>Start</a>
-      </li>
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
+      <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
           data-e2e="institutions">
-        <a [routerLink]="['./institutions']"
-           queryParamsHandling="merge"
-           i18n>Lista instytucji</a>
+        <a routerLink="/settings/institutions" i18n>Lista instytucji</a>
       </li>
       <li routerLinkActive="active" data-e2e="profile">
         <a
@@ -34,60 +42,48 @@
           Twój profil
         </a>
       </li>
-    </ul>
-
-    <header *ngIf="showInstitutions$ | async">
-      <span>Panel zarządzania instytucją</span>
-    </header>
-    <ul class="navigation__list navigation__list--institution" *ngIf="showInstitutions$ | async">
       <li>
-          <s4e-search
-            placeholder="Wybierz instytucję"
-            [query]="institutionsSearchResultsQuery"
-            [store]="institutionsSearchResultsStore"
-            [value]="searchValue"
-            [hasBeenSelected]="hasBeenSelected"
-            (valueChange)="searchForInstitutions($event)"
-            (selectResult)="selectInstitution($event)"
-          >
-            <ng-template #result let-result>
-              <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
-            </ng-template>
-          </s4e-search>
+        <button [routerLink]="['/map/products']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
       </li>
-      <li *ngIf="(showInstitutions$ | async)" routerLinkActive="active">
-        <a
-          [routerLink]="['./people']"
-          queryParamsHandling="merge"
-          [class.disabled]="!((isInstitutionActive$ | async) && (isManagerOfActive$ | async))"
-          data-e2e="go-to-institution-people-btn"
-          i18n
-        >
-          Ludzie
-        </a>
-      </li>
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active">
-        <a
-          [routerLink]="['./institution']"
-          queryParamsHandling="merge"
-          [class.disabled]="!(isInstitutionActive$ | async)"
-          data-e2e="go-to-institution-profile-btn"
-          i18n
-        >
-          Profil Instytucji
-        </a>
+      <li>
+        <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>
       </li>
     </ul>
-    <section class="login">
-      <ul>
-        <li>
-          <button [routerLink]="['/map/products']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
-        </li>
-        <li>
-          <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>
-        </li>
-      </ul>
-    </section>
+  </nav>
+
+  <nav class="navigation--mobile" [ngClass]="{'open': isMobileSidebarOpen}">
+    <ul class="navigation__list">
+      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
+          data-e2e="institutions">
+        <a *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)"
+          routerLink="/settings/institutions"
+           i18n
+           (click)="isMobileSidebarOpen = false"
+        >Lista instytucji</a>
+      </li>
+      <li routerLinkActive="active" data-e2e="profile">
+        <a
+          [routerLink]="['./profile']"
+          queryParamsHandling="merge"
+          i18n
+          (click)="isMobileSidebarOpen = false"
+        >
+          Twój profil
+        </a>
+      </li>
+      <li>
+        <button
+          [routerLink]="['/map/products']"
+          i18n
+          class="button button--borderPrimary button--small"
+        >
+          Wróć do mapy
+        </button>
+      </li>
+      <li>
+        <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>
+      </li>
+    </ul>
   </nav>
   <section class="content">
     <s4e-breadcrumb></s4e-breadcrumb>

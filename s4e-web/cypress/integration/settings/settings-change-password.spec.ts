@@ -3,7 +3,7 @@
 import { Login } from '../../page-objects/auth/login.po';
 import { SideNav } from '../../page-objects/settings/settings-side-nav.po';
 
-context('Settings change password', () => {
+context.skip('Settings change password', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });

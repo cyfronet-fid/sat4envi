@@ -1,36 +1,37 @@
 <s4e-tiles-dashboard>
   <h1 dashboard-title>Witamy w panelu administratora Sat4Envi</h1>
   <p dashboard-description>
-    Jesteś superadministratorem zasobów i dostępów Sat4Envi w Kategorii Zarządzanie Kryzysowe <br />
-    Oprócz zarządzania ludźmi i grupami możesz również m. in. edytować instytucje:
+    Jesteś administratorem zasobów i dostępów Sat4Envi w <a routerLink="/settings/institutions">kilku instytucjach</a> <br />
+    Oprócz zarządzania ludźmi i grupami możesz również m. in. edytować instytucje.
   </p>
   <ng-container dashboard-tiles>
     <s4e-tile data-e2e="institution-search-tile">
+      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
       <header class="panel__header" tile-title>Wybierz instytucję</header>
       <p i18n tile-description>Wybierz instytucję aby móc nią zarządzać</p>
-        <s4e-search
-          placeholder="Wpisz szukaną instytucję..."
-          [query]="institutionsSearchResultsQuery"
-          [store]="institutionSearchResultsStore"
-          [value]="searchValue"
-          (valueChange)="searchForInstitutions($event)"
-          (selectResult)="selectInstitution($event)"
-        >
-          <ng-template #result let-result>
-            <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
-            <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
-          </ng-template>
-        </s4e-search>
+      <s4e-search
+        placeholder="Wpisz szukaną instytucję..."
+        [query]="institutionsSearchResultsQuery"
+        [store]="institutionSearchResultsStore"
+        [value]="searchValue"
+        (valueChange)="searchForInstitutions($event)"
+        (selectResult)="selectInstitution($event)"
+        footer-navigation
+      >
+        <ng-template #result let-result>
+          <span *ngIf="!!result.name" class="name">{{ result.name }}</span>
+          <span *ngIf="!!result.slug" class="type">{{ result.slug }}</span>
+        </ng-template>
+      </s4e-search>
     </s4e-tile>
 
     <s4e-tile data-e2e="go-to-institutions-list-tile">
+      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
       <header class="panel__header" tile-title>Zarządzaj instytucjami</header>
-      <p i18n tile-description>Lista wszystkich instytucji. W tym miejscu możesz je edytować</p>
+      <p i18n tile-description>Lista wszystkich instytucji. W tym miejscu możesz je edytować.</p>
       <button
-        routerLink="../groups"
-        queryParamsHandling="merge"
+        routerLink="/settings/institutions"
         class="button button--secondary button--small"
-        [disabled]="!(isInstitutionActive$ | async)"
         footer-navigation
       >
         Zarządzaj

@@ -125,6 +125,7 @@ export class InstitutionService {
         }
       );
   }
+
   protected _getInstitutionSlugFrom$(route: ActivatedRoute) {
     return route.queryParamMap
       .pipe(map(params => params.get('institution')));
@@ -140,6 +141,7 @@ export class InstitutionService {
     function listToTree(list: Institution[]) {
       let map = {};
       let node: InstitutionWithChildren;
+      let tree;
       let roots: InstitutionWithChildren[] = [];
       let listWithChildren: InstitutionWithChildren[] = list.map((inst, i) => {
         map[list[i].slug] = i;
@@ -148,9 +150,10 @@ export class InstitutionService {
 
       for (let i = 0; i < list.length; i += 1) {
         node = listWithChildren[i];
-        if (node.parentSlug != null && !!listWithChildren[map[node.parentSlug]]) {
+        tree = listWithChildren[map[node.parentSlug]];
+        if (node.parentSlug != null && !!tree) {
           // if you have dangling branches check that map[node.parentId] exists
-          listWithChildren[map[node.parentSlug]].children.push(node);
+          tree.children.push(node);
         } else {
           roots.push(node);
         }

@@ -66,51 +66,65 @@
   }
 
   s4e-settings {
-  .settings {
-    .navigation {
-      &.open {
-        display: block !important;
+    .settings {
+      .navigation {
+
+        &__list {
+          display: none;
+        }
+
+        &__open--mobile {
+          display: block !important;
+        }
+
+        &--mobile {
+          .navigation__list {
+            display: flex;
+          }
+          &.open {
+            display: block;
+          }
+        }
+      }
+
+      .dashboard {
+        margin-top: 0;
+        display: block;
+        height: auto;
+      }
+      .content {
+        max-width: 700px;
+        min-width: unset;
+
+        &__header {
+          margin-bottom: 30px;
+
+          p {
+            width: 100%;
+          }
+
+          h1 {
+            font-size: 2rem;
+            margin-top: 40px;
+          }
+        }
+
+        &__details {
+          &--50 {
+            width: auto;
+          }
+        }
+      }
+
+      .panel {
+        flex-direction: column;
       }
     }
   }
 
-
-
-  .dashboard {
-    margin-top: 0;
-    display: block;
-    height: auto;
+  .modal-dialog {
+    width: calc(100% - 50px) !important;
   }
-
-
-  .content {
-    &__header {
-      margin-bottom: 30px;
-      p {
-        width: 100%;
-      }
-
-      h1 {
-        font-size: 2rem;
-        margin-top: 40px;
-      }
-
-      .button {
-        position: relative;
-      }
-    }
-    &__details {
-      padding: 15px 0;
-
-      &--50 {
-        width: auto;
-      }
-    }
-  }
-  .panel {
-    flex-direction: column;
-  }
-}
 }
 
 @media only all and (max-width: 800px)  {

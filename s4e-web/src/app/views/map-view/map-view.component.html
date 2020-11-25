@@ -1,5 +1,9 @@
 
-<div class="section sidebar" [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'">
+<div
+  class="section sidebar"
+  [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+  [ngClass]="{open: isMobileSidebarOpen}"
+>
   <div class="collapse" (click)="mapService.toggleSidebar()" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"></div>
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
