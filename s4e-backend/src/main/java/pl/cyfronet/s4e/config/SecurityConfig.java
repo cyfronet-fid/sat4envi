@@ -160,6 +160,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(GET, prefix("/places")).permitAll()
 
+                .mvcMatchers(GET, prefix(
+                        "/docs",
+                        "/docs.yaml",
+                        "/docs.html",
+                        "/docs/swagger-config",
+                        "/swagger-ui/**"
+                )).permitAll()
+
                 .mvcMatchers(ADMIN_PREFIX + "/**").hasRole("ADMIN")
 
                 .anyRequest().denyAll();

@@ -315,7 +315,9 @@ openssl pkcs12 -export -inkey $NAME.pem -in $NAME.crt -out $NAME.p12
 #### API docs
 
 We use Swagger to create API documentation.
-When you run the backend Swagger-UI is exposed under `http://localhost:4201/swagger-ui.html`.
+When you run the backend Swagger-UI is exposed under `http://localhost:4201/api/v1/docs.html`.
+
+In profile `production` only package `pl.cyfronet.s4e.controller` is scanned and exposed.
 
 
 #### <a id="backend-static"></a> Static images S3 storage
