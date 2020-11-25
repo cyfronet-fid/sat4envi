@@ -60,6 +60,8 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
 
   favouriteProductsCount$: Observable<number> = this.productQuery.selectFavouritesCount();
 
+  spacerHeight: number = 231;
+
   constructor(
     public searchResultsQuery: LocationSearchResultsQuery,
     public searchResultsStore: LocationSearchResultsStore,
@@ -150,6 +152,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     height = calculatedHeight < MIN_HEIGHT ? MIN_HEIGHT : height;
     height = calculatedHeight > MAX_HEIGHT ? MAX_HEIGHT : height;
 
+    this.spacerHeight = height + 50;
     this._renderer.setStyle(this.pickerRef.nativeElement, 'height', `${height as number}px`);
   }
 
