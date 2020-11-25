@@ -1,15 +1,3 @@
-@import 'colors';
-
-$border-radius-default: 5px;
-$border-radius-circle: 50px;
-
-/*================
-===== FONTS ======
-================*/
-
-$font-base: 'Roboto', sans-serif;
-$font-secondary: 'Titillium Web', sans-serif;
-
 /*================
 ==== COLORS ======
 ================*/
@@ -19,8 +7,7 @@ $color-black: #000;
 $color-red: #f00;
 $color-yellow: #FFC300;
 
-
-
+$color-wcag-grey: #353333;
 $color-grey: #505050;
 $color-grey-primary: #F5F5F5;
 $color-grey-secondary: #D8DDE0;
@@ -33,7 +20,7 @@ $color-secondary: #2B74BB;
 $color-tertiary: #F9FCFE;
 $color-tertiary-darken: darken($color-tertiary, 8%);
 $color-tertiary-second: #F6F6F6;
-$color-hover: rgba(255, 250, 224, 0.53);
+$color-hover: rgba(255, 250, 201, 0.53);
 $color-hover-secondary: #E7FFD3;
 $color-white-50: rgba(255,255,255,0.5);
 
@@ -42,30 +29,5 @@ $color-text: $color-grey-tertiary;
 
 $color-error: #BA4343;
 
-
-/*==================
-====== SIZES =======
-==================*/
-
-$space-xlarge: 25px;
-$space-large: 20px;
-$space-default: 15px;
-$space-small: 10px;
-$space-xsmall: 5px;
-
-$width-sidebar: 360px;
-
-
-/*==================
-====== VARIOUS======
-==================*/
-$shadow-primary: 0 2px 4px rgba(0,0,0,0.1);
-
-/*==================
-=== dev-helpers ====
-==================*/
-$dev-border: 1px solid $color-red;
-
-
-
-
+$border-radius-default: 5px;
+$border-radius-circle: 50px;

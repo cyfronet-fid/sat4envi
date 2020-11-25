@@ -41,6 +41,7 @@ import {ReportTemplateQuery} from './zk/state/report-templates/report-template.q
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
 import {ReportTemplate} from './zk/state/report-templates/report-template.model';
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
+import {ViewConfigurationStore} from './state/view-configuration/view-configuration.store';
 
 
 @Component({
@@ -89,6 +90,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public userIsZK$: Observable<boolean>;
   public timelineResolution$: Observable<number>;
 
+  public hasHeightContrast = this.viewConfigurationQuery.select('highContrast');
+  public hasLargeFont = this.viewConfigurationQuery.select('largeFont');
+
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
 
@@ -112,7 +116,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private viewConfigurationQuery: ViewConfigurationQuery,
     private reportTemplateQuery: ReportTemplateQuery,
     private reportTemplateStore: ReportTemplateStore,
-    private viewConfigurationService: ViewConfigurationService
+    private viewConfigurationService: ViewConfigurationService,
+    private viewConfigurationStore: ViewConfigurationStore
   ) {}
 
   ngOnInit(): void {
@@ -217,6 +222,14 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   toggleProductDescription(show: boolean = true) {
     this.mapService.toggleProductDescription(show);
+  }
+
+  toggleHighContrast() {
+    this.viewConfigurationStore.update({highContrast: !this.viewConfigurationQuery.getValue().highContrast});
+  }
+
+  toggleLargeFont() {
+    this.viewConfigurationStore.update({largeFont: !this.viewConfigurationQuery.getValue().largeFont});
   }
 
   downloadMapImage() {
