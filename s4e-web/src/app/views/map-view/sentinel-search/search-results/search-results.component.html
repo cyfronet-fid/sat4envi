@@ -15,46 +15,50 @@
             (click)="close.emit()"></button>
   </header>
 
-  <section class="sentinel" *ngIf="!isLoading; else loadingRef">
-    <ng-container *ngIf="!error; else errorRef">
-    <span i18n>Wyniki wyszukiwania</span>
-    <ul class="search-result">
-      <li
-        *ngFor="let result of searchResults"
-        data-test="search-result-entry"
-        (mouseenter)="mouseenter.emit(result.id)"
-        (mouseleave)="mouseleave.emit()"
-      >
-        <div class="search-result__package">
-          <strong class="package-name">{{result.sceneKeyShort}}</strong>
-        </div>
-        <section class="search-result__content">
-          <div class="search-result__quicklook"
-               [ngStyle]="{'background': result.image ? ('url(' + result.image + ')') : ''}"
-               (click)="showDetails.emit(result)">
-            <strong *ngIf="!result.image">Brak podglądu</strong>
-          </div>
-          <div class="search-result__details">
-            <span class="search-result__timestamp">{{result.timestamp}}</span>
-            <ul class="search-result__spec">
-              <li>
-                <span i18n>Spacecraft:</span>
-                <strong>{{result.metadataContent.spacecraft}}</strong>
-              </li>
-              <li>
-                <span i18n>Level:</span>
-                <strong>{{result.metadataContent.processing_level}}</strong>
-              </li>
-            </ul>
-          </div>
-          <div class="search-result__actions">
-            <button data-test="show-details-button" class="show-details" (click)="showDetails.emit(result)"></button>
-            <a [attr.href]="result.url" (click)="isUserLoggedIn || interceptDownload($event)" target="_blank" class="download-link download"></a>
-          </div>
-        </section>
-      </li>
-      <li *ngIf="searchResults.length === 0" data-test="no-results" i18n>Brak wyników</li>
-    </ul>
+  <section class="sentinel">
+    <ng-container *ngIf="!isLoading; else loadingRef">
+      <ng-container *ngIf="!error; else errorRef">
+        <span i18n>Wyniki wyszukiwania <strong *ngIf="totalCount != null">{{totalCount}} wyników</strong></span>
+        <ul class="search-result">
+          <li
+            *ngFor="let result of searchResults"
+            data-test="search-result-entry"
+            (mouseenter)="mouseenter.emit(result.id)"
+            (mouseleave)="mouseleave.emit()"
+          >
+            <div class="search-result__package">
+              <strong class="package-name">{{result.sceneKeyShort}}</strong>
+            </div>
+            <section class="search-result__content">
+              <div class="search-result__quicklook"
+                   [ngStyle]="{'background': result.image ? ('url(' + result.image + ')') : ''}"
+                   (click)="showDetails.emit(result)">
+                <strong *ngIf="!result.image">Brak podglądu</strong>
+              </div>
+              <div class="search-result__details">
+                <span class="search-result__timestamp">{{result.timestamp}}</span>
+                <ul class="search-result__spec">
+                  <li>
+                    <span i18n>Spacecraft:</span>
+                    <strong>{{result.metadataContent.spacecraft}}</strong>
+                  </li>
+                  <li>
+                    <span i18n>Level:</span>
+                    <strong>{{result.metadataContent.processing_level}}</strong>
+                  </li>
+                </ul>
+              </div>
+              <div class="search-result__actions">
+                <button data-test="show-details-button" class="show-details"
+                        (click)="showDetails.emit(result)"></button>
+                <a [attr.href]="result.url" (click)="isUserLoggedIn || interceptDownload($event)" target="_blank"
+                   class="download-link download"></a>
+              </div>
+            </section>
+          </li>
+          <li *ngIf="searchResults.length === 0" data-test="no-results" i18n>Brak wyników</li>
+        </ul>
+      </ng-container>
     </ng-container>
     <ng-template #errorRef>
       <div class="error" data-test="error-container" i18n>Wystąpił błąd podczas pobierania wyników,
@@ -62,6 +66,21 @@
       </div>
     </ng-template>
   </section>
+
+  <ul class="pagination" *ngIf="resultPagesCount != null">
+    <li>
+      <a [ngClass]="{disabled: currentPage === 0}" href="javascript:undefined"
+         (click)="currentPage !== 0 && changePage.emit(currentPage - 1)"></a>
+    </li>
+    <li *ngFor="let page of resultPagesCount | toPaginationArray : 13 : currentPage">
+      <a href="javascript:undefined" [ngClass]="{active: page.index === currentPage}"
+         (click)="changePage.emit(page.index)">{{page.label}}</a>
+    </li>
+    <li>
+      <a [ngClass]="{disabled: currentPage === resultPagesCount - 1}" href="javascript:undefined"
+         (click)="currentPage !== resultPagesCount - 1 && changePage.emit(currentPage + 1)"></a>
+    </li>
+  </ul>
 
   <ng-template #loadingRef>
     <div class="loading loading--results"></div>

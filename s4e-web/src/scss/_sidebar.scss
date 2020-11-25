@@ -452,6 +452,8 @@
 }
 
 .sentinel {
+  min-height: calc(100vh - 120px);
+
   header {
     font-size: 0.875rem;
     margin-bottom: 10px;

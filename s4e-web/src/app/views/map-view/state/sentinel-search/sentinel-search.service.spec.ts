@@ -7,7 +7,9 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {SentinelSearchQuery} from './sentinel-search.query';
 import {SentinelSearchFactory, SentinelSearchMetadataFactory} from './sentinel-search.factory.spec';
 import {
-  createSentinelSearchResult, SENTINEL_SEARCH_ACTIVE_ID,
+  createSentinelSearchResult,
+  SENTINEL_PAGE_INDEX_QUERY_KEY,
+  SENTINEL_SEARCH_ACTIVE_ID,
   SENTINEL_SEARCH_PARAMS_QUERY_KEY,
   SENTINEL_SELECTED_QUERY_KEY,
   SENTINEL_VISIBLE_QUERY_KEY
@@ -21,8 +23,8 @@ import {FormControl, FormGroup} from '@angular/forms';
 import {of, ReplaySubject} from 'rxjs';
 import {BACK_LINK_QUERY_PARAM} from '../../../../state/session/session.service';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
+import {delay, take} from 'rxjs/operators';
 import Spy = jasmine.Spy;
-import {shareReplay, take} from 'rxjs/operators';
 
 describe('SentinelSearchResultService', () => {
   let service: SentinelSearchService;
@@ -120,11 +122,18 @@ describe('SentinelSearchResultService', () => {
       const searchResults = SentinelSearchFactory.buildList(3);
       const promise = service.search(form).toPromise();
       await redirectPromise;
-      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search?param1=abc`});
+      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search?param1=abc&limit=15&offset=0`});
       r.flush(searchResults);
+      await of(null).pipe(delay(500)).toPromise();
+      const rCount = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search/count?param1=abc&limit=15&offset=0`});
+      rCount.flush(13);
       await promise;
       expect(spyRouter).toHaveBeenCalledWith([], {
-        queryParams: {searchParams: JSON.stringify({common: {param1: 'abc'}}), showSearchResults: '1'},
+        queryParams: {
+          searchParams: JSON.stringify({common: {param1: 'abc'}}),
+          showSearchResults: '1',
+          page: 0
+        },
         queryParamsHandling: 'merge'
       });
       expect(query.getValue().loaded).toBeTruthy();
@@ -141,11 +150,12 @@ describe('SentinelSearchResultService', () => {
       const spy = spyOn(notificationService, 'addGeneral').and.stub();
       const promise = service.search(new FormGroup({})).toPromise();
       await redirectPromise;
-      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search`});
+      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/search?limit=15&offset=0`});
       r.flush({}, {status: 400, statusText: 'Bad Request'});
-      await promise.catch(() => {});
+      await promise.catch(() => {
+      });
       expect(spyRouter).toHaveBeenCalledWith([], {
-        queryParams: {searchParams: '{}', showSearchResults: '1'},
+        queryParams: {searchParams: '{}', showSearchResults: '1', page: 0},
         queryParamsHandling: 'merge'
       });
       expect(query.getValue().loaded).toBeFalsy();
@@ -179,21 +189,22 @@ describe('SentinelSearchResultService', () => {
   });
 
   it('connectQueryToActiveModal', async () => {
+    const result = createSentinelSearchResult(SentinelSearchFactory.build());
+    const result2 = createSentinelSearchResult(SentinelSearchFactory.build());
+    store.set([result, result2]);
+
     const params$ = new ReplaySubject(1);
     const routerQuery: RouterQuery = TestBed.get(RouterQuery);
     const spy = spyOn(modalService, 'show');
     const routerSpy = spyOn(routerQuery, 'selectQueryParams').and.returnValue(params$.asObservable());
-    params$.next('1');
-    const activeModal$ = service.connectQueryToActiveModal().pipe(shareReplay(1));
+    params$.next(result.id.toString());
+    const activeModal$ = service.connectQueryToActiveModal();
 
     await activeModal$.pipe(take(1)).toPromise();
-    expect(query.getActiveId()).toEqual(1);
+    expect(query.getActiveId()).toEqual(result.id);
     expect(spy).toHaveBeenCalledWith({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
     expect(routerSpy).toHaveBeenCalledWith(SENTINEL_SEARCH_ACTIVE_ID);
-    params$.next('2')
-    await activeModal$.pipe(take(1)).toPromise();
-    expect(query.getActiveId()).toEqual(1);
-    expect(spy).toHaveBeenCalledTimes(1);
+    params$.next(result2.id.toString());
   });
 
   it('nextActive', () => {
@@ -202,15 +213,27 @@ describe('SentinelSearchResultService', () => {
     const spy = spyOn(router, 'navigate');
     store.set([first, second]);
     service.nextActive();
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}
+    });
     expect(query.getActive()).toEqual(first);
     store.setActive(first.id);
     service.nextActive();
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: second.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: second.id}
+    });
     expect(query.getActive()).toEqual(second);
     service.nextActive();
     expect(query.getActive()).toEqual(first);
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}
+    });
   });
 
   it('previousActive', () => {
@@ -219,14 +242,26 @@ describe('SentinelSearchResultService', () => {
     const spy = spyOn(router, 'navigate');
     store.set([first, second]);
     service.previousActive();
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}
+    });
     expect(query.getActive()).toEqual(first);
     store.setActive(second.id);
     service.previousActive();
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: first.id}
+    });
     expect(query.getActive()).toEqual(first);
     service.previousActive();
-    expect(spy).toHaveBeenCalledWith([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: second.id}});
+    expect(spy).toHaveBeenCalledWith([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: second.id}
+    });
     expect(query.getActive()).toEqual(second);
   });
 
@@ -236,7 +271,7 @@ describe('SentinelSearchResultService', () => {
     const spy = spyOn(router, 'navigate');
 
     service.clearResults();
-    expect(spy).toHaveBeenCalledWith([], {queryParamsHandling: 'merge', queryParams: {showSearchResults: undefined}})
+    expect(spy).toHaveBeenCalledWith([], {queryParamsHandling: 'merge', queryParams: {showSearchResults: undefined}});
     expect(query.getAll().length).toBe(0);
   });
 
@@ -256,7 +291,7 @@ describe('SentinelSearchResultService', () => {
   describe('connectQueryToForm', () => {
     let form: FormGroup;
     let routerQuery: RouterQuery;
-    let params$: ReplaySubject<string>;
+    let params$: ReplaySubject<string[]>;
     let selectShowSearchResults$: ReplaySubject<boolean>;
     let spy: Spy;
     let spySearch: Spy;
@@ -272,28 +307,28 @@ describe('SentinelSearchResultService', () => {
       spy = spyOn(routerQuery, 'selectQueryParams').and.returnValue(params$);
       spySearch = spyOn(service, 'search').and.returnValue(of(null));
       searchParams = {common: {param1: 'abc'}};
-      params$.next(JSON.stringify(searchParams));
+      params$.next([JSON.stringify(searchParams), '0']);
     });
 
     it('success', async () => {
-      await service.connectQueryToForm(form).toPromise()
-      expect(form.value).toEqual(searchParams)
-      expect(spySearch).toHaveBeenCalledWith(form)
-      expect(spy).toHaveBeenCalledWith(SENTINEL_SEARCH_PARAMS_QUERY_KEY);
+      await service.connectQueryToForm(form).toPromise();
+      expect(form.value).toEqual(searchParams);
+      expect(spySearch).toHaveBeenCalledWith(form, 0);
+      expect(spy).toHaveBeenCalledWith([SENTINEL_SEARCH_PARAMS_QUERY_KEY, SENTINEL_PAGE_INDEX_QUERY_KEY]);
     });
 
     it('broken JSON', async () => {
-      params$.next('.broken / json');
-      await service.connectQueryToForm(form).toPromise()
-      expect(form.value).toEqual({common: {}})
-      expect(spySearch).toHaveBeenCalledWith(form)
-      expect(spy).toHaveBeenCalledWith(SENTINEL_SEARCH_PARAMS_QUERY_KEY);
+      params$.next(['.broken / json', '0']);
+      await service.connectQueryToForm(form).toPromise();
+      expect(form.value).toEqual({common: {}});
+      expect(spySearch).toHaveBeenCalledWith(form, 0);
+      expect(spy).toHaveBeenCalledWith([SENTINEL_SEARCH_PARAMS_QUERY_KEY, SENTINEL_PAGE_INDEX_QUERY_KEY]);
     });
 
     it('should not search if drawer is not open', async () => {
-      selectShowSearchResults$.next(false)
-      await service.connectQueryToForm(form).toPromise()
-      expect(spySearch).not.toHaveBeenCalled()
+      selectShowSearchResults$.next(false);
+      await service.connectQueryToForm(form).toPromise();
+      expect(spySearch).not.toHaveBeenCalled();
     });
   });
 });

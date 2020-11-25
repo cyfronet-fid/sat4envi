@@ -5,7 +5,8 @@
     </div>
     <ul>
       <li>
-        <s4e-sentinel-form [paramsDef]="(sentinels$ | async)?.common.params" [formControl]="form.get('common')"></s4e-sentinel-form>
+        <s4e-sentinel-form [paramsDef]="(sentinels$ | async)?.common.params"
+                           [formControl]="form.get('common')"></s4e-sentinel-form>
       </li>
       <li *ngFor="let sentinel of (sentinels$ | async)?.sections">
         <s4e-sentinel-section [sentinel]="sentinel" [formControlName]="sentinel.name"></s4e-sentinel-section>
@@ -19,7 +20,9 @@
 </div>
 
 <ng-template #metadataLoadingRef>
-  <ng-container i18n>Metadata loading... [UI - Style it]</ng-container>
+  <div class="loading loading--results"></div>
+  <div class="loading loading--results"></div>
+  <div class="loading loading--results"></div>
 </ng-template>
 
 <s4e-search-results class="search-results"
@@ -32,6 +35,10 @@
                     (forbiddenAction)="redirectToLoginPage()"
                     (showDetails)="openSearchResultModal($event)"
                     [searchResults]="searchResults$ | async"
+                    [resultPagesCount]="resultPagesCount$ | async"
+                    [totalCount]="resultTotalCount$ | async"
+                    [currentPage]="currentPage$ | async"
+                    (changePage)="changePage($event)"
                     (mouseenter)="setHovered($event)"
                     (mouseleave)="setHovered(null)"
 ></s4e-search-results>

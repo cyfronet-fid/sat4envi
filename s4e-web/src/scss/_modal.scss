@@ -97,6 +97,10 @@ h3 {
   height: 50px;
   width: 50px;
   top: 45%;
+
+  &[disabled=""] {
+    opacity: 0.3;
+  }
 }
 
 .modal__next {

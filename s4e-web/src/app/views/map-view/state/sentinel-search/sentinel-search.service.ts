@@ -1,28 +1,32 @@
-import {handleHttpRequest$} from 'src/app/common/store.util';
 import {environment} from '../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SentinelSearchStore} from './sentinel-search.store';
 import {
-  createSentinelSearchResult, SENTINEL_SEARCH_ACTIVE_ID, SENTINEL_SEARCH_PARAMS_QUERY_KEY,
-  SENTINEL_SELECTED_QUERY_KEY, SENTINEL_SHOW_RESULTS_QUERY_KEY,
+  createSentinelSearchResult,
+  SENTINEL_PAGE_INDEX_QUERY_KEY,
+  SENTINEL_PAGE_SIZE,
+  SENTINEL_SEARCH_ACTIVE_ID,
+  SENTINEL_SEARCH_PARAMS_QUERY_KEY,
+  SENTINEL_SELECTED_QUERY_KEY,
+  SENTINEL_SHOW_RESULTS_QUERY_KEY,
   SENTINEL_VISIBLE_QUERY_KEY,
   SentinelSearchResultResponse,
 } from './sentinel-search.model';
 import {SentinelSearchQuery} from './sentinel-search.query';
-import {catchError, delay, filter, map, merge, pairwise, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, delay, filter, finalize, map, merge, pairwise, switchMap, take, tap} from 'rxjs/operators';
 import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
-import {HashMap} from '@datorama/akita';
+import {applyTransaction, HashMap} from '@datorama/akita';
 import {NotificationService} from 'notifications';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import {ActivatedQueue} from 'src/app/utils/search/activated-queue.utils';
-import {combineLatest, Observable, of, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {FormGroup} from '@angular/forms';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {filterNotNull, filterTrue, logIt} from '../../../../utils/rxjs/observable';
+import {filterNotNull} from '../../../../utils/rxjs/observable';
 import {BACK_LINK_QUERY_PARAM} from '../../../../state/session/session.service';
 import {ModalQuery} from '../../../../modal/state/modal.query';
 
@@ -57,32 +61,55 @@ export class SentinelSearchService {
     this.setSentinelVisibility(sentinelId, !this.query.isSentinelVisible(sentinelId));
   }
 
-  search(form: FormGroup): Observable<SentinelSearchResultResponse[]> {
+  search(form: FormGroup, page: number = 0, refreshCount: boolean = true): Observable<SentinelSearchResultResponse[]> {
     const params: HashMap<any> = Object.values(form.value).reduce((prev, current) => Object.assign(prev, current), {});
+    params.limit = SENTINEL_PAGE_SIZE;
+    params.offset = page * SENTINEL_PAGE_SIZE;
 
-    this.store.set([]);
-    this.store.update({loaded: false, loading: true, error: null});
-    const url = `${environment.apiPrefixV1}/search`;
+    applyTransaction(() => {
+      if (refreshCount) {
+        this.store.update({resultPagesCount: null, resultTotalCount: null});
+      }
+      this.store.set([]);
+      this.store.update({loaded: false, loading: true, error: null});
+    });
+
     return fromPromise(this.router.navigate([], {
-      queryParams: {[SENTINEL_SEARCH_PARAMS_QUERY_KEY]: JSON.stringify(form.value), [SENTINEL_SHOW_RESULTS_QUERY_KEY]: '1'},
+      queryParams: {
+        [SENTINEL_PAGE_INDEX_QUERY_KEY]: page,
+        [SENTINEL_SEARCH_PARAMS_QUERY_KEY]: JSON.stringify(form.value),
+        [SENTINEL_SHOW_RESULTS_QUERY_KEY]: '1'
+      },
       queryParamsHandling: 'merge'
     }))
       .pipe(
-        switchMap(() => this.http.get<SentinelSearchResultResponse[]>(url, {params})),
-        handleHttpRequest$(this.store),
+        switchMap(() => this.http.get<SentinelSearchResultResponse[]>(
+          `${environment.apiPrefixV1}/search`, {params})
+        ),
         delay(250),
         map(data => data.map(product => createSentinelSearchResult(product))),
         tap(data => {
           this.store.set(data);
           this.store.setLoaded(true);
         }),
+        switchMap(data => {
+          return refreshCount
+            ? this.http.get<any>(`${environment.apiPrefixV1}/search/count`, {params})
+              .pipe(
+                tap(count => this.store.update({resultTotalCount: count, resultPagesCount: Math.ceil(count / SENTINEL_PAGE_SIZE)})),
+                map(() => data)
+              )
+            : of(data);
+        }),
         catchError(error => {
+          this.store.setError(error);
           this.notificationService.addGeneral({
             type: 'error',
             content: 'Wystąpił błąd podczas wyszukiwaniania'
           });
           return throwError(error);
-        })
+        }),
+        finalize(() => this.store.setLoading(false)),
       );
   }
 
@@ -113,18 +140,26 @@ export class SentinelSearchService {
     this.store.setLoaded(loaded);
   }
 
-  openModalForResult(resultId: string) {
+  openModalForResult(resultId: number) {
     this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: resultId}});
   }
 
   nextActive() {
     this._activatedQueue.next();
-    this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}});
+    this.router.navigate([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}
+    });
   }
 
   previousActive() {
     this._activatedQueue.previous();
-    this.router.navigate([], {replaceUrl: true, queryParamsHandling: 'merge', queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}});
+    this.router.navigate([], {
+      replaceUrl: true,
+      queryParamsHandling: 'merge',
+      queryParams: {[SENTINEL_SEARCH_ACTIVE_ID]: this.query.getActiveId()}
+    });
   }
 
   clearResults() {
@@ -141,47 +176,47 @@ export class SentinelSearchService {
         map(([prevResultId, curResultId]) => {
           try {
             return parseInt(curResultId);
-          } catch(e) {
+          } catch (e) {
             return null;
           }
         }),
         filterNotNull(),
-        tap(resultId => {
-          this.store.setActive(resultId);
+        switchMap(id => this.query.selectEntity(id).pipe(filterNotNull(), take(1))),
+        tap(entity => {
+          this.store.setActive(entity.id);
           this.modalService.show({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
         })
-      )
+      );
   }
 
   connectQueryToForm(form: FormGroup): Observable<any> {
-    return this.routerQuery.selectQueryParams(SENTINEL_SEARCH_PARAMS_QUERY_KEY).pipe(
-      take(1),
-      map((params: string) => {
-        try {
-          return JSON.parse(params);
-        } catch (e) {
-          return {};
-        }
-      }),
-      tap(params => Object.keys(form.controls).forEach(key => form.get(key).patchValue(params[key] || {}))),
-      switchMap(() => this.query.selectShowSearchResults().pipe(take(1))),
-      filterTrue(),
-      switchMap(() => this.search(form))
-    );
+    return this.routerQuery.selectQueryParams([SENTINEL_SEARCH_PARAMS_QUERY_KEY, SENTINEL_PAGE_INDEX_QUERY_KEY])
+      .pipe(
+        take(1),
+        map(([params, page]) => {
+          try {
+            return [JSON.parse(params as string), parseInt((page || '0') as string)];
+          } catch (e) {
+            return [{}, 0];
+          }
+        }),
+        tap(([params, page]) => Object.keys(form.controls).forEach(key => form.get(key).patchValue(params[key] || {}))),
+        switchMap(([params, page]) => this.query.selectShowSearchResults().pipe(take(1)).pipe(map(show => [show, params, page]))),
+        filter(([show, params, page]) => show),
+        switchMap(([show, params, page]) => this.search(form, page))
+      );
+  }
+
+  redirectToLoginPage() {
+    this.notificationService.addGeneral({type: 'warning', duration: 10000, content: 'Zaloguj się by uzyskać dostęp do zasobu'});
+    this.router.navigate(['/login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: this.routerQuery.getValue().state.url}});
+  }
+
+  setHovered(resultId: string | number | null) {
+    this.store.update({hoveredId: resultId});
   }
 
   private _clearSentinelSearchFromQuery(): Promise<any> {
     return this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {[SENTINEL_SHOW_RESULTS_QUERY_KEY]: undefined}});
-  }
-
-  redirectToLoginPage() {
-    this.notificationService.addGeneral({type: 'warning', duration: 10000, content: 'Zaloguj się by uzyskać dostęp do zasobu'})
-    this.router.navigate(['/login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: this.routerQuery.getValue().state.url}})
-  }
-
-  setHovered(resultId: string | number | null) {
-    this.store.setLoading(true);
-    this.store.update({hoveredId: resultId});
-    this.store.setLoading(false);
   }
 }

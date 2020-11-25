@@ -536,6 +536,70 @@ input.checkbox-slide:checked + .slider:after
 }
 
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+
+  li {
+    display: inline-block;
+
+    a {
+      display: flex;
+      align-content: center;
+      border: 1px solid $color-grey-secondary;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      color: $color-text;
+      background: $color-white;
+      font-size: 0.9rem;
+      border-left: none;
+
+      &.active {
+        background: $color-hover;
+        font-weight: bold;
+      }
+
+      &.disabled {
+        background: $color-grey-secondary;
+        cursor: not-allowed;
+      }
+    }
+
+    &:first-child,
+    &:last-child {
+      a {
+        text-indent: -10000px;
+        position: relative;
+        border-left: 1px solid $color-grey-secondary;
+        border-radius: $border-radius-default 0 0 $border-radius-default;
+        &:before {
+          content: " ";
+          width: 13px;
+          height: 10px;
+          top: 1px;
+          background: url('../assets/images/ico_chevron.svg') no-repeat;
+          transform: rotate(90deg);
+        }
+      }
+    }
+
+    &:last-child {
+      a {
+        border-left: none;
+        border-radius: 0 $border-radius-default $border-radius-default 0;
+        &:before {
+          transform: rotate(-90deg);
+        }
+      }
+    }
+
+  }
+}
+
+
 
 
 

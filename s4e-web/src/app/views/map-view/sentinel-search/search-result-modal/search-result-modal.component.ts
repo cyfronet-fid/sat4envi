@@ -46,13 +46,12 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   }
 
   interceptDownload($event: MouseEvent, dismiss: boolean = true) {
-    if (dismiss) {
-      this.dismiss();
-    }
-
     if (!this._sessionQuery.isLoggedIn()) {
+      this.dismiss();
       $event.preventDefault();
       this._sentinelSearchService.redirectToLoginPage();
+    } else if (dismiss) {
+      this.dismiss();
     }
   }
 
