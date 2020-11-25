@@ -64,6 +64,61 @@
             <ul s4e-form-error [control]="form.controls.passwordRepeat"></ul>
           </li>
 
+          <li class="form__element" id="domain-controller">
+            <label for="registration-domain" i18n>Domena zawodowa</label>
+            <select
+              class="form-control"
+              formControlName="domain"
+              id="registration-domain"
+            >
+              <option *ngFor="let domain of scientificDomainTypes" [value]="domain.value">
+                {{ domain.label }}
+              </option>
+            </select>
+            <ul s4e-form-error [control]="form.controls.domain"></ul>
+          </li>
+
+          <li class="form__element" id="usage-controller">
+            <label for="registration-usage" i18n>Powód użycia</label>
+            <select
+              class="form-control"
+              formControlName="usage"
+              id="registration-usage"
+            >
+              <option *ngFor="let usage of appUsageTypes" [value]="usage.value">
+                {{ usage.label }}
+              </option>
+            </select>
+            <ul s4e-form-error [control]="form.controls.usage"></ul>
+          </li>
+
+          <li class="form__element" id="country-controller">
+            <label for="registration-country" i18n>Kraj</label>
+            <select
+              class="form-control"
+              formControlName="country"
+              id="registration-country"
+            >
+              <option *ngFor="let country of countries" [value]="country.code">
+                {{ country.name_pl }}
+              </option>
+            </select>
+            <ul s4e-form-error [control]="form.controls.country"></ul>
+          </li>
+
+          <li class="form__element">
+            <input
+              type="checkbox"
+              class="form-control"
+              formControlName="policy"
+              id="registration-policy"
+            >
+            <label for="registration-policy" i18n>
+              Akceptuję <a href="javascript:void(0)">politykę prywatności</a>
+            </label>
+            <ul s4e-form-error [control]="form.controls.policy"></ul>
+          </li>
+
           <li class="form__element">
             <re-captcha formControlName="recaptcha" [siteKey]="remoteConfiguration.get().recaptchaSiteKey"></re-captcha>
           </li>

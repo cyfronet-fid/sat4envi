@@ -2,7 +2,7 @@
 
 import { Registration } from '../../page-objects/auth/register.po'
 
-describe('Register', () => {
+describe.skip('Register', () => {
 
     beforeEach(() => {
         cy.visit("/register");
