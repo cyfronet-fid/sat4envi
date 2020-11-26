@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.TestDbHelper;
@@ -39,6 +40,9 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @AutoConfigureMockMvc
 @BasicTest
+@TestPropertySource(properties = {
+        "scene.artifacts.internal-download-whitelist=other_artifact,yet_another_artifact"
+})
 public class SceneControllerTest {
     @Autowired
     private ProductRepository productRepository;
@@ -447,6 +451,25 @@ public class SceneControllerTest {
             when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
 
             mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", scene.getId(), "default_artifact")
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isSeeOther())
+                    .andExpect(redirectedUrl(redirectUrl));
+        }
+
+        @Test
+        public void shouldRedirectToDownloadLinkIfUnauthenticatedButArtifactWhitelisted() throws Exception {
+            val product = productRepository.save(productBuilder().build());
+
+            Scene scene = sceneRepository.save(sceneBuilder(product).build());
+
+            String redirectUrl = "https://domain.pl/test?sth=value";
+
+            PresignedGetObjectRequest pgor = mock(PresignedGetObjectRequest.class);
+            when(pgor.isBrowserExecutable()).thenReturn(true);
+            when(pgor.url()).thenReturn(new URL(redirectUrl));
+            when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class))).thenReturn(pgor);
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/scenes/{id}/download/{artifactName}", scene.getId(), "other_artifact")
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isSeeOther())
                     .andExpect(redirectedUrl(redirectUrl));
