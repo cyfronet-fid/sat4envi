@@ -16,10 +16,12 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import pl.cyfronet.s4e.properties.SceneArtifactsProperties;
 import pl.cyfronet.s4e.security.JwtAuthenticationFilter;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import static org.springframework.http.HttpMethod.*;
 import static pl.cyfronet.s4e.Constants.ADMIN_PREFIX;
@@ -145,8 +147,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(DELETE, prefix("/products/{id}/favourite"))
                     .access("isAuthenticated() && @licensePermissionEvaluator.allowProductRead(#id, principal)")
 
+                // Whitelist some artifacts download. It is used to allow anyone to download scene thumbnail (in Sentinel search).
                 .mvcMatchers(GET, prefix("/scenes/{id}/download/{artifactName}"))
-                    .access("isAuthenticated() && @licensePermissionEvaluator.allowSceneRead(#id, principal)")
+                    .access("(isAuthenticated() || @isArtifactWhitelisted.test(#artifactName)) && @licensePermissionEvaluator.allowSceneRead(#id, principal)")
 
                 .mvcMatchers(GET, prefix("/search")).permitAll()
                 .mvcMatchers(GET, prefix("/search/count")).permitAll()
@@ -176,6 +179,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public InstitutionSecurityHelper ish() {
         return new InstitutionSecurityHelper();
+    }
+
+    @Bean
+    public Predicate<String> isArtifactWhitelisted(SceneArtifactsProperties sceneArtifactsProperties) {
+        return sceneArtifactsProperties.getInternalDownloadWhitelist()::contains;
     }
 
     @Bean
