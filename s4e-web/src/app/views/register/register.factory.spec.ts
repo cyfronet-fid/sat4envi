@@ -6,6 +6,10 @@ export const RegisterFactory = Factory.makeFactory<RegisterFormState>({
   password: Factory.each(i => `password#${i}`),
   passwordRepeat: Factory.each(i => `password#${i}`),
   recaptcha: Factory.each(i => `captcha#${i}`),
+  policy: true,
+  domain: 'LAND',
+  usage: 'COMMERCIAL',
+  country: 'PL',
   surname: Factory.each(i => `surname#${i}`),
   name: Factory.each(i => `name#${i}`),
 });

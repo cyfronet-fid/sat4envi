@@ -40,7 +40,15 @@ export function devRestoreFormState<K extends keyof FormState>(formValue: any, f
     return;
   }
 
-  Object.keys(form.controls).forEach(field => {
+  Object.keys(form.controls)
+    .filter(field => {
+      if (!formValue.controls[field]) {
+        console.error(`Control for field ${field} can't be found`)
+      }
+
+      return !!formValue.controls[field];
+    })
+    .forEach(field => {
     const control = form.get(field);
     control.setErrors(formValue.controls[field].errors);
 

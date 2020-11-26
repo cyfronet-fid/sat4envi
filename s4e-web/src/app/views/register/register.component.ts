@@ -3,7 +3,7 @@ import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../state/form/form.model';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {RegisterFormState} from './state/register.model';
+import {appUsageTypes, RegisterFormState, scientificDomainsTypes} from './state/register.model';
 import {RegisterQuery} from './state/register.query';
 import {RegisterService} from './state/register.service';
 import {validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
@@ -11,6 +11,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {GenericFormComponent} from '../../utils/miscellaneous/generic-form.component';
 import {map} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {countries} from './state/countries';
 
 export function MustMatch(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {
@@ -38,6 +39,10 @@ export function MustMatch(controlName: string, matchingControlName: string) {
   encapsulation: ViewEncapsulation.None
 })
 export class RegisterComponent extends GenericFormComponent<RegisterQuery, RegisterFormState> {
+  public scientificDomainTypes = scientificDomainsTypes;
+  public appUsageTypes = appUsageTypes;
+  public countries = countries;
+
   constructor(fm: AkitaNgFormsManager<FormState>,
               router: Router,
               private activatedRoute: ActivatedRoute,
@@ -54,6 +59,10 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
       surname: new FormControl('', Validators.required),
       password: new FormControl('', [Validators.required]),
       passwordRepeat: new FormControl('', [Validators.required]),
+      domain: new FormControl('', [Validators.required]),
+      usage: new FormControl<string>('', [Validators.required]),
+      country: new FormControl<string>('', [Validators.required]),
+      policy: new FormControl<boolean>(false, [Validators.required]),
       recaptcha: new FormControl('', [Validators.required])
     }, {validators: MustMatch('password', 'passwordRepeat')});
 
