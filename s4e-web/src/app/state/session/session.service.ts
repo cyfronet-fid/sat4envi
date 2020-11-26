@@ -74,17 +74,26 @@ export class SessionService {
         handleHttpRequest$(this._store),
         switchMap(data => this._profileLoaderService.loadProfile$()),
         tap(() => this._store.update({email: request.email})),
-        tap(() => this._navigateToApplication())
+        tap(async () => await this._navigateToApplication())
       );
   }
 
   @action('logout')
   logout() {
     this._http.post(`${environment.apiPrefixV1}/logout`, {})
-      .subscribe(() => {
+      .subscribe(async () => {
         this._store.reset();
-        this._router.navigate(['/login']);
+        await this._router.navigate(['/login']);
       });
+  }
+
+  removeAccount$(email: string, password: string) {
+    const url = `${environment.apiPrefixV1}/users/forget-me`;
+    return this._http.post(url, {email, password})
+      .pipe(
+        handleHttpRequest$(this._store),
+        tap(() => this.logout())
+      );
   }
 
   getJwtToken$(request: LoginFormState) {
@@ -97,10 +106,12 @@ export class SessionService {
     this._store.setError(null);
   }
 
-  private _navigateToApplication(): void {
-    !!this._backLink && this._backLink !== ''
-      ? this._router.navigateByUrl(this._backLink)
-      : this._router.navigate(['/map/products']);
+  private async _navigateToApplication(): Promise<void> {
+    await (
+      !!this._backLink && this._backLink !== ''
+        ? this._router.navigateByUrl(this._backLink)
+        : this._router.navigate(['/map/products'])
+    );
 
     delete (this._backLink);
   }

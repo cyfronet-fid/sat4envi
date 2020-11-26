@@ -1,78 +1,71 @@
-<s4e-tiles-dashboard>
-  <h1 dashboard-title i18n>Twój profil</h1>
-  <p dashboard-description i18n></p>
-  <ng-container dashboard-tiles>
-    <s4e-tile data-e2e="user-details">
-      <img src="./assets/images/ico_people.svg" alt="Ikona ludzi" width="50" tile-image />
-      <header class="panel__header" tile-title>Moje dane</header>
-      <div tile-description>
-        <p i18n>Imię: {{ userName$ | async }}</p>
-        <p i18n>Nazwisko: {{ userSurname$ | async }}</p>
-        <p i18n>Email: {{ userEmail$ | async }}</p>
-      </div>
+<h1 i18n>Twój profil</h1>
+<br />
+
+<section class="content__details profile">
+  <div class="profile__content ng-star-inserted" data-e2e="institution-details">
+    <h2>Moje dane</h2>
+    <p i18n>Imię: {{ userName$ | async }}</p>
+    <p i18n>Nazwisko: {{ userSurname$ | async }}</p>
+    <p i18n>Email: {{ userEmail$ | async }}</p>
+    <button
+      class="button button--secondary button--small"
+      routerLink="/settings/change-password"
+      queryParamsHandling="merge"
+      data-e2e="go-to-password-change"
+    >
+      Zmień hasło
+    </button>
+  </div>
+</section>
+
+<section class="content__details profile">
+  <div class="profile__content ng-star-inserted" data-e2e="institution-details">
+    <h2>Usuwanie konta</h2>
+    <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="removeAccount()">
+      <ext-input
+        formControlName="password"
+        label="Hasło"
+        type="password"
+        placeholder="Hasło"
+        [required]="true"
+        i18n-label
+      ></ext-input>
+      <br />
       <button
         class="button button--secondary button--small"
-        routerLink="/settings/change-password"
-        queryParamsHandling="merge"
-        data-e2e="go-to-password-change"
-        footer-navigation
+        type="submit"
       >
-        Zmień hasło
+        Usuń konto
       </button>
-    </s4e-tile>
+    </form>
+  </div>
+</section>
 
-    <s4e-tile
-      *ngIf="(administrationInstitutions$ | async).length > 0"
-      data-e2e="administrative-institutions-tile"
-      data-ut="administrative-institutions-tile"
-    >
-      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
-      <header class="panel__header" tile-title>Instytucje administrowane</header>
-      <div tile-description>
-        <p *ngFor="let institution of (administrationInstitutions$ | async).slice(0, MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY)">
-          <a
-            routerLink="/settings/institution"
-            [queryParams]="{institution: institution.slug}"
-            queryParamsHandling="merge"
-          >
-            {{ institution.name }}
-          </a>
-        </p>
-      </div>
-      <button
-       style="z-index: 999"
-        *ngIf="hasMoreAdministrationInstitutionsThanMax$ | async"
-        class="button button--secondary button--small"
-        routerLink="/settings/institutions"
-        queryParamsHandling="merge"
-        data-ut="go-to-institutions"
-        data-e2e="go-to-institutions"
-        footer-navigation
-      >
-        Pokaż więcej
-      </button>
-    </s4e-tile>
-
-    <s4e-tile
-      style="z-index: 999"
-      *ngIf="(memberInstitutions$ | async).length > 0"
-      data-e2e="member-institutions-tile"
-      data-ut="member-institutions-tile"
-    >
-      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
-      <header class="panel__header" tile-title>Instytucje członkowskie</header>
-      <div tile-description>
-        <p *ngFor="let institution of (memberInstitutions$ | async)">
-          <a
-            routerLink="/settings/institution"
-            [queryParams]="{institution: institution.slug}"
-            queryParamsHandling="merge"
-          >
-            {{ institution.name }}
-          </a>
-        </p>
-      </div>
-    </s4e-tile>
+<s4e-generic-list-view *ngIf="!!(institutions$ | async) && (institutions$ | async).length > 0"
+                       [loading]="isLoading$ | async"
+                       [items]="institutions$ | async"
+                       [error]="error$ | async"
+                       [searchable]="true">
+  <ng-container description></ng-container>
+  <h1 caption i18>
+    <ng-container i18n>Lista instytucji</ng-container>
+  </h1>
+  <ng-container search-label i18n>Szukaj instytucji:</ng-container>
+  <ng-container table-header>
+    <th i18n>Nazwa instytucji</th>
+    <th i18n>Administrator</th>
   </ng-container>
-</s4e-tiles-dashboard>
+  <ng-template let-inst="item">
+    <td
+      [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15"
+      data-e2e="institution-name"
+    >
+      <a routerLink="../institution" queryParamsHandling="merge"
+         [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
+    <td>
+      {{ isManagerOf(inst) ? 'tak' : 'nie' }}
+    </td>
+  </ng-template>
+</s4e-generic-list-view>
+
 <div class="content__image content__image--profile"></div>

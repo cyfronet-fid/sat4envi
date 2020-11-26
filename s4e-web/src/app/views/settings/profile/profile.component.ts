@@ -2,31 +2,67 @@ import { map } from 'rxjs/operators';
 import { InstitutionQuery } from './../state/institution/institution.query';
 import { Component, OnInit } from '@angular/core';
 import {SessionQuery} from '../../../state/session/session.query';
-import {Observable} from 'rxjs';
-import { Institution } from '../state/institution/institution.model';
+import {forkJoin, Observable} from 'rxjs';
+import {Institution, InstitutionForm} from '../state/institution/institution.model';
+import {SessionService} from '../../../state/session/session.service';
+import {GenericFormComponent} from '../../../utils/miscellaneous/generic-form.component';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {FormState} from '../../../state/form/form.model';
+import {Router} from '@angular/router';
+import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
+import {emailListValidator} from '../email-list-validator.utils';
+import {validateAllFormFields} from '../../../utils/miscellaneous/miscellaneous';
+import {ModalService} from '../../../modal/state/modal.service';
 
 @Component({
   selector: 's4e-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent {
-  public MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY = 10;
-
+export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {password: string}> {
+  public error$ = this._institutionQuery.selectError();
+  public isLoading$ = this._institutionQuery.selectLoading();
   public userEmail$: Observable<string> = this._sessionQuery.select(state => state.email);
   public userName$: Observable<string> = this._sessionQuery.select(state => state.name);
   public userSurname$: Observable<string> = this._sessionQuery.select(state => state.surname);
 
-  public administrationInstitutions$: Observable<Institution[]> = this._institutionQuery
-    .selectAdministrationInstitutions$();
-  public hasMoreAdministrationInstitutionsThanMax$ = this.administrationInstitutions$
-    .pipe(map(institutions => institutions.length > this.MAX_ADMINISTRATION_INSTITUTIONS_TO_DISPLAY));
+  public institutions$ = this._institutionQuery.selectAll();
 
-  public memberInstitutions$: Observable<Institution[]> = this._institutionQuery
-    .selectMemberInstitutions$();
+  form: FormGroup<{password: string}> = new FormGroup<{password: string}>({
+    password: new FormControl<string>(null, [Validators.required, Validators.minLength(8)])
+  });
 
   constructor(
+    private _formsManager: AkitaNgFormsManager<FormState>,
+    private _router: Router,
     private _sessionQuery: SessionQuery,
-    private _institutionQuery: InstitutionQuery
-  ) {}
+    private _sessionService: SessionService,
+    private _institutionQuery: InstitutionQuery,
+    private _modalService: ModalService
+  ) {
+    super(_formsManager, _router, _institutionQuery, 'removeUser');
+  }
+
+  isManagerOf(institution: Institution) {
+    return this._institutionQuery.isManagerOf(institution);
+  }
+
+  async removeAccount() {
+    const confirmAccountRemoval = await this._modalService.confirm(
+      'Usuwanie konta',
+      'Operacja usunięcia konta jest nieodwracalna. Czy napewno chcesz skasować konto?'
+    );
+    if (!confirmAccountRemoval) {
+      return;
+    }
+
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
+    console.log(this.form.valid, this.form.errors);
+    if (this.form.invalid) {
+      return;
+    }
+
+    this._sessionService.removeAccount$(this._sessionQuery.getValue().email, this.form.value.password)
+      .subscribe();
+  }
 }

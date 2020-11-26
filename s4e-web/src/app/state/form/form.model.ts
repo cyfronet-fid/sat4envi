@@ -20,4 +20,5 @@ export interface FormState {
   invitation: InvitationForm;
   jwtToken: JwtTokenForm;
   expertHelp: ExpertHelpForm;
+  removeUser: {password: string};
 }
