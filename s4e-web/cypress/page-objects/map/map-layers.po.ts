@@ -4,10 +4,10 @@ import { GeneralModal } from '../modal/general-modal.po';
 export class Layers extends Core {
   static pageObject = {
     getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'), //Configuration WMS
-    getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'), //Products 
+    getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'), //Layers
     getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'), 
 
-    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'), // Modal WMS layers
+    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'), // Modal WMS single layers
     getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'), 
     getDisplayInPanelBtns: () => cy.get('[data-e2e="display-in-panel-btn"]'), // Visible YES/NO
 
@@ -15,7 +15,8 @@ export class Layers extends Core {
     getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'), // Add Layer button
     getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'), 
     getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'), 
-    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]') 
+    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]'),
+    layerCount: () => Cypress.$('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').length
   };
 
   static activeLayersCountShouldBe(count: number) {

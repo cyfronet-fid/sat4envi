@@ -3,7 +3,7 @@ import { Core } from './../core.po';
 export class GeneralModal extends Core {
   static pageObject = {
     getCloseBtnClass: '[data-e2e="close-btn"]',
-    getCloseBtn: () => cy.get(GeneralModal.pageObject.getCloseBtnClass),
+    getCloseBtn: () => cy.get(GeneralModal.pageObject.getCloseBtnClass), //X
     getCancelBtn: () => cy.get('button.button-cancel'),
     getModalContainer: () => cy.get('[data-e2e="modal-container"]')
   };
