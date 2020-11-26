@@ -315,6 +315,9 @@ public class AppUserControllerTest {
                 .name("Name")
                 .surname("Surname")
                 .password("admin123")
+                .domain(AppUser.ScientificDomain.ATMOSPHERE)
+                .usage(AppUser.Usage.RESEARCH)
+                .country("PL")
                 .build();
 
         assertThat(appUserRepository.findByEmail(registerRequest.getEmail()), isEmpty());
@@ -367,6 +370,9 @@ public class AppUserControllerTest {
                 .name("Name")
                 .surname("Surname")
                 .password("admin123")
+                .domain(AppUser.ScientificDomain.ATMOSPHERE)
+                .usage(AppUser.Usage.RESEARCH)
+                .country("PL")
                 .build();
         appUserRepository.save(AppUser.builder()
                 .name("Name")
