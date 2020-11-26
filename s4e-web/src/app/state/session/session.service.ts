@@ -4,7 +4,7 @@ import {SessionStore} from './session.store';
 import {catchError, map, switchMap, tap} from 'rxjs/operators';
 import {action} from '@datorama/akita';
 import {LoginFormState, Session} from './session.model';
-import {HTTP_401_UNAUTHORIZED} from '../../errors/errors.model';
+import {HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN} from '../../errors/errors.model';
 import {Observable, of} from 'rxjs';
 import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
@@ -74,26 +74,26 @@ export class SessionService {
         handleHttpRequest$(this._store),
         switchMap(data => this._profileLoaderService.loadProfile$()),
         tap(() => this._store.update({email: request.email})),
-        tap(async () => await this._navigateToApplication())
+        switchMap(() => this._navigateToApplication())
       );
   }
 
   @action('logout')
   logout() {
     this._http.post(`${environment.apiPrefixV1}/logout`, {})
-      .subscribe(async () => {
-        this._store.reset();
-        await this._router.navigate(['/login']);
-      });
+      .pipe(
+        tap(() => this._store.reset()),
+        switchMap(() => this._router.navigate(['/login']))
+      )
+      .subscribe();
   }
 
   removeAccount$(email: string, password: string) {
     const url = `${environment.apiPrefixV1}/users/forget-me`;
-    return this._http.post(url, {email, password})
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap(() => this.logout())
-      );
+
+    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_403_FORBIDDEN.toString()}};
+    return this._http.post(url, {email, password}, headers)
+      .pipe(handleHttpRequest$(this._store));
   }
 
   getJwtToken$(request: LoginFormState) {

@@ -1,8 +1,8 @@
-import { map } from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import { InstitutionQuery } from './../state/institution/institution.query';
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {SessionQuery} from '../../../state/session/session.query';
-import {forkJoin, Observable} from 'rxjs';
+import {forkJoin, Observable, throwError} from 'rxjs';
 import {Institution, InstitutionForm} from '../state/institution/institution.model';
 import {SessionService} from '../../../state/session/session.service';
 import {GenericFormComponent} from '../../../utils/miscellaneous/generic-form.component';
@@ -10,9 +10,10 @@ import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../state/form/form.model';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {emailListValidator} from '../email-list-validator.utils';
 import {validateAllFormFields} from '../../../utils/miscellaneous/miscellaneous';
 import {ModalService} from '../../../modal/state/modal.service';
+import {untilDestroyed} from 'ngx-take-until-destroy';
+import {NotificationService} from 'notifications';
 
 @Component({
   selector: 's4e-profile',
@@ -29,7 +30,7 @@ export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {pa
   public institutions$ = this._institutionQuery.selectAll();
 
   form: FormGroup<{password: string}> = new FormGroup<{password: string}>({
-    password: new FormControl<string>(null, [Validators.required, Validators.minLength(8)])
+    password: new FormControl<string>(null, [Validators.required])
   });
 
   constructor(
@@ -38,7 +39,8 @@ export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {pa
     private _sessionQuery: SessionQuery,
     private _sessionService: SessionService,
     private _institutionQuery: InstitutionQuery,
-    private _modalService: ModalService
+    private _modalService: ModalService,
+    private _notificationService: NotificationService
   ) {
     super(_formsManager, _router, _institutionQuery, 'removeUser');
   }
@@ -48,6 +50,11 @@ export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {pa
   }
 
   async removeAccount() {
+    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
+    if (this.form.invalid) {
+      return;
+    }
+
     const confirmAccountRemoval = await this._modalService.confirm(
       'Usuwanie konta',
       'Operacja usunięcia konta jest nieodwracalna. Czy napewno chcesz skasować konto?'
@@ -56,13 +63,17 @@ export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {pa
       return;
     }
 
-    validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
-    console.log(this.form.valid, this.form.errors);
-    if (this.form.invalid) {
-      return;
-    }
-
     this._sessionService.removeAccount$(this._sessionQuery.getValue().email, this.form.value.password)
-      .subscribe();
+      .pipe(untilDestroyed(this))
+      .subscribe(
+        () => this._sessionService.logout(),
+        () => {
+          this._notificationService.addGeneral({
+            content: 'Podałeś niepoprawne hasło lub utraciłeś sesję',
+            type: 'error'
+          });
+          this.form.reset();
+        }
+      );
   }
 }

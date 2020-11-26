@@ -1,14 +1,18 @@
-<h1 i18n>Twój profil</h1>
-<br />
+<header class="content__header">
+  <h1 i18n>Twój profil</h1>
+</header>
 
 <section class="content__details profile">
   <div class="profile__content ng-star-inserted" data-e2e="institution-details">
     <h2>Moje dane</h2>
-    <p i18n>Imię: {{ userName$ | async }}</p>
-    <p i18n>Nazwisko: {{ userSurname$ | async }}</p>
-    <p i18n>Email: {{ userEmail$ | async }}</p>
+    <ul>
+      <li i18n>{{ userName$ | async }}</li>
+      <li i18n>{{ userSurname$ | async }}</li>
+      <li i18n>Email: {{ userEmail$ | async }}</li>
+    </ul>
+    <br />
     <button
-      class="button button--secondary button--small"
+      class="button button--default button--small"
       routerLink="/settings/change-password"
       queryParamsHandling="merge"
       data-e2e="go-to-password-change"
@@ -18,38 +22,19 @@
   </div>
 </section>
 
-<section class="content__details profile">
-  <div class="profile__content ng-star-inserted" data-e2e="institution-details">
-    <h2>Usuwanie konta</h2>
-    <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="removeAccount()">
-      <ext-input
-        formControlName="password"
-        label="Hasło"
-        type="password"
-        placeholder="Hasło"
-        [required]="true"
-        i18n-label
-      ></ext-input>
-      <br />
-      <button
-        class="button button--secondary button--small"
-        type="submit"
-      >
-        Usuń konto
-      </button>
-    </form>
-  </div>
-</section>
-
 <s4e-generic-list-view *ngIf="!!(institutions$ | async) && (institutions$ | async).length > 0"
                        [loading]="isLoading$ | async"
                        [items]="institutions$ | async"
                        [error]="error$ | async"
-                       [searchable]="true">
+                       [searchable]="true"
+                       data-ut="institutions">
   <ng-container description></ng-container>
-  <h1 caption i18>
-    <ng-container i18n>Lista instytucji</ng-container>
-  </h1>
+  <h2 caption-inside i18>
+    <ng-container i18n>Jestś przypisany do poniższych instytucji</ng-container>
+  </h2>
+  <ng-container description-inside>
+    Klikając w poszczególną instytucję możesz zobaczyć jej szczegóły.
+  </ng-container>
   <ng-container search-label i18n>Szukaj instytucji:</ng-container>
   <ng-container table-header>
     <th i18n>Nazwa instytucji</th>
@@ -67,5 +52,33 @@
     </td>
   </ng-template>
 </s4e-generic-list-view>
+
+<section class="content__details profile">
+  <div class="profile__content ng-star-inserted" data-e2e="institution-details">
+    <h2>Usuwanie konta</h2>
+    <p>
+      Podając hasło możesz usunąć konto i wszystkie dane powiązane z nim w aplikacji Sat4Envi.
+      Pamiętaj, że jest to nieodwracalna decyzja!
+    </p>
+    <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="removeAccount()">
+      <ext-input
+        formControlName="password"
+        label="Hasło"
+        type="password"
+        placeholder="Hasło"
+        auto
+        [required]="true"
+        i18n-label
+      ></ext-input>
+      <br />
+      <button
+        class="button button--error button--small"
+        type="submit"
+      >
+        Usuń konto
+      </button>
+    </form>
+  </div>
+</section>
 
 <div class="content__image content__image--profile"></div>
