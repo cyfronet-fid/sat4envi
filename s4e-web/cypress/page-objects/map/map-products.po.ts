@@ -8,7 +8,7 @@ export class MapProducts extends Core {
     getFavouriteTab: () => cy.get('[data-e2e="favourite-list"]'), // link favorite
     getProductsTab: () => cy.get('[data-e2e="product-list"]'), // link list of products
     getFavouriteCount: () => cy.get('[data-e2e="favourite-count"]'), // count of favorite
-    getProducts: () => cy.get(".products-list .products__item"), // all procucts
+    getProducts: () => cy.get(".products-list .products__item"), // all procucts 
     getProductList: () => cy.get(".products-list"), // list od prodcts (one element)
     getProductsBtns: () =>
       cy.get('s4e-items-picker.section.products .products__name'), // button for select every product

@@ -24,6 +24,36 @@ describe('Map Layers', () => {
       .activeLayersCountShouldBe(0)
   });
 
+  
+
+  it('should add, hide and remove from panel', function() {
+    const label = 'Test';
+    const url = 'https://eumetview.eumetsat.int/geoserver/wms?LAYERS=eps:metop1_ir108';
+    
+    
+    //console.log(count)
+
+    Layers
+      .openManagementModal()
+      .addNew(label, url)
+      .changeContextTo(GeneralModal)
+      .closeAndChangeContext(Layers)
+      const count = Layers.pageObject.layerCount()
+    Layers
+      .sidebarLayersCountShouldBe(count + 1)
+
+      .openManagementModal()
+      .toggleNthInPanelDisplay(count)
+      .changeContextTo(GeneralModal)
+      .closeAndChangeContext(Layers)
+      .sidebarLayersCountShouldBe(count)
+
+      .openManagementModal()
+      .removeNthWithPermission(0)
+      .changeContextTo(ConfirmModal)
+      .accept();
+  });
+
   it('should display url errors', function () {
     const label = 'Test';
     const url = [
@@ -46,29 +76,5 @@ describe('Map Layers', () => {
       .errorsCountShouldBe(6)
       .changeContextTo(GeneralModal)
      .closeAndChangeContext(Layers);
-  });
-
-  it('should add, hide and remove from panel', function() {
-    const label = 'Test';
-    const url = 'https://eumetview.eumetsat.int/geoserver/wms?LAYERS=eps:metop1_ir108';
-    const count = Layers.pageObject.layerCount()
-
-    Layers
-      .openManagementModal()
-      .addNew(label, url)
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(Layers)
-      .sidebarLayersCountShouldBe(count + 1)
-
-      .openManagementModal()
-      .toggleNthInPanelDisplay(count)
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(Layers)
-      .sidebarLayersCountShouldBe(count)
-
-      .openManagementModal()
-      .removeNthWithPermission(0)
-      .changeContextTo(ConfirmModal)
-      .accept();
   });
 });
