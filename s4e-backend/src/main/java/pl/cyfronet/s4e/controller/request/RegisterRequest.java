@@ -8,6 +8,7 @@ import pl.cyfronet.s4e.controller.validation.CountryCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -27,12 +28,15 @@ public class RegisterRequest {
     @Size(min=8)
     private String password;
 
+    @NotNull
     @Schema(description = "User's scientific domain")
     private AppUser.ScientificDomain domain;
 
+    @NotNull
     @Schema(description = "User's usage scenario")
     private AppUser.Usage usage;
 
+    @NotNull
     @CountryCode
     @Schema(description = "User's ISO 3166 alpha-2 country code", example = "PL")
     private String country;
