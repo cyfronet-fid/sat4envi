@@ -87,6 +87,13 @@
     opacity: 0.8;
   }
 
+  &--error {
+    @include button;
+    background: transparent;
+    border: 1px solid $color-error;
+    color: $color-error;
+  }
+
   & + & {
     margin-left: $space-xsmall;
   }

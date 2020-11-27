@@ -11,6 +11,7 @@ import {ProfileModule} from './profile.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import {ModalService} from '../../../modal/state/modal.service';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -19,6 +20,7 @@ describe('ProfileComponent', () => {
   let sessionQuery: SessionQuery;
   let sessionStore: SessionStore;
   let institutionQuery: InstitutionQuery;
+  let modalService: ModalService;
   let de: DebugElement;
 
   beforeEach(async(() => {
@@ -39,6 +41,7 @@ describe('ProfileComponent', () => {
     sessionService = TestBed.get(SessionService);
     sessionQuery = TestBed.get(SessionQuery);
     sessionStore = TestBed.get(SessionStore);
+    modalService = TestBed.get(ModalService);
 
     institutionQuery = TestBed.get(InstitutionQuery);
   });
@@ -48,31 +51,60 @@ describe('ProfileComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display administrative and member institutions', () => {
+  it('should display institutions list', () => {
     const institutions = InstitutionFactory.buildList(5);
-    const administrativeInstitutions = institutions.splice(0, 3);
-    component.administrationInstitutions$ = of(administrativeInstitutions);
-    const memberInstitutions = institutions;
-    component.memberInstitutions$ = of(memberInstitutions);
+    component.institutions$ = of(institutions);
 
     fixture.detectChanges();
 
-    const administrativeInstitutionsTile = de.query(By.css('s4e-tile[data-ut="administrative-institutions-tile"]'));
-    const administrativeInstitutionsTileText = administrativeInstitutionsTile.nativeElement.textContent;
-    administrativeInstitutions
-      .forEach(institution => expect(administrativeInstitutionsTileText.indexOf(institution.name) > -1).toBeTruthy());
-
-    const memberInstitutionsTile = de.query(By.css('s4e-tile[data-ut="member-institutions-tile"]'));
-    const memberInstitutionsTileText = memberInstitutionsTile.nativeElement.textContent;
-    memberInstitutions
-        .forEach(institution => expect(memberInstitutionsTileText.indexOf(institution.name) > -1).toBeTruthy());
+    const institutionsList = de.query(By.css('[data-ut="institutions"]'));
+    expect(institutionsList).toBeTruthy();
   });
-  it('should display get more button on more than max institutions', () => {
-    component.hasMoreAdministrationInstitutionsThanMax$ = of(true);
+  it('should hide institutions list', () => {
+    component.institutions$ = of([]);
 
     fixture.detectChanges();
 
-    const goToInstitutionsListBtn = de.queryAll(By.css('button[data-ut="go-to-institutions"]'));
-    expect(goToInstitutionsListBtn).toBeTruthy();
+    const institutionsList = de.query(By.css('[data-ut="institutions"]'));
+    expect(institutionsList).toBeFalsy();
+  });
+  it('should remove user', async () => {
+    const password = 'test1234';
+    component.form.patchValue({password});
+
+    const email = 'test@mail.lp';
+    spyOn(sessionQuery, 'getValue').and.returnValue({email});
+    spyOn(modalService, 'confirm').and.returnValue(of(true).toPromise());
+
+    const spy = spyOn(sessionService, 'removeAccount$').and.returnValue(of());
+
+    await component.removeAccount();
+
+    expect(spy).toHaveBeenCalledWith(email, password);
+  });
+  it('should valid remove user', async () => {
+    const email = 'test@mail.lp';
+    spyOn(sessionQuery, 'getValue').and.returnValue({email});
+    spyOn(modalService, 'confirm').and.returnValue(of(true).toPromise());
+
+    const spy = spyOn(sessionService, 'removeAccount$');
+
+    await component.removeAccount();
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+  it('should not remove user', async () => {
+    const password = 'test1234';
+    component.form.patchValue({password});
+
+    const email = 'test@mail.lp';
+    spyOn(sessionQuery, 'getValue').and.returnValue({email});
+    spyOn(modalService, 'confirm').and.returnValue(of(false).toPromise());
+
+    const spy = spyOn(sessionService, 'removeAccount$');
+
+    await component.removeAccount();
+
+    expect(spy).not.toHaveBeenCalled();
   });
 });

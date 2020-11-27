@@ -28,5 +28,4 @@ describe('SessionService', () => {
   it('should be created', () => {
     expect(sessionService).toBeDefined();
   });
-
 });
