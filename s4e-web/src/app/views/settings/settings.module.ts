@@ -19,11 +19,14 @@ import {SETTINGS_PATH} from './settings.breadcrumbs';
 import { EventsModule } from 'src/app/utils/search/events.module';
 import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 import {GenericListViewModule} from './components/generic-list-view/generic-list-view.module';
+import {OverlayListModule} from '../../components/overlay-list/overlay-list.module';
+import {WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
 
 @NgModule({
   declarations: [
     SettingsComponent,
-    ManageAuthoritiesComponent
+    ManageAuthoritiesComponent,
+    WmsOverlaysComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +43,8 @@ import {GenericListViewModule} from './components/generic-list-view/generic-list
     ModalModule,
     BreadcrumbModule,
     EventsModule,
-    GenericListViewModule
+    GenericListViewModule,
+    OverlayListModule
   ]
 })
 export class SettingsModule {

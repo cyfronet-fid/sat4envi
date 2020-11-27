@@ -1,0 +1,240 @@
+<ng-container *ngIf="!(isLoading$ | async); else loadingRef">
+  <div *ngIf="!(overlays$ | async) || (overlays$ | async).length === 0" class="infobox infobox--emptylayers">
+    <p>
+      Nie masz jeszcze żadnej swojej nakładki. <a href="#">Sprawdź czym są nadkładki.</a>
+    </p>
+    <button
+      [disabled]="(isAddLoading$ | async)"
+      class="button button--secondary button--small"
+      type="button"
+      (click)="setNewFormVisible(true)"
+      i18n
+    >
+      Dodaj Nakładkę
+    </button>
+  </div>
+
+  <ng-container *ngIf="(isAddLoading$ | async)">
+    <div>
+      <p>URL zdjęcia WMS może zawierać następujące parametry:</p>
+      <ol>
+        <li>
+          <b>LAYERS=</b>
+          lista oddzielonych przecinkami nazw warstw (OPCJONALNE)
+        </li>
+        <li>
+          <b>STYLES=</b>
+          lista oddzielonych przecinkami typów renderingu dla każdej
+          z podanych warstw (OPCJONALNE)
+        </li>
+        <br>
+      </ol>
+
+      <p>
+        Parametry akceptowalne i ich wartości,
+        usuwane podczas przetwarzania URL dla prawidłowego wyświetlania obrazu:
+      </p>
+      <ol>
+        <li><b>VERSION=</b> z wartościami numerycznymi w formacie x.y.z</li>
+        <li><b>REQUEST=GetMap</b></li>
+        <li><b>BBOX=</b> z wartością w formacie minx,miny,maxx,maxy</li>
+        <li><b>SRS=</b> lub <b>CRS=</b> w formacie nazwa przestrzeni:identyfikator</li>
+        <li><b>WIDTH=</b> w formacie numerycznym</li>
+        <li><b>HEIGHT=</b> w formacie numerycznym</li>
+        <li><b>FORMAT=</b> w formacie image/rozszerzenie zdjęcia (vnd.jpeg-png|vnd.jpeg-png8|png|gif|tiff|jpg)</li>
+        <li><b>SERVICE=WMS</b></li>
+        <li><b>TRANSPARENT=</b> z wartością false lub true</li>
+      </ol>
+
+      <br>
+    </div>
+    <form [formGroup]="newOverlayForm" class="form">
+      <div class="infobox infobox--addlayer">
+        <strong>
+          Formularz dodawania własnej nakładki
+        </strong>
+        <table [ngClass]="{disabled: (isAddingNewLayer$ | async)}" width="100%">
+          <tbody>
+          <tr>
+            <td><ext-input
+              formControlName="label"
+              label="Nazwa"
+              i18n-label
+              placeholder="Moja nakładka 1"
+              i18n-placeholder
+              data-e2e="layer-label-input"
+            ></ext-input></td>
+            <td>
+              <label for="wms-url" i18n>
+                URL*
+              </label>
+              <input
+                id="wms-url"
+                class="form-control"
+                placeholder="https://my-wms-server.com/..."
+                [formControl]="newOverlayForm.controls.url"
+                [ngClass]="{'is-invalid': hasErrors('url')}"
+                data-e2e="layer-url-input"
+              />
+              <ng-container *ngIf="hasErrors('url')" >
+                <span
+                  class="error"
+                  *ngFor="let error of newOverlayForm.controls.url.errors | keyvalue"
+                  [ngSwitch]="error.key"
+                  data-e2e="invalid-url-error"
+                >
+                  <ng-container *ngSwitchCase="'required'" i18n>
+                    To pole jest wymagane
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'version'" i18n>
+                    Parametr `version` nie posiada wartości w formacie x.y.z<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'request'" i18n>
+                    Parametr `request` nie posiada wartości `GetMap`<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'layers'" i18n>
+                    Parametr `layers` nie posiada wartości w formacie
+                    elementów oddzielonych przecinkami<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'styles'" i18n>
+                    Parametr `styles` nie posiada wartości w formacie
+                    elementów oddzielonych przecinkami<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'bbox'" i18n>
+                    Parametr `bbox` nie posiada wartości
+                    w formacie minx,miny,maxx,maxy<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'srsOrCrs'" i18n>
+                    Parametr `srs` albo `crs` nie posiada wartości
+                    w formacie nazwa przestrzeni:identyfikator<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'width'" i18n>
+                    Parametr `width` nie posiada wartości będącej liczbą<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'height'" i18n>
+                    Parametr `height` nie posiada wartości będącej liczbą<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'format'" i18n>
+                    Parametr `format` nie posiada wartości
+                    w formacie image/rozszerzenie zdjęcia
+                    (vnd.jpeg-png|vnd.jpeg-png8|png|gif|tiff|jpg)<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'wmsService'" i18n>
+                    Parametr `service` nie posiada wartości `wms`<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'transparent'" i18n>
+                    Parametr `transparent` posiada wartość inną niż `true` lub `false`<br>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="'url'" i18n>
+                    URL jest niepoprawny<br>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault i18n>
+                    Nieoczekiwany błąd: {{ error.key }}
+                  </ng-container>
+                </span>
+              </ng-container>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <ng-container *ngIf="!((isAddingNewLayer$ | async)); else createLoadingRef">
+          <button
+            (click)="addNewOverlay()"
+            class="button button--secondary button--small"
+            data-e2e="submit-layer-form-btn"
+          >
+            Dodaj
+          </button>
+          <button
+            (click)="setNewFormVisible(false)"
+            class="button button--cancel button--small"
+          >
+            Anuluj
+          </button>
+        </ng-container>
+        <ng-template #createLoadingRef>
+          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        </ng-template>
+      </div>
+    </form>
+  </ng-container>
+
+  <div class="s4e-modal-table" *ngIf="!!(overlays$ | async) && (overlays$ | async).length > 0; else noOverlaysRef">
+    <table class="modal__table modal__table--white">
+      <thead>
+        <tr>
+          <th i18n>Nazwa</th>
+          <th i18n>URL nakładki</th>
+          <th *ngIf="newOwner === 'PERSONAL'" i18n>Pokaż w panelu</th>
+          <th i18n>Data dodania</th>
+          <th *ngIf="isPersonal((overlays$ | async)[0])"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let overlay of (overlays$ | async);trackBy:getOverlayId;index as $index"
+          [ngClass]="{disabled: overlay.loadingDelete}"
+          data-e2e="management-overlay"
+        >
+          <td>{{overlay.label}}</td>
+          <td>{{
+            overlay.url.length > 6
+              ? (overlay.url | slice:0:70) + '..'
+              : overlay.url
+          }}</td>
+          <td *ngIf="newOwner === 'PERSONAL'" i18n align="center">
+            <label class="fancycheckbox" data-e2e="display-in-panel-btn">
+              <input
+                *ngIf="!overlay.loadingVisible; else loadingVisibleRef"
+                type="checkbox"
+                [formControl]="visibilityFCList[$index]"
+                class="checkbox-slide"
+              >
+              <div class="slider round"></div>
+            </label>
+
+            <ng-template #loadingVisibleRef>
+              <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            </ng-template>
+          </td>
+          <td align="center">{{overlay.createdAt | S4EDate}}</td>
+          <td *ngIf="newOwner !== 'PERSONAL' || newOwner === 'PERSONAL' && isPersonal(overlay)">
+            <button
+              [disabled]="overlay.loadingDelete"
+              (click)="removeOverlay(overlay.id)"
+              data-e2e="delete-layer-btn"
+            >
+              <img *ngIf="!overlay.loadingDelete; else deleteLoadingRef" src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+              <ng-template #deleteLoadingRef>
+                <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+              </ng-template>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <section class="element" role="menuitem" *ngFor="let config of (overlays$ | async)">
+    </section>
+  </div>
+  <ng-template #noOverlaysRef>
+    <span i18n>Brak nakładek</span>
+  </ng-template>
+
+  <ng-container *ngIf="!!(overlays$ | async) && (overlays$ | async).length > 0">
+    <button
+      *ngIf="!(isAddLoading$ | async)"
+      class="button button--secondary button--small"
+      type="button"
+      (click)="setNewFormVisible(true)"
+      data-e2e="add-layer-btn"
+      i18n
+    >
+      Dodaj Nakładkę
+    </button>
+  </ng-container>
+</ng-container>
+<ng-template #loadingRef>
+  <div class="loading loading--form">
+    <div class="loading__item"></div>
+  </div>
+</ng-template>

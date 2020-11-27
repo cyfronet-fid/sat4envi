@@ -13,6 +13,7 @@ export type OwnerType = typeof GLOBAL_OWNER_TYPE | typeof PERSONAL_OWNER_TYPE | 
 export interface Overlay {
   id: number;
   ownerType: OwnerType;
+  institutionSlug?: string;
   url: string;
   label: string;
   visible: boolean;

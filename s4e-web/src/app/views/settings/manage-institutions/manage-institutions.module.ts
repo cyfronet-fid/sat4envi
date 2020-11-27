@@ -12,6 +12,7 @@ import {FormErrorModule} from 'src/app/components/form-error/form-error.module';
 import {S4EFormsModule} from 'src/app/form/form.module';
 import {InstitutionListComponent} from './institution-list/institution-list.component';
 import {GenericListViewModule} from '../components/generic-list-view/generic-list-view.module';
+import {OverlayListModule} from '../../../components/overlay-list/overlay-list.module';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {GenericListViewModule} from '../components/generic-list-view/generic-lis
     UtilsModule,
     FormErrorModule,
     S4EFormsModule,
-    GenericListViewModule
+    GenericListViewModule,
+    OverlayListModule
   ],
   exports: [
     InstitutionFormComponent,

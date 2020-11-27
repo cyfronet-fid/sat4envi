@@ -19,12 +19,13 @@
     >
       <h2 id="institution-title">{{ institution.name }}</h2>
       <ul>
-        <li id="institution-address">{{ institution.address }}</li>
+        <li *ngIf="!!institution.address" id="institution-address">{{ institution.address }}</li>
         <li
+          *ngIf="!!institution.postalCode || !!institution.city"
           id="institution-postal-code"
           data-e2e="postal-code-with-city"
         >
-          {{ institution.postalCode }} {{ institution.city }}
+          {{ institution?.postalCode }} {{ institution?.city }}
         </li>
         <li *ngIf="!!institution.phone" id="institution-phone">
           Telefon: {{ institution.phone }}
@@ -72,6 +73,15 @@
           queryParamsHandling="merge"
         >
           Zarządzaj ludźmi
+        </button>
+      </ng-container>
+      <ng-container add-button>
+        <button
+          class="button button--secondary button--small"
+          [routerLink]="['/settings/institution-wms-overlays']"
+          queryParamsHandling="merge"
+        >
+          Konfiguruj WMS
         </button>
       </ng-container>
     </ng-container>

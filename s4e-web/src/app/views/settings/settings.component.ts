@@ -34,6 +34,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     .isManagerOf$(this.activeInstitution$);
   public isAdminOfOneInstitution$ = this._institutionQuery
     .selectHasOnlyOneAdministrationInstitution();
+  public isSuperAdmin$ = this._sessionQuery.select('admin');
 
   public canGrantInstitutionDeleteAuthority;
 

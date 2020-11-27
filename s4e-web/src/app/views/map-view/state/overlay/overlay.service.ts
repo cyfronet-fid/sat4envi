@@ -62,12 +62,44 @@ export class OverlayService {
     this._store.ui.update({showNewOverlayForm: show});
   }
 
-  createOverlay(overlay: OverlayForm) {
-    console.log('Create overlay');
+  createGlobalOverlay(overlay: OverlayForm) {
+    const url = `${environment.apiPrefixV1}/overlays/global`;
+    this._createOverlay(overlay, url);
+  }
 
+  createInstitutionalOverlay(overlay: OverlayForm, institutionSlug: string) {
+    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/overlays`;
+    this._createOverlay(overlay, url);
+  }
+
+  createPersonalOverlay(overlay: OverlayForm) {
+    const url = `${environment.apiPrefixV1}/overlays/personal`;
+    this._createOverlay(overlay, url);
+  }
+
+  deletePersonalOverlay(id: number) {
+    const url = `${environment.apiPrefixV1}/overlays/personal`;
+    this._deleteOverlay(id, url);
+  }
+
+  deleteGlobalOverlay(id: number) {
+    const url = `${environment.apiPrefixV1}/overlays/global`;
+    this._deleteOverlay(id, url);
+  }
+
+  deleteInstitutionalOverlay(id: number, institutionSlug: string) {
+    const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/overlays`;
+    this._deleteOverlay(id, url);
+  }
+
+  resetUI() {
+    this._store.ui.update({showNewOverlayForm: false, loadingNew: false, error: null, loading: false});
+    this._store.ui.update(null, {loadingDelete: false, loadingPublic: false, loadingVisible: false});
+  }
+
+  private _createOverlay(overlay: OverlayForm, url: string) {
     this._store.ui.update({loadingNew: true});
-    const postUrl = `${environment.apiPrefixV1}/overlays/personal`;
-    this._http.post<Overlay>(postUrl, overlay)
+    this._http.post<Overlay>(url, overlay)
       .pipe(finalize(() => this._store.ui.update({loadingNew: false})))
       .subscribe((newOverlay) => {
           this._store.add(newOverlay);
@@ -77,10 +109,9 @@ export class OverlayService {
       );
   }
 
-  deleteOverlay(id: string) {
+  private _deleteOverlay(id: number, baseUrl: string) {
     this._store.ui.update(id, {loadingDelete: true});
-    const url = `${environment.apiPrefixV1}/overlays/personal/${id}`;
-    this._http.delete(url)
+    this._http.delete(`${baseUrl}/${id}`)
       .pipe(finalize(() => this._store.ui.update(id, {loadingDelete: false})))
       .subscribe(() => {
           this._store.remove(id);
@@ -88,10 +119,5 @@ export class OverlayService {
         },
         error => this._store.ui.setError(error)
       );
-  }
-
-  resetUI() {
-    this._store.ui.update({showNewOverlayForm: false, loadingNew: false, error: null, loading: false});
-    this._store.ui.update(null, {loadingDelete: false, loadingPublic: false, loadingVisible: false});
   }
 }
