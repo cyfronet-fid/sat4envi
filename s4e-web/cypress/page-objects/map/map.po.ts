@@ -16,8 +16,8 @@ export class Map extends Core {
     getLogoutBtn: () => cy.get("a").contains("Wyloguj"),
 
     // Date selection
-    getDateChangeBtn: () => cy.get(".timeline__changedate"),
-    getYearSelectionBtn: () => cy.get(".owl-dt-control-period-button"),
+    getDateChangeBtn: () => cy.get(".timeline__changedate"),//calendar icon
+    getYearSelectionBtn: () => cy.get(".owl-dt-control-period-button"), //month year on open calendar
     getYearBtn: (year: number) =>
       cy.get(".owl-dt-calendar-cell-content").contains(year),
     getMonthBtn: (month: number) =>
@@ -28,6 +28,8 @@ export class Map extends Core {
       cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {timeout: 5000}),
     getHourBtnInPopup: (hour: number) =>
       cy.get(`li[data-hour="${hour < 10 ? '0' + hour : hour}:00:00"]`, {timeout: 5000}),
+    getHourBtnInPopupNumber: () => cy.get('.multiple__popup ul li'),
+    getStackedHourNumberBtn: () => cy.get('.timeline__item'),
     getStackedHourBtn: (hourStart: number, hourEnd: number) =>
       cy.get(`.timeline__item--multiple[title="${hourStart < 10 ? '0' + hourStart : hourStart}:00 - ${hourEnd < 10 ? '0' + hourEnd : hourEnd}:00"]`,
         {timeout: 5000}),
@@ -102,6 +104,11 @@ export class Map extends Core {
     Map.pageObject.getStackedHourBtn(hourStart, hourEnd).should("be.visible").click();
     Map.pageObject.getHourBtnInPopup(hourStart).click();
     return Map;
+  }
+
+  static selectStackedDataPointNumber(stackedHourNumber:number, hour:number){
+    Map.pageObject.getStackedHourNumberBtn().eq(stackedHourNumber).click();
+    Map.pageObject.getHourBtnInPopupNumber().eq(hour).click()
   }
 
   static increaseResolution() {

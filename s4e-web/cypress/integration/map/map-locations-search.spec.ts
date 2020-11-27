@@ -1,6 +1,5 @@
 /// <reference types="Cypress" />
 
-
 import { Login } from '../../page-objects/auth/login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
@@ -13,23 +12,21 @@ describe('Map Locations Search', () => {
     Login
       .loginAs(this.zkMember)
       .changeContextTo(LocationsSearch);
-     
   });
 
   beforeEach(() => {
     LocationsSearch
       .pageObject
-
       .getSearch()
       .clear();
   });
 
-  function waitForCitiesList(){
+  function waitForCitiesList() {
     cy.server()
     cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
     cy.wait('@getCityList').its('status').should('eq', 200)
   }
-  
+
   it('should display searched places', () => {
     LocationsSearch
       .type('warsz')
@@ -89,10 +86,10 @@ describe('Map Locations Search', () => {
       .nthResultShouldHaveLabel(1, 'Warszawiaki')
       .nthResultShouldHaveType(1, 'wieś')
       .nthResultShouldHaveVoivodeship(1, 'lubelskie')
-       .type('{downarrow}{enter}')
-       .selectActiveResult()
+      .type('{downarrow}{enter}')
+      .selectActiveResult()
       .searchShouldHaveValue('Warszawiaki');
- });
+  });
 });
 
 

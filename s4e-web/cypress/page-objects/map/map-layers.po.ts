@@ -5,19 +5,19 @@ export class Layers extends Core {
   static pageObject = {
     getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'), //Configuration WMS
     getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'), //Layers
-    getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'), 
+    getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'),
 
     getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'), // Modal WMS single layers
-    getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'), 
+    getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'),
     getDisplayInPanelBtns: () => cy.get('[data-e2e="display-in-panel-btn"]'), // Visible YES/NO
 
-    getAddBtn: () => cy.get('[data-e2e="add-layer-btn"]'), //dodaj nakladke
-    getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'), // Add Layer button
-    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'), 
-    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'), 
+    getAddBtn: () => cy.get('[data-e2e="add-layer-btn"]'),
+    getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
+    getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
+    getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
     getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]'),
-    layerCount: () => Cypress.$('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').length
   };
+
 
   static activeLayersCountShouldBe(count: number) {
     Layers
@@ -58,7 +58,7 @@ export class Layers extends Core {
       .pageObject
       .getDisplayInPanelBtns()
       .eq(nth)
-      .click({force: true});
+      .click({ force: true });
 
     return Layers;
   }
@@ -68,7 +68,7 @@ export class Layers extends Core {
       .pageObject
       .getRemoveBtns()
       .eq(nth)
-      .click({force: true});
+      .click({ force: true });
 
     return Layers;
   }

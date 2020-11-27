@@ -23,8 +23,6 @@ export class MapViews extends Core {
       .getOpenSaveViewsBtn()
       .click({ force: true });
 
-    cy.wait(500);
-
     return MapViews;
   }
 
@@ -46,6 +44,7 @@ export class MapViews extends Core {
     MapViews
       .pageObject
       .getViewLabelInput()
+      .should("be.visible")
       .clear({ force: true })
       .type(label, { force: true });
 

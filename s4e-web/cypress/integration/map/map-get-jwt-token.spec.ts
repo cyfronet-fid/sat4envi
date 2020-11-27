@@ -18,7 +18,6 @@ describe('Map favorite products', () => {
       .authenticateAs(this.zkMember)
       .shouldHaveVisibleToken()
       .tokenShouldContain('.')
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(Map);
-  });
+      .goToApiManula()
+  })
 });

@@ -6,22 +6,20 @@ import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { Layers } from '../../page-objects/map/map-layers.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
-/*context('Map Views', () => {
+context('Map Views', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
   beforeEach(function () {
     Login.loginAs(this.zkMember);
-    cy.wait(500);
+    cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').should('have.length', 5)
   });
 
   it('should save view and remove it', () => {
     MapViews
       .openSaveViewsModal()
       .addView('test-view')
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(MapViews)
       .openViewsModal()
       .viewsCountShouldBe(1)
       .deleteNth(0)
@@ -29,15 +27,14 @@ import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
       .acceptAndChangeContextTo(GeneralModal)
       .closeAndChangeContext(MapViews);
   });
-<<<<<<< HEAD
-  it('should display view', () => {
+
+  it.only('should display view', () => {
     Layers
       .selectNthSidebarLayer(1)
       .changeContextTo(MapViews)
       .openSaveViewsModal()
       .addView('test-view')
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(Layers)
+      .changeContextTo(Layers)
       .unselectNthSidebarLayer(1)
       .changeContextTo(MapViews)
       .openViewsModal()
@@ -52,4 +49,6 @@ import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
       .acceptAndChangeContextTo(GeneralModal)
       .closeAndChangeContext(MapViews);
   });
-});*/
+
+  
+});
