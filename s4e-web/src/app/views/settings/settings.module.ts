@@ -17,10 +17,13 @@ import {S4EFormsModule} from '../../form/form.module';
 import {ManageInstitutionsModule} from './manage-institutions/manage-institutions.module';
 import {SETTINGS_PATH} from './settings.breadcrumbs';
 import { EventsModule } from 'src/app/utils/search/events.module';
+import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
+import {GenericListViewModule} from './components/generic-list-view/generic-list-view.module';
 
 @NgModule({
   declarations: [
-    SettingsComponent
+    SettingsComponent,
+    ManageAuthoritiesComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +39,8 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     SearchModule,
     ModalModule,
     BreadcrumbModule,
-    EventsModule
+    EventsModule,
+    GenericListViewModule
   ]
 })
 export class SettingsModule {

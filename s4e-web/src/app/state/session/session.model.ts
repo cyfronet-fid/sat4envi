@@ -14,6 +14,7 @@ export interface Session {
   name: string;
   surname: string;
   roles: Role[];
+  authorities: string[];
   memberZK: boolean;
   admin: boolean;
 }
@@ -30,6 +31,7 @@ export function createSession(params: Partial<Session>): Session {
   return {
     email: params.email || null,
     roles: params.roles || [],
+    authorities: params.authorities || [],
     name: '',
     surname: '',
     memberZK: false,

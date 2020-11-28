@@ -11,5 +11,4 @@ export class PersonQuery extends QueryEntity<PersonState, Person> {
   constructor(protected store: PersonStore) {
     super(store);
   }
-
 }

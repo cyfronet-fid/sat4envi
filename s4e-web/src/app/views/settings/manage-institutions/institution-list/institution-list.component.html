@@ -35,7 +35,7 @@
         <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
       </a>
       <a
-        *ngIf="isAdmin"
+        *ngIf="isAdmin || hasDeleteAuthorities"
         href="javascript:void(0)"
         data-e2e="delete"
         (click)="deleteInstitution(inst.slug)">

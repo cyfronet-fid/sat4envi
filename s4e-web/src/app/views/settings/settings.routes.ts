@@ -12,6 +12,7 @@ import {InstitutionListComponent} from './manage-institutions/institution-list/i
 import {InstitutionProfileComponent} from './intitution-profile/institution-profile.component';
 import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH, SETTINGS_PATH} from './settings.breadcrumbs';
 import {multipleInstitutionAdminDashboardMatcher, singleInstitutionAdminDashboardMatcher} from './dashboards.routes';
+import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 
 export const settingsRoutes: Routes = [
   {
@@ -45,7 +46,10 @@ export const settingsRoutes: Routes = [
           ]
         }
       },
-
+      {
+        path: 'manage-authorities',
+        component: ManageAuthoritiesComponent
+      },
       {
         path: INSTITUTIONS_LIST_PATH,
         component: InstitutionListComponent,

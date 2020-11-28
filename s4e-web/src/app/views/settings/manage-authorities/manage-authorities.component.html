@@ -1,0 +1,30 @@
+<s4e-generic-list-view
+  [loading]="areLoading$ | async"
+  [items]="users$ | async"
+  [error]="errors$ | async"
+  [selectable]="false"
+>
+  <ng-container caption i18n>Zarządzaj uprawnieniami</ng-container>
+  <ng-container search-label i18n>Szukaj ludzi:</ng-container>
+  <ng-container description>
+    W tym miejscu masz możliwość edytowania, dodawania
+    i usuwania uprawnień dla administratorów instytucji
+  </ng-container>
+  <ng-container table-header>
+    <th i18n>Imię i nazwisko</th>
+    <th i18n>Email</th>
+    <th i18n>Usuwanie instytucji</th>
+  </ng-container>
+  <ng-template let-user="item">
+    <td i18n>{{user.name}} {{user.surname}}</td>
+    <td i18n>{{user.email}}</td>
+    <td *ngIf="canGrantDeleteAuthority">
+      <input
+        [disabled]="user.email === currentUserEmail"
+        type="checkbox"
+        (click)="toggleDeleteAuthority(user)"
+        [checked]="user.hasGrantedDeleteInstitution"
+      />
+    </td>
+  </ng-template>
+</s4e-generic-list-view>
