@@ -55,4 +55,12 @@ export class ViewConfigurationService {
     this.store.setActive(configuration);
     this.store.setLoading(false);
   }
+
+  toggleHighContract() {
+    this.store.update(state => ({...state, highContrast: !state.highContrast}));
+  }
+
+  toggleLargeFont() {
+    this.store.update(state => ({...state, largeFont: !state.largeFont}));
+  }
 }

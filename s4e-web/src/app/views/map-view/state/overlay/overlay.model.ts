@@ -11,7 +11,7 @@ export const PERSONAL_OWNER_TYPE = 'PERSONAL';
 export type OwnerType = typeof GLOBAL_OWNER_TYPE | typeof PERSONAL_OWNER_TYPE | typeof INSTITUTIONAL_OWNER_TYPE;
 
 export interface Overlay {
-  id: string;
+  id: number;
   ownerType: OwnerType;
   url: string;
   label: string;

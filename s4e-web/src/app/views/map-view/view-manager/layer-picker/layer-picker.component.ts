@@ -18,7 +18,7 @@ export class ItemsPickerComponent {
   @Input() help: string;
   @Input() caption: string;
 
-  @Output() itemSelected = new EventEmitter<ID>();
+  @Output() itemSelected = new EventEmitter<number>();
   @Output() isFavouriteSelected = new EventEmitter<{ID: number, isFavourite: boolean}>();
   @Output() collapse = new EventEmitter<void>();
 }

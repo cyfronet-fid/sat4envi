@@ -10,14 +10,25 @@ import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {OverlayFactory} from '../overlay/overlay.factory.spec';
+import {ProductStore} from '../product/product.store';
+import {OverlayStore} from '../overlay/overlay.store';
+import {ProductFactory} from '../product/product.factory.spec';
+import {SceneStore} from '../scene/scene.store.service';
+import {SceneFactory} from '../scene/scene.factory.spec';
+import {MapStore} from '../map/map.store';
 
 describe('ViewConfigurationQuery', () => {
   let query: ViewConfigurationQuery;
   let store: ViewConfigurationStore;
   let mapQuery: MapQuery;
+  let mapStore: MapStore;
   let productQuery: ProductQuery;
   let sceneQuery: SceneQuery;
   let overlayQuery: OverlayQuery;
+  let productStore: ProductStore;
+  let overlayStore: OverlayStore;
+  let sceneStore: SceneStore;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -27,10 +38,14 @@ describe('ViewConfigurationQuery', () => {
 
     query = TestBed.get(ViewConfigurationQuery);
     store = TestBed.get(ViewConfigurationStore);
+    productStore = TestBed.get(ProductStore);
     productQuery = TestBed.get(ProductQuery);
     overlayQuery = TestBed.get(OverlayQuery);
+    overlayStore = TestBed.get(OverlayStore);
     mapQuery = TestBed.get(MapQuery);
     sceneQuery = TestBed.get(SceneQuery);
+    sceneStore = TestBed.get(SceneStore);
+    mapStore = TestBed.get(MapStore);
   });
 
   it('should create an instance', () => {
@@ -91,78 +106,48 @@ describe('ViewConfigurationQuery', () => {
   });
 
   it('getCurrent should work', () => {
-    let productSpyActive = jest.spyOn(productQuery, 'getActiveId');
-    productSpyActive.mockReturnValueOnce(10);
-    let productSpy = jest.spyOn(productQuery, 'getEntity');
-    productSpy.mockReturnValueOnce({
-      description: '', imageUrl: '', legend: undefined,
-      id: 10,
-      name: 'product 10 name'
-    });
-    let productSpyDate = jest.spyOn(productQuery, 'getValue');
-    productSpyDate.mockReturnValueOnce(
-      {
-        active: undefined,
-        ui: {availableDays: [], loadedMonths: [], selectedDate: '11-11-2020', selectedDay: 0, selectedMonth: 0, selectedYear: 0}
-      }
-    );
-    let overlaySpyActive = jest.spyOn(overlayQuery, 'getActive');
-    overlaySpyActive.mockReturnValueOnce(
-      [
-        {
-          label: 'overlay 1 caption', id: 'ov1', type: undefined
-        },
-        {
-          label: 'overlay 3 caption', id: 'ov3', type: undefined
-        }
-      ]
-    );
-    let overlaySpy = jest.spyOn(overlayQuery, 'getEntity');
-    overlaySpy.mockReturnValueOnce({
-      label: 'overlay 1 caption', id: 'ov1', type: undefined
-    }).mockReturnValueOnce({
-      label: 'overlay 3 caption', id: 'ov31', type: undefined
-    });
+    const product = ProductFactory.build();
+    productStore.set([product]);
+    productStore.setActive(product.id);
+    productStore.update(state => (
+      {...state, ui: {...state.ui, selectedMonth: 11, selectedYear: 2020, selectedDay: 11, selectedDate: '11-11-2020'}}
+    ));
 
-    let sceneSpyActive = jest.spyOn(sceneQuery, 'getActiveId');
-    sceneSpyActive.mockReturnValueOnce(78);
+    const overlays = OverlayFactory.buildList(2);
+    overlayStore.set(overlays);
+    overlayStore.setActive(overlays.map(ol => ol.id));
 
-    let mapSpy = jest.spyOn(mapQuery, 'getValue');
-    mapSpy.mockReturnValueOnce(
-      {
-        zkOptionsOpened: false,
-        loginOptionsOpened: false,
-        view: {
-          zoomLevel: 9,
-          centerCoordinates: [56, 67]
-        }
+    const scene = SceneFactory.build();
+    sceneStore.set([scene]);
+    sceneStore.setActive(scene.id);
+
+    mapStore.update({
+      sidebarOpen: false,
+      productDescriptionOpened: false,
+      zkOptionsOpened: false,
+      loginOptionsOpened: false,
+      view: {
+        zoomLevel: 9,
+        centerCoordinates: [56, 67]
       }
-    );
+    });
 
     const viewConfigEx: ViewConfigurationEx = {
       caption: '',
       configuration: {
-        overlays: ['ov1', 'ov3'],
-        productId: 10,
-        sceneId: 78,
+        overlays: [overlays[0].id, overlays[1].id],
+        productId: product.id,
+        sceneId: scene.id,
         date: '11-11-2020',
         viewPosition: {
           zoomLevel: 9,
           centerCoordinates: [56, 67]
         }
       },
-      configurationNames: {overlays: ['overlay 1 caption', 'overlay 3 caption'], product: 'product 10 name', selectedDate: '11-11-2020'},
+      configurationNames: {overlays: overlays.map(ol => ol.label), product: product.displayName, selectedDate: '11-11-2020'},
       thumbnail: null
     };
 
     expect(query.getCurrent()).toEqual(viewConfigEx);
-    expect(productSpyActive).toHaveBeenCalled();
-    expect(productSpy).toHaveBeenCalledWith(10);
-    expect(productSpyDate).toHaveBeenCalled();
-    expect(overlaySpyActive).toHaveBeenCalled();
-    expect(overlaySpy.mock.calls.length).toBe(2);
-    expect(sceneSpyActive).toHaveBeenCalled();
-    expect(mapSpy).toHaveBeenCalled();
   });
-
 });

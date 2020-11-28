@@ -29,7 +29,7 @@ export class ViewConfigurationQuery extends QueryEntity<ViewConfigurationState, 
       configuration: {
         sceneId: this.sceneQuery.getActiveId(),
         productId: this.productQuery.getActiveId(),
-        overlays: this.overlayQuery.getActive().map(o => o.id),
+        overlays: this.overlayQuery.getActiveId(),
         date: this.productQuery.getValue().ui.selectedDate,
         viewPosition: this.mapQuery.getValue().view
       } as ViewRouterConfig

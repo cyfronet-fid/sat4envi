@@ -18,7 +18,6 @@ export interface MapState {
   loginOptionsOpened: boolean;
   productDescriptionOpened: boolean;
   sidebarOpen: boolean;
-
   view: ViewPosition;
 }
 

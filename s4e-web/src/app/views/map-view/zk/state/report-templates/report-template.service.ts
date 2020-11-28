@@ -56,8 +56,7 @@ export class ReportTemplateService {
       reportTemplate = {...reportTemplate, productId: activeProduct.id};
     }
 
-    const activeOverlaysIds = this._overlayQuery.getActive()
-      .map(overlay => parseInt(overlay.id, 10));
+    const activeOverlaysIds = this._overlayQuery.getActiveId();
     reportTemplate = {...reportTemplate, overlayIds: activeOverlaysIds};
 
     return this._http.post(ReportTemplateService.URL_BASE, reportTemplate)
@@ -82,7 +81,7 @@ export class ReportTemplateService {
       );
   }
 
-  public setActive(active: string | ReportTemplate | null) {
+  public setActive(active: string | null) {
     this._store.setActive(active);
   }
 }

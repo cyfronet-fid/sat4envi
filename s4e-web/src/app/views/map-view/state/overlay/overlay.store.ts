@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {EntityState, EntityStore, EntityUIStore, MultiActiveState, StoreConfig} from '@datorama/akita';
 import {Overlay, OverlayUIState} from './overlay.model';
 
-export interface OverlayState extends EntityState<Overlay>, MultiActiveState<string> {
+export interface OverlayState extends EntityState<Overlay>, MultiActiveState<number> {
 }
 
 @Injectable({providedIn: 'root'})

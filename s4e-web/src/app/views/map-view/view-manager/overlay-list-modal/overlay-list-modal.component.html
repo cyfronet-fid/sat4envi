@@ -171,7 +171,7 @@
               <th i18n>URL nakładki</th>
               <th i18n>Pokaż w panelu</th>
               <th i18n>Data dodania</th>
-              <th *ngIf="isPersonal(overlays$)"></th>
+              <th *ngIf="isPersonal((overlays$ | async)[0])"></th>
             </tr>
           </thead>
           <tbody>

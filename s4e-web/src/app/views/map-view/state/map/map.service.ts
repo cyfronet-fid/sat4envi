@@ -3,17 +3,22 @@ import {HttpClient} from '@angular/common/http';
 import {MapStore} from './map.store';
 import {MapQuery} from './map.query';
 import {SIDEBAR_OPEN_LOCAL_STORAGE_KEY, ViewPosition} from './map.model';
-import {forkJoin, of} from 'rxjs';
-import {catchError, filter, map, take, tap} from 'rxjs/operators';
+import {of} from 'rxjs';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {SceneService} from '../scene/scene.service';
 import {ProductQuery} from '../product/product.query';
 import {SceneQuery} from '../scene/scene.query';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {OverlayService} from '../overlay/overlay.service';
 import {ProductService} from '../product/product.service';
 import {ViewRouterConfig} from '../view-configuration/view-configuration.model';
 import {LocalStorage} from '../../../../app.providers';
+import {RouterQuery} from '@datorama/akita-ng-router-store';
+import {HashMap} from '@datorama/akita';
+import {logIt} from '../../../../utils/rxjs/observable';
+import {olx} from 'openlayers';
+import view = olx.view;
 
 @Injectable({providedIn: 'root'})
 export class MapService {
@@ -29,6 +34,7 @@ export class MapService {
     private sceneQuery: SceneQuery,
     private sceneService: SceneService,
     private router: Router,
+    private routerQuery: RouterQuery,
     @Inject(LocalStorage) private storage: Storage
   ) {
   }
@@ -49,19 +55,17 @@ export class MapService {
     this.store.update({view});
   }
 
-  public connectRouterToStore(route: ActivatedRoute) {
-
-
-    return forkJoin([
-      route.queryParamMap.pipe(
-        map(params => {
-          const overlays = params.getAll('overlays');
-          const productId = params.get('product');
-          const date = params.get('date');
-          const sceneId = params.get('scene');
-          const centerX = params.get('centerx');
-          const centerY = params.get('centery');
-          const zoom = params.get('zoom');
+  public loadMapQueryParams() {
+    return this.routerQuery.selectQueryParams()
+      .pipe(
+        map((params: HashMap<string>) => {
+          const overlays: number[] = (Array.isArray(params['overlays']) ? params['overlays'] as any : [params['overlays'] as string]).map(ol => Number(ol)).filter(olId => !isNaN(olId));
+          const productId = params['product'];
+          const date = params['date'];
+          const sceneId = params['scene'];
+          const centerX = params['centerx'];
+          const centerY = params['centery'];
+          const zoom = params['zoom'];
 
           // validate data, if there is something missing throw error, which will prevent setting store from those query params
           if (zoom == null || centerX == null || centerY == null || (date != null && !date.match(/^[0-9]+-[0-1][0-9]-[0-9][0-9]$/g))) {
@@ -80,45 +84,32 @@ export class MapService {
             sceneId: sceneId == null ? null : Number(sceneId),
             date,
           } as ViewRouterConfig;
-        }), take(1)
-      ),
-      this.overlayQuery.selectLoading().pipe(filter(p => p === false), take(1)),
-      this.productQuery.selectLoading().pipe(filter(p => p === false), take(1))
-    ]).pipe(
-      map(([viewConfig, foo, bar]) => {
-        this.updateStoreByView(viewConfig);
-        return true;
-      }),
-      catchError((err) => {
-        return of(false);
-      })
-    );
+        }),
+        take(1),
+        switchMap(viewConfig => this.updateStoreByView(viewConfig)),
+        map(() => true),
+        catchError((err) => of(false))
+      );
   }
 
   public updateStoreByView(viewConfig: ViewRouterConfig) {
+    this.productService.setSelectedDate(viewConfig.date);
     this.setView(viewConfig.viewPosition);
     this.overlayService.setAllActive(viewConfig.overlays);
-    this.productService.setActive$(viewConfig.productId)
-      .subscribe(() => {
-        if (viewConfig.date) {
-          this.productService.setSelectedDate(viewConfig.date);
-        }
-        this.sceneService.setActive(viewConfig.sceneId);
-      });
+    return this.productService.setActive$(viewConfig.productId).pipe(tap(() => this.sceneService.setActive(viewConfig.sceneId)));
   }
 
   public connectStoreToRouter() {
     return this.mapQuery.selectQueryParamsFromStore()
       .pipe(
-        tap((queryParams) => {
-          this.router.navigate(
-            [],
-            {
-              queryParamsHandling: 'merge',
-              queryParams: queryParams
-            }
-          );
-        })
+        switchMap((queryParams) => this.router.navigate(
+          [],
+          {
+            replaceUrl: true,
+            queryParamsHandling: 'merge',
+            queryParams: queryParams
+          }
+        ))
       );
   }
 
