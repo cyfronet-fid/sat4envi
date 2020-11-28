@@ -12,6 +12,7 @@ import {ViewConfigurationQuery} from '../../state/view-configuration/view-config
 import {ViewConfiguration, ViewConfigurationEx} from '../../state/view-configuration/view-configuration.model';
 import {Observable} from 'rxjs';
 import {MapService} from '../../state/map/map.service';
+import {switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 's4e-list-configs-modal',
@@ -51,13 +52,12 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
   }
 
   loadConfig(configuration: ViewConfiguration) {
-    this.mapService.updateStoreByView(configuration.configuration);
+    this.mapService.updateStoreByView(configuration.configuration).subscribe();
     this.dismiss();
   }
 
   sendTo(configuration: ViewConfiguration) {
-    this.mapService.updateStoreByView(configuration.configuration);
+    this.mapService.updateStoreByView(configuration.configuration).subscribe(() => this.configurationService.setActive(configuration.uuid));
     this.dismiss();
-    this.configurationService.setActive(configuration.uuid);
   }
 }

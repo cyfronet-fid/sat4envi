@@ -53,12 +53,12 @@ describe('ProductService', () => {
   });
 
   describe('setActive', () => {
-    it('with null should clear stores', () => {
+    it('with null should clear stores', async () => {
       const spy1 = spyOn(sceneStore, 'setActive').and.stub();
       const spy2 = spyOn(legendService, 'set').and.stub();
       const spy3 = spyOn(productStore, 'setActive').and.stub();
 
-      productService.setActive$(null);
+      await productService.setActive$(null).toPromise();
 
       expect(spy1).toHaveBeenCalledWith(null);
       expect(spy2).toHaveBeenCalledWith(null);
@@ -90,7 +90,7 @@ describe('ProductService', () => {
       expect(() => productService.getLastAvailableScene$()).not.toThrow();
     });
 
-    it('should get last available', () => {
+    it('should get last available', async () => {
       spyOn(dateUtils, 'timezone').and.returnValue('Europe/Warsaw')
       const product = ProductFactory.build();
       const scene = SceneFactory.build()

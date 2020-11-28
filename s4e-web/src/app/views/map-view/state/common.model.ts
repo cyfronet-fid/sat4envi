@@ -1,8 +1,7 @@
-import {ID} from '@datorama/akita';
-import {ProductCategory, UIProductCategory} from './product/product.model';
+import {UIProductCategory} from './product/product.model';
 
 export interface IUILayer {
-  cid: ID;
+  cid: number;
   label: string;
   active: boolean;
   favourite: boolean;

@@ -1,8 +1,8 @@
-import { EXPERT_HELP_MODAL_ID } from './zk/expert-help-modal/expert-help-modal.model';
-import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal/jwt-token-modal.model';
-import { Modal } from './../../modal/state/modal.model';
-import { environment } from 'src/environments/environment';
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {EXPERT_HELP_MODAL_ID} from './zk/expert-help-modal/expert-help-modal.model';
+import {JWT_TOKEN_MODAL_ID} from './jwt-token-modal/jwt-token-modal.model';
+import {Modal} from '../../modal/state/modal.model';
+import {environment} from 'src/environments/environment';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {combineLatest, forkJoin, Observable} from 'rxjs';
 import {UIOverlay} from './state/overlay/overlay.model';
 import {MapQuery} from './state/map/map.query';
@@ -16,7 +16,7 @@ import {LegendService} from './state/legend/legend.service';
 import {LocationSearchResult} from './state/location-search-results/location-search-result.model';
 import {SessionService} from '../../state/session/session.service';
 import {SessionQuery} from '../../state/session/session.query';
-import {Scene, SceneWithUI} from './state/scene/scene.model';
+import {Scene} from './state/scene/scene.model';
 import {Product} from './state/product/product.model';
 import {SceneService} from './state/scene/scene.service';
 import {ProductService} from './state/product/product.service';
@@ -39,9 +39,8 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 import {ReportTemplateQuery} from './zk/state/report-templates/report-template.query';
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
-import {ReportTemplate} from './zk/state/report-templates/report-template.model';
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
-import {ViewConfigurationStore} from './state/view-configuration/view-configuration.store';
+import {filterFalse, filterNotNull} from '../../utils/rxjs/observable';
 
 
 @Component({
@@ -67,28 +66,40 @@ import {ViewConfigurationStore} from './state/view-configuration/view-configurat
 })
 export class MapViewComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
+  public activeScene$: Observable<Scene> = this.sceneQuery.selectActive();
+  public activeSceneUrl$: Observable<string> = this.activeScene$
+    .pipe(map((scene) => !!scene
+      ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
+      : null
+    ));
 
-  public activeScene$: Observable<Scene>;
-  public activeSceneUrl$: Observable<string>;
-  public activeProducts$: Observable<Product | null>;
-  public timelineUI$: Observable<TimelineUI>;
-  public scenesAreLoading$: Observable<boolean>;
-  public legend$: Observable<Legend>;
-  public legendState$: Observable<LegendState>;
-  public userLoggedIn$: Observable<boolean>;
-  public placeSearchResults$: Observable<LocationSearchResult[]>;
-  public placeSearchLoading$: Observable<boolean>;
-  public placeSearchResultsOpen$: Observable<boolean>;
-  public activeView$: Observable<ViewPosition>;
-  public currentTimelineDate$: Observable<string>;
-  public availableDates$: Observable<string[]>;
-  public showZKOptions$: Observable<boolean>;
-  public showLoginOptions$: Observable<boolean>;
-  public showProductDescription$: Observable<boolean>;
+  public activeProducts$: Observable<Product | null> = this.productQuery.selectActive();
+  public timelineUI$: Observable<TimelineUI> = this.sceneQuery.selectTimelineUI();
+  public scenesAreLoading$: Observable<boolean> = this.sceneQuery.selectLoading();
+  public legend$: Observable<Legend | null> = this.activeProducts$.pipe(map(product => product == null ? null : {
+    type: 'gradient',
+    url: '',
+    bottomMetric: {},
+    leftDescription: {},
+    rightDescription: {},
+    topMetric: {}
+  } as Legend));
+
+  public legendState$: Observable<LegendState> = this.legendQuery.select();
+  public userLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
+  public placeSearchResults$: Observable<LocationSearchResult[]> = this.searchResultsQuery.selectAll();
+  public placeSearchLoading$: Observable<boolean> = this.searchResultsQuery.selectLoading();
+  public placeSearchResultsOpen$: Observable<boolean> = this.searchResultsQuery.selectIsOpen();
+  public activeView$: Observable<ViewPosition> = this.mapQuery.select('view');
+  public currentTimelineDate$: Observable<string> = this.productQuery.selectSelectedDate();
+  public availableDates$: Observable<string[]> = this.productQuery.selectAvailableDates();
+  public showZKOptions$: Observable<boolean> = this.mapQuery.select('zkOptionsOpened');
+  public showLoginOptions$: Observable<boolean> = this.mapQuery.select('loginOptionsOpened');
+  public showProductDescription$: Observable<boolean> = this.mapQuery.select('productDescriptionOpened');
   public selectedLocation$: Observable<LocationSearchResult | null>;
-  public overlays$: Observable<UIOverlay[]>;
-  public userIsZK$: Observable<boolean>;
-  public timelineResolution$: Observable<number>;
+  public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
+  public userIsZK$: Observable<boolean> = this.sessionQuery.selectMemberZK();
+  public timelineResolution$: Observable<number> = this.productQuery.selectTimelineResolution();
 
   public hasHeightContrast = this.viewConfigurationQuery.select('highContrast');
   public hasLargeFont = this.viewConfigurationQuery.select('largeFont');
@@ -117,82 +128,44 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private reportTemplateQuery: ReportTemplateQuery,
     private reportTemplateStore: ReportTemplateStore,
     private viewConfigurationService: ViewConfigurationService,
-    private viewConfigurationStore: ViewConfigurationStore
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.userIsZK$ = this.sessionQuery.selectMemberZK();
-    this.currentTimelineDate$ = this.productQuery.selectSelectedDate();
-    this.activeScene$ = this.sceneQuery.selectActive();
-    this.activeSceneUrl$ = this.activeScene$
-      .pipe(map((scene) => !!scene
-        ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
-        : null
-      ));
-    this.timelineUI$ = this.sceneQuery.selectTimelineUI();
-    this.scenesAreLoading$ = this.sceneQuery.selectLoading();
-    this.overlays$ = this.overlayQuery.selectVisibleAsUIOverlays();
-    this.activeProducts$ = this.productQuery.selectActive();
     // TODO - uncomment it when the legends are properly seeded
     // this.legend$ = this.legendQuery.selectLegend();
     // For now we use the stub with static legend to get user's feedback
-    this.legend$ = this.activeProducts$.pipe(map(product => product == null ? null : {
-      type: 'gradient',
-      url: '',
-      bottomMetric: {},
-      leftDescription: {},
-      rightDescription: {},
-      topMetric: {}
-    } as Legend));
-
-    this.legendState$ = this.legendQuery.select();
-    this.placeSearchLoading$ = this.searchResultsQuery.selectLoading();
-    this.placeSearchResults$ = this.searchResultsQuery.selectAll();
-    this.placeSearchResultsOpen$ = this.searchResultsQuery.selectIsOpen();
-    this.userLoggedIn$ = this.sessionQuery.isLoggedIn$();
-    this.availableDates$ = this.productQuery.selectAvailableDates();
-    this.showZKOptions$ = this.mapQuery.select('zkOptionsOpened');
-    this.showLoginOptions$ = this.mapQuery.select('loginOptionsOpened');
-    this.showProductDescription$ = this.mapQuery.select('productDescriptionOpened');
-    this.timelineResolution$ = this.productQuery.selectTimelineResolution();
     this.sidebarOpen$.pipe(delay(0), untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize());
-
-    this.productService.get();
-    this.overlayService.get();
-    this.activeView$ = this.mapQuery.select('view');
 
     this.mapService.setView({
       centerCoordinates: proj4(environment.projection.toProjection, environment.projection.coordinates),
       zoomLevel: 6
     });
 
-    this.mapService
-      .connectRouterToStore(this.route)
-      .pipe(
-        untilDestroyed(this),
-        switchMap(() => this.mapService.connectStoreToRouter())
-      )
-      .subscribe();
+    forkJoin([
+      this.productService.get(),
+      this.overlayService.get()
+    ]).pipe(
+      switchMap(() => this.mapService.loadMapQueryParams()),
+      untilDestroyed(this),
+      switchMap(() => this.mapService.connectStoreToRouter())
+    ).subscribe();
 
     this.viewConfigurationQuery.selectLoading()
       .pipe(
-        filter(isLoading => !isLoading),
+        filterFalse(),
         map(() => this.viewConfigurationQuery.getActive()),
-        filter(config => !!config),
+        filterNotNull(),
         switchMap(() => this._openShareViewModal$()),
         tap(() => this.viewConfigurationService.setActive(null))
       )
       .subscribe();
 
-    this.productService.get();
-    this.overlayService.get();
-
-    (this.reportTemplateQuery.selectActive() as Observable<ReportTemplate>)
+    this.reportTemplateQuery.selectActive()
       .pipe(
         untilDestroyed(this),
-        filter(activeId => !!activeId)
-      )
-      .subscribe(() => this.openReportModal());
+        filterNotNull()
+      ).subscribe(() => this.openReportModal());
   }
 
   selectScene(sceneId: number) {
@@ -225,11 +198,11 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   toggleHighContrast() {
-    this.viewConfigurationStore.update({highContrast: !this.viewConfigurationQuery.getValue().highContrast});
+    this.viewConfigurationService.toggleHighContract();
   }
 
   toggleLargeFont() {
-    this.viewConfigurationStore.update({largeFont: !this.viewConfigurationQuery.getValue().largeFont});
+    this.viewConfigurationService.toggleLargeFont();
   }
 
   downloadMapImage() {
@@ -297,7 +270,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.toggleZKOptions(false);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+  }
 
   openJwtTokenModal() {
     this.modalService.show<Modal>({

@@ -3,17 +3,18 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {
-  AVAILABLE_TIMELINE_RESOLUTIONS, COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY,
+  AVAILABLE_TIMELINE_RESOLUTIONS,
+  COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY,
   MostRecentScene,
   Product,
   PRODUCT_MODE_FAVOURITE,
   PRODUCT_MODE_QUERY_KEY,
   TIMELINE_RESOLUTION_QUERY_KEY
 } from './product.model';
-import {catchError, filter, finalize, map, subscribeOn, switchMap, take, tap, zip} from 'rxjs/operators';
+import {filter, finalize, switchMap, take, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {LegendService} from '../legend/legend.service';
-import {forkJoin, Observable, of, pipe, throwError} from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneService} from '../scene/scene.service';
 import {applyTransaction, arrayRemove, arrayUpsert} from '@datorama/akita';
@@ -25,6 +26,7 @@ import * as moment from 'moment';
 import {NotificationService} from 'notifications';
 import {SceneQuery} from '../scene/scene.query';
 import {LocalStorage} from '../../../../app.providers';
+import {logIt} from '../../../../utils/rxjs/observable';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -44,18 +46,17 @@ export class ProductService {
   }
 
   get() {
-    const url = `${environment.apiPrefixV1}/products`;
-    this.http.get<Product[]>(url)
+    return this.http.get<Product[]>(`${environment.apiPrefixV1}/products`)
       .pipe(
-        handleHttpRequest$(this.store)
-      )
-      .subscribe((data) => this.store.set(data));
+        handleHttpRequest$(this.store),
+        tap(data => this.store.set(data))
+      );
   }
 
   getLastAvailableScene$() {
     const product = this.query.getActive();
     if (!product) {
-      return of();
+      return of(null);
     }
 
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes/most-recent`;
@@ -63,7 +64,7 @@ export class ProductService {
 
     return this.http.get<MostRecentScene>(url, params)
       .pipe(
-        tap(() =>  this.store.ui.update(product.id, state => ({...state, isLoading: true}))),
+        tap(() => this.store.ui.update(product.id, state => ({...state, isLoading: true}))),
         filter(data => {
           if (data.sceneId == null) {
             this._notificationService.addGeneral({type: 'info', content: 'Ten produkt nie posiada jeszcze scen'});
@@ -81,23 +82,25 @@ export class ProductService {
   setActive$(productId: number | null) {
     this.store.ui.update({isLoading: false});
     if (productId == null) {
-      return of(applyTransaction(() => {
+      applyTransaction(() => {
         this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
         this.store.setActive(null);
         this.sceneStore.setActive(null);
         this.legendService.set(null);
-      }));
+      });
+
+      return of(null);
     }
 
     return this.query.selectEntity(productId)
       .pipe(
         tap(() => this.store.ui.update(productId, {isLoading: true})),
-        switchMap(product => forkJoin([of(product), this.getSingle$(product)])),
+        switchMap(product => this.getSingle$(product)),
         tap(() => applyTransaction(() => {
           this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
           this.store.setActive(productId);
         })),
-        switchMap(([product, any]) => {
+        switchMap((product) => {
           const ui = this.query.getValue().ui;
           const date = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
           return forkJoin([of(product), this.fetchAvailableDays$(date)]);
@@ -228,21 +231,23 @@ export class ProductService {
   toggleCategoryCollapse(category: number) {
     this.store.ui.update(state => {
       let categories = state.collapsedCategories.indexOf(category) === -1
-          ? arrayUpsert(state.collapsedCategories, category, category)
-          : arrayRemove(state.collapsedCategories, category)
+        ? arrayUpsert(state.collapsedCategories, category, category)
+        : arrayRemove(state.collapsedCategories, category);
 
       this.storage.setItem(COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, JSON.stringify(categories));
 
-      return {...state, collapsedCategories: categories}
+      return {...state, collapsedCategories: categories};
     });
   }
 
   private getSingle$(product: Product): Observable<any> {
     if (product.legend === undefined) {
       return this.http.get<Product>(`${environment.apiPrefixV1}/products/${product.id}`)
-        .pipe(tap(pt => this.store.upsert(product.id, pt)));
+        .pipe(
+          tap(pt => this.store.upsert(product.id, pt))
+        );
     } else {
-      return of(null);
+      return of(product);
     }
   }
 }

@@ -11,6 +11,7 @@ import {ViewConfiguration, ViewRouterConfig} from '../../state/view-configuratio
 import {MapService} from '../../state/map/map.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {of} from 'rxjs';
 
 describe('ListConfigsModalComponent', () => {
   let component: ListConfigsModalComponent;
@@ -78,9 +79,13 @@ describe('ListConfigsModalComponent', () => {
   });
 
   it('load config should redirect to url', () => {
-    let mapSpy = spyOn(mapService, 'updateStoreByView');
+    let mapSpy = spyOn(mapService, 'updateStoreByView').and.returnValue(of(null));
     const config: ViewRouterConfig = {
-      overlays: ['ov1', 'ov4'], productId: 13, sceneId: 14, date: '11-12-2020', viewPosition: {
+      overlays: [1, 2],
+      productId: 13,
+      sceneId: 14,
+      date: '11-12-2020',
+      viewPosition: {
         zoomLevel: 4,
         centerCoordinates: [10, 11]
       }

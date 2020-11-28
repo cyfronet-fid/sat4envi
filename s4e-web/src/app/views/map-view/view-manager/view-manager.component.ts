@@ -108,12 +108,10 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
       productId = null;
     }
 
-    this.productService.setActive$(productId)
-      .pipe(untilDestroyed(this))
-      .subscribe();
+    this.productService.setActive$(productId).subscribe();
   }
 
-  selectOverlay(overlayId: string) {
+  selectOverlay(overlayId: number) {
     this.overlayService.setActive(overlayId);
   }
 

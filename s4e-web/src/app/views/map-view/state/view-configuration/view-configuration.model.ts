@@ -2,7 +2,7 @@ import {ViewPosition} from '../map/map.model';
 import {ViewConfigurationState} from './view-configuration.store';
 
 export interface ViewRouterConfig {
-  overlays: string[];
+  overlays: number[];
   viewPosition: ViewPosition;
   productId: number;
   date: string;

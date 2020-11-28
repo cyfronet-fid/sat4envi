@@ -7,7 +7,8 @@ import { MapProducts } from './map-products.po';
 export class Map extends Core {
   static pageObject = {
     // TODO: update elements with data-e2e attributes
-    getUserBtn: () => cy.get("#user-login-button"),
+    // Wait has been added because of angular shadow dom update
+    getUserBtn: () => cy.wait(250).get("#user-login-button"),
 
     // user
     getOpenJwtTokenModalBtn: () => cy.get('[data-e2e="open-jwt-token-btn"]'),
