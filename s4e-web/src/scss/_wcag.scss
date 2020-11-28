@@ -1,0 +1,106 @@
+/*==============================
+==== HIGH CONTRAST COLORS ======
+==== AND WCAG Changes ==========
+==============================
+
+$color-white: #fff;
+$color-black: #000;
+$color-red: #f00;
+$color-yellow: #FFC300;
+
+$color-grey: #505050;
+$color-grey-primary: #F5F5F5;
+$color-grey-secondary: #D8DDE0;
+$color-grey-tertiary: #41414C;
+$color-grey-quaternary: #B4B4B4;
+$color-bluish: #d3edff;
+$color-primary: #61FBAF;
+$color-primary-darker: #149B58;
+$color-secondary: #2B74BB;
+$color-tertiary: #F9FCFE;
+$color-tertiary-darken: darken($color-tertiary, 8%);
+$color-tertiary-second: #F6F6F6;
+$color-hover: rgba(255, 250, 201, 0.53);
+$color-hover-secondary: #E7FFD3;
+$color-white-50: rgba(255,255,255,0.5);
+
+$color-header: #3c3c3c;
+$color-text: $color-grey-tertiary;
+
+$color-error: #BA4343;
+
+$border-radius-default: 5px;
+$border-radius-circle: 50px;*/
+
+body.wcag_fs {
+  font-size: 22px !important;
+}
+
+body.wcag_hc {
+  filter: invert(1);
+  background: $color-white !important;
+  color: $color-black !important;
+
+  #map {
+    filter: invert(1);
+  }
+
+  .container .content__formContainer .form,
+  .settings {
+    background: $color-white !important;
+    color: $color-black !important;
+  }
+
+  .intro {
+    background: url("/../assets/images/bg_auth_grey.png") no-repeat !important;
+  }
+
+  .button {
+    &--primary,
+    &--secondary {
+      color: $color-wcag-grey !important;
+    }
+  }
+
+  label,
+  .content__switch,
+  .button--secondary {
+    color: $color-white !important;
+  }
+  a {
+    color: $color-secondary !important;
+
+    &:hover {
+      filter: saturate(300%);
+    }
+  }
+
+  button.products__name {
+    color: $color-secondary;
+
+    &.active {
+      background: $color-black !important;
+      color: $color-white !important;
+    }
+  }
+
+  table,
+  .modal-header,
+  form label,
+  .contents header,
+  .search-result,
+  .modal-body,
+  .timecontrol label,
+  .timecontrol span
+  {
+    color: $color-black !important;
+  }
+
+}
+
+
+
+
+
+
+

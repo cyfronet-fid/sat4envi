@@ -95,10 +95,21 @@
               Pobierz token API
             </a>
           </li>
+
           <li>
             <a routerLink="/logout" i18n>Wyloguj</a>
           </li>
         </ng-template>
+        <li>
+          <a href="javascript:void(0)" (click)="toggleHighContrast()">
+            {{ (hasHeightContrast | async) ? 'Wyłącz' : 'Włącz' }} wysoki kontrast
+          </a>
+        </li>
+        <li>
+          <a href="javascript:void(0)" (click)="toggleLargeFont()">
+            {{ (hasLargeFont | async) ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
+          </a>
+        </li>
       </ul>
     </div>
   </ng-container>
