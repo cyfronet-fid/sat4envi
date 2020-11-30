@@ -31,7 +31,9 @@
               "node_modules/@fortawesome/fontawesome-free/css/all.css",
               "src/scss/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/canvg/dist/browser/canvg.js"
+            ]
           },
           "configurations": {
             "production": {

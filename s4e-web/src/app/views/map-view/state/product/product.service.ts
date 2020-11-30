@@ -241,14 +241,11 @@ export class ProductService {
     });
   }
 
-  private getSingle$(product: Product): Observable<any> {
-    if (product.description == null) {
-      return this.http.get<Product>(`${environment.apiPrefixV1}/products/${product.id}`)
-        .pipe(
-          tap(pt => this.store.upsert(product.id, pt))
-        );
-    } else {
-      return of(product);
-    }
+  private getSingle$(product: Product): Observable<Product> {
+    return (product.description == null
+      ? this.http.get<Product>(`${environment.apiPrefixV1}/products/${product.id}`)
+        .pipe(tap(pt => this.store.upsert(product.id, pt)))
+      : of(product)).pipe(tap(pt => this.legendService.set(pt.legend)))
+
   }
 }

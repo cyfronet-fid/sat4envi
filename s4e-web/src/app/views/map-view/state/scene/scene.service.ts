@@ -1,5 +1,5 @@
 import {handleHttpRequest$} from 'src/app/common/store.util';
-import {environment} from './../../../../../environments/environment';
+import {environment} from '../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SceneStore} from './scene.store.service';
@@ -62,18 +62,6 @@ export class SceneService {
 
   setActive(sceneId: number | null) {
     this.store.setActive(sceneId);
-
-    const activeScene = this.sceneQuery.getActive();
-    const sceneLegend = activeScene == null ? null : activeScene.legend;
-    if (sceneLegend != null) {
-      this.legendService.set(sceneLegend);
-      return;
-    }
-
-    const activeProduct = this.productQuery.getActive();
-    if (activeProduct != null) {
-      this.legendService.set(activeProduct.legend);
-    }
   }
 
   previous(): boolean {

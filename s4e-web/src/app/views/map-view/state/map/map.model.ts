@@ -11,6 +11,7 @@ export interface MapData {
   image: string;
   width: number;
   height: number;
+  pointResolution: number;
 }
 
 export interface MapState {

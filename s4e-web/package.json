@@ -82,6 +82,7 @@
     "@ngx-translate/core": "^10.0.2",
     "@ngx-translate/http-loader": "^3.0.1",
     "angular-resizable-element": "^3.3.2",
+    "canvg": "2.0.0",
     "core-js": "^2.6.4",
     "cropperjs": "^1.5.9",
     "date-fns": "^2.0.0-alpha.27",

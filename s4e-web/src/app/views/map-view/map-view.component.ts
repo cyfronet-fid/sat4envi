@@ -210,18 +210,19 @@ export class MapViewComponent implements OnInit, OnDestroy {
   openReportModal() {
     forkJoin([
       this.mapComponent.getMapData(),
-      this.productQuery.selectActive().pipe(map(p => p == null ? null : p.name), take(1)),
+      this.productQuery.selectActive().pipe(take(1)),
       this.sceneQuery.selectActive().pipe(map(s => s == null ? null : s.timestamp), take(1))
     ])
       .pipe(
         untilDestroyed(this),
-        filter(([mapData, productName, sceneDate]) => !!mapData)
+        filter(([mapData, product, sceneDate]) => !!mapData)
       )
-      .subscribe(([mapData, productName, sceneDate]) => this.modalService.show<ReportModal>({
+      .subscribe(([mapData, product, sceneDate]) => this.modalService.show<ReportModal>({
         id: REPORT_MODAL_ID,
         size: 'lg',
-        mapImage: mapData.image,
-        productName: productName,
+        image: mapData,
+        productName: product == null ? '' : product.displayName,
+        legend: product == null ? null : product.legend,
         sceneDate: sceneDate
       }));
     this.toggleZKOptions(false);
