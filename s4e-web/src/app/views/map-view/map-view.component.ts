@@ -67,11 +67,11 @@ import {filterFalse, filterNotNull} from '../../utils/rxjs/observable';
 export class MapViewComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
   public activeScene$: Observable<Scene> = this.sceneQuery.selectActive();
-  public activeSceneUrl$: Observable<string> = this.activeScene$
-    .pipe(map((scene) => !!scene
-      ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
-      : null
-    ));
+  // public activeSceneUrl$: Observable<string> = this.activeScene$
+  //   .pipe(map((scene) => !!scene
+  //     ? environment.apiPrefixV1 + '/scenes/' + scene.id + '/download'
+  //     : null
+  //   ));
 
   public activeProducts$: Observable<Product | null> = this.productQuery.selectActive();
   public timelineUI$: Observable<TimelineUI> = this.sceneQuery.selectTimelineUI();
@@ -136,7 +136,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     ]).pipe(
       switchMap(() => this.mapService.loadMapQueryParams()),
       untilDestroyed(this),
-      switchMap(() => this.mapService.connectStoreToRouter())
+      switchMap(() => this.mapService.connectStoreToRouter()),
+      switchMap(() => this.sceneService.connectQueryToDetailsModal$())
     ).subscribe();
 
     this.viewConfigurationQuery.selectLoading()
@@ -332,5 +333,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
         })),
         finalize(() => this.toggleZKOptions(false))
       );
+  }
+
+  showDetailsModal() {
+    this.sceneService.showModalForActive();
   }
 }

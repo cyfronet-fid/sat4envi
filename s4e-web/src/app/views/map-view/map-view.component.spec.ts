@@ -121,21 +121,6 @@ describe('MapViewComponent', () => {
       expect(activeScene).toBeFalsy();
       const link = fixture.debugElement.query(By.css('[data-test-download-original=\'\'].disabled'));
       expect(link).toBeTruthy();
-      expect((link.nativeElement as HTMLLinkElement).hasAttribute('href')).toBeFalsy();
-    });
-
-    it('Download Original File button should have correct URL in href if scene is active ', async () => {
-      sessionStore.update({memberZK: true});
-      mapStore.update({zkOptionsOpened: true});
-      const scene = SceneFactory.build();
-      sceneStore.add(scene);
-      sceneStore.setActive(scene.id);
-      fixture.detectChanges();
-      const link = fixture.debugElement.query(By.css('[data-test-download-original=\'\']:not(.disabled)'));
-      expect(link).toBeTruthy();
-      expect((link.nativeElement as HTMLLinkElement)
-        .getAttribute('href'))
-        .toEqual(`${environment.apiPrefixV1}/scenes/${scene.id}/download`);
     });
   });
 

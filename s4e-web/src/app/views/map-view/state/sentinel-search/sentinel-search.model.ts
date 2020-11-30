@@ -27,6 +27,13 @@ export interface SentinelSearchResultMetadata {
   [key: string]: string;
 }
 
+export interface BaseSceneResponse {
+  id: number;
+  artifacts: string[];
+  sceneKey: string;
+  timestamp: string;
+}
+
 /**
  * This is result returned from the server
  */
@@ -60,7 +67,7 @@ export function artifactDownloadLink(id: number, artifact: string): string {
 /**
  * A factory function that creates SentinelSearchResult
  */
-export function createSentinelSearchResult(params: SentinelSearchResultResponse) {
+export function createSentinelSearchResult(params: BaseSceneResponse) {
   const image = params.artifacts.includes(SENTINEL_THUMBNAIL_ARTIFACT_NAME)
     ? artifactDownloadLink(params.id, SENTINEL_THUMBNAIL_ARTIFACT_NAME)
     : null;

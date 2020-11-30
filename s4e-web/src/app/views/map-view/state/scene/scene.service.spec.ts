@@ -4,7 +4,7 @@ import {SceneService} from './scene.service';
 import {SceneStore} from './scene.store.service';
 import {SceneQuery} from './scene.query';
 import {take, toArray} from 'rxjs/operators';
-import {SceneFactory} from './scene.factory.spec';
+import {SceneFactory, SceneResponseFactory} from './scene.factory.spec';
 import {LegendFactory} from '../legend/legend.factory.spec';
 import {LegendQuery} from '../legend/legend.query';
 import {LegendStore} from '../legend/legend.store';
@@ -14,6 +14,9 @@ import {ProductFactory} from '../product/product.factory.spec';
 import environment from 'src/environments/environment';
 import {timezone} from '../../../../utils/miscellaneous/date-utils';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MapModule} from '../../map.module';
+import {artifactDownloadLink, createSentinelSearchResult} from '../sentinel-search/sentinel-search.model';
 
 describe('SceneService', () => {
   let sceneService: SceneService;
@@ -24,15 +27,8 @@ describe('SceneService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        LocalStorageTestingProvider,
-        SceneService,
-        SceneStore,
-        LegendStore,
-        LegendQuery,
-        ProductQuery,
-        ProductStore],
-      imports: [HttpClientTestingModule]
+      providers: [LocalStorageTestingProvider],
+      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
     http = TestBed.get(HttpTestingController);
@@ -109,13 +105,13 @@ describe('SceneService', () => {
       const productId = product.id;
       const productStore: ProductStore = TestBed.get(ProductStore);
       productStore.add(product);
-      const scene = SceneFactory.build();
+      const scene = SceneResponseFactory.build();
 
       sceneQuery
         .selectAll()
         .pipe(take(2), toArray())
         .subscribe(data => {
-          expect(data).toEqual([[], [{...scene, layerName: product.layerName}]]);
+          expect(data).toEqual([[], [{...createSentinelSearchResult(scene), layerName: product.layerName}]]);
           done();
         });
 
