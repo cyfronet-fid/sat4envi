@@ -1,0 +1,19 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_stabilnoscatmosfery.svg",
+  "leftDescription": {
+    "1.017": "20",
+    "0.91": "16",
+    "0.8": "12",
+    "0.69": "8",
+    "0.58": "4",
+    "0.463": "0",
+    "0.358": "-4",
+    "0.25": "-8",
+    "0.14": "-12",
+    "0.0273": "-16"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}

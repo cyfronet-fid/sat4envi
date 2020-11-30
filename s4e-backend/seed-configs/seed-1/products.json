@@ -104,7 +104,24 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "air"
+    "productCategoryName": "air",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "leftDescription": {
+        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
+        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
+        "0.697": "Grube, wysokie i zimne chmury lodowe",
+        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
+        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
+        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
+        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
+        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "NatCol",
@@ -182,7 +199,36 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_intensywnoscopadu.svg",
+      "leftDescription": {
+        "0.9768": "3.8",
+        "0.926": "3.6",
+        "0.878": "3.4",
+        "0.833": "3.2",
+        "0.782": "3",
+        "0.736": "2.8",
+        "0.69": "2.6",
+        "0.638": "2.4",
+        "0.5883": "2.2",
+        "0.546": "2",
+        "0.498": "1.8",
+        "0.45": "1.6",
+        "0.407": "1.4",
+        "0.357": "1.2",
+        "0.31": "1",
+        "0.2628": "0.8",
+        "0.212": "0.6",
+        "0.166": "0.4",
+        "0.117": "0.2",
+        "0.068": "0"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Opad_H05_03h",
@@ -195,7 +241,38 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_sumaopadu.svg",
+      "leftDescription": {
+        "0.975": "40",
+        "0.926": "38",
+        "0.878": "36",
+        "0.832": "34",
+        "0.782": "32",
+        "0.736": "30",
+        "0.689": "28",
+        "0.64": "26",
+        "0.595": "24",
+        "0.547": "22",
+        "0.5": "20",
+        "0.455": "18",
+        "0.405": "16",
+        "0.357": "14",
+        "0.31": "12",
+        "0.262": "10",
+        "0.213": "8",
+        "0.167": "6",
+        "0.119": "4",
+        "0.07": "2",
+        "0.028": "0"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
+
   },
   {
     "name": "Opad_H05_06h",
@@ -208,7 +285,37 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_sumaopadu.svg",
+      "leftDescription": {
+        "0.975": "40",
+        "0.926": "38",
+        "0.878": "36",
+        "0.832": "34",
+        "0.782": "32",
+        "0.736": "30",
+        "0.689": "28",
+        "0.64": "26",
+        "0.595": "24",
+        "0.547": "22",
+        "0.5": "20",
+        "0.455": "18",
+        "0.405": "16",
+        "0.357": "14",
+        "0.31": "12",
+        "0.262": "10",
+        "0.213": "8",
+        "0.167": "6",
+        "0.119": "4",
+        "0.07": "2",
+        "0.028": "0"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Opad_H05_12h",
@@ -221,7 +328,37 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_sumaopadu.svg",
+      "leftDescription": {
+        "0.975": "40",
+        "0.926": "38",
+        "0.878": "36",
+        "0.832": "34",
+        "0.782": "32",
+        "0.736": "30",
+        "0.689": "28",
+        "0.64": "26",
+        "0.595": "24",
+        "0.547": "22",
+        "0.5": "20",
+        "0.455": "18",
+        "0.405": "16",
+        "0.357": "14",
+        "0.31": "12",
+        "0.262": "10",
+        "0.213": "8",
+        "0.167": "6",
+        "0.119": "4",
+        "0.07": "2",
+        "0.028": "0"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Opad_H05_24h",
@@ -234,7 +371,37 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_sumaopadu.svg",
+      "leftDescription": {
+        "0.975": "40",
+        "0.926": "38",
+        "0.878": "36",
+        "0.832": "34",
+        "0.782": "32",
+        "0.736": "30",
+        "0.689": "28",
+        "0.64": "26",
+        "0.595": "24",
+        "0.547": "22",
+        "0.5": "20",
+        "0.455": "18",
+        "0.405": "16",
+        "0.357": "14",
+        "0.31": "12",
+        "0.262": "10",
+        "0.213": "8",
+        "0.167": "6",
+        "0.119": "4",
+        "0.07": "2",
+        "0.028": "0"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "OST",
@@ -260,7 +427,24 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "leftDescription": {
+        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
+        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
+        "0.697": "Grube, wysokie i zimne chmury lodowe",
+        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
+        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
+        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
+        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
+        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Soil_Moisture_SM2",
@@ -273,7 +457,24 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "leftDescription": {
+        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
+        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
+        "0.697": "Grube, wysokie i zimne chmury lodowe",
+        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
+        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
+        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
+        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
+        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Soil_Moisture_SM3",
@@ -286,7 +487,24 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "leftDescription": {
+        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
+        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
+        "0.697": "Grube, wysokie i zimne chmury lodowe",
+        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
+        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
+        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
+        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
+        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   },
   {
     "name": "Soil_Moisture_SM4",
@@ -299,6 +517,23 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "leftDescription": {
+        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
+        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
+        "0.697": "Grube, wysokie i zimne chmury lodowe",
+        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
+        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
+        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
+        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
+        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    }
   }
 ]

@@ -91,6 +91,7 @@ export class ProductService {
 
       return of(null);
     }
+    this.legendService.set(null);
 
     return this.query.selectEntity(productId)
       .pipe(
@@ -241,7 +242,7 @@ export class ProductService {
   }
 
   private getSingle$(product: Product): Observable<any> {
-    if (product.legend === undefined) {
+    if (product.description == null) {
       return this.http.get<Product>(`${environment.apiPrefixV1}/products/${product.id}`)
         .pipe(
           tap(pt => this.store.upsert(product.id, pt))

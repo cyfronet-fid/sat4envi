@@ -1,0 +1,17 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_charakterystykapowierzchni.svg",
+  "leftDescription": {
+    "0.944": "Chmury wodne (mgła lub Stratus)",
+    "0.806": "Chmury o mieszanej fazie lub chmury znajdujące się pod cienkim cirrusem powyżej",
+    "0.683": "Grube chmury lodowe o dużych kryształkach w wyższych partiach",
+    "0.584": "Śnieg i lód na ziemi",
+    "0.451": "Grunt pokryty przez aktywną wegetację",
+    "0.313": "Pustynie piaszczyste, odsłonięte gleby lub wyschnięta wegetacja",
+    "0.197": "Lód morski nie pokryty śniegiem",
+    "0.087": "Ocean i jeziora"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}

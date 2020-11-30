@@ -1,5 +1,7 @@
 import {HashMap} from '@datorama/akita';
 
+export const COLLAPSED_LEGEND_LOCAL_STORAGE_KEY = 'collapseLegend';
+
 export interface Legend {
   type: 'gradient';
   url: string;
@@ -14,9 +16,3 @@ export interface LegendState {
   isOpen: boolean;
 }
 
-export function createInitialState(): LegendState {
-  return {
-    legend: null,
-    isOpen: false
-  };
-}

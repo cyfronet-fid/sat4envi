@@ -58,6 +58,7 @@ import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overl
 import {SearchResultsComponent, ToPaginationArrayPipe} from './sentinel-search/search-results/search-results.component';
 import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-templates-modal.component';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
+import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,8 @@ import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-temp
     OverlayListModalComponent,
     SearchResultsComponent,
     JwtTokenModalComponent,
+    ExpertHelpModalComponent,
+    LegendDesignerComponent,
     ExpertHelpModalComponent,
     ReportTemplatesModalComponent,
     ToPaginationArrayPipe

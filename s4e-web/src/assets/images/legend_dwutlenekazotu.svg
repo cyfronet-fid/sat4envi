@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="350px" viewBox="0 0 20 350" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>legenda / dwutlenek azotu</title>
+    <g id="legenda-/-dwutlenek-azotu" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Rectangle" fill="#A50026" x="0" y="0" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#B81326" x="0" y="12" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#CB2425" x="0" y="26" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#DB392B" x="0" y="39" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#E65036" x="0" y="51" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#F16940" x="0" y="65" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#F6814C" x="0" y="78" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#FA9A57" x="0" y="90" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#FDB165" x="0" y="104" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#FDC576" x="0" y="117" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#FDD888" x="0" y="129" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#FEE79A" x="0" y="143" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#FEF3AC" x="0" y="156" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#FFFFBF" x="0" y="168" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#F3FAD4" x="0" y="182" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#E7F5EA" x="0" y="194" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#D7EFF5" x="0" y="207" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#C3E4EF" x="0" y="221" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#AFDBEA" x="0" y="233" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#9ACBE1" x="0" y="246" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#84BAD8" x="0" y="260" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#70A8CE" x="0" y="272" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#5E93C3" x="0" y="285" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#4C7DB8" x="0" y="299" width="20" height="12"></rect>
+        <rect id="Rectangle" fill="#4066AC" x="0" y="311" width="20" height="13"></rect>
+        <rect id="Rectangle" fill="#384EA0" x="0" y="324" width="20" height="14"></rect>
+        <rect id="Rectangle" fill="#313695" x="0" y="338" width="20" height="12"></rect>
+    </g>
+</svg>

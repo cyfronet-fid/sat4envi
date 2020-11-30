@@ -76,15 +76,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public activeProducts$: Observable<Product | null> = this.productQuery.selectActive();
   public timelineUI$: Observable<TimelineUI> = this.sceneQuery.selectTimelineUI();
   public scenesAreLoading$: Observable<boolean> = this.sceneQuery.selectLoading();
-  public legend$: Observable<Legend | null> = this.activeProducts$.pipe(map(product => product == null ? null : {
-    type: 'gradient',
-    url: '',
-    bottomMetric: {},
-    leftDescription: {},
-    rightDescription: {},
-    topMetric: {}
-  } as Legend));
-
   public legendState$: Observable<LegendState> = this.legendQuery.select();
   public userLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
   public placeSearchResults$: Observable<LocationSearchResult[]> = this.searchResultsQuery.selectAll();
@@ -100,7 +91,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
   public userIsZK$: Observable<boolean> = this.sessionQuery.selectMemberZK();
   public timelineResolution$: Observable<number> = this.productQuery.selectTimelineResolution();
-
+  public legend$ = this.legendQuery.selectLegend();
   public hasHeightContrast = this.viewConfigurationQuery.select('highContrast');
   public hasLargeFont = this.viewConfigurationQuery.select('largeFont');
 
@@ -132,9 +123,6 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // TODO - uncomment it when the legends are properly seeded
-    // this.legend$ = this.legendQuery.selectLegend();
-    // For now we use the stub with static legend to get user's feedback
     this.sidebarOpen$.pipe(delay(0), untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize());
 
     this.mapService.setView({

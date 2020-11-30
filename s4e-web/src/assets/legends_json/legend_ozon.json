@@ -1,0 +1,18 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_ozon.svg",
+  "leftDescription": {
+    "0.999": "550",
+    "0.8789": "500",
+    "0.758": "450",
+    "0.641": "400",
+    "0.522": "350",
+    "0.4024": "300",
+    "0.286": "250",
+    "0.168": "200",
+    "0.048": "150"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}

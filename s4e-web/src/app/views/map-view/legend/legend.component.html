@@ -5,20 +5,14 @@
   </p>
 </div>
 
-<div (click)="opened.emit()" class="legend__chart">
-  <img class="legend__image" [attr.src]="activeLegend.url">
-  <ul *ngIf="(activeLegend.leftDescription | keyvalue).length > 0">
-    <li *ngFor="let item of (activeLegend.leftDescription | keyvalue)"
-         class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
-      {{item.value}}
-    </li>
-  </ul>
+<ul class="legend__left" *ngIf="isOpen && (activeLegend.leftDescription | keyvalue).length > 0">
+  <div class="legend__background"[style.background-image]="url"></div>
+  <li *ngFor="let item of (activeLegend.leftDescription | keyvalue)"
+      class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
+    {{item.value}}
+  </li>
+</ul>
 
-  <ul *ngIf="(activeLegend.leftDescription | keyvalue).length > 0">
-    <li *ngFor="let item of (activeLegend.rightDescription | keyvalue)"
-         class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
-      {{item.value}}
-    </li>
-  </ul>
-</div>
+<div class="legend__chart" [style.background-image]="url" (click)="opened.emit()"></div>
+
 
