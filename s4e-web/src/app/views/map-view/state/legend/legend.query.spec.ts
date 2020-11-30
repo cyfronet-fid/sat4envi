@@ -23,5 +23,4 @@ describe('LegendQuery', () => {
   it('should create an instance', () => {
     expect(query).toBeTruthy();
   });
-
 });

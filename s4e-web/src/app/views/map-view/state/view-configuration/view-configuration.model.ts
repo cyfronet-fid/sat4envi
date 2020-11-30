@@ -1,5 +1,7 @@
 import {ViewPosition} from '../map/map.model';
-import {ViewConfigurationState} from './view-configuration.store';
+
+export const HC_LOCAL_STORAGE_KEY = 'highContrast';
+export const LARGE_FONT_LOCAL_STORAGE_KEY = 'largeFont';
 
 export interface ViewRouterConfig {
   overlays: number[];
@@ -23,13 +25,4 @@ export interface ViewConfigurationEx extends ViewConfiguration {
     overlays: string[];
     selectedDate: string;
   };
-}
-
-/**
- * A factory function that creates ViewConfiguration
- */
-export function createViewConfiguration(params: Partial<ViewConfigurationState> = {}): ViewConfigurationState {
-  return {
-    loading: false
-  } as ViewConfigurationState;
 }
