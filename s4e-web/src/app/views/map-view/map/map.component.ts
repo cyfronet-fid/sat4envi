@@ -1,5 +1,5 @@
 import {RemoteConfiguration} from 'src/app/utils/initializer/config.service';
-import {environment} from './../../../../environments/environment';
+import {environment} from '../../../../environments/environment';
 import {NotificationService} from 'notifications';
 import {TileLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
@@ -25,6 +25,8 @@ import {WKT} from 'ol/format';
 import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
 import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
 import BaseLayer from 'ol/layer/Base';
+import {getPointResolution} from 'ol/proj';
+
 @Component({
   selector: 's4e-map',
   templateUrl: './map.component.html',
@@ -223,14 +225,21 @@ export class MapComponent implements OnInit, OnDestroy {
       return of(null);
     }
 
+
     const mapCanvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
+
+    const pointResolution = getPointResolution(
+      this.map.getView().getProjection(),
+      this.map.getView().getResolution(),
+      this.map.getView().getCenter()
+    );
 
     const r = new ReplaySubject<MapData>(1);
 
     // :IMPORTANT this will work only on new browsers!
     this.map.once('rendercomplete', () => {
       const data = mapCanvas.toDataURL('image/png');
-      r.next({image: data, width: mapCanvas.width, height: mapCanvas.height});
+      r.next({image: data, width: mapCanvas.width, height: mapCanvas.height, pointResolution});
       r.complete();
     });
     this.map.renderSync();
@@ -266,7 +275,7 @@ export class MapComponent implements OnInit, OnDestroy {
     mapLayers.push(this.baseLayer);
 
     if (scene != null) {
-      const sceneTiles = new Tile({ source: this._getTileWmsFrom(scene)});
+      const sceneTiles = new Tile({source: this._getTileWmsFrom(scene)});
       mapLayers.push(sceneTiles);
     }
 

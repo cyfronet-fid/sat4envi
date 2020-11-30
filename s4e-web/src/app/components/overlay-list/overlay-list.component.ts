@@ -1,7 +1,7 @@
-import { NotificationService } from 'notifications';
+import {NotificationService} from 'notifications';
 import {getImageWmsLoader} from '../../views/map-view/state/overlay/image-wms.utils';
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {Overlay, OverlayUI, OwnerType, PERSONAL_OWNER_TYPE, UIOverlay} from '../../views/map-view/state/overlay/overlay.model';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Overlay, OverlayUI, OwnerType, PERSONAL_OWNER_TYPE} from '../../views/map-view/state/overlay/overlay.model';
 import {getImageWmsFrom} from '../../views/map-view/state/overlay/overlay.utils';
 import {ModalService} from '../../modal/state/modal.service';
 import {OverlayQuery} from '../../views/map-view/state/overlay/overlay.query';
@@ -13,7 +13,6 @@ import {Observable, Subject} from 'rxjs';
 import Projection from 'ol/proj/Projection';
 import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {InstitutionsSearchResultsQuery} from '../../views/settings/state/institutions-search/institutions-search-results.query';
 import {ActivatedRoute} from '@angular/router';
 
 export interface OverlayForm {
@@ -27,6 +26,56 @@ export interface OverlayForm {
   styleUrls: ['./overlay-list.component.scss']
 })
 export class OverlayListComponent implements OnInit, OnDestroy {
+  public newOwner: OwnerType;
+  public overlaysFilter: (overlays: (Overlay & OverlayUI)[]) => (Overlay & OverlayUI)[];
+  public isAddLoading$ = this._overlayQuery.ui.select('showNewOverlayForm');
+  public isAddingNewLayer$ = this._overlayQuery.ui.select('loadingNew').pipe(untilDestroyed(this));
+  public isLoading$ = this._overlayQuery.selectLoading();
+  public setInstitutionalFilter$ = this._activatedRoute.queryParamMap
+    .pipe(
+      untilDestroyed(this),
+      filter(() => !!this.newOwner && this.newOwner === 'INSTITUTIONAL'),
+      filter(paramsMap => paramsMap.has('institution')),
+      map(paramsMap => paramsMap.get('institution')),
+      tap(institutionSlug => this.overlaysFilter = overlays => overlays
+        .map(overlays => {
+          console.log(overlays);
+          return overlays;
+        })
+        .filter(overlay => !overlay.ownerType || overlay.ownerType === 'INSTITUTIONAL')
+        .filter(overlay => !!overlay.institutionSlug && overlay.institutionSlug === institutionSlug)
+      )
+    );
+  public newOverlayForm: FormGroup<OverlayForm> = new FormGroup<OverlayForm>({
+    label: new FormControl<string>('', [Validators.required]),
+    url: new FormControl<string>('', [Validators.required, ...WMS_URL_VALIDATORS])
+  });
+  public visibilityFCList: FormControl<boolean>[] = [];
+  private _overlaysChanged$: Subject<void> = new Subject();
+  public overlays$: Observable<(Overlay & OverlayUI)[]> = this._overlayQuery.selectAllWithUIState()
+    .pipe(
+      map(overlays => this.overlaysFilter(overlays)),
+      tap(overlays => {
+        this._overlaysChanged$.next();
+        this.visibilityFCList = overlays.map(overlay => {
+          const fc = new FormControl<boolean>(overlay.visible);
+          fc.valueChanges
+            .pipe(takeUntil(this._overlaysChanged$))
+            .subscribe(visible => this._overlayService.setVisible(overlay.id, visible));
+          return fc;
+        });
+      })
+    );
+
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private _modalService: ModalService,
+    private _overlayQuery: OverlayQuery,
+    private _overlayService: OverlayService,
+    private _notificationService: NotificationService
+  ) {
+  }
+
   @Input()
   set newOverlayOwner(newOwner: OwnerType) {
     this.newOwner = newOwner;
@@ -41,56 +90,6 @@ export class OverlayListComponent implements OnInit, OnDestroy {
         break;
     }
   }
-
-  public newOwner: OwnerType;
-  public overlaysFilter: (overlays: (Overlay & OverlayUI)[]) => (Overlay & OverlayUI)[];
-
-  public isAddLoading$ = this._overlayQuery.ui.select('showNewOverlayForm');
-  public isAddingNewLayer$ = this._overlayQuery.ui.select('loadingNew').pipe(untilDestroyed(this));
-  public isLoading$ = this._overlayQuery.selectLoading();
-  public overlays$:Observable<(Overlay & OverlayUI)[]> = this._overlayQuery.selectAllWithUIState()
-    .pipe(
-      map(overlays => this.overlaysFilter(overlays)),
-      tap(overlays => {
-        this._overlaysChanged$.next();
-        this.visibilityFCList = overlays.map(overlay => {
-          const fc = new FormControl<boolean>(overlay.visible);
-          fc.valueChanges
-            .pipe(takeUntil(this._overlaysChanged$))
-            .subscribe(visible => this._overlayService.setVisible(overlay.id, visible));
-          return fc;
-        });
-      })
-    );
-  public setInstitutionalFilter$ = this._activatedRoute.queryParamMap
-    .pipe(
-      untilDestroyed(this),
-      filter(() => !!this.newOwner && this.newOwner === 'INSTITUTIONAL'),
-      filter(paramsMap => paramsMap.has('institution')),
-      map(paramsMap => paramsMap.get('institution')),
-      tap(institutionSlug => this.overlaysFilter = overlays => overlays
-        .map(overlays => {
-          console.log(overlays)
-          return overlays;
-        })
-        .filter(overlay => !overlay.ownerType || overlay.ownerType === 'INSTITUTIONAL')
-        .filter(overlay => !!overlay.institutionSlug && overlay.institutionSlug === institutionSlug)
-      )
-    );
-  public newOverlayForm: FormGroup<OverlayForm> = new FormGroup<OverlayForm>({
-    label: new FormControl<string>('', [Validators.required]),
-    url: new FormControl<string>('', [Validators.required, ...WMS_URL_VALIDATORS])
-  });
-  public visibilityFCList: FormControl<boolean>[] = [];
-  private _overlaysChanged$: Subject<void> = new Subject();
-
-  constructor(
-    private _activatedRoute: ActivatedRoute,
-    private _modalService: ModalService,
-    private _overlayQuery: OverlayQuery,
-    private _overlayService: OverlayService,
-    private _notificationService: NotificationService
-  ) {}
 
   ngOnInit() {
     if (!this.newOwner) {
@@ -180,8 +179,8 @@ export class OverlayListComponent implements OnInit, OnDestroy {
      * Observable is used due to not working Open Layers Event Dispatcher
      * and force state changes
      */
-    return new Observable<string|null>(observer$ => {
-      const source = getImageWmsFrom({ url });
+    return new Observable<string | null>(observer$ => {
+      const source = getImageWmsFrom({url});
       source.setImageLoadFunction(getImageWmsLoader(observer$));
 
       const BBOX = [1252344.2714243277, 6261721.357121641, 2504688.5428486555, 7514065.628545967];

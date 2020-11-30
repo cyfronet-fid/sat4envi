@@ -14,10 +14,9 @@ import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH, 
 import {multipleInstitutionAdminDashboardMatcher, singleInstitutionAdminDashboardMatcher} from './dashboards.routes';
 import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 import {IsAdminGuard} from './guards/is-admin.guard';
-import {WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
+import {GLOBAL_OVERLAYS_PATH, INSTITUTION_OVERLAYS_PATH, WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
 
-export const INSTITUTION_OVERLAYS_PATH = 'institution-wms-overlays';
-export const GLOBAL_OVERLAYS_PATH = 'global-wms-overlays';
+
 export const settingsRoutes: Routes = [
   {
     path: SETTINGS_PATH,

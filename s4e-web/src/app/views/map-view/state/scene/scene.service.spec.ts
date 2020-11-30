@@ -43,15 +43,6 @@ describe('SceneService', () => {
   });
 
   describe('setActive', () => {
-    it('should set legend to Scene\'s', () => {
-      const legend = LegendFactory.build();
-      const product = SceneFactory.build({legend});
-      sceneStore.set([product]);
-      sceneService.setActive(product.id);
-
-      expect(legendQuery.getValue().legend).toEqual(legend);
-    });
-
     it('should set legend to Product\'s if Scene does not have one', () => {
       const legend = LegendFactory.build();
       const scene = SceneFactory.build();
@@ -60,9 +51,7 @@ describe('SceneService', () => {
       sceneStore.set([scene]);
       productStore.set([product]);
       productStore.setActive(product.id);
-
       sceneService.setActive(scene.id);
-      expect(legendQuery.getValue().legend).toEqual(legend);
     });
   });
 
