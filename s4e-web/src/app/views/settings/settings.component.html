@@ -29,6 +29,10 @@
       </a>
     </header>
     <ul class="navigation__list">
+      <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async) && canGrantInstitutionDeleteAuthority" routerLinkActive="active"
+          data-e2e="institutions">
+        <a routerLink="/settings/manage-authorities" i18n>Zarządzaj uprawnieniami</a>
+      </li>
       <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
           data-e2e="institutions">
         <a routerLink="/settings/institutions" i18n>Lista instytucji</a>

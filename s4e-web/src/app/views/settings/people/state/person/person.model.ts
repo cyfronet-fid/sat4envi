@@ -7,12 +7,13 @@ export interface UserRole {
 }
 
 export interface Person {
-  id: number;
+  id: string;
   email: string;
   name: string;
   surname: string;
   roles: UserRole[];
   isAdmin: boolean;
+  hasGrantedDeleteInstitution: boolean;
 }
 
 /**

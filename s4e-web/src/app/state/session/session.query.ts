@@ -34,6 +34,14 @@ export class SessionQuery extends Query<Session> {
   isAdmin() {
     return this.getValue().admin;
   }
+
+  canDeleteInstitution() {
+    return this.getValue().authorities.includes('OP_INSTITUTION_DELETE') || this.getValue().admin;
+  }
+  canGrantInstitutionDeleteAuthority() {
+    return this.getValue().authorities.includes('OP_GRANT_OP_INSTITUTION_DELETE') || this.getValue().admin;
+  }
+
   isManager() {
     return hasAnyManagerRole(this.getValue().roles);
   }

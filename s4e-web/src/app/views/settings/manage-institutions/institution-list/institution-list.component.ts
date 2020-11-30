@@ -14,12 +14,11 @@ import {ModalService} from '../../../../modal/state/modal.service';
 })
 export class InstitutionListComponent implements OnInit, OnDestroy {
   isAdmin = false;
+  hasDeleteAuthorities = false;
 
   isLoading$ = this._institutionQuery.selectLoading();
   institutions$ = this._institutionQuery.selectAll();
   error$ = this._institutionQuery.selectError();
-
-  institutionId = (item: Institution) => item.slug;
 
   constructor(
     private _institutionQuery: InstitutionQuery,
@@ -30,6 +29,7 @@ export class InstitutionListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isAdmin = this._sessionQuery.isAdmin();
+    this.hasDeleteAuthorities = this._sessionQuery.canDeleteInstitution();
   }
 
   isManagerOf(institution: Institution) {

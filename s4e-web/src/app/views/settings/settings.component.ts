@@ -20,7 +20,6 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
 export class SettingsComponent implements OnInit, OnDestroy {
   public isMobileSidebarOpen = false;
   public searchValue: string;
-  public hasBeenSelected = false;
 
   public hasAnyAdminInstitution$ = this._institutionQuery
     .selectAdministrationInstitutions$()
@@ -35,6 +34,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     .isManagerOf$(this.activeInstitution$);
   public isAdminOfOneInstitution$ = this._institutionQuery
     .selectHasOnlyOneAdministrationInstitution();
+
+  public canGrantInstitutionDeleteAuthority;
 
   constructor(
     private _institutionsSearchResultsService: InstitutionsSearchResultsService,
@@ -79,6 +80,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }))
       )
       .subscribe();
+
+    this.canGrantInstitutionDeleteAuthority = this._sessionQuery.canGrantInstitutionDeleteAuthority();
   }
 
   searchForInstitutions(partialInstitutionName: string) {
