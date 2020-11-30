@@ -634,6 +634,38 @@ public class AppUserControllerTest {
     @Nested
     class ForgetMe {
         @Test
+        public void shouldForgetZkAdmin() throws Exception {
+            val zkAdmin = appUserRepository.save(AppUser.builder()
+                    .email("zkAdmin@mail.com")
+                    .name("Get")
+                    .surname("Profile")
+                    .password("{noop}password")
+                    .enabled(true)
+                    .build());
+            userRoleRepository.save(UserRole.builder().
+                    role(AppRole.INST_MEMBER)
+                    .user(zkAdmin)
+                    .institution(institution)
+                    .build());
+            userRoleRepository.save(UserRole.builder().
+                    role(AppRole.INST_ADMIN)
+                    .user(zkAdmin)
+                    .institution(institution)
+                    .build());
+            String email = "zkAdmin@mail.com";
+            String password = "password";
+            ForgetUserRequest request = ForgetUserRequest.builder().email(email).password(password).build();
+
+            mockMvc.perform(post(API_PREFIX_V1 + "/users/forget-me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsBytes(request))
+                    .with(jwtBearerToken(zkAdmin, objectMapper)))
+                    .andExpect(status().isOk());
+
+            assertThat(appUserRepository.findByEmail(email), isEmpty());
+        }
+
+        @Test
         public void shouldBeSecured() throws Exception {
             ForgetUserRequest request = ForgetUserRequest.builder()
                     .email(securityAppUser.getEmail())
