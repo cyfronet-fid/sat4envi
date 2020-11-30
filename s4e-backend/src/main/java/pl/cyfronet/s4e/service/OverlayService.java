@@ -93,11 +93,13 @@ public class OverlayService {
     }
 
     private OverlayResponse toOverlayResponse(WMSOverlay overlay, List<Long> nonActiveIds) {
+        val institution = overlay.getInstitution();
         return OverlayResponse.builder()
                 .id(overlay.getId())
                 .url(getOverlayUrlBy(overlay))
                 .createdAt(overlay.getCreatedAt())
                 .ownerType(overlay.getOwnerType().toString())
+                .institutionSlug(institution != null ? institution.getSlug() : null)
                 .label(overlay.getLabel())
                 .visible(!nonActiveIds.contains(overlay.getId()))
                 .build();

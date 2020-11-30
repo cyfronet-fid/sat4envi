@@ -59,6 +59,7 @@ import {SearchResultsComponent, ToPaginationArrayPipe} from './sentinel-search/s
 import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-templates-modal.component';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.component';
+import {OverlayListModule} from '../../components/overlay-list/overlay-list.module';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.
     SearchModule,
     FormErrorModule,
     ResizableModule,
-    EventsModule
+    EventsModule,
+    OverlayListModule,
     // OwlNativeDateTimeModule
   ],
   providers: [
