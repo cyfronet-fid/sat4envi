@@ -66,6 +66,10 @@ export class SentinelSearchService {
     params.limit = SENTINEL_PAGE_SIZE;
     params.offset = page * SENTINEL_PAGE_SIZE;
 
+    if (!!this.query.getValue().footprint) {
+      Object.assign(params, {footprint: this.query.getValue().footprint});
+    }
+
     applyTransaction(() => {
       if (refreshCount) {
         this.store.update({resultPagesCount: null, resultTotalCount: null});
@@ -218,5 +222,9 @@ export class SentinelSearchService {
 
   private _clearSentinelSearchFromQuery(): Promise<any> {
     return this.router.navigate([], {queryParamsHandling: 'merge', queryParams: {[SENTINEL_SHOW_RESULTS_QUERY_KEY]: undefined}});
+  }
+
+  setFootprint(footprint: string | null) {
+    this.store.update({footprint});
   }
 }
