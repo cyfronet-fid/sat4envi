@@ -171,7 +171,6 @@ s4e-tiles-dashboard {
     flex: 3;
   }
 
-
   &__header {
     font-weight: 700;
     margin-bottom: $space-small;
@@ -234,8 +233,11 @@ s4e-tiles-dashboard {
       display: inline-block;
       margin-right: $space-xlarge;
       position: relative;
-      padding-left: 20px;
       font-size: 1rem;
+
+      &.active {
+        padding-left: 20px;
+      }
       &.active:before {
         content: " ";
         display: block;

@@ -6,10 +6,9 @@
 </div>
 
 <ul class="legend__left" *ngIf="isOpen && (activeLegend.leftDescription | keyvalue).length > 0">
-  <div class="legend__background"[style.background-image]="url"></div>
   <li *ngFor="let item of (activeLegend.leftDescription | keyvalue)"
       class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
-    {{item.value}}
+    <span>{{item.value}}</span>
   </li>
 </ul>
 

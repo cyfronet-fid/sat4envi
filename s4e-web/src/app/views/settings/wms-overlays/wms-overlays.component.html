@@ -1,3 +1,21 @@
-<h2>Warstwy instytucji</h2>
-
-<s4e-overlay-list [newOverlayOwner]="ownerType"></s4e-overlay-list>
+<ul class="content__tabs">
+  <li>
+    <a routerLink="/settings/institution" queryParamsHandling="merge">
+      Profil instytucji
+    </a>
+  </li>
+  <li>
+    <a routerLink="/settings/people" queryParamsHandling="merge">
+      Osoby w instytucji
+    </a>
+  </li>
+  <li class="active">
+      Warstwy WMS dla instytucji
+  </li>
+</ul>
+<header class="content__header">
+  <h1 i18n>Warstwy WMS instytucji</h1>
+</header>
+<section class="content__details profile">
+  <s4e-overlay-list [newOverlayOwner]="ownerType"></s4e-overlay-list>
+</section>

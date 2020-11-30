@@ -134,10 +134,12 @@
 
     dl {
       margin: $space-default $space-small;
+      display: flex;
+      flex-direction: column;
 
-      &:first-child {
-        padding-right: $space-default;
-        border-right: 1px solid $color-grey-secondary;
+      & + dl {
+        padding-left: $space-default;
+        border-left: 1px solid $color-grey-secondary;
       }
 
       dt {
@@ -155,7 +157,7 @@
       dd {
         padding: ($space-xsmall - 2px) $space-default;
         line-height: 1.12rem;
-        a {
+        a:not(.button) {
           cursor: pointer;
           color: $color-secondary;
           font-size: 0.875rem;
@@ -173,11 +175,14 @@
   }
 
   &__login {
-    position: absolute;
-    width: 200px;
-    text-align: center;
-    bottom: 30px;
-    right: 10px;
+    margin-bottom: $space-xsmall;
+    margin-top: auto;
+
+    .button {
+      margin-top: $space-xlarge;
+      display: block;
+      text-align: center;
+    }
   }
 
   &__header {

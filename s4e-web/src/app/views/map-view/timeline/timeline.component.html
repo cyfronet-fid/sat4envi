@@ -28,9 +28,9 @@
       <span (click)="goToNextScene()" class="timecontrol__button timecontrol__button--next"></span>
     </div>
     <div class="timecontrol timecontrol--interval">
-      <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
+      <span (click)="increaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
       <span>{{resolution}}h</span>
-      <span (click)="increaseResolution.emit()" class="timecontrol__button timecontrol__button--plus"></span>
+      <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--plus"></span>
     </div>
   </section>
 

@@ -37,6 +37,13 @@ $legend-height: 600px;
 
 .chart__label {
   position: absolute;
+  span {
+    background: $color-white-80;
+    display: inline-block;
+    border-radius: $border-radius-default;
+    padding: 3px;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  }
 }
 
 .legend__left {

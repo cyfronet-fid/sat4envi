@@ -2,6 +2,17 @@
   <li class="active" >
     Profil instytucji
   </li>
+  <li>
+    <a routerLink="/settings/people" queryParamsHandling="merge">
+      Osoby w instytucji
+    </a>
+  </li>
+  <li>
+    <a [routerLink]="['/settings/institution-wms-overlays']"
+       queryParamsHandling="merge">
+      Warstwy WMS dla instytucji
+    </a>
+  </li>
 </ul>
 <header class="content__header">
   <h1 i18n>Profil instytucji</h1>
@@ -60,24 +71,7 @@
       >
         Dodaj jednostkę podrzędną
       </button>
-      <ng-container add-button>
-        <button
-          class="button button--secondary button--small"
-          [routerLink]="['/settings/people']"
-          queryParamsHandling="merge"
-        >
-          Zarządzaj ludźmi
-        </button>
-      </ng-container>
-      <ng-container add-button>
-        <button
-          class="button button--secondary button--small"
-          [routerLink]="['/settings/institution-wms-overlays']"
-          queryParamsHandling="merge"
-        >
-          Konfiguruj WMS
-        </button>
-      </ng-container>
+
     </ng-container>
     <ng-template #returnToUserProfile>
       <button
