@@ -13,6 +13,12 @@
       Warstwy WMS dla instytucji
     </a>
   </li>
+  <li>
+    <a [routerLink]="['/settings/manage-products']"
+       queryParamsHandling="merge">
+      Zarządzaj produktami
+    </a>
+  </li>
 </ul>
 <s4e-generic-list-view
   [loading]="areLoading$ | async"

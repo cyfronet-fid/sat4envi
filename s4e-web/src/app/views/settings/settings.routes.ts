@@ -20,7 +20,7 @@ import {multipleInstitutionAdminDashboardMatcher, singleInstitutionAdminDashboar
 import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 import {IsAdminGuard} from './guards/is-admin.guard';
 import {GLOBAL_OVERLAYS_PATH, INSTITUTION_OVERLAYS_PATH, WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
-
+import {ManageProductsComponent} from './manage-products/manage-products.component';
 
 export const settingsRoutes: Routes = [
   {
@@ -50,7 +50,10 @@ export const settingsRoutes: Routes = [
         component: InstitutionProfileComponent,
         canActivate: [IsLoggedIn]
       },
-
+      {
+        path: 'manage-products',
+        component: ManageProductsComponent
+      },
       {
         path: ADD_INSTITUTION_PATH,
         component: InstitutionFormComponent,

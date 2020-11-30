@@ -4,14 +4,14 @@ import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {
   AVAILABLE_TIMELINE_RESOLUTIONS,
-  COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY,
+  COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, LicensedProduct,
   MostRecentScene,
   Product,
   PRODUCT_MODE_FAVOURITE,
   PRODUCT_MODE_QUERY_KEY,
   TIMELINE_RESOLUTION_QUERY_KEY
 } from './product.model';
-import {catchError, delay, filter, finalize, switchMap, take, tap} from 'rxjs/operators';
+import {delay, filter, finalize, map, switchMap, take, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {LegendService} from '../legend/legend.service';
 import {forkJoin, Observable, of} from 'rxjs';
@@ -26,7 +26,11 @@ import * as moment from 'moment';
 import {NotificationService} from 'notifications';
 import {SceneQuery} from '../scene/scene.query';
 import {LocalStorage} from '../../../../app.providers';
-import {logIt} from '../../../../utils/rxjs/observable';
+import {Institution} from '../../../settings/state/institution/institution.model';
+import {InstitutionService} from '../../../settings/state/institution/institution.service';
+import {InstitutionQuery} from '../../../settings/state/institution/institution.query';
+import {SessionQuery} from '../../../../state/session/session.query';
+import {SessionStore} from '../../../../state/session/session.store';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -40,16 +44,103 @@ export class ProductService {
     private _notificationService: NotificationService,
     private sceneService: SceneService,
     private _sceneQuery: SceneQuery,
+    private _institutionService: InstitutionService,
+    private _institutionQuery: InstitutionQuery,
     private router: Router,
-    @Inject(LocalStorage) private storage: Storage
-  ) {
-  }
+    @Inject(LocalStorage) private storage: Storage,
+    private _sessionQuery: SessionQuery,
+    private _productQuery: ProductQuery,
+    private _sessionStore: SessionStore
+  ) {}
 
   get() {
     return this.http.get<Product[]>(`${environment.apiPrefixV1}/products`)
       .pipe(
         handleHttpRequest$(this.store),
         tap(data => this.store.set(data))
+      );
+  }
+
+  getProductsLicencesFor$(institution: Institution) {
+    return this._sessionQuery.select('authorities')
+      .pipe(
+        map(authorities => authorities.filter(authority => authority.includes('LICENSE_WRITE_'))),
+        filter(productWriteAuthorities => productWriteAuthorities.length > 0),
+        switchMap(productWriteAuthorities => forkJoin(
+          productWriteAuthorities
+            .map((authority: string) => authority.replace('LICENSE_WRITE_', ''))
+            .map(productId => {
+              const url = `${environment.apiPrefixV1}/license-grants/product/${productId}`;
+              return this.http.get<any[]>(url)
+                .pipe(handleHttpRequest$(this.store));
+            })
+        )),
+        map(productsLicenses => productsLicenses
+          .filter(productLicenses => !!productLicenses && productLicenses.length > 0)
+          .map(licenses => {
+            console.log(licenses)
+            return licenses;
+          })
+          .map(productLicenses => ({
+            ...productLicenses[0],
+            institutionsSlugs: productLicenses.map(license => license.institutionSlug)
+          }))
+          .map((productLicense: LicensedProduct) => ({
+            ...productLicense,
+            productName: this._productQuery.getEntity(productLicense.productId).displayName,
+            hasInstitutionLicence: productLicense.institutionsSlugs.includes(institution.slug)
+          }))
+        ),
+        tap(licensedProducts => this.store.update({licensedProducts}))
+      );
+  }
+
+  addProductLicence(licensedProduct: LicensedProduct, institution: Institution) {
+    const url = `${environment.apiPrefixV1}/license-grants/product/${licensedProduct.productId}/institution/${institution.slug}`;
+    return this.http.post(url, {})
+      .pipe(
+        handleHttpRequest$(this.store),
+        tap(() => {
+          this.store.update({
+            licensedProducts: this._productQuery.getValue().licensedProducts
+              .map(license => {
+                if (license.productId === licensedProduct.productId) {
+                  return {
+                    ...license,
+                    institutionsSlugs: [...license.institutionsSlugs, institution.slug],
+                    hasInstitutionLicence: true
+                  }
+                }
+
+                return license;
+              })
+          })
+        })
+      );
+  }
+
+  removeProductLicence(licensedProduct: LicensedProduct, institution: Institution) {
+    const url = `${environment.apiPrefixV1}/license-grants/product/${licensedProduct.productId}/institution/${institution.slug}`;
+    return this.http.delete(url, {})
+      .pipe(
+        handleHttpRequest$(this.store),
+        tap(() => {
+          this.store.update({
+            licensedProducts: this._productQuery.getValue().licensedProducts
+              .map(license => {
+                if (license.productId === licensedProduct.productId) {
+                  return {
+                    ...license,
+                    institutionsSlugs: license.institutionsSlugs
+                      .filter(institutionSlug => institutionSlug !== institution.slug),
+                    hasInstitutionLicence: false
+                  }
+                }
+
+                return license;
+              })
+          })
+        })
       );
   }
 

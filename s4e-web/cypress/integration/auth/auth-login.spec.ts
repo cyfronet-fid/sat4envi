@@ -44,12 +44,12 @@ describe('Auth', () => {
         .errorsCountShouldBe(2);
     })
 
-    it("shouldn't login not-registered user", function () {
-      Login
-        .fillForm(this.userToRegister)
-        .sendForm()
-        .hasErrorLogin();
-    })
+    // it("shouldn't login not-registered user", function () {
+    //   Login
+    //     .fillForm(this.userToRegister)
+    //     .sendForm()
+    //     .hasErrorLogin();
+    // })
 
     it("should't login user when email have wrong format", function () {
       Login

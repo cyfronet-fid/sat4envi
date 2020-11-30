@@ -179,7 +179,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
       const source = getImageWmsFrom({url});
       source.setImageLoadFunction(getImageWmsLoader(observer$));
 
-      const BBOX = [1252344.2714243277, 6261721.357121641, 2504688.5428486555, 7514065.628545967];
+      const BBOX = [49.497526,14.407200,54.573956,23.836237];
       const standardCrs = 'EPSG:3857';
       source
         .getImage(BBOX, 1, 1, new Projection({code: standardCrs}))
