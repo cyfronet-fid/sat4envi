@@ -4,8 +4,6 @@
   .products {
     background: $color-white;
     position: relative;
-
-
   }
 }
 
@@ -15,9 +13,9 @@
 }
 
 .products__visibility__spinner {
-  margin-left: auto;
   font-size: 0.875rem;
   padding: 5px 6px 4px !important;
+  margin-left: -10px;
 }
 
 .list > .list__item {

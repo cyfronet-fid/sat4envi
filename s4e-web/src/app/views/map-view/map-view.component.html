@@ -71,22 +71,90 @@
   </button>
   <ng-container *ngIf="showLoginOptions$ | async">
     <div class="dropdown__content dropdown__content--login">
-      <span class="dropdown__header">Twoje Sat4Envi</span>
+      <div class="dropdown__header">
+        <img src="/assets/images/logo_s4e_color.png" width="60" alt="Logo Sat4Envi" />
+        <a href="https://sat4envi.imgw.pl"><strong>Przejdź do strony projektu</strong></a>
+      </div>
       <div class="dropdown__close" (click)="toggleLoginOptions(false)"></div>
-      <ul>
-        <ng-container *ngIf="!(userLoggedIn$ | async); else loginOptions">
-          <li>
-            <a routerLink="/login" i18n>Zaloguj</a>
-          </li>
-          <li>
-            <a routerLink="/register" i18n>Zarejestruj</a>
-          </li>
-        </ng-container>
-        <ng-template #loginOptions>
-          <li>
-            <a routerLink="/settings" i18n>Ustawienia</a>
-          </li>
-          <li>
+      <section>
+        <dl>
+          <dt>Operacje widoku</dt>
+          <dd><a
+            (click)="openShareViewModal()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wyślij widok na adres email
+          </a></dd>
+          <dd><a
+            (click)="openSaveViewModal()"
+            href="javascript:undefined"
+            data-e2e="open-save-view-modal-btn"
+            i18n
+          >
+            Zapisz konfigurację widoku w aplikacji
+          </a></dd>
+          <dd><a
+            (click)="openListViewModal()"
+            href="javascript:undefined"
+            data-e2e="open-views-modal-btn"
+            i18n
+          >
+            Wczytaj zapisaną konfigurację
+          </a></dd>
+          <dd><a
+            (click)="openExpertHelpModal()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wsparcie eksperckie
+          </a></dd>
+
+          <dt>Raporty</dt>
+          <dd><a
+            (click)="openReportModal()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wygeneruj raport PDF
+          </a></dd>
+          <dd><a
+            (click)="openReportTemplatesModal()"
+            href="javascript:undefined"
+            i18n
+          >
+            Szablony raportów
+          </a></dd>
+
+          <dt>Zapisywanie na dysk</dt>
+
+
+          <dd><a
+            data-test-download-original
+            [ngClass]="{disabled: (activeScene$ | async) == null}"
+            [attr.href]="activeSceneUrl$ | async"
+            target="_blank"
+            i18n
+          >
+            Zapisz źródło widoku (surowe dane)
+          </a></dd>
+          <dd><a
+            (click)="downloadMapImage()"
+            href="javascript:undefined"
+            i18n
+          >
+            Zapisz na dysku jako obraz PNG
+          </a></dd>
+        </dl>
+        <dl>
+          <dt>Zarządzanie kontem</dt>
+          <dd>
+            <a routerLink="/settings" i18n>Panel administracyjny</a>
+          </dd>
+          <dd>
+            <a routerLink="/profile" i18n>Twój profil</a>
+          </dd>
+          <dd>
             <a
               href="javascript:void(0)"
               (click)="openJwtTokenModal()"
@@ -95,23 +163,32 @@
             >
               Pobierz token API
             </a>
-          </li>
+          </dd>
 
-          <li>
-            <a routerLink="/logout" i18n>Wyloguj</a>
-          </li>
-        </ng-template>
-        <li>
-          <a href="javascript:void(0)" (click)="toggleHighContrast()">
-            {{ (hasHeightContrast | async) ? 'Wyłącz' : 'Włącz' }} wysoki kontrast
-          </a>
-        </li>
-        <li>
-          <a href="javascript:void(0)" (click)="toggleLargeFont()">
-            {{ (hasLargeFont | async) ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
-          </a>
-        </li>
-      </ul>
+
+          <dt>Dostępność</dt>
+          <dd>
+            <a href="javascript:void(0)" (click)="toggleHighContrast()">
+              {{ (hasHeightContrast | async) ? 'Wyłącz' : 'Włącz' }} wysoki kontrast
+            </a>
+          </dd>
+          <dd>
+            <a href="javascript:void(0)" (click)="toggleLargeFont()">
+              {{ (hasLargeFont | async) ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
+            </a>
+          </dd>
+        </dl>
+        <div class="dropdown__login">
+          <a routerLink="/logout" class="button button--small button--primary" i18n>Wyloguj</a>
+        </div>
+        <ng-container *ngIf="!(userLoggedIn$ | async); else loginOptions">
+          <div class="dropdown__login">
+            <a routerLink="/login" i18n class="button button--small button--primary">
+              Zaloguj / Zarejestruj
+            </a>
+          </div>
+        </ng-container>
+      </section>
     </div>
   </ng-container>
 </div>

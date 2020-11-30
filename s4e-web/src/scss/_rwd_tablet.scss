@@ -10,7 +10,6 @@
       display: block !important;
     }
 
-    display: none;
   }
 
   .timeline {
@@ -24,18 +23,8 @@
     width: 100% !important;
   }
 
-  .layers,
-  .collapse {
-    display: none;
-  }
-
   .dropdown {
     &__button {
-
-      &--products {
-        display: block;
-        z-index: 5 !important;
-      }
 
       &--product {
         left: 80px !important;

@@ -179,7 +179,7 @@
 
     .products__toggle {
       top: 10px;
-      width: calc(100% - 33px);
+      width: calc(100% - 35px);
       position: absolute;
       height: 20px;
       cursor: pointer;
@@ -233,6 +233,19 @@
   &__item {
     display: flex;
     flex-direction: row;
+    padding-left: $space-xlarge + 5px;
+    position: relative;
+
+    &:before {
+      content: "";
+      width: 15px;
+      height: 15px;
+      position: absolute;
+      left: 9px;
+      top: 9px;
+      background: url(/../assets/images/ico_eye_open.svg) no-repeat;
+      opacity: 0.2;
+    }
 
     button {
       font-size: 0.875rem;
@@ -243,10 +256,9 @@
       &.active {
         background: $color-grey-secondary;
         border-radius: 8px;
+
       }
     }
-
-
 
     &:last-child {
       margin-bottom: 0;
@@ -255,15 +267,27 @@
     .far {
       opacity: .2;
     }
+
+    &.active {
+      padding-left: 0;
+
+      &:before {
+        display: none;
+      }
+    }
   }
 
   &__visibility {
-    align-self: flex-end;
-    margin-left: auto;
+    align-self: flex-start;
 
     .far {
       opacity: 1;
     }
+  }
+
+  &__favourite {
+    align-self: flex-end;
+    margin-left: auto;
   }
 
   .form {
@@ -323,18 +347,6 @@
   margin: 0 -15px;
   border-top: 3px solid $color-grey-quaternary;
   z-index: 1;
-
-  &:before {
-    display: block;
-    content: " ";
-    background: linear-gradient(to bottom, rgba(249,252,254,0.00) 0%, $color-grey-primary 90%);
-    height: 40px;
-    width: $width-sidebar + 30px;
-    position: absolute;
-    left: 0;
-    top: -43px;
-    zindex: 2
-  }
 
   &:after {
     display: block;

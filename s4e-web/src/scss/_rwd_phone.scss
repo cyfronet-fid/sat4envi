@@ -35,9 +35,12 @@
   }
 
 
-  .layers,
   .collapse {
     display: none;
+  }
+
+  .layers {
+    width: 95%;
   }
 
   #map {

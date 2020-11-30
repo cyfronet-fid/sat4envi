@@ -26,28 +26,33 @@
       <!--suppress AngularInvalidExpressionResultType -->
       <form (ngSubmit)="register()" [formGroup]="form" class="form">
         <h2 class="content__header" i18n>Rejestracja</h2>
+        <p>Sat4envi to otwarte dane dla każdego. Zarejestrowani użytkownicy mają dostęp do dodatkowych produktów
+          oraz mogą korzystać z wyszukiwarki danych satelit systemu Sentinel. Zarejestruj się całkowicie za darmo!
+        </p>
+        <p>
+          Wszystkie poniższe dane są wymagane. Po wysłaniu zgłoszenia otrzymasz na podany adres email link
+          weryfikacyjny. Nie zapomnij go kliknąć.
+        </p>
         <div class="alert alert-danger" *ngIf="form.errors">
           <ul s4e-form-error [control]="form"></ul>
         </div>
 
         <ul class="form__list">
-          <li class="form__element">
+          <li class="form__element" class="form__element--50">
+            <label for="registration-name" i18n>Imię</label>
+            <input class="form-control" formControlName="name" id="registration-name" type="text">
+            <ul s4e-form-error [control]="form.controls.name"></ul>
+          </li>
+          <li class="form__element" class="form__element--50">
+            <label for="registration-surname" i18n>Nazwisko</label>
+            <input class="form-control" formControlName="surname" id="registration-surname" type="text">
+            <ul s4e-form-error [control]="form.controls.surname"></ul>
+          </li>
+          <li class="form__element" class="form__element--clear">
             <label for="registration-login" i18n>Email</label>
             <input class="form-control" formControlName="email" id="registration-login" autocomplete="new-password"
                    type="text">
             <ul s4e-form-error [control]="form.controls.email"></ul>
-          </li>
-
-          <li class="form__element">
-            <label for="registration-name" i18n>Imie</label>
-            <input class="form-control" formControlName="name" id="registration-name" type="text">
-            <ul s4e-form-error [control]="form.controls.name"></ul>
-          </li>
-
-          <li class="form__element">
-            <label for="registration-surname" i18n>Nazwisko</label>
-            <input class="form-control" formControlName="surname" id="registration-surname" type="text">
-            <ul s4e-form-error [control]="form.controls.surname"></ul>
           </li>
 
           <li class="form__element">
@@ -64,7 +69,7 @@
             <ul s4e-form-error [control]="form.controls.passwordRepeat"></ul>
           </li>
 
-          <li class="form__element" id="domain-controller">
+          <li class="form__element form__element--50" id="domain-controller" >
             <label for="registration-domain" i18n>Domena zawodowa</label>
             <select
               class="form-control"
@@ -78,7 +83,7 @@
             <ul s4e-form-error [control]="form.controls.domain"></ul>
           </li>
 
-          <li class="form__element" id="usage-controller">
+          <li class="form__element form__element--50" id="usage-controller">
             <label for="registration-usage" i18n>Powód użycia</label>
             <select
               class="form-control"
@@ -92,7 +97,7 @@
             <ul s4e-form-error [control]="form.controls.usage"></ul>
           </li>
 
-          <li class="form__element" id="country-controller">
+          <li class="form__element form__element--clear" id="country-controller">
             <label for="registration-country" i18n>Kraj</label>
             <select
               class="form-control"
@@ -106,7 +111,7 @@
             <ul s4e-form-error [control]="form.controls.country"></ul>
           </li>
 
-          <li class="form__element">
+          <li class="form__element form__element--policy">
             <input
               type="checkbox"
               class="form-control"
@@ -119,7 +124,7 @@
             <ul s4e-form-error [control]="form.controls.policy"></ul>
           </li>
 
-          <li class="form__element">
+          <li class="form__element ">
             <re-captcha formControlName="recaptcha" [siteKey]="remoteConfiguration.get().recaptchaSiteKey"></re-captcha>
           </li>
 

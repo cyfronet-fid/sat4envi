@@ -44,7 +44,7 @@
     }
 
     &--login, &--loginactive {
-      background: url(/../assets/images/ico_lock.svg) $color-white no-repeat center;
+      background: url(/../assets/images/ico_user.svg) $color-white no-repeat center;
       top: 12px;
       right: 70px;
       background-size: 20px;
@@ -82,7 +82,6 @@
     display: flex;
     flex-direction: column;
     padding: $space-xsmall;
-    width: 215px;
     box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
     z-index: 6;
 
@@ -92,6 +91,7 @@
 
     &--login {
       right: 68px;
+      max-width: 500px;
     }
 
     &--product {
@@ -105,6 +105,10 @@
       .dropdown__header {
         padding: 0;
         padding-left: 55px;
+
+        span {
+          text-align: right;
+        }
       }
 
       .dropdown__close {
@@ -122,22 +126,58 @@
       }
     }
 
-    ul {
-      margin-top: $space-xsmall;
+    section
+    {
+      display: flex;
+      flex-direction: row;
+    }
 
-      li {
-        padding: $space-small $space-default;
+    dl {
+      margin: $space-default $space-small;
+
+      &:first-child {
+        padding-right: $space-default;
+        border-right: 1px solid $color-grey-secondary;
+      }
+
+      dt {
+        padding: $space-xsmall $space-default;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: $space-large;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+
+      dd {
+        padding: ($space-xsmall - 2px) $space-default;
+        line-height: 1.12rem;
         a {
           cursor: pointer;
-          color: $color-grey;
+          color: $color-secondary;
           font-size: 0.875rem;
 
           &.disabled {
             opacity: 0.4;
           }
+
+          &:hover {
+            text-decoration: underline;
+          }
         }
       }
     }
+  }
+
+  &__login {
+    position: absolute;
+    width: 200px;
+    text-align: center;
+    bottom: 30px;
+    right: 10px;
   }
 
   &__header {
@@ -150,7 +190,12 @@
     display: flex;
     align-items: center;
     height: 50px;
-    padding: 0 calc(100% - 50px) 0 $space-default;
+    padding: 0 ($space-xlarge + 30px) 0 $space-default;
+
+    img {
+      margin-right: $space-default;
+    }
+
   }
 
   &__close {

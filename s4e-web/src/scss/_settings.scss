@@ -187,6 +187,12 @@ s4e-tiles-dashboard {
       font-size: 0.875rem;
     }
   }
+
+  .search {
+    i {
+      display: none;
+    }
+  }
 } // end panel
 
 .content {
@@ -316,6 +322,8 @@ s4e-tiles-dashboard {
       margin-left: 130px;
       border-radius: $border-radius-default;
       display: none;
+
+
 
       span {
         display: inline-block;

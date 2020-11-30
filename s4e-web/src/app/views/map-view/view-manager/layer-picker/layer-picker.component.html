@@ -15,14 +15,10 @@
       role="menuitem"
       *ngFor="let item of items"
     >
-      <ng-container *ngIf="hasFavourite">
-        <button *ngIf="!item.isFavouriteLoading; else itemFavLoading"
-                (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
-          <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}" title="Dodaj produkt do ulubionych"></i>
-        </button>
-        <ng-template #itemFavLoading>
-          <fa-icon class="item-fav-spinner" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-        </ng-template>
+      <ng-container *ngIf="item.isLoading; else visibility">
+        <span class="products__visibility__spinner">
+          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        </span>
       </ng-container>
       <button
         (click)="itemSelected.emit(item.cid)"
@@ -32,10 +28,16 @@
       >
         {{item.label}}
       </button>
-      <ng-container *ngIf="item.isLoading; else visibility">
-        <span class="products__visibility__spinner">
-          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-        </span>
+      <ng-container *ngIf="hasFavourite">
+        <div class="products__favourite">
+          <button *ngIf="!item.isFavouriteLoading; else itemFavLoading"
+                  (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
+            <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}" title="Dodaj produkt do ulubionych"></i>
+          </button>
+          <ng-template #itemFavLoading>
+            <fa-icon class="item-fav-spinner" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+          </ng-template>
+        </div>
       </ng-container>
 
       <ng-template #visibility>
