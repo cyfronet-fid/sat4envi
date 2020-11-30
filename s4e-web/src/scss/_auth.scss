@@ -27,6 +27,9 @@ body, html {
     justify-content: space-between;
     align-items: center;
     padding: 100px $space-default;
+    position: absolute;
+    height: 100%;
+    box-sizing: border-box;
 
     &__content {
       width: 70%;
@@ -62,6 +65,7 @@ body, html {
     overflow-y: scroll;
     overflow-x: hidden;
     position: relative;
+    margin-left: auto;
 
     &__text {
       display: table-cell;
@@ -94,8 +98,41 @@ body, html {
       .form {
         background: $color-white;
 
+        p {
+          line-height: 1.4rem;
+        }
+
+        p+p {
+          margin-bottom: $space-xlarge * 2;
+        }
+
         &__element {
           margin-bottom: $space-xlarge;
+
+          &--50 {
+            width: 47%;
+            float: left;
+            margin-right: $space-default;
+
+          }
+
+          &--clear {
+            clear: both;
+          }
+
+          &--policy {
+            overflow: auto;
+            input {
+              float: left;
+              width: 15px;
+              margin-right: $space-small;
+            }
+          }
+        }
+
+        li.form__element--50 + li.form__element--50 {
+          float: right;
+          margin-right: 0;
         }
 
         li {
@@ -127,94 +164,6 @@ body, html {
         border-bottom: 2px solid $color-error;
         margin-bottom: 3px;
       }
-
-      [type="checkbox"]:not(:checked),
-      [type="checkbox"]:checked {
-        position: absolute;
-        display: none;
-      }
-
-      [type="checkbox"]:not(:checked) + label,
-      [type="checkbox"]:checked + label {
-        position: relative;
-        padding-top: 2px;
-        cursor: pointer;
-        margin-top: 8px;
-      }
-
-      [type="checkbox"]:not(:checked) + label:before,
-      [type="checkbox"]:checked + label:before,
-      [type="checkbox"]:not(:checked) + label:after,
-      [type="checkbox"]:checked + label:after {
-        content: '';
-        position: absolute;
-      }
-
-      [type="checkbox"]:not(:checked) + label:before,
-      [type="checkbox"]:checked + label:before {
-        width: 65px;
-        height: 30px;
-        background: $color-grey-primary;
-        border-radius: 15px;
-        left: 130px;
-        top: -4px;
-        transition: all .2s ease;
-      }
-
-      [type="checkbox"]:not(:checked) + label:after,
-      [type="checkbox"]:checked + label:after {
-        width: 10px;
-        height: 10px;
-        background: $color-grey-secondary;
-        border-radius: 50%;
-        top: 6px;
-        left: 140px;
-        transition: all .2s ease;
-      }
-
-      /* on checked */
-      [type="checkbox"]:checked + label:before {
-        background: $color-secondary;
-      }
-
-      [type="checkbox"]:checked + label:after {
-        background: #ffffff;
-        top: 6px;
-        left: 175px;
-      }
-
-      [type="checkbox"]:checked + label .ui,
-      [type="checkbox"]:not(:checked) + label .ui:before,
-      [type="checkbox"]:checked + label .ui:after {
-        position: absolute;
-        left: 136px;
-        width: 65px;
-        border-radius: 2px;
-        font-size: 14px;
-        font-weight: bold;
-        line-height: 22px;
-        transition: all .2s ease;
-      }
-
-      [type="checkbox"]:not(:checked) + label .ui:before {
-        content: "NIE";
-        left: 162px;
-        color: $color-grey;
-        top: 0;
-      }
-
-      [type="checkbox"]:checked + label .ui:after {
-        content: "TAK";
-        color: #ffffff;
-        left: 6px;
-        top: -2px;
-      }
-
-      [type="checkbox"]:focus + label:before {
-        box-sizing: border-box;
-        margin-top: -1px;
-      }
-
 
 
     }
