@@ -80,47 +80,11 @@ describe('MapViewComponent', () => {
       expect(fixture.debugElement.query(By.css('#zk-options-button'))).toBeNull();
     });
 
-    it('should show #zk-options-button if user is not memberZK', () => {
-      sessionStore.update({memberZK: true});
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('#zk-options-button'))).not.toBeNull();
-    });
-
-    it('clicking #zk-options-button should show options', () => {
-      // log in user
-      sessionStore.update({memberZK: true});
-      fixture.detectChanges();
-      fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
-      fixture.detectChanges();
-      expect(fixture.debugElement.query(By.css('.dropdown__button--zk'))).toBeTruthy();
-    });
-
-    it('clicking .zk__dropdown__close should toggleZKOptions(false)', () => {
-      // log in user
-      sessionStore.update({memberZK: true});
-      fixture.detectChanges();
-      fixture.debugElement.query(By.css('#zk-options-button')).nativeElement.click();
-      fixture.detectChanges();
-      const spy = spyOn(component, 'toggleZKOptions');
-      fixture.debugElement.query(By.css('.dropdown__close')).nativeElement.click();
-      expect(spy).toHaveBeenCalledWith(false);
-    });
-
     it('toggleZKOptions should call mapService.toggleZKOptions ', () => {
       const service: MapService = TestBed.get(MapService);
       const spy = spyOn(service, 'toggleZKOptions');
       component.toggleZKOptions();
       expect(spy).toHaveBeenCalledWith(true);
-    });
-
-    it('Download Original File button should be disabled if there is no activeScene ', async () => {
-      sessionStore.update({memberZK: true});
-      mapStore.update({zkOptionsOpened: true});
-      const activeScene = await component.activeScene$.pipe(take(1)).toPromise();
-      fixture.detectChanges();
-      expect(activeScene).toBeFalsy();
-      const link = fixture.debugElement.query(By.css('[data-test-download-original=\'\'].disabled'));
-      expect(link).toBeTruthy();
     });
   });
 

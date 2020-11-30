@@ -92,8 +92,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public userIsZK$: Observable<boolean> = this.sessionQuery.selectMemberZK();
   public timelineResolution$: Observable<number> = this.productQuery.selectTimelineResolution();
   public legend$ = this.legendQuery.selectLegend();
-  public hasHeightContrast = this.viewConfigurationQuery.select('highContrast');
-  public hasLargeFont = this.viewConfigurationQuery.select('largeFont');
+  public hasHeightContrast$ = this.viewConfigurationQuery.select('highContrast');
+  public hasLargeFont$ = this.viewConfigurationQuery.select('largeFont');
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');

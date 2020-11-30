@@ -60,6 +60,7 @@ import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.component';
 import {OverlayListModule} from '../../components/overlay-list/overlay-list.module';
+import {UserDropdownComponent} from './user-dropdown/user-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import {OverlayListModule} from '../../components/overlay-list/overlay-list.modu
     LegendDesignerComponent,
     ExpertHelpModalComponent,
     ReportTemplatesModalComponent,
-    ToPaginationArrayPipe
+    ToPaginationArrayPipe,
+    UserDropdownComponent
   ],
   exports: [
     MapViewComponent,

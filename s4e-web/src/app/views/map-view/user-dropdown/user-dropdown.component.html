@@ -1,0 +1,127 @@
+<div class="dropdown__content dropdown__content--login">
+  <div class="dropdown__header">
+    <img src="/assets/images/logo_s4e_color.png" width="60" i18n-alt alt="Logo Sat4Envi"/>
+    <a href="https://sat4envi.imgw.pl"><strong i18n>Przejdź do strony projektu</strong></a>
+  </div>
+  <div class="dropdown__close" (click)="toggleLoginOptions.emit(false)"></div>
+  <section>
+    <dl *ngIf="showAdvanced">
+      <dt i18n>Operacje widoku</dt>
+      <dd><a
+        (click)="openShareViewModal.emit()"
+        href="javascript:undefined"
+        i18n
+      >
+        Wyślij widok na adres email
+      </a></dd>
+      <dd><a
+        (click)="openSaveViewModal.emit()"
+        href="javascript:undefined"
+        data-e2e="open-save-view-modal-btn"
+        i18n
+      >
+        Zapisz konfigurację widoku w aplikacji
+      </a></dd>
+      <dd><a
+        (click)="openListViewModal.emit()"
+        href="javascript:undefined"
+        data-e2e="open-views-modal-btn"
+        i18n
+      >
+        Wczytaj zapisaną konfigurację
+      </a></dd>
+      <dd><a
+        (click)="openExpertHelpModal.emit()"
+        href="javascript:undefined"
+        i18n
+      >
+        Wsparcie eksperckie
+      </a></dd>
+
+      <dt i18n>Raporty</dt>
+      <dd><a
+        (click)="openReportModal.emit()"
+        href="javascript:undefined"
+        i18n
+      >
+        Wygeneruj raport PDF
+      </a></dd>
+      <dd><a
+        (click)="openReportTemplatesModal.emit()"
+        href="javascript:undefined"
+        i18n
+      >
+        Szablony raportów
+      </a></dd>
+
+      <dt i18n>Zapisywanie na dysk</dt>
+
+
+      <dd><a
+        data-test-download-original
+        [ngClass]="{disabled: activeScene == null}"
+        (click)="openSceneDetailsModal.emit()"
+        target="_blank"
+        i18n
+      >
+        Zapisz źródło widoku (surowe dane)
+      </a></dd>
+      <dd><a
+        (click)="downloadMapImage.emit()"
+        href="javascript:undefined"
+        i18n
+      >
+        Zapisz na dysku jako obraz PNG
+      </a></dd>
+    </dl>
+    <dl>
+
+      <ng-container *ngIf="userLoggedIn">
+        <dt i18n>Zarządzanie kontem</dt>
+        <dd>
+          <a routerLink="/settings" i18n>Panel administracyjny</a>
+        </dd>
+        <dd>
+          <a routerLink="/settings/profile" i18n>Twój profil</a>
+        </dd>
+        <dd>
+          <a
+            href="javascript:void(0)"
+            (click)="openJwtTokenModal.emit()"
+            data-e2e="open-jwt-token-btn"
+            i18n
+          >
+            Pobierz token API
+          </a>
+        </dd>
+      </ng-container>
+
+
+      <dt i18n>Dostępność</dt>
+      <dd>
+        <a href="javascript:void(0)" (click)="toggleHighContrast.emit()" i18n>
+          {{ hasHeightContrast ? 'Wyłącz' : 'Włącz' }} wysoki kontrast
+        </a>
+      </dd>
+      <dd>
+        <a href="javascript:void(0)" (click)="toggleLargeFont.emit()" i18n>
+          {{ hasLargeFont ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
+        </a>
+      </dd>
+    </dl>
+
+    <ng-template #loggedInRef>
+      <div class="dropdown__login">
+        <a routerLink="/logout" class="button button--small button--primary" i18n>Wyloguj</a>
+      </div>
+    </ng-template>
+
+    <ng-container *ngIf="!userLoggedIn; else loggedInRef">
+      <div class="dropdown__login">
+        <a routerLink="/login" class="button button--small button--primary" i18n>
+          Zaloguj / Zarejestruj
+        </a>
+      </div>
+    </ng-container>
+  </section>
+</div>
