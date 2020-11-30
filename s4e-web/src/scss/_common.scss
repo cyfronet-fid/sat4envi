@@ -490,6 +490,9 @@ input.checkbox-slide:checked + .slider:after
   }
 
   &--emptylayers {
+    p {
+      margin: 0 $space-default;
+    }
     &:before {
       display: block;
       content: " ";

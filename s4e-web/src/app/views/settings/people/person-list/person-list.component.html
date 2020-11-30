@@ -7,6 +7,12 @@
   <li class="active">
     Osoby w instytucji
   </li>
+  <li>
+    <a [routerLink]="['/settings/institution-wms-overlays']"
+       queryParamsHandling="merge">
+      Warstwy WMS dla instytucji
+    </a>
+  </li>
 </ul>
 <s4e-generic-list-view
   [loading]="areLoading$ | async"

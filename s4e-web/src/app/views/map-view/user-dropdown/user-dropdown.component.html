@@ -1,7 +1,6 @@
 <div class="dropdown__content dropdown__content--login">
   <div class="dropdown__header">
     <img src="/assets/images/logo_s4e_color.png" width="60" i18n-alt alt="Logo Sat4Envi"/>
-    <a href="https://sat4envi.imgw.pl"><strong i18n>Przejdź do strony projektu</strong></a>
   </div>
   <div class="dropdown__close" (click)="toggleLoginOptions.emit(false)"></div>
   <section>
@@ -108,20 +107,22 @@
           {{ hasLargeFont ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
         </a>
       </dd>
+      <ng-template #loggedInRef>
+        <dd class="dropdown__login">
+          <a routerLink="/logout" class="button button--small button--primary" i18n>Wyloguj</a>
+        </dd>
+      </ng-template>
+      <ng-container *ngIf="!userLoggedIn; else loggedInRef">
+        <dd class="dropdown__login">
+          <a routerLink="/login" class="button button--small button--primary" i18n>
+            Zaloguj / Zarejestruj
+          </a>
+        </dd>
+      </ng-container>
     </dl>
 
-    <ng-template #loggedInRef>
-      <div class="dropdown__login">
-        <a routerLink="/logout" class="button button--small button--primary" i18n>Wyloguj</a>
-      </div>
-    </ng-template>
 
-    <ng-container *ngIf="!userLoggedIn; else loggedInRef">
-      <div class="dropdown__login">
-        <a routerLink="/login" class="button button--small button--primary" i18n>
-          Zaloguj / Zarejestruj
-        </a>
-      </div>
-    </ng-container>
+
+
   </section>
 </div>

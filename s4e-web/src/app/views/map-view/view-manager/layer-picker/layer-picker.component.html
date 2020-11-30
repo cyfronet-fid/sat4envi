@@ -20,6 +20,16 @@
           <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
         </span>
       </ng-container>
+      <ng-template #visibility>
+        <button
+          *ngIf="item.active"
+          class="products__visibility"
+          (click)="itemSelected.emit(item.cid)"
+          data-e2e="selected-icon"
+        >
+          <i class="far fa-eye"></i>
+        </button>
+      </ng-template>
       <button
         (click)="itemSelected.emit(item.cid)"
         class="products__name"

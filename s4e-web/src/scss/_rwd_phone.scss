@@ -168,6 +168,13 @@
         }
       }
 
+      &__tabs {
+        li {
+          display: block;
+          margin-bottom: $space-default;
+        }
+      }
+
       .search {
         margin-left: 103px;
         width: 65%;
