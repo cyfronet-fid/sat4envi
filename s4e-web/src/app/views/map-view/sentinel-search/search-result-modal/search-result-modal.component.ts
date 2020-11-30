@@ -1,12 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './search-result-modal.model';
-import {Observable} from 'rxjs';
+import {DetailsModal, SENTINEL_SEARCH_RESULT_MODAL_ID} from './search-result-modal.model';
+import {Observable, of, ReplaySubject} from 'rxjs';
 import {SentinelSearchResult} from '../../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
 import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search.service';
 import {SessionQuery} from '../../../../state/session/session.query';
+import {MODAL_DEF} from '../../../../modal/modal.providers';
 
 @Component({
   selector: 's4e-search-result-modal',
@@ -20,6 +21,7 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   xclicked = () => this.dismiss();
 
   constructor(
+    @Inject(MODAL_DEF) public modal: DetailsModal,
     modalService: ModalService,
     private _sentinelSearchService: SentinelSearchService,
     private _sentinelSearchQuery: SentinelSearchQuery,
@@ -29,9 +31,14 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
   }
 
   ngOnInit(): void {
-    this.searchResult$ = this._sentinelSearchQuery.selectActive();
-    this.isFirst$ = this._sentinelSearchQuery.selectIsActiveFirst();
-    this.isLast$ = this._sentinelSearchQuery.selectIsActiveLast();
+    if (this.modal.mode === 'sentinel') {
+      this.searchResult$ = this._sentinelSearchQuery.selectActive();
+      this.isFirst$ = this._sentinelSearchQuery.selectIsActiveFirst();
+      this.isLast$ = this._sentinelSearchQuery.selectIsActiveLast();
+    } else if (this.modal.mode === 'scene') {
+      this.searchResult$ = of(this.modal.entity);
+      this.isFirst$ = this.isLast$ = of(false);
+    }
   }
 
   previousResult() {

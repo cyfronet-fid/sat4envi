@@ -25,6 +25,7 @@ import {BACK_LINK_QUERY_PARAM} from '../../../../state/session/session.service';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {delay, take} from 'rxjs/operators';
 import Spy = jasmine.Spy;
+import * as akita from '@datorama/akita';
 
 describe('SentinelSearchResultService', () => {
   let service: SentinelSearchService;
@@ -193,6 +194,9 @@ describe('SentinelSearchResultService', () => {
     const result2 = createSentinelSearchResult(SentinelSearchFactory.build());
     store.set([result, result2]);
 
+    const uuid = '4be89042a0';
+    spyOn(akita, 'guid').and.returnValue(uuid);
+
     const params$ = new ReplaySubject(1);
     const routerQuery: RouterQuery = TestBed.get(RouterQuery);
     const spy = spyOn(modalService, 'show');
@@ -202,7 +206,15 @@ describe('SentinelSearchResultService', () => {
 
     await activeModal$.pipe(take(1)).toPromise();
     expect(query.getActiveId()).toEqual(result.id);
-    expect(spy).toHaveBeenCalledWith({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+    expect(spy).toHaveBeenCalledWith(
+      {
+        entity: null,
+        id: 'search-result-modal-id',
+        mode: 'sentinel',
+        showNavigation: true,
+        size: 'lg',
+        uuid}
+    );
     expect(routerSpy).toHaveBeenCalledWith(SENTINEL_SEARCH_ACTIVE_ID);
     params$.next(result2.id.toString());
   });

@@ -16,6 +16,8 @@
 }
 
 .button {
+  cursor: pointer;
+
   &--default {
     @include button;
   }

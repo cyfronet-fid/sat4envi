@@ -20,7 +20,7 @@ import {Router} from '@angular/router';
 import {applyTransaction, HashMap} from '@datorama/akita';
 import {NotificationService} from 'notifications';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
+import {makeDetailsModal, SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import {ActivatedQueue} from 'src/app/utils/search/activated-queue.utils';
 import {Observable, of, throwError} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
@@ -188,7 +188,7 @@ export class SentinelSearchService {
         switchMap(id => this.query.selectEntity(id).pipe(filterNotNull(), take(1))),
         tap(entity => {
           this.store.setActive(entity.id);
-          this.modalService.show({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'});
+          this.modalService.show(makeDetailsModal());
         })
       );
   }

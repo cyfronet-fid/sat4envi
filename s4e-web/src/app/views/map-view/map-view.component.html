@@ -180,11 +180,11 @@
         <li><a
           data-test-download-original
           [ngClass]="{disabled: (activeScene$ | async) == null}"
-          [attr.href]="activeSceneUrl$ | async"
-          target="_blank"
+          href="javascript:undefined"
+          (click)="showDetailsModal()"
           i18n
         >
-          Zapisz na dysku jako oryginał (zip)
+          Zapisz oryginał na dysku...
         </a></li>
         <li><a
           (click)="downloadMapImage()"
