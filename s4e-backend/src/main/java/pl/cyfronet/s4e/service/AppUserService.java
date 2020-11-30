@@ -10,10 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.ForgetUserRequest;
 import pl.cyfronet.s4e.controller.request.RegisterRequest;
-import pl.cyfronet.s4e.data.repository.AppUserRepository;
-import pl.cyfronet.s4e.data.repository.InvitationRepository;
-import pl.cyfronet.s4e.data.repository.ReportTemplateRepository;
-import pl.cyfronet.s4e.data.repository.WMSOverlayRepository;
+import pl.cyfronet.s4e.data.repository.*;
 import pl.cyfronet.s4e.ex.AppUserDuplicateException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.RegistrationTokenExpiredException;
@@ -28,11 +25,11 @@ public class AppUserService {
     private final AppUserRepository appUserRepository;
     private final InvitationRepository invitationRepository;
     private final WMSOverlayRepository wmsOverlayRepository;
+    private final UserRoleRepository userRoleRepository;
     private final ReportTemplateRepository reportTemplateRepository;
     private final AppUserMapper appUserMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
-    private final UserRoleService userRoleService;
 
     @Transactional(rollbackFor = AppUserDuplicateException.class)
     public AppUser register(RegisterRequest registerRequest) throws AppUserDuplicateException {
@@ -122,12 +119,10 @@ public class AppUserService {
         }
     }
 
-    private void removeUserRoles(AppUser appUser) throws NotFoundException {
-        for (UserRole userRole : appUser.getRoles()) {
-            appUser.removeRole(userRole);
-            userRoleService.removeRole(userRole.getInstitution().getSlug(),
-                    userRole.getUser().getId(),
-                    userRole.getRole());
+    private void removeUserRoles(AppUser appUser) {
+        for (UserRole userRole : userRoleRepository.findByUser_Id(appUser.getId())) {
+            userRole.getInstitution().removeMemberRole(userRole);
+            userRole.getUser().removeRole(userRole);
         }
     }
 
