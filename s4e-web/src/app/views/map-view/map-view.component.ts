@@ -86,7 +86,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public availableDates$: Observable<string[]> = this.productQuery.selectAvailableDates();
   public showZKOptions$: Observable<boolean> = this.mapQuery.select('zkOptionsOpened');
   public showLoginOptions$: Observable<boolean> = this.mapQuery.select('loginOptionsOpened');
-  public showProductDescription$: Observable<boolean> = this.mapQuery.select('productDescriptionOpened');
+  public showProductDescription$: Observable<boolean> = this.mapQuery.selectShowProductDescription();
   public selectedLocation$: Observable<LocationSearchResult | null>;
   public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
   public userIsZK$: Observable<boolean> = this.sessionQuery.selectMemberZK();

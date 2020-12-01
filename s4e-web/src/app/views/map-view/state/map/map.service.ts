@@ -2,7 +2,7 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MapStore} from './map.store';
 import {MapQuery} from './map.query';
-import {SIDEBAR_OPEN_LOCAL_STORAGE_KEY, ViewPosition} from './map.model';
+import {PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY, SIDEBAR_OPEN_LOCAL_STORAGE_KEY, ViewPosition} from './map.model';
 import {of} from 'rxjs';
 import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
@@ -48,6 +48,9 @@ export class MapService {
   }
 
   toggleProductDescription(open: boolean = true) {
+    if (open === false) {
+      this.storage.setItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY, JSON.stringify(true))
+    }
     this.store.update({productDescriptionOpened: open});
   }
 
