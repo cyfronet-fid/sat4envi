@@ -33,10 +33,10 @@
           data-e2e="institutions">
         <a routerLink="/settings/manage-authorities" i18n>Zarządzaj uprawnieniami</a>
       </li>
-      <li *ngIf="isSuperAdmin$ | async" routerLinkActive="active"
-          data-e2e="institutions">
-        <a routerLink="/settings/global-wms-overlays" i18n>Globalne WMS</a>
-      </li>
+<!--      <li *ngIf="isSuperAdmin$ | async" routerLinkActive="active"-->
+<!--          data-e2e="institutions">-->
+<!--        <a routerLink="/settings/global-wms-overlays" i18n>Globalne WMS</a>-->
+<!--      </li>-->
       <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
           data-e2e="institutions">
         <a routerLink="/settings/institutions" i18n>Lista instytucji</a>
