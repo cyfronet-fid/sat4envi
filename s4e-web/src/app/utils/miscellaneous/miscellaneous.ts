@@ -21,14 +21,16 @@ export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormC
 }
 
 export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManager?: { formKey: keyof FormState, fm: AkitaNgFormsManager<FormState> }) {
-  Object.keys(formGroup.controls).forEach(field => {
-    const control = formGroup.get(field);
-    if (control instanceof FormControl) {
-      control.markAsTouched({onlySelf: true});
-    } else if (control instanceof FormGroup) {
-      this.validateAllFormFields(control);
-    }
-  });
+  Object.keys(formGroup.controls)
+    .filter(field => !!formGroup.get(field))
+    .forEach(field => {
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({onlySelf: true});
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
 
   if (updateFormManager != null && environment.hmr) {
     (updateFormManager.fm as any).updateStore(updateFormManager.formKey, formGroup);

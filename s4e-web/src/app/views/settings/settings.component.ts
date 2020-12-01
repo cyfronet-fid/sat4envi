@@ -3,7 +3,7 @@ import { InstitutionsSearchResultsStore } from './state/institutions-search/inst
 import {InstitutionService} from './state/institution/institution.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {Observable} from 'rxjs';
-import {filter, finalize, map, switchMap} from 'rxjs/operators'
+import {filter, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
@@ -64,23 +64,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
       .subscribe();
 
     this._institutionService.get();
-    this.isInstitutionActive$
-      .pipe(
-        untilDestroyed(this),
-        filter(isActive => !isActive),
-        switchMap(() => this._institutionQuery.selectHasOnlyOneAdministrationInstitution()),
-        filter(hasOneAdminInstitution => hasOneAdminInstitution),
-        switchMap(() => this._router.navigate(
-        [],
-        {
-          relativeTo: this._activatedRoute,
-          queryParams: {
-            institution: this._institutionQuery.getAdministrationInstitutions()[0].slug
-          },
-          skipLocationChange: true
-        }))
-      )
-      .subscribe();
 
     this.canGrantInstitutionDeleteAuthority = this._sessionQuery.canGrantInstitutionDeleteAuthority();
   }

@@ -1,8 +1,6 @@
 import {InvitationService} from '../../people/state/invitation/invitation.service';
-import {IBreadcrumb} from '../../breadcrumb/breadcrumb.model';
-import {BreadcrumbService} from '../../breadcrumb/breadcrumb.service';
 import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {Component} from '@angular/core';
 import {ModalService} from 'src/app/modal/state/modal.service';
@@ -23,9 +21,10 @@ import {Institution, InstitutionForm} from '../../state/institution/institution.
 import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
 import {combineLatest, forkJoin, of} from 'rxjs';
-import {ADD_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
+import {ADD_INSTITUTION_PATH, EDIT_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
 import {emailListValidator} from '../../email-list-validator.utils';
 import {SessionService} from '../../../../state/session/session.service';
+import {NotificationService} from 'notifications';
 
 @Component({
   selector: 's4e-add-institution',
@@ -49,6 +48,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
   });
   activeInstitution: Institution;
   emblemImgSrc: string;
+  isAddingChild$ = this._institutionsSearchResultsQuery.isChildAddition$(this._activatedRoute);
 
   constructor(
     private _formsManager: AkitaNgFormsManager<FormState>,
@@ -59,9 +59,9 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     private _modalService: ModalService,
     private _modalQuery: ModalQuery,
     private _activatedRoute: ActivatedRoute,
-    private _breadcrumbService: BreadcrumbService,
     private _invitationService: InvitationService,
-    private _sessionService: SessionService
+    private _sessionService: SessionService,
+    private _notificationService: NotificationService
   ) {
     super(_formsManager, _router, _institutionQuery, 'addInstitution');
   }
@@ -73,7 +73,6 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   loadLogo($event) {
     const emblem = File.getFirst($event);
-    console.log('emblem', emblem);
 
     if (!emblem) {
       return;
@@ -132,6 +131,8 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   updateInstitution() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
+
+    console.log(Object.keys(this.form.controls).forEach(key => [key, this.form.controls[key]]))
     if (this.form.invalid) {
       return;
     }
@@ -183,46 +184,23 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
   protected _updateFormState() {
     combineLatest(
       this._institutionsSearchResultsQuery.selectActive$(this._activatedRoute),
-      this._institutionsSearchResultsQuery.isChildAddition$(this._activatedRoute),
-      this._breadcrumbService.breadcrumbs$,
-      this._activatedRoute.data
+      this._institutionsSearchResultsQuery.isChildAddition$(this._activatedRoute)
     )
       .pipe(
         untilDestroyed(this),
-        filter(([institution, addChild, breadcrumbs, data]) => !!institution && (!!addChild || !!data.isEditMode))
+        filter(([institution, isChildAddition]) => !!institution)
       )
-      .subscribe(([institution, addChild, breadcrumbs, data]) => {
-        const isAddChildState = !!addChild && !data.isEditMode;
-        if (isAddChildState) {
-          this._updateBreadcrumbsWithInstitutionProfile(breadcrumbs);
-        }
-
+      .subscribe(([institution, isChildAddition]) => {
         const {slug: parentSlug, name: parentName, ...x} = institution as Institution;
-        const parentInstitution = (isAddChildState && {parentSlug, parentName} || institution) as any;
+        const parentInstitution = (isChildAddition && {parentSlug, parentName} || institution) as any;
         this._setParent(this.form, parentInstitution);
 
-        const isEditMode = !addChild && !!data.isEditMode;
+        const isEditMode = this._router.url.includes(EDIT_INSTITUTION_PATH);
         if (isEditMode) {
           this.activeInstitution = institution as Institution;
           this._setFormWith(this.form, institution as Institution);
         }
       });
-  }
-
-  protected _updateBreadcrumbsWithInstitutionProfile(breadcrumbs: IBreadcrumb[]) {
-    const mainRouteIndex = 0;
-    const institutionListBreadcrumbIndex = this._breadcrumbService.getMainRoutes()[mainRouteIndex].children
-      .find(route => route.path === ADD_INSTITUTION_PATH)
-      .data
-      .breadcrumbs
-      .map(breadcrumb => breadcrumb.url)
-      .indexOf(INSTITUTIONS_LIST_PATH);
-    const finalBreadcrumbOffset = 1;
-    breadcrumbs[institutionListBreadcrumbIndex + finalBreadcrumbOffset] = {
-      label: 'Profil instytucji',
-      url: INSTITUTION_PROFILE_PATH
-    };
-    this._breadcrumbService.replaceWith(breadcrumbs);
   }
 
   protected _setParent(form: FormGroup<Institution>, institution: Institution) {
@@ -246,9 +224,17 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
           this.form.controls.emblem.setErrors(null);
         },
         (error) => {
-          console.log('Error while image converting: ', error);
-          this.form.controls.emblem.setErrors({'niewłaściwy format zdjęcia': true});
           this.emblemImgSrc = null;
+          if (error.target.src.indexOf('/static/emblems') > -1) {
+            this.form.controls.emblem.setErrors(null);
+            this.form.controls.emblem.setValue(null);
+            return;
+          }
+
+          this._notificationService.addGeneral({
+            content: 'Wgrane zdjęcie jest w niewłaściwym formacie, jest uszkodzone lub link źródłowy jest niepoprawny',
+            type: 'error'
+          })
         }
       );
   }

@@ -13,7 +13,7 @@ import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {distinctUntilChanged, filter, tap, map} from 'rxjs/operators';
+import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
@@ -44,18 +44,18 @@ export class MapComponent implements OnInit, OnDestroy {
 
   @Input()
   set isSentinelSearch(isSentinelSearch: boolean) {
+    this._isSentinelSearch = isSentinelSearch;
+
     if (!this.map) {
       return;
     }
-
-    this._isSentinelSearch = isSentinelSearch;
 
     if (!isSentinelSearch) {
       this._clearPolygonDrawing();
     }
   }
 
-  private _isSentinelSearch = true;
+  private _isSentinelSearch = false;
   private _removePolygon = false;
 
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
