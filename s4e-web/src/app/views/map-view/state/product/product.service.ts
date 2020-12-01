@@ -11,7 +11,7 @@ import {
   PRODUCT_MODE_QUERY_KEY,
   TIMELINE_RESOLUTION_QUERY_KEY
 } from './product.model';
-import {filter, finalize, switchMap, take, tap} from 'rxjs/operators';
+import {catchError, delay, filter, finalize, switchMap, take, tap} from 'rxjs/operators';
 import {ProductQuery} from './product.query';
 import {LegendService} from '../legend/legend.service';
 import {forkJoin, Observable, of} from 'rxjs';
@@ -95,6 +95,7 @@ export class ProductService {
 
     return this.query.selectEntity(productId)
       .pipe(
+        take(1),
         tap(() => this.store.ui.update(productId, {isLoading: true})),
         switchMap(product => this.getSingle$(product)),
         tap(() => applyTransaction(() => {
@@ -118,21 +119,21 @@ export class ProductService {
 
   }
 
-  toggleFavourite(ID: number, isFavourite: boolean) {
-    this.store.ui.update(ID, {isFavouriteLoading: true});
+  toggleFavourite(productId: number, isFavourite: boolean) {
+    this.store.ui.update(productId, {isFavouriteLoading: true});
 
     const request$ = (
       isFavourite
         ? this.http
-          .put(`${environment.apiPrefixV1}/products/${ID}/favourite`, {}, HANDLE_ALL_ERRORS)
+          .put(`${environment.apiPrefixV1}/products/${productId}/favourite`, {}, HANDLE_ALL_ERRORS)
         : this.http
-          .delete(`${environment.apiPrefixV1}/products/${ID}/favourite`, HANDLE_ALL_ERRORS)
+          .delete(`${environment.apiPrefixV1}/products/${productId}/favourite`, HANDLE_ALL_ERRORS)
     )
       .pipe(
-        handleHttpRequest$(this.store),
+        delay(250),
+        tap(() => this.store.update(productId, {favourite: isFavourite})),
         finalize(() => {
-          this.store.ui.update(ID, {isFavouriteLoading: false});
-          this.store.update(ID, {favourite: isFavourite});
+          this.store.ui.update(productId, {isFavouriteLoading: false});
         })
       )
       .subscribe();
@@ -148,10 +149,7 @@ export class ProductService {
     const url = `${environment.apiPrefixV1}/products/${this.query.getActiveId()}/scenes/available`;
     const params = {params: {tz: timezone(), yearMonth: dateF}};
     return this.http.get<string[]>(url, params)
-      .pipe(
-        handleHttpRequest$(this.store),
-        tap(data => this.updateAvailableDays(data))
-      );
+      .pipe(tap(data => this.updateAvailableDays(data)));
   }
 
   setSelectedDate(dateString: string) {

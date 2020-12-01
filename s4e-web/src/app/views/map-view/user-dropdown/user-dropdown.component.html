@@ -4,75 +4,78 @@
   </div>
   <div class="dropdown__close" (click)="toggleLoginOptions.emit(false)"></div>
   <section>
-    <dl *ngIf="showAdvanced">
-      <dt i18n>Operacje widoku</dt>
-      <dd><a
-        (click)="openShareViewModal.emit()"
-        href="javascript:undefined"
-        i18n
-      >
-        Wyślij widok na adres email
-      </a></dd>
-      <dd><a
-        (click)="openSaveViewModal.emit()"
-        href="javascript:undefined"
-        data-e2e="open-save-view-modal-btn"
-        i18n
-      >
-        Zapisz konfigurację widoku w aplikacji
-      </a></dd>
-      <dd><a
-        (click)="openListViewModal.emit()"
-        href="javascript:undefined"
-        data-e2e="open-views-modal-btn"
-        i18n
-      >
-        Wczytaj zapisaną konfigurację
-      </a></dd>
-      <dd><a
-        (click)="openExpertHelpModal.emit()"
-        href="javascript:undefined"
-        i18n
-      >
-        Wsparcie eksperckie
-      </a></dd>
+    <ng-container *ngIf="userLoggedIn">
+      <dl>
+        <ng-container *ngIf="showAdvanced">
+          <dt i18n>Operacje widoku</dt>
+          <dd><a
+            (click)="openShareViewModal.emit()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wyślij widok na adres email
+          </a></dd>
+          <dd><a
+            (click)="openSaveViewModal.emit()"
+            href="javascript:undefined"
+            data-e2e="open-save-view-modal-btn"
+            i18n
+          >
+            Zapisz konfigurację widoku w aplikacji
+          </a></dd>
+          <dd><a
+            (click)="openListViewModal.emit()"
+            href="javascript:undefined"
+            data-e2e="open-views-modal-btn"
+            i18n
+          >
+            Wczytaj zapisaną konfigurację
+          </a></dd>
+          <dd><a
+            (click)="openExpertHelpModal.emit()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wsparcie eksperckie
+          </a></dd>
 
-      <dt i18n>Raporty</dt>
-      <dd><a
-        (click)="openReportModal.emit()"
-        href="javascript:undefined"
-        i18n
-      >
-        Wygeneruj raport PDF
-      </a></dd>
-      <dd><a
-        (click)="openReportTemplatesModal.emit()"
-        href="javascript:undefined"
-        i18n
-      >
-        Szablony raportów
-      </a></dd>
+          <dt i18n>Raporty</dt>
+          <dd><a
+            (click)="openReportModal.emit()"
+            href="javascript:undefined"
+            i18n
+          >
+            Wygeneruj raport PDF
+          </a></dd>
+          <dd><a
+            (click)="openReportTemplatesModal.emit()"
+            href="javascript:undefined"
+            i18n
+          >
+            Szablony raportów
+          </a></dd>
 
-      <dt i18n>Zapisywanie na dysk</dt>
+          <dt i18n>Zapisywanie na dysk</dt>
+        </ng-container>
+        <dd><a
+          data-test-download-original
+          [ngClass]="{disabled: activeScene == null}"
+          (click)="openSceneDetailsModal.emit()"
+          target="_blank"
+          i18n
+        >
+          Zapisz źródło widoku (surowe dane)
+        </a></dd>
+        <dd><a
+          (click)="downloadMapImage.emit()"
+          href="javascript:undefined"
+          i18n
+        >
+          Zapisz na dysku jako obraz PNG
+        </a></dd>
 
-
-      <dd><a
-        data-test-download-original
-        [ngClass]="{disabled: activeScene == null}"
-        (click)="openSceneDetailsModal.emit()"
-        target="_blank"
-        i18n
-      >
-        Zapisz źródło widoku (surowe dane)
-      </a></dd>
-      <dd><a
-        (click)="downloadMapImage.emit()"
-        href="javascript:undefined"
-        i18n
-      >
-        Zapisz na dysku jako obraz PNG
-      </a></dd>
-    </dl>
+      </dl>
+    </ng-container>
     <dl>
 
       <ng-container *ngIf="userLoggedIn">
@@ -120,8 +123,6 @@
         </dd>
       </ng-container>
     </dl>
-
-
 
 
   </section>
