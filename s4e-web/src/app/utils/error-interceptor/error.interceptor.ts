@@ -15,6 +15,7 @@ import {
 import {HttpErrorHelper} from './error.helper';
 import {NotificationService} from 'notifications';
 import {BACK_LINK_QUERY_PARAM} from '../../state/session/session.service';
+import {resetStores} from '@datorama/akita';
 
 
 @Injectable({
@@ -61,6 +62,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     switch (error.status) {
       case HTTP_403_FORBIDDEN:
       case HTTP_401_UNAUTHORIZED:
+        resetStores();
         this._notificationService.addGeneral({
           type: 'error',
           content: 'Wystąpił błąd: Nie jesteś zalogowany lub twoja sesja się przedawniła'

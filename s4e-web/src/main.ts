@@ -2,8 +2,10 @@ import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
-import {enableAkitaProdMode, persistState} from '@datorama/akita';
+import {akitaConfig, enableAkitaProdMode, persistState} from '@datorama/akita';
 import {hmrBootstrap} from './hmr';
+
+akitaConfig({ resettable: true });
 
 if (environment.production) {
   enableProdMode();

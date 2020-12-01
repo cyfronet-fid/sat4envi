@@ -1,8 +1,8 @@
 import {handleHttpRequest$} from 'src/app/common/store.util';
 import {ERROR_INTERCEPTOR_SKIP_HEADER} from '../../utils/error-interceptor/error.helper';
 import {SessionStore} from './session.store';
+import {action, resetStores} from '@datorama/akita';
 import {catchError, finalize, map, switchMap, tap} from 'rxjs/operators';
-import {action} from '@datorama/akita';
 import {LoginFormState, Session} from './session.model';
 import {HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN} from '../../errors/errors.model';
 import {Observable, of} from 'rxjs';
@@ -82,6 +82,7 @@ export class SessionService {
   logout() {
     this._http.post(`${environment.apiPrefixV1}/logout`, {})
       .pipe(
+        tap(() => resetStores()),
         tap(() => this._store.reset()),
         finalize(() => this._router.navigate(['/login']))
       )
