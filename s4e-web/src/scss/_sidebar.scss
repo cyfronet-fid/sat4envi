@@ -238,13 +238,14 @@
 
     &:before {
       content: "";
-      width: 15px;
-      height: 15px;
+      width: 16px;
+      height: 16px;
       position: absolute;
-      left: 9px;
-      top: 9px;
+      left: 8px;
+      top: 8px;
       background: url(/../assets/images/ico_eye_open.svg) no-repeat;
       opacity: 0.2;
+      background-size: contain;
     }
 
     button {

@@ -2,47 +2,49 @@
 
 
 
-.element {
+.saved__element {
+  background: $color-white;
+  overflow: hidden;
+  padding: $space-default;
+  border-radius: $border-radius-default;
   margin-bottom: $space-xlarge;
-  padding-bottom: $space-large;
-  border-bottom: 2px solid $color-white-50;
-
-  &:last-child {
-    border: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
 
   header {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
-    margin-bottom: $space-default;
     display: block;
+    margin-bottom: $space-small;
   }
 
   .content {
-    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+
     figure {
       width: 150px;
       height: 80px;
       overflow: hidden;
-      border: 1px solid $color-white-50;
+      border: 1px solid $color-grey-secondary;
+      border-radius: $border-radius-default;
       margin-right: $space-default;
-      float: left;
     }
 
-    p {
-      margin: 0 $space-large;
+    ul {
       font-size: 0.875rem;
+      margin-right: $space-small;
     }
 
     .buttons__container {
-      margin-top: $space-small;
       display: flex;
-      flex-direction: row;
+      flex-wrap: wrap;
+      margin-left: auto;
+
 
       button {
         padding: $space-xsmall $space-xlarge;
+        margin-bottom: $space-xsmall;
       }
     }
   }
