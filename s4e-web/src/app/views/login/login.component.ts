@@ -46,7 +46,7 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
 
   login() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
-    if (!this.form.valid) {
+    if (this.form.invalid) {
       return;
     }
 
@@ -54,14 +54,9 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
       .pipe(
         untilDestroyed(this),
         switchMap(() => this._activatedRoute.queryParamMap),
-        tap((params) => {
-          if (!params.has(TOKEN_QUERY_PARAMETER)) {
-            return;
-          }
-
-          const token = params.get(TOKEN_QUERY_PARAMETER);
-          this._invitationService.confirm(token);
-        })
+        filter(params => params.has(TOKEN_QUERY_PARAMETER)),
+        map(params => params.get(TOKEN_QUERY_PARAMETER)),
+        tap(token => this._invitationService.confirm(token))
       )
       .subscribe();
   }
