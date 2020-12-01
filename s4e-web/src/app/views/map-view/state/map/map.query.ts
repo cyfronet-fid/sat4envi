@@ -7,6 +7,7 @@ import {distinctUntilChanged, map} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ProductQuery} from '../product/product.query';
 import {SceneQuery} from '../scene/scene.query';
+import {mapAllTrue} from '../../../../utils/rxjs/observable';
 
 @Injectable({providedIn: 'root'})
 export class MapQuery extends Query<MapState> {
@@ -34,5 +35,12 @@ export class MapQuery extends Query<MapState> {
         centery: zoom.centerCoordinates[1]
       }))
     );
+  }
+
+  selectShowProductDescription() {
+    return combineLatest([
+      this.select('productDescriptionOpened'),
+      this.productQuery.selectActiveId().pipe(map(id => id != null))
+    ]).pipe(mapAllTrue());
   }
 }
