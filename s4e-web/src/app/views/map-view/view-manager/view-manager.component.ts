@@ -30,6 +30,7 @@ import {ModalService} from '../../../modal/state/modal.service';
 import {OVERLAY_LIST_MODAL_ID} from './overlay-list-modal/overlay-list-modal.model';
 import {TimelineService} from '../state/scene/timeline.service';
 import {untilDestroyed} from 'ngx-take-until-destroy';
+import {mapAnyTrue} from '../../../utils/rxjs/observable';
 
 @Component({
   selector: 's4e-view-manager',
@@ -52,8 +53,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   productsLoading$: Observable<boolean> = this.productQuery.selectLoading();
   overlays$: Observable<IUILayer[]> = this.overlayQuery.selectVisibleAsUIOverlays();
   overlaysLoading$: Observable<boolean> = this.overlayQuery.selectLoading();
-  loading$: Observable<boolean> = combineLatest([this.overlaysLoading$, this.productsLoading$])
-    .pipe(map(areLoading => areLoading.some(isLoading => isLoading)));
+  loading$: Observable<boolean> = combineLatest([this.overlaysLoading$, this.productsLoading$]).pipe(mapAnyTrue());
 
   isFavouriteFiltration: boolean = false;
   searchValue: string;

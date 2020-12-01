@@ -49,17 +49,6 @@
           </ng-template>
         </div>
       </ng-container>
-
-      <ng-template #visibility>
-        <button
-          *ngIf="item.active"
-          class="products__visibility"
-          (click)="itemSelected.emit(item.cid)"
-          data-e2e="selected-icon"
-        >
-          <i class="far fa-eye"></i>
-        </button>
-      </ng-template>
     </li>
   </ul>
 </section>
