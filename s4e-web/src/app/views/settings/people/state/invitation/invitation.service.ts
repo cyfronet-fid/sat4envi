@@ -89,7 +89,7 @@ export class InvitationService {
     this._http.post<Institution>(url, {})
       .pipe(
         handleHttpRequest$(this._store),
-        tap(institution => this._notificationService.addGeneral({
+        tap(() => this._notificationService.addGeneral({
           content: notificationMessage,
           type: 'success'
         })),

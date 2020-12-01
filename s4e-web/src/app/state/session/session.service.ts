@@ -1,7 +1,7 @@
 import {handleHttpRequest$} from 'src/app/common/store.util';
 import {ERROR_INTERCEPTOR_SKIP_HEADER} from '../../utils/error-interceptor/error.helper';
 import {SessionStore} from './session.store';
-import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {catchError, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {action} from '@datorama/akita';
 import {LoginFormState, Session} from './session.model';
 import {HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN} from '../../errors/errors.model';
@@ -74,7 +74,7 @@ export class SessionService {
         handleHttpRequest$(this._store),
         switchMap(data => this._profileLoaderService.loadProfile$()),
         tap(() => this._store.update({email: request.email})),
-        switchMap(() => this._navigateToApplication())
+        finalize(() => this._navigateToApplication())
       );
   }
 
@@ -83,7 +83,7 @@ export class SessionService {
     this._http.post(`${environment.apiPrefixV1}/logout`, {})
       .pipe(
         tap(() => this._store.reset()),
-        switchMap(() => this._router.navigate(['/login']))
+        finalize(() => this._router.navigate(['/login']))
       )
       .subscribe();
   }
@@ -106,8 +106,8 @@ export class SessionService {
     this._store.setError(null);
   }
 
-  private async _navigateToApplication(): Promise<void> {
-    await (
+  private _navigateToApplication() {
+    (
       !!this._backLink && this._backLink !== ''
         ? this._router.navigateByUrl(this._backLink)
         : this._router.navigate(['/map/products'])

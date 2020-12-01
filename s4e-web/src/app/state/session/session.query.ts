@@ -42,9 +42,6 @@ export class SessionQuery extends Query<Session> {
     return this.getValue().authorities.includes('OP_GRANT_OP_INSTITUTION_DELETE') || this.getValue().admin;
   }
 
-  isManager() {
-    return hasAnyManagerRole(this.getValue().roles);
-  }
   hasOnlyGroupMemberRole() {
     const roles = this.getValue().roles;
     return roles.length === 1 && roles.some((role) => role.role === ROLE_GROUP_MANAGER);
@@ -69,13 +66,14 @@ export class SessionQuery extends Query<Session> {
   }
 
   private _getInstitutionsRolesMap() {
-    return this.getValue().roles
+    return !!this.getValue().roles && this.getValue().roles
       .reduce((permissions, role) => {
           return Object.keys(permissions).includes(role.institutionSlug)
               ? {...permissions, [role.institutionSlug]: [...permissions[role.institutionSlug], role]}
               : {...permissions, [role.institutionSlug]: [role]};
         },
         {}
-      );
+      )
+      || [];
   }
 }
