@@ -2,7 +2,7 @@
   {
     "name": "Sentinel-1-GRDH",
     "displayName": "Sentinel 1 GRDH",
-    "description": "Opis GRDH",
+    "description": "Dane z przyrządu SAR satelitów Sentinel-1, w trybie skanowania IW (Interferometric Wide Swath) typu GRD (Ground Range Detected).",
     "accessType": "OPEN",
     "layerName": "sentinel_1_grdh",
     "sceneSchemaName": "Sentinel-1.scene.v1.json",
@@ -16,7 +16,7 @@
   {
     "name": "Sentinel-1-GRDM",
     "displayName": "Sentinel 1 GRDM",
-    "description": "Opis GRDM",
+    "description": "Dane z przyrządu SAR satelitów Sentinel-1, w trybie skanowania EW (Extra Wide),typu GRD (Ground Range Detected).",
     "accessType": "OPEN",
     "layerName": "sentinel_1_grdm",
     "sceneSchemaName": "Sentinel-1.scene.v1.json",
@@ -29,7 +29,7 @@
   {
     "name": "Sentinel-1-SLC_",
     "displayName": "Sentinel 1 SLC",
-    "description": "Opis SLC",
+    "description": "Dane z przyrządu SAR satelitów Sentinel-1, w trybie skanowania IW (Interferometric Wide Swath), typu SLC (Single Look Complex).",
     "accessType": "OPEN",
     "layerName": "sentinel_1_slc",
     "sceneSchemaName": "Sentinel-1.scene.v1.json",
@@ -83,7 +83,7 @@
   {
     "name": "Airmass",
     "displayName": "Airmass",
-    "description": "Airmass",
+    "description": "Obraz satelitarny Meteosat dla obszaru Europy, kompozycja RBG Airmass (6.2-7.3/9.7-10.8/6.2) przedstawiające rodzaje mas powietrza i zachmurzenie.",
     "accessType": "OPEN",
     "layerName": "airmass",
     "sceneSchemaName": "MSG.scene.v1.json",
