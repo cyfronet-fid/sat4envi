@@ -58,11 +58,11 @@ describe('RegisterComponent', () => {
     expect(component.form.controls.passwordRepeat.valid).toBeFalsy();
 
 
-    component.form.controls.password.setValue('pass');
+    component.form.controls.password.setValue('pass1234');
     expect(component.form.controls.password.valid).toBeTruthy();
     expect(component.form.controls.passwordRepeat.valid).toBeFalsy();
 
-    component.form.controls.passwordRepeat.setValue('pass');
+    component.form.controls.passwordRepeat.setValue('pass1234');
     expect(component.form.controls.password.valid).toBeTruthy();
     expect(component.form.controls.passwordRepeat.valid).toBeTruthy();
   });

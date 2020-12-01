@@ -57,12 +57,12 @@ export class RegisterComponent extends GenericFormComponent<RegisterQuery, Regis
       email: new FormControl('', [Validators.required, Validators.email]),
       name: new FormControl('', [Validators.required]),
       surname: new FormControl('', Validators.required),
-      password: new FormControl('', [Validators.required]),
-      passwordRepeat: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+      passwordRepeat: new FormControl('', [Validators.required, Validators.minLength(8)]),
       domain: new FormControl('', [Validators.required]),
       usage: new FormControl<string>('', [Validators.required]),
       country: new FormControl<string>('', [Validators.required]),
-      policy: new FormControl<boolean>(false, [Validators.required]),
+      policy: new FormControl<boolean>(false, [Validators.required, Validators.requiredTrue]),
       recaptcha: new FormControl('', [Validators.required])
     }, {validators: MustMatch('password', 'passwordRepeat')});
 
