@@ -283,5 +283,22 @@
     }
   }
 
+  .saved__element {
+    ul {
+      margin: $space-default 0;
+    }
+
+    .buttons__container {
+      display: block;
+      margin-left: 0;
+      width: 100%;
+      button {
+        display: block;
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  }
+
 
 }

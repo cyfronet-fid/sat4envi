@@ -4,7 +4,7 @@
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
       <div class="s4e-modal-table" *ngIf="(configs$ | async).length > 0; else noConfigurations">
           <section
-            class="element"
+            class="saved__element"
             role="menuitem"
             *ngFor="let config of (configs$ | async)"
             data-e2e="view"
@@ -16,15 +16,20 @@
               <figure>
                 <img [src]="config.thumbnail" alt="View thumbnail" i18n-alt alt="Miniatura mapy" />
               </figure>
-              <p>
-
-                <strong>Produkt:</strong>
-                {{config.configurationNames.product || 'Nie wybrano'}},
-                <strong>Data:</strong>
-                {{config.configurationNames.selectedDate || 'Nie wybrano'}},
-                <strong>Nakładki:</strong>
-               {{config.configurationNames.overlays.toString() || 'Nie wybrano'}}
-              </p>
+              <ul>
+                <li>
+                  <strong>Produkt:</strong>
+                  {{config.configurationNames.product || 'Nie wybrano'}},
+                </li>
+                <li>
+                  <strong>Data:</strong>
+                  {{config.configurationNames.selectedDate || 'Nie wybrano'}},
+                </li>
+                <li>
+                  <strong>Nakładki:</strong>
+                  {{config.configurationNames.overlays.toString() || 'Nie wybrano'}}
+                </li>
+              </ul>
               <div class="buttons__container">
                 <button
                   class="button button--primary button--small"

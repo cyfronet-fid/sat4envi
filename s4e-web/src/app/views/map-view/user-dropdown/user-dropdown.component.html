@@ -54,9 +54,8 @@
           >
             Szablony raportów
           </a></dd>
-
-          <dt i18n>Zapisywanie na dysk</dt>
         </ng-container>
+        <dt i18n>Zapisywanie na dysk</dt>
         <dd><a
           data-test-download-original
           [ngClass]="{disabled: activeScene == null}"
@@ -105,7 +104,7 @@
           {{ hasHeightContrast ? 'Wyłącz' : 'Włącz' }} wysoki kontrast
         </a>
       </dd>
-      <dd>
+      <dd style="display: none;">
         <a href="javascript:void(0)" (click)="toggleLargeFont.emit()" i18n>
           {{ hasLargeFont ? 'Wyłącz' : 'Włącz' }} powiększoną czcionkę
         </a>
