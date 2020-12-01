@@ -38,10 +38,6 @@ export class OverlayListComponent implements OnInit, OnDestroy {
       filter(paramsMap => paramsMap.has('institution')),
       map(paramsMap => paramsMap.get('institution')),
       tap(institutionSlug => this.overlaysFilter = overlays => overlays
-        .map(overlays => {
-          console.log(overlays);
-          return overlays;
-        })
         .filter(overlay => !overlay.ownerType || overlay.ownerType === 'INSTITUTIONAL')
         .filter(overlay => !!overlay.institutionSlug && overlay.institutionSlug === institutionSlug)
       )

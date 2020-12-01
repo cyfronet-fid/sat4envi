@@ -1,8 +1,5 @@
-import {BreadcrumbService} from './breadcrumb/breadcrumb.service';
 import {ModalModule} from '../../modal/modal.module';
-import {BreadcrumbModule} from './breadcrumb/breadcrumb.module';
 import {SearchModule} from '../../components/search/search.module';
-import {AdminDashboardModule} from './admin-dashboard/admin-dashboard.module';
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
@@ -35,22 +32,14 @@ import {WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
     ProfileModule,
     InstitutionProfileModule,
     DashboardModule,
-    AdminDashboardModule,
     PeopleModule,
     RouterModule.forChild(settingsRoutes),
     ManageInstitutionsModule,
     SearchModule,
     ModalModule,
-    BreadcrumbModule,
     EventsModule,
     GenericListViewModule,
     OverlayListModule
   ]
 })
-export class SettingsModule {
-  constructor(private _breadcrumbService: BreadcrumbService) {
-    const childrenRoutes = settingsRoutes.find(route => route.path === SETTINGS_PATH).children;
-    this._breadcrumbService.registerRoutes(childrenRoutes, SETTINGS_PATH);
-    this._breadcrumbService.setMainRoutes(settingsRoutes);
-  }
-}
+export class SettingsModule {}

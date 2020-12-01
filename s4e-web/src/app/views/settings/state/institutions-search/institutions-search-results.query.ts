@@ -5,10 +5,9 @@ import { InstitutionsSearchResultsStore } from './institutions-search-results.st
 import { Institution } from '../institution/institution.model';
 import {Injectable} from '@angular/core';
 import { SearchResultsQuery } from 'src/app/views/map-view/state/search-results/search-results.query';
-import { Observable, of } from 'rxjs';
+import {forkJoin, Observable, of} from 'rxjs';
 
 export const INSTITUTION_QUERY_PARAM = 'institution';
-export const ADD_CHILD_QUERY_PARAM = 'add_child';
 
 @Injectable({
   providedIn: 'root'
@@ -17,13 +16,16 @@ export class InstitutionsSearchResultsQuery extends SearchResultsQuery<Instituti
 
   constructor(
     protected _store: InstitutionsSearchResultsStore,
-    protected _institutionService: InstitutionService
+    protected _institutionService: InstitutionService,
+
+    protected _router: Router
   ) {
     super(_store);
   }
 
   isChildAddition$(activatedRoute: ActivatedRoute) {
-    return activatedRoute.queryParamMap.pipe(map((params) => params.has(ADD_CHILD_QUERY_PARAM)));
+    return this.isAnyInstitutionActive$(activatedRoute)
+      .pipe(map(isActive => isActive && this._router.url.includes('add-institution')));
   }
 
   isAnyInstitutionActive$(activatedRoute: ActivatedRoute) {
