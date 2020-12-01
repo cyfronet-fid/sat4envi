@@ -21,18 +21,18 @@ describe('Auth', () => {
     it('should login as superAdmin', function () {
       Login
         .loginAs(this.superAdmin)
-        .logout();
+        // .logout();
     });
 
     it('should login as zkMember', function () {
       Login
         .loginAs(this.zkMember)
-        .logout();
+        // .logout();
     });
     it('should login as zkAdmin', function () {
       Login
         .loginAs(this.zkAdmin)
-        .logout();
+        // .logout();
     })
   });
 
