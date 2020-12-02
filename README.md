@@ -99,6 +99,7 @@ Several profiles can be specified in a comma separated list, e.g. `production,ru
 - Mailer properties must be configured.
 
 `run-seed-users`: Runs `SeedUsers`.
+By default doesn't force re-seed, but it can be told to do so by setting `seed.users.force=true`.
 
 `run-seed-places`: Runs `SeedPlaces`.
 
