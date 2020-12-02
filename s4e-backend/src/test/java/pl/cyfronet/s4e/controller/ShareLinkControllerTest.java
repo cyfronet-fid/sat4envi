@@ -124,7 +124,7 @@ public class ShareLinkControllerTest {
                 .andExpect(status().isOk());
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox1.getMessageCount() == 1 && inbox2.getMessageCount() == 1);
 
         MimeMessageParser parser1 = getParserForFirstMail(inbox1);
