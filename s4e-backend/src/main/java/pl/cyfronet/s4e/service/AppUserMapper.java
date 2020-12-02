@@ -41,11 +41,15 @@ public abstract class AppUserMapper {
     @Mapping(target = "surname", source = "projection.surname")
     @Mapping(target = "admin", source = "userDetails", qualifiedByName = "admin")
     @Mapping(target = "memberZK", source = "userDetails", qualifiedByName = "memberZK")
-    @Mapping(target = "authorities", source = "projection.authorities")
+    @Mapping(target = "authorities", source = "userDetails.authorities")
     public abstract UserMeResponse projectionToMeResponse(
             AppUserController.UserMeProjection projection,
             AppUserDetails userDetails
     );
+
+    protected String sgaToString(SimpleGrantedAuthority simpleGrantedAuthority) {
+        return simpleGrantedAuthority.getAuthority();
+    }
 
     @Named("admin")
     protected boolean admin(AppUserDetails userDetails) {
