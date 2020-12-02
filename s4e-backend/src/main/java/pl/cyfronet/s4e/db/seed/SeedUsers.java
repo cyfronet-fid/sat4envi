@@ -2,6 +2,7 @@ package pl.cyfronet.s4e.db.seed;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
@@ -30,6 +31,8 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @Slf4j
 public class SeedUsers implements ApplicationRunner {
+    private static final String FORCE_PROPERTY = "seed.users.force";
+
     private final AppUserRepository appUserRepository;
     private final InstitutionRepository institutionRepository;
     private final InstitutionService institutionService;
@@ -39,9 +42,17 @@ public class SeedUsers implements ApplicationRunner {
 
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${" + FORCE_PROPERTY + ":false}")
+    private boolean force;
+
     @Async
     @Override
     public void run(ApplicationArguments args) {
+        if (appUserRepository.count() > 0 && !force) {
+            log.info("Users already seeded, skipping. Set " + FORCE_PROPERTY + "=true to seed anyway");
+            return;
+        }
+
         emailVerificationRepository.deleteAll();
         institutionRepository.deleteAll();
         appUserRepository.deleteAll();
