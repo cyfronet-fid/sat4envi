@@ -121,7 +121,7 @@ public class ExpertHelpControllerTest {
                     .content(objectMapper.writeValueAsBytes(request)))
                     .andExpect(status().isOk());
 
-            await().atMost(Durations.ONE_SECOND)
+            await().atMost(Durations.TWO_SECONDS)
                     .until(() -> zkInbox.getMessageCount() == 1 && expertInbox.getMessageCount() == 1);
 
             {

@@ -293,7 +293,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
@@ -399,7 +399,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
@@ -442,7 +442,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // EmailVerification is only removed in the EmailConfirmationListener, so it is verified after
@@ -518,7 +518,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
@@ -577,7 +577,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.ONE_SECOND)
+        await().atMost(Durations.TWO_SECONDS)
                 .until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
