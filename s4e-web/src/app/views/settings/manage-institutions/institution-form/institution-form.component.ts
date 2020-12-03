@@ -131,8 +131,6 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
 
   updateInstitution() {
     validateAllFormFields(this.form, {formKey: this.formKey, fm: this.fm});
-
-    console.log(Object.keys(this.form.controls).forEach(key => [key, this.form.controls[key]]))
     if (this.form.invalid) {
       return;
     }
