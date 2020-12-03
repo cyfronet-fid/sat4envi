@@ -27,11 +27,11 @@
       <form (ngSubmit)="register()" [formGroup]="form" class="form">
         <h2 class="content__header" i18n>Rejestracja</h2>
         <p>Sat4envi to otwarte dane dla każdego. Zarejestrowani użytkownicy mają dostęp do dodatkowych produktów
-          oraz mogą korzystać z wyszukiwarki danych satelit systemu Sentinel. Zarejestruj się całkowicie za darmo!
+          oraz mogą pobierać udostępnione dane. Zarejestruj się całkowicie za darmo!
         </p>
         <p>
           Wszystkie poniższe dane są wymagane. Po wysłaniu zgłoszenia otrzymasz na podany adres email link
-          weryfikacyjny. Nie zapomnij go kliknąć.
+          weryfikacyjny. Nie zapomnij w niego kliknąć.
         </p>
         <div class="alert alert-danger" *ngIf="form.errors">
           <ul s4e-form-error [control]="form"></ul>
