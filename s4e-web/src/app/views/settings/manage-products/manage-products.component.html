@@ -1,0 +1,49 @@
+<ul class="content__tabs">
+  <li>
+    <a [routerLink]="['/settings/institution']"
+       queryParamsHandling="merge">
+      Profil instytucji
+    </a>
+  </li>
+  <li>
+    <a routerLink="/settings/people" queryParamsHandling="merge">
+      Osoby w instytucji
+    </a>
+  </li>
+  <li>
+    <a [routerLink]="['/settings/institution-wms-overlays']"
+       queryParamsHandling="merge">
+      Warstwy WMS dla instytucji
+    </a>
+  </li>
+  <li class="active">
+    Zarządzaj produktami
+  </li>
+</ul>
+
+<s4e-generic-list-view
+  [loading]="areLoading$ | async"
+  [items]="licences$ | async"
+  [error]="errors$ | async"
+  [selectable]="false"
+>
+  <ng-container caption i18n>Zarządzaj produktami instytucji</ng-container>
+  <ng-container search-label i18n>Szukaj ludzi:</ng-container>
+  <ng-container description>
+    W tym miejscu masz możliwość włączenia/wyłączenia widoczności produktu dla członków instytucji
+  </ng-container>
+  <ng-container table-header>
+    <th i18n>Nazwa</th>
+    <th i18n>Widoczność dla czonków instytucji</th>
+  </ng-container>
+  <ng-template let-licence="item">
+    <td i18n>{{ licence.productName }}</td>
+    <td>
+      <input
+        type="checkbox"
+        (click)="toggleInstitutionVisibilityOf(licence)"
+        [checked]="licence.hasInstitutionLicence"
+      />
+    </td>
+  </ng-template>
+</s4e-generic-list-view>

@@ -41,6 +41,16 @@ export interface ProductWithUICategory extends Product {
   productCategory: UIProductCategory;
 }
 
+export interface LicensedProduct {
+  institutionsSlugs: string[];
+  productId: string;
+  productName: string;
+
+  // IMPORTANT!!! This field tells if specific institution has this product licence
+  // Field provided to reduce calculate complexity in HTML template
+  hasInstitutionLicence?: boolean;
+}
+
 export interface ProductState extends EntityState<Product>, ActiveState<number> {
     ui: {
         loadedMonths: string[];
@@ -50,6 +60,7 @@ export interface ProductState extends EntityState<Product>, ActiveState<number> 
         selectedMonth: number;
         availableDays: string[];
     };
+    licensedProducts: LicensedProduct[];
     loaded: boolean;
 }
 
@@ -76,6 +87,7 @@ export function createProductState(state: Partial<ProductState> = {}): ProductSt
             selectedMonth: now.getMonth(),
             availableDays: [],
         },
+      licensedProducts: [],
         loaded: false,
         ...state
     };

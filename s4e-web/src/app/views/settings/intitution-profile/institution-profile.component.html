@@ -13,6 +13,12 @@
       Warstwy WMS dla instytucji
     </a>
   </li>
+  <li>
+    <a [routerLink]="['/settings/manage-products']"
+       queryParamsHandling="merge">
+      Zarządzaj produktami
+    </a>
+  </li>
 </ul>
 <header class="content__header">
   <h1 i18n>Profil instytucji</h1>
@@ -71,7 +77,6 @@
       >
         Dodaj jednostkę podrzędną
       </button>
-
     </ng-container>
     <ng-template #returnToUserProfile>
       <button

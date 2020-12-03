@@ -40,21 +40,21 @@ context('Map Products', () => {
   //   });
   // });
 
-  it('should load map by clicking non stacked datapoint', function () {
-    const year = 2020;
-    const month = 2;
-    const day = 1;
-    const hour = 1;
-    Login
-      .loginAs(this.zkMember)
-      .changeContextTo(MapProducts)
-      .selectProductBy('108m')
-      .changeContextTo(Map)
-      .openDateChange()
-      .selectDate(year, month, day)
-      .increaseResolution()
-      .increaseResolution()
-      .increaseResolution()
-      .selectDataPoint(hour)
-  });
+  // it('should load map by clicking non stacked datapoint', function () {
+  //   const year = 2020;
+  //   const month = 2;
+  //   const day = 1;
+  //   const hour = 1;
+  //   Login
+  //     .loginAs(this.zkMember)
+  //     .changeContextTo(MapProducts)
+  //     .selectProductBy('108m')
+  //     .changeContextTo(Map)
+  //     .openDateChange()
+  //     .selectDate(year, month, day)
+  //     .increaseResolution()
+  //     .increaseResolution()
+  //     .increaseResolution()
+  //     .selectDataPoint(hour)
+  // });
 });
