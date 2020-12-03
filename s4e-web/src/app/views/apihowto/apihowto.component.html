@@ -19,7 +19,7 @@
     HOST: {{API_BASE}}
   </p>
 
-  <h2>Pobranie tokenu</h2>
+  <h2>Pobranie klucza API (tzw. token)</h2>
 
   <p>Endpoint [POST]: /token</p>
 
@@ -117,7 +117,7 @@
   <p><i>wymaga dodania tokenu autoryzacyjnego</i></p>
 
   <h2>Download</h2>
-  <h3>Ściągnięcie archiwum</h3>
+  <h3>Pobranie archiwum</h3>
   <p>
     Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/$value
   </p>
@@ -134,7 +134,7 @@
   </code>
 
 
-  <h3>Ściągnięcie dowolnego artefaktu</h3>
+  <h3>Pobranie dowolnego artefaktu</h3>
   <p>Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/Nodes('filename')/Nodes('&#123;type&#125;')/$value</p>
   <p>Opis parametrów:</p>
   <ul>
@@ -154,9 +154,9 @@
 
   <h2>API SOK</h2>
   <p>
-    API SOK wystawione pod prefixem <code>{{API_BASE}}</code>
-    opisane jest w standardzie <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a>
-    w formacie <a href="{{API_BASE}}/docs" target="_blank">JSON</a> oraz
+    API systemu SOK Sat4Envi udostępnione jest pod prefixem: <code>{{API_BASE}}</code>
+    Dokumentacja API została dostosowana do standardu <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a>
+    i jest dostępna w formacie <a href="{{API_BASE}}/docs" target="_blank">JSON</a> oraz
     <a href="{{API_BASE}}/docs.yaml" target="_blank">YAML</a>.
   </p>
   <p>
@@ -164,8 +164,8 @@
   </p>
 
   <h2>API Web Map Service (WMS)</h2>
-  <p>Aby pobrać warstwy udostępniane w serwisie Sat4Envi należy skorzystać z metody GetCapabilities serwera WMS.</p>
+  <p>Aby pobrać warstwy udostępniane w serwisie Sat4Envi, należy skorzystać z metody GetCapabilities serwera WMS.</p>
   <p>API jest zgodne ze standardem WMS (v. 1.3.0), a opis pozostałych metod opisany w dokumentacji standardu pod adresem <a href="https://www.ogc.org/standards/wms" target="_blank">https://www.ogc.org/standards/wms</a></p>
   <p>API WMS jest dostępne pod adresem {{API_WMS}}.</p>
-  <p>Każdy produkt wystawiony jest jako warstwa WMS z możliwością czasowego zawężenia wyników przez użycie parametru TIME.</p>
+  <p>Każdy produkt udostępniony jest jako warstwa WMS z możliwością czasowego zawężenia wyników przez użycie parametru TIME.</p>
 </main>
