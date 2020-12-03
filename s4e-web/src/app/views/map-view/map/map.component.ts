@@ -348,6 +348,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _clearPolygonDrawing() {
+    this._sentinelSearchService.setFootprint(null);
+
     if (!!this._polygonDrawing.layer) {
       this.map.removeLayer(this._polygonDrawing.layer);
       this._polygonDrawing.layer.getSource()

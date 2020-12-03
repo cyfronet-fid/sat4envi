@@ -64,9 +64,6 @@ describe('PeopleListComponent', () => {
     const resendBtn = de.query(By.css('button[data-ut="resend-btn"]'));
     expect(resendBtn).toBeTruthy();
 
-    const editBtn = de.query(By.css('a[data-ut="edit-btn"]'));
-    expect(editBtn).toBeTruthy();
-
     const deleteBtn = de.query(By.css('a[data-ut="delete-btn"]'));
     expect(deleteBtn).toBeTruthy();
   });
@@ -82,9 +79,6 @@ describe('PeopleListComponent', () => {
 
     const resendBtn = de.query(By.css('a[data-ut="resend-btn"]'));
     expect(resendBtn).toBeFalsy();
-
-    const editBtn = de.query(By.css('a[data-ut="edit-btn"]'));
-    expect(editBtn).toBeFalsy();
 
     const deleteBtn = de.query(By.css('a[data-ut="delete-btn"]'));
     expect(deleteBtn).toBeTruthy();

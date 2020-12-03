@@ -1,9 +1,6 @@
 import {Layer, Tile} from 'ol/layer';
 import {IUILayer} from '../common.model';
 import {EntityState} from '@datorama/akita';
-import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
-import { NgxUiLoaderService } from 'ngx-ui-loader';
-import {TileLoader} from '../utils/layers-loader.util';
 
 export const GLOBAL_OWNER_TYPE = 'GLOBAL';
 export const INSTITUTIONAL_OWNER_TYPE = 'INSTITUTIONAL';

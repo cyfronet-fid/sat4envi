@@ -1,6 +1,5 @@
 import {UrlSegment} from '@angular/router';
 import {InjectorModule} from 'src/app/common/injector.module';
-import {SessionQuery} from '../../state/session/session.query';
 import {InstitutionQuery} from './state/institution/institution.query';
 
 export function multipleInstitutionAdminDashboardMatcher(url: UrlSegment[]) {

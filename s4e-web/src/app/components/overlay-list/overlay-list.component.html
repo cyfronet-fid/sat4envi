@@ -16,36 +16,10 @@
 
   <ng-container *ngIf="(isAddLoading$ | async)">
     <div>
-      <p>URL zdjęcia WMS może zawierać następujące parametry:</p>
-      <ol>
-        <li>
-          <b>LAYERS=</b>
-          lista oddzielonych przecinkami nazw warstw (OPCJONALNE)
-        </li>
-        <li>
-          <b>STYLES=</b>
-          lista oddzielonych przecinkami typów renderingu dla każdej
-          z podanych warstw (OPCJONALNE)
-        </li>
-        <br>
-      </ol>
-
       <p>
-        Parametry akceptowalne i ich wartości,
-        usuwane podczas przetwarzania URL dla prawidłowego wyświetlania obrazu:
+        Jeśli podany URL nie posiada parametru <b>LAYERS</b> to zostanie on
+        uzupełniony nazwami wszystkich warstw zwróconych przez metodę GetCapabilities podanego serwera WMS.
       </p>
-      <ol>
-        <li><b>VERSION=</b> z wartościami numerycznymi w formacie x.y.z</li>
-        <li><b>REQUEST=GetMap</b></li>
-        <li><b>BBOX=</b> z wartością w formacie minx,miny,maxx,maxy</li>
-        <li><b>SRS=</b> lub <b>CRS=</b> w formacie nazwa przestrzeni:identyfikator</li>
-        <li><b>WIDTH=</b> w formacie numerycznym</li>
-        <li><b>HEIGHT=</b> w formacie numerycznym</li>
-        <li><b>FORMAT=</b> w formacie image/rozszerzenie zdjęcia (vnd.jpeg-png|vnd.jpeg-png8|png|gif|tiff|jpg)</li>
-        <li><b>SERVICE=WMS</b></li>
-        <li><b>TRANSPARENT=</b> z wartością false lub true</li>
-      </ol>
-
       <br>
     </div>
     <form [formGroup]="newOverlayForm" class="form">
