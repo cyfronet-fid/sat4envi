@@ -89,6 +89,10 @@ public class AppUserDetailsService implements UserDetailsService {
             sourceAuthorities.add("ROLE_MEMBER_ZK");
         }
 
+        if (appUser.getRoles().stream().map(UserRole::getInstitution).anyMatch(Institution::isPak)) {
+            sourceAuthorities.add("ROLE_MEMBER_PAK");
+        }
+
         return sourceAuthorities.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toUnmodifiableSet());

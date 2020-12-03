@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.cyfronet.s4e.ex.InstitutionZkException;
+import pl.cyfronet.s4e.ex.InstitutionAttributeException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.InstitutionService;
 
@@ -32,7 +32,7 @@ public class AdminInstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PatchMapping(path = "/{slug}/zk/set")
-    public void setZk(@PathVariable String slug) throws NotFoundException, InstitutionZkException {
+    public void setZk(@PathVariable String slug) throws NotFoundException, InstitutionAttributeException {
         institutionService.setZk(slug);
     }
 
@@ -44,7 +44,31 @@ public class AdminInstitutionController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @PatchMapping(path = "/{slug}/zk/unset")
-    public void unsetZk(@PathVariable String slug) throws NotFoundException, InstitutionZkException {
+    public void unsetZk(@PathVariable String slug) throws NotFoundException, InstitutionAttributeException {
         institutionService.unsetZk(slug);
+    }
+
+    @Operation(summary = "Set PAK flag")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "PAK flag set"),
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @PatchMapping(path = "/{slug}/pak/set")
+    public void setPak(@PathVariable String slug) throws NotFoundException, InstitutionAttributeException {
+        institutionService.setPak(slug);
+    }
+
+    @Operation(summary = "Unset PAK flag")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "PAK flag unset"),
+            @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
+    })
+    @PatchMapping(path = "/{slug}/pak/unset")
+    public void unsetPak(@PathVariable String slug) throws NotFoundException, InstitutionAttributeException {
+        institutionService.unsetPak(slug);
     }
 }
