@@ -247,7 +247,6 @@ class AdminInstitutionControllerTest {
 
         @Nested
         class Unset {
-
             private static final String ZK_UNSET_URL_TEMPLATE =
                     Constants.ADMIN_PREFIX + "/institutions/{slug}/zk/unset";
 
@@ -374,6 +373,333 @@ class AdminInstitutionControllerTest {
                         .andExpect(status().isBadRequest());
 
                 assertZkStates(Map.of(
+                        "A",     false
+                ));
+            }
+        }
+    }
+
+    @Nested
+    class Pak {
+        private AppUser admin;
+
+        private AppUser user;
+
+        private Institution institution;
+
+        @BeforeEach
+        public void beforeEach() {
+            admin = appUserRepository.save(AppUser.builder()
+                    .email("admin@mail.pl")
+                    .name("John")
+                    .surname("Smith")
+                    .password("{noop}password")
+                    .enabled(true)
+                    .authority("ROLE_ADMIN")
+                    .build());
+
+            user = appUserRepository.save(AppUser.builder()
+                    .email("user@mail.pl")
+                    .name("John")
+                    .surname("Smith")
+                    .password("{noop}password")
+                    .enabled(true)
+                    .build());
+
+            institution = institutionRepository.save(Institution.builder()
+                    .name("A")
+                    .slug(slugify.slugify("A"))
+                    .build());
+        }
+
+        private void createHierarchy(boolean pak, String... relations) {
+            assertThat(relations.length % 2, is(equalTo(0)));
+
+            for (int i = 0; i < relations.length; i = i + 2) {
+                String parentName = relations[i];
+                String childName = relations[i + 1];
+
+                val parent = institutionRepository.findBySlug(slugify.slugify(parentName)).get();
+                institutionRepository.save(Institution.builder()
+                        .name(childName)
+                        .slug(slugify.slugify(childName))
+                        .parent(parent)
+                        .pak(pak)
+                        .build());
+            }
+        }
+
+        private void assertPakStates(Map<String, Boolean> pakStates) {
+            pakStates.forEach((name, pak) -> {
+                val institution = institutionRepository.findBySlug(slugify.slugify(name)).get();
+                assertThat(name + ".pak == " + pak.toString(), institution.isPak() == pak);
+            });
+        }
+
+        @Nested
+        class Set {
+            private static final String PAK_SET_URL_TEMPLATE =
+                    Constants.ADMIN_PREFIX + "/institutions/{slug}/pak/set";
+
+            @Test
+            public void shouldBeSecured() throws Exception {
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(user, objectMapper)))
+                        .andExpect(status().isForbidden());
+            }
+
+            @Test
+            public void shouldReturn404IfNotFound() throws Exception {
+                assertPakStates(Map.of(
+                        "A",     false
+                ));
+
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isNotFound());
+
+                assertPakStates(Map.of(
+                        "A",     false
+                ));
+            }
+
+            @Test
+            public void shouldPropagateToSubtreeFromRoot() throws Exception {
+                createHierarchy(false,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   false,
+                        "A-2",   false,
+                        "A-1-1", false
+                ));
+
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isOk());
+
+                assertPakStates(Map.of(
+                        "A",     true,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+            }
+
+            @Test
+            public void shouldPropagateToSubtree() throws Exception {
+                createHierarchy(false,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   false,
+                        "A-2",   false,
+                        "A-1-1", false
+                ));
+
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isOk());
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   true,
+                        "A-2",   false,
+                        "A-1-1", true
+                ));
+            }
+
+            @Test
+            public void shouldForbidIfSet() throws Exception {
+                createHierarchy(true,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isBadRequest());
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+            }
+
+            @Test
+            public void shouldAllowToMovePakRootUp() throws Exception {
+                createHierarchy(true,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+
+                mockMvc.perform(patch(PAK_SET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isOk());
+
+                assertPakStates(Map.of(
+                        "A",     true,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+            }
+        }
+
+        @Nested
+        class Unset {
+            private static final String PAK_UNSET_URL_TEMPLATE =
+                    Constants.ADMIN_PREFIX + "/institutions/{slug}/pak/unset";
+
+            @Test
+            public void shouldBeSecured() throws Exception {
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(user, objectMapper)))
+                        .andExpect(status().isForbidden());
+            }
+
+            @Test
+            public void shouldReturn404IfNotFound() throws Exception {
+                institution.setPak(true);
+                institutionRepository.save(institution);
+
+                assertPakStates(Map.of(
+                        "A",     true
+                ));
+
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isNotFound());
+
+                assertPakStates(Map.of(
+                        "A",     true
+                ));
+            }
+
+            @Test
+            public void shouldPropagateToSubtreeFromRoot() throws Exception {
+                institution.setPak(true);
+                institutionRepository.save(institution);
+
+                createHierarchy(true,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     true,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isOk());
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   false,
+                        "A-2",   false,
+                        "A-1-1", false
+                ));
+            }
+
+            @Test
+            public void shouldPropagateToSubtree() throws Exception {
+                createHierarchy(true,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isOk());
+
+                assertPakStates(Map.of(
+                        "A",     false,
+                        "A-1",   false,
+                        "A-2",   true,
+                        "A-1-1", false
+                ));
+            }
+
+            @Test
+            public void shouldForbidIfNotPakRoot() throws Exception {
+                institution.setPak(true);
+                institutionRepository.save(institution);
+
+                createHierarchy(true,
+                        "A",   "A-1",
+                        "A",   "A-2",
+                        "A-1", "A-1-1"
+                );
+
+                assertPakStates(Map.of(
+                        "A",     true,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A-1"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isBadRequest());
+
+                assertPakStates(Map.of(
+                        "A",     true,
+                        "A-1",   true,
+                        "A-2",   true,
+                        "A-1-1", true
+                ));
+            }
+
+            @Test
+            public void shouldForbidToUnsetIfNotSet() throws Exception {
+                assertPakStates(Map.of(
+                        "A",     false
+                ));
+
+                mockMvc.perform(patch(PAK_UNSET_URL_TEMPLATE, slugify.slugify("A"))
+                        .with(jwtBearerToken(admin, objectMapper)))
+                        .andExpect(status().isBadRequest());
+
+                assertPakStates(Map.of(
                         "A",     false
                 ));
             }

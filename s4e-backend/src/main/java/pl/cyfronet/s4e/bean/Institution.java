@@ -73,4 +73,6 @@ public class Institution extends CreationAndModificationAudited {
     private boolean eumetsatLicense;
 
     private boolean zk;
+
+    private boolean pak;
 }

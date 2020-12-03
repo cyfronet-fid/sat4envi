@@ -35,6 +35,7 @@ public abstract class InstitutionMapper {
     @Mapping(target = "licenseGrants", ignore = true)
     @Mapping(target = "eumetsatLicense", ignore = true)
     @Mapping(target = "zk", ignore = true)
+    @Mapping(target = "pak", ignore = true)
     public abstract Institution requestToPreEntity(CreateChildInstitutionRequest request);
 
     @Mapping(target = "id", ignore = true)
@@ -45,6 +46,7 @@ public abstract class InstitutionMapper {
     @Mapping(target = "licenseGrants", ignore = true)
     @Mapping(target = "eumetsatLicense", ignore = true)
     @Mapping(target = "zk", ignore = true)
+    @Mapping(target = "pak", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "createdBy", ignore = true)
     @Mapping(target = "lastModifiedAt", ignore = true)

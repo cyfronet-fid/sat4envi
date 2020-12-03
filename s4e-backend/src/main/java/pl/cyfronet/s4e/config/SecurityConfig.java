@@ -130,7 +130,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(DELETE, prefix("/report-templates/{uuid}"))
                     .access("isAuthenticated() && @reportTemplateService.canDelete(#uuid, authentication)")
 
-                .mvcMatchers(POST, prefix("/share-link")).hasRole("MEMBER_ZK")
+                .mvcMatchers(POST, prefix("/share-link")).hasAnyRole("MEMBER_ZK", "MEMBER_PAK")
 
                 .mvcMatchers(GET, prefix("/schemas", "/schemas/{name}")).permitAll()
 

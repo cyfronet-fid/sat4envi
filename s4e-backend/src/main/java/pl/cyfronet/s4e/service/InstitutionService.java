@@ -19,6 +19,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -52,6 +54,7 @@ public class InstitutionService {
         Institution newInstitution = doSave(institutionMapper.requestToPreEntity(request));
         newInstitution.setParent(parentInstitution);
         newInstitution.setZk(parentInstitution.isZk());
+        newInstitution.setPak(parentInstitution.isPak());
 
         String newSlug = newInstitution.getSlug();
 
@@ -77,38 +80,68 @@ public class InstitutionService {
     }
 
     @Transactional
-    public void setZk(String institutionSlug) throws InstitutionZkException, NotFoundException {
-        val institution = institutionRepository.findBySlug(institutionSlug)
-                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
-
-        if (institution.isZk()) {
-            throw new InstitutionZkException("Institution '" + institutionSlug + "' already is ZK");
-        }
-
-        doSetZk(true, institution);
+    public void setZk(String institutionSlug) throws NotFoundException, InstitutionAttributeException {
+        setAttribute(institutionSlug, "ZK", Institution::setZk, Institution::isZk);
     }
 
     @Transactional
-    public void unsetZk(String institutionSlug) throws NotFoundException, InstitutionZkException {
+    public void unsetZk(String institutionSlug) throws NotFoundException, InstitutionAttributeException {
+        unsetAttribute(institutionSlug, "ZK", Institution::setZk, Institution::isZk);
+    }
+
+    @Transactional
+    public void setPak(String institutionSlug) throws NotFoundException, InstitutionAttributeException {
+        setAttribute(institutionSlug, "PAK", Institution::setPak, Institution::isPak);
+    }
+
+    @Transactional
+    public void unsetPak(String institutionSlug) throws NotFoundException, InstitutionAttributeException {
+        unsetAttribute(institutionSlug, "PAK", Institution::setPak, Institution::isPak);
+    }
+
+    private void setAttribute(
+            String institutionSlug,
+            String name,
+            BiConsumer<Institution, Boolean> set,
+            Function<Institution, Boolean> get
+    ) throws NotFoundException, InstitutionAttributeException {
         val institution = institutionRepository.findBySlug(institutionSlug)
                 .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
 
-        if (!institution.isZk()) {
-            throw new InstitutionZkException("Institution '" + institutionSlug + "' already isn't ZK");
+        if (get.apply(institution)) {
+            throw new InstitutionAttributeException("Institution '" + institutionSlug + "' already is " + name);
         }
+
+        doSetAttribute(institution, true, set);
+    }
+
+    private void unsetAttribute(
+            String institutionSlug,
+            String name,
+            BiConsumer<Institution, Boolean> set,
+            Function<Institution, Boolean> get
+    ) throws NotFoundException, InstitutionAttributeException {
+        val institution = institutionRepository.findBySlug(institutionSlug)
+                .orElseThrow(() -> new NotFoundException("Institution not found for id '" + institutionSlug + "'"));
+
+        if (!get.apply(institution)) {
+            throw new InstitutionAttributeException("Institution '" + institutionSlug + "' already isn't " + name);
+        }
+
+        // If a parent has attribute set, then one should manage that parent instead.
         val parent = institution.getParent();
-        if (parent != null && parent.isZk()) {
-            throw new InstitutionZkException(
-                    "Institution '" + institutionSlug + "' parent '" + parent.getSlug() + "' is ZK"
+        if (parent != null && get.apply(institution.getParent())) {
+            throw new InstitutionAttributeException(
+                    "Institution '" + institutionSlug + "' parent '" + parent.getSlug() + "' is " + name
             );
         }
 
-        doSetZk(false, institution);
+        doSetAttribute(institution, false, set);
     }
 
-    private void doSetZk(boolean zk, Institution institution) {
-        institution.setZk(zk);
-        institution.getChildren().forEach(child -> doSetZk(zk, child));
+    private void doSetAttribute(Institution institution, boolean value, BiConsumer<Institution, Boolean> set) {
+        set.accept(institution, value);
+        institution.getChildren().forEach(child -> doSetAttribute(child, value, set));
     }
 
     public <T> Set<T> getMembers(String institutionSlug, Class<T> projection) {
