@@ -16,6 +16,7 @@
   {
     "name": "Sentinel-1-GRDM",
     "displayName": "Sentinel 1 GRDM",
+
     "description": "Dane z przyrządu SAR satelitów Sentinel-1, w trybie skanowania EW (Extra Wide),typu GRD (Ground Range Detected).",
     "accessType": "OPEN",
     "layerName": "sentinel_1_grdm",
@@ -430,21 +431,36 @@
     "productCategoryName": "rains-and-storms",
     "legend": {
       "type": "gradient",
-      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "url": "/assets/images/legend_wilgotnoscgleby.svg",
       "leftDescription": {
-        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
-        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
-        "0.697": "Grube, wysokie i zimne chmury lodowe",
-        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
-        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
-        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
-        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
-        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+        "0.975": "100",
+        "0.926": "95",
+        "0.878": "90",
+        "0.832": "85",
+        "0.782": "80",
+        "0.736": "75",
+        "0.689": "70",
+        "0.64": "65",
+        "0.595": "60",
+        "0.547": "55",
+        "0.5": "50",
+        "0.455": "45",
+        "0.405": "40",
+        "0.357": "35",
+        "0.31": "30",
+        "0.262": "25",
+        "0.213": "20",
+        "0.167": "15",
+        "0.119": "10",
+        "0.07": "5",
+        "0.028": "0"
+
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {}
     }
+
   },
   {
     "name": "Soil_Moisture_SM2",
@@ -460,21 +476,36 @@
     "productCategoryName": "rains-and-storms",
     "legend": {
       "type": "gradient",
-      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "url": "/assets/images/legend_wilgotnoscgleby.svg",
       "leftDescription": {
-        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
-        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
-        "0.697": "Grube, wysokie i zimne chmury lodowe",
-        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
-        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
-        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
-        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
-        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+        "0.975": "100",
+        "0.926": "95",
+        "0.878": "90",
+        "0.832": "85",
+        "0.782": "80",
+        "0.736": "75",
+        "0.689": "70",
+        "0.64": "65",
+        "0.595": "60",
+        "0.547": "55",
+        "0.5": "50",
+        "0.455": "45",
+        "0.405": "40",
+        "0.357": "35",
+        "0.31": "30",
+        "0.262": "25",
+        "0.213": "20",
+        "0.167": "15",
+        "0.119": "10",
+        "0.07": "5",
+        "0.028": "0"
+
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {}
     }
+
   },
   {
     "name": "Soil_Moisture_SM3",
@@ -490,21 +521,36 @@
     "productCategoryName": "rains-and-storms",
     "legend": {
       "type": "gradient",
-      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "url": "/assets/images/legend_wilgotnoscgleby.svg",
       "leftDescription": {
-        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
-        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
-        "0.697": "Grube, wysokie i zimne chmury lodowe",
-        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
-        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
-        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
-        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
-        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+        "0.975": "100",
+        "0.926": "95",
+        "0.878": "90",
+        "0.832": "85",
+        "0.782": "80",
+        "0.736": "75",
+        "0.689": "70",
+        "0.64": "65",
+        "0.595": "60",
+        "0.547": "55",
+        "0.5": "50",
+        "0.455": "45",
+        "0.405": "40",
+        "0.357": "35",
+        "0.31": "30",
+        "0.262": "25",
+        "0.213": "20",
+        "0.167": "15",
+        "0.119": "10",
+        "0.07": "5",
+        "0.028": "0"
+
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {}
     }
+
   },
   {
     "name": "Soil_Moisture_SM4",
@@ -520,20 +566,35 @@
     "productCategoryName": "rains-and-storms",
     "legend": {
       "type": "gradient",
-      "url": "/assets/images/legend_pylwatmosferze.svg",
+      "url": "/assets/images/legend_wilgotnoscgleby.svg",
       "leftDescription": {
-        "0.909": "Chmury pyłowe/popiołowe. Kolor chmur pyłowych zmienia się od różu do fioletu, chmury popiołowe są bardziej różowawe",
-        "0.808": "Chmury Cirrus bez chmur poniżej są czarne lub ciemnoniebieskie",
-        "0.697": "Grube, wysokie i zimne chmury lodowe",
-        "0.56": "Grube chmury piętra średniego. Cienkie chmury średniego piętra są zielone",
-        "0.447": "Cienkie chmury Cirrus ponad pustynią są zielone",
-        "0.298": "Gorące pustynie piaszczyste, gorąca masa powietrza. Kolor zależny od temp. pow. ziemi",
-        "0.179": "Wilgotne powietrze w niższych poziomach (~700hPa). Kolor zależny od temp. pow. ziemi",
-        "0.067": "Suche powietrze w niższych poziomach. Kolor zależny od temp. pow. ziemi"
+        "0.975": "100",
+        "0.926": "95",
+        "0.878": "90",
+        "0.832": "85",
+        "0.782": "80",
+        "0.736": "75",
+        "0.689": "70",
+        "0.64": "65",
+        "0.595": "60",
+        "0.547": "55",
+        "0.5": "50",
+        "0.455": "45",
+        "0.405": "40",
+        "0.357": "35",
+        "0.31": "30",
+        "0.262": "25",
+        "0.213": "20",
+        "0.167": "15",
+        "0.119": "10",
+        "0.07": "5",
+        "0.028": "0"
+
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {}
     }
+
   }
 ]
