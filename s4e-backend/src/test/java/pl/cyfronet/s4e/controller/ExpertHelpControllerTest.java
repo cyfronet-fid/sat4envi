@@ -8,7 +8,6 @@ import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import lombok.val;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.awaitility.Durations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -121,8 +120,7 @@ public class ExpertHelpControllerTest {
                     .content(objectMapper.writeValueAsBytes(request)))
                     .andExpect(status().isOk());
 
-            await().atMost(Durations.TWO_SECONDS)
-                    .until(() -> zkInbox.getMessageCount() == 1 && expertInbox.getMessageCount() == 1);
+            await().until(() -> zkInbox.getMessageCount() == 1 && expertInbox.getMessageCount() == 1);
 
             {
                 val messageParser = getParser(zkInbox.getMessages().get(0).getMimeMessage());

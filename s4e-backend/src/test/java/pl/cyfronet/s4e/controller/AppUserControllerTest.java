@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -293,8 +292,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Durations.TWO_SECONDS)
-                .until(() -> inbox.getMessageCount() == 1);
+        await().until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
         val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
@@ -399,8 +397,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run
-        await().atMost(Durations.TWO_SECONDS)
-                .until(() -> inbox.getMessageCount() == 1);
+        await().until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
         val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
@@ -442,8 +439,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.TWO_SECONDS)
-                .until(() -> inbox.getMessageCount() == 1);
+        await().until(() -> inbox.getMessageCount() == 1);
 
         // EmailVerification is only removed in the EmailConfirmationListener, so it is verified after
         // the email has been received.
@@ -518,8 +514,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.TWO_SECONDS)
-                .until(() -> inbox.getMessageCount() == 1);
+        await().until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
         val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());
@@ -577,8 +572,7 @@ public class AppUserControllerTest {
         verifyNoMoreInteractions(testListener);
 
         // Email sending handler is executed in @Async method so allow it to run.
-        await().atMost(Durations.TWO_SECONDS)
-                .until(() -> inbox.getMessageCount() == 1);
+        await().until(() -> inbox.getMessageCount() == 1);
 
         // The message should contain a link with the token.
         val messageParser = getParser(inbox.getMessages().get(0).getMimeMessage());

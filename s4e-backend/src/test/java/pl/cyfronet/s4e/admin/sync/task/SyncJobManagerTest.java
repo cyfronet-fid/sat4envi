@@ -2,9 +2,11 @@ package pl.cyfronet.s4e.admin.sync.task;
 
 import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import pl.cyfronet.s4e.TestAwaitilityConfiguration;
 import pl.cyfronet.s4e.TestClock;
 import pl.cyfronet.s4e.admin.sync.PrefixScanner;
 import pl.cyfronet.s4e.sync.Error;
@@ -28,6 +30,11 @@ class SyncJobManagerTest {
     private SceneAcceptor sceneAcceptor;
     private TestClock clock;
     private SyncJobManager syncJobManager;
+
+    @BeforeAll
+    public static void beforeAll() {
+        TestAwaitilityConfiguration.initialize();
+    }
 
     @BeforeEach
     public void beforeEach() {

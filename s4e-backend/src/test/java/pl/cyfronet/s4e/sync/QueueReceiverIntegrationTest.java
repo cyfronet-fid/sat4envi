@@ -1,6 +1,5 @@
 package pl.cyfronet.s4e.sync;
 
-import org.awaitility.Durations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,8 +68,7 @@ public class QueueReceiverIntegrationTest {
 
         sendMessage(incomingQueueName, SCENE_KEY, eventName);
 
-        await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
+        await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
     }
 
     @Test
@@ -79,13 +77,11 @@ public class QueueReceiverIntegrationTest {
 
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectCreated:Put");
 
-        await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
+        await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
 
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectRemoved:Delete");
 
-        await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(0));
+        await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(0));
     }
 
     private void sendMessage(String routingKey, String sceneKey, String eventName) {
