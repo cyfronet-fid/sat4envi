@@ -71,7 +71,7 @@
   </button>
   <ng-container *ngIf="showLoginOptions$ | async">
     <s4e-user-dropdown
-      [showAdvanced]="userIsZK$ | async"
+      [showAdvanced]="userIsAuthorizedForAdditionalFunctionalities$ | async"
       [userLoggedIn]="userLoggedIn$ | async"
       [hasHeightContrast]="hasHeightContrast$ | async"
       [hasLargeFont]="hasLargeFont$ | async"
