@@ -65,6 +65,7 @@ export class MapService {
           const overlays: number[] = (Array.isArray(params['overlays']) ? params['overlays'] as any : [params['overlays'] as string]).map(ol => Number(ol)).filter(olId => !isNaN(olId));
           const productId = params['product'];
           const date = params['date'];
+          const manualDate = params['manualDate'] || null;
           const sceneId = params['scene'];
           const centerX = params['centerx'];
           const centerY = params['centery'];
@@ -85,6 +86,7 @@ export class MapService {
             viewPosition,
             productId: productId == null ? null : Number(productId),
             sceneId: sceneId == null ? null : Number(sceneId),
+            manualDate,
             date,
           } as ViewRouterConfig;
         }),
@@ -97,6 +99,7 @@ export class MapService {
 
   public updateStoreByView(viewConfig: ViewRouterConfig) {
     this.productService.setSelectedDate(viewConfig.date);
+    this.productService.setManualDate(viewConfig.manualDate);
     this.setView(viewConfig.viewPosition);
     this.overlayService.setAllActive(viewConfig.overlays);
     return this.productService.setActive$(viewConfig.productId).pipe(tap(() => this.sceneService.setActive(viewConfig.sceneId)));

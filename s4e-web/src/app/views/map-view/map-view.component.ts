@@ -152,7 +152,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   selectScene(sceneId: number) {
-    this.sceneService.setActive(sceneId);
+    this.sceneService.setActive(sceneId, true);
   }
 
   toggleLegend() {
@@ -161,7 +161,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   setDate($event: string) {
     this.sceneService.get(this.productQuery.getActive(), $event, 'first').subscribe();
-    this.productService.setSelectedDate($event);
+    this.productService.setSelectedDate($event, true);
   }
 
   loadAvailableDates($event: string) {
@@ -278,9 +278,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   getLastAvailableScene() {
-    this.productService.getLastAvailableScene$()
-      .pipe(untilDestroyed(this))
-      .subscribe();
+    this.productService.getLastAvailableScene$(true).subscribe();
   }
 
   nextScene() {

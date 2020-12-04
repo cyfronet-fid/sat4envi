@@ -1,14 +1,13 @@
 import {Legend} from '../legend/legend.model';
 import {ActiveState, EntityState} from '@datorama/akita';
-import {yyyymmdd} from '../../../../utils/miscellaneous/date-utils';
-
 export const COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY = 'collapsedCategories'
 export const PRODUCT_MODE_QUERY_KEY = 'pmode';
 export const PRODUCT_MODE_FAVOURITE = 'favourite';
 export const TIMELINE_RESOLUTION_QUERY_KEY = 'resolution';
-
 export const AVAILABLE_TIMELINE_RESOLUTIONS = [1, 3, 6, 12, 24];
 export const DEFAULT_TIMELINE_RESOLUTION = 24;
+
+export const MAXIMUM_SCENE_TIME_DISTANCE = 60000;
 
 export interface MostRecentScene {
   sceneId: number;
@@ -59,6 +58,7 @@ export interface ProductState extends EntityState<Product>, ActiveState<number> 
         selectedYear: number;
         selectedMonth: number;
         availableDays: string[];
+        manuallySelectedDate: string;
     };
     licensedProducts: LicensedProduct[];
     loaded: boolean;
@@ -74,17 +74,17 @@ export interface ProductUIState extends EntityState<ProductUI> {
 }
 
 export function createProductState(state: Partial<ProductState> = {}): ProductState {
-    const now = new Date();
     return {
         active: null,
         error: null,
         loading: true,
         ui: {
             loadedMonths: [],
-            selectedDate: yyyymmdd(now),
-            selectedDay: now.getDate(),
-            selectedYear: now.getFullYear(),
-            selectedMonth: now.getMonth(),
+            selectedDate: null,
+            selectedDay: null,
+            selectedYear: null,
+            selectedMonth: null,
+            manuallySelectedDate: null,
             availableDays: [],
         },
       licensedProducts: [],

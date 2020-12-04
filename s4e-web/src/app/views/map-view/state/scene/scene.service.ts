@@ -3,7 +3,7 @@ import {environment} from '../../../../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {SceneStore} from './scene.store.service';
-import {SceneResponse, SHOW_SCENE_DETAILS_QUERY_PARAM} from './scene.model';
+import {Scene, SceneResponse, SHOW_SCENE_DETAILS_QUERY_PARAM} from './scene.model';
 import {SceneQuery} from './scene.query';
 import {LegendService} from '../legend/legend.service';
 import {ProductQuery} from '../product/product.query';
@@ -21,6 +21,7 @@ import {makeDetailsModal, SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-
 import {filterTrue} from '../../../../utils/rxjs/observable';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {createSentinelSearchResult} from '../sentinel-search/sentinel-search.model';
+import {Observable} from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class SceneService {
@@ -39,7 +40,7 @@ export class SceneService {
     this._activatedQueue = new ActivatedQueue(this.sceneQuery, this.store, false);
   }
 
-  get(product: Product, date: string, setActive?: 'last' | 'first') {
+  get(product: Product, date: string, setActive?: 'last' | 'first'): Observable<SceneResponse[]> {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
     const urlParams = {params: {date, timeZone: timezone()}};
 
@@ -49,19 +50,29 @@ export class SceneService {
         map(scenes => scenes.map(scene => createSentinelSearchResult(scene)).map(scene => ({...scene, layerName: product.layerName}))),
         tap(scenes => applyTransaction(() => {
           this.store.set(scenes);
-          let activeSceneId = null;
+          let activeScene: Scene = null;
           if (scenes.length > 0) {
-            activeSceneId = setActive === 'last' && scenes[scenes.length - 1].id
-              || setActive === 'first' && scenes[0].id
+            activeScene = setActive === 'last' && scenes[scenes.length - 1]
+              || setActive === 'first' && scenes[0]
               || null;
           }
-          this.store.setActive(activeSceneId);
+          if (activeScene) {
+            this.store.setActive(activeScene.id);
+            this.productStore.setSelectedDate(activeScene.timestamp, true);
+          } else {
+            this.store.setActive(null);
+          }
         }))
       );
   }
 
-  setActive(sceneId: number | null) {
+  setActive(sceneId: number | null, manualTrigger: boolean = false) {
     this.store.setActive(sceneId);
+    if (manualTrigger) {
+      this.productStore.update(
+        state => ({...state, ui: {...state.ui, manuallySelectedDate: this.sceneQuery.getEntity(sceneId).timestamp}})
+      );
+    }
   }
 
   previous(): boolean {
