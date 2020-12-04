@@ -73,8 +73,7 @@ export class SessionService {
       .pipe(
         handleHttpRequest$(this._store),
         switchMap(data => this._profileLoaderService.loadProfile$()),
-        tap(() => this._store.update({email: request.email})),
-        finalize(() => this._navigateToApplication())
+        tap(() => this._store.update({email: request.email}))
       );
   }
 
@@ -83,10 +82,9 @@ export class SessionService {
     this._http.post(`${environment.apiPrefixV1}/logout`, {})
       .pipe(
         tap(() => resetStores()),
-        tap(() => this._store.reset()),
-        finalize(() => this._router.navigate(['/login']))
+        tap(() => this._store.reset())
       )
-      .subscribe();
+      .subscribe(() => this._router.navigate(['/login']));
   }
 
   removeAccount$(email: string, password: string) {
@@ -107,7 +105,7 @@ export class SessionService {
     this._store.setError(null);
   }
 
-  private _navigateToApplication() {
+  goToLastUrl() {
     (
       !!this._backLink && this._backLink !== ''
         ? this._router.navigateByUrl(this._backLink)

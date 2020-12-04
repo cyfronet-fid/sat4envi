@@ -3,21 +3,26 @@ import { getImageXhr } from 'src/app/views/settings/manage-institutions/institut
 import ImageWrapper from 'ol/Image';
 
 
-export function getImageWmsLoader(
-  error$: Subscriber<string>,
-  urlParser: (src: string) => string = (src: string) => src
-) {
+export function getImageWmsLoader(error$: Subscriber<string>) {
   return (image: ImageWrapper, src: string) => {
     handleBrowserEncodingError(image, error$);
-    return getHandledXhr(getImageXhr(urlParser(src)), error$);
+
+    const xhr = getHandledXhr(getImageXhr(src), error$);
+    xhr.onloadend = () => {
+      error$.next(src);
+      error$.complete();
+    };
+
+    return xhr;
   };
 }
 
 
 function getHandledXhr(xhr: XMLHttpRequest, error$: Subscriber<string>) {
-  xhr.onload = () => !handleHttpError(xhr, error$)
-    || handleHttpResponseImageTypeError(xhr, error$);
-  xhr.onloadend = () => error$.next(null);
+  xhr.onload = () => {
+    handleHttpError(xhr, error$);
+    handleHttpResponseImageTypeError(xhr, error$);
+  }
   xhr.onerror = () => handleHttpCorsAndOtherErrors(xhr, error$);
 
   xhr.send();
@@ -46,17 +51,16 @@ function handleBrowserEncodingError(image: ImageWrapper, error$: Subscriber<stri
   }
 }
 
-function handleHttpError(xhr: XMLHttpRequest, error$: Subscriber<string>): boolean {
+function handleHttpError(xhr: XMLHttpRequest, error$: Subscriber<string>) {
   const errorMessage = getErrorMessageBy(xhr.status);
   if (!!errorMessage) {
     error$.error(errorMessage + ', sprawdź poprawność URL');
   }
-
-  return !!errorMessage;
 }
 
 function handleHttpResponseImageTypeError(xhr: XMLHttpRequest, error$: Subscriber<string>) {
   const isImage = xhr.getResponseHeader('content-type').indexOf('image') > -1;
+
   const isInvalidImage = xhr.status === 200 && !isImage;
   if (isInvalidImage) {
     error$.error(`Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`);

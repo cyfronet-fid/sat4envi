@@ -76,18 +76,6 @@
     </td>
     <td>
       <ng-container *ngIf="user.email !== currentUserEmail">
-        <ng-container *ngIf="isInvitation(user)">
-
-          <a
-            href="javascript:void(0)"
-            (click)="sendInvitation(user)"
-            data-ut="edit-btn"
-            data-e2e="edit-invitation-btn"
-          >
-            <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
-          </a>
-        </ng-container>
-
         <a
           href="javascript:void(0)"
           (click)="delete(user)"

@@ -1,4 +1,4 @@
-<ul class="content__tabs">
+<ul *ngIf="isManagerOfActive$ | async" class="content__tabs">
   <li class="active" >
     Profil instytucji
   </li>

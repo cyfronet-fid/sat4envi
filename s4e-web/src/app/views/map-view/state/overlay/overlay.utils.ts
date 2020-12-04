@@ -1,10 +1,10 @@
 import { Overlay, UIOverlay } from './overlay.model';
-import { getBaseUrlAndParamsFrom } from '../../view-manager/overlay-list-modal/wms-url.utils';
 import {ImageWMS, TileWMS} from 'ol/source';
 import {InjectorModule} from '../../../../common/injector.module';
 import {TileLoader} from '../utils/layers-loader.util';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
 import {Tile} from 'ol/layer';
+import {getBaseUrlAndParamsFrom} from '../../../../components/overlay-list/wms-url.utils';
 
 export function convertToUIOverlay(
   overlay: Overlay,

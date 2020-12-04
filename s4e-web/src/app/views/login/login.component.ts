@@ -54,11 +54,12 @@ export class LoginComponent extends GenericFormComponent<SessionQuery, LoginForm
       .pipe(
         untilDestroyed(this),
         switchMap(() => this._activatedRoute.queryParamMap),
-        filter(params => params.has(TOKEN_QUERY_PARAMETER)),
-        map(params => params.get(TOKEN_QUERY_PARAMETER)),
-        tap(token => this._invitationService.confirm(token))
+        tap(params => params.has(TOKEN_QUERY_PARAMETER)
+          ? this._invitationService.confirm(params.get(TOKEN_QUERY_PARAMETER))
+          : null
+        )
       )
-      .subscribe();
+      .subscribe(() => this._sessionService.goToLastUrl());
   }
 
   protected _loadBackLink() {

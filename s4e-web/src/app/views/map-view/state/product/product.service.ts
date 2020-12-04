@@ -79,10 +79,6 @@ export class ProductService {
         )),
         map(productsLicenses => productsLicenses
           .filter(productLicenses => !!productLicenses && productLicenses.length > 0)
-          .map(licenses => {
-            console.log(licenses)
-            return licenses;
-          })
           .map(productLicenses => ({
             ...productLicenses[0],
             institutionsSlugs: productLicenses.map(license => license.institutionSlug)
