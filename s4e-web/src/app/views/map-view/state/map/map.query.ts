@@ -30,6 +30,7 @@ export class MapQuery extends Query<MapState> {
         product: product == null ? null : product.active,
         scene: scene == null ? null : scene.id,
         date: product.ui.selectedDate,
+        manualDate: product.ui.manuallySelectedDate || undefined,
         zoom: zoom.zoomLevel,
         centerx: zoom.centerCoordinates[0],
         centery: zoom.centerCoordinates[1]

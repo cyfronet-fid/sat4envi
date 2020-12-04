@@ -4,7 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {ProductStore} from './product.store';
 import {
   AVAILABLE_TIMELINE_RESOLUTIONS,
-  COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, LicensedProduct,
+  COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY, LicensedProduct, MAXIMUM_SCENE_TIME_DISTANCE,
   MostRecentScene,
   Product,
   PRODUCT_MODE_FAVOURITE,
@@ -31,6 +31,8 @@ import {InstitutionService} from '../../../settings/state/institution/institutio
 import {InstitutionQuery} from '../../../settings/state/institution/institution.query';
 import {SessionQuery} from '../../../../state/session/session.query';
 import {SessionStore} from '../../../../state/session/session.store';
+import {logIt} from '../../../../utils/rxjs/observable';
+import {Scene} from '../scene/scene.model';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -144,7 +146,7 @@ export class ProductService {
       );
   }
 
-  getLastAvailableScene$() {
+  getLastAvailableScene$(manualTrigger: boolean = false): Observable<MostRecentScene> {
     const product = this.query.getActive();
     if (!product) {
       return of(null);
@@ -163,10 +165,11 @@ export class ProductService {
 
           return !!data.sceneId;
         }),
-        tap(data => this.setSelectedDate(data.timestamp)),
-        switchMap(data => forkJoin([of(data), this.sceneService.get(product, data.timestamp.substr(0, 10))])),
-        tap(([data]) => this.sceneService.setActive(data.sceneId)),
-        tap(() => this.store.ui.update(product.id, state => ({...state, isLoading: false})))
+        tap(mostRecentScene => this.setSelectedDate(mostRecentScene.timestamp, manualTrigger)),
+        switchMap(mostRecentScene => forkJoin([of(mostRecentScene), this.sceneService.get(product, mostRecentScene.timestamp.substr(0, 10))])),
+        tap(([mostRecentScene]) => this.sceneService.setActive(mostRecentScene.sceneId)),
+        tap(() => this.store.ui.update(product.id, state => ({...state, isLoading: false}))),
+        map(([mostRecentScene]) => mostRecentScene)
       );
   }
 
@@ -193,21 +196,53 @@ export class ProductService {
           this.store.update(state => ({...state, ui: {...state.ui, loadedMonths: [], availableDays: []}}));
           this.store.setActive(productId);
         })),
-        switchMap((product) => {
+        switchMap(product => {
           const ui = this.query.getValue().ui;
-          const date = yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay));
-          return forkJoin([of(product), this.fetchAvailableDays$(date)]);
+
+          let scenes;
+          let month;
+          if (ui.manuallySelectedDate == null) {
+            return this.getLastAvailableScene$().pipe(
+              map((scene) => [product, yyyymm(new Date(scene.timestamp))]),
+              switchMap(([product, month]: [Product, string]) => this.fetchAvailableDays$(month))
+            );
+          } else {
+            return forkJoin([
+              this.sceneService.get(product, yyyymmdd(new Date(ui.manuallySelectedDate))).pipe(
+                tap(scenes => {
+                  const noCloseSceneNotifiaction = () => {
+                    this._notificationService.addGeneral({
+                      type: 'info', content: `Nie znaleziono sceny o czasie pobrania ${moment(ui.manuallySelectedDate).format('YYYY:DD:MM HH:mm')}`
+                    });
+                  }
+
+                  if (scenes.length === 0) {
+                    noCloseSceneNotifiaction();
+                    return;
+                  }
+
+                  // find matching scene
+                  let foundScene: number[] = scenes
+                    .map(scene => [scene.id, Math.abs(moment(ui.manuallySelectedDate).diff(moment(scene.timestamp)))])
+                    .sort(([aId, aDiff], [bId, bDiff]) => {
+                      if (aDiff < bDiff) return -1;
+                      else if (aDiff > bDiff) return 1;
+                      return 0;
+                    })[0]
+                  if (foundScene[1] < MAXIMUM_SCENE_TIME_DISTANCE) {
+                    this.sceneService.setActive(foundScene[0])
+                  } else {
+                    noCloseSceneNotifiaction();
+                    this.sceneService.setActive(null);
+                  }
+                })
+              ),
+              this.fetchAvailableDays$(yyyymm(new Date(ui.selectedYear, ui.selectedMonth, ui.selectedDay)))
+            ]);
+          }
         }),
-        switchMap(([product, any]) => {
-          const ui = this.query.getValue().ui;
-          return this.sceneService.get(product, ui.selectedDate);
-        }),
-        tap(() => this.store.ui.update(productId, {isLoading: false}))
+        finalize(() => this.store.ui.update(productId, {isLoading: false}))
       );
-  }
-
-  setDateRange(month: number, year: number) {
-
   }
 
   toggleFavourite(productId: number, isFavourite: boolean) {
@@ -243,19 +278,8 @@ export class ProductService {
       .pipe(tap(data => this.updateAvailableDays(data)));
   }
 
-  setSelectedDate(dateString: string) {
-    const date = new Date(dateString);
-
-    this.store.update(store => ({
-      ...store,
-      ui: {
-        ...store.ui,
-        selectedMonth: date.getMonth(),
-        selectedYear: date.getFullYear(),
-        selectedDay: date.getDate(),
-        selectedDate: yyyymmdd(date),
-      }
-    }));
+  setSelectedDate(dateString: string, manualTrigger: boolean = false) {
+    this.store.setSelectedDate(dateString, manualTrigger);
   }
 
   updateAvailableDays(data: string[]) {
@@ -275,26 +299,30 @@ export class ProductService {
   nextScene() {
     if (!this.sceneService.next()) {
       this.nextDay();
+    } else {
+      this.setSelectedDate(this._sceneQuery.getActive().timestamp, true);
     }
   }
 
   previousScene() {
     if (!this.sceneService.previous()) {
       this.previousDay();
+    } else {
+      this.setSelectedDate(this._sceneQuery.getActive().timestamp, true);
     }
   }
 
   previousDay() {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.subtract(1, 'day');
-    this.setSelectedDate(yyyymmdd(newDate.toDate()));
+    this.setSelectedDate(yyyymmdd(newDate.toDate()), true);
     this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'last').subscribe();
   }
 
   nextDay() {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.add(1, 'day');
-    this.setSelectedDate(yyyymmdd(newDate.toDate()));
+    this.setSelectedDate(yyyymmdd(newDate.toDate()), true);
     this.sceneService.get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'first').subscribe();
   }
 
@@ -336,5 +364,9 @@ export class ProductService {
         .pipe(tap(pt => this.store.upsert(product.id, pt)))
       : of(product)).pipe(tap(pt => this.legendService.set(pt.legend)))
 
+  }
+
+  setManualDate(manualDate: string|null) {
+    this.store.update(state => ({...state, ui: {...state.ui, manuallySelectedDate: manualDate}}));
   }
 }
