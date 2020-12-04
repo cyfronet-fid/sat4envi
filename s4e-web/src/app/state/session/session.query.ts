@@ -35,6 +35,11 @@ export class SessionQuery extends Query<Session> {
     return this.getValue().admin;
   }
 
+  selectPakMember() {
+    return this.select('authorities')
+      .pipe(map(authorities => authorities.some(authority => authority === 'ROLE_MEMBER_PAK')));
+  }
+
   canDeleteInstitution() {
     return this.getValue().authorities.includes('OP_INSTITUTION_DELETE') || this.getValue().admin;
   }

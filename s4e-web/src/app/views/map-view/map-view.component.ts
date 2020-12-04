@@ -40,7 +40,7 @@ import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-temp
 import {ReportTemplateQuery} from './zk/state/report-templates/report-template.query';
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
-import {filterFalse, filterNotNull} from '../../utils/rxjs/observable';
+import {filterFalse, filterNotNull, mapAnyTrue} from '../../utils/rxjs/observable';
 
 
 @Component({
@@ -83,7 +83,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public showProductDescription$: Observable<boolean> = this.mapQuery.selectShowProductDescription();
   public selectedLocation$: Observable<LocationSearchResult | null>;
   public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
-  public userIsZK$: Observable<boolean> = this.sessionQuery.selectMemberZK();
+  public userIsAuthorizedForAdditionalFunctionalities$: Observable<boolean> = combineLatest([
+    this.sessionQuery.selectPakMember(),
+    this.sessionQuery.selectMemberZK()
+  ]).pipe(mapAnyTrue());
   public timelineResolution$: Observable<number> = this.productQuery.selectTimelineResolution();
   public legend$ = this.legendQuery.selectLegend();
   public hasHeightContrast$ = this.viewConfigurationQuery.select('highContrast');
