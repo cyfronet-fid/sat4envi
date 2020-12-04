@@ -273,7 +273,6 @@
       "topMetric": {},
       "bottomMetric": {}
     }
-
   },
   {
     "name": "Opad_H05_06h",
@@ -460,7 +459,6 @@
       "topMetric": {},
       "bottomMetric": {}
     }
-
   },
   {
     "name": "Soil_Moisture_SM2",
@@ -505,7 +503,6 @@
       "topMetric": {},
       "bottomMetric": {}
     }
-
   },
   {
     "name": "Soil_Moisture_SM3",
@@ -550,7 +547,6 @@
       "topMetric": {},
       "bottomMetric": {}
     }
-
   },
   {
     "name": "Soil_Moisture_SM4",
@@ -589,12 +585,10 @@
         "0.119": "10",
         "0.07": "5",
         "0.028": "0"
-
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {}
     }
-
   }
 ]
