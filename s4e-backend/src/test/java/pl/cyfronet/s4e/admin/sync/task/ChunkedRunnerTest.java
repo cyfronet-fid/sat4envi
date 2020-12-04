@@ -1,12 +1,11 @@
 package pl.cyfronet.s4e.admin.sync.task;
 
-import org.awaitility.Awaitility;
-import org.awaitility.Durations;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import pl.cyfronet.s4e.TestAwaitilityConfiguration;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -27,7 +26,7 @@ class ChunkedRunnerTest {
 
     @BeforeAll
     public static void beforeAll() {
-        Awaitility.setDefaultTimeout(Durations.ONE_SECOND);
+        TestAwaitilityConfiguration.initialize();
     }
 
     @BeforeEach

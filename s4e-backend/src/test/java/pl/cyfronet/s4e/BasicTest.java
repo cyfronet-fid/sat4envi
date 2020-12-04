@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import({ TestClockConfiguration.class, TestMockConfiguration.class })
+@Import({ TestClockConfiguration.class, TestMockConfiguration.class, TestAwaitilityConfiguration.class})
 @ExtendWith(MockitoExtension.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

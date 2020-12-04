@@ -1,6 +1,5 @@
 package pl.cyfronet.s4e.sync;
 
-import org.awaitility.Durations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +43,6 @@ class SceneAcceptorIntegrationTest {
 
         sceneAcceptor.accept(SCENE_KEY);
 
-        await().atMost(Durations.TEN_SECONDS)
-                .until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
+        await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
     }
 }
