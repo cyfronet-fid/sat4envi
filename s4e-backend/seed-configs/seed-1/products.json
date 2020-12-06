@@ -121,7 +121,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": ""
+      }
     }
   },
   {
@@ -228,7 +230,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "mm/h"
+      }
     }
   },
   {
@@ -271,7 +275,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "mm"
+      }
     }
   },
   {
@@ -314,7 +320,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "mm"
+      }
     }
   },
   {
@@ -357,7 +365,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "mm"
+      }
     }
   },
   {
@@ -400,7 +410,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "mm"
+      }
     }
   },
   {
@@ -457,7 +469,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "%"
+      }
     }
   },
   {
@@ -501,7 +515,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "%"
+      }
     }
   },
   {
@@ -545,7 +561,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "%"
+      }
     }
   },
   {
@@ -588,7 +606,9 @@
       },
       "rightDescription": {},
       "topMetric": {},
-      "bottomMetric": {}
+      "bottomMetric": {
+        "unit": "%"
+      }
     }
   }
 ]

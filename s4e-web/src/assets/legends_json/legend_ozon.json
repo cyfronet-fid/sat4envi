@@ -14,5 +14,7 @@
   },
   "rightDescription": {},
   "topMetric": {},
-  "bottomMetric": {}
+  "bottomMetric": {
+    "unit": "D"
+  }
 }

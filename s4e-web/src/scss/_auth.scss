@@ -31,6 +31,13 @@ body, html {
     height: 100%;
     box-sizing: border-box;
 
+    a.logo {
+      background-repeat: no-repeat;
+      display: block;
+      min-height: 70px;
+      margin-bottom: $space-default;
+    }
+
     &__content {
       width: 70%;
       margin: 0 auto;
@@ -42,6 +49,7 @@ body, html {
         font-weight: 600;
         color: $color-white;
         line-height: 3.5rem;
+        word-break: break-word;
       }
 
       p {

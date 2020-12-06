@@ -1,17 +1,10 @@
-<div class="legend__description" *ngIf="isOpen">
-  <h3>Lorem Ipsum</h3>
-  <p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum felis ac augue porta tincidunt. Nulla vitae vehicula metus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla mauris mauris, porttitor sit amet mollis vitae, placerat non nulla. Morbi vitae mattis urna. Integer tincidunt tempus pellentesque. Cras consectetur, sapien eu placerat pretium, mauris velit tincidunt urna, ac euismod eros magna et nisl. Fusce sit amet dolor dui. Praesent lectus lectus, sodales non aliquam nec, ultricies vitae libero.
-  </p>
-</div>
-
 <ul class="legend__left" *ngIf="isOpen && (activeLegend.leftDescription | keyvalue).length > 0">
   <li *ngFor="let item of (activeLegend.leftDescription | keyvalue)"
       class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
     <span>{{item.value}}</span>
   </li>
 </ul>
-
 <div class="legend__chart" [style.background-image]="url" (click)="opened.emit()"></div>
+<div class="legend__metric">{{activeLegend.bottomMetric.unit}}</div>
 
 

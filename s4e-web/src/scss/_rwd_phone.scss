@@ -7,6 +7,7 @@
 
   /* MAP */
   .sidebar {
+    left: 0 !important;
 
     &:after {
       display: block;
@@ -85,7 +86,7 @@
       }
 
       &--product {
-        left: 80px !important;
+        left: 5px !important;
         width: auto !important;
         right: 5px !important;
       }
@@ -247,8 +248,13 @@
     }
   }
 
+  .form__list {
+    margin-bottom: 90px;
+  }
+
   .logo__partners {
-    margin: 0 auto !important;
+    margin: 0 auto 50px auto !important;
+    width: 100%;
   }
 
   .content__switch {
@@ -263,6 +269,7 @@
         position: fixed;
         color: $color-white;
         background: $color-secondary;
+        bottom: 0;
 
         &:before {
           display: none;
