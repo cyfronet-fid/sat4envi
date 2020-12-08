@@ -18,7 +18,8 @@
 import {
   Component,
   ElementRef,
-  EventEmitter, HostBinding, HostListener,
+  EventEmitter,
+  HostListener,
   Inject,
   Input,
   LOCALE_ID,
@@ -33,7 +34,7 @@ import {
 import {combineLatest, merge, Observable, of, ReplaySubject, Subject} from 'rxjs';
 import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
 import {untilDestroyed} from 'ngx-take-until-destroy';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {debounceTime, map} from 'rxjs/operators';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
 import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 import {AkitaGuidService} from '../state/search-results/guid.service';
@@ -65,19 +66,20 @@ export const DATEPICKER_FORMAT_CUSTOMIZATION = {
 };
 
 export class PointStacker {
-  constructor(private scenePointWidth: number, private scenePointMaximumSpace: number) {}
+  constructor(private scenePointWidth: number, private scenePointMaximumSpace: number) {
+  }
 
   stack(scenes: SceneWithUI[], width: number, activeScene: Scene): DataPoint[] {
     const retScenes: DataPoint[] = [];
 
-    for (let i=0; i < scenes.length;) {
-      const scenePoint = []
+    for (let i = 0; i < scenes.length;) {
+      const scenePoint = [];
       let j = i;
       const startPosition = scenes[i].position * width * 0.01;
       let endPosition = startPosition;
       let selected = false;
       do {
-        if(activeScene && activeScene.id === scenes[j].id) {
+        if (activeScene && activeScene.id === scenes[j].id) {
           selected = true;
         }
         scenePoint.push(scenes[j]);
@@ -113,28 +115,13 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   @Input() resolution: number = DEFAULT_TIMELINE_RESOLUTION;
   currentDate: string = '';
   startAt = null;
-  private pointStacker = new PointStacker(10, 15)
-
-  public activeScene: Scene|null = null
-  @Input('activeScene') set _activeScene(scene: Scene | null) {
-    this.activeScene = scene;
-    this._activeScene$.next(scene);
-  }
+  public activeScene: Scene | null = null;
   @Input() startTime: string;
   hourmarks: string[] = [];
-
-
-  public scenes$: Observable<DataPoint[]>
+  public scenes$: Observable<DataPoint[]>;
   public activeStackedPoint: DataPoint | null = null;
   public isLive$ = this.sceneQuery.selectLoading()
     .pipe(map(() => this.sceneQuery.getValue().isLiveMode));
-
-  private readonly _activeScene$: ReplaySubject<Scene|null> = new ReplaySubject(1);
-  private readonly _timelineWidth$: ReplaySubject<number> = new ReplaySubject(1);
-  private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(1);
-  @Input('scenes') set scenesWithUI(scenes: SceneWithUI[]) {
-    this._scenesWithUi$.next(scenes);
-  }
   @Output() dateSelected = new EventEmitter<string>();
   @Output() selectedScene = new EventEmitter<Scene>();
   @Output() previousScene = new EventEmitter<void>();
@@ -143,22 +130,15 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   @Output() previousDay = new EventEmitter<void>();
   @Output() increaseResolution = new EventEmitter<void>();
   @Output() decreaseResolution = new EventEmitter<void>();
-
   @Output() loadAvailableDates = new EventEmitter<string>();
   @Output() lastAvailableScene = new EventEmitter<void>();
+  @Output() openSceneSelection = new EventEmitter<void>();
   pickerState: boolean = false;
   componentId: string;
-  // @Input() set products(products: Scene[] | null) {
-  //   this.days = [];
-  //   let currDay: Day;
-  //   for (const product of (products || [])) {
-  //     const day = formatDate(product.timestamp, 'shortDate', this.LOCALE_ID);
-  //     if (currDay === undefined || currDay.label !== day) {
-  //       currDay = {label: day, products: []};
-  //       this.days.push(currDay);
-  //     }
-  //     currDay.products.push(product);
-  //   }
+  private pointStacker = new PointStacker(10, 15);
+  private readonly _activeScene$: ReplaySubject<Scene | null> = new ReplaySubject(1);
+  private readonly _timelineWidth$: ReplaySubject<number> = new ReplaySubject(1);
+  private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(1);
   // }
   private updateStream = new Subject<void>();
 
@@ -173,6 +153,26 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   ) {
     //class name can not start with number
     this.componentId = `D${this.guidService.guid()}`;
+  }
+  // @Input() set products(products: Scene[] | null) {
+  //   this.days = [];
+  //   let currDay: Day;
+  //   for (const product of (products || [])) {
+  //     const day = formatDate(product.timestamp, 'shortDate', this.LOCALE_ID);
+  //     if (currDay === undefined || currDay.label !== day) {
+  //       currDay = {label: day, products: []};
+  //       this.days.push(currDay);
+  //     }
+  //     currDay.products.push(product);
+  //   }
+
+  @Input('activeScene') set _activeScene(scene: Scene | null) {
+    this.activeScene = scene;
+    this._activeScene$.next(scene);
+  }
+
+  @Input('scenes') set scenesWithUI(scenes: SceneWithUI[]) {
+    this._scenesWithUi$.next(scenes);
   }
 
   private _availableDates: string[] = [];
@@ -209,7 +209,8 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     this.dateSelected.emit(yyyymmdd($event.value));
   }
 
-  monthSelected($event: any) {}
+  monthSelected($event: any) {
+  }
 
   async goToPreviousDay() {
     const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
@@ -295,7 +296,7 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
 
     this.scenes$ = this.aggregateScenes();
 
-    this.onResize()
+    this.onResize();
   }
 
   ngOnDestroy(): void {
@@ -325,6 +326,6 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
         this._timelineWidth$.asObservable(),
         this._activeScene$.asObservable(),
       ])
-    ).pipe(distinctUntilChangedDE(), map(([scenes, width, activeScene]) => this.pointStacker.stack(scenes, width, activeScene)))
+    ).pipe(distinctUntilChangedDE(), map(([scenes, width, activeScene]) => this.pointStacker.stack(scenes, width, activeScene)));
   }
 }

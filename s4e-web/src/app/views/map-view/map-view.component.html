@@ -57,6 +57,7 @@
               (decreaseResolution)="decreaseResolution()"
               [resolution]="timelineResolution$ | async"
               (previousDay)="previousDay()"
+              (openSceneSelection)="openSceneSelectionModal()"
               [loading]="scenesAreLoading$ | async"
               [activeScene]="activeScene$ | async"
               (selectedScene)="selectScene($event?.id)"
