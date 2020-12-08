@@ -18,7 +18,7 @@
 <div>
   <section class="timeline__manager">
     <div class="timecontrol timecontrol--live button button--small button--default" data-e2e="btn-live">
-      <label for="live" [ngClass]="{active: isLive$ | async}"i18n>
+      <label for="live" [ngClass]="{active: isLive$ | async}" i18n>
         <span class="live--dot"></span><span>Na żywo</span>
       </label>
       <input type="checkbox" id="live" name="live" (change)="toggleLiveMode()" />
@@ -48,6 +48,11 @@
       <span (click)="increaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
       <span>{{resolution}}h</span>
       <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--plus"></span>
+    </div>
+
+    <!-- This button launches modal for mobile view -->
+    <div class="timecontrol timecontrol--interval" (click)="openSceneSelection.emit()">
+      <span>{{activeScene?.timestamp | hour}}</span>
     </div>
   </section>
 

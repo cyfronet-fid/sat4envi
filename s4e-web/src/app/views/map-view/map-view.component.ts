@@ -58,6 +58,7 @@ import {ReportTemplateQuery} from './zk/state/report-templates/report-template.q
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
 import {filterFalse, filterNotNull, mapAnyTrue} from '../../utils/rxjs/observable';
+import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-selector-modal/mobile-scene-selector-modal.model';
 import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query';
 import {InstitutionService} from '../settings/state/institution/institution.service';
 import {InstitutionQuery} from '../settings/state/institution/institution.query';
@@ -370,5 +371,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   showDetailsModal() {
     this.sceneService.showModalForActive();
+  }
+
+  openSceneSelectionModal() {
+    this.modalService.show({id: MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID});
   }
 }

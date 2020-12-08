@@ -78,6 +78,8 @@ import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-temp
 import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.component';
 import {OverlayListModule} from '../../components/overlay-list/overlay-list.module';
 import {UserDropdownComponent} from './user-dropdown/user-dropdown.component';
+import {MobileSceneSelectorModalComponent} from './timeline/mobile-scene-selector-modal/mobile-scene-selector-modal.component';
+import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-selector-modal/mobile-scene-selector-modal.model';
 
 @NgModule({
   declarations: [
@@ -105,7 +107,8 @@ import {UserDropdownComponent} from './user-dropdown/user-dropdown.component';
     ExpertHelpModalComponent,
     ReportTemplatesModalComponent,
     ToPaginationArrayPipe,
-    UserDropdownComponent
+    UserDropdownComponent,
+    MobileSceneSelectorModalComponent
   ],
   exports: [
     MapViewComponent,
@@ -153,7 +156,8 @@ import {UserDropdownComponent} from './user-dropdown/user-dropdown.component';
     makeModalProvider(OVERLAY_LIST_MODAL_ID, OverlayListModalComponent),
     makeModalProvider(JWT_TOKEN_MODAL_ID, JwtTokenModalComponent),
     makeModalProvider(EXPERT_HELP_MODAL_ID, ExpertHelpModalComponent),
-    makeModalProvider(REPORT_TEMPLATES_MODAL_ID, ReportTemplatesModalComponent)
+    makeModalProvider(REPORT_TEMPLATES_MODAL_ID, ReportTemplatesModalComponent),
+    makeModalProvider(MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID, MobileSceneSelectorModalComponent)
   ],
   entryComponents: [
     ReportModalComponent,
@@ -164,7 +168,8 @@ import {UserDropdownComponent} from './user-dropdown/user-dropdown.component';
     OverlayListModalComponent,
     JwtTokenModalComponent,
     ExpertHelpModalComponent,
-    ReportTemplatesModalComponent
+    ReportTemplatesModalComponent,
+    MobileSceneSelectorModalComponent
   ]
 })
 export class MapModule {
