@@ -111,7 +111,7 @@
           </tr>
           </tbody>
         </table>
-        <ng-container *ngIf="!((isAddingNewLayer$ | async)); else createLoadingRef">
+        <ng-container *ngIf="!(isAddingNewLayer$ | async); else createLoadingRef">
           <button
             (click)="addNewOverlay()"
             class="button button--secondary button--small"

@@ -7,6 +7,17 @@ export function getImageWmsLoader(error$: Subscriber<string>) {
   return (image: ImageWrapper, src: string) => {
     handleBrowserEncodingError(image, error$);
 
+    src = decodeURIComponent(src)
+    src = src.split('?')[0]
+      + '?'
+      + src.split('?')[1]
+        .split('&')
+        .filter(param => !param.toLowerCase().includes('width')
+          && !param.toLowerCase().includes('height')
+        )
+        .join('&')
+      + '&WIDTH=64&HEIGHT=32'
+
     const xhr = getHandledXhr(getImageXhr(src), error$);
     xhr.onloadend = () => {
       error$.next(src);
@@ -59,7 +70,13 @@ function handleHttpError(xhr: XMLHttpRequest, error$: Subscriber<string>) {
 }
 
 function handleHttpResponseImageTypeError(xhr: XMLHttpRequest, error$: Subscriber<string>) {
-  const isImage = xhr.getResponseHeader('content-type').indexOf('image') > -1;
+  const contentType = xhr.getResponseHeader('content-type');
+  if (!contentType) {
+    error$.error(`Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`);
+    return;
+  }
+
+  const isImage = contentType.indexOf('image') > -1;
 
   const isInvalidImage = xhr.status === 200 && !isImage;
   if (isInvalidImage) {
