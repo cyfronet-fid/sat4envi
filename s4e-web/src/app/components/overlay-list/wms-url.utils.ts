@@ -4,8 +4,8 @@ import {Overlay} from '../../views/map-view/state/overlay/overlay.model';
 
 const VERSION_EXPRESSION = /version=\d+\.\d+\.\d+(&?)/i;
 const REQUEST_EXPRESSION = /request=[a-zA-Z]*(&?)/i;
-const LAYERS_EXPRESSION = /layers=[a-zA-Z._0-9,:-]*(&?)/i;
-const STYLES_EXPRESSION = /styles=[a-zA-Z._0-9,:-]*(&?)/i;
+const LAYERS_EXPRESSION = /layers=([a-zA-Z._0-9:-]*(,?))+(&?)/i;
+const STYLES_EXPRESSION = /styles=([a-zA-Z._0-9:-]*(,?))+(&?)/i;
 const BBOX_EXPRESSION = /bbox=(-?)[.0-9]*,(-?)[.0-9]*,(-?)[.0-9]*,(-?)[.0-9]*(&?)/i;
 const SRS_OR_CRS_EXPRESSION = /(srs|crs)=[a-zA-Z._0-9]*:[a-zA-Z._0-9]*(&?)/i;
 const WIDTH_EXPRESSION = /width=[0-9]*(&?)/i;

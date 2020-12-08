@@ -11,10 +11,11 @@ import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {WMS_URL_VALIDATORS} from './wms-url.utils';
 import {forkJoin, Observable, of, Subject} from 'rxjs';
 import Projection from 'ol/proj/Projection';
-import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {debounceTime, filter, finalize, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ActivatedRoute} from '@angular/router';
 import WMSCapabilities from 'ol/format/WMSCapabilities';
+import {OverlayStore} from '../../views/map-view/state/overlay/overlay.store';
 
 export interface OverlayForm {
   url: string;
@@ -68,6 +69,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     private _activatedRoute: ActivatedRoute,
     private _modalService: ModalService,
     private _overlayQuery: OverlayQuery,
+    private _overlayStore: OverlayStore,
     private _overlayService: OverlayService,
     private _notificationService: NotificationService
   ) {
@@ -96,6 +98,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     this._overlayService.get().subscribe();
     this.setInstitutionalFilter$.subscribe();
     this.isAddingNewLayer$.subscribe(loadingNew => disableEnableForm(loadingNew, this.newOverlayForm));
+    this._overlayStore.ui.update({loadingNew: false});
   }
 
   async removeOverlay(id: number) {
@@ -131,23 +134,32 @@ export class OverlayListComponent implements OnInit, OnDestroy {
   }
 
   addNewOverlay() {
+    this._overlayStore.ui.update({loadingNew: true});
     validateAllFormFields(this.newOverlayForm);
     if (this.newOverlayForm.invalid) {
+      this._overlayStore.ui.update({loadingNew: false});
       return;
     }
 
-    const url = this.newOverlayForm.controls.url.value;
+    const url = this.newOverlayForm.controls.url.value.trim();
     if (this.newOwner === 'INSTITUTIONAL') {
       this.hasLoadingError$(url)
         .pipe(
           untilDestroyed(this),
           switchMap(formattedUrl => forkJoin([of(formattedUrl), this._activatedRoute.queryParamMap])),
-          map(([url, params]) => [url, params.get('institution')])
+          map(([url, params]) => [url, params.get('institution')]),
+          tap(() => this._overlayStore.ui.update({loadingNew: false}))
         )
         .subscribe(
-          ([url, institutionSlug]) => this._overlayService
-            .createInstitutionalOverlay({...this.newOverlayForm.value, url}, institutionSlug),
-          (error: string) => this._notificationService.addGeneral({content: error, type: 'error'})
+          ([url, institutionSlug]) => {
+            this._overlayStore.ui.update({loadingNew: false});
+            this._overlayService
+              .createInstitutionalOverlay({...this.newOverlayForm.value, url}, institutionSlug);
+          },
+          (error: string) => {
+            this._notificationService.addGeneral({content: error, type: 'error'});
+            this._overlayStore.ui.update({loadingNew: false});
+          }
         );
       return;
     }
@@ -156,6 +168,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe(
         formattedUrl => {
+          this._overlayStore.ui.update({loadingNew: false});
           switch (this.newOwner) {
             case 'PERSONAL':
               this._overlayService.createPersonalOverlay({...this.newOverlayForm.value, url: formattedUrl});
@@ -165,7 +178,10 @@ export class OverlayListComponent implements OnInit, OnDestroy {
               break;
           }
         },
-        (error: string) => this._notificationService.addGeneral({content: error, type: 'error'})
+        (error: string) => {
+          this._notificationService.addGeneral({content: error, type: 'error'});
+          this._overlayStore.ui.update({loadingNew: false});
+        }
       );
   }
 
@@ -178,33 +194,59 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     return new Observable<string | null>(observer$ => {
       const capabilitiesUrl = `${url.split('?')[0]}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`;
       fetch(capabilitiesUrl)
-        .then(response => response.text())
-        .then(text => (new WMSCapabilities()).read(text))
-        .then(parsedCapabilities => parsedCapabilities.Capability.Layer)
-        .then(layerMetadata => {
-          const {crs, extent, ...rest} = layerMetadata.BoundingBox[0];
+        .then(response => {
+            if (response.status !== 200) {
+              observer$.error(`
+                Sprawdź poprawność URL i jego parametrów!
 
-          if (!url.includes('LAYERS')) {
-            const layers = this._unpackLayers(layerMetadata)
-              .filter(layer => !!layer.Name)
-              .map(layer => layer.Name)
-              .join(',');
+                Mógł wystąpić Cross-Origin Request Blocked:
+                Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
+              `);
+              observer$.complete();
+              throw new Error();
+            }
 
-            const hasParams = url.includes("?");
+            return response;
+          },
+          error => {
+            observer$.error(`
+              Sprawdź poprawność URL i jego parametrów!
 
-            url = hasParams ? `${url}&LAYERS=${layers}` : `${url.split('?')[0]}?LAYERS=${layers}`;
+              Mógł wystąpić Cross-Origin Request Blocked:
+              Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
+             `);
+            observer$.complete();
           }
+        )
+        .then(response => (response as any).text(), error => {})
+        .then(text => (new WMSCapabilities()).read(text), error => {})
+        .then(parsedCapabilities => parsedCapabilities.Capability.Layer, error => {})
+        .then(
+          layerMetadata => {
+            const {crs, extent, ...rest} = layerMetadata.BoundingBox[0];
 
-          if (!url.includes('STYLES=')) {
-            url = `${url}&STYLES=`
+            if (!url.includes('LAYERS')) {
+              const layers = this._unpackLayers(layerMetadata)
+                .filter(layer => !!layer.Name)
+                .map(layer => layer.Name)
+                .join(',');
+
+              const hasParams = url.includes("?");
+
+              url = hasParams ? `${url}&LAYERS=${layers}` : `${url.split('?')[0]}?LAYERS=${layers}`;
+            }
+
+            if (!url.includes('STYLES=')) {
+              url = `${url}&STYLES=`
+            }
+
+            const source = getImageWmsFrom({url});
+            source.setImageLoadFunction(getImageWmsLoader(observer$));
+            source
+              .getImage(extent, 1,1, new Projection({code: crs}))
+              .load();
           }
-
-          const source = getImageWmsFrom({url});
-          source.setImageLoadFunction(getImageWmsLoader(observer$));
-          source
-            .getImage(extent, 1000,0.01, new Projection({code: crs}))
-            .load();
-        });
+          , error => {});
     });
   }
 
