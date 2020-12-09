@@ -152,6 +152,15 @@
   z-index: 10;
   width: calc(100% - 30px);
   box-shadow: $shadow-primary;
+
+  li {
+    &:focus {
+      outline: auto;
+    }
+    &:hover {
+      background: $color-hover;
+    }
+  }
 }
 
 .products-list {

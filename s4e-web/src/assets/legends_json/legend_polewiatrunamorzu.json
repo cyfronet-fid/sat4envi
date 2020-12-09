@@ -17,8 +17,8 @@
     "0.027": "0"
   },
   "rightDescription": {},
-  "topMetric": {
-    "1": "m/s"
-  },
-  "bottomMetric": {}
+  "topMetric": {},
+  "bottomMetric": {
+    "unit": "m/s"
+  }
 }

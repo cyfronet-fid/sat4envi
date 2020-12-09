@@ -94,6 +94,9 @@ s4e-settings {
       font-size: 1.3rem;
       font-weight: 600;
       margin-bottom: $space-small / 2;
+      a {
+        color: $color-text;
+      }
     }
   }
 

@@ -15,7 +15,7 @@
     <header *ngIf="hasAnyAdminInstitution$ | async" class="navigation__institution">
       <span>Wybrana instytucja</span>
       <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)">
-        {{ (activeInstitution$ | async)?.name }}
+        <a routerLink="/settings/institution" queryParamsHandling="merge">{{ (activeInstitution$ | async)?.name }}</a>
       </p>
       <a *ngIf="!(isAdminOfOneInstitution$ | async)"
         routerLink="/settings/institutions"

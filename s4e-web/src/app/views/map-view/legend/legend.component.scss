@@ -35,16 +35,37 @@ $legend-height: 600px;
   }
 }
 
+
+
 .chart__label {
   position: absolute;
-  span {
+}
+
+.chart__label span,
+.legend__metric {
     background: $color-white-80;
     display: inline-block;
     border-radius: $border-radius-default;
     padding: 3px;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.legend__metric {
+  position: absolute;
+  right: 0;
+  bottom: -20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+  box-sizing: border-box;
+
+  &:empty {
+    display: none;
   }
 }
+
+
 
 .legend__left {
   width: 200px;
@@ -69,4 +90,3 @@ $legend-height: 600px;
   right: 0;
 }
 
-.legend__description {display: none;}

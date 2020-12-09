@@ -26,10 +26,4 @@ describe('LegendComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should show description if isOpen is true', () => {
-    component.isOpen = true;
-    fixture.detectChanges();
-    expect(fixture.debugElement.query(By.css('.legend__description'))).toBeTruthy();
-  });
 });

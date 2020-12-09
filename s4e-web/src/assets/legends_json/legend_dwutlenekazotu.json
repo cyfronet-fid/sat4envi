@@ -11,5 +11,7 @@
   },
   "rightDescription": {},
   "topMetric": {},
-  "bottomMetric": {}
+  "bottomMetric": {
+    "unit": "10^15cz./cm2"
+  }
 }

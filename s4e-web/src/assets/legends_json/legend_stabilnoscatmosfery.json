@@ -15,5 +15,7 @@
   },
   "rightDescription": {},
   "topMetric": {},
-  "bottomMetric": {}
+  "bottomMetric": {
+    "unit": "LI"
+  }
 }

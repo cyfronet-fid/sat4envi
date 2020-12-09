@@ -512,9 +512,6 @@ input.checkbox-slide:checked + .slider:after
     font-weight: 500;
     line-height: 1rem;
 
-    display: none;
-    //This box is waiting for poligon functionality, that's why display:none;
-
     &:before {
       position: absolute;
       width: 40px;
@@ -609,6 +606,15 @@ input.checkbox-slide:checked + .slider:after
     }
 
   }
+}
+
+
+
+@media  (max-height: 700px) {
+ s4e-legend {
+  transform: scale(0.75) !important;
+   top: 0 !important;
+ }
 }
 
 
