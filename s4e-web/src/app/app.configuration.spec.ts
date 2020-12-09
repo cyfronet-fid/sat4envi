@@ -7,6 +7,7 @@ import {LocalStorage} from './app.providers';
 import {HashMap} from '@datorama/akita';
 
 export const RemoteConfigurationFactory = Factory.makeFactory<IRemoteConfiguration>({
+  osmUrl: '/osm/{z}/{x}/{y}.png',
   geoserverUrl: 'http://localhost:8080/geoserver/wms',
   geoserverWorkspace: 'testing',
   recaptchaSiteKey: 'abc123',
@@ -46,11 +47,11 @@ class LocalStorageMock {
 export const LocalStorageTestingProvider: Provider = {
   provide: LocalStorage,
   useValue: new LocalStorageMock()
-}
+};
 
 export function makeLocalStorageTestingProvider(initState: HashMap<string>): Provider {
   return {
     provide: LocalStorage,
     useValue: new LocalStorageMock(initState)
-  }
+  };
 }

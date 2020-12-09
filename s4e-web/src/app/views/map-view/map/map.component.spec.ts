@@ -3,8 +3,9 @@ import {MapComponent} from './map.component';
 import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {Tile} from 'ol/layer';
 import {RouterTestingModule} from '@angular/router/testing';
+import {RemoteConfigurationTestingProvider} from '../../../app.configuration.spec';
+
 
 describe('MapComponent', () => {
   let component: MapComponent;
@@ -12,6 +13,7 @@ describe('MapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      providers: [RemoteConfigurationTestingProvider],
       imports: [
         ShareModule,
         RouterTestingModule
@@ -41,7 +43,7 @@ describe('MapComponent', () => {
     });
 
     component.getMapData().pipe(take(1)).subscribe(data => {
-      expect(data).toEqual({height: 150, width: 300, image: 'data:image/png;base64,00', "pointResolution": 152.87405656527181});
+      expect(data).toEqual({height: 150, width: 300, image: 'data:image/png;base64,00', 'pointResolution': 152.87405656527181});
       done();
     });
     expect(spy).toHaveBeenCalled();

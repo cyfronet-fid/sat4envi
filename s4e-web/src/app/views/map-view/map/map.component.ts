@@ -19,7 +19,7 @@ import moment from 'moment';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
-import {Draw, Modify, Snap} from 'ol/interaction';
+import {Draw} from 'ol/interaction';
 import GeometryType from 'ol/geom/GeometryType';
 import {WKT} from 'ol/format';
 import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
@@ -124,7 +124,10 @@ export class MapComponent implements OnInit, OnDestroy {
       )
     );
 
-    const source = new OSM({url: '/osm/{z}/{x}/{y}.png', crossOrigin: 'Anonymous'});
+    const source = new OSM({
+      url: this._remoteConfiguration.get().osmUrl,
+      crossOrigin: 'Anonymous'
+    });
     this.baseLayer = new Tile({source});
 
     this.map.getLayers().push(this.baseLayer);
@@ -218,7 +221,7 @@ export class MapComponent implements OnInit, OnDestroy {
       centerCoordinates: view.getCenter(),
       zoomLevel: view.getZoom()
     });
-  };
+  }
 
   public getMapData(): Observable<MapData | null> {
     if (!this.map) {
@@ -343,7 +346,7 @@ export class MapComponent implements OnInit, OnDestroy {
           }),
         });
         this.map.addLayer(this._polygonDrawing.polygon);
-        this.map.removeInteraction(this._polygonDrawing.drawing)
+        this.map.removeInteraction(this._polygonDrawing.drawing);
       });
   }
 

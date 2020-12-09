@@ -7,6 +7,8 @@ import lombok.Value;
 @Value
 @Builder
 public class ConfigResponse {
+    @Schema(example = "/osm/{z}/{x}/{y}.png")
+    String osmUrl;
     @Schema(example = "/wms")
     String geoserverUrl;
     @Schema(example = "development")
