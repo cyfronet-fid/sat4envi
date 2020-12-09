@@ -2,11 +2,11 @@
 
 import promisify from 'cypress-promise';
 import { Map } from '../../page-objects/map/map.po';
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { MapProducts } from '../../page-objects/map/map-products.po';
 import { Core } from './../../page-objects/core.po';
 
-describe('Map favorite products', () => {
+describe.skip('Map favorite products', () => {
   beforeEach(function () {
     cy.fixture('users/zkMember.json').as('zkMember');
   });

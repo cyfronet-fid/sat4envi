@@ -1,8 +1,8 @@
 /// <reference types = "Cypress" />
 
-import { Registration } from '../../page-objects/auth/register.po'
+import { Registration } from '../../page-objects/auth/auth-register.po'
 
-describe.skip('Register', () => {
+describe('Register', () => {
 
     beforeEach(() => {
         cy.visit("/register");
@@ -17,7 +17,7 @@ describe.skip('Register', () => {
         it("shouldn't send empty form", function () {
             Registration
                 .sendForm()
-                .errorsCountShouldBe(5);
+                .errorsCountShouldBe(9);
         });
 
         it("shouldn't send form on incorrect email", function () {
@@ -47,4 +47,3 @@ describe.skip('Register', () => {
         });
     });
 })
-

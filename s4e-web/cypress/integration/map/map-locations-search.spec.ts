@@ -1,9 +1,9 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
-describe('Map Locations Search', () => {
+describe.skip('Map Locations Search', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });

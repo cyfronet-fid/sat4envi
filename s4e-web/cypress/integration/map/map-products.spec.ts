@@ -1,10 +1,10 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { Map } from '../../page-objects/map/map.po';
 import { MapProducts } from './../../page-objects/map/map-products.po';
 
-context('Map Products', () => {
+context.skip('Map Products', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });

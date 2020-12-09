@@ -1,4 +1,4 @@
-import { User } from '../auth/login.po';
+import { User } from '../auth/auth-login.po'
 import { Core } from '../core.po';
 import promisify from 'cypress-promise';
 
