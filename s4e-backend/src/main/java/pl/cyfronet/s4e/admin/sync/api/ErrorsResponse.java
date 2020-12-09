@@ -16,7 +16,7 @@ public class ErrorsResponse {
     public static class ErrorResponse {
         private String sceneKey;
         private String code;
-        private Exception cause;
+        private String cause;
         private Map<String, Object> parameters;
     }
 }
