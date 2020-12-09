@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
+import pl.cyfronet.s4e.properties.OsmProperties;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -19,6 +20,9 @@ public class ConfigControllerTest {
     @Autowired
     private GeoServerProperties geoServerProperties;
 
+    @Autowired
+    private OsmProperties osmProperties;
+
     @Value("${recaptcha.validation.siteKey}")
     private String recaptchaSiteKey;
 
@@ -29,6 +33,7 @@ public class ConfigControllerTest {
     public void shouldReturnConfiguration() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/config"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.osmUrl").value(osmProperties.getUrl()))
                 .andExpect(jsonPath("$.geoserverUrl").value(geoServerProperties.getOutsideBaseUrl()))
                 .andExpect(jsonPath("$.recaptchaSiteKey").value(recaptchaSiteKey));
     }
