@@ -23,6 +23,7 @@ import pl.cyfronet.s4e.security.JwtTokenService;
 import pl.cyfronet.s4e.security.SecurityConstants;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -63,7 +64,7 @@ public class AuthController {
             @ApiResponse(
                     responseCode = "200",
                     description = "OK",
-                    headers = @Header(name = "Set-Cookie", schema = @Schema(example = "token=abcdef; Path=/; HttpOnly; Max-Age=1234"))
+                    headers = @Header(name = "Set-Cookie", schema = @Schema(example = "token=abcdef; Domain=data.sat4envi.imgw.pl; Path=/; HttpOnly; Max-Age=1234"))
             ),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthenticated: Incorrect credentials or account doesn't exist", content = @Content),
@@ -72,14 +73,16 @@ public class AuthController {
     @PostMapping(value = "/login", consumes = APPLICATION_JSON_VALUE)
     public void login(
             @RequestBody @Valid LoginRequest loginRequest,
+            HttpServletRequest request,
             HttpServletResponse response
     ) throws AuthenticationException {
         val token = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         val authToken = authenticationProvider.authenticate(token);
 
+        String domain = determineCookieDomain(request.getServerName());
         String jws = jwtTokenService.generateClaimsJws(authToken);
 
-        response.addCookie(authCookie(jws));
+        response.addCookie(authCookie(jws, domain));
     }
 
     @Operation(summary = "Logout from the application")
@@ -87,21 +90,36 @@ public class AuthController {
             @ApiResponse(
                     responseCode = "200",
                     description = "OK",
-                    headers = @Header(name = "Set-Cookie", schema = @Schema(example = "token=; Path=/; HttpOnly; Max-Age=0")))
+                    headers = @Header(name = "Set-Cookie", schema = @Schema(example = "token=; Domain=data.sat4envi.imgw.pl; Path=/; HttpOnly; Max-Age=0")))
     })
     @PostMapping(value = "/logout", consumes = APPLICATION_JSON_VALUE)
-    public void logout(HttpServletResponse response) throws AuthenticationException {
-        Cookie authCookie = authCookie(null);
+    public void logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws AuthenticationException {
+        String domain = determineCookieDomain(request.getServerName());
+        Cookie authCookie = authCookie(null, domain);
         authCookie.setMaxAge(0);
+
         response.addCookie(authCookie);
     }
 
-    private Cookie authCookie(String content) {
+    private String determineCookieDomain(String host) {
+        String propertyValue = jwtProperties.getCookie().getDomain();
+        if (propertyValue == null || propertyValue.isBlank()) {
+            return host;
+        } else {
+            return propertyValue;
+        }
+    }
+
+    private Cookie authCookie(String content, String domain) {
         Cookie authCookie = new Cookie(SecurityConstants.COOKIE_NAME, content);
         authCookie.setMaxAge(maxAge());
         authCookie.setHttpOnly(true);
         authCookie.setPath("/");
         authCookie.setSecure(true);
+        authCookie.setDomain(domain);
         return authCookie;
     }
 
