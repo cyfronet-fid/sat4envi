@@ -1,9 +1,9 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
-describe('Map Locations Search', () => {
+describe.skip('Map Locations Search', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
@@ -21,17 +21,11 @@ describe('Map Locations Search', () => {
       .clear();
   });
 
-  function waitForCitiesList() {
-    cy.server()
-    cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
-    cy.wait('@getCityList').its('status').should('eq', 200)
-  }
 
   it('should display searched places', () => {
     LocationsSearch
       .type('warsz')
-    waitForCitiesList()
-    LocationsSearch
+      .waitForCitiesList()
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -44,8 +38,7 @@ describe('Map Locations Search', () => {
   it('should clear input', () => {
     LocationsSearch
       .type('warsz')
-    waitForCitiesList()
-    LocationsSearch
+      .waitForCitiesList()
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -57,8 +50,7 @@ describe('Map Locations Search', () => {
   it('should select active place on loupe click', () => {
     LocationsSearch
       .type('warsz')
-    waitForCitiesList()
-    LocationsSearch
+      .waitForCitiesList()
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -69,8 +61,7 @@ describe('Map Locations Search', () => {
   it('should select active place on enter press', () => {
     LocationsSearch
       .type('warsz')
-    waitForCitiesList()
-    LocationsSearch
+      .waitForCitiesList()
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -81,8 +72,7 @@ describe('Map Locations Search', () => {
   it('should navigate with arrows', () => {
     LocationsSearch
       .type('warsz')
-    waitForCitiesList()
-    LocationsSearch
+      .waitForCitiesList()
       .nthResultShouldHaveLabel(1, 'Warszawiaki')
       .nthResultShouldHaveType(1, 'wieś')
       .nthResultShouldHaveVoivodeship(1, 'lubelskie')

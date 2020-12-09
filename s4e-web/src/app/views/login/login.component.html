@@ -41,6 +41,7 @@
               id="login-login"
               type="text"
               data-test="login-email-input"
+              data-e2e="login-email-input"
             >
             <ul s4e-form-error [control]="form.controls.email"></ul>
           </li>
@@ -52,6 +53,7 @@
               id="login-password"
               type="password"
               data-test="login-password-input"
+              data-e2e="login-password-input"
             >
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
@@ -61,6 +63,7 @@
               type="submit"
               [disabled]="form.invalid"
               data-test="login-submit-btn"
+              data-e2e="login-submit-btn"
             >
               <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
               <ng-container i18n>Zaloguj</ng-container>
@@ -71,7 +74,7 @@
       </form>
     </div>
     <section class="content__switch content__switch--left">
-      <a routerLink="/" data-test="go-to-map-btn">
+      <a routerLink="/" data-test="go-to-map-btn" data-e2e="go-to-map-btn">
         Przejdź do mapy
       </a>
     </section>

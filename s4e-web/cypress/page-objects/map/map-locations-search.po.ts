@@ -108,4 +108,12 @@ export class LocationsSearch extends Core {
 
     return LocationsSearch;
   }
+
+  static waitForCitiesList() {
+    cy.server()
+    cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
+    cy.wait('@getCityList').its('status').should('eq', 200)
+
+    return LocationsSearch
+  }
 }

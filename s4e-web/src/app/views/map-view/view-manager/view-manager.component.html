@@ -32,11 +32,11 @@
   </div>
   </s4e-items-picker>
 
-  <div class="products-list">
+  <div class="products-list" data-e2e="product-list">
     <div *ngIf="isLoggedIn"  class="products-filtration">
-      <a data-e2e="product-list"
+      <a data-e2e="product-list-btn"
          [ngClass]="{'active': !isFavouriteFiltration}" (click)="setViewModeToFavourite(false)" i18n>Lista produktów</a>
-      <a data-e2e="favourite-list"
+      <a data-e2e="favourite-list-btn"
          [ngClass]="{'active': isFavouriteFiltration}" (click)="setViewModeToFavourite(true)">
         <span class="badge"><small data-e2e="favourite-count">{{ favouriteProductsCount$ | async }}</small></span>
         <ng-container i18n>Ulubione</ng-container>

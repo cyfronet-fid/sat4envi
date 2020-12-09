@@ -2,7 +2,7 @@
 
 import promisify from 'cypress-promise';
 
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { UserProfile } from '../../page-objects/settings/settings-user-profile.po';
 
 context.skip('Settings user profile', () => {
@@ -10,12 +10,12 @@ context.skip('Settings user profile', () => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
-  beforeEach(function () {
-    Login
-      .loginAs(this.zkMember)
-      .goToSettingsAs(this.zkMember)
-      .goToUserProfile();
-  });
+  // beforeEach(function () {
+  //   Login
+  //     .loginAs(this.zkMember)
+  //     .goToSettingsAs(this.zkMember)
+  //     .goToUserProfile();
+  // });
 
   // it.skip('should display and navigate to change password', function () {
   //   UserProfile

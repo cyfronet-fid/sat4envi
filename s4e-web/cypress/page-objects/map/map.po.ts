@@ -1,8 +1,8 @@
 import { JwtTokenModal } from './map-jwt-token-modal.po';
 import { Core } from './../core.po';
-import { User, Login } from '../auth/login.po';
+import { User, Login } from '../auth/auth-login.po';
 import { SideNav } from '../settings/settings-side-nav.po';
-import { MapProducts } from './map-products.po';
+import { MapFavorities } from './map-favorities.po';
 
 export class Map extends Core {
   static pageObject = {

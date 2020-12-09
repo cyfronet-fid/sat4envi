@@ -1,12 +1,12 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/auth/login.po';
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { Layers } from '../../page-objects/map/map-layers.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
 
-describe('Map Layers', () => {
+describe.skip('Map Layers', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
