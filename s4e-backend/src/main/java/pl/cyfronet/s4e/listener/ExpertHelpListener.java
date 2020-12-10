@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pl.cyfronet.s4e.controller.request.HelpType;
 import pl.cyfronet.s4e.event.OnSendHelpRequestEvent;
 import pl.cyfronet.s4e.service.MailService;
 import pl.cyfronet.s4e.util.MailHelper;
@@ -29,6 +30,7 @@ public class ExpertHelpListener {
     }
 
     private void sendConfirmationEmailToUserBy(OnSendHelpRequestEvent event) {
+        String helpType = getHelpType(event);
         String subject = messageSource.getMessage(
                 "email.expert-help-sending-confirmation.subject",
                 null,
@@ -37,7 +39,7 @@ public class ExpertHelpListener {
 
         Context ctx = new Context(event.getLocale());
         mailHelper.injectCommonVariables(ctx);
-        ctx.setVariable("helpType", event.getHelpType());
+        ctx.setVariable("helpType", helpType);
         ctx.setVariable("issueDescription", event.getIssueDescription());
 
         String plainText = templateEngine.process("expert-help-sending-confirmation.txt", ctx);
@@ -48,6 +50,7 @@ public class ExpertHelpListener {
 
     private void sendEmailToExpertBy(OnSendHelpRequestEvent event) {
         Object[] requestingUserEmailSubject = new Object[]{event.getRequestingUserEmail()};
+        String helpType = getHelpType(event);
         String subject = messageSource.getMessage(
                 "email.expert-help.subject",
                 requestingUserEmailSubject,
@@ -57,7 +60,7 @@ public class ExpertHelpListener {
         Context ctx = new Context(event.getLocale());
         mailHelper.injectCommonVariables(ctx);
         ctx.setVariable("requestingUserEmail", event.getRequestingUserEmail());
-        ctx.setVariable("helpType", event.getHelpType());
+        ctx.setVariable("helpType", helpType);
         ctx.setVariable("issueDescription", event.getIssueDescription());
 
         String plainText = templateEngine.process("expert-help.txt", ctx);
@@ -69,5 +72,20 @@ public class ExpertHelpListener {
             helper.setSubject(subject);
             helper.setText(plainText, htmlText);
         });
+    }
+
+    private String getHelpType(OnSendHelpRequestEvent event) {
+        if (HelpType.REMOTE.equals(event.getHelpType())) {
+            return messageSource.getMessage(
+                    "email.expert-help.remote",
+                    null,
+                    event.getLocale()
+            );
+        }
+        return messageSource.getMessage(
+                "email.expert-help.at-location",
+                null,
+                event.getLocale()
+        );
     }
 }
