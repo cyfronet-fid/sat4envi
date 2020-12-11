@@ -55,8 +55,22 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
+  @Input()
+  set blockPolygonDrawing(isBlocked: boolean) {
+    if (!this.map) {
+      return;
+    }
+
+    isBlocked
+      ? this._disableDrawing()
+      : this._enableDrawing();
+
+    this._isBlocked = isBlocked;
+  }
+
   private _isSentinelSearch = false;
   private _removePolygon = false;
+  private _isBlocked = false;
 
   private overlays$: BehaviorSubject<UIOverlay[]> = new BehaviorSubject([]);
   private baseLayer: Layer;
@@ -177,7 +191,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this.map.on('moveend', this.onMoveEnd);
     this.map.on('click', () => {
-      if (!this._isSentinelSearch) {
+      if (!this._isSentinelSearch || this._isBlocked) {
         return;
       }
 
@@ -317,6 +331,16 @@ export class MapComponent implements OnInit, OnDestroy {
       source: this._polygonDrawing.layer.getSource(),
       type: GeometryType.POLYGON
     });
+    this._enableDrawing();
+  }
+
+  private _enableDrawing() {
+    if (!this._polygonDrawing.drawing
+      || this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    ) {
+      return;
+    }
+
     this.map.addInteraction(this._polygonDrawing.drawing);
     this._polygonDrawing.drawing
       .on('drawstart', () => {
@@ -350,6 +374,14 @@ export class MapComponent implements OnInit, OnDestroy {
       });
   }
 
+  private _disableDrawing() {
+    if (!!this._polygonDrawing.drawing
+      && this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    ) {
+      this.map.removeInteraction(this._polygonDrawing.drawing);
+    }
+  }
+
   private _clearPolygonDrawing() {
     this._sentinelSearchService.setFootprint(null);
 
@@ -363,7 +395,9 @@ export class MapComponent implements OnInit, OnDestroy {
       this.map.removeLayer(this._polygonDrawing.polygon);
     }
 
-    if (!!this._polygonDrawing.drawing) {
+    if (!!this._polygonDrawing.drawing
+      && this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    ) {
       this.map.removeInteraction(this._polygonDrawing.drawing);
     }
   }

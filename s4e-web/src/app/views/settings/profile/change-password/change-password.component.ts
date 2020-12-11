@@ -43,13 +43,7 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
           this.form.controls.newPassword.value
         )
         .pipe(untilDestroyed(this))
-        .subscribe(() => {
-          this._notificationService.addGeneral({
-            type: 'success',
-            content: 'Hasło zostało zmienione'
-          });
-          this.reset();
-        });
+        .subscribe(() => this.reset());
     }
   }
 

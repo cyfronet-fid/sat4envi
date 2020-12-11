@@ -5,7 +5,7 @@ import {action, resetStores} from '@datorama/akita';
 import {catchError, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {LoginFormState, Session} from './session.model';
 import {HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN} from '../../errors/errors.model';
-import {Observable, of} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
 import environment from 'src/environments/environment';
@@ -69,11 +69,18 @@ export class SessionService {
   @action('login')
   login$(request: LoginFormState) {
     const url = `${environment.apiPrefixV1}/login`;
-    return this._http.post<LoginFormState>(url, request)
+    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}}
+    return this._http.post<LoginFormState>(url, request, headers)
       .pipe(
-        handleHttpRequest$(this._store),
         switchMap(data => this._profileLoaderService.loadProfile$()),
-        tap(() => this._store.update({email: request.email}))
+        tap(() => this._store.update({email: request.email})),
+        catchError(error => {
+          this._notificationService.addGeneral({
+            content: 'Użytkownik nie istnieje, bądź hasło jest niepoprawne',
+            type: 'error'
+          })
+          return throwError(error);
+        })
       );
   }
 
@@ -97,7 +104,8 @@ export class SessionService {
 
   getJwtToken$(request: LoginFormState) {
     const url = `${environment.apiPrefixV1}/token`;
-    return this._http.post<{ email: string, token: string }>(url, request)
+    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}};
+    return this._http.post<{ email: string, token: string }>(url, request, headers)
       .pipe(map(response => response.token));
   }
 

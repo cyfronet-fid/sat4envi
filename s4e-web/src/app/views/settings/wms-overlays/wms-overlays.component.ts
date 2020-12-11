@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {OwnerType} from '../../map-view/state/overlay/overlay.model';
-import {OverlayService} from '../../map-view/state/overlay/overlay.service';
 
 export const INSTITUTION_OVERLAYS_PATH = 'institution-wms-overlays';
 export const GLOBAL_OVERLAYS_PATH = 'global-wms-overlays';
@@ -13,14 +12,9 @@ export const GLOBAL_OVERLAYS_PATH = 'global-wms-overlays';
 export class WmsOverlaysComponent implements OnInit {
   public ownerType: OwnerType;
 
-  constructor(
-    private _router: Router,
-    private _overlayService: OverlayService
-  ) {}
+  constructor(private _router: Router) {}
 
   ngOnInit() {
-    this._overlayService.get();
-
     const urlWithoutParams = this._router.url.split('?').shift();
     const lastUrlSegment = urlWithoutParams.split('/').pop();
     switch (lastUrlSegment) {

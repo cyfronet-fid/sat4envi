@@ -18,6 +18,7 @@ import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous
 import { InvitationForm } from './invitation-form.model';
 import { Invitation } from '../state/invitation/invitation.model';
 import { InvitationService } from '../state/invitation/invitation.service';
+import {InvitationQuery} from '../state/invitation/invitation.query';
 
 @Component({
   templateUrl: './invitation-form.component.html',
@@ -39,6 +40,7 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     private _modalService: ModalService,
     private _modalQuery: ModalQuery,
     private _notificationService: NotificationService,
+    private _invitationQuery: InvitationQuery,
     @Inject(MODAL_DEF) modal: InvitationFormModal
   ) {
     super(fm, _modalService, _modalQuery, INVITATION_FORM_MODAL_ID, 'invitation');
@@ -59,26 +61,16 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
   }
 
   send() {
-    if (!this.institution) {
-      this._notificationService.addGeneral({
-        content: `
-          Institution isn't selected,
-          please refresh page or contact admins if error still occurs
-        `,
-        type: 'error'
-      });
-      return;
-    }
-
     validateAllFormFields(this.form);
     if (this.form.invalid) {
       return;
     }
 
     const {email, forAdmin} = this.form.value;
-    !!this.invitation
+    const invitationExist = !!this._invitationQuery.getEntity(email);
+    !!this.invitation || invitationExist
       ? this._invitationService
-        .resend({oldEmail: this.invitation.email, newEmail: email, forAdmin}, this.institution)
+        .resend({oldEmail: email, newEmail: email, forAdmin}, this.institution)
       : this._invitationService.send(this.institution.slug, email, forAdmin).subscribe();
     this.dismiss();
   }

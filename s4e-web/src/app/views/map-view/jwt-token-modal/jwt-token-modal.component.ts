@@ -74,6 +74,13 @@ export class JwtTokenModalComponent extends FormModalComponent<'jwtToken'> {
     const password = this.form.controls.password.value;
     this.token = await this._sessionService
       .getJwtToken$({email, password})
-      .toPromise();
+      .toPromise()
+      .catch(() => {
+        this._notificationService.addGeneral({
+          content: 'Podałeś nieprawdiłowe hasło',
+          type: 'error'
+        });
+        return null;
+      });
   }
 }

@@ -15,8 +15,8 @@ export function getImageXhr(src: string): XMLHttpRequest {
 }
 
 export namespace ImageBase64 {
-  const MAX_HEIGHT = 500;
-  const MAX_WIDTH = 500;
+  const MAX_HEIGHT = 200;
+  const MAX_WIDTH = 200;
 
   const MIN_HEIGHT = 130;
   const MIN_WIDTH = 130;
@@ -77,29 +77,33 @@ export namespace ImageBase64 {
     const canvas = document.createElement('canvas');
 
     let scale = 1;
+    let width = img.width;
+    let height = img.height;
 
     // scale up
-    if (img.width > MAX_WIDTH || img.height > MAX_HEIGHT) {
-      scale = img.width > img.height
-        ? img.width / MAX_WIDTH
-        : img.height / MAX_HEIGHT;
+    if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+      scale = width > height
+        ? width / MAX_WIDTH
+        : height / MAX_HEIGHT;
 
       scale = !scale || scale === 0 ? 1 : scale;
     }
 
     // scale down
-    if (img.width < MIN_WIDTH || img.height < MIN_HEIGHT) {
-      scale = img.width < img.height
-        ? img.width / MIN_WIDTH
-        : img.height / MIN_HEIGHT;
+    if (width < MIN_WIDTH || img.height < MIN_HEIGHT) {
+      scale = width < height
+        ? width / MIN_WIDTH
+        : height / MIN_HEIGHT;
     }
+    width = width / scale;
+    height = height / scale;
 
-    canvas.width = img.width / scale;
-    canvas.height = img.height / scale;
+    canvas.width = width;
+    canvas.height = height;
 
     canvas
       .getContext('2d')
-      .drawImage(img, 0, 0, canvas.width, canvas.height);
+      .drawImage(img, 0, 0, img.width, img.height, 0, 0, width, height);
 
     return canvas;
   }

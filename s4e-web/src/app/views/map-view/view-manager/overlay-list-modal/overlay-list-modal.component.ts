@@ -17,12 +17,7 @@ export interface OverlayForm {
   styleUrls: ['./overlay-list-modal.component.scss']
 })
 export class OverlayListModalComponent extends ModalComponent {
-  constructor(
-    modalService: ModalService,
-    private _overlayQuery: OverlayQuery,
-    private _overlayService: OverlayService,
-    private _notificationService: NotificationService
-  ) {
+  constructor(modalService: ModalService) {
     super(modalService, OVERLAY_LIST_MODAL_ID);
   }
 }

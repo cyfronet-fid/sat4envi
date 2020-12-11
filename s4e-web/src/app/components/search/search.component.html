@@ -62,13 +62,12 @@
           </li>
         </ul>
       </div>
-
-      <ng-template #emptyResultSet>
-        <div class="searchResult__loader">
-          <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
-          <span class="search__loading" i18n>Wczytywanie wyników</span>
-        </div>
-      </ng-template>
     </div>
+    <ng-template #emptyResultSet>
+      <div class="searchResult__loader">
+        <fa-icon [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+        <span class="search__loading" i18n>Wczytywanie wyników</span>
+      </div>
+    </ng-template>
   </div>
 </div>

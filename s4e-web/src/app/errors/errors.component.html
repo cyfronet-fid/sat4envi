@@ -3,10 +3,10 @@
   <h3 class="title">{{ actualError.title }}</h3>
 
   <p>
-    <a routerLink="/" class="button button--secondary button--small">Wróć do poprzedniej strony</a>
+    <a routerLink="/" class="button button--secondary button--small">Wróć do strony głównej</a>
     <span *ngIf="!!backLink && backLink !== ''" >
       <span>&nbsp; | &nbsp;</span>
-      <a routerLink="{{ backLink }}">Return to last page</a>
+      <a routerLink="{{ backLink }}">Wróć do poprzedniej strony</a>
     </span>
   </p>
 </div>

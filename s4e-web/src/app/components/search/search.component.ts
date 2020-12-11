@@ -2,8 +2,9 @@ import { ActivatedQueue } from './../../utils/search/activated-queue.utils';
 import { QueryEntity, Store, EntityStore } from '@datorama/akita';
 import {FormControl} from '@ng-stack/forms';
 import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, filter} from 'rxjs/operators';
 import { untilDestroyed } from 'ngx-take-until-destroy';
+import {control} from 'openlayers';
 
 @Component({
   selector: 's4e-search',
@@ -102,10 +103,16 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   select(result: any) {
-    this.hasBeenSelected = true;
-    this.hasBeenSelectedChange.emit(true);
-    this.selectResult.emit(result);
-    this.areResultsOpen = false;
+    setTimeout(() => {
+      if (this.query.getActive() !== result) {
+        return;
+      }
+
+      this.hasBeenSelected = true;
+      this.hasBeenSelectedChange.emit(true);
+      this.selectResult.emit(result);
+      this.areResultsOpen = false;
+    }, 600);
   }
 
   resetSearchValue(): void {
