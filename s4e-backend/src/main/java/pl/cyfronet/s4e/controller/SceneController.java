@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.cyfronet.s4e.controller.mapper.SceneMapper;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.MostRecentSceneResponse;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
@@ -29,7 +30,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.*;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -43,6 +43,7 @@ public class SceneController {
     private final SceneService sceneService;
     private final SceneStorage sceneStorage;
     private final TimeHelper timeHelper;
+    private final SceneMapper sceneMapper;
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
@@ -60,11 +61,9 @@ public class SceneController {
         ZonedDateTime zdtStart = ZonedDateTime.of(date, LocalTime.MIDNIGHT, timeZone.getZoneId());
         LocalDateTime start = timeHelper.getLocalDateTimeInBaseZone(zdtStart);
         LocalDateTime end = timeHelper.getLocalDateTimeInBaseZone(zdtStart.plusDays(1));
-        Function<LocalDateTime, ZonedDateTime> timeConverter = (timestamp) ->
-                timeHelper.getZonedDateTime(timestamp, timeZone.getZoneId());
 
         return sceneService.list(productId, start, end, userDetails, SceneResponse.Projection.class).stream()
-                .map(s -> SceneResponse.of(productId, s, timeConverter))
+                .map(s -> sceneMapper.toResponse(s, timeZone.getZoneId()))
                 .collect(Collectors.toList());
     }
 

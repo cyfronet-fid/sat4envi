@@ -105,6 +105,18 @@ public class SceneControllerTest {
     }
 
     @Test
+    public void shouldReturnScenesWithFootprint() throws Exception {
+        val product = productRepository.save(productBuilder().build());
+        sceneRepository.save(sceneBuilder(product, LocalDateTime.of(2019, 10, 11, 12, 13)).build());
+
+        mockMvc.perform(get(API_PREFIX_V1 + "/products/" + product.getId() + "/scenes")
+                .param("date", "2019-10-11"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(equalTo(1))))
+                .andExpect(jsonPath("$[0].footprint", is(equalTo("POLYGON ((18.98189008982064 -36.95919177442794, 74.10811836891402 -36.95919177442794, 74.10811836891402 57.037586807964416, 18.98189008982064 57.037586807964416, 18.98189008982064 -36.95919177442794))"))));
+    }
+
+    @Test
     public void shouldReturnFilteredScenes() throws Exception {
         val product = productRepository.save(productBuilder().build());
 

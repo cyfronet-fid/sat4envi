@@ -30,7 +30,7 @@ public abstract class AdminSceneMapper {
             Geometry geometry4326 = geometryUtil.transform(geometry3857, "EPSG:3857", "EPSG:4326");
             footprintPart.setEpsg4326(geometry4326.toText());
         } catch (FactoryException | TransformException e) {
-            log.info("Cannot transform geometry to EPSG:4326: '" + geometry3857.toText() + "'", e);
+            log.warn("Cannot transform geometry to EPSG:4326: '" + geometry3857.toText() + "'", e);
         }
 
         return footprintPart;
