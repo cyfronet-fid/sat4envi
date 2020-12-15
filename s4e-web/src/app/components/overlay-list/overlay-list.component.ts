@@ -1,5 +1,4 @@
 import {NotificationService} from 'notifications';
-import {getImageWmsLoader} from '../../views/map-view/state/overlay/image-wms.utils';
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Overlay, OverlayUI, OwnerType, PERSONAL_OWNER_TYPE} from '../../views/map-view/state/overlay/overlay.model';
 import {getImageWmsFrom} from '../../views/map-view/state/overlay/overlay.utils';
@@ -183,71 +182,6 @@ export class OverlayListComponent implements OnInit, OnDestroy {
           this._overlayStore.ui.update({loadingNew: false});
         }
       );
-  }
-
-  hasLoadingError$(url: string) {
-    /**
-     * Observable is used due to not working Open Layers Event Dispatcher
-     * and force state changes
-     */
-    url = url.toLowerCase().includes('request=getcapabilities') ? url.split("?")[0] : url;
-    return new Observable<string | null>(observer$ => {
-      const capabilitiesUrl = `${url.split('?')[0]}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`;
-      fetch(capabilitiesUrl)
-        .then(response => {
-            if (response.status !== 200) {
-              observer$.error(`
-                Sprawdź poprawność URL i jego parametrów!
-
-                Mógł wystąpić Cross-Origin Request Blocked:
-                Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
-              `);
-              observer$.complete();
-              throw new Error();
-            }
-
-            return response;
-          },
-          error => {
-            observer$.error(`
-              Sprawdź poprawność URL i jego parametrów!
-
-              Mógł wystąpić Cross-Origin Request Blocked:
-              Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
-             `);
-            observer$.complete();
-          }
-        )
-        .then(response => (response as any).text(), error => {})
-        .then(text => (new WMSCapabilities()).read(text), error => {})
-        .then(parsedCapabilities => parsedCapabilities.Capability.Layer, error => {})
-        .then(
-          layerMetadata => {
-            const {crs, extent, ...rest} = layerMetadata.BoundingBox[0];
-
-            if (!url.includes('LAYERS')) {
-              const layers = this._unpackLayers(layerMetadata)
-                .filter(layer => !!layer.Name)
-                .map(layer => layer.Name)
-                .join(',');
-
-              const hasParams = url.includes("?");
-
-              url = hasParams ? `${url}&LAYERS=${layers}` : `${url.split('?')[0]}?LAYERS=${layers}`;
-            }
-
-            if (!url.includes('STYLES=')) {
-              url = `${url}&STYLES=`
-            }
-
-            const source = getImageWmsFrom({url});
-            source.setImageLoadFunction(getImageWmsLoader(observer$));
-            source
-              .getImage(extent, 1,1, new Projection({code: crs}))
-              .load();
-          }
-          , error => {});
-    });
   }
 
   setNewFormVisible(show: boolean) {
