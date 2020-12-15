@@ -6,7 +6,7 @@ export interface User {
 }
 
 export class Login extends Core {
-	
+
 	static readonly pageObject = {
 		getLoginInput: () => cy.get('input[data-e2e="login-email-input"]'),
 		getPasswordInput: () => cy.get('input[data-e2e="login-password-input"]'),
@@ -86,7 +86,6 @@ export class Login extends Core {
 	};
 
 	static logout() {
-
 		Login.
 			pageObject
 			.getOptionsBtn()
@@ -107,6 +106,18 @@ export class Login extends Core {
 
 		return Login;
 	};
+
+	static forceLogout() {
+	  cy.server();
+	  cy.route({
+      method: 'POST',
+      url: '**/logout'
+    })
+      .as('@logoutRequest');
+    cy.visit('/logout');
+    cy.wait('@logoutRequest')
+      .wait(300);
+  }
 
 	static loginPageShouldNotBeAllowed() {
 		cy.visit('/login')

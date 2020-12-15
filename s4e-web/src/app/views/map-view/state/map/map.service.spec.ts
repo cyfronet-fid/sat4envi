@@ -91,20 +91,22 @@ describe('MapService', () => {
       overlayStore.setActive([overlay.id]);
 
 
-      service.connectStoreToRouter().subscribe();
-      expect(spy).toHaveBeenCalledWith([], {
-        queryParamsHandling: 'merge',
-        replaceUrl: true,
-        queryParams: {
-          overlays: [overlay.id],
-          product: product.id,
-          scene: scene.id,
-          date: date,
-          zoom: zoomLevel,
-          centerx: centerCoordinates[0],
-          centery: centerCoordinates[1]
-        }
-      });
+      service.connectStoreToRouter()
+        .subscribe(() => {
+          expect(spy).toHaveBeenCalledWith([], {
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+            queryParams: {
+              overlays: [overlay.id],
+              product: product.id,
+              scene: scene.id,
+              date: date,
+              zoom: zoomLevel,
+              centerx: centerCoordinates[0],
+              centery: centerCoordinates[1]
+            }
+          });
+        });
     });
   });
 

@@ -36,27 +36,9 @@ describe('OverlayListModalComponent', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
-
-  it('should valid values on add', fakeAsync(() => {
-    spyOn(component, 'hasLoadingError$')
-      .and.returnValue(of().pipe(catchError(() => throwError(''))));
-    const spy = spyOn(overlayService, 'createPersonalOverlay');
-
-    const newLayer = {
-      label: 'test',
-      url: 'incorrect-url'
-    };
-    component.newOwner = 'PERSONAL';
-    component.newOverlayForm.setValue(newLayer);
-    component.addNewOverlay();
-
-    tick();
-
-    expect(spy).not.toHaveBeenCalled();
-  }));
   it('should valid url params on add', async () => {
     component.newOwner = 'PERSONAL';
-    const spy = spyOn(overlayService, 'createPersonalOverlay');
+    const spy = spyOn(overlayService, 'createPersonalOverlay$');
 
     const url = [
       'https://test-page.pl/?SERVICE=unknown',

@@ -4,7 +4,8 @@ import {InjectorModule} from '../../../../common/injector.module';
 import {TileLoader} from '../utils/layers-loader.util';
 import {NgxUiLoaderService} from 'ngx-ui-loader';
 import {Tile} from 'ol/layer';
-import {getBaseUrlAndParamsFrom} from '../../../../components/overlay-list/wms-url.utils';
+import {UrlParser} from '../../../../components/overlay-list/wms-url.utils';
+import * as url from 'url';
 
 export function convertToUIOverlay(
   overlay: Overlay,
@@ -24,24 +25,23 @@ export function convertToUIOverlay(
 }
 
 export function getImageWmsFrom(overlay: Partial<Overlay>) {
-  const urlAndParams = getBaseUrlAndParamsFrom(overlay);
-  const {url, ...urlParams} = !!urlAndParams && urlAndParams || {url: overlay.url};
+  const urlParser = new UrlParser(overlay.url);
   return new ImageWMS({
     crossOrigin: 'Anonymous',
     serverType: 'geoserver',
-    url,
-    params: urlParams
+    url: urlParser.getUrlBase(),
+    params: urlParser.getParamsWithValues()
   });
 }
 
 export function getTileWmsFrom(overlay: Partial<Overlay>) {
-  const urlAndParams = getBaseUrlAndParamsFrom(overlay);
-  const {url, ...urlParams} = !!urlAndParams && urlAndParams || {url: overlay.url};
+  const urlParser = new UrlParser(overlay.url);
+  urlParser.remove('server', 'service', 'request', 'version');
   return new TileWMS({
     crossOrigin: 'Anonymous',
     serverType: 'geoserver',
-    url,
-    params: { TILED: true, ...urlParams}
+    url: urlParser.getUrlBase(),
+    params: { TILED: true, ...urlParser.getParamsWithValues()}
   });
 }
 

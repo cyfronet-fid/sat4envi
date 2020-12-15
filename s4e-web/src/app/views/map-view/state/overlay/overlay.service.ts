@@ -3,11 +3,12 @@ import {RemoteConfiguration} from 'src/app/utils/initializer/config.service';
 import {Injectable} from '@angular/core';
 import {OverlayStore} from './overlay.store';
 import {Overlay} from './overlay.model';
-import {finalize, tap} from 'rxjs/operators';
+import {catchError, finalize, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
 import environment from 'src/environments/environment';
 import {OverlayForm} from '../../view-manager/overlay-list-modal/overlay-list-modal.component';
+import {throwError} from 'rxjs';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -62,19 +63,19 @@ export class OverlayService {
     this._store.ui.update({showNewOverlayForm: show});
   }
 
-  createGlobalOverlay(overlay: OverlayForm) {
+  createGlobalOverlay$(overlay: OverlayForm) {
     const url = `${environment.apiPrefixV1}/overlays/global`;
-    this._createOverlay(overlay, url);
+    return this._createOverlay$(overlay, url);
   }
 
-  createInstitutionalOverlay(overlay: OverlayForm, institutionSlug: string) {
+  createInstitutionalOverlay$(overlay: OverlayForm, institutionSlug: string) {
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/overlays`;
-    this._createOverlay(overlay, url);
+    return this._createOverlay$(overlay, url);
   }
 
-  createPersonalOverlay(overlay: OverlayForm) {
+  createPersonalOverlay$(overlay: OverlayForm) {
     const url = `${environment.apiPrefixV1}/overlays/personal`;
-    this._createOverlay(overlay, url);
+    return this._createOverlay$(overlay, url);
   }
 
   deletePersonalOverlay(id: number) {
@@ -97,15 +98,15 @@ export class OverlayService {
     this._store.ui.update(null, {loadingDelete: false, loadingPublic: false, loadingVisible: false});
   }
 
-  private _createOverlay(overlay: OverlayForm, url: string) {
+  private _createOverlay$(overlay: OverlayForm, url: string) {
     this._store.ui.update({loadingNew: true});
-    this._http.post<Overlay>(url, overlay)
-      .pipe(finalize(() => this._store.ui.update({loadingNew: false})))
-      .subscribe((newOverlay) => {
+    return this._http.post<Overlay>(url, overlay)
+      .pipe(
+        tap(newOverlay => {
           this._store.add(newOverlay);
           this._store.ui.update({showNewOverlayForm: false});
-        },
-        error => this._store.ui.setError(error)
+        }),
+        tap(() => this._store.ui.update({loadingNew: false}))
       );
   }
 
