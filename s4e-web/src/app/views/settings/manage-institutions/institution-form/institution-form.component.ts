@@ -39,7 +39,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     slug: new FormControl<string>(),
     name: new FormControl<string>(null, Validators.required),
     address: new FormControl<string>(),
-    postalCode: new FormControl<string>(),
+    postalCode: new FormControl<string>(null),
     city: new FormControl<string>(null, Validators.required),
     phone: new FormControl<string>(),
     emblem: new FormControl<string>(),
@@ -167,11 +167,7 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       : this.form.reset();
 
     this._router.navigate(
-      [
-        !!this.activeInstitution
-          ? '/settings/institution'
-          : '/settings/institutions'
-      ],
+      ['/settings/institution'],
       {
         relativeTo: this._activatedRoute,
         queryParamsHandling: 'merge'

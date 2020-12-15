@@ -3,7 +3,7 @@ import {Query} from '@datorama/akita';
 import {MapStore} from './map.store';
 import {MapState} from './map.model';
 import {combineLatest} from 'rxjs';
-import {distinctUntilChanged, map} from 'rxjs/operators';
+import {distinctUntilChanged, map, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
 import {ProductQuery} from '../product/product.query';
 import {SceneQuery} from '../scene/scene.query';

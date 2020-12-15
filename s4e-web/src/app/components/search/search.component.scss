@@ -93,6 +93,10 @@ section, .section {
         background: $color-grey-primary;
         cursor: pointer;
       }
+
+      &.active {
+        background: $color-grey-primary;
+      }
     }
   }
 }

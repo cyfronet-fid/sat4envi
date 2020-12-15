@@ -27,7 +27,6 @@ export class MapService {
     private store: MapStore,
     private mapQuery: MapQuery,
     private http: HttpClient,
-    private overlayQuery: OverlayQuery,
     private overlayService: OverlayService,
     private productQuery: ProductQuery,
     private productService: ProductService,

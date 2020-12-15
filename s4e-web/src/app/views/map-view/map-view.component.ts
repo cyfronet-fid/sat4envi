@@ -41,6 +41,7 @@ import {ReportTemplateQuery} from './zk/state/report-templates/report-template.q
 import {ReportTemplateStore} from './zk/state/report-templates/report-template.store';
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
 import {filterFalse, filterNotNull, mapAnyTrue} from '../../utils/rxjs/observable';
+import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query';
 
 
 @Component({
@@ -72,16 +73,11 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public scenesAreLoading$: Observable<boolean> = this.sceneQuery.selectLoading();
   public legendState$: Observable<LegendState> = this.legendQuery.select();
   public userLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
-  public placeSearchResults$: Observable<LocationSearchResult[]> = this.searchResultsQuery.selectAll();
-  public placeSearchLoading$: Observable<boolean> = this.searchResultsQuery.selectLoading();
-  public placeSearchResultsOpen$: Observable<boolean> = this.searchResultsQuery.selectIsOpen();
   public activeView$: Observable<ViewPosition> = this.mapQuery.select('view');
   public currentTimelineDate$: Observable<string> = this.productQuery.selectSelectedDate();
   public availableDates$: Observable<string[]> = this.productQuery.selectAvailableDates();
-  public showZKOptions$: Observable<boolean> = this.mapQuery.select('zkOptionsOpened');
   public showLoginOptions$: Observable<boolean> = this.mapQuery.select('loginOptionsOpened');
   public showProductDescription$: Observable<boolean> = this.mapQuery.selectShowProductDescription();
-  public selectedLocation$: Observable<LocationSearchResult | null>;
   public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
   public userIsAuthorizedForAdditionalFunctionalities$: Observable<boolean> = combineLatest([
     this.sessionQuery.selectPakMember(),
@@ -91,6 +87,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public legend$ = this.legendQuery.selectLegend();
   public hasHeightContrast$ = this.viewConfigurationQuery.select('highContrast');
   public hasLargeFont$ = this.viewConfigurationQuery.select('largeFont');
+  public areSentinelSearchResultsOpen$ = this.sentinelSearchQuery.selectShowSearchResults();
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
@@ -116,26 +113,34 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private reportTemplateQuery: ReportTemplateQuery,
     private reportTemplateStore: ReportTemplateStore,
     private viewConfigurationService: ViewConfigurationService,
+    private sentinelSearchQuery: SentinelSearchQuery
   ) {
   }
 
   ngOnInit(): void {
-    this.sidebarOpen$.pipe(delay(0), untilDestroyed(this)).subscribe(() => this.mapComponent.updateSize());
+    this.sidebarOpen$.pipe(delay(0), untilDestroyed(this))
+      .subscribe(() => this.mapComponent.updateSize());
 
     this.mapService.setView({
       centerCoordinates: proj4(environment.projection.toProjection, environment.projection.coordinates),
       zoomLevel: 6
     });
 
-    forkJoin([
-      this.productService.get(),
-      this.overlayService.get()
-    ]).pipe(
-      switchMap(() => this.mapService.loadMapQueryParams()),
-      untilDestroyed(this),
-      switchMap(() => this.mapService.connectStoreToRouter()),
-      switchMap(() => this.sceneService.connectQueryToDetailsModal$())
-    ).subscribe();
+    this.mapService.loadMapQueryParams()
+      .pipe(
+        untilDestroyed(this),
+        switchMap(() => forkJoin([
+          this.productService.get(),
+          this.overlayService.get()
+        ])),
+        switchMap(() => this.mapService.connectStoreToRouter()
+          // IMPORTANT!! Due to navigations this switch map is never destroyed
+          // , so it must to be done in here
+          .pipe(untilDestroyed(this))
+        ),
+        switchMap(() => this.sceneService.connectQueryToDetailsModal$())
+      )
+      .subscribe();
 
     this.viewConfigurationQuery.selectLoading()
       .pipe(
@@ -243,7 +248,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   openShareViewModal() {
-    this._openShareViewModal$().subscribe();
+    this._openShareViewModal$()
+      .pipe(untilDestroyed(this),tap(() => console.trace()),)
+      .subscribe();
   }
 
   viewChanged($event: ViewPosition) {
