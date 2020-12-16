@@ -8,14 +8,14 @@ describe('Map favorite products', () => {
   context("Favorites for not logged in user", () => {
 
     before(() => {
-      cy.visit('/login')
+      cy.visit('/login');
       MapFavorities
-        .waitForProductsAndUnselectFavorites()
+        .waitForProductsAndUnselectFavorites();
     });
 
     it('favourites shouldn\'t be visible without authentication', () => {
       Login.
-        goToMapWithoutLogin()
+        goToMapWithoutLogin();
       MapFavorities
         .favouritesAreNotVisible();
     });

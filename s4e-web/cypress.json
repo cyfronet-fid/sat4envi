@@ -1,7 +1,7 @@
 {
   "baseUrl": "https://localhost:4200",
   "defaultCommandTimeout":6000,
-  "viewportWidth": 1400,
+  "viewportWidth": 1900,
   "viewportHeight": 1200,
   "testFiles": "**/*.spec.ts",
   "retries": {

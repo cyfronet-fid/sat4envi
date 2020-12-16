@@ -1,7 +1,7 @@
-import { Core } from './../core.po';
+import { Core } from '../core.po';
 
 
-export class MapOptions extends Core {
+export class MailToExpert extends Core {
     static pageObject = {
         getUserBtn: () => cy.get("[data-e2e='zk-options-btn']"),
         getSendMailToExpertBtn: () => cy.get("a").contains("Wsparcie eksperckie"),
@@ -13,46 +13,47 @@ export class MapOptions extends Core {
     };
 
     static openSendMailToExpertModal() {
-        MapOptions
+        MailToExpert 
             .pageObject
             .getUserBtn()
             .click()
-        MapOptions
+            MailToExpert 
             .pageObject
             .getSendMailToExpertBtn()
             .click()
 
-        return MapOptions
+        return MailToExpert;
     }
 
     static addMessageToSupport( select: string, message: string) {
-        MapOptions
+        MailToExpert 
             .pageObject
             .getSupportTypeInput()
             .select(select)
 
-        MapOptions
+            MailToExpert 
             .pageObject
             .getTextArea()
             .type(message)
 
-        return MapOptions
-    }
+        return MailToExpert;
+    };
 
     static sendMessageToSupport() {
-        MapOptions
+        MailToExpert 
             .pageObject
             .getSendBtn()
             .click()
 
-        return MapOptions
-    }
+        return MailToExpert;
+    };
 
     static confirmationShouldToAppear() {
-        MapOptions
+        MailToExpert 
             .pageObject
             .getConfirmationMessage()
             .should("be.visible");
-    }
-}
 
+        return MailToExpert;
+    };
+};
