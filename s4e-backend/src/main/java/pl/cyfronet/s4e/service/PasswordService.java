@@ -32,14 +32,16 @@ public class PasswordService {
 
     @Transactional(rollbackFor = NotFoundException.class)
     public PasswordReset createPasswordResetTokenForUser(String email) throws NotFoundException {
-        passwordResetRepository.deleteByAppUserEmail(email);
-        PasswordReset token = PasswordReset.builder()
-                .token(UUID.randomUUID().toString())
-                .appUser(appUserService.findByEmail(email)
-                        .orElseThrow(() -> new NotFoundException("User not found for email: '" + email + "'")))
-                .expiryTimestamp(LocalDateTime.now().plus(EXPIRE_IN))
-                .build();
-        return passwordResetRepository.save(token);
+        val appUser = appUserService.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found for email: '" + email + "'"));
+        PasswordReset passwordReset = passwordResetRepository.findByAppUserEmail(email)
+                .orElseGet(() -> PasswordReset.builder().appUser(appUser).build());
+        passwordReset.setToken(UUID.randomUUID().toString());
+        passwordReset.setExpiryTimestamp(LocalDateTime.now().plus(EXPIRE_IN));
+        if (passwordReset.getId() == null) {
+            return passwordResetRepository.save(passwordReset);
+        }
+        return passwordReset;
     }
 
     public void validate(String token) throws NotFoundException, PasswordResetTokenExpiredException {

@@ -3,6 +3,7 @@ package pl.cyfronet.s4e.service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,7 @@ import java.util.UUID;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isEmpty;
 import static com.github.npathai.hamcrestopt.OptionalMatchers.isPresent;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @BasicTest
@@ -223,17 +224,43 @@ public class PasswordServiceTest {
         assertThat(passwordEncoder.matches(oldPassword, appUserRepository.findByEmail(PROFILE_EMAIL).get().getPassword()), is(true));
     }
 
-    @Test
-    public void shouldCreatePasswordResetTokenForUser() throws Exception {
-        assertThat(passwordService.findByEmail(PROFILE_EMAIL), isEmpty());
-        passwordService.createPasswordResetTokenForUser( PROFILE_EMAIL);
-        assertThat(passwordService.findByEmail(PROFILE_EMAIL), isPresent());
-    }
+    @Nested
+    class CreatePasswordResetTokenForUser {
+        @Autowired
+        private PasswordResetRepository passwordResetRepository;
 
-    @Test
-    public void shouldntCreatePasswordResetTokenForUser() {
-        assertThat(passwordService.findByEmail("mail@email.pl"), isEmpty());
-        assertThrows(NotFoundException.class, () -> passwordService.createPasswordResetTokenForUser( "mail@email.pl"));
-        assertThat(passwordService.findByEmail("mail@email.pl"), isEmpty());
+        @Test
+        public void shouldWork() throws Exception {
+            assertThat(passwordService.findByEmail(PROFILE_EMAIL), isEmpty());
+            passwordService.createPasswordResetTokenForUser(PROFILE_EMAIL);
+            assertThat(passwordService.findByEmail(PROFILE_EMAIL), isPresent());
+        }
+
+        @Test
+        public void shouldRecreateToken() throws Exception {
+            final LocalDateTime originalExpiryTimestamp = LocalDateTime.now();
+            Long originalResetId = passwordResetRepository.save(PasswordReset.builder()
+                    .appUser(appUser)
+                    .token("someValue")
+                    .expiryTimestamp(originalExpiryTimestamp)
+                    .build()).getId();
+            assertThat(passwordResetRepository.findByAppUserEmail(PROFILE_EMAIL), isPresent());
+
+            passwordService.createPasswordResetTokenForUser(PROFILE_EMAIL);
+
+            assertThat(passwordResetRepository.existsById(originalResetId), is(true));
+            assertThat(passwordResetRepository.findById(originalResetId).get(), allOf(
+                    hasProperty("appUser", is(equalTo(appUser))),
+                    hasProperty("token", not(equalTo("someValue"))),
+                    hasProperty("expiryTimestamp", is(greaterThan(originalExpiryTimestamp)))
+            ));
+        }
+
+        @Test
+        public void shouldVerifyUserExists() {
+            assertThat(passwordService.findByEmail("doesnt@exist.pl"), isEmpty());
+            assertThrows(NotFoundException.class, () -> passwordService.createPasswordResetTokenForUser("doesnt@exist.pl"));
+            assertThat(passwordService.findByEmail("doesnt@exist.pl"), isEmpty());
+        }
     }
 }

@@ -10,6 +10,4 @@ import java.util.Optional;
 public interface PasswordResetRepository extends CrudRepository<PasswordReset, Long> {
     Optional<PasswordReset> findByToken(String token);
     Optional<PasswordReset> findByAppUserEmail(String email);
-    @Transactional
-    void deleteByAppUserEmail(String email);
 }
