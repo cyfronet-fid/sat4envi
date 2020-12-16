@@ -1,9 +1,9 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { MapViews } from '../../page-objects/map/map-views.po';
+import { MapViews } from '../../page-objects/user-options/user-options-save-view-as-configuration.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
-import { Layers } from '../../page-objects/map/map-layers.po';
+import { MapLayers } from '../../page-objects/map/map-layers.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
 context.skip('Map Views', () => {
@@ -24,30 +24,31 @@ context.skip('Map Views', () => {
       .viewsCountShouldBe(1)
       .deleteNth(0)
       .changeContextTo(ConfirmModal)
-      .acceptAndChangeContextTo(GeneralModal)
-      .closeAndChangeContext(MapViews);
+    GeneralModal
+      .closeModal();
   });
 
   it.only('should display view', () => {
-    Layers
+    MapLayers
       .selectNthSidebarLayer(1)
       .changeContextTo(MapViews)
       .openSaveViewsModal()
       .addView('test-view')
-      .changeContextTo(Layers)
+      .changeContextTo(MapLayers)
       .unselectNthSidebarLayer(1)
       .changeContextTo(MapViews)
       .openViewsModal()
       .viewsCountShouldBe(1)
       .selectNth(0)
-      .changeContextTo(Layers)
+      .changeContextTo(MapLayers)
       .activeLayersCountShouldBe(1)
       .changeContextTo(MapViews)
       .openViewsModal()
-      .deleteNth(0)
-      .changeContextTo(ConfirmModal)
-      .acceptAndChangeContextTo(GeneralModal)
-      .closeAndChangeContext(MapViews);
+      .deleteNth(0);
+    ConfirmModal
+      .acceptAndChangeContextTo(GeneralModal);
+    GeneralModal
+      .closeModal();
   });
 
   

@@ -1,7 +1,7 @@
 import { Core } from '../core.po';
 
 export class LocationsSearch extends Core {
-  static pageObject = {
+  static readonly pageObject = {
     getSearch: () => cy.get('[data-e2e="search-input"]'),
     getSearchResults: () => cy.get('[data-e2e="search-result"]'),
     getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'), 
@@ -15,11 +15,10 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getSearch()
-      .clear()
-      .type(value, { force: true });
+      .type(value);
 
     return LocationsSearch;
-  }
+  };
 
   static nthResultShouldHaveLabel(nth: number, label: string) {
     LocationsSearch
@@ -30,7 +29,7 @@ export class LocationsSearch extends Core {
       .should('be.visible');
 
     return LocationsSearch;
-  }
+  };
 
   static nthResultShouldHaveType(nth: number, type: string) {
     LocationsSearch
@@ -45,7 +44,7 @@ export class LocationsSearch extends Core {
       .should('contain', type);
 
     return LocationsSearch;
-  }
+  };
 
   static nthResultShouldHaveVoivodeship(nth: number, voivodeship: string) {
     LocationsSearch
@@ -60,17 +59,17 @@ export class LocationsSearch extends Core {
       .should('contain', voivodeship);
 
     return LocationsSearch;
-  }
+  };
 
   static selectNthResult(nth: number) {
     LocationsSearch
       .pageObject
       .getSearchResults()
       .eq(nth)
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
-  }
+  };
 
   static searchShouldHaveValue(value: string) {
     LocationsSearch
@@ -80,7 +79,7 @@ export class LocationsSearch extends Core {
       .should('have.value', value);
 
     return LocationsSearch;
-  }
+  };
 
   static resultsShouldBeClosed() {
     LocationsSearch
@@ -89,31 +88,31 @@ export class LocationsSearch extends Core {
       .should('not.be.visible');
 
     return LocationsSearch;
-  }
+  };
 
   static clearSearch() {
     LocationsSearch
       .pageObject
       .getClearSearchBtn()
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
-  }
+  };
 
   static selectActiveResult() {
     LocationsSearch
       .pageObject
       .getSelectActiveResultBtn()
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
-  }
+  };
 
-  static waitForCitiesList() {
+  static waitForCitiesList(name:string) {
     cy.server()
-    cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
-    cy.wait('@getCityList').its('status').should('eq', 200)
+    cy.route('GET', `/api/v1/places?namePrefix=${name}`).as('getCityList');
+    cy.wait('@getCityList').its('status').should('eq', 200);
 
     return LocationsSearch
-  }
-}
+  };
+};

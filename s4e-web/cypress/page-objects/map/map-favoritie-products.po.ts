@@ -2,7 +2,7 @@ import { Core } from '../core.po';
 
 export class MapFavorities extends Core {
 
-  static pageObject = {
+  static readonly pageObject = {
     getNonFavoritesBtns: () => cy.get(".e2e-non-favourite-btn"),
     getFavoritesBtns: () => cy.get('.e2e-favourite-btn'),
     favoritesBtnClass: ".e2e-favourite-btn",

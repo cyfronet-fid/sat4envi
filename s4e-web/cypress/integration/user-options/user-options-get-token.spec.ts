@@ -1,10 +1,10 @@
-import { GeneralModal } from './../../page-objects/modal/general-modal.po';
-/// <reference types="Cypress" />
 
-import { Map } from '../../page-objects/map/map.po';
+/// <reference types="Cypress" />
+import { GeneralModal } from '../../page-objects/modal/general-modal.po';
+import { MapDateSelect } from '../../page-objects/map/map-date-select.po';
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { MapFavorities } from '../../page-objects/map/map-favoritie-products.po';
-import { Core } from './../../page-objects/core.po';
+import { Core } from '../../page-objects/core.po';
 
 // describe.skip('Get JWT Token', () => {
 //   beforeEach(function () {

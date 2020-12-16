@@ -3,12 +3,13 @@
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
-describe.skip('Map Locations Search', () => {
+describe('Map Locations Search', () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
   beforeEach(function () {
+    cy.visit('/login')
     Login
       .loginAs(this.zkMember)
       .changeContextTo(LocationsSearch);
@@ -25,7 +26,7 @@ describe.skip('Map Locations Search', () => {
   it('should display searched places', () => {
     LocationsSearch
       .type('warsz')
-      .waitForCitiesList()
+      .waitForCitiesList('warsz')
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -37,11 +38,11 @@ describe.skip('Map Locations Search', () => {
 
   it('should clear input', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
+      .type('szczeci')
+      .waitForCitiesList('szczeci')
+      .nthResultShouldHaveLabel(0, 'Szczecin')
       .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
+      .nthResultShouldHaveVoivodeship(0, 'zachodniopomorskie')
       .clearSearch()
       .searchShouldHaveValue('');
   });
@@ -50,7 +51,7 @@ describe.skip('Map Locations Search', () => {
   it('should select active place on loupe click', () => {
     LocationsSearch
       .type('warsz')
-      .waitForCitiesList()
+      .waitForCitiesList('warsz')
       .nthResultShouldHaveLabel(0, 'Warszawa')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
@@ -60,23 +61,24 @@ describe.skip('Map Locations Search', () => {
 
   it('should select active place on enter press', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
+      .type('katow')
+      .waitForCitiesList('katow')
+      .nthResultShouldHaveLabel(0, 'Katowice')
       .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
+      .nthResultShouldHaveVoivodeship(0, 'śląskie')
       .type('{enter}')
-      .searchShouldHaveValue('Warszawa');
+      .searchShouldHaveValue('Katowice');
   });
 
   it('should navigate with arrows', () => {
     LocationsSearch
       .type('warsz')
-      .waitForCitiesList()
+      .waitForCitiesList('warsz')
       .nthResultShouldHaveLabel(1, 'Warszawiaki')
       .nthResultShouldHaveType(1, 'wieś')
       .nthResultShouldHaveVoivodeship(1, 'lubelskie')
       .type('{downarrow}{enter}')
+      LocationsSearch
       .selectActiveResult()
       .searchShouldHaveValue('Warszawiaki');
   });

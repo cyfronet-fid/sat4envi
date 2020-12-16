@@ -1,7 +1,7 @@
 import { Core } from '../core.po';
 
 export class ConfirmModal extends Core {
-  static pageObject = {
+  static readonly pageObject = {
     getAcceptBtn: () => cy.get('s4e-confirm-modal #accept_btn'),
     getCancelBtn: () => cy.get('s4e-confirm-modal #cancel_btn'),
     getContent: () => cy.get('[data-e2e="modal-content"]')

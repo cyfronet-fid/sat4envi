@@ -1,47 +1,47 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { Map } from '../../page-objects/map/map.po';
-import { MapFavorities } from '../../page-objects/map/map-favoritie-products.po';
+import { MapDateSelect } from '../../page-objects/map/map-date-select.po';
+import { MapProducts } from '../../page-objects/map/map-products.po';
 
-context.skip('Map Products', () => {
+describe.only('Map Products', () => {
+
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
 
-  beforeEach(() => {
-    cy.visit('/');
+  beforeEach(function () {
+    cy.visit('/login');
+    Login.loginAs(this.zkMember);
   });
 
-  // it('should load product map', function () {
-  //   const year = 2020;
-  //   const month = 2;
-  //   const day = 1;
-  //   Login
-  //     .loginAs(this.zkMember)
-  //     .changeContextTo(MapFavorities)
-  //     .selectProductBy('108m')
-  //     .changeContextTo(Map)
-  //     .openDateChange()
-  //     .selectDate(year, month, day)
-  //     .selectStackedDataPointNumber(3, 1)
-  // });
+  it('should load the product', function(){
+    MapProducts
+      .selectProductByName('Airmass');
+  });
 
-  // it('should load map by clicking non stacked datapoint', function () {
-  //   const year = 2020;
-  //   const month = 2;
-  //   const day = 1;
-  //   const hour = 1;
-  //   Login
-  //     .loginAs(this.zkMember)
-  //     .changeContextTo(MapProducts)
-  //     .selectProductBy('108m')
-  //     .changeContextTo(Map)
-  //     .openDateChange()
-  //     .selectDate(year, month, day)
-  //     .increaseResolution()
-  //     .increaseResolution()
-  //     .increaseResolution()
-  //     .selectDataPoint(hour)
-  // });
+  it.only('should the live scene be loading', function(){
+    MapProducts
+    .selectProductByName('Intensywność opadu')
+    .turnOnOnLiveView()
+    .turnOffOnLiveView();
+  });
+
+  it('should load the selected date of the product', function () {
+    const year = 2020;
+    const month = 2;
+    const day = 1;
+
+    MapProducts
+      .selectProductByName('108m')
+    MapDateSelect
+      .openDateChange()
+      .selectDate(year, month, day)
+  });
+
+  it('should dispaly legend', function(){
+    MapProducts
+    .selectProductByName('Pył w atmosferze ')
+    .legendShouldBeVisible();
+  });
 });

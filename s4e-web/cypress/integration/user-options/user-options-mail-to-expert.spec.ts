@@ -2,9 +2,9 @@
 
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
-import { MapOptions } from '../../page-objects/map/map-options.po'
+import { MailToExpert } from '../../page-objects/user-options/user-options-mail-toexpert.po'
 
-describe.skip("Map Options", () => {
+describe.skip("Mail to Expert", () => {
   beforeEach(() => {
     cy.fixture('users/zkMember.json').as('zkMember');
   });
@@ -15,12 +15,12 @@ describe.skip("Map Options", () => {
   });
 
   it("Should send mail to expert", () => {
-    MapOptions
+    MailToExpert
       .openSendMailToExpertModal()
       .addMessageToSupport('Wsparcie zdalne',"Test Message")
       .sendMessageToSupport()
       .changeContextTo(ConfirmModal)
-      .acceptAndChangeContextTo(MapOptions)
+      .acceptAndChangeContextTo(MailToExpert)
       .confirmationShouldToAppear()
   })
 });
