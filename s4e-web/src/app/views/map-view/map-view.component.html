@@ -66,6 +66,7 @@
   <button
     (click)="toggleLoginOptions()"
     id="user-login-button"
+    data-e2e="loginOptions-btn"
     [className]="(userLoggedIn$ | async) ? 'dropdown__button dropdown__button--loginactive' : 'dropdown__button dropdown__button--login'"
 
   >

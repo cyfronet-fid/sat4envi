@@ -4,10 +4,10 @@ import { GeneralModal } from '../modal/general-modal.po';
 export class Layers extends Core {
   static pageObject = {
     getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'),
-    getSidebarLayers: () => cy.get('[data-e2e="layers-list"]').find('[data-e2e="picker-item-label"]'),
+    getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'), 
     getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'),
 
-    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'),
+    getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'), 
     getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'),
     getDisplayInPanelBtns: () => cy.get('[data-e2e="display-in-panel-btn"]'),
 
@@ -15,8 +15,9 @@ export class Layers extends Core {
     getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
     getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
     getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
-    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]')
+    getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]'),
   };
+
 
   static activeLayersCountShouldBe(count: number) {
     Layers
@@ -57,7 +58,7 @@ export class Layers extends Core {
       .pageObject
       .getDisplayInPanelBtns()
       .eq(nth)
-      .click({force: true});
+      .click({ force: true });
 
     return Layers;
   }
@@ -67,7 +68,7 @@ export class Layers extends Core {
       .pageObject
       .getRemoveBtns()
       .eq(nth)
-      .click({force: true});
+      .click({ force: true });
 
     return Layers;
   }
