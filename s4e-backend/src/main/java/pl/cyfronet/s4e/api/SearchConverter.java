@@ -70,7 +70,7 @@ public class SearchConverter {
                         Splitter.on(':')
                                 .limit(2)
                                 .trimResults())
-                .split(query.replaceAll("\\(", "").replaceAll("\\)", ""));
+                .split(query);
     }
 
     private Object parseSortBy(String sortBy) {
@@ -85,9 +85,9 @@ public class SearchConverter {
 
     private void setTime(Map<String, String> queryParamMap, Map<String, Object> result, String paramName) {
         if (queryParamMap.containsKey(paramName)) {
-            String[] times = queryParamMap.get(paramName).
-                    replaceAll("\\[", "")
-                    .replaceAll("\\]", "")
+            String[] times = queryParamMap.get(paramName)
+                    .replace("[", "")
+                    .replace("]", "")
                     .replaceAll("\\s+", "")
                     .split("TO");
             String[] ingestionParams = getQueryParam(paramName).split(":");
@@ -139,18 +139,21 @@ public class SearchConverter {
     }
 
     private void setGeometryParam(Map<String, String> queryParamMap, Map<String, Object> result, String paramName) {
-        if (queryParamMap.containsKey(paramName)) {
-            if (queryParamMap.get(paramName).contains("POLYGON")) {
-                String[] value = queryParamMap.get(paramName).split("POLYGON");
-                result.put(getQueryParam(paramName), "POLYGON((" + value[1].replaceAll("\"", "") + "))");
-            } else {
-                //point
-                String value = queryParamMap.get(paramName)
-                        .replaceAll("\"", "")
-                        .replace("Intersects", "")
-                        .replace(",", " ");
-                result.put(getQueryParam(paramName), "POINT(" + value + ")");
-            }
+        String queryParamValue = queryParamMap.get(paramName);
+        if (queryParamValue == null) {
+            return;
+        }
+
+        if (!queryParamValue.startsWith("Intersects(") || !queryParamValue.endsWith(")")) {
+            return;
+        }
+
+        String geometry = queryParamValue.substring("Intersects(".length(), queryParamValue.length() - 1);
+
+        if (geometry.startsWith("POLYGON((")) {
+            result.put(getQueryParam(paramName), geometry);
+        } else {
+            result.put(getQueryParam(paramName), "POINT(" + geometry + ")");
         }
     }
 

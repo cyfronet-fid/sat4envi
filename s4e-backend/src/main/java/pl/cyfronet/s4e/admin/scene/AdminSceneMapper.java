@@ -25,12 +25,12 @@ public abstract class AdminSceneMapper {
 
         val footprintPart = new AdminSceneResponse.FootprintPart();
 
-        footprintPart.setEpsg3857(geometry3857.toText());
+        footprintPart.setEpsg3857(geometryUtil.toWkt(geometry3857));
         try {
             Geometry geometry4326 = geometryUtil.transform(geometry3857, "EPSG:3857", "EPSG:4326");
-            footprintPart.setEpsg4326(geometry4326.toText());
+            footprintPart.setEpsg4326(geometryUtil.toWkt(geometry4326));
         } catch (FactoryException | TransformException e) {
-            log.warn("Cannot transform geometry to EPSG:4326: '" + geometry3857.toText() + "'", e);
+            log.warn("Cannot transform geometry to EPSG:4326: '" + geometryUtil.toWkt(geometry3857) + "'", e);
         }
 
         return footprintPart;

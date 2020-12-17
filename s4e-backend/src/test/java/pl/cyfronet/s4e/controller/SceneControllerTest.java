@@ -113,7 +113,7 @@ public class SceneControllerTest {
                 .param("date", "2019-10-11"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(1))))
-                .andExpect(jsonPath("$[0].footprint", is(equalTo("POLYGON ((18.98189008982064 -36.95919177442794, 74.10811836891402 -36.95919177442794, 74.10811836891402 57.037586807964416, 18.98189008982064 57.037586807964416, 18.98189008982064 -36.95919177442794))"))));
+                .andExpect(jsonPath("$[0].footprint", is(equalTo("POLYGON((12.60000 55.00000,19.00000 55.25000,26.00000 55.00000,24.93000 47.55000,19.00000 47.67000,14.00000 47.50000,12.60000 55.00000))"))));
     }
 
     @Test

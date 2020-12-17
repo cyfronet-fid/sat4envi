@@ -50,7 +50,8 @@ public abstract class SceneMapper {
 
     protected String mapTo4326Wkt(Geometry footprint) {
         try {
-            return geometryUtil.transform(footprint, "EPSG:3857", "EPSG:4326").toText();
+            Geometry geometry4326 = geometryUtil.transform(footprint, "EPSG:3857", "EPSG:4326");
+            return geometryUtil.toWkt(geometry4326);
         } catch (FactoryException | TransformException e) {
             log.warn("Cannot transform geometry to EPSG:4326: '" + footprint + "'", e);
             return null;

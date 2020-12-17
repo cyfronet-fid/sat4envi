@@ -29,7 +29,7 @@ public class SearchApiParams {
 
     public static final String CLOUD_COVER_PERCENTAGE = "cloudcoveragepercentage";
 
-    public static final String getQueryParam(String param) {
+    public static String getQueryParam(String param) {
         switch (param) {
             case SENSING_START:
             case SENSING_END:
