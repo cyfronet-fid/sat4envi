@@ -21,9 +21,9 @@ public class TestGeometryHelper {
         WKTReader reader = new WKTReader(factory);
         Geometry polygon = null;
         try {
-            // 108m
-            // lat/long
-            polygon = reader.read("POLYGON((18.981890089820652 -36.95919177442794,74.10811836891402 -36.95919177442794,74.10811836891402 57.037586807964416,18.981890089820652 57.037586807964416,18.981890089820652 -36.95919177442794))");
+            // Here we specifically use long/lat, as the JTS expects the EPSG:4326 coords to be in that order,
+            // and it swaps the coords when transforming to EPSG:3857.
+            polygon = reader.read("POLYGON((55 12.6,55.25 19,55 26,47.55 24.93,47.67 19,47.5 14,55 12.6))");
             polygon = transform(polygon, "EPSG:4326", "EPSG:3857");
         } catch (ParseException | FactoryException | TransformException e) {
             log.warn("Unexpected", e);

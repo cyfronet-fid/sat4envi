@@ -20,6 +20,8 @@ public class GeometryUtil {
     public static GeometryFactory FACTORY_3857 = new GeometryFactory(new PrecisionModel(), 3857);
     public static GeometryFactory FACTORY_4326 = new GeometryFactory(new PrecisionModel(), 4326);
 
+    private static final String COORDINATE_FORMAT = "%.5f";
+
     public Geometry parseWKT(String wkt, GeometryFactory factory) throws ParseException {
         WKTReader reader = new WKTReader(factory);
         return reader.read(wkt);
@@ -59,5 +61,27 @@ public class GeometryUtil {
         CoordinateReferenceSystem fromCRS = CRS.decode(from);
         MathTransform transform = CRS.findMathTransform(fromCRS, toCRS);
         return JTS.transform(geometry, transform);
+    }
+
+    public String toWkt(Geometry geometry) {
+        if (!(geometry instanceof Polygon)) {
+            throw new IllegalArgumentException("Passed geometry must be an instance of Polygon");
+        }
+        Polygon polygon = (Polygon) geometry;
+        CoordinateSequence shell = polygon.getExteriorRing().getCoordinateSequence();
+        StringBuilder sb = new StringBuilder();
+        sb.append("POLYGON((");
+        for (int i = 0; i < shell.size(); i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            // Append exactly: "<lat> <long>", as WKT assumes long/lat axis ordering (contrary to JTS).
+            sb
+                    .append(String.format(COORDINATE_FORMAT, shell.getY(i)))
+                    .append(' ')
+                    .append(String.format(COORDINATE_FORMAT, shell.getX(i)));
+        }
+        sb.append("))");
+        return sb.toString();
     }
 }
