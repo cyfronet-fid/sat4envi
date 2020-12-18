@@ -2,14 +2,14 @@
 
 import { Registration } from '../../page-objects/auth/auth-register.po';
 
+before(() => {
+  cy.fixture("users/userToRegister.json").as("userToRegister");
+});
+
 describe('Register', () => {
 
 	beforeEach(() => {
 		cy.visit("/register");
-	});
-
-	before(() => {
-		cy.fixture("users/userToRegister.json").as("userToRegister");
 	});
 
 	context("Valid form", () => {

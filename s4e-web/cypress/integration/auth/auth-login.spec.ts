@@ -2,14 +2,14 @@
 
 import { Login } from '../../page-objects/auth/auth-login.po';
 
-describe('Auth', () => {
+before(() => {
+  cy.fixture('users/zkMember.json').as('zkMember');
+  cy.fixture('users/zkAdmin.json').as('zkAdmin');
+  cy.fixture('users/admin.json').as('superAdmin');
+  cy.fixture('users/userToRegister.json').as('userToRegister');
+});
 
-	before(() => {
-		cy.fixture('users/zkMember.json').as('zkMember');
-		cy.fixture('users/zkAdmin.json').as('zkAdmin');
-		cy.fixture('users/admin.json').as('superAdmin');
-		cy.fixture('users/userToRegister.json').as('userToRegister');
-	});
+describe('Auth', () => {
 
 	beforeEach(() => {
 		cy.visit("/login");

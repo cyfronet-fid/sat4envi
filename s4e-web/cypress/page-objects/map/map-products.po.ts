@@ -11,9 +11,8 @@ export class MapProducts extends Core {
   };
 
   static selectProductByName(partialName: string) {
-    cy.server();
     cy.route('GET', '/api/v1/products/*').as('turnOnProduct')
-
+    
     MapProducts
       .pageObject
       .getProductsNameBtn()
@@ -31,7 +30,7 @@ export class MapProducts extends Core {
       .should("have.class", "active");
 
     return MapProducts;
-  };
+  }
 
   static selectNthProduct(number: number) {
     MapProducts
@@ -41,7 +40,7 @@ export class MapProducts extends Core {
       .should("be.visible")
       .click();
     return MapProducts;
-  };
+  }
 
   static productsCountShouldBe(count: number) {
     MapProducts
@@ -50,7 +49,7 @@ export class MapProducts extends Core {
       .should('have.length', count);
 
     return MapProducts;
-  };
+  }
 
   static legendShouldBeVisible() {
     MapProducts
@@ -59,10 +58,11 @@ export class MapProducts extends Core {
       .should("be.visible");
 
     return MapProducts;
-  };
+  }
 
   static turnOnOnLiveView() {
-    cy.route('GET', '/api/v1/products/*/scenes/most-recent?timeZone=Europe/*').as('loadResentScene')
+    cy.route('GET', "/api/v1/products/*/scenes/most-recent?{*,*/*}").as('loadResentScene');
+
     MapProducts
       .pageObject
       .getOnLiveBtn()
@@ -72,7 +72,7 @@ export class MapProducts extends Core {
     cy.wait('@loadResentScene');
 
     return MapProducts;
-  };
+  }
 
   static turnOffOnLiveView() {
     MapProducts
@@ -83,5 +83,5 @@ export class MapProducts extends Core {
       .should("not.have.class", "active");
 
     return MapProducts;
-  };
+  }
 };

@@ -10,7 +10,7 @@
   <div class="s4e-modal-header">
     {{(searchResult$ | async)?.sceneKeyShort}}
   </div>
-  <div class="s4e-modal-body report">
+  <div class="s4e-modal-body report" data-e2e="modal-body">
     <aside *ngIf="(searchResult$ | async)?.image as imageSrc">
       <strong i18n>Quicklook</strong>
       <div class="report-template">
@@ -47,6 +47,6 @@
     <a *ngIf="modal.mode === 'sentinel'"
        [attr.href]="(searchResult$ | async)?.url" target="_blank"
        (click)="interceptDownload($event)"
-       class="button button--secondary button--small" type="button" i18n>Pobierz Plik</a>
+       class="button button--secondary button--small" data-e2e="btn--download" type="button" i18n>Pobierz Plik</a>
   </div>
 </s4e-generic-modal>

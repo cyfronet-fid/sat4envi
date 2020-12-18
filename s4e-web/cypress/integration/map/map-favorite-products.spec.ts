@@ -3,6 +3,10 @@
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { MapFavorities } from '../../page-objects/map/map-favoritie-products.po';
 
+before(function () {
+  cy.fixture('users/zkMember.json').as('zkMember');
+});
+
 describe('Map favorite products', () => {
 
   context("Favorites for not logged in user", () => {
@@ -22,10 +26,6 @@ describe('Map favorite products', () => {
   });
 
   context("Favorities for logged in user", () => {
-
-    beforeEach(function () {
-      cy.fixture('users/zkMember.json').as('zkMember');
-    });
 
     beforeEach(function () {
       cy.visit('/login')

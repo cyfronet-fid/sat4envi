@@ -10,7 +10,7 @@ export class MapFavorities extends Core {
     getGoToProductsBtn: () => cy.get('[data-e2e="product-list-btn"]'),
     getFavouriteCount: () => cy.get('[data-e2e="favourite-count"]'),
     getProductNavbar: () => cy.get('[data-e2e="product-list"]'),
-  };
+  }
 
   static favouritesCountShouldBe(count: number) {
     MapFavorities
@@ -19,7 +19,7 @@ export class MapFavorities extends Core {
       .should('have.text', count.toString());
 
     return MapFavorities;
-  };
+  }
 
   static unselectAllFavorites() {
     cy.server();
@@ -38,7 +38,7 @@ export class MapFavorities extends Core {
       });
 
     return MapFavorities;
-  };
+  }
 
   static selectNthAsFavorite(number: number) {
     cy.server();
@@ -52,7 +52,7 @@ export class MapFavorities extends Core {
     cy.get('.item-fav-spinner').should('not.exist');
 
     return MapFavorities;
-  };
+  }
 
   static favouritesAreNotVisible() {
     MapFavorities
@@ -66,7 +66,7 @@ export class MapFavorities extends Core {
       .should('have.length', 0);
 
     return MapFavorities;
-  };
+  }
 
   static goToFavourites() {
     MapFavorities
@@ -75,7 +75,7 @@ export class MapFavorities extends Core {
       .click();
 
     return MapFavorities;
-  };
+  }
 
   static goToProducts() {
     MapFavorities
@@ -92,5 +92,5 @@ export class MapFavorities extends Core {
         MapFavorities.unselectAllFavorites();
       };
     });
-  };
+  }
 };

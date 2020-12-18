@@ -12,7 +12,7 @@
         <s4e-sentinel-section [sentinel]="sentinel" [formControlName]="sentinel.name"></s4e-sentinel-section>
       </li>
     </ul>
-    <button class="button button--primary" (click)="search()" [disabled]="(disableSearchBtn$ | async) || form.invalid">
+    <button class="button button--primary" data-e2e='btn-search' (click)="search()" [disabled]="(disableSearchBtn$ | async) || form.invalid">
       <fa-icon class="spinner" [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
       <ng-container i18n>Szukaj</ng-container>
     </button>

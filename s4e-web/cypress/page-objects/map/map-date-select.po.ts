@@ -33,7 +33,7 @@ export class MapDateSelect extends Core {
 
   static selectDate(year: number, month: number, day: number,) {
     cy.server();
-    cy.route('GET', `/api/v1/products/*/scenes?date=${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}&timeZone=Europe/*`).as('loadedProduct');
+    cy.route('GET', `/api/v1/products/*/scenes?date=${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}{*,*/*}`).as('loadedProduct');
 
     MapDateSelect.pageObject.getYearSelectionBtn().should("be.visible").click();
     MapDateSelect.pageObject.getYearBtn(year).should("be.visible").click();
@@ -54,7 +54,7 @@ export class MapDateSelect extends Core {
     hourStart: number,
     hourEnd: number
   ) {
-    cy.wait(500);
+    
     MapDateSelect.pageObject.getStackedHourBtn(hourStart, hourEnd).should("be.visible").click();
     MapDateSelect.pageObject.getHourBtnInPopup(hourStart).click();
     return MapDateSelect;

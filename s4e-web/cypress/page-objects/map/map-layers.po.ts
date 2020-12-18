@@ -16,8 +16,8 @@ export class MapLayers extends Core {
     getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
     getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
     getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]'),
+    getLayerCount:() => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').its('length').as('layerCount')
   };
-
 
   static activeLayersCountShouldBe(count: number) {
 
@@ -144,7 +144,7 @@ export class MapLayers extends Core {
   };
 
   static waitForNewAddedLayer(){
-    cy.wait('@addedNewLayer');
+    cy.wait('@addedNewLayer', {timeout:10000});
   }
 
   static layersConfigurationAreNotVisible(){

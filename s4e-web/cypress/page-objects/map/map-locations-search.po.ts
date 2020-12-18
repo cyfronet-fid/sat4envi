@@ -9,7 +9,7 @@ export class LocationsSearch extends Core {
     getSearchResultsVoivodeship: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.voivodeship'),
     getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'), 
     getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]') 
-  };
+  }
 
   static type(value: string) {
     LocationsSearch
@@ -18,7 +18,15 @@ export class LocationsSearch extends Core {
       .type(value);
 
     return LocationsSearch;
-  };
+  }
+
+  static searchCitiesBy(name:string){
+    cy.server()
+    cy.route('GET', `/api/v1/places?namePrefix=${name}`).as('getCityList');
+    cy.wait('@getCityList')
+
+    return LocationsSearch;
+  }
 
   static nthResultShouldHaveLabel(nth: number, label: string) {
     LocationsSearch
@@ -29,7 +37,7 @@ export class LocationsSearch extends Core {
       .should('be.visible');
 
     return LocationsSearch;
-  };
+  }
 
   static nthResultShouldHaveType(nth: number, type: string) {
     LocationsSearch
@@ -44,7 +52,7 @@ export class LocationsSearch extends Core {
       .should('contain', type);
 
     return LocationsSearch;
-  };
+  }
 
   static nthResultShouldHaveVoivodeship(nth: number, voivodeship: string) {
     LocationsSearch
@@ -59,7 +67,7 @@ export class LocationsSearch extends Core {
       .should('contain', voivodeship);
 
     return LocationsSearch;
-  };
+  }
 
   static selectNthResult(nth: number) {
     LocationsSearch
@@ -69,7 +77,7 @@ export class LocationsSearch extends Core {
       .click();
 
     return LocationsSearch;
-  };
+  }
 
   static searchShouldHaveValue(value: string) {
     LocationsSearch
@@ -79,7 +87,7 @@ export class LocationsSearch extends Core {
       .should('have.value', value);
 
     return LocationsSearch;
-  };
+  }
 
   static resultsShouldBeClosed() {
     LocationsSearch
@@ -88,7 +96,7 @@ export class LocationsSearch extends Core {
       .should('not.be.visible');
 
     return LocationsSearch;
-  };
+  }
 
   static clearSearch() {
     LocationsSearch
@@ -97,7 +105,7 @@ export class LocationsSearch extends Core {
       .click();
 
     return LocationsSearch;
-  };
+  }
 
   static selectActiveResult() {
     LocationsSearch
@@ -106,13 +114,5 @@ export class LocationsSearch extends Core {
       .click();
 
     return LocationsSearch;
-  };
-
-  static waitForCitiesList(name:string) {
-    cy.server()
-    cy.route('GET', `/api/v1/places?namePrefix=${name}`).as('getCityList');
-    cy.wait('@getCityList').its('status').should('eq', 200);
-
-    return LocationsSearch
-  };
+  }
 };
