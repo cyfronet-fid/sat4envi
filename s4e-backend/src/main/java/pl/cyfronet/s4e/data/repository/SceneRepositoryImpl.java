@@ -3,6 +3,8 @@ package pl.cyfronet.s4e.data.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ObjectError;
 import pl.cyfronet.s4e.api.MappedScene;
@@ -44,50 +46,71 @@ import java.util.Map;
 @Slf4j
 public class SceneRepositoryImpl implements SceneRepositoryExt {
     private final JdbcTemplate jdbcTemplate;
-    private final PreparedStatementBuilder preparedStatementBuilder;
-    private Connection connection;
+    private final PreparedStatementBuilder.PrepareStatement prepareFindAllStatement;
+    private final PreparedStatementBuilder.PrepareStatement prepareCountStatement;
 
-    public SceneRepositoryImpl(JdbcTemplate jdbcTemplate,
-                               PreparedStatementBuilder preparedStatementBuilder)
-            throws SQLException {
+    public SceneRepositoryImpl(JdbcTemplate jdbcTemplate, PreparedStatementBuilder preparedStatementBuilder) {
         this.jdbcTemplate = jdbcTemplate;
-        this.preparedStatementBuilder = preparedStatementBuilder;
-        this.connection = jdbcTemplate.getDataSource().getConnection();
+        this.prepareFindAllStatement = preparedStatementBuilder::preparedStatement;
+        this.prepareCountStatement = preparedStatementBuilder::preparedCountStatement;
     }
 
-    public List<MappedScene> findAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException {
-        PreparedStatement preparedStatement = prepareQuery(params);
+    public List<MappedScene> findAllByParamsMap(Map<String, Object> params) throws QueryException {
+        return query(
+                connection -> prepare(connection, params, prepareFindAllStatement),
+                new SceneRowMapper()
+        );
+    }
+
+    public Long countAllByParamsMap(Map<String, Object> params) throws QueryException {
+        List<Long> results = query(
+                connection -> prepare(connection, params, prepareCountStatement),
+                (rs, rowNum) -> rs.getLong(1)
+        );
+
+        if (results.size() == 0) {
+            String paramsString = params.entrySet().stream()
+                    .map(entry -> entry.getKey() + "=" + entry.getValue())
+                    .reduce((previous, keyValueString) -> previous + "," + keyValueString)
+                    .orElse("<no params>");
+            log.warn("A count call returned results with zero length, returning default (i.e. 0L). Params: " + paramsString + ".");
+            return 0L;
+        }
+
+        return results.get(0);
+    }
+
+    private PreparedStatement prepare(
+            Connection connection,
+            Map<String, Object> params,
+            PreparedStatementBuilder.PrepareStatement prepareStatement
+    ) throws SQLException {
         try {
-            return jdbcTemplate.query(connection -> preparedStatement, new SceneRowMapper());
+            PreparedStatement ps = prepareStatement.prepare(connection, params);
+            log.trace(ps.toString());
+            return ps;
+        } catch (QueryException e) {
+            // Wrap a checked exception in IAE, so that it can be thrown from a lambda.
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private <T> List<T> query(PreparedStatementCreator psc, RowMapper<T> rowMapper) throws QueryException {
+        try {
+            return jdbcTemplate.query(psc, rowMapper);
         } catch (DataAccessException e) {
             MapBindingResult mapBindingResult = new MapBindingResult(new HashMap<>(), "params");
             mapBindingResult.addError(
                     new ObjectError("params", "Cannot execute query" + e.getMessage()));
             throw new QueryException(mapBindingResult);
+        } catch (IllegalArgumentException e) {
+            // Unwrap the wrapped QueryException.
+            Throwable maybeQueryException = e.getCause();
+            if (maybeQueryException instanceof QueryException) {
+                throw (QueryException) maybeQueryException;
+            } else {
+                throw e;
+            }
         }
-    }
-
-    public Long countAllByParamsMap(Map<String, Object> params) throws SQLException, QueryException {
-        PreparedStatement preparedStatement = prepareCountQuery(params);
-        try {
-            return jdbcTemplate.query(connection -> preparedStatement, (rs, rowNum) -> rs.getLong(1)).get(0);
-        } catch (DataAccessException e) {
-            MapBindingResult mapBindingResult = new MapBindingResult(new HashMap<>(), "params");
-            mapBindingResult.addError(
-                    new ObjectError("params", "Cannot execute query" + e.getMessage()));
-            throw new QueryException(mapBindingResult);
-        }
-    }
-
-    private PreparedStatement prepareQuery(Map<String, Object> params) throws SQLException, QueryException {
-        PreparedStatement ps = preparedStatementBuilder.preparedStatement(connection, params);
-        log.trace(ps.toString());
-        return ps;
-    }
-
-    private PreparedStatement prepareCountQuery(Map<String, Object> params) throws SQLException, QueryException {
-        PreparedStatement ps = preparedStatementBuilder.preparedCountStatement(connection, params);
-        log.trace(ps.toString());
-        return ps;
     }
 }
