@@ -16,6 +16,10 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class PreparedStatementBuilder {
+    public interface PrepareStatement {
+        PreparedStatement prepare(Connection connection, Map<String, Object> params) throws SQLException, QueryException;
+    }
+
     private final QueryBuilder queryBuilder;
 
     public PreparedStatement preparedStatement(Connection connection,
