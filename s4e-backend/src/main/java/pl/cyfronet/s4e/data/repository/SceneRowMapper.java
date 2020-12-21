@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
-public class SceneRowMapper implements RowMapper {
+public class SceneRowMapper implements RowMapper<MappedScene> {
     @Override
     public MappedScene mapRow(ResultSet rs, int i) throws SQLException {
         return MappedScene.builder()
