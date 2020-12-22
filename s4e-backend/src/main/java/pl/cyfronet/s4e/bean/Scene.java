@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.*;
 import org.locationtech.jts.geom.Geometry;
 import pl.cyfronet.s4e.bean.audit.CreationAndModificationAudited;
 
+import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -19,6 +18,7 @@ import java.time.LocalDateTime;
  * There is ON CASCADE DELETE on Product
  */
 @Entity
+@DynamicUpdate
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 
 @Data
