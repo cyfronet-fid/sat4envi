@@ -92,7 +92,6 @@ public class AdminProductControllerTest {
 
         @BeforeEach
         public void beforeEach() {
-
             requestBuilder = AdminCreateProductRequest.builder()
                     .name("Product01")
                     .displayName("Product 01")
