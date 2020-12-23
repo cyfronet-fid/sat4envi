@@ -1,34 +1,28 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { Layers } from '../../page-objects/map/map-layers.po';
+import { MapLayers } from '../../page-objects/map/map-layers.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
+before(() => {
+  cy.fixture('users/zkMember.json').as('zkMember');
+});
 
-describe.skip('Map Layers', () => {
-  before(() => {
-    cy.fixture('users/zkMember.json').as('zkMember');
-    cy.fixture('layer-capability.xml').as('geoserverResponse');
-  });
+describe('Map MapLayers', () => {
 
-  beforeEach(function () {
-    cy.visit('/login');
-    Login
-      .loginAs(this.zkMember);
-    cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').its('length').as('layerCount');
-  });
+  context("Configuration layers for not logged in user", () => {
 
-  afterEach(() => {
-    Login.forceLogout();
-  });
+    beforeEach(function () {
+      cy.visit('/login');
+    });
 
-  it('should display selected layer', () => {
-    Layers
-      .selectNthSidebarLayer(0)
-      .activeLayersCountShouldBe(1)
-      .unselectNthSidebarLayer(0)
-      .activeLayersCountShouldBe(0)
+    it('configuration layers shouldn\'t be visible without authentication', () => {
+      Login.
+        goToMapWithoutLogin();
+      MapLayers
+        .layersConfigurationAreNotVisible();
+    });
   });
 
   it('should display all url layers', function () {
@@ -46,17 +40,16 @@ describe.skip('Map Layers', () => {
       response: this.geoserverResponse
     })
       .as('getCapabilities');
-    Layers
+    MapLayers
       .openManagementModal()
       .fillForm(label, geoserverUrl);
     cy.wait('@getCapabilities');
 
-    Layers
+    MapLayers
       .activeLayersCountShouldBe(28)
       .allUrlLayersCountShouldBe(28);
 
-    GeneralModal
-      .closeAndChangeContext(Layers);
+    GeneralModal.closeModal();
   });
 
   it('should display selected url layers on values in "layers=" query param', function () {
@@ -78,64 +71,85 @@ describe.skip('Map Layers', () => {
       response: this.geoserverResponse
     })
       .as('getCapabilities');
-    Layers
+    MapLayers
       .openManagementModal()
       .fillForm(label, `${geoserverUrl}?LAYERS=${layers}`);
     cy.wait('@getCapabilities');
 
-    Layers
+    MapLayers
       .activeLayersCountShouldBe(2)
       .allUrlLayersCountShouldBe(28);
 
-    GeneralModal
-      .closeAndChangeContext(Layers);
+    GeneralModal.closeModal();
   });
 
-  it('should add, hide and remove from panel', function () {
-    const label = 'Test';
-    const url = 'https://eumetview.eumetsat.int/geoserver/wms?LAYERS=eps:metop1_ir108';
-    const count = this.layerCount
+  context("Configuration layers for logged in user", () => {
 
-    Layers
-      .openManagementModal()
-      .addNew(label, url)
-    GeneralModal
-      .closeAndChangeContext(Layers)
-    Layers
-      .sidebarLayersCountShouldBe(count + 1)
-      .openManagementModal()
-      .toggleNthInPanelDisplay(count)
-    GeneralModal
-      .closeAndChangeContext(Layers);
-    Layers
-      .sidebarLayersCountShouldBe(count)
-      .openManagementModal()
-      .removeNthWithPermission(0)
-    ConfirmModal
-      .accept();
-  });
+    beforeEach(function () {
+      cy.visit('/login');
+      Login.loginAs(this.zkMember);
+      MapLayers.pageObject.getLayerCount();
+    });
 
-  it('should display url errors', function () {
-    const label = 'Test';
-    const url = [
-      'https://test-page.pl/?SERVICE=unknown',
-      'REQUEST=unknown',
-      'LAYERS=unkn?own',
-      'STYLES=unkn?own',
-      'FORMAT=image/unknown',
-      'TRANSPARENT=none',
-      'VERSION=x.y.z',
-      'HEIGHT=none',
-      'WIDTH=none',
-      'CRS=unknown',
-      'BBOX=unknown,unknown,unknown,unknown'
-    ].join('&');
+    it('should display selected layer', () => {
+      MapLayers
+        .selectNthSidebarLayer(0)
+        .activeLayersCountShouldBe(1)
+        .unselectNthSidebarLayer(0)
+        .activeLayersCountShouldBe(0);
+    });
 
-    Layers
-      .openManagementModal()
-      .addNew(label, url)
-      .errorsCountShouldBe(6)
-      .changeContextTo(GeneralModal)
-      .closeAndChangeContext(Layers);
+    it('should add, hide and remove layer from panel', function () {
+      const label = 'Test';
+      const url = 'https://eumetview.eumetsat.int/geoserver/wms?LAYERS=eps:metop1_ir108';
+
+      MapLayers
+        .openManagementModal()
+        .addNew(label, url)
+        .waitForNewAddedLayer();
+      GeneralModal
+        .closeModal();
+      MapLayers
+        .sidebarLayersCountShouldBe(this.layerCount + 1)
+        .openManagementModal()
+        .toggleNthInPanelDisplay(this.layerCount);
+      GeneralModal
+        .closeModal();
+      MapLayers
+        .sidebarLayersCountShouldBe(this.layerCount)
+        .openManagementModal()
+        .removeNthWithPermission(0);
+      ConfirmModal
+        .accept();
+      GeneralModal
+        .closeModal();
+      MapLayers
+        .sidebarLayersCountShouldBe(this.layerCount);
+
+    });
+
+    it('should display url errors', function () {
+      const label = 'Test';
+      const url = [
+        'https://test-page.pl/?SERVICE=unknown',
+        'REQUEST=unknown',
+        'LAYERS=unkn?own',
+        'STYLES=unkn?own',
+        'FORMAT=image/unknown',
+        'TRANSPARENT=none',
+        'VERSION=x.y.z',
+        'HEIGHT=none',
+        'WIDTH=none',
+        'CRS=unknown',
+        'BBOX=unknown,unknown,unknown,unknown'
+      ].join('&');
+
+      MapLayers
+        .openManagementModal()
+        .addNew(label, url)
+        .errorsCountShouldBe(6);
+      GeneralModal
+        .closeModal();
+    });
   });
 });

@@ -4,7 +4,7 @@
     <span>{{item.value}}</span>
   </li>
 </ul>
-<div class="legend__chart" [style.background-image]="url" (click)="opened.emit()"></div>
+<div class="legend__chart" data-e2e="legend__chart" [style.background-image]="url" (click)="opened.emit()"></div>
 <div class="legend__metric">{{activeLegend.bottomMetric.unit}}</div>
 
 

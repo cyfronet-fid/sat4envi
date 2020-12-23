@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
     <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
-    <div class="s4e-modal-body report">
+    <div class="s4e-modal-body report" data-e2e="modal-body">
       <aside>
         <div #reportTemplate class="report-template" style="display: block; width: 275px; height: 275px;">
           <img #minimap style="display: block;" id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
