@@ -38,19 +38,21 @@
               i18n-placeholder
               data-e2e="layer-label-input"
             ></ext-input></td>
-            <td>
-              <label for="wms-url" i18n>
-                URL*
-              </label>
-              <input
-                id="wms-url"
-                class="form-control"
-                placeholder="https://my-wms-server.com/..."
-                [formControl]="newOverlayForm.controls.url"
-                [ngClass]="{'is-invalid': hasErrors('url')}"
-                data-e2e="layer-url-input"
-              />
-              <ng-container *ngIf="hasErrors('url')" >
+          </tr>
+          <tr>
+            <br />
+            <label for="wms-url" i18n>
+              URL*
+            </label>
+            <textarea
+              id="wms-url"
+              placeholder="https://my-wms-server.com/..."
+              [formControl]="newOverlayForm.controls.url"
+              rows="20"
+              [ngClass]="{'is-invalid': hasErrors('url')}"
+              data-e2e="layer-url-input"
+            ></textarea>
+            <ng-container *ngIf="hasErrors('url')" >
                 <span
                   class="error"
                   *ngFor="let error of newOverlayForm.controls.url.errors | keyvalue"
@@ -67,7 +69,7 @@
                     Parametr `request` nie posiada wartości `GetMap`<br>
                   </ng-container>
                   <ng-container *ngSwitchCase="'layers'" i18n>
-                    Parametr `layers` nie posiada wartości w formacie
+                    Parametr `layers` jest pusty lub nie posiada wartości w formacie
                     elementów oddzielonych przecinkami<br>
                   </ng-container>
                   <ng-container *ngSwitchCase="'styles'" i18n>
@@ -106,8 +108,21 @@
                     Nieoczekiwany błąd: {{ error.key }}
                   </ng-container>
                 </span>
-              </ng-container>
-            </td>
+            </ng-container>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let layer of latestCapabilities?.layers">
+              <input
+                id="layer"
+                name="layer"
+                type="checkbox"
+                class="form-control"
+                [checked]="hasUrlLayer(layer)"
+                (change)="toggleLayerInUrl(layer)"
+                data-e2e="url-layer"
+              />
+              <label for="layer">{{ layer.title }} ({{ layer.name }})</label>
+            </ng-container>
           </tr>
           </tbody>
         </table>
@@ -116,6 +131,7 @@
             (click)="addNewOverlay()"
             class="button button--secondary button--small"
             data-e2e="submit-layer-form-btn"
+            [disabled]="newOverlayForm.invalid"
           >
             Dodaj
           </button>

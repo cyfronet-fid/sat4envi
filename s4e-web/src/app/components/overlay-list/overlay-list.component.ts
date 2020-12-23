@@ -1,21 +1,19 @@
 import {NotificationService} from 'notifications';
-import {getImageWmsLoader} from '../../views/map-view/state/overlay/image-wms.utils';
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Overlay, OverlayUI, OwnerType, PERSONAL_OWNER_TYPE} from '../../views/map-view/state/overlay/overlay.model';
-import {getImageWmsFrom} from '../../views/map-view/state/overlay/overlay.utils';
 import {ModalService} from '../../modal/state/modal.service';
 import {OverlayQuery} from '../../views/map-view/state/overlay/overlay.query';
 import {disableEnableForm, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
 import {OverlayService} from '../../views/map-view/state/overlay/overlay.service';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {WMS_URL_VALIDATORS} from './wms-url.utils';
-import {forkJoin, Observable, of, Subject} from 'rxjs';
-import Projection from 'ol/proj/Projection';
-import {debounceTime, filter, finalize, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {UrlParser, OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS} from './wms-url.utils';
+import {empty, EMPTY, Observable, Subject, throwError} from 'rxjs';
+import {catchError, debounceTime, filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ActivatedRoute} from '@angular/router';
-import WMSCapabilities from 'ol/format/WMSCapabilities';
 import {OverlayStore} from '../../views/map-view/state/overlay/overlay.store';
+import {CapabilitiesMetadata, fetchCapabilitiesMetadata$, getToggledLayerInUrl, ILayer, validateImage$} from './image-wms.utils';
+import * as Url from 'url';
 
 export interface OverlayForm {
   url: string;
@@ -46,7 +44,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     );
   public newOverlayForm: FormGroup<OverlayForm> = new FormGroup<OverlayForm>({
     label: new FormControl<string>('', [Validators.required]),
-    url: new FormControl<string>('', [Validators.required, ...WMS_URL_VALIDATORS])
+    url: new FormControl<string>('', [Validators.required, ...OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS])
   });
   public visibilityFCList: FormControl<boolean>[] = [];
   private _overlaysChanged$: Subject<void> = new Subject();
@@ -64,6 +62,9 @@ export class OverlayListComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+  public latestCapabilities: CapabilitiesMetadata;
+  private _lastUrl;
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -99,6 +100,83 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     this.setInstitutionalFilter$.subscribe();
     this.isAddingNewLayer$.subscribe(loadingNew => disableEnableForm(loadingNew, this.newOverlayForm));
     this._overlayStore.ui.update({loadingNew: false});
+
+    // metadata loading
+    this.newOverlayForm.valueChanges
+      .pipe(
+        untilDestroyed(this),
+        debounceTime(1000),
+        filter(formValue => !!formValue.url && formValue.url !== ''),
+        map(formValue => formValue.url.trim()),
+        filter(url => {
+          if (!this._lastUrl) {
+            return true;
+          }
+
+          const actualUrlBase = url.split('?')[0];
+          const lastUrlBase = this._lastUrl.split('?')[0];
+          if (actualUrlBase !== lastUrlBase) {
+            return true;
+          }
+
+          const hasLoadedLayers = !!this.latestCapabilities
+            && !!this.latestCapabilities.layers;
+          if (!hasLoadedLayers) {
+            return true;
+          }
+
+          return false;
+        }),
+        map(url => {
+          const urlParser = new UrlParser(url);
+          const isGetCapabilitiesUrl = urlParser.has('request')
+            && urlParser
+              .getParamValueOf('request')
+              .toLowerCase()
+              .includes('GetCapabilities'.toLowerCase());
+          if (isGetCapabilitiesUrl) {
+            url = urlParser.getUrlBase();
+            this.newOverlayForm.patchValue({url});
+          }
+          this._lastUrl = url;
+
+          return url;
+        }),
+        tap(() => this._overlayStore.ui.update({loadingNew: true})),
+        switchMap(url => fetchCapabilitiesMetadata$(url)
+          .pipe(
+            catchError(error => {
+              this._notificationService.addGeneral({
+                content: `
+                Wystąpił błąd i może być on związany z Cross-Origin Request Blocked:
+                Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne.
+
+                Błąd: ${error}
+            `,
+                type: 'error'
+              });
+              this.latestCapabilities = {
+                layers: [],
+                crs: '',
+                extent: []
+              };
+              this._overlayStore.ui.update({loadingNew: false});
+              return EMPTY;
+            })
+          )
+        ),
+        tap(({layers, crs, extent}) => {
+          const urlParser = new UrlParser(this.newOverlayForm.controls.url.value);
+          if (!urlParser.has('layers')) {
+            urlParser.setValues('LAYERS', ...layers.map(layer => layer.name));
+            this.newOverlayForm.patchValue({url: urlParser.getFullUrl()});
+          }
+
+          this._overlayStore.ui.update({loadingNew: false});
+          this.latestCapabilities = {layers, crs, extent};
+        })
+      )
+      .subscribe();
   }
 
   async removeOverlay(id: number) {
@@ -124,6 +202,16 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     }
   }
 
+  hasUrlLayer(layer: ILayer) {
+    const url = this.newOverlayForm.controls.url.value;
+    return !!url && url.trim().includes(layer.name);
+  }
+
+  toggleLayerInUrl(layer: ILayer) {
+    const actualUrl = this.newOverlayForm.controls.url.value.trim();
+    this.newOverlayForm.patchValue({url: getToggledLayerInUrl(actualUrl, layer.name)});
+  }
+
   hasErrors(controlName: string) {
     const formControl = this.newOverlayForm
       .controls[controlName] as FormControl;
@@ -141,43 +229,49 @@ export class OverlayListComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const url = this.newOverlayForm.controls.url.value.trim();
-    if (this.newOwner === 'INSTITUTIONAL') {
-      this.hasLoadingError$(url)
-        .pipe(
-          untilDestroyed(this),
-          switchMap(formattedUrl => forkJoin([of(formattedUrl), this._activatedRoute.queryParamMap])),
-          map(([url, params]) => [url, params.get('institution')]),
-          tap(() => this._overlayStore.ui.update({loadingNew: false}))
-        )
-        .subscribe(
-          ([url, institutionSlug]) => {
-            this._overlayStore.ui.update({loadingNew: false});
-            this._overlayService
-              .createInstitutionalOverlay({...this.newOverlayForm.value, url}, institutionSlug);
-          },
-          (error: string) => {
-            this._notificationService.addGeneral({content: error, type: 'error'});
-            this._overlayStore.ui.update({loadingNew: false});
-          }
-        );
+    const urlParser = new UrlParser(this.newOverlayForm.controls.url.value);
+    if (!urlParser.has('layers')) {
+      this._notificationService.addGeneral({
+        content: 'URL powinien mieć wybraną co najmniej 1 warstwę',
+        type: 'error'
+      });
+      this._overlayStore.ui.update({loadingNew: false});
       return;
     }
 
-    this.hasLoadingError$(url)
-      .pipe(untilDestroyed(this))
-      .subscribe(
-        formattedUrl => {
-          this._overlayStore.ui.update({loadingNew: false});
+    if (
+      urlParser.has('styles')
+      && (
+        !urlParser.getParamValueOf('styles')
+        || urlParser.getParamValueOf('styles') === ''
+      )
+    ) {
+      urlParser.remove('styles');
+    }
+
+    const {layers, crs, extent} = this.latestCapabilities;
+    validateImage$(urlParser.getFullUrl(), crs, extent)
+      .pipe(
+        untilDestroyed(this),
+        switchMap(() => this._activatedRoute.queryParamMap
+          .pipe(untilDestroyed(this))
+        ),
+        switchMap(queryParams => {
+          const label = this.newOverlayForm.controls.label.value.trim();
+          const newOverlay = {label, url: urlParser.getFullUrl()};
           switch (this.newOwner) {
             case 'PERSONAL':
-              this._overlayService.createPersonalOverlay({...this.newOverlayForm.value, url: formattedUrl});
-              break;
+              return this._overlayService.createPersonalOverlay$(newOverlay);
             case 'GLOBAL':
-              this._overlayService.createGlobalOverlay({...this.newOverlayForm.value, url: formattedUrl});
-              break;
+              return this._overlayService.createGlobalOverlay$(newOverlay);
+            case 'INSTITUTIONAL':
+              return this._overlayService
+                .createInstitutionalOverlay$(newOverlay, queryParams.get('institution'));
           }
-        },
+        })
+      )
+      .subscribe(
+        () => {},
         (error: string) => {
           this._notificationService.addGeneral({content: error, type: 'error'});
           this._overlayStore.ui.update({loadingNew: false});
@@ -185,72 +279,9 @@ export class OverlayListComponent implements OnInit, OnDestroy {
       );
   }
 
-  hasLoadingError$(url: string) {
-    /**
-     * Observable is used due to not working Open Layers Event Dispatcher
-     * and force state changes
-     */
-    url = url.toLowerCase().includes('request=getcapabilities') ? url.split("?")[0] : url;
-    return new Observable<string | null>(observer$ => {
-      const capabilitiesUrl = `${url.split('?')[0]}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`;
-      fetch(capabilitiesUrl)
-        .then(response => {
-            if (response.status !== 200) {
-              observer$.error(`
-                Sprawdź poprawność URL i jego parametrów!
-
-                Mógł wystąpić Cross-Origin Request Blocked:
-                Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
-              `);
-              observer$.complete();
-              throw new Error();
-            }
-
-            return response;
-          },
-          error => {
-            observer$.error(`
-              Sprawdź poprawność URL i jego parametrów!
-
-              Mógł wystąpić Cross-Origin Request Blocked:
-              Polityka administracyjna serwera nie zezwala na czytanie przez źródła zewnętrzne
-             `);
-            observer$.complete();
-          }
-        )
-        .then(response => (response as any).text(), error => {})
-        .then(text => (new WMSCapabilities()).read(text), error => {})
-        .then(parsedCapabilities => parsedCapabilities.Capability.Layer, error => {})
-        .then(
-          layerMetadata => {
-            const {crs, extent, ...rest} = layerMetadata.BoundingBox[0];
-
-            if (!url.includes('LAYERS')) {
-              const layers = this._unpackLayers(layerMetadata)
-                .filter(layer => !!layer.Name)
-                .map(layer => layer.Name)
-                .join(',');
-
-              const hasParams = url.includes("?");
-
-              url = hasParams ? `${url}&LAYERS=${layers}` : `${url.split('?')[0]}?LAYERS=${layers}`;
-            }
-
-            if (!url.includes('STYLES=')) {
-              url = `${url}&STYLES=`
-            }
-
-            const source = getImageWmsFrom({url});
-            source.setImageLoadFunction(getImageWmsLoader(observer$));
-            source
-              .getImage(extent, 1,1, new Projection({code: crs}))
-              .load();
-          }
-          , error => {});
-    });
-  }
-
   setNewFormVisible(show: boolean) {
+    this._lastUrl = null;
+    this.latestCapabilities = null;
     this.newOverlayForm.reset();
     this._overlayService.setNewFormVisible(show);
   }
@@ -265,24 +296,5 @@ export class OverlayListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._overlayService.resetUI();
-  }
-
-  private _unpackLayers(layer: any, depth = 0) {
-    const MAX_DEPTH = 10;
-
-    if (!layer) {
-      return [];
-    }
-
-    if (!layer.Layer || depth > MAX_DEPTH) {
-      return [layer];
-    }
-
-    return [
-      layer,
-      ...layer.Layer
-        .map(layer => this._unpackLayers(layer, depth + 1))
-        .reduce((finalLayers, layers) => finalLayers = [...finalLayers, ...layers])
-    ];
   }
 }
