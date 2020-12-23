@@ -3,15 +3,16 @@
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { LocationsSearch } from '../../page-objects/map/map-locations-search.po';
 
-describe.skip('Map Locations Search', () => {
-  beforeEach(() => {
-    cy.fixture('users/zkMember.json').as('zkMember');
-  });
+before(() => {
+  cy.fixture('users/zkMember.json').as('zkMember');
+});
+
+describe('Map Locations Search', () => {
 
   beforeEach(function () {
+    cy.visit('/login')
     Login
       .loginAs(this.zkMember)
-      .changeContextTo(LocationsSearch);
   });
 
   beforeEach(() => {
@@ -21,66 +22,46 @@ describe.skip('Map Locations Search', () => {
       .clear();
   });
 
-
-  it('should display searched places', () => {
+  it.only('should display searched places', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
-      .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
-      .selectNthResult(0)
-      .searchShouldHaveValue('Warszawa')
+      .searchCitiesBy('warsz')
+      .nthResultShouldHaveLabel(8, 'Warszewo')
+      .nthResultShouldHaveType(8, 'wieś')
+      .nthResultShouldHaveVoivodeship(8, 'warmińsko-mazurskie')
+      .selectNthResult(8)
+      .searchShouldHaveValue('Warszewo')
       .resultsShouldBeClosed();
   });
 
-
   it('should clear input', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
+      .searchCitiesBy('szczeci')
+      .nthResultShouldHaveLabel(0, 'Szczecin')
       .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
+      .nthResultShouldHaveVoivodeship(0, 'zachodniopomorskie')
       .clearSearch()
       .searchShouldHaveValue('');
   });
 
-
-  it('should select active place on loupe click', () => {
-    LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
-      .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
-      .selectActiveResult()
-      .searchShouldHaveValue('Warszawa');
-  });
-
   it('should select active place on enter press', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
-      .nthResultShouldHaveLabel(0, 'Warszawa')
+      .searchCitiesBy('katow')
+      .nthResultShouldHaveLabel(0, 'Katowice')
       .nthResultShouldHaveType(0, 'miasto')
-      .nthResultShouldHaveVoivodeship(0, 'mazowieckie')
+      .nthResultShouldHaveVoivodeship(0, 'śląskie')
       .type('{enter}')
-      .searchShouldHaveValue('Warszawa');
+      .searchShouldHaveValue('Katowice');
   });
 
   it('should navigate with arrows', () => {
     LocationsSearch
-      .type('warsz')
-      .waitForCitiesList()
+      .searchCitiesBy('warsz')
       .nthResultShouldHaveLabel(1, 'Warszawiaki')
       .nthResultShouldHaveType(1, 'wieś')
       .nthResultShouldHaveVoivodeship(1, 'lubelskie')
       .type('{downarrow}{enter}')
-      .selectActiveResult()
+    LocationsSearch
       .searchShouldHaveValue('Warszawiaki');
   });
 });
-
-
 

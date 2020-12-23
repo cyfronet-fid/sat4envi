@@ -23,3 +23,20 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+
+
+
+import * as unfetch from '../dependencies/unfetch.umd';
+
+// TODO: Remove after Cypress upgrade to version above 6.x.y
+/**
+ * UnfetchJS library support data (XML) fetching incorrectly working in the cypress 4.x.y 
+ * and fixed in the latest versions of it
+ */
+
+Cypress.on('window:before:load', win => {
+  win.eval(unfetch.unfetchFunction)
+  win.fetch = win.unfetch
+})
+

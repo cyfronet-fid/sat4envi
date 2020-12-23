@@ -24,6 +24,7 @@
       <li
         *ngFor="let reportTemplate of reportsTemplates$ | async"
         class="report-template-details"
+        data-e2e="report-template-details"
       >
         <div>
           <div>
@@ -36,6 +37,7 @@
             <button
               class="button button--primary button--small"
               type="button"
+              data-e2e="load-report-btn"
               (click)="load(reportTemplate)"
               i18n
             >
@@ -45,6 +47,7 @@
               class="button button--small"
               type="button"
               (click)="delete(reportTemplate)"
+              data-e2e="btn-delete"
               i18n
             >
               <img _ngcontent-c103="" alt="Delete" src="/assets/images/ico_delete.svg" width="15">

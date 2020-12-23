@@ -1,8 +1,8 @@
 import { Core } from './../core.po';
 import { GeneralModal } from '../modal/general-modal.po';
 
-export class Layers extends Core {
-  static pageObject = {
+export class MapLayers extends Core {
+  static readonly pageObject = {
     getSidebarManagementBtn: () => cy.get('button[data-e2e="sidebar-management-btn"]'),
     getSidebarLayers: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'),
     getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'),
@@ -15,134 +15,173 @@ export class Layers extends Core {
     getLabelInput: () => cy.get('[data-e2e="layer-label-input"]').find('input'),
     getUrlInput: () => cy.get('[data-e2e="layer-url-input"]'),
     getUrlLayers: () => cy.get('[data-e2e="url-layer"]'),
-    getActiveUrlLayers: () => cy.get('[data-e2e="url-layer"] :checked'),
+    getActiveUrlLayers: () => cy.get('[data-e2e="url-layer"]:checked'),
     getSubmitFormBtn: () => cy.get('[data-e2e="submit-layer-form-btn"]'),
     getUrlErrors: () => cy.get('[data-e2e="invalid-url-error"]'),
+    getLayerCount: () => cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]').its('length').as('layerCount'),
+    getErrorMessage: () => cy.get(".message")
   };
 
-
   static activeLayersCountShouldBe(count: number) {
-    Layers
+
+    MapLayers
       .pageObject
       .getSelectedLayersIcons()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
   static selectNthSidebarLayer(nth: number) {
-    Layers
+    MapLayers
       .pageObject
       .getSidebarLayers()
       .eq(nth)
-      .click({ force: true });
+      .click();
 
-    return Layers;
+    cy.location('href').should('include', 'overlays');
+
+    return MapLayers;
   }
 
   static unselectNthSidebarLayer(nth: number) {
-    return Layers.selectNthSidebarLayer(nth);
+    MapLayers
+      .pageObject
+      .getSidebarLayers()
+      .eq(nth)
+      .click();
+
+    return MapLayers;
   }
 
   static openManagementModal() {
-    Layers
+    MapLayers
       .pageObject
       .getSidebarManagementBtn()
-      .click({ force: true });
+      .click();
 
     GeneralModal.isVisible();
 
-    return Layers;
+    return MapLayers;
   }
 
   static toggleNthInPanelDisplay(nth: number) {
-    Layers
+    MapLayers
       .pageObject
       .getDisplayInPanelBtns()
       .eq(nth)
-      .click({ force: true });
+      .click();
 
-    return Layers;
+    return MapLayers;
   }
 
   static removeNthWithPermission(nth: number) {
-    Layers
+    MapLayers
       .pageObject
       .getRemoveBtns()
       .eq(nth)
-      .click({ force: true });
+      .click();
 
-    return Layers;
+    return MapLayers;
   }
 
   static sidebarLayersCountShouldBe(count: number) {
-    Layers
+    MapLayers
       .pageObject
       .getSidebarLayers()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
   static managementLayersCountShouldBe(count: number) {
-    Layers
+    MapLayers
       .pageObject
       .getManagementLayers()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
-  static fillForm(label: string, url: string) {
-    Layers
+  static fillForm(label: string, url: string, waitForResponse = true) {
+    MapLayers
       .pageObject
       .getAddBtn()
-      .click({ force: true });
+      .click();
 
-    Layers
+    MapLayers
+      .pageObject
+      .getUrlInput()
+      .type(url)
+
+    if (waitForResponse) { cy.wait('@getCapabilities') };
+
+
+    MapLayers
       .pageObject
       .getLabelInput()
       .type(label);
 
-    return Layers;
+    return MapLayers;
   }
 
   static allUrlLayersCountShouldBe(count: number) {
-    Layers
+    MapLayers
       .pageObject
       .getUrlLayers()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
   static selectedUrlLayersCountShouldBe(count: number) {
-    Layers
+    MapLayers
       .pageObject
       .getActiveUrlLayers()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
   static errorsCountShouldBe(count: number) {
-    Layers
+    MapLayers
       .pageObject
       .getUrlErrors()
       .should('have.length', count);
 
-    return Layers;
+    return MapLayers;
   }
 
-  static addNew(label: string, url: string) {
-    Layers
-      .fillForm(label, url);
+  static addNew() {
+    cy.server();
+    cy.route('POST', '/api/v1/overlays/personal').as('addedNewLayer');
 
-    Layers
+    MapLayers
       .pageObject
       .getSubmitFormBtn()
-      .click({ force: true });
+      .click();
 
-    return Layers;
+    cy.wait('@addedNewLayer', { timeout: 10000 });
+
+    return MapLayers;
+  };
+
+
+  static layersConfigurationAreNotVisible() {
+    MapLayers
+      .pageObject
+      .getSidebarManagementBtn()
+      .should("not.be.visible");
+
+    return MapLayers;
   }
-}
+
+  static errorShouldBeDispalyed() {
+    MapLayers
+      .pageObject
+      .getErrorMessage()
+      .should("be.visible")
+
+    return MapLayers;
+  }
+};

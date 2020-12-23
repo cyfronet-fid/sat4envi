@@ -32,7 +32,7 @@
             (click)="close.emit()"></button>
   </header>
 
-  <section class="sentinel">
+  <section class="sentinel" data-e2e="sentinel-search-result">
     <ng-container *ngIf="!isLoading; else loadingRef">
       <ng-container *ngIf="!error; else errorRef">
         <span i18n>Wyniki wyszukiwania <strong *ngIf="totalCount != null">{{totalCount}} wyników</strong></span>
@@ -40,6 +40,7 @@
           <li
             *ngFor="let result of searchResults"
             data-test="search-result-entry"
+            data-e2e="search-result-entry"
             (mouseenter)="mouseenter.emit(result.id)"
             (mouseleave)="mouseleave.emit()"
           >
@@ -66,10 +67,10 @@
                 </ul>
               </div>
               <div class="search-result__actions">
-                <button data-test="show-details-button" class="show-details"
+                <button data-test="show-details-button" data-e2e="show-details-button" class="show-details"
                         (click)="showDetails.emit(result)"></button>
                 <a [attr.href]="result.url" (click)="isUserLoggedIn || interceptDownload($event)" target="_blank"
-                   class="download-link download"></a>
+                   class="download-link download" data-e2e="download-link"></a>
               </div>
             </section>
           </li>

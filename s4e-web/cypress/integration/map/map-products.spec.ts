@@ -1,47 +1,51 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { Map } from '../../page-objects/map/map.po';
-import { MapFavorities } from '../../page-objects/map/map-favoritie-products.po';
+import { MapDateSelect } from '../../page-objects/map/map-date-select.po';
+import { MapProducts } from '../../page-objects/map/map-products.po';
 
-context.skip('Map Products', () => {
-  beforeEach(() => {
-    cy.fixture('users/zkMember.json').as('zkMember');
+before(() => {
+  cy.fixture('users/zkMember.json').as('zkMember');  
+  cy.fixture('products.json').as('products');  
+});
+
+describe('Map Products', () => {
+
+  beforeEach(function(){
+    cy.server();
+   
+    cy.visit('/login');
+    Login
+      .loginAs(this.zkMember)
   });
 
-  beforeEach(() => {
-    cy.visit('/');
+  it('should load the product', function(){
+    MapProducts
+      .selectProductByName(this.products[3].name);
   });
 
-  // it('should load product map', function () {
-  //   const year = 2020;
-  //   const month = 2;
-  //   const day = 1;
-  //   Login
-  //     .loginAs(this.zkMember)
-  //     .changeContextTo(MapFavorities)
-  //     .selectProductBy('108m')
-  //     .changeContextTo(Map)
-  //     .openDateChange()
-  //     .selectDate(year, month, day)
-  //     .selectStackedDataPointNumber(3, 1)
-  // });
+  it('should the live scene be loading', function(){
+    MapProducts
+    .selectProductByName(this.products[5].name)
+    .turnOnOnLiveView()
+    .turnOffOnLiveView();
+  });
 
-  // it('should load map by clicking non stacked datapoint', function () {
-  //   const year = 2020;
-  //   const month = 2;
-  //   const day = 1;
-  //   const hour = 1;
-  //   Login
-  //     .loginAs(this.zkMember)
-  //     .changeContextTo(MapProducts)
-  //     .selectProductBy('108m')
-  //     .changeContextTo(Map)
-  //     .openDateChange()
-  //     .selectDate(year, month, day)
-  //     .increaseResolution()
-  //     .increaseResolution()
-  //     .increaseResolution()
-  //     .selectDataPoint(hour)
-  // });
+  it('should load the selected date of the product', function () {
+    const year = 2020;
+    const month = 2;
+    const day = 1;
+    
+    MapProducts
+      .selectProductByName(this.products[0].name)
+    MapDateSelect
+      .openDateChange()
+      .selectDate(year, month, day);
+  });
+
+  it('should display legend', function(){
+    MapProducts
+    .selectProductByName(this.products[4].name)
+    .legendShouldBeVisible();
+  });
 });

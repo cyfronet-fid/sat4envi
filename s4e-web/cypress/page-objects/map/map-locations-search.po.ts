@@ -1,7 +1,7 @@
 import { Core } from '../core.po';
 
 export class LocationsSearch extends Core {
-  static pageObject = {
+  static readonly pageObject = {
     getSearch: () => cy.get('[data-e2e="search-input"]'),
     getSearchResults: () => cy.get('[data-e2e="search-result"]'),
     getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'), 
@@ -9,14 +9,27 @@ export class LocationsSearch extends Core {
     getSearchResultsVoivodeship: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.voivodeship'),
     getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'), 
     getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]') 
-  };
+  }
 
   static type(value: string) {
     LocationsSearch
       .pageObject
       .getSearch()
-      .clear()
-      .type(value, { force: true });
+      .type(value);
+
+    return LocationsSearch;
+  }
+
+  static searchCitiesBy(name:string){
+    cy.server()
+    cy.route('GET', `/api/v1/places?namePrefix=${name}`).as('getCityList');
+
+    LocationsSearch
+      .pageObject
+      .getSearch()
+      .type(name);
+      
+    cy.wait('@getCityList')
 
     return LocationsSearch;
   }
@@ -67,7 +80,7 @@ export class LocationsSearch extends Core {
       .pageObject
       .getSearchResults()
       .eq(nth)
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
   }
@@ -95,7 +108,7 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getClearSearchBtn()
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
   }
@@ -104,16 +117,8 @@ export class LocationsSearch extends Core {
     LocationsSearch
       .pageObject
       .getSelectActiveResultBtn()
-      .click({ force: true });
+      .click();
 
     return LocationsSearch;
   }
-
-  static waitForCitiesList() {
-    cy.server()
-    cy.route('GET', '/api/v1/places?namePrefix=warsz').as('getCityList');
-    cy.wait('@getCityList').its('status').should('eq', 200)
-
-    return LocationsSearch
-  }
-}
+};
