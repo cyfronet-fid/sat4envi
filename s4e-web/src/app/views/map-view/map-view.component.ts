@@ -59,6 +59,7 @@ import {ReportTemplateStore} from './zk/state/report-templates/report-template.s
 import {ViewConfigurationService} from './state/view-configuration/view-configuration.service';
 import {filterFalse, filterNotNull, mapAnyTrue} from '../../utils/rxjs/observable';
 import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query';
+import {InstitutionService} from '../settings/state/institution/institution.service';
 
 
 @Component({
@@ -130,7 +131,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private reportTemplateQuery: ReportTemplateQuery,
     private reportTemplateStore: ReportTemplateStore,
     private viewConfigurationService: ViewConfigurationService,
-    private sentinelSearchQuery: SentinelSearchQuery
+    private sentinelSearchQuery: SentinelSearchQuery,
+    private institutionService: InstitutionService
   ) {
   }
 

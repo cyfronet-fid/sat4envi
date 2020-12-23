@@ -23,7 +23,7 @@
 >
   <section class="section search">
     <input
-      (keydown.enter)="select(query.getActive())"
+      (keydown.enter)="selectActive()"
       (keydown.arrowup)="activatePreviousResult()"
       (keydown.arrowdown)="activateNextResult()"
 
@@ -45,7 +45,7 @@
     </button>
     <button
       class="search__button"
-      (click)="select(query.getActive())"
+      (click)="selectActive()"
       [disabled]="!canSelectActiveResult"
       data-e2e="select-active-result-btn"
     >
@@ -68,7 +68,7 @@
           <li class="searchResult__item"
             *ngFor="let result of results"
             [ngClass]="{'active': isActive(result)}"
-            (click)="select(result); store.setActive(result)"
+            (click)="selectActive()"
             (focus)="store.setActive(result)"
             data-e2e="search-result"
           >
