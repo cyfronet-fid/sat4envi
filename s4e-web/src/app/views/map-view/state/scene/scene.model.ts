@@ -32,6 +32,7 @@ export interface Scene extends SceneResponse {
   timestamp: string;
   legend: Legend | null;
   layerName: string;
+  footprint: string;
 }
 
 export interface SceneWithUI extends Scene {

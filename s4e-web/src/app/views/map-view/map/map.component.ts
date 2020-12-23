@@ -43,6 +43,7 @@ import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.se
 import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
 import BaseLayer from 'ol/layer/Base';
 import {getPointResolution} from 'ol/proj';
+import {Fill, Stroke, Style} from 'ol/style';
 
 @Component({
   selector: 's4e-map',
@@ -102,6 +103,8 @@ export class MapComponent implements OnInit, OnDestroy {
     drawing: null,
     polygon: null
   };
+
+  private _scenePolygon;
 
   constructor(
     private _remoteConfiguration: RemoteConfiguration,
@@ -311,12 +314,48 @@ export class MapComponent implements OnInit, OnDestroy {
     if (scene != null) {
       const sceneTiles = new Tile({source: this._getTileWmsFrom(scene)});
       mapLayers.push(sceneTiles);
+
+      this._replaceScenePolygon(scene);
     }
 
     const activeLayers = this.overlays
       .filter(overlay => overlay.active)
       .map(overlay => overlay.olLayer);
     mapLayers.extend(activeLayers);
+  }
+
+  private _replaceScenePolygon(scene: Scene | null) {
+    const hasPolygon = this.map.getLayers().getArray()
+      .includes(this._scenePolygon);
+    if (hasPolygon) {
+      this.map.removeLayer(this._scenePolygon);
+    }
+
+    if (!scene) {
+      return;
+    }
+
+    this._scenePolygon = new VectorLayer({
+      source: new VectorSource({
+        features: [new WKT().readFeature(
+          scene.footprint,
+          {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+          }
+        )],
+      }),
+      style: new Style({
+        fill: new Fill({
+          color: [0, 0, 0, 0]
+        }),
+        stroke: new Stroke({
+          color: [3, 148, 252],
+          width: 4
+        })
+      })
+    });
+    this.map.addLayer(this._scenePolygon);
   }
 
   private _getTileWmsFrom(scene: Scene) {
