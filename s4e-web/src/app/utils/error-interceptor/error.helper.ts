@@ -1,3 +1,20 @@
+/*
+ * Copyright 2020 ACC Cyfronet AGH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpRequest} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {HTTP_502_BAD_GATEWAY, HTTP_404_BAD_REQUEST, HTTP_500_INTERNAL_SERVER_ERROR} from '../../errors/errors.model';
