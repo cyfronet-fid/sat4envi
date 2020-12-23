@@ -200,7 +200,7 @@ public class SearchControllerTest {
         @Test
         public void shouldGetSceneByProductType() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/search")
-                    .param("productType", "GRDH")
+                    .param("productType", product.getName())
                     .param("limit", "30"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(30))))
@@ -367,7 +367,7 @@ public class SearchControllerTest {
         @Test
         public void shouldGetSceneByProductType() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/search/count")
-                    .param("productType", "GRDH")
+                    .param("productType", product.getName())
                     .param("limit", "30"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))))

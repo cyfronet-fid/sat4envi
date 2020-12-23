@@ -17,10 +17,14 @@
 
 package pl.cyfronet.s4e.config;
 
+import lombok.val;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.data.repository.query.*;
+
+import java.util.List;
+import java.util.function.Function;
 
 @Configuration
 public class QueryConfig {
@@ -37,14 +41,22 @@ public class QueryConfig {
 
     @Bean
     public QueryBuilder queryBuilder() {
+        QueryBuilder queryBuilder = new QueryBuilderImpl();
+        List<Function<QueryBuilder, QueryBuilder>> constructors = List.of(
+                QueryProductType::new,
+                QueryTime::new,
+                QueryGeometry::new,
+                QueryText::new,
+                QueryNumber::new
+        );
+        for (val constructor : constructors) {
+            queryBuilder = constructor.apply(queryBuilder);
+        }
         return new QueryEnding(
-                new QueryNumber(
-                        new QueryText(
-                                new QueryGeometry(
-                                        new QueryTime(new QueryBuilderImpl())
-                                )
-                        )
-                ), springDataWebProperties
+                queryBuilder,
+                springDataWebProperties.getPageable().getMaxPageSize(),
+                springDataWebProperties.getPageable().getDefaultPageSize(),
+                0
         );
     }
 }

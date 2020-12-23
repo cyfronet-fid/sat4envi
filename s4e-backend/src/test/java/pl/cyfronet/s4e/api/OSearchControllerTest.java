@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,13 +72,14 @@ public class OSearchControllerTest {
     @Autowired
     private MockMvc mockMvc;
     private AppUser appUser;
+    private Product product;
 
     @BeforeEach
     public void setUp() throws Exception {
         reset(s3Presigner);
         testDbHelper.clean();
         //add product
-        Product product = productRepository.save(productBuilder().build());
+        product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 30; j++) {
@@ -416,7 +417,7 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryProductType() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "producttype:GRDH")
+                    .param("q", "producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
@@ -751,7 +752,7 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryProductType() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "producttype:GRDH")
+                    .param("q", "producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,11 +50,11 @@ public class QueryTime extends QueryDecorator {
                                     Errors errors) {
         // [TIMESTAMP] sensingFrom / sensingTo -> sensing_time
         if (params.containsKey(SENSING_FROM)) {
-            resultQuery.append(" AND " + getMetadataTime("sensing_time") + " >= ? ");
+            resultQuery.append(" AND ").append(getMetadataTime("sensing_time")).append(" >= ?");
             parameters.add(parseDateToServerLocalDate(params, SENSING_FROM, errors));
         }
         if (params.containsKey(SENSING_TO)) {
-            resultQuery.append(" AND " + getMetadataTime("sensing_time") + " <= ? ");
+            resultQuery.append(" AND ").append(getMetadataTime("sensing_time")).append(" <= ?");
             parameters.add(parseDateToServerLocalDate(params, SENSING_TO, errors));
         }
     }
@@ -65,17 +65,17 @@ public class QueryTime extends QueryDecorator {
                                       Errors errors) {
         // [TIMESTAMP] ingestionFrom / ingestionTo -> ingestion_time
         if (params.containsKey(INGESTION_FROM)) {
-            resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " >= ? ");
+            resultQuery.append(" AND ").append(getMetadataTime("ingestion_time")).append(" >= ?");
             parameters.add(parseDateToServerLocalDate(params, INGESTION_FROM, errors));
         }
         if (params.containsKey(INGESTION_TO)) {
-            resultQuery.append(" AND " + getMetadataTime("ingestion_time") + " <= ? ");
+            resultQuery.append(" AND ").append(getMetadataTime("ingestion_time")).append(" <= ?");
             parameters.add(parseDateToServerLocalDate(params, INGESTION_TO, errors));
         }
     }
 
     private String getMetadataTime(String timeParameter) {
-        return "to_timestamp(metadata_content->>'" + timeParameter + "', '" + DATE_FORMAT + "')";
+        return "f_cast_isots(metadata_content->>'" + timeParameter + "')";
     }
 
     private LocalDateTime parseDateToServerLocalDate(Map<String, Object> params, String param, Errors errors) {

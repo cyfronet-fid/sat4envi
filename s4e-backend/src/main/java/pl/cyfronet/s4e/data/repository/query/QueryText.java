@@ -32,7 +32,6 @@ public class QueryText extends QueryDecorator {
         super(queryBuilder);
         paramsToDBField = new LinkedHashMap<>();
         paramsToDBField.put(SATELLITE_PLATFORM, "spacecraft");
-        paramsToDBField.put(PRODUCT_TYPE, "product_type");
         paramsToDBField.put(POLARISATION, "polarisation");
         paramsToDBField.put(PROCESSING_LEVEL, "processing_level");
         paramsToDBField.put(SENSOR_MODE, "sensor_mode");
@@ -57,7 +56,7 @@ public class QueryText extends QueryDecorator {
                          List<Object> parameters,
                          StringBuilder resultQuery) {
         if (params.containsKey(entry.getKey())) {
-            resultQuery.append(" AND metadata_content->>'" + entry.getValue() + "' = ? ");
+            resultQuery.append(" AND metadata_content->>'").append(entry.getValue()).append("' = ?");
             if (params.containsKey(POLARISATION)) {
                 parameters.add(parsePolarisation(String.valueOf(params.get(entry.getKey()))));
             } else {

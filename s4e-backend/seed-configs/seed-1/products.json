@@ -16,7 +16,6 @@
   {
     "name": "Sentinel-1-GRDM",
     "displayName": "Sentinel 1 GRDM",
-
     "description": "Dane z przyrządu SAR satelitów Sentinel-1, w trybie skanowania EW (Extra Wide),typu GRD (Ground Range Detected).",
     "accessType": "OPEN",
     "layerName": "sentinel_1_grdm",

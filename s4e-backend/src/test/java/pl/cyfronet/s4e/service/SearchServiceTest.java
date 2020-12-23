@@ -60,11 +60,13 @@ public class SearchServiceTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Product product;
+
     @BeforeEach
     public void setUp() throws Exception {
         testDbHelper.clean();
         //add product
-        Product product = productRepository.save(productBuilder().build());
+        product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 10; j++) {
@@ -116,7 +118,7 @@ public class SearchServiceTest {
     @Test
     public void testQueryByProductType() throws Exception {
         Map<String, Object> params = new HashMap<>();
-        params.put("productType", "GRDH");
+        params.put("productType", product.getName());
         List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(10));
     }
@@ -223,7 +225,7 @@ public class SearchServiceTest {
         params.put("processingLevel", "2LC");
         params.put("cloudCover", 20);
         params.put("polarisation", "VV VH");
-        params.put("productType", "GRDH");
+        params.put("productType", product.getName());
         params.put("satellitePlatform", "Sentinel-1A");
         params.put("sensingFrom", "2019-11-01T00:00:00.000000+00:00");
         params.put("sensingTo", "2019-11-12T00:00:00.000000+00:00");

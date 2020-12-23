@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,20 +61,24 @@ public class QueryBuilderTest {
         params.put("ingestionFrom", "2019-11-09T00:00:00.000000+00:00");
         params.put("ingestionTo", "2019-11-12T00:00:00.000000+00:00");
         StringBuilder resultQuery = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT id,product_id,scene_key,ST_AsText(ST_Transform(footprint,4326),5) AS footprint,");
-        query.append("metadata_content,scene_content,timestamp ");
-        query.append("FROM Scene WHERE true  ");
-        query.append("AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  ");
-        query.append("AND to_timestamp(metadata_content->>'sensing_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  ");
-        query.append("AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') >= ?  ");
-        query.append("AND to_timestamp(metadata_content->>'ingestion_time', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') <= ?  ");
-        query.append("AND metadata_content->>'spacecraft' = ?  AND metadata_content->>'product_type' = ?  ");
-        query.append("AND metadata_content->>'polarisation' = ?  AND metadata_content->>'processing_level' = ?  ");
-        query.append("AND metadata_content->>'relative_orbit_number' = ?  ");
-        query.append("AND (metadata_content ->> 'cloud_cover')::float <= ?  ORDER BY id DESC LIMIT ?  OFFSET ? ;");
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery, errors);
-        assertThat(resultQuery.toString(), is(equalTo(query.toString())));
+        String query = "SELECT " +
+                "scene.id, product_id, scene_key, ST_AsText(ST_Transform(footprint,4326),5) AS footprint, " +
+                "metadata_content, scene_content, timestamp " +
+                "FROM scene JOIN product ON scene.product_id = product.id " +
+                "WHERE true " +
+                "AND product.name = ? " +
+                "AND f_cast_isots(metadata_content->>'sensing_time') >= ? " +
+                "AND f_cast_isots(metadata_content->>'sensing_time') <= ? " +
+                "AND f_cast_isots(metadata_content->>'ingestion_time') >= ? " +
+                "AND f_cast_isots(metadata_content->>'ingestion_time') <= ? " +
+                "AND metadata_content->>'spacecraft' = ? " +
+                "AND metadata_content->>'polarisation' = ? " +
+                "AND metadata_content->>'processing_level' = ? " +
+                "AND metadata_content->>'relative_orbit_number' = ? " +
+                "AND (metadata_content ->> 'cloud_cover')::float <= ? " +
+                "ORDER BY id DESC LIMIT ? OFFSET ?;";
+        assertThat(resultQuery.toString(), is(equalTo(query)));
     }
 
     @Test
@@ -83,14 +87,13 @@ public class QueryBuilderTest {
         List<Object> parameters = new ArrayList<>();
         Map<String, Object> params = new HashMap<>();
         StringBuilder resultQuery = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT id,product_id,scene_key,");
-        query.append("ST_AsText(ST_Transform(footprint,4326),5) AS footprint,");
-        query.append("metadata_content,scene_content,timestamp ");
-        query.append("FROM Scene ");
-        query.append("WHERE true  ORDER BY id DESC LIMIT ?  OFFSET ? ;");
         queryBuilder.prepareQueryAndParameters(params, parameters, resultQuery, errors);
-        assertThat(resultQuery.toString(), is(equalTo(query.toString())));
+        String query = "SELECT " +
+                "scene.id, product_id, scene_key, ST_AsText(ST_Transform(footprint,4326),5) AS footprint, " +
+                "metadata_content, scene_content, timestamp " +
+                "FROM scene JOIN product ON scene.product_id = product.id " +
+                "WHERE true ORDER BY id DESC LIMIT ? OFFSET ?;";
+        assertThat(resultQuery.toString(), is(equalTo(query)));
     }
 
     @Test
