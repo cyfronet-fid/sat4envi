@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class SentinelSearchConfigSupplier implements Supplier<SentinelSearchConf
             List.of(
                     new Section("sentinel-1", List.of(
                             new SelectParam(SATELLITE_PLATFORM, List.of("Sentinel-1A", "Sentinel-1B")),
-                            new SelectParam(PRODUCT_TYPE, List.of("", "GRDM", "GRDH", "SLC_")),
+                            new SelectParam(PRODUCT_TYPE, List.of("", "Sentinel-1-GRDM", "Sentinel-1-GRDH", "Sentinel-1-SLC_")),
                             new SelectParam(PROCESSING_LEVEL, List.of("", "1", "2")),
                             new SelectParam(POLARISATION, List.of("", "HH", "VV", "HV", "VH", "HH+HV", "VV+VH")),
                             new SelectParam(SENSOR_MODE, List.of("", "SM", "IW", "EW", "WV")),

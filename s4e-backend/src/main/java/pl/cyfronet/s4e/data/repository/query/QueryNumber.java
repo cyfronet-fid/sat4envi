@@ -45,7 +45,7 @@ public class QueryNumber extends QueryDecorator {
                                    StringBuilder resultQuery,
                                    Errors errors) {
         if (params.containsKey(CLOUD_COVER)) {
-            resultQuery.append(" AND (metadata_content ->> 'cloud_cover')::float <= ? ");
+            resultQuery.append(" AND (metadata_content ->> 'cloud_cover')::float <= ?");
             parameters.add(getCloudCover(params, errors));
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class QueryDecorator implements QueryBuilder {
-    public static final String DATE_FORMAT = "YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"";
     private final QueryBuilder queryBuilder;
 
     protected abstract void doPrepareQueryAndParameters(Map<String, Object> params,

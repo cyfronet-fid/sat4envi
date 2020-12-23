@@ -17,6 +17,7 @@
 
 package pl.cyfronet.s4e.data.repository.query;
 
+import lombok.val;
 import org.springframework.validation.Errors;
 import pl.cyfronet.s4e.bean.Scene;
 
@@ -25,31 +26,40 @@ import java.util.List;
 import java.util.Map;
 
 public class QueryBuilderImpl implements QueryBuilder {
-    private List<String> columns;
-
-    public QueryBuilderImpl() {
-        columns = new ArrayList<>();
-        columns.add(Scene.COLUMN_ID);
+    private static final String SELECT_QUERY_PREFIX;
+    private static final String COUNT_QUERY_PREFIX = "SELECT COUNT(*) FROM scene JOIN product ON scene.product_id = product.id WHERE true ";
+    static {
+        val columns = new ArrayList<String>();
+        columns.add("scene." + Scene.COLUMN_ID);
         columns.add(Scene.COLUMN_PRODUCT_ID);
         columns.add(Scene.COLUMN_SCENE_KEY);
         columns.add("ST_AsText(ST_Transform(" + Scene.COLUMN_FOOTPRINT + ",4326),5) AS footprint");
         columns.add(Scene.COLUMN_METADATA);
         columns.add(Scene.COLUMN_CONTENT);
         columns.add(Scene.COLUMN_TIMESTAMP);
+        SELECT_QUERY_PREFIX =
+                "SELECT " +
+                String.join(", ", columns) +
+                " FROM scene JOIN product ON scene.product_id = product.id WHERE true";
     }
 
     @Override
-    public void prepareQueryAndParameters(Map<String, Object> params,
-                                          List<Object> parameters,
-                                          StringBuilder resultQuery,
-                                          Errors errors) {
-        resultQuery.append("SELECT ");
-        resultQuery.append(String.join(",", columns));
-        resultQuery.append(" FROM Scene WHERE true ");
+    public void prepareQueryAndParameters(
+            Map<String, Object> params,
+            List<Object> parameters,
+            StringBuilder resultQuery,
+            Errors errors
+    ) {
+        resultQuery.append(SELECT_QUERY_PREFIX);
     }
 
     @Override
-    public void prepareCountQueryAndParameters(Map<String, Object> params, List<Object> parameters, StringBuilder resultQuery, Errors errors) {
-        resultQuery.append("SELECT COUNT(*) FROM Scene WHERE true ");
+    public void prepareCountQueryAndParameters(
+            Map<String, Object> params,
+            List<Object> parameters,
+            StringBuilder resultQuery,
+            Errors errors
+    ) {
+        resultQuery.append(COUNT_QUERY_PREFIX);
     }
 }

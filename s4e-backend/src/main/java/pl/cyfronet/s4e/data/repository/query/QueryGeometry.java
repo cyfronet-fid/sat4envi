@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,11 +43,12 @@ public class QueryGeometry extends QueryDecorator {
                                 StringBuilder resultQuery) {
         if (params.containsKey(FOOTPRINT)) {
 
-            resultQuery.append(" AND ST_Intersects(footprint, " +
-                    "ST_Transform(" +
-                    "ST_GeomFromText(?, "
-                    + GeometryUtil.FACTORY_4326.getSRID() + "), "
-                    + GeometryUtil.FACTORY_3857.getSRID() + "))");
+            resultQuery
+                    .append(" AND ST_Intersects(footprint, ST_Transform(ST_GeomFromText(?, ")
+                    .append(GeometryUtil.FACTORY_4326.getSRID())
+                    .append("), ")
+                    .append(GeometryUtil.FACTORY_3857.getSRID())
+                    .append("))");
             parameters.add(String.valueOf(params.get(FOOTPRINT)));
         }
     }
