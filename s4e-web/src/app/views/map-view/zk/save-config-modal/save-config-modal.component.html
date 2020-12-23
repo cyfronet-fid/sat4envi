@@ -18,7 +18,7 @@
 <form [formGroup]="form" (ngSubmit)="accept()">
   <s4e-generic-modal [buttonX]="true" [modalId]="registeredId">
     <div class="s4e-modal-header" i18n>Zapisz konfigurację widoku</div>
-    <div class="s4e-modal-body report">
+    <div class="s4e-modal-body report" data-e2e="modal-body">
       <aside>
         <strong i18n>Podgląd konfiguracji widoku</strong>
         <div #reportTemplate class="report-template">

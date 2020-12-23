@@ -10,5 +10,17 @@
   {
     "id": 3,
     "name": "WV-IR"
+  },
+  {
+    "id": 4,
+    "name": "Airmass"
+  },
+  {
+    "id": 5,
+    "name": "Pył w atmosferze"
+  },
+  {
+    "id":6,
+    "name":"Intensywność opadu"
   }
 ]

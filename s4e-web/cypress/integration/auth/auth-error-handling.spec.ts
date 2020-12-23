@@ -2,7 +2,7 @@
 
 import { environment } from '../../../src/environments/environment';
 
-context('ErrorHandling', () => {
+describe('ErrorHandling', () => {
   beforeEach(() => {
     cy.visit('/');
   });

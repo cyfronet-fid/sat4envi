@@ -27,7 +27,7 @@
       <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
     </li>
     <li [class.active]="isLinkActive('sentinel-search')">
-      <a [routerLink]="['./sentinel-search']" queryParamsHandling="preserve" i18n>Szukaj Danych</a>
+      <a [routerLink]="['./sentinel-search']" data-e2e='data-sentinel-search' queryParamsHandling="preserve" i18n>Szukaj Danych</a>
     </li>
   </ul>
   <div class="sidebar-content">
