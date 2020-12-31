@@ -51,54 +51,57 @@
     </div>
 
     <!-- This button launches modal for mobile view -->
-    <div class="timecontrol timecontrol--interval" (click)="openSceneSelection.emit()">
+    <button class="timecontrol timecontrol--scenemobile" (click)="openSceneSelection.emit()"
+            [disabled]="((scenes$ | async)?.length) == 0">
       <span>{{activeScene?.timestamp | hour}}</span>
-    </div>
+      <span class="timecontrol__button timecontrol__button--clock"></span>
+    </button>
   </section>
-
-  <ul class="timeline__grid">
-    <li class="timeline__item timeline__item--noproduct" *ngIf="!((scenes$ | async)?.length) && !loading" i18n>Brak
+  <div class="timeline__grid">
+    <div class="timeline__item timeline__item--noproduct" *ngIf="!((scenes$ | async)?.length) && !loading" i18n>Brak
       scen w tym dniu, wybierz inną datę, lub <a href="javascript:void(0)" (click)="goToLastAvailableScene()">przejdź
-        do ostatniej zarejestrowanej sceny</a></li>
-
-    <ng-container *ngFor="let scenePoint of (scenes$ | async)">
-      <li class="timeline__item"
-          *ngIf="scenePoint.points.length === 1; else aggregatePoint"
-          [attr.title]="scenePoint.points[0].timestamp | hour"
-          [attr.data-scene-id]="scenePoint.points[0].id"
-          [attr.data-active-id]="activeScene?.id"
-          [ngClass]="{active: scenePoint.selected}"
-          [style.left.%]="scenePoint.points[0].position"
-          (click)="selectScene(scenePoint.points[0])">
-        <span>{{ scenePoint.points[0].timestamp | date : 'shortTime' }}</span>
-      </li>
-      <ng-template #aggregatePoint>
-        <li class="timeline__item timeline__item--multiple"
-            (click)="activeStackedPoint === scenePoint ? activeStackedPoint = null : activeStackedPoint = scenePoint"
+        do ostatniej zarejestrowanej sceny</a>
+    </div>
+    <ul>
+      <ng-container *ngFor="let scenePoint of (scenes$ | async)">
+        <li class="timeline__item"
+            *ngIf="scenePoint.points.length === 1; else aggregatePoint"
+            [attr.title]="scenePoint.points[0].timestamp | hour"
+            [attr.data-scene-id]="scenePoint.points[0].id"
+            [attr.data-active-id]="activeScene?.id"
             [ngClass]="{active: scenePoint.selected}"
-            [attr.title]="(scenePoint.points[0].timestamp | hour) + ' - ' + (scenePoint.points[scenePoint.points.length - 1].timestamp | hour)"
-            [style.left.%]="scenePoint.position">
-          <div class="multiple__popup" *ngIf="activeStackedPoint === scenePoint">
-            <header>Dostępne sceny</header>
-            <ul>
-              <li *ngFor="let scene of scenePoint.points"
-                  title=""
-                  [attr.data-scene-id]="scene.id"
-                  [attr.data-hour]="scene.timestamp | hour : true"
-                  (click)="selectScene(scene)">
-                {{scene.timestamp | hour : true}}
-              </li>
-            </ul>
-          </div>
-          <div class="multiple__dot">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+            [style.left.%]="scenePoint.points[0].position"
+            (click)="selectScene(scenePoint.points[0])">
+          <span>{{ scenePoint.points[0].timestamp | date : 'shortTime' }}</span>
         </li>
-      </ng-template>
-    </ng-container>
-  </ul>
+        <ng-template #aggregatePoint>
+          <li class="timeline__item timeline__item--multiple"
+              (click)="activeStackedPoint === scenePoint ? activeStackedPoint = null : activeStackedPoint = scenePoint"
+              [ngClass]="{active: scenePoint.selected}"
+              [attr.title]="(scenePoint.points[0].timestamp | hour) + ' - ' + (scenePoint.points[scenePoint.points.length - 1].timestamp | hour)"
+              [style.left.%]="scenePoint.position">
+            <div class="multiple__popup" *ngIf="activeStackedPoint === scenePoint">
+              <header>Dostępne sceny</header>
+              <ul>
+                <li *ngFor="let scene of scenePoint.points"
+                    title=""
+                    [attr.data-scene-id]="scene.id"
+                    [attr.data-hour]="scene.timestamp | hour : true"
+                    (click)="selectScene(scene)">
+                  {{scene.timestamp | hour : true}}
+                </li>
+              </ul>
+            </div>
+            <div class="multiple__dot">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </li>
+        </ng-template>
+      </ng-container>
+    </ul>
+  </div>
   <div class="timeline__hourmark">
     <span *ngFor="let hour of hourmarks" class="hourmark">{{hour}}</span>
   </div>
