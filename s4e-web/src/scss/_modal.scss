@@ -162,6 +162,27 @@ h3 {
   }
 }
 
+.scene-list {
+  ul {
+    width: 80%;
+    margin:0 auto;
+  }
+  li {
+    text-align: center;
+    padding: 10px;
+    background: #fff;
+    font-weight: bold;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &.active {
+      border: 2px solid $color-secondary;
+      color: $color-secondary;
+    }
+  }
+}
+
 
 
 

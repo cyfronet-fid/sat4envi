@@ -185,4 +185,38 @@
       display: none;
     }
   }
+
+
+  .timeline {
+    padding: 0;
+    .timecontrol {
+      &--scenemobile {
+        display: flex;
+      }
+
+      &--interval,
+      &--clock,
+      &--live span:last-child{
+        display: none;
+      }
+
+      &--live {
+        padding: 5px !important;
+      }
+    }
+
+    &__grid ul,
+    &__grid:before,
+    &__hourmark {
+      display: none;
+    }
+
+    &__item--noproduct {
+      bottom: 10px;
+      line-height: 1.2;
+      width:100%;
+      margin: 0 7px;
+    }
+  }
+
 }
