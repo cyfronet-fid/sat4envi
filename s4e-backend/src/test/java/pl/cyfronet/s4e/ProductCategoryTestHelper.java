@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,23 +22,22 @@ import pl.cyfronet.s4e.bean.ProductCategory;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ProductCategoryHelper {
+public class ProductCategoryTestHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
 
-    private static final String label = "Product category %d";
-    private static final String iconName = "icon %d SVG";
+    private static final String LABEL = "Product category %d";
+    private static final String ICON_NAME = "icon %d SVG";
 
     public static ProductCategory.ProductCategoryBuilder productCategoryBuilder() {
-        val label = nextUnique(ProductCategoryHelper.label);
-        val iconName = nextUnique(ProductCategoryHelper.iconName);
+        val current = COUNT.getAndIncrement();
+        val label = String.format(LABEL, current);
+        val iconName = String.format(ICON_NAME, current);
         return ProductCategory
                 .builder()
                 .label(label)
                 .name(label)
-                .iconName(iconName);
-    }
-
-    private static String nextUnique(String format) {
-        return String.format(format, COUNT.getAndIncrement());
+                .iconName(iconName)
+                // Skip the default category rank.
+                .rank(2000L + current * 1000L);
     }
 }

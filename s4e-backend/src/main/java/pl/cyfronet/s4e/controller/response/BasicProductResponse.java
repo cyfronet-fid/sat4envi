@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,4 +28,6 @@ public interface BasicProductResponse {
     boolean getFavourite();
 
     BasicProductCategoryResponse getProductCategory();
+
+    Long getRank();
 }

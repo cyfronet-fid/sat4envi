@@ -12,7 +12,8 @@
       "default": "quicklook",
       "COG": "RGBs_8b"
     },
-    "productCategoryName": "surface"
+    "productCategoryName": "surface",
+    "rank": 1000
   },
   {
     "name": "Sentinel-1-GRDM",
@@ -26,7 +27,8 @@
     "granuleArtifactRule": {
       "default": "quicklook"
     },
-    "productCategoryName": "surface"
+    "productCategoryName": "surface",
+    "rank": 2000
   },
   {
     "name": "Sentinel-1-SLC_",
@@ -40,7 +42,8 @@
     "granuleArtifactRule": {
       "default": "quicklook"
     },
-    "productCategoryName": "surface"
+    "productCategoryName": "surface",
+    "rank": 3000
   },
   {
     "name": "Sentinel-2-L1C",
@@ -55,7 +58,8 @@
       "default": "quicklook",
       "COG": "RGBs_8b"
     },
-    "productCategoryName": "surface"
+    "productCategoryName": "surface",
+    "rank": 4000
   },
   {
     "name": "Sentinel-2-L2A",
@@ -70,7 +74,8 @@
       "default": "quicklook",
       "COG": "RGBs_8b"
     },
-    "productCategoryName": "surface"
+    "productCategoryName": "surface",
+    "rank": 5000
   },
   {
     "name": "108m",
@@ -84,7 +89,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "atmosphere-meteorology"
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 6000
   },
   {
     "name": "Airmass",
@@ -98,7 +104,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "other",
+    "rank": 7000
   },
   {
     "name": "Dust",
@@ -131,7 +138,8 @@
       "bottomMetric": {
         "unit": ""
       }
-    }
+    },
+    "rank": 8000
   },
   {
     "name": "NatCol",
@@ -145,7 +153,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "other",
+    "rank": 9000
   },
   {
     "name": "Polsafi",
@@ -159,7 +168,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "rank": 10000
   },
   {
     "name": "RGB24_micro",
@@ -173,7 +183,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "other"
+    "productCategoryName": "other",
+    "rank": 11000
   },
   {
     "name": "Setvak_Eu",
@@ -187,7 +198,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "atmosphere-meteorology"
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 12000
   },
   {
     "name": "Setvak_PL",
@@ -201,7 +213,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "atmosphere-meteorology"
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 13000
   },
   {
     "name": "Opad_H03",
@@ -246,7 +259,8 @@
       "bottomMetric": {
         "unit": "mm/h"
       }
-    }
+    },
+    "rank": 14000
   },
   {
     "name": "Opad_H05_03h",
@@ -292,7 +306,8 @@
       "bottomMetric": {
         "unit": "mm"
       }
-    }
+    },
+    "rank": 15000
   },
   {
     "name": "Opad_H05_06h",
@@ -338,7 +353,8 @@
       "bottomMetric": {
         "unit": "mm"
       }
-    }
+    },
+    "rank": 16000
   },
   {
     "name": "Opad_H05_12h",
@@ -384,7 +400,8 @@
       "bottomMetric": {
         "unit": "mm"
       }
-    }
+    },
+    "rank": 17000
   },
   {
     "name": "Opad_H05_24h",
@@ -430,7 +447,8 @@
       "bottomMetric": {
         "unit": "mm"
       }
-    }
+    },
+    "rank": 18000
   },
   {
     "name": "OST",
@@ -444,7 +462,8 @@
     "granuleArtifactRule": {
       "default": "product_file"
     },
-    "productCategoryName": "rains-and-storms"
+    "productCategoryName": "rains-and-storms",
+    "rank": 19000
   },
   {
     "name": "Soil_Moisture_SM1",
@@ -484,14 +503,14 @@
         "0.119": "10",
         "0.07": "5",
         "0.028": "0"
-
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {
         "unit": "%"
       }
-    }
+    },
+    "rank": 20000
   },
   {
     "name": "Soil_Moisture_SM2",
@@ -531,14 +550,14 @@
         "0.119": "10",
         "0.07": "5",
         "0.028": "0"
-
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {
         "unit": "%"
       }
-    }
+    },
+    "rank": 21000
   },
   {
     "name": "Soil_Moisture_SM3",
@@ -578,14 +597,14 @@
         "0.119": "10",
         "0.07": "5",
         "0.028": "0"
-
       },
       "rightDescription": {},
       "topMetric": {},
       "bottomMetric": {
         "unit": "%"
       }
-    }
+    },
+    "rank": 22000
   },
   {
     "name": "Soil_Moisture_SM4",
@@ -631,6 +650,7 @@
       "bottomMetric": {
         "unit": "%"
       }
-    }
+    },
+    "rank": 23000
   }
 ]

@@ -136,6 +136,9 @@ public class Product extends CreationAndModificationAudited {
     @ToString.Exclude
     private ProductCategory productCategory = ProductCategory.builder().id(1L).build();
 
+    @NotNull
+    private Long rank;
+
     public void addFavourite(AppUser appUser) {
         this.favourites.add(appUser);
     }

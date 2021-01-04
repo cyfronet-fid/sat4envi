@@ -110,6 +110,7 @@ public class ProductServiceTest {
                 .granuleArtifactRule(Map.of("default", "default_artifact"))
                 .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
+                .rank(1000L)
                 .build());
     }
 
@@ -195,7 +196,8 @@ public class ProductServiceTest {
                     .layerName("product_01")
                     .sceneSchemaName("Sentinel-1.scene.v1.json")
                     .metadataSchemaName("Sentinel-1.metadata.v1.json")
-                    .granuleArtifactRule(Map.of("default", "some_artifact"));
+                    .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .rank(2000L);
         }
 
         @Test
@@ -383,6 +385,7 @@ public class ProductServiceTest {
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
+                    .rank(2000L)
                     .build());
 
             dtoBuilder = ProductService.DTO.builder()
@@ -393,7 +396,8 @@ public class ProductServiceTest {
                             .type("Legend 02")
                             .build())
                     .layerName("product_02")
-                    .granuleArtifactRule(Map.of("default", "some_other_artifact"));
+                    .granuleArtifactRule(Map.of("default", "some_other_artifact"))
+                    .rank(3000L);
         }
 
         @Test
@@ -417,7 +421,8 @@ public class ProductServiceTest {
                     hasProperty("displayName", equalTo(dto.getDisplayName())),
                     hasProperty("description", equalTo(dto.getDescription())),
                     hasProperty("layerName", equalTo(dto.getLayerName())),
-                    hasProperty("granuleArtifactRule", hasEntry("default", "some_other_artifact"))
+                    hasProperty("granuleArtifactRule", hasEntry("default", "some_other_artifact")),
+                    hasProperty("rank", equalTo(3000L))
             ));
 
             val categoryName = updatedProduct.getProductCategory().getName();
@@ -428,6 +433,7 @@ public class ProductServiceTest {
         public void shouldUpdateSelectedFields() throws ProductException, NotFoundException {
             val dto = ProductService.DTO.builder()
                     .name("ProductFoo")
+                    .rank(null)
                     .build();
 
             productService.update(product.getId(), dto);
@@ -440,7 +446,8 @@ public class ProductServiceTest {
                     hasProperty("displayName", equalTo(product.getDisplayName())),
                     hasProperty("description", equalTo(product.getDescription())),
                     hasProperty("layerName", equalTo(product.getLayerName())),
-                    hasProperty("granuleArtifactRule", equalTo(product.getGranuleArtifactRule()))
+                    hasProperty("granuleArtifactRule", equalTo(product.getGranuleArtifactRule())),
+                    hasProperty("rank", equalTo(2000L))
             ));
         }
 

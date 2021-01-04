@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
-    <T> List<T> findAllFetchSchemasAndCategory(Class<T> projection);
+    <T> List<T> findAllFetchSchemasAndCategory(Sort sort, Class<T> projection);
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"productCategory"})

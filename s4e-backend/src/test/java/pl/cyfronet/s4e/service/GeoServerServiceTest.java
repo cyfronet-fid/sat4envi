@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
-import pl.cyfronet.s4e.OverlayHelper;
+import pl.cyfronet.s4e.OverlayTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
@@ -85,7 +85,7 @@ class GeoServerServiceTest {
         sldStyle = sldStyleRepository.save(sldStyleBuilder().build());
 
         val wmsOverlay = wmsOverlayRepository.save(
-                OverlayHelper.wmsOverlayBuilder()
+                OverlayTestHelper.wmsOverlayBuilder()
                         .ownerType(OverlayOwner.GLOBAL)
                         .url("")
                         .build()

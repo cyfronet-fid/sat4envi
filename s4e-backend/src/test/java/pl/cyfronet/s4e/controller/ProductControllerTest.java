@@ -105,6 +105,7 @@ public class ProductControllerTest {
                         .granuleArtifactRule(Map.of())
                         .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
+                        .rank(3000L)
                         .build(),
                 Product.builder()
                         .name("Setvak")
@@ -114,6 +115,7 @@ public class ProductControllerTest {
                         .granuleArtifactRule(Map.of())
                         .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
+                        .rank(1000L)
                         .build(),
                 Product.builder()
                         .name("WV_IR")
@@ -124,6 +126,7 @@ public class ProductControllerTest {
                         .granuleArtifactRule(Map.of())
                         .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
+                        .rank(2000L)
                         .build()))
                 .forEach(products::add);
 
@@ -178,7 +181,7 @@ public class ProductControllerTest {
         @Nested
         class ByUserWithoutLicense {
             @Test
-            public void shouldReturnNoThirdProduct() throws Exception {
+            public void shouldReturnOnlyEumetsatProduct() throws Exception {
                 mockMvc.perform(get(API_PREFIX_V1 + "/products")
                         .with(jwtBearerToken(appUser, objectMapper)))
                         .andExpect(status().isOk())
@@ -215,8 +218,8 @@ public class ProductControllerTest {
                         .with(jwtBearerToken(appUser, objectMapper)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$[*].id", contains(
-                                products.get(0).getId().intValue(),
-                                products.get(1).getId().intValue()
+                                products.get(1).getId().intValue(),
+                                products.get(0).getId().intValue()
                         )));
             }
         }
@@ -235,9 +238,9 @@ public class ProductControllerTest {
                         .with(jwtBearerToken(appUser, objectMapper)))
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$[*].id", contains(
-                                products.get(0).getId().intValue(),
                                 products.get(1).getId().intValue(),
-                                products.get(2).getId().intValue()
+                                products.get(2).getId().intValue(),
+                                products.get(0).getId().intValue()
                         )));
             }
         }
@@ -263,8 +266,8 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 //$[0] is 108m product
-                .andExpect(jsonPath("$[0].favourite", is(equalTo(true))))
-                .andExpect(jsonPath("$[0].description").doesNotExist());
+                .andExpect(jsonPath("$[2].favourite", is(equalTo(true))))
+                .andExpect(jsonPath("$[2].description").doesNotExist());
     }
 
     @Test
@@ -280,8 +283,8 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 //$[0] is 108m product
-                .andExpect(jsonPath("$[0].favourite", is(equalTo(true))))
-                .andExpect(jsonPath("$[0].description").doesNotExist());
+                .andExpect(jsonPath("$[2].favourite", is(equalTo(true))))
+                .andExpect(jsonPath("$[2].description").doesNotExist());
     }
 
     @Test
@@ -310,8 +313,8 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 //$[0] is 108m product
-                .andExpect(jsonPath("$[0].favourite", is(equalTo(true))))
-                .andExpect(jsonPath("$[0].description").doesNotExist());
+                .andExpect(jsonPath("$[2].favourite", is(equalTo(true))))
+                .andExpect(jsonPath("$[2].description").doesNotExist());
         // now we remove
         mockMvc.perform(delete(API_PREFIX_V1 + "/products/{id}/favourite", product.getId())
                 .with(jwtBearerToken(appUser, objectMapper)))
@@ -322,8 +325,8 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()", is(equalTo(3))))
                 //$[0] is 108m product
-                .andExpect(jsonPath("$[0].favourite", is(equalTo(false))))
-                .andExpect(jsonPath("$[0].description").doesNotExist());
+                .andExpect(jsonPath("$[2].favourite", is(equalTo(false))))
+                .andExpect(jsonPath("$[2].description").doesNotExist());
     }
 
     @Test

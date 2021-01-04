@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.InvitationHelper;
+import pl.cyfronet.s4e.InvitationTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
@@ -79,17 +79,17 @@ public class InvitationControllerTest {
     @BeforeEach
     public void beforeEach() {
         testDbHelper.clean();
-        institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
+        institution = institutionRepository.save(InvitationTestHelper.institutionBuilder().build());
 
-        institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
+        institutionAdmin = appUserRepository.save(InvitationTestHelper.userBuilder().build());
         val institutionAdminRoles = new AppRole[]{AppRole.INST_ADMIN, AppRole.INST_MEMBER};
         addRoles(institutionAdmin, institution, institutionAdminRoles);
 
-        member = appUserRepository.save(InvitationHelper.userBuilder().build());
+        member = appUserRepository.save(InvitationTestHelper.userBuilder().build());
         val memberRoles = new AppRole[]{AppRole.INST_MEMBER};
         addRoles(member, institution, memberRoles);
 
-        user = appUserRepository.save(InvitationHelper.userBuilder().build());
+        user = appUserRepository.save(InvitationTestHelper.userBuilder().build());
     }
 
     @AfterEach
@@ -117,7 +117,7 @@ public class InvitationControllerTest {
                 .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
         invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
+                .save(InvitationTestHelper.invitationBuilder(institution).build());
         mockMvc.perform(get(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(jwtBearerToken(institutionAdmin, objectMapper))
@@ -128,7 +128,7 @@ public class InvitationControllerTest {
 
     @Test
     public void createShouldBeSecured() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
+        val request = InvitationTestHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ public class InvitationControllerTest {
 
     @Test
     public void shouldntCreateForMember() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
+        val request = InvitationTestHelper.invitationRequestBuilder().build();
         request.setEmail(member.getEmail());
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
@@ -160,8 +160,8 @@ public class InvitationControllerTest {
 
     @Test
     public void createShouldHandleNFE() throws Exception {
-        val institution = InvitationHelper.institutionBuilder().build();
-        val request = InvitationHelper.invitationRequestBuilder().build();
+        val institution = InvitationTestHelper.institutionBuilder().build();
+        val request = InvitationTestHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -172,7 +172,7 @@ public class InvitationControllerTest {
 
     @Test
     public void shouldCreate() throws Exception {
-        val request = InvitationHelper.invitationRequestBuilder().build();
+        val request = InvitationTestHelper.invitationRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -193,8 +193,8 @@ public class InvitationControllerTest {
     @Test
     public void resendShouldBeSecured() throws Exception {
         val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
-        val request = InvitationHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
+                .save(InvitationTestHelper.invitationBuilder(institution).build());
+        val request = InvitationTestHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(put(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -206,8 +206,8 @@ public class InvitationControllerTest {
     @Test
     public void shouldResend() throws Exception {
         val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
-        val request = InvitationHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
+                .save(InvitationTestHelper.invitationBuilder(institution).build());
+        val request = InvitationTestHelper.invitationResendInvitationBuilder(invitation.getEmail()).build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations";
         mockMvc.perform(put(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -230,7 +230,7 @@ public class InvitationControllerTest {
 
     @Test
     public void confirmShouldRequireAuthenticated() throws Exception {
-        val invitation = invitationRepository.save(InvitationHelper.invitationBuilder(institution).build());
+        val invitation = invitationRepository.save(InvitationTestHelper.invitationBuilder(institution).build());
         val URL = API_PREFIX_V1 + "/invitations/{token}/confirm";
         mockMvc.perform(
                 post(URL, invitation.getToken()).contentType(MediaType.APPLICATION_JSON)
@@ -239,7 +239,7 @@ public class InvitationControllerTest {
 
     @Test
     public void shouldConfirm() throws Exception {
-        val invitation = invitationRepository.save(InvitationHelper.invitationBuilder(institution).build());
+        val invitation = invitationRepository.save(InvitationTestHelper.invitationBuilder(institution).build());
         val URL = API_PREFIX_V1 + "/invitations/{token}/confirm";
         mockMvc.perform(
                 post(URL, invitation.getToken())
@@ -253,7 +253,7 @@ public class InvitationControllerTest {
 
     @Test
     public void rejectShouldHandleNFE() throws Exception {
-        val invitation = InvitationHelper.invitationBuilder(institution).build();
+        val invitation = InvitationTestHelper.invitationBuilder(institution).build();
         val URL = API_PREFIX_V1 + "/invitations/{token}/reject";
         mockMvc.perform(
                 put(URL, invitation.getToken()).contentType(MediaType.APPLICATION_JSON)
@@ -262,7 +262,7 @@ public class InvitationControllerTest {
 
     @Test
     public void shouldReject() throws Exception {
-        val invitation = invitationRepository.save(InvitationHelper.invitationBuilder(institution).build());
+        val invitation = invitationRepository.save(InvitationTestHelper.invitationBuilder(institution).build());
         val URL = API_PREFIX_V1 + "/invitations/{token}/reject";
         mockMvc.perform(
                 put(URL, invitation.getToken()).contentType(MediaType.APPLICATION_JSON)
@@ -276,7 +276,7 @@ public class InvitationControllerTest {
     @Test
     public void deleteShouldBeSecured() throws Exception {
         val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
+                .save(InvitationTestHelper.invitationBuilder(institution).build());
         val URL = API_PREFIX_V1 + "/institution/{institution}/invitation/{id}";
         mockMvc.perform(delete(URL, institution.getSlug(), invitation.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -287,9 +287,9 @@ public class InvitationControllerTest {
     @Test
     public void deleteShouldThrowNotFoundExceptionOnDifferentUrlInstitutionAndInvitationInstitution() throws Exception {
         val newInstitution = institutionRepository
-                .save(InvitationHelper.institutionBuilder().build());
+                .save(InvitationTestHelper.institutionBuilder().build());
         val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(newInstitution).build());
+                .save(InvitationTestHelper.invitationBuilder(newInstitution).build());
         val URL = API_PREFIX_V1 + "/institutions/{institution}/invitations/{id}";
         mockMvc.perform(delete(URL, institution.getSlug(), invitation.getId())
                 .contentType(MediaType.APPLICATION_JSON)

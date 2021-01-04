@@ -63,4 +63,7 @@ class AdminCreateProductRequest {
 
     @NotEmpty
     private String productCategoryName;
+
+    @NotNull
+    private Long rank;
 }

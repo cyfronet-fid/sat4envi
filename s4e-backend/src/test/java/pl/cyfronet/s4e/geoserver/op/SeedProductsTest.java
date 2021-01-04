@@ -59,7 +59,7 @@ public class SeedProductsTest {
 
     private void seedProductsMinioDataV1() {
         log.info("Seeding Products: test");
-        List<Product> products = Arrays.asList(new Product[]{
+        List<Product> products = Arrays.asList(
                 Product.builder()
                         .name("108m")
                         .displayName("108m")
@@ -68,6 +68,7 @@ public class SeedProductsTest {
                         .accessType(Product.AccessType.OPEN)
                         .layerName("108m")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
+                        .rank(1000L)
                         .build(),
                 Product.builder()
                         .name("Setvak")
@@ -77,8 +78,9 @@ public class SeedProductsTest {
                         .accessType(Product.AccessType.OPEN)
                         .layerName("setvak")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
+                        .rank(2000L)
                         .build()
-        });
+        );
         productRepository.saveAll(products);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.Constants;
-import pl.cyfronet.s4e.InvitationHelper;
+import pl.cyfronet.s4e.InvitationTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.ExpertHelpRequest;
@@ -93,8 +93,8 @@ public class ExpertHelpControllerTest {
     public void beforeEach() {
         testDbHelper.clean();
 
-        nonZkMember = appUserRepository.save(InvitationHelper.userBuilder().build());
-        zkMember = appUserRepository.save(InvitationHelper.userBuilder().build());
+        nonZkMember = appUserRepository.save(InvitationTestHelper.userBuilder().build());
+        zkMember = appUserRepository.save(InvitationTestHelper.userBuilder().build());
 
         val institution = institutionRepository.save(Institution.builder()
                 .name("ZK")

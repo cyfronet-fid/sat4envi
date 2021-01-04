@@ -51,4 +51,6 @@ class AdminUpdateProductRequest {
     private Map<String, String> granuleArtifactRule;
 
     private String productCategoryName;
+
+    private Long rank;
 }

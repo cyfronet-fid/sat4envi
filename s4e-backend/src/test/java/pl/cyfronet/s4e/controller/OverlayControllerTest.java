@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.InvitationHelper;
-import pl.cyfronet.s4e.OverlayHelper;
+import pl.cyfronet.s4e.InvitationTestHelper;
+import pl.cyfronet.s4e.OverlayTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.*;
@@ -89,22 +89,22 @@ public class OverlayControllerTest {
     public void beforeEach() {
         testDbHelper.clean();
 
-        superAdmin = appUserRepository.save(InvitationHelper.userBuilder().authority("ROLE_ADMIN").build());
+        superAdmin = appUserRepository.save(InvitationTestHelper.userBuilder().authority("ROLE_ADMIN").build());
 
-        institution = institutionRepository.save(InvitationHelper.institutionBuilder().build());
+        institution = institutionRepository.save(InvitationTestHelper.institutionBuilder().build());
 
-        institutionAdmin = appUserRepository.save(InvitationHelper.userBuilder().build());
+        institutionAdmin = appUserRepository.save(InvitationTestHelper.userBuilder().build());
         val institutionAdminRoles = new AppRole[]{
                 AppRole.INST_ADMIN,
                 AppRole.INST_MEMBER
         };
         addRoles(institutionAdmin, institution, institutionAdminRoles);
 
-        member = appUserRepository.save(InvitationHelper.userBuilder().build());
+        member = appUserRepository.save(InvitationTestHelper.userBuilder().build());
         val memberRoles = new AppRole[]{AppRole.INST_MEMBER};
         addRoles(member, institution, memberRoles);
 
-        user = appUserRepository.save(InvitationHelper.userBuilder().build());
+        user = appUserRepository.save(InvitationTestHelper.userBuilder().build());
 
         this.prepareGlobalOverlays();
         this.prepareInstitutionalOverlay();
@@ -139,7 +139,7 @@ public class OverlayControllerTest {
 
     @Test
     public void personalOverlayCreationShouldBeSecured() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/overlays/personal";
         mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +149,7 @@ public class OverlayControllerTest {
 
     @Test
     public void shouldCreatePersonalOverlay() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/overlays/personal";
         mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ public class OverlayControllerTest {
 
     @Test
     public void globalOverlayCreationShouldBeSecured() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/overlays/global";
         mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -181,7 +181,7 @@ public class OverlayControllerTest {
 
     @Test
     public void shouldCreateGlobalOverlay() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/overlays/global";
         mockMvc.perform(post(URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -196,7 +196,7 @@ public class OverlayControllerTest {
 
     @Test
     public void institutionalOverlayShouldBeSecured() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/overlays";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -207,7 +207,7 @@ public class OverlayControllerTest {
 
     @Test
     public void shouldCreateInstitutionalOverlay() throws Exception {
-        val request = OverlayHelper.overlayRequestBuilder().build();
+        val request = OverlayTestHelper.overlayRequestBuilder().build();
         val URL = API_PREFIX_V1 + "/institutions/{institution}/overlays";
         mockMvc.perform(post(URL, institution.getSlug())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -363,19 +363,19 @@ public class OverlayControllerTest {
 
     private void prepareGlobalOverlays() {
         val prgWms = wmsOverlayRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .wmsOverlayBuilder()
                         .ownerType(OverlayOwner.GLOBAL)
                         .url("")
                         .build()
         );
         val sldStyle = sldStyleRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .sldStyleBuilder()
                         .build()
         );
         prgOverlay = prgOverlayRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .prgOverlayBuilder()
                         .wmsOverlay(prgWms)
                         .sldStyle(sldStyle)
@@ -383,7 +383,7 @@ public class OverlayControllerTest {
         );
 
         wmsGlobalOverlay = wmsOverlayRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .wmsOverlayBuilder()
                         .ownerType(OverlayOwner.GLOBAL)
                         .build()
@@ -392,7 +392,7 @@ public class OverlayControllerTest {
 
     private void prepareInstitutionalOverlay() {
         wmsInstitutionalOverlay = wmsOverlayRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .wmsOverlayBuilder()
                         .ownerType(OverlayOwner.INSTITUTIONAL)
                         .institution(institution)
@@ -402,7 +402,7 @@ public class OverlayControllerTest {
 
     private void preparePersonalOverlay() {
         wmsPersonalOverlay = wmsOverlayRepository.save(
-                OverlayHelper
+                OverlayTestHelper
                         .wmsOverlayBuilder()
                         .ownerType(OverlayOwner.PERSONAL)
                         .appUser(member)
