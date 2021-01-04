@@ -53,6 +53,7 @@ class SceneAcceptorTestHelper {
                 .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                 .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                 .granuleArtifactRule(Map.of("default", "quicklook", "COG", "RGBs_8b"))
+                .rank(1000L)
                 .build()).getId();
     }
 }

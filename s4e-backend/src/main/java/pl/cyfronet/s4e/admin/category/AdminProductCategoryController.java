@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,6 +90,13 @@ public class AdminProductCategoryController {
                         .iconName("icon_special")
                         .build()
         );
+
+        for (int i = 0; i < productCategories.size(); i++) {
+            val productCategory = productCategories.get(i);
+            // Skip the default category rank.
+            productCategory.setRank(1000L + (i + 1) * 1000L);
+        }
+
         productCategoryRepository.saveAll(productCategories);
     }
 }

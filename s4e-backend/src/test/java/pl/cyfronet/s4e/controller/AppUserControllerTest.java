@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.InvitationHelper;
+import pl.cyfronet.s4e.InvitationTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.controller.request.ForgetUserRequest;
@@ -210,7 +210,7 @@ public class AppUserControllerTest {
     @Test
     public void shouldCreateUserAddedToInstitution() throws Exception {
         val invitation = invitationRepository
-                .save(InvitationHelper.invitationBuilder(institution).build());
+                .save(InvitationTestHelper.invitationBuilder(institution).build());
         RegisterRequest registerRequest = RegisterRequest.builder()
                 .email("some@email.pl")
                 .name("Name")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
 import org.thymeleaf.TemplateEngine;
-import pl.cyfronet.s4e.InvitationHelper;
+import pl.cyfronet.s4e.InvitationTestHelper;
 import pl.cyfronet.s4e.bean.Invitation;
 import pl.cyfronet.s4e.event.OnConfirmInvitationEvent;
 import pl.cyfronet.s4e.event.OnDeleteInvitationEvent;
@@ -62,8 +62,8 @@ public class InvitationListenerTest {
 
     @Test
     public void shouldSendEmailOnCreate() throws NotFoundException {
-        val invitation = InvitationHelper
-                .invitationBuilder(InvitationHelper.institutionBuilder().build())
+        val invitation = InvitationTestHelper
+                .invitationBuilder(InvitationTestHelper.institutionBuilder().build())
                 .build();
         when(invitationService.findByToken(invitation.getToken(), Invitation.class))
                 .thenReturn(Optional.of(invitation));
@@ -75,8 +75,8 @@ public class InvitationListenerTest {
 
     @Test
     public void shouldSendEmailOnConfirmAndRemoveInvitation() throws NotFoundException {
-        val invitation = InvitationHelper
-                .invitationBuilder(InvitationHelper.institutionBuilder().build())
+        val invitation = InvitationTestHelper
+                .invitationBuilder(InvitationTestHelper.institutionBuilder().build())
                 .build();
 
         when(invitationService.findByToken(invitation.getToken(), Invitation.class))
@@ -90,8 +90,8 @@ public class InvitationListenerTest {
 
     @Test
     public void shouldSendEmailOnRejection() throws NotFoundException {
-        val invitation = InvitationHelper
-                .invitationBuilder(InvitationHelper.institutionBuilder().build())
+        val invitation = InvitationTestHelper
+                .invitationBuilder(InvitationTestHelper.institutionBuilder().build())
                 .build();
 
         when(invitationService.findByToken(invitation.getToken(), Invitation.class))
@@ -104,8 +104,8 @@ public class InvitationListenerTest {
 
     @Test
     public void shouldSendEmailOnDeletionAndRemoveInvitation() throws NotFoundException {
-        val invitation = InvitationHelper
-                .invitationBuilder(InvitationHelper.institutionBuilder().build())
+        val invitation = InvitationTestHelper
+                .invitationBuilder(InvitationTestHelper.institutionBuilder().build())
                 .build();
         when(invitationService.findByToken(invitation.getToken(), Invitation.class))
                 .thenReturn(Optional.of(invitation));

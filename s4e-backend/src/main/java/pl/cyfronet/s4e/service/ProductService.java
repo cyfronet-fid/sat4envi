@@ -78,6 +78,8 @@ public class ProductService {
 
         @Builder.Default
         private String productCategoryName = ProductCategoryRepository.DEFAULT_CATEGORY_NAME;
+
+        private Long rank;
     }
 
     private final ProductRepository productRepository;
@@ -100,8 +102,8 @@ public class ProductService {
         return productRepository.findAllByOrderByIdAsc(projection);
     }
 
-    public <T> List<T> findAllFetchSchemasAndCategory(Class<T> projection) {
-        return productRepository.findAllFetchSchemasAndCategory(projection);
+    public <T> List<T> findAllFetchSchemasAndCategory(Sort sort, Class<T> projection) {
+        return productRepository.findAllFetchSchemasAndCategory(sort, projection);
     }
 
     public <T> Optional<T> findById(Long id, Class<T> projection) {
@@ -113,7 +115,7 @@ public class ProductService {
     }
 
     public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
-        return productRepository.findAllFetchProductCategory(Sort.by("id"), projection);
+        return productRepository.findAllFetchProductCategory(Sort.by("rank"), projection);
     }
 
     public <T> List<T> findAllAuthorizedFetchProductCategory(AppUserDetails userDetails, Class<T> projection) {
@@ -123,7 +125,7 @@ public class ProductService {
                 ids.add(product.getId());
             }
         }
-        return productRepository.findAllByIdInFetchProductCategory(ids, Sort.by("id"), projection);
+        return productRepository.findAllByIdInFetchProductCategory(ids, Sort.by("rank"), projection);
     }
 
     @Transactional

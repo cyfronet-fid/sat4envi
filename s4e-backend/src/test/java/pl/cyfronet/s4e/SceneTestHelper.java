@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.SneakyThrows;
+import lombok.val;
 import pl.cyfronet.s4e.bean.Legend;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
@@ -51,7 +52,8 @@ public class SceneTestHelper {
     }
 
     public static Product.ProductBuilder productBuilder() {
-        String displayName = nextUnique(PRODUCT_NAME_PATTERN);
+        val current = COUNT.getAndIncrement();
+        String displayName = String.format(PRODUCT_NAME_PATTERN, current);
         String name = displayName.replace(" ", "_");
         return Product.builder()
                 .name(name)
@@ -60,7 +62,8 @@ public class SceneTestHelper {
                 .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .layerName(name.toLowerCase())
-                .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE);
+                .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
+                .rank(1000L * current);
     }
 
     @SneakyThrows

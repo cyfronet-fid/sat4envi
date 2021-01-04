@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,6 +140,7 @@ public class GeoServerServiceIntegrationTest {
                 .layerName("test")
                 .displayName("test")
                 .description("Description")
+                .rank(1000L)
                 .build();
         Assertions.assertThrows(RestClientException.class, () -> geoServerService.addStoreAndLayer(product));
     }

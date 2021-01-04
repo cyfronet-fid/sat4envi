@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.product.ProductDeletionException;
@@ -64,8 +66,10 @@ public class AdminProductController {
             @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content)
     })
     @GetMapping
-    public List<AdminProductResponse> list() {
-        return productService.findAllFetchSchemasAndCategory(AdminProductResponse.class);
+    public List<AdminProductResponse> list(
+            @SortDefault("rank") Sort sort
+    ) {
+        return productService.findAllFetchSchemasAndCategory(sort, AdminProductResponse.class);
     }
 
     @Operation(summary = "Return Product")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import pl.cyfronet.s4e.controller.request.InvitationResendInvitation;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class InvitationHelper {
+public class InvitationTestHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
 
     private static final String institutionName = "Institution %d";
@@ -38,7 +38,7 @@ public class InvitationHelper {
     private static final Slugify slugify = new Slugify();
 
     public static Institution.InstitutionBuilder institutionBuilder() {
-        val name = nextUnique(InvitationHelper.institutionName);
+        val name = nextUnique(InvitationTestHelper.institutionName);
         return Institution.builder()
                 .name(name)
                 .slug(slugify.slugify(name));

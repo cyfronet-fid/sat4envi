@@ -58,4 +58,6 @@ interface AdminProductResponse {
     Map<String, String> getGranuleArtifactRule();
 
     BasicProductCategoryResponse getProductCategory();
+
+    Long getRank();
 }

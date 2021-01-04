@@ -122,7 +122,8 @@ public class AdminProductControllerTest {
                     .sceneSchemaName("Sentinel-1.scene.v1.json")
                     .metadataSchemaName("Sentinel-1.metadata.v1.json")
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
-                    .productCategoryName("other");
+                    .productCategoryName("other")
+                    .rank(1000L);
         }
 
         @Test
@@ -238,6 +239,7 @@ public class AdminProductControllerTest {
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .rank(1000L)
                     .build());
         }
 
@@ -258,7 +260,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$[0].legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$[0].layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$[0].granuleArtifactRule.default", is(equalTo("some_artifact"))))
-                    .andExpect(jsonPath("$[0].productCategory.label", is(equalTo("Inne"))));
+                    .andExpect(jsonPath("$[0].productCategory.label", is(equalTo("Inne"))))
+                    .andExpect(jsonPath("$[0].rank", is(equalTo(1000))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -279,7 +282,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_artifact"))))
-                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))));
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))))
+                    .andExpect(jsonPath("$.rank", is(equalTo(1000))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -311,6 +315,7 @@ public class AdminProductControllerTest {
                             .label("Atmosfera/Meteorologia")
                             .name("atmosphere-meteorology")
                             .iconName("ico_cloud")
+                            .rank(2000L)
                             .build()
             );
             product = productRepository.save(Product.builder()
@@ -326,6 +331,7 @@ public class AdminProductControllerTest {
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .rank(1000L)
                     .build());
 
             requestBuilder = AdminUpdateProductRequest.builder()
@@ -338,7 +344,8 @@ public class AdminProductControllerTest {
                             .build())
                     .layerName("product_02")
                     .granuleArtifactRule(Map.of("default", "some_other_artifact"))
-                    .productCategoryName(category.getName());
+                    .productCategoryName(category.getName())
+                    .rank(2000L);
         }
 
         @Test
@@ -375,7 +382,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_02"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
                     .andExpect(jsonPath("$.productCategory.label", is(equalTo(category.getLabel()))))
-                    .andExpect(jsonPath("$.productCategory.label", is(equalTo(category.getLabel()))));
+                    .andExpect(jsonPath("$.rank", is(equalTo(2000))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val updatedProductCategory = productRepository
@@ -391,6 +398,7 @@ public class AdminProductControllerTest {
             AdminUpdateProductRequest updateRequest = AdminUpdateProductRequest.builder()
                     .name("Product02")
                     .granuleArtifactRule(Map.of("default", "some_other_artifact"))
+                    .rank(null)
                     .build();
 
             assertThat(productRepository.count(), is(equalTo(1L)));
@@ -409,7 +417,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
                     .andExpect(jsonPath("$.granuleArtifactRule.default", is(equalTo("some_other_artifact"))))
-                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))));
+                    .andExpect(jsonPath("$.productCategory.label", is(equalTo("Inne"))))
+                    .andExpect(jsonPath("$.rank", is(equalTo(1000))));
 
             assertThat(productRepository.count(), is(equalTo(1L)));
         }
@@ -478,7 +487,7 @@ public class AdminProductControllerTest {
         public void beforeEach() {
             productCategoryRepository.deleteAllByNameNot(ProductCategoryRepository.DEFAULT_CATEGORY_NAME);
 
-            val category = productCategoryRepository.save(ProductCategoryHelper.productCategoryBuilder().build());
+            val category = productCategoryRepository.save(ProductCategoryTestHelper.productCategoryBuilder().build());
             product = productRepository.save(Product.builder()
                     .name("Product01")
                     .displayName("Product 01")
@@ -493,6 +502,7 @@ public class AdminProductControllerTest {
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "default_artifact"))
                     .productCategory(category)
+                    .rank(1000L)
                     .build());
         }
 

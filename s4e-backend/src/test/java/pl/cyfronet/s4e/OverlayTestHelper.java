@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import pl.cyfronet.s4e.controller.request.OverlayRequest;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class OverlayHelper {
+public class OverlayTestHelper {
     private static final AtomicInteger COUNT = new AtomicInteger();
 
     private static final String label = "Test %d";
@@ -33,16 +33,16 @@ public class OverlayHelper {
     private static final String feature = "feature %d";
 
     public static OverlayRequest.OverlayRequestBuilder overlayRequestBuilder() {
-        val label = nextUnique(OverlayHelper.label);
-        val url = nextUnique(OverlayHelper.url);
+        val label = nextUnique(OverlayTestHelper.label);
+        val url = nextUnique(OverlayTestHelper.url);
         return OverlayRequest.builder()
                 .label(label)
                 .url(url);
     }
 
     public static WMSOverlay.WMSOverlayBuilder wmsOverlayBuilder() {
-        val label = nextUnique(OverlayHelper.label);
-        val url = nextUnique(OverlayHelper.url);
+        val label = nextUnique(OverlayTestHelper.label);
+        val url = nextUnique(OverlayTestHelper.url);
         return WMSOverlay.builder()
                 .label(label)
                 .layerName(label)
@@ -50,14 +50,14 @@ public class OverlayHelper {
     }
 
     public static SldStyle.SldStyleBuilder sldStyleBuilder() {
-        val name = nextUnique(OverlayHelper.label);
+        val name = nextUnique(OverlayTestHelper.label);
         return SldStyle.builder()
                 .name(name)
                 .created(true);
     }
 
     public static PRGOverlay.PRGOverlayBuilder prgOverlayBuilder() {
-        val feature = nextUnique(OverlayHelper.feature);
+        val feature = nextUnique(OverlayTestHelper.feature);
         return PRGOverlay.builder()
                 .featureType(feature)
                 .created(true);
