@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,6 +103,7 @@ public class ProductControllerTest {
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                         .layerName("108m")
                         .granuleArtifactRule(Map.of())
+                        .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
                         .build(),
                 Product.builder()
@@ -111,6 +112,7 @@ public class ProductControllerTest {
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
                         .layerName("setvak")
                         .granuleArtifactRule(Map.of())
+                        .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
                         .build(),
                 Product.builder()
@@ -120,6 +122,7 @@ public class ProductControllerTest {
                         .layerName("wv_ir")
                         .legend(legend)
                         .granuleArtifactRule(Map.of())
+                        .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
                         .build()))
                 .forEach(products::add);
@@ -156,6 +159,7 @@ public class ProductControllerTest {
         @BeforeEach
         public void beforeEach () {
             products.get(0).setAccessType(Product.AccessType.EUMETSAT);
+            products.get(0).setAuthorizedOnly(true);
             products.get(1).setAccessType(Product.AccessType.PRIVATE);
             products.get(2).setAccessType(Product.AccessType.PRIVATE);
             repository.saveAll(products);
@@ -164,12 +168,10 @@ public class ProductControllerTest {
         @Nested
         class ByUnauthenticatedUser {
             @Test
-            public void shouldReturnNoThirdProduct() throws Exception {
+            public void shouldReturnNoProducts() throws Exception {
                 mockMvc.perform(get(API_PREFIX_V1 + "/products"))
                         .andExpect(status().isOk())
-                        .andExpect(jsonPath("$[*].id", contains(
-                                products.get(0).getId().intValue()
-                        )));
+                        .andExpect(jsonPath("$", hasSize(0)));
             }
         }
 

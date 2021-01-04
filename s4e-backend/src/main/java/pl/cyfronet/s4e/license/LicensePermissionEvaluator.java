@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,6 +87,10 @@ public class LicensePermissionEvaluator {
      * @return If given the authorities from {@code userDetails} to allow read access to {@code product}.
      */
     private boolean decideRead(AppUserDetails userDetails, Product product) {
+        if (product.getAuthorizedOnly() && userDetails == null) {
+            return false;
+        }
+
         ProductGranularLicense license = productLicenses.get(product.getAccessType());
         return license.canRead(product, userDetails);
     }
@@ -105,12 +109,13 @@ public class LicensePermissionEvaluator {
      */
     private boolean decideRead(AppUserDetails userDetails, Scene scene) {
         Product product = scene.getProduct();
-        ProductGranularLicense license = productLicenses.get(product.getAccessType());
 
         // Verify access to product.
         if (!decideRead(userDetails, product)) {
             return false;
         }
+
+        ProductGranularLicense license = productLicenses.get(product.getAccessType());
 
         // If license is timestamp-granular then verify access,
         if (license instanceof TimestampGranularLicense) {

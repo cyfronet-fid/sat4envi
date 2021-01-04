@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ public class SeedProductsTest {
                         .name("108m")
                         .displayName("108m")
                         .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
+                        .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
                         .layerName("108m")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)
@@ -72,6 +73,7 @@ public class SeedProductsTest {
                         .name("Setvak")
                         .displayName("Setvak")
                         .description("Obraz satelitarny Meteosat w kanale 10.8 µm z paletą barwną do analizy powierzchni wysokich chmur konwekcyjnych – obszar Europy Centralnej.")
+                        .authorizedOnly(false)
                         .accessType(Product.AccessType.OPEN)
                         .layerName("setvak")
                         .granuleArtifactRule(DEFAULT_GRANULE_ARTIFACT_RULE)

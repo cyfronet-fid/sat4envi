@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
@@ -228,6 +229,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
@@ -251,6 +253,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$[0].name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$[0].displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$[0].description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$[0].authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$[0].accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$[0].legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$[0].layerName", is(equalTo("product_01"))))
@@ -271,6 +274,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
@@ -313,6 +317,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
@@ -364,6 +369,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 02"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 02 __description__"))))
+                    .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("PRIVATE"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 02"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_02"))))
@@ -398,6 +404,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
@@ -476,6 +483,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ class SceneAcceptorTestHelper {
         return productRepository.save(Product.builder()
                 .name("Sentinel-1-GRDH")
                 .displayName("Sentinel-1-GRDH")
+                .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .layerName("sentinel_1_grdh")
                 .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
