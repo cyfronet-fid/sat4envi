@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,6 +61,8 @@ public class ProductService {
         private String displayName;
 
         private String description;
+
+        private Boolean authorizedOnly;
 
         private Product.AccessType accessType;
 

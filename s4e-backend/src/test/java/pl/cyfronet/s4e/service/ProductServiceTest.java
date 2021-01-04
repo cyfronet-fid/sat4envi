@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,6 +108,7 @@ public class ProductServiceTest {
                 .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                 .layerName("108m")
                 .granuleArtifactRule(Map.of("default", "default_artifact"))
+                .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .build());
     }
@@ -186,6 +187,7 @@ public class ProductServiceTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
                             .type("Legend 01")
@@ -379,6 +381,7 @@ public class ProductServiceTest {
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .build());
 
