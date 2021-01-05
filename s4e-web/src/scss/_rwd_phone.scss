@@ -311,4 +311,15 @@
       }
     }
   }
+
+  .cookies {
+    section {
+      flex-direction: column;
+      align-items: flex-start;
+
+      button {
+        margin-left: 80px;
+      }
+    }
+  }
 }

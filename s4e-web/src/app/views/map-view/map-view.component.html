@@ -14,7 +14,20 @@
   ~ limitations under the License.
   ~
   -->
-
+<div *ngIf="!(cookiePolicyAccepted$ | async)" class="cookies">
+  <section>
+    <p i18n>
+      Aby dostarczyć Państwu jak najlepszych wrażeń podczas korzystania z aplikacji
+      Sat4Envi zbieramy dane w celach analitycznych.
+      <a href="https://sat4envi.imgw.pl/?page_id=506"
+        >Zasady przetwarzania danych w projekcie</a
+      >.
+    </p>
+    <button (click)="acceptCookies()" class="button button--primary" i18n>
+      Rozumiem
+    </button>
+  </section>
+</div>
 <div
   class="section sidebar"
   [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'"

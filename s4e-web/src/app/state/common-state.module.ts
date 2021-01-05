@@ -19,10 +19,11 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SessionQuery} from './session/session.query';
 import {SessionService} from './session/session.service';
+import {CookieService} from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [],
   imports: [CommonModule],
-  providers: [SessionQuery, SessionService]
+  providers: [SessionQuery, SessionService, CookieService]
 })
 export class CommonStateModule {}

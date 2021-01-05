@@ -16,12 +16,17 @@
  */
 
 import {SessionStore} from './session.store';
+import {TestBed} from '@angular/core/testing';
+import {CommonStateModule} from '../common-state.module';
 
 describe('SessionStore', () => {
   let store: SessionStore;
 
   beforeEach(() => {
-    store = new SessionStore();
+    TestBed.configureTestingModule({
+      imports: [CommonStateModule]
+    });
+    store = TestBed.inject(SessionStore);
   });
 
   it('should create an instance', () => {

@@ -16,7 +16,7 @@
  */
 
 import Canvg from 'canvg';
-import * as JsPDF from 'jspdf';
+import {jsPDF} from 'jspdf';
 import {forkJoin, fromEvent, Observable, of, ReplaySubject} from 'rxjs';
 import {delay, filter, switchMap, take, tap} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
@@ -48,7 +48,7 @@ class ScaleComposer {
   minWidth: number = 40;
 
   constructor(
-    private doc: JsPDF,
+    private doc: jsPDF,
     private xStart: number,
     private yStart: number,
     private xEnd: number,
@@ -157,7 +157,7 @@ class LegendComposer {
   private direction: 'bottom-top' | 'top-bottom';
 
   constructor(
-    private doc: JsPDF,
+    private doc: jsPDF,
     private xStart: number,
     private yStart: number,
     private xEnd: number,
@@ -408,7 +408,7 @@ export class ReportGenerator {
   private loadFont(fontPromise: Promise<any>): Observable<any> {
     return fromPromise(
       fontPromise.then(fontModule => {
-        fontModule.registerFont(JsPDF);
+        fontModule.registerFont(jsPDF);
       })
     );
   }
@@ -436,7 +436,7 @@ export class ReportGenerator {
       throw Error('caption too long');
     }
 
-    const doc = new JsPDF({
+    const doc = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
       format: 'a4'
@@ -587,7 +587,7 @@ export class ReportGenerator {
     imageData: string,
     imageHeight: number,
     imageWidth: number,
-    doc: JsPDF,
+    doc: jsPDF,
     margin: number,
     A4Height: number,
     middleMargin: number

@@ -17,12 +17,17 @@
 
 import {Injectable} from '@angular/core';
 import {Store, StoreConfig} from '@datorama/akita';
-import {createSession, Session} from './session.model';
+import {COOKIE_POLICY_ACCEPTED_KEY, createSession, Session} from './session.model';
+import {CookieService} from 'ngx-cookie-service';
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'Session'})
 export class SessionStore extends Store<Session> {
-  constructor() {
-    super(createSession({}));
+  constructor(cookieService: CookieService) {
+    super(
+      createSession({
+        cookiePolicyAccepted: cookieService.get(COOKIE_POLICY_ACCEPTED_KEY) === '1'
+      })
+    );
   }
 }

@@ -129,6 +129,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     .selectAdministrationInstitutions$()
     .pipe(map(institutions => !!institutions && institutions.length > 0));
 
+  public cookiePolicyAccepted$ = this.sessionQuery.selectCookiePolicyAccepted();
+
   @ViewChild('map', {read: MapComponent, static: true}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
 
@@ -405,5 +407,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   openSceneSelectionModal() {
     this.modalService.show({id: MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID});
+  }
+
+  acceptCookies() {
+    this.sessionService.acceptCookiePolicy();
   }
 }
