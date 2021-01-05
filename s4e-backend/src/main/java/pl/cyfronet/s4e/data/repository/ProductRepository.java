@@ -30,7 +30,7 @@ import java.util.Set;
 
 @Transactional(readOnly = true)
 public interface ProductRepository extends CrudRepository<Product, Long> {
-    <T> List<T> findAllByOrderByIdAsc(Class<T> projection);
+    <T> List<T> findAllBy(Sort sort, Class<T> projection);
 
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
