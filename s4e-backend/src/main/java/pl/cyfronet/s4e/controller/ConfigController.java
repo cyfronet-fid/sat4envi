@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.OsmProperties;
 import pl.cyfronet.s4e.search.SentinelSearchConfig;
 import pl.cyfronet.s4e.search.SentinelSearchConfigSupplier;
+import pl.cyfronet.s4e.security.AppUserDetails;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -67,6 +69,8 @@ public class ConfigController {
     })
     @GetMapping("/config/sentinel-search")
     public SentinelSearchConfig sentinelSearchConfig() {
-        return sentinelSearchConfigSupplier.get();
+        AppUserDetails userDetails = AppUserDetailsSupplier.get();
+
+        return sentinelSearchConfigSupplier.getConfig(userDetails);
     }
 }

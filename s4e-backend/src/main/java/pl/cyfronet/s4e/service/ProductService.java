@@ -98,10 +98,6 @@ public class ProductService {
 
     private final LicensePermissionEvaluator licensePermissionEvaluator;
 
-    public <T> List<T> findAll(Class<T> projection) {
-        return productRepository.findAllByOrderByIdAsc(projection);
-    }
-
     public <T> List<T> findAllFetchSchemasAndCategory(Sort sort, Class<T> projection) {
         return productRepository.findAllFetchSchemasAndCategory(sort, projection);
     }
