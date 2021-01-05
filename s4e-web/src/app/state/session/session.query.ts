@@ -106,6 +106,10 @@ export class SessionQuery extends Query<Session> {
     );
   }
 
+  public selectCookiePolicyAccepted(): Observable<boolean> {
+    return this.select('cookiePolicyAccepted');
+  }
+
   private _getInstitutionsRolesMap() {
     return (
       (!!this.getValue().roles &&

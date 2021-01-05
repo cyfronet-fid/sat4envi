@@ -15,6 +15,8 @@
  *
  */
 
+export const COOKIE_POLICY_ACCEPTED_KEY = 'cookiePolicyAccepted';
+
 export interface LoginFormState {
   email: string;
   password: string;
@@ -34,6 +36,7 @@ export interface Session {
   authorities: string[];
   memberZK: boolean;
   admin: boolean;
+  cookiePolicyAccepted: boolean;
 }
 
 export interface PasswordChangeFormState {
@@ -44,8 +47,11 @@ export interface PasswordChangeFormState {
 /**
  * A factory function that creates Session
  */
-export function createSession(params: Partial<Session>): Session {
+export function createSession(
+  params: Partial<Session> & {cookiePolicyAccepted: boolean}
+): Session {
   return {
+    cookiePolicyAccepted: params.cookiePolicyAccepted,
     email: params.email || null,
     roles: params.roles || [],
     authorities: params.authorities || [],

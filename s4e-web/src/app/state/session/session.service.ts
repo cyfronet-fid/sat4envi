@@ -17,20 +17,17 @@
 
 import {handleHttpRequest$} from 'src/app/common/store.util';
 import {
-  ERROR_INTERCEPTOR_CODES_TO_HANDLE,
   ERROR_INTERCEPTOR_CODES_TO_SKIP,
   ERROR_INTERCEPTOR_SKIP_HEADER
 } from '../../utils/error-interceptor/error.helper';
 import {SessionStore} from './session.store';
 import {action, resetStores} from '@datorama/akita';
-import {catchError, finalize, map, switchMap, tap} from 'rxjs/operators';
-import {LoginFormState, Session} from './session.model';
+import {catchError, map, switchMap, tap} from 'rxjs/operators';
+import {COOKIE_POLICY_ACCEPTED_KEY, LoginFormState, Session} from './session.model';
 import {
   HTTP_401_UNAUTHORIZED,
   HTTP_403_FORBIDDEN,
-  HTTP_404_NOT_FOUND,
-  HTTP_500_INTERNAL_SERVER_ERROR,
-  HTTP_502_BAD_GATEWAY
+  HTTP_404_NOT_FOUND
 } from '../../errors/errors.model';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {Router} from '@angular/router';
@@ -38,6 +35,7 @@ import environment from 'src/environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {NotificationService} from '../../notifications/state/notification.service';
+import {CookieService} from 'ngx-cookie-service';
 
 export const BACK_LINK_QUERY_PARAM = 'back_link';
 
@@ -66,7 +64,8 @@ export class SessionService {
     private _notificationService: NotificationService,
     private _http: HttpClient,
     private _router: Router,
-    private _profileLoaderService: ProfileLoaderService
+    private _profileLoaderService: ProfileLoaderService,
+    private cookieService: CookieService
   ) {}
 
   loadProfile$() {
@@ -200,5 +199,10 @@ export class SessionService {
       : this._router.navigate(['/map/products']);
 
     delete this._backLink;
+  }
+
+  acceptCookiePolicy() {
+    this._store.update({cookiePolicyAccepted: true});
+    this.cookieService.set(COOKIE_POLICY_ACCEPTED_KEY, '1', new Date('2038-01-01'));
   }
 }
