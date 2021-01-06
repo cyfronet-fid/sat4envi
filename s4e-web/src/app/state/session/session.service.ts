@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,28 @@
  */
 
 import {handleHttpRequest$} from 'src/app/common/store.util';
-import {ERROR_INTERCEPTOR_SKIP_HEADER} from '../../utils/error-interceptor/error.helper';
+import {
+  ERROR_INTERCEPTOR_CODES_TO_HANDLE,
+  ERROR_INTERCEPTOR_CODES_TO_SKIP,
+  ERROR_INTERCEPTOR_SKIP_HEADER
+} from '../../utils/error-interceptor/error.helper';
 import {SessionStore} from './session.store';
 import {action, resetStores} from '@datorama/akita';
 import {catchError, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {LoginFormState, Session} from './session.model';
-import {HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN} from '../../errors/errors.model';
-import {Observable, of, throwError} from 'rxjs';
+import {
+  HTTP_401_UNAUTHORIZED,
+  HTTP_403_FORBIDDEN,
+  HTTP_404_NOT_FOUND,
+  HTTP_500_INTERNAL_SERVER_ERROR,
+  HTTP_502_BAD_GATEWAY
+} from '../../errors/errors.model';
+import {EMPTY, Observable, of, throwError} from 'rxjs';
 import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
 import environment from 'src/environments/environment';
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
 export const BACK_LINK_QUERY_PARAM = 'back_link';
 
@@ -71,7 +81,7 @@ export class SessionService {
     this._backLink = backLink;
   }
 
-  resetPassword(oldPassword: string, newPassword: string) {
+  changePassword(oldPassword: string, newPassword: string) {
     const url = `${environment.apiPrefixV1}/password-change`;
     return this._http.post(url, {oldPassword, newPassword})
       .pipe(
@@ -79,6 +89,53 @@ export class SessionService {
         tap(() => this._notificationService.addGeneral({
           type: 'success',
           content: 'Hasło zostało zmienione'
+        }))
+      );
+  }
+
+  sendPasswordResetToken$(email: string) {
+    const url = `${environment.apiPrefixV1}/token-create?email=${email}`;
+    return this._http.post(url, {})
+      .pipe(
+        tap(() => this._notificationService.addGeneral({
+          type: 'success',
+          content: 'Link do resetu hasła został wysłany na podany adres email'
+        }))
+      );
+  }
+
+  resetPassword$(token: string, password: string) {
+    const headers = {
+      headers: {
+        [ERROR_INTERCEPTOR_CODES_TO_SKIP]: [
+          HTTP_401_UNAUTHORIZED.toString(),
+          HTTP_404_NOT_FOUND.toString()
+        ].join(',')
+      }
+    };
+    const url = `${environment.apiPrefixV1}/password-reset`;
+    return this._http.post(url, {token, password}, headers)
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          switch (error.status) {
+            case HTTP_404_NOT_FOUND:
+              this._notificationService.addGeneral({
+                type: 'error',
+                content: 'Token dla resetu hasła nie istnieje'
+              });
+              break;
+            case HTTP_401_UNAUTHORIZED:
+              this._notificationService.addGeneral({
+                type: 'error',
+                content: 'Token resetu hasła przedawnił się'
+              });
+              break;
+          }
+          return EMPTY;
+        }),
+        tap(() => this._notificationService.addGeneral({
+          type: 'success',
+          content: 'Hasło zostało zresetowane'
         }))
       );
   }

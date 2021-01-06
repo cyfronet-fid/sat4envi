@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
   submitPasswordChange() {
     if (this.form.valid) {
       this._sessionService
-        .resetPassword(
+        .changePassword(
           this.form.controls.oldPassword.value,
           this.form.controls.newPassword.value
         )

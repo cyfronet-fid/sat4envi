@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,10 @@ export class HttpErrorHelper {
   public static skipErrorCode(error: HttpErrorResponse, request: HttpRequest<any>): boolean {
     return request.headers.has(ERROR_INTERCEPTOR_CODES_TO_SKIP)
       && request.headers.get(ERROR_INTERCEPTOR_CODES_TO_SKIP).length > 0
-      && request.headers.get(ERROR_INTERCEPTOR_CODES_TO_SKIP).split(',').map(errorCode => +errorCode).includes(error.status);
+      && request.headers.get(ERROR_INTERCEPTOR_CODES_TO_SKIP)
+        .split(',')
+        .map(errorCode => +(errorCode.trim()))
+        .includes(error.status);
   }
 
   public static handleErrorCode(error: HttpErrorResponse, request: HttpRequest<any>): boolean {
