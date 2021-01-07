@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,9 +52,9 @@ public class ProductController {
     public List<BasicProductResponse> getProducts() {
         AppUserDetails userDetails = AppUserDetailsSupplier.get();
         if (isAdmin(userDetails)) {
-            return productService.findAllFetchProductCategory(BasicProductResponse.class);
+            return productService.findAllByDownloadOnlyFalseFetchProductCategory(BasicProductResponse.class);
         }
-        return productService.findAllAuthorizedFetchProductCategory(userDetails, BasicProductResponse.class);
+        return productService.findAllAuthorizedByDownloadOnlyFalseFetchProductCategory(userDetails, BasicProductResponse.class);
     }
 
     @Operation(summary = "View product info")

@@ -113,6 +113,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
@@ -155,7 +156,7 @@ public class AdminProductControllerTest {
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val newProductCategory = productRepository
-                    .findAllFetchProductCategory(Sort.by("id"), Product.class)
+                    .findAllByDownloadOnlyFalseFetchProductCategory(Sort.by("id"), Product.class)
                     .get(0)
                     .getProductCategory()
                     .getName();
@@ -230,6 +231,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
@@ -255,6 +257,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$[0].name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$[0].displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$[0].description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$[0].downloadOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$[0].authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$[0].accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$[0].legend.type", is(equalTo("Legend 01"))))
@@ -277,6 +280,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product01"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
+                    .andExpect(jsonPath("$.downloadOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
@@ -322,6 +326,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
@@ -376,6 +381,7 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 02"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 02 __description__"))))
+                    .andExpect(jsonPath("$.downloadOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("PRIVATE"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 02"))))
@@ -386,7 +392,7 @@ public class AdminProductControllerTest {
 
             assertThat(productRepository.count(), is(equalTo(1L)));
             val updatedProductCategory = productRepository
-                    .findAllFetchProductCategory(Sort.by("id"), Product.class)
+                    .findAllByDownloadOnlyFalseFetchProductCategory(Sort.by("id"), Product.class)
                     .get(0)
                     .getProductCategory()
                     .getName();
@@ -397,6 +403,8 @@ public class AdminProductControllerTest {
         public void shouldUpdateSelectedFields() throws Exception {
             AdminUpdateProductRequest updateRequest = AdminUpdateProductRequest.builder()
                     .name("Product02")
+                    .downloadOnly(true)
+                    .authorizedOnly(true)
                     .granuleArtifactRule(Map.of("default", "some_other_artifact"))
                     .rank(null)
                     .build();
@@ -412,7 +420,8 @@ public class AdminProductControllerTest {
                     .andExpect(jsonPath("$.name", is(equalTo("Product02"))))
                     .andExpect(jsonPath("$.displayName", is(equalTo("Product 01"))))
                     .andExpect(jsonPath("$.description", is(equalTo("Product 01 __description__"))))
-                    .andExpect(jsonPath("$.authorizedOnly", is(equalTo(false))))
+                    .andExpect(jsonPath("$.downloadOnly", is(equalTo(true))))
+                    .andExpect(jsonPath("$.authorizedOnly", is(equalTo(true))))
                     .andExpect(jsonPath("$.accessType", is(equalTo("OPEN"))))
                     .andExpect(jsonPath("$.legend.type", is(equalTo("Legend 01"))))
                     .andExpect(jsonPath("$.layerName", is(equalTo("product_01"))))
@@ -492,6 +501,7 @@ public class AdminProductControllerTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()

@@ -41,6 +41,9 @@ class AdminCreateProductRequest {
     private String description;
 
     @NotNull
+    private Boolean downloadOnly;
+
+    @NotNull
     private Boolean authorizedOnly;
 
     @NotNull
