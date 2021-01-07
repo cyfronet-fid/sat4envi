@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import jakarta.json.Json;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
@@ -58,8 +59,35 @@ class ScenePersisterTest {
 
     @Test
     public void shouldSaveNewScene() throws NotFoundException {
-        Product product = createProduct();
-        Prototype prototype = getPrototype(product.getId(), "key/path/of/a.scene");
+        Product product = createProduct(false);
+        Prototype prototype = getPrototype(product.getId(), "key/path/of/a.scene", "default_artifact");
+
+        assertThat(listProductScenes(product.getId()), hasSize(0));
+
+        Long persistedId = scenePersister.persist(prototype);
+
+        assertThat(listProductScenes(product.getId()), hasItems(allOf(
+                hasProperty("id", equalTo(persistedId)),
+                hasProperty("sceneKey", equalTo(prototype.getSceneKey()))
+        )));
+    }
+
+    @Test
+    public void shouldVerifyS3PathNotNull() {
+        Product product = createProduct(false);
+        Prototype prototype = getPrototype(product.getId(), "key/path/of/a.scene", "not_in_granule_artifact_rule");
+
+        assertThat(listProductScenes(product.getId()), hasSize(0));
+
+        assertThrows(DataIntegrityViolationException.class, () -> scenePersister.persist(prototype));
+
+        assertThat(listProductScenes(product.getId()), hasSize(0));
+    }
+
+    @Test
+    public void shouldntVerifyS3PathNotNullIfProductDownloadOnly() throws NotFoundException {
+        Product product = createProduct(true);
+        Prototype prototype = getPrototype(product.getId(), "key/path/of/a.scene", "not_in_granule_artifact_rule");
 
         assertThat(listProductScenes(product.getId()), hasSize(0));
 
@@ -73,10 +101,10 @@ class ScenePersisterTest {
 
     @Test
     public void shouldUpdateExistingScene() throws NotFoundException {
-        Product product = createProduct();
+        Product product = createProduct(false);
         String sceneKey = "key/path/of/a.scene";
         Scene scene = createScene(product, sceneKey);
-        Prototype prototype = getPrototype(product.getId(), sceneKey);
+        Prototype prototype = getPrototype(product.getId(), sceneKey, "default_artifact");
 
         assertThat(listProductScenes(product.getId()), hasItems(allOf(
                 hasProperty("id", equalTo(scene.getId())),
@@ -94,11 +122,11 @@ class ScenePersisterTest {
 
     @Test
     public void shouldVerifyUpdatedSceneProductMatches() {
-        Product product1 = createProduct();
-        Product product2 = createProduct();
+        Product product1 = createProduct(false);
+        Product product2 = createProduct(false);
         String sceneKey = "key/path/of/a.scene";
         Scene scene = createScene(product1, sceneKey);
-        Prototype prototype = getPrototype(product2.getId(), sceneKey);
+        Prototype prototype = getPrototype(product2.getId(), sceneKey, "default_artifact");
 
         assertThat(listProductScenes(product1.getId()), hasItems(allOf(
                 hasProperty("id", equalTo(scene.getId())),
@@ -115,8 +143,10 @@ class ScenePersisterTest {
         assertThat(listProductScenes(product2.getId()), is(empty()));
     }
 
-    private Product createProduct() {
-        return productRepository.save(SceneTestHelper.productBuilder().build());
+    private Product createProduct(boolean downloadOnly) {
+        return productRepository.save(SceneTestHelper.productBuilder()
+                .downloadOnly(downloadOnly)
+                .build());
     }
 
     private Scene createScene(Product product, String sceneKey) {
@@ -125,14 +155,14 @@ class ScenePersisterTest {
                 .build());
     }
 
-    private Prototype getPrototype(Long productId, String sceneKey) {
+    private Prototype getPrototype(Long productId, String sceneKey, String artifactName) {
         return Prototype.builder()
                 .sceneKey(sceneKey)
                 .productId(productId)
                 .footprint(TestGeometryHelper.ANY_POLYGON)
                 .sceneJson(Json.createObjectBuilder()
                         .add("artifacts", Json.createObjectBuilder()
-                                .add("default_artifact", "some/value.tif")
+                                .add(artifactName, "some/value.tif")
                                 .build())
                         .build())
                 .metadataJson(Json.createObjectBuilder()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class GeoServerSynchronizer {
     @Transactional
     public void synchronizeStoreAndMosaics() {
         log.info("Creating stores and mosaics");
-        for (val product : productRepository.findAll()) {
+        for (val product : productRepository.findAllByDownloadOnlyFalse()) {
             if (!geoServerService.layerExists(product.getLayerName())) {
                 geoServerService.addStoreAndLayer(product);
             }
@@ -62,8 +62,7 @@ public class GeoServerSynchronizer {
         }
 
         log.info("Creating PRG overlays");
-        List<PRGOverlay> prgOverlays = new ArrayList<>();
-        prgOverlayRepository.findAll().forEach(prgOverlays::add);
+        List<PRGOverlay> prgOverlays = new ArrayList<>(prgOverlayRepository.findAll());
         // existence check is done inside
         geoServerService.createPrgOverlays(prgOverlays);
         for (val prgOverlay : prgOverlays) {

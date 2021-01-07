@@ -43,6 +43,8 @@ interface AdminProductResponse {
 
     String getDescription();
 
+    Boolean getDownloadOnly();
+
     Boolean getAuthorizedOnly();
 
     String getAccessType();

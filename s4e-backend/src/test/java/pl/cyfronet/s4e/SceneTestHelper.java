@@ -59,6 +59,7 @@ public class SceneTestHelper {
                 .name(name)
                 .displayName(displayName)
                 .description("sth")
+                .downloadOnly(false)
                 .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .layerName(name.toLowerCase())

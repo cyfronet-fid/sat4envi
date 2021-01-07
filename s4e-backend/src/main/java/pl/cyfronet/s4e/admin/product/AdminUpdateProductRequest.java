@@ -35,6 +35,8 @@ class AdminUpdateProductRequest {
 
     private String description;
 
+    private Boolean downloadOnly;
+
     private Boolean authorizedOnly;
 
     private Product.AccessType accessType;

@@ -27,6 +27,7 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SchemaRepository;
 
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,11 +43,12 @@ class SceneAcceptorTestHelper {
         Map<String, Schema> schemas = SchemaTestHelper.SCENE_AND_METADATA_SCHEMA_NAMES.stream()
                 .map(path -> SchemaTestHelper.schemaBuilder(path, testResourceHelper).build())
                 .map(schemaRepository::save)
-                .collect(Collectors.toMap(Schema::getName, s -> s));
+                .collect(Collectors.toMap(Schema::getName, Function.identity()));
 
         return productRepository.save(Product.builder()
                 .name("Sentinel-1-GRDH")
                 .displayName("Sentinel-1-GRDH")
+                .downloadOnly(false)
                 .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .layerName("sentinel_1_grdh")

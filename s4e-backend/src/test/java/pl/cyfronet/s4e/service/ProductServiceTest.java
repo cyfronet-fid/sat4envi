@@ -108,6 +108,7 @@ public class ProductServiceTest {
                 .description("Obraz satelitarny Meteosat dla obszaru Europy w kanale 10.8 µm z zastosowanie maskowanej palety barw dla obszarów mórz i lądów.")
                 .layerName("108m")
                 .granuleArtifactRule(Map.of("default", "default_artifact"))
+                .downloadOnly(false)
                 .authorizedOnly(false)
                 .accessType(Product.AccessType.OPEN)
                 .rank(1000L)
@@ -124,7 +125,7 @@ public class ProductServiceTest {
     }
 
     @Nested
-    class FindAllAuthorizedFetchProductCategory {
+    class FindAllAuthorizedByDownloadOnlyFetchProductCategory {
         private Product productPrivate;
 
         @BeforeEach
@@ -137,6 +138,11 @@ public class ProductServiceTest {
             productRepository.save(SceneTestHelper.productBuilder()
                     .accessType(Product.AccessType.PRIVATE)
                     .build());
+
+            // A download only Product. Make sure it isn't listed by this method.
+            productRepository.save(SceneTestHelper.productBuilder()
+                    .downloadOnly(true)
+                    .build());
         }
 
         @Test
@@ -144,7 +150,7 @@ public class ProductServiceTest {
             val userDetails = mock(AppUserDetails.class);
             when(userDetails.getAuthorities()).thenReturn(Set.of());
 
-            val results = productService.findAllAuthorizedFetchProductCategory(userDetails, ProjectionWithId.class);
+            val results = productService.findAllAuthorizedByDownloadOnlyFalseFetchProductCategory(userDetails, ProjectionWithId.class);
 
             assertThat(results, hasSize(1));
             assertThat(results.get(0).getId(), is(equalTo(product108m.getId())));
@@ -152,7 +158,7 @@ public class ProductServiceTest {
 
         @Test
         public void shouldFilterForAnonymousUser() {
-            val results = productService.findAllAuthorizedFetchProductCategory(null, ProjectionWithId.class);
+            val results = productService.findAllAuthorizedByDownloadOnlyFalseFetchProductCategory(null, ProjectionWithId.class);
 
             assertThat(results, hasSize(1));
             assertThat(results.get(0).getId(), is(equalTo(product108m.getId())));
@@ -165,7 +171,7 @@ public class ProductServiceTest {
                     Set.of(new SimpleGrantedAuthority(LICENSE_READ_AUTHORITY_PREFIX + productPrivate.getId()))
             );
 
-            val results = productService.findAllAuthorizedFetchProductCategory(userDetails, ProjectionWithId.class);
+            val results = productService.findAllAuthorizedByDownloadOnlyFalseFetchProductCategory(userDetails, ProjectionWithId.class);
 
             assertThat(results, containsInAnyOrder(
                     hasProperty("id", is(equalTo(product108m.getId()))),
@@ -188,6 +194,7 @@ public class ProductServiceTest {
                     .name("Product01")
                     .displayName("Product 01")
                     .description("Product 01 __description__")
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .legend(Legend.builder()
@@ -383,6 +390,7 @@ public class ProductServiceTest {
                     .sceneSchema(schemas.get("Sentinel-1.scene.v1.json"))
                     .metadataSchema(schemas.get("Sentinel-1.metadata.v1.json"))
                     .granuleArtifactRule(Map.of("default", "some_artifact"))
+                    .downloadOnly(false)
                     .authorizedOnly(false)
                     .accessType(Product.AccessType.OPEN)
                     .rank(2000L)

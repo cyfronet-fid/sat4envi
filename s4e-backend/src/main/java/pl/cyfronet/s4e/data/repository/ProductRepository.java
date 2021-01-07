@@ -32,13 +32,15 @@ import java.util.Set;
 public interface ProductRepository extends CrudRepository<Product, Long> {
     <T> List<T> findAllBy(Sort sort, Class<T> projection);
 
+    List<Product> findAllByDownloadOnlyFalse();
+
     @Query("SELECT p FROM Product p")
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
     <T> List<T> findAllFetchSchemasAndCategory(Sort sort, Class<T> projection);
 
-    @Query("SELECT p FROM Product p")
+    @Query("SELECT p FROM Product p WHERE p.downloadOnly = FALSE")
     @EntityGraph(attributePaths = {"productCategory"})
-    <T> List<T> findAllFetchProductCategory(Sort sort, Class<T> projection);
+    <T> List<T> findAllByDownloadOnlyFalseFetchProductCategory(Sort sort, Class<T> projection);
 
     @Query("SELECT p FROM Product p WHERE p.id IN :ids")
     @EntityGraph(attributePaths = {"productCategory"})

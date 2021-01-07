@@ -62,6 +62,8 @@ public class ProductService {
 
         private String description;
 
+        private Boolean downloadOnly;
+
         private Boolean authorizedOnly;
 
         private Product.AccessType accessType;
@@ -110,13 +112,16 @@ public class ProductService {
         return productRepository.findByIdFetchSchemasAndCategory(id, projection);
     }
 
-    public <T> List<T> findAllFetchProductCategory(Class<T> projection) {
-        return productRepository.findAllFetchProductCategory(Sort.by("rank"), projection);
+    public <T> List<T> findAllByDownloadOnlyFalseFetchProductCategory(Class<T> projection) {
+        return productRepository.findAllByDownloadOnlyFalseFetchProductCategory(Sort.by("rank"), projection);
     }
 
-    public <T> List<T> findAllAuthorizedFetchProductCategory(AppUserDetails userDetails, Class<T> projection) {
+    public <T> List<T> findAllAuthorizedByDownloadOnlyFalseFetchProductCategory(
+            AppUserDetails userDetails,
+            Class<T> projection
+    ) {
         val ids = new HashSet<Long>();
-        for (val product : productRepository.findAll()) {
+        for (val product : productRepository.findAllByDownloadOnlyFalse()) {
             if (licensePermissionEvaluator.allowProductRead(product.getId(), userDetails)) {
                 ids.add(product.getId());
             }

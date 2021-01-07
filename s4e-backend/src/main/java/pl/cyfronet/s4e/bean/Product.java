@@ -71,6 +71,9 @@ public class Product extends CreationAndModificationAudited {
     private String description;
 
     @NotNull
+    private Boolean downloadOnly;
+
+    @NotNull
     private Boolean authorizedOnly;
 
     @NotNull
