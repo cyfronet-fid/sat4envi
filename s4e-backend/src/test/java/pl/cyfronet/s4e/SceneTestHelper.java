@@ -89,12 +89,12 @@ public class SceneTestHelper {
                 .metadataContent(metadataContent);
     }
 
-    public static Scene.SceneBuilder sceneWithMetadataBuilder(Product product, JsonNode jsonNode) {
+    public static Scene.SceneBuilder sceneWithMetadataBuilder(Product product, JsonNode metadataContent) {
         return Scene.builder()
                 .product(product)
                 .sceneKey(nextUnique(SCENE_KEY_PATTERN))
                 .sceneContent(getDefaultSceneContent())
-                .metadataContent(jsonNode)
+                .metadataContent(metadataContent)
                 .footprint(TestGeometryHelper.ANY_POLYGON)
                 .legend(Legend.builder()
                         .type("some_type")
@@ -111,39 +111,43 @@ public class SceneTestHelper {
         return sceneContent;
     }
 
-    public static String getMetaDataWithNumber(long number) {
-        return "{\n" +
-                "   \"spacecraft\": \"Sentinel-1A\",\n" +
-                "   \"product_type\": \"GRDH\",\n" +
-                "   \"sensor_mode\": \"IW\",\n" +
-                "   \"collection\": \"S1B_24AU\",\n" +
-                "   \"timeliness\": \"Near Real Time\",\n" +
-                "   \"instrument\": \"OLCI\",\n" +
-                "   \"product_level\": \"L" + number%10 + "\",\n" +
-                "   \"processing_level\": \"" + number%10 + "LC\",\n" +
-                "   \"cloud_cover\": " + number + ",\n" +
-                "   \"polarisation\": \"Dual VV/VH\",\n" +
-                "   \"sensing_time\": \"2019-11-0" + (number%9 + 1) + "T05:07:42.047432+00:00\",\n" +
-                "   \"ingestion_time\": \"2019-11-0" + (number%9 + 1) + "T05:34:27.000000+00:00\",\n" +
-                "   \"relative_orbit_number\": \"" + number + "\",\n" +
-                "   \"absolute_orbit_number\": \"0" + number + "\",\n" +
-                "   \"polygon\": \"55.975475,19.579060 56.395580,15.414984 57.887905,15.835841 57.462494,20.167494\",\n" +
-                "   \"format\": \"GeoTiff" + number + "\",\n" +
-                "   \"schema\": \"Sentinel-1.metadata.v1.json\"\n" +
-                "}";
+    public static JsonNode getMetadataContentWithNumber(long number) {
+        return OBJECT_MAPPER.createObjectNode()
+                .put("spacecraft", "Sentinel-1A")
+                .put("product_type", "GRDH")
+                .put("sensor_mode", "IW")
+                .put("collection", "S1B_24AU")
+                .put("timeliness", "Near Real Time")
+                .put("instrument", "OLCI")
+                .put("product_level", "L" + number%10)
+                .put("processing_level", number%10 + "LC")
+                .put("cloud_cover", number)
+                .put("polarisation", "Dual VV/VH")
+                .put("sensing_time", "2019-11-0" + (number%9 + 1) + "T05:07:42.047432+00:00")
+                .put("ingestion_time", "2019-11-0" + (number%9 + 1) + "T05:34:27.000000+00:00")
+                .put("relative_orbit_number", "" + number)
+                .put("absolute_orbit_number", "0" + number)
+                .put("polygon", "55.975475,19.579060 56.395580,15.414984 57.887905,15.835841 57.462494,20.167494")
+                .put("format", "GeoTiff" + number)
+                .put("schema", "Sentinel-1.metadata.v1.json");
     }
 
-    public static String getSceneContent(){
-        return " {\"schema\": \"Sentinel-1.scene.v1.json\"," +
-                " \"artifacts\": " +
-                "{\"RGB_16b\": \"/Sentinel-1/GRDH_Products/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.RGB.tif\"," +
-                " \"RGBs_8b\": \"/Sentinel-1/GRDH_Products/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.RGBs.tif\"," +
-                " \"checksum\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.SAFE.md5\", " +
-                "\"manifest\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.manifest.xml\"," +
-                " \"metadata\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.metadata\", " +
-                "\"quicklook\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.qlf.tif\"," +
-                " \"product_archive\": \"/Sentinel-1/GRDH/2020-01-04/S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9.SAFE.zip\"}, " +
-                "\"product_type\": \"Sentinel-1-GRDH\"} ";
+    public static JsonNode getSceneContent() {
+        String pathMain = "/Sentinel-1/GRDH/2020-01-04/";
+        String pathProducts = "/Sentinel-1/GRDH_Products/2020-01-04/";
+        String name = "S1A_IW_GRDH_1SDV_20200104T160956_20200104T161021_030653_038356_BCD9";
+        return OBJECT_MAPPER.createObjectNode()
+                .put("schema", "Sentinel-1.scene.v1.json")
+                .put("product_type", "Sentinel-1-GRDH")
+                .set("artifacts", OBJECT_MAPPER.createObjectNode()
+                        .put("checksum", pathMain + name + ".SAFE.md5")
+                        .put("manifest", pathMain + name + ".manifest.xml")
+                        .put("metadata", pathMain + name + ".metadata")
+                        .put("quicklook", pathMain + name + ".qlf.tif")
+                        .put("product_archive", pathMain + name + ".SAFE.zip")
+                        .put("RGB_16b", pathProducts + name + ".RGB.tif")
+                        .put("RGBs_8b", pathProducts + name + ".RGBs.tif")
+                );
     }
 
     public static Function<LocalDateTime, Scene> toScene(Product product) {

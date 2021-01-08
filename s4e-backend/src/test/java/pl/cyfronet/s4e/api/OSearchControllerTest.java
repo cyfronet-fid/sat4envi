@@ -100,11 +100,10 @@ public class OSearchControllerTest {
         testDbHelper.clean();
     }
 
-    private Scene buildScene(Product product, long number) throws Exception {
-        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
-                .build();
-        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+    private Scene buildScene(Product product, long number) {
+        JsonNode metadataContent = SceneTestHelper.getMetadataContentWithNumber(number);
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, metadataContent).build();
+        scene.setSceneContent(SceneTestHelper.getSceneContent());
         return scene;
     }
 
