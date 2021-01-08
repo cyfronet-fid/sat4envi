@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import pl.cyfronet.s4e.service.SceneStorage;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -50,7 +51,7 @@ public class ODataController {
     private final SceneStorage sceneStorage;
     private final SceneFileStorageService sceneFileStorageService;
 
-    @Operation(summary = "Redirect to a presigned download url for an archive")
+    @Operation(summary = "Redirect to a presigned download url for a zip archive")
     @ApiResponses({
             @ApiResponse(responseCode = "303", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
@@ -63,9 +64,13 @@ public class ODataController {
                 sceneId,
                 sceneFileStorageService.getSceneArtifacts(sceneId)
                         .entrySet().stream()
-                        .filter(map -> map.getValue().contains(".zip"))
+                        .filter(entry -> entry.getValue().endsWith(".zip"))
+                        .map(Map.Entry::getKey)
+                        .sorted()
                         .findFirst()
-                        .get().getKey(),
+                        .orElseThrow(() -> new NotFoundException(
+                                "Artifact with '.zip' suffix for scene with id '" + sceneId + "' not found"
+                        )),
                 sceneStorage.getPresignedGetTimeout()
         );
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadLink.toURI()).build();
