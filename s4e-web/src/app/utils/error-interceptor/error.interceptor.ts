@@ -18,7 +18,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
-import {catchError, filter, finalize, map, pairwise} from 'rxjs/operators';
+import {catchError, filter, finalize, map, pairwise, tap} from 'rxjs/operators';
 import {Router, RoutesRecognized} from '@angular/router';
 import {
   HTTP_101_TIMEOUT,
@@ -51,7 +51,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         pairwise(),
         map((event: [RoutesRecognized, RoutesRecognized]) => event[0].url)
       )
-      .subscribe((lastUrl: string) => this._backLink = '/' + lastUrl);
+      .subscribe((lastUrl: string) => this._backLink = !!lastUrl ? '/' + lastUrl : null);
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -84,7 +84,14 @@ export class ErrorInterceptor implements HttpInterceptor {
           type: 'error',
           content: 'Wystąpił błąd: Nie jesteś zalogowany lub twoja sesja się przedawniła'
         });
-        this._router.navigate(['login'], {queryParams: {[BACK_LINK_QUERY_PARAM]: this._backLink}});
+        this._router.navigate(
+          ['login'],
+          {
+            queryParams: !!this._backLink
+              ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
+              : {}
+          }
+        );
         break;
       case HTTP_101_TIMEOUT:
       case HTTP_404_BAD_REQUEST:
@@ -98,7 +105,14 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       case HTTP_502_BAD_GATEWAY:
       case HTTP_500_INTERNAL_SERVER_ERROR:
-        this._router.navigate(['errors', error.status], {queryParams: {[BACK_LINK_QUERY_PARAM]: this._backLink}});
+        this._router.navigate(
+          ['errors', error.status],
+          {
+            queryParams: !!this._backLink
+              ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
+              : {}
+          }
+        );
         break;
       default:
         this._notificationService.addGeneral({

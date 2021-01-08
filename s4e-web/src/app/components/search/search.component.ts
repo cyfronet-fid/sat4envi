@@ -18,7 +18,7 @@
 import { ActivatedQueue } from './../../utils/search/activated-queue.utils';
 import { QueryEntity, Store, EntityStore } from '@datorama/akita';
 import {FormControl} from '@ng-stack/forms';
-import { Component, Input, Output, EventEmitter, ContentChild, TemplateRef, OnInit, OnDestroy } from '@angular/core';
+import {Component, Input, Output, EventEmitter, ContentChild, TemplateRef, OnInit, OnDestroy, NgZone} from '@angular/core';
 import {debounceTime, distinctUntilChanged, filter} from 'rxjs/operators';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import {control} from 'openlayers';
@@ -91,8 +91,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   get canSelectActiveResult(): boolean {
-    return this.hasSearchValue
-      && this.areResultsOpen
+    return this.areResultsOpen
       && this.hasResults;
   }
 
@@ -119,17 +118,27 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.activatedQueue.previous();
   }
 
-  select(result: any) {
-    setTimeout(() => {
-      if (this.query.getActive() !== result) {
-        return;
-      }
+  selectActive() {
+    if (
+      !this.query.getActive()
+      || (
+        this.searchFormControl.value !== ''
+        && !this.query.getActive().name
+            .toLowerCase()
+            .startsWith(
+              this.searchFormControl.value
+                .toLowerCase()
+            )
+      )
+    ) {
+      return;
+    }
 
-      this.hasBeenSelected = true;
-      this.hasBeenSelectedChange.emit(true);
-      this.selectResult.emit(result);
-      this.areResultsOpen = false;
-    }, 600);
+    this.hasBeenSelected = true;
+    this.hasBeenSelectedChange.emit(true);
+    this.selectResult.emit(this.query.getActive());
+    this.searchFormControl.setValue(this.query.getActive().name);
+    this.areResultsOpen = false;
   }
 
   resetSearchValue(): void {
@@ -151,6 +160,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (!this._hasBeenSelected) {
         this.areResultsOpen = true;
         this.valueChange.emit(text);
+        this.store.setActive(null);
       }
 
       this.hasBeenSelected = false;

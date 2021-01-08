@@ -44,6 +44,7 @@ import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.quer
 import BaseLayer from 'ol/layer/Base';
 import {getPointResolution} from 'ol/proj';
 import {Fill, Stroke, Style} from 'ol/style';
+import {defaults, ScaleLine} from 'ol/control';
 
 @Component({
   selector: 's4e-map',
@@ -141,7 +142,12 @@ export class MapComponent implements OnInit, OnDestroy {
       environment.projection.toProjection,
       this.activeView$.getValue().centerCoordinates
     );
+
+    const scaleControl = new ScaleLine({
+      units: 'metric'
+    });
     this.map = new Map({
+      controls: defaults().extend([scaleControl]),
       target: 'map',
       layers: [],
       view: new View({

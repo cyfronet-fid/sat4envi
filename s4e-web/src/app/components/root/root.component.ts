@@ -44,13 +44,16 @@ export class RootComponent implements OnInit, OnDestroy {
       .pipe(untilDestroyed(this))
       .subscribe(isHeightContrast => isHeightContrast
         ? this.document.body.classList.add('wcag_hc')
-        : this.document.body.classList.remove('wcag_hc'));
+        : this.document.body.classList.remove('wcag_hc')
+      );
 
+    const htmlTag = this.document.getElementsByTagName('html')[0];
     this.viewConfigurationQuery.select('largeFont')
       .pipe(untilDestroyed(this))
       .subscribe(isLargeFont => isLargeFont
-        ? this.document.body.classList.add('wcag_fs')
-        : this.document.body.classList.remove('wcag_fs'));
+        ? htmlTag.classList.add('wcag_fs')
+        : htmlTag.classList.remove('wcag_fs')
+      );
   }
 
   /**
