@@ -139,6 +139,28 @@ public class ODataControllerTest {
                         .with(jwtBearerToken(appUser, objectMapper)))
                         .andExpect(status().isNotFound());
             }
+
+            @Nested
+            class WithMissingZipArtifact {
+                @Autowired
+                private ObjectMapper objectMapper;
+
+                @BeforeEach
+                public void beforeEach() {
+                    JsonNode sceneContentCopy = scene.getSceneContent().deepCopy();
+                    ObjectNode artifacts = (ObjectNode) sceneContentCopy.get("artifacts");
+                    artifacts.remove("product_archive");
+                    scene.setSceneContent(sceneContentCopy);
+                    scene = sceneRepository.save(scene);
+                }
+
+                @Test
+                public void shouldReturn404IfZipArtifactNotFound() throws Exception {
+                    mockMvc.perform(get(DEFAULT_DOWNLOAD_URL_TEMPLATE, scene.getId())
+                            .with(jwtBearerToken(appUser, objectMapper)))
+                            .andExpect(status().isNotFound());
+                }
+            }
         }
 
         @Nested
