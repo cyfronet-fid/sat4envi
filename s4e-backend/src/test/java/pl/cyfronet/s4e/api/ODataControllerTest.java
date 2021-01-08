@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package pl.cyfronet.s4e.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -88,7 +88,7 @@ public class ODataControllerTest {
         //add product
         Product product = productRepository.save(productBuilder().build());
         //addscenewithmetadata
-        scene = sceneRepository.save(buildScene(product, 0));
+        scene = sceneRepository.save(buildScene(product));
         appUser = appUserRepository.save(AppUser.builder()
                 .email(PROFILE_EMAIL)
                 .name("Get")
@@ -98,19 +98,17 @@ public class ODataControllerTest {
                 .build());
     }
 
-    @SneakyThrows
-    private Scene buildScene(Product product, long number) {
-        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
-                .build();
-        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+    private Scene buildScene(Product product) {
+        JsonNode metadataContent = SceneTestHelper.getMetadataContentWithNumber(0);
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, metadataContent).build();
+        scene.setSceneContent(SceneTestHelper.getSceneContent());
         return scene;
     }
 
     @Nested
     class Download {
         @Nested
-        class Default {
+        class DefaultZip {
             private static final String DEFAULT_DOWNLOAD_URL_TEMPLATE =
                     API_PREFIX_V1 + "/dhus/odata/v1/Products('{sceneId}')/$value";
 

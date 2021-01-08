@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 package pl.cyfronet.s4e.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +37,10 @@ import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
@@ -60,13 +62,11 @@ public class SearchControllerTest {
     @Autowired
     private TestDbHelper testDbHelper;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private MockMvc mockMvc;
     Product product;
 
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         testDbHelper.clean();
         //add product
         product = productRepository.save(productBuilder()
@@ -86,11 +86,10 @@ public class SearchControllerTest {
         testDbHelper.clean();
     }
 
-    private Scene buildScene(Product product, long number) throws Exception {
-        JsonNode jsonNode = objectMapper.readTree(SceneTestHelper.getMetaDataWithNumber(number));
-        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, jsonNode)
-                .build();
-        scene.setSceneContent(objectMapper.readTree(SceneTestHelper.getSceneContent()));
+    private Scene buildScene(Product product, long number) {
+        JsonNode metadataContent = SceneTestHelper.getMetadataContentWithNumber(number);
+        Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, metadataContent).build();
+        scene.setSceneContent(SceneTestHelper.getSceneContent());
         return scene;
     }
 
