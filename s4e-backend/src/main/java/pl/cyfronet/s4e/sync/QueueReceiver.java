@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package pl.cyfronet.s4e.sync;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 
 @RequiredArgsConstructor
@@ -28,7 +29,13 @@ public class QueueReceiver {
 
     @RabbitListener(queues = "#{incomingQueueName}")
     public void handle(Notification notification) {
-        log.debug("Received notification: objectKey='{}', eventName='{}'", notification.getObjectKey(), notification.getEventName());
-        notificationDispatcher.dispatch(notification);
+        try {
+            notificationDispatcher.dispatch(notification);
+        } catch (AmqpRejectAndDontRequeueException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            log.warn("Unexpected runtime exception thrown, rejecting");
+            throw new AmqpRejectAndDontRequeueException("Unexpected runtime exception thrown", e);
+        }
     }
 }
