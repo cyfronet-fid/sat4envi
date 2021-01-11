@@ -23,6 +23,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { Component, DebugElement, Directive } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
+import {LocationSearchResultsStore} from '../../views/map-view/state/location-search-results/locations-search-results.store';
 
 const SEARCH_RESULTS = [
   {
@@ -43,7 +44,6 @@ class StoreMock extends EntityStore<any> {}
       placeholder="Wpisz szukaną ... ..."
       [query]="query"
       [store]="store"
-
       [value]="searchValue"
       (valueChange)="refreshResults($event)"
 
@@ -156,45 +156,6 @@ describe('SearchComponent', () => {
       });
   });
 
-  it('should emit result on `enter` `key press`', () => {
-    const selectResultSpy = spyOn(component, 'selectResult');
-    const valueToSearch = 'example';
-    sendInput(valueToSearch)
-      .then(() => {
-        const results = de.queryAll(By.css('.name'));
-        expect(results.length).toEqual(2);
-
-        const ENTER = 13;
-        keyPress(ENTER);
-
-        fixture.detectChanges();
-
-        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
-      });
-  });
-
-  it('should emit second result on `arrow down`', () => {
-    const selectResultSpy = spyOn(component, 'selectResult');
-    const valueToSearch = 'example';
-    sendInput(valueToSearch)
-      .then(() => {
-        const results = de.queryAll(By.css('.name'));
-        expect(results.length).toEqual(2);
-
-        const ARROW_DOWN = 40;
-        keyPress(ARROW_DOWN);
-
-        fixture.detectChanges();
-
-        const ENTER = 13;
-        keyPress(ENTER);
-
-        fixture.detectChanges();
-
-        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[1]);
-      });
-  });
-
   function sendInput(text: string) {
     searchInput.click();
     fixture.detectChanges();
@@ -203,13 +164,5 @@ describe('SearchComponent', () => {
     searchInput.dispatchEvent(new Event('input'));
     fixture.detectChanges();
     return fixture.whenStable();
-  }
-
-  function keyPress(key) {
-    const event = document.createEvent('Event');
-    event.keyCode = key;
-    event.key = key;
-    event.initEvent('keydown');
-    document.dispatchEvent(event);
   }
 });

@@ -16,12 +16,11 @@
  */
 
 import { ActivatedQueue } from './../../utils/search/activated-queue.utils';
-import { QueryEntity, Store, EntityStore } from '@datorama/akita';
 import {FormControl} from '@ng-stack/forms';
 import {Component, Input, Output, EventEmitter, ContentChild, TemplateRef, OnInit, OnDestroy, NgZone} from '@angular/core';
-import {debounceTime, distinctUntilChanged, filter} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import {control} from 'openlayers';
+import {LocationSearchResult} from '../../views/map-view/state/location-search-results/location-search-result.model';
 
 @Component({
   selector: 's4e-search',
@@ -30,9 +29,8 @@ import {control} from 'openlayers';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   @Input() placeholder: string = '';
-
-  @Input() query: QueryEntity<any, any>;
-  @Input() store: EntityStore<any, any>;
+  @Input() store: any;
+  @Input() query: any;
 
   @Input()
   set value(value: string) {
@@ -61,6 +59,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   public activatedQueue: ActivatedQueue;
 
   private _hasBeenSelected = false;
+
+  constructor() {}
 
   ngOnInit() {
     this._handleSearchValueChange();
@@ -96,7 +96,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   isActive(result: any) {
-    const activeId = !!this.query.getActive() && this.query.getActive().id || null;
+    const activeId = !!this.query.getActive()
+      && (this.query.getActive() as LocationSearchResult).id || null;
     return result.id === activeId;
   }
 
@@ -118,27 +119,28 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.activatedQueue.previous();
   }
 
+  activateHovered(result: any) {
+    this.store.setActive(result.id);
+  }
+
   selectActive() {
     if (
-      !this.query.getActive()
-      || (
-        this.searchFormControl.value !== ''
-        && !this.query.getActive().name
+      !!this.searchFormControl.value
+      && !(this.query.getActive() as LocationSearchResult).name
+        .toLowerCase()
+        .startsWith(
+          this.searchFormControl.value
             .toLowerCase()
-            .startsWith(
-              this.searchFormControl.value
-                .toLowerCase()
-            )
-      )
+        )
     ) {
       return;
     }
 
+    this.areResultsOpen = false;
     this.hasBeenSelected = true;
     this.hasBeenSelectedChange.emit(true);
     this.selectResult.emit(this.query.getActive());
-    this.searchFormControl.setValue(this.query.getActive().name);
-    this.areResultsOpen = false;
+    this.searchFormControl.setValue((this.query.getActive() as LocationSearchResult).name);
   }
 
   resetSearchValue(): void {

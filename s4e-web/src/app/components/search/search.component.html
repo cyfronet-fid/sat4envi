@@ -46,7 +46,7 @@
     <button
       class="search__button"
       (click)="selectActive()"
-      [disabled]="!canSelectActiveResult"
+      [disabled]="true"
       data-e2e="select-active-result-btn"
     >
       <i class="fas fa-map-marker-alt"></i>
@@ -69,7 +69,7 @@
             *ngFor="let result of results"
             [ngClass]="{'active': isActive(result)}"
             (click)="selectActive()"
-            (focus)="store.setActive(result)"
+            (mouseenter)="activateHovered(result)"
             data-e2e="search-result"
           >
             <ng-container
