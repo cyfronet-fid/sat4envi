@@ -223,8 +223,8 @@
 
     &--noproduct {
       display: inline-block;
-      width: auto;
-      height: auto;
+      width: auto !important;
+      height: auto !important;
       padding: 5px 15px;
       font-size: 0.875rem;
       margin: -6px auto 0 auto;

@@ -223,7 +223,7 @@
       filter: brightness(0);
       position: absolute;
       right: 10px;
-      top: 9px;
+      top: 11px;
       z-index: 3;
     }
   }
@@ -301,6 +301,12 @@ a {
   color: $color-secondary;
   font-weight: normal;
 }
+
+p,
+td {
+  font-size: 1rem;
+}
+
 
 .logo {
   width: 188px;
@@ -623,6 +629,10 @@ input.checkbox-slide:checked + .slider:after
     }
 
   }
+}
+
+ngx-ui-loader .ngx-background-spinner {
+  z-index: 5 !important;
 }
 
 
