@@ -18,3 +18,4 @@
 /cypress/videos
 /.angulardoc.json
 /src/environments/base.ts
+/cypress/logs
