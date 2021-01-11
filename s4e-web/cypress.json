@@ -8,8 +8,5 @@
     "runMode": 2,
     "openMode": 1
   },
-  "video": false,
-  "videoUploadOnPasses": false,
-  "watchForFileChanges": false,
-  "chromeWebSecurity": false
+  "watchForFileChanges": false
 }
