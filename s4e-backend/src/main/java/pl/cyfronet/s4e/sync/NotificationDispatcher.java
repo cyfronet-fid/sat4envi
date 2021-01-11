@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,22 +39,33 @@ public class NotificationDispatcher {
 
     public void dispatch(Notification notification) {
         if (notification == null) {
-            return;
+            log.warn("A null notification received, rejecting");
+            throw new AmqpRejectAndDontRequeueException("A null notification received");
         }
+
+        log.info(
+                "Received notification: eventName='{}', objectKey='{}'",
+                notification.getObjectKey(),
+                notification.getEventName()
+        );
 
         val eventName = notification.getEventName();
         val objectKey = notification.getObjectKey();
+
+        if (eventName == null || objectKey == null) {
+            log.warn("A notification with null eventName or objectKey received, rejecting");
+            throw new AmqpRejectAndDontRequeueException("A notification with null eventName or objectKey received");
+        }
 
         if (ACCEPT_EVENTS.contains(eventName)) {
             accept(objectKey);
         } else if (DELETE_EVENTS.contains(eventName)) {
             delete(objectKey);
         } else {
-            log.warn(
-                    "Notification with unsupported eventName: objectKey='{}', eventName='{}'",
-                    objectKey,
-                    eventName
-            );
+            String message = "Notification with unsupported eventName: " +
+                    "eventName='" + eventName + "', objectKey='" + objectKey + "'";
+            log.warn(message + ", rejecting");
+            throw new AmqpRejectAndDontRequeueException(message);
         }
     }
 
