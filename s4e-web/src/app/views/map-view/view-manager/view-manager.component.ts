@@ -101,6 +101,9 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     if (environment.hmr) {
       const location = this.searchResultsQuery.getValue().searchResult;
       this.searchValue = !!location && location.name || '';
+      if (!!location) {
+        this.navigateToPlace(location);
+      }
     }
   }
 
