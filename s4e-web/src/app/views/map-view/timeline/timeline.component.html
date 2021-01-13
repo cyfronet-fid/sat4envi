@@ -17,7 +17,7 @@
 
 <div>
   <section class="timeline__manager">
-    <div class="timecontrol timecontrol--live button button--small button--default">
+    <div class="timecontrol timecontrol--live button button--small button--default" data-e2e="btn-live">
       <label for="live" [ngClass]="{active: isLive$ | async}"i18n>
         <span class="live--dot"></span><span>Na żywo</span>
       </label>
@@ -29,7 +29,7 @@
       <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays"
              (dateTimeChange)="selectDate($event)"
              [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
-      <span [owlDateTimeTrigger]="datepicker" class="timeline__changedate"></span>
+      <span [owlDateTimeTrigger]="datepicker" class="timeline__changedate" data-e2e="timeline__changedate"></span>
       <owl-date-time #datepicker
                      [startAt]="currentDate"
                      [panelClass]="componentId"

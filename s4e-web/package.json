@@ -23,7 +23,7 @@
     "build-private": "ng build --configuration production.private",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "cypress run",
+    "e2e": "cypress run --headless --browser chrome",
     "e2e-browser": "cypress run --browser chrome",
     "extract-i18n": "ng xi18n s4e-angular --i18n-format xlf --output-path i18n --i18n-locale pl && ng run s4e-angular:xliffmerge",
     "start-en": "ng serve --proxy-config proxy.conf.json --configuration=en"

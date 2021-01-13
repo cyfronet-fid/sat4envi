@@ -28,6 +28,7 @@
           <dd><a
             (click)="openShareViewModal.emit()"
             href="javascript:undefined"
+            data-e2e="open-send-view-btn"
             i18n
           >
             Wyślij widok na adres email
@@ -51,6 +52,7 @@
           <dd><a
             (click)="openExpertHelpModal.emit()"
             href="javascript:undefined"
+            data-e2e="open-mail-to-expert-modal-btn"
             i18n
           >
             Wsparcie eksperckie
@@ -60,6 +62,7 @@
           <dd><a
             (click)="openReportModal.emit()"
             href="javascript:undefined"
+            data-e2e="open-generate-report-modal"
             i18n
           >
             Wygeneruj raport PDF
@@ -67,6 +70,7 @@
           <dd><a
             (click)="openReportTemplatesModal.emit()"
             href="javascript:undefined"
+            data-e2e="open-template-report-modal"
             i18n
           >
             Szablony raportów
@@ -77,6 +81,7 @@
           data-test-download-original
           [ngClass]="{disabled: activeScene == null}"
           (click)="openSceneDetailsModal.emit()"
+          data-e2e="open-save-on-disk-metadata-modal"
           target="_blank"
           i18n
         >
@@ -85,6 +90,7 @@
         <dd><a
           (click)="downloadMapImage.emit()"
           href="javascript:undefined"
+          data-e2e="open-save-on-disk-image"
           i18n
         >
           Zapisz na dysku jako obraz PNG
@@ -97,10 +103,10 @@
       <ng-container *ngIf="userLoggedIn">
         <dt i18n>Zarządzanie kontem</dt>
         <dd>
-          <a routerLink="/settings/dashboard" i18n>Panel administracyjny</a>
+          <a routerLink="/settings/dashboard" data-e2e="open-settings-btn" i18n>Panel administracyjny</a>
         </dd>
         <dd>
-          <a routerLink="/settings/profile" i18n>Twój profil</a>
+          <a routerLink="/settings/profile" data-e2e="open-profile-btn" i18n>Twój profil</a>
         </dd>
         <dd>
           <a

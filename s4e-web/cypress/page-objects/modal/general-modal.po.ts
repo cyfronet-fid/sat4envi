@@ -1,10 +1,9 @@
 import { Core } from './../core.po';
 
 export class GeneralModal extends Core {
-  static pageObject = {
-    getCloseBtnClass: '[data-e2e="close-btn"]',
-    getCloseBtn: () => cy.get(GeneralModal.pageObject.getCloseBtnClass),
-    getCancelBtn: () => cy.get('button.button-cancel'),
+  static readonly pageObject = {
+    getCloseBtn: () => cy.get('[data-e2e="close-btn"]'),
+    getCancelBtn: () => cy.get('[data-e2e="btn-cancel"]'),
     getModalContainer: () => cy.get('[data-e2e="modal-container"]')
   };
 
@@ -22,31 +21,33 @@ export class GeneralModal extends Core {
       .pageObject
       .getModalContainer() 
       .should('be.visible');
+
+      return GeneralModal;
   }
 
-  static closeAndChangeContext<T>(context: T) {
+  static closeModal(){
     GeneralModal
       .pageObject
       .getCloseBtn()
-      .click({ force: true });
+      .click();
     GeneralModal
       .pageObject
       .getModalContainer()
       .should('not.exist');
 
-    return context;
+    return GeneralModal;
   }
 
-  static cancelAndChangeContext<T>(context: T) {
+  static cancelModal(){
     GeneralModal
       .pageObject
       .getCancelBtn()
-      .click({ force: true });
+      .click();
     GeneralModal
       .pageObject
       .getModalContainer()
       .should('not.exist');
 
-    return context;
+    return GeneralModal;
   }
 }

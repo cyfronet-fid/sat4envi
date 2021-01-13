@@ -31,7 +31,7 @@ export class Login extends Core {
 			.type(user.password);
 
 		return Login;
-	};
+	}
 
 	static unfillForm() {
 		Login
@@ -41,7 +41,7 @@ export class Login extends Core {
 		  .click()
 
 		return Login;
-	};
+	}
 
 	static sendForm() {
 		Login
@@ -50,7 +50,7 @@ export class Login extends Core {
 			.click();
 
 		return Login;
-	};
+	}
 
 
 	static errorsCountShouldBe(count: number) {
@@ -62,7 +62,7 @@ export class Login extends Core {
 			.should('have.length', count);
 
 		return Login;
-	};
+	}
 
 	static hasErrorLogin() {
 		cy.location('pathname').should('eq', '/login');
@@ -72,7 +72,7 @@ export class Login extends Core {
 			.getError();
 
 		return Login;
-	};
+	}
 
 	static loginAs(user: User) {
 
@@ -83,7 +83,7 @@ export class Login extends Core {
 		cy.location('href').should('include', '/map/products?');
 
 		return Login;
-	};
+	}
 
 	static logout() {
 		Login.
@@ -105,7 +105,7 @@ export class Login extends Core {
 		cy.location('pathname').should('eq', '/login')
 
 		return Login;
-	};
+	}
 
 	static forceLogout() {
 	  cy.server();
@@ -124,9 +124,9 @@ export class Login extends Core {
 		cy.url().should('not.contain', '/login');
 
 		return Login;
-	};
+	}
 
-	static goToMapWithoutLogin(){
+	static goToMap(){
 
 		Login
 			.pageObject
@@ -134,5 +134,5 @@ export class Login extends Core {
 			.click()
 
 			cy.location('href').should('include', '/map/products?');
-	};
+	}
 };

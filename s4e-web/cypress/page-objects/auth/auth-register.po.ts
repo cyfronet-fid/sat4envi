@@ -26,8 +26,7 @@ export class Registration {
     getSubmitBtn: () => cy.get('[data-e2e="btn-submit"]'),
 
     getErrors: () => cy.get('.invalid-feedback > .ng-star-inserted'),
-
-  };
+  }
 
   static fillForm(user: User) {
     Registration.
@@ -76,7 +75,7 @@ export class Registration {
       .click();
 
     return Registration;
-  };
+  }
 
   static sendForm() {
     Registration
@@ -85,7 +84,7 @@ export class Registration {
     .click();
 
     return Registration;
-  };
+  }
 
   static errorsCountShouldBe(count: number) {
     cy.location('pathname').should('eq', '/register');
@@ -96,7 +95,7 @@ export class Registration {
       .should('have.length', count);
 
     return Registration;
-  };
+  }
 
   static clickReCaptcha() {
     cy.get("iframe[src*=\"https://www.google.com/recaptcha\"]")
@@ -116,13 +115,13 @@ export class Registration {
 
     return Registration;
 
-  };
+  }
 
   static beOnConfirmationPage() {
     cy.location('pathname').should('eq', '/register-confirmation');
 
     return Registration;
-  };
+  }
 };
 
 
