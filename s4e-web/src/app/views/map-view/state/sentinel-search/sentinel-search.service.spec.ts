@@ -105,14 +105,14 @@ describe('SentinelSearchResultService', () => {
     it('should not call http.get if query.isMetadataLoaded() is true', () => {
       store.setMetadataLoaded();
       service.getSentinels$();
-      http.expectNone(`${environment.apiPrefixV1}/config/sentinel-search`);
+      http.expectNone(`${environment.apiPrefixV1}/config/search`);
       http.verify();
     });
 
     it('should call http and set loadings', async () => {
       const metadata = SentinelSearchMetadataFactory.build();
       const promise = service.getSentinels$().toPromise();
-      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/config/sentinel-search`});
+      const r = http.expectOne({method: 'GET', url: `${environment.apiPrefixV1}/config/search`});
       expect(query.isMetadataLoading()).toBeTruthy();
       r.flush(metadata);
       await promise;

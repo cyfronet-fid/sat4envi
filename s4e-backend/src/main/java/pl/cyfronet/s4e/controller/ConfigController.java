@@ -67,7 +67,7 @@ public class ConfigController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK")
     })
-    @GetMapping("/config/sentinel-search")
+    @GetMapping("/config/search")
     public SearchPanelConfigResponse sentinelSearchConfig() {
         AppUserDetails userDetails = AppUserDetailsSupplier.get();
 

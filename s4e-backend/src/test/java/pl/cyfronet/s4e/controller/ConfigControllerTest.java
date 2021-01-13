@@ -106,7 +106,7 @@ public class ConfigControllerTest {
 
         @Test
         public void shouldReturn() throws Exception {
-            mockMvc.perform(get(API_PREFIX_V1 + "/config/sentinel-search"))
+            mockMvc.perform(get(API_PREFIX_V1 + "/config/search"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.sections[0].name", is(equalTo("sentinel-1"))))
                     .andExpect(jsonPath("$.sections[1].name", is(equalTo("test.metadata.v1.json"))));

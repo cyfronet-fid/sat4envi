@@ -16,14 +16,14 @@ export class MapDataSearch extends Core {
 
   static goToSearchData() {
     cy.server()
-    cy.route('GET', "/api/v1/config/sentinel-search").as("sentinelSearch")
+    cy.route('GET', "/api/v1/config/search").as("search")
 
     MapDataSearch
       .pageObject
       .getGoToSearchDataBtn()
       .click();
 
-    cy.wait('@sentinelSearch')
+    cy.wait('@search')
 
     return MapDataSearch
   }
@@ -57,7 +57,7 @@ export class MapDataSearch extends Core {
       .then((element)=>{
         element.trigger('click') //for avoid detached from DOM
       })
-     
+
     MapDataSearch
       .pageObject
       .getResultList()
@@ -69,7 +69,7 @@ export class MapDataSearch extends Core {
   }
 
   static downloadNthData(number: number) {
-    
+
     MapDataSearch
       .pageObject
       .getAllResultsDownloadBtn()
