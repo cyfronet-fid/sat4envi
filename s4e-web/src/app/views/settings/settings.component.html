@@ -31,11 +31,12 @@
     </a>
     <header *ngIf="hasAnyAdminInstitution$ | async" class="navigation__institution">
       <span>Wybrana instytucja</span>
-      <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)">
+      <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)" data-e2e="selectedInstitution">
         <a routerLink="/settings/institution" queryParamsHandling="merge">{{ (activeInstitution$ | async)?.name }}</a>
       </p>
       <a *ngIf="!(isAdminOfOneInstitution$ | async)"
         routerLink="/settings/institutions"
+        data-e2e="changeInstitution"
          i18n
       >
         {{
@@ -47,7 +48,7 @@
     </header>
     <ul class="navigation__list">
       <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async) && canGrantInstitutionDeleteAuthority" routerLinkActive="active"
-          data-e2e="institutions">
+          data-e2e="managePrivilege">
         <a routerLink="/settings/manage-authorities" i18n>Zarządzaj uprawnieniami</a>
       </li>
 <!--      <li *ngIf="isSuperAdmin$ | async" routerLinkActive="active"-->
@@ -55,23 +56,24 @@
 <!--        <a routerLink="/settings/global-wms-overlays" i18n>Globalne WMS</a>-->
 <!--      </li>-->
       <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
-          data-e2e="institutions">
+          data-e2e="institutionsList">
         <a routerLink="/settings/institutions" i18n>Lista instytucji</a>
       </li>
       <li routerLinkActive="active" data-e2e="profile">
         <a
           [routerLink]="['./profile']"
           queryParamsHandling="merge"
+          data-e2e="userProfile"
           i18n
         >
           Twój profil
         </a>
       </li>
       <li>
-        <button [routerLink]="['/map/products']" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
+        <button [routerLink]="['/map/products']" data-e2e="returnToMap" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
       </li>
       <li>
-        <a href="javascript:void(0)" routerLink="/logout" i18n>Wyloguj</a>
+        <a href="javascript:void(0)" data-e2e="logOut" routerLink="/logout" i18n>Wyloguj</a>
       </li>
     </ul>
   </nav>

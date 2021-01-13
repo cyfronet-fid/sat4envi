@@ -46,13 +46,14 @@
           name="institution"
           [checked]="isSelected(institution)"
           (click)="selectedInstitution = institution"
+          data-e2e="selectParentInstitution"
         >
         <label data-e2e="institution-radio" [attr.for]="'institution' + index$" i18n>{{ institution.name }}</label>
       </li>
     </ul>
   </div>
   <div class="s4e-modal-footer">
-    <button class="button button--primary button--small"  type="submit" (click)="accept()" i18n>Przypisz do instytucji</button>
+    <button class="button button--primary button--small" data-e2e="btn-submit" type="submit" (click)="accept()" i18n>Przypisz do instytucji</button>
     <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Anuluj</button>
   </div>
 </s4e-generic-modal>

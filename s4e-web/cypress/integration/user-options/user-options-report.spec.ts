@@ -2,7 +2,7 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { GenerateReport } from "../../page-objects/user-options/user-options-report.po";
+import { UserOptionsGenerateReport } from "../../page-objects/user-options/user-options-report.po";
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 
 before(() => {
@@ -18,27 +18,26 @@ describe('Generate Report', () => {
   });
 
   it('should save the report', function () {
-
-    GenerateReport
+    UserOptionsGenerateReport
       .openGenerateReportModal()
       .fillFields("test", "test")
       .saveReportToDisk();
   });
 
   it('should save the report as template', function () {
-    GenerateReport
+    UserOptionsGenerateReport
       .openGenerateReportModal()
       .fillFields("test", "test")
       .saveReportAsTemplate()
     GeneralModal
       .closeModal();
-    GenerateReport
+    UserOptionsGenerateReport
       .openGenerateTemplateReportModal()
       .reportsCountShouldBe(1)
       .loadNthReport(0);
     GeneralModal
       .cancelModal();
-    GenerateReport
+    UserOptionsGenerateReport
       .openGenerateTemplateReportModal()
       .deleteNthReportTemplate(0)
       .reportsCountShouldBe(0);

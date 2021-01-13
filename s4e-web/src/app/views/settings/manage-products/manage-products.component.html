@@ -23,12 +23,12 @@
     </a>
   </li>
   <li>
-    <a routerLink="/settings/people" queryParamsHandling="merge">
+    <a routerLink="/settings/people" data-e2e="people" queryParamsHandling="merge">
       Osoby w instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']"
+    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
        queryParamsHandling="merge">
       Warstwy WMS dla instytucji
     </a>
@@ -54,7 +54,7 @@
     <th i18n>Widoczność dla czonków instytucji</th>
   </ng-container>
   <ng-template let-licence="item">
-    <td i18n>{{ licence.productName }}</td>
+    <td data-e2e="productName" i18n>{{ licence.productName }}</td>
     <td>
       <input
         type="checkbox"

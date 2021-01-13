@@ -2,7 +2,7 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { SaveData } from '../../page-objects/user-options/user-options-save-data.po';
+import { UserOptionsSaveData } from '../../page-objects/user-options/user-options-save-data.po';
 import { MapProducts } from '../../page-objects/map/map-products.po';
 
 before(() => {
@@ -19,14 +19,14 @@ describe('Save image and data', () => {
   });
 
   it('should save png image', function () {
-    SaveData
+    UserOptionsSaveData
       .saveImageOnDisk();
   });
 
   it('should open modal with metadata and raw data', function () {
     MapProducts
       .selectProductByName('Intensywność opadu')
-    SaveData
+    UserOptionsSaveData
       .openSaveMetaDataOnDiskModal()
   });
 });

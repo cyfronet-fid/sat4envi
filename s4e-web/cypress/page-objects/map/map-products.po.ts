@@ -13,7 +13,7 @@ export class MapProducts extends Core {
 
   static selectProductByName(partialName: string) {
     cy.route('GET', '/api/v1/products/*').as('turnOnProduct')
-    
+
     MapProducts
       .pageObject
       .getProductsNameBtn()
@@ -22,7 +22,7 @@ export class MapProducts extends Core {
       .click();
 
     cy.wait('@turnOnProduct');
-    
+
     MapProducts
       .pageObject
       .getSpinnerIcon()
@@ -44,7 +44,7 @@ export class MapProducts extends Core {
       .eq(number)
       .should("be.visible")
       .click();
-      
+
     return MapProducts;
   }
 
@@ -87,6 +87,16 @@ export class MapProducts extends Core {
       .click()
       .find("label")
       .should("not.have.class", "active");
+
+    return MapProducts;
+  }
+
+  static productWithNameShouldNotBeVisible(partialName: string) {
+    MapProducts
+      .pageObject
+      .getProductsNameBtn()
+      .contains(partialName)
+      .should("not.be.visible")
 
     return MapProducts;
   }

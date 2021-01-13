@@ -1,56 +1,56 @@
 import { Core } from './../core.po';
 
-export class SaveData extends Core {
+export class UserOptionsSaveData extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getSaveImageOnDiskBtn: () => cy.get('[data-e2e="open-save-on-disk-image"]'),
     getOpenSaveMetaDataOnDiskBtn: () => cy.get('[data-e2e="open-save-on-disk-metadata-modal"]'),
     getModal: () => cy.get('[data-e2e="modal-container"]'),
-    getResultDownloadAllArtifactsBtn:() => cy.get('[data-e2e="btn--download"]')
+    getResultDownloadAllArtifactsBtn: () => cy.get('[data-e2e="btn--download"]')
   };
 
   static saveImageOnDisk() {
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getOptionsBtn()
       .click();
 
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getSaveImageOnDiskBtn()
       .invoke('removeAttr', 'target')
       .click();
 
-      return SaveData;
+    return UserOptionsSaveData;
   }
 
   static openSaveMetaDataOnDiskModal() {
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getOptionsBtn()
       .click();
 
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getOpenSaveMetaDataOnDiskBtn()
       .click();
 
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getModal()
       .should("be.visible");
 
-      return SaveData;
+    return UserOptionsSaveData;
   }
 
   static selectNthArtifactsToDownload(number: number) {
-    SaveData
+    UserOptionsSaveData
       .pageObject
       .getResultDownloadAllArtifactsBtn()
       .eq(number)
       .invoke('removeAttr', 'target')
       .click();
 
-    return SaveData;
+    return UserOptionsSaveData;
   }
 };

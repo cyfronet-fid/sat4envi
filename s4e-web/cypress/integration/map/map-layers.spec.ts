@@ -5,12 +5,10 @@ import { MapLayers } from '../../page-objects/map/map-layers.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
 import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 
-
 before(() => {
   cy.fixture('users/zkMember.json').as('zkMember');
   cy.fixture('layer-capability.xml').as('geoserverResponse');
 });
-
 
 describe('Map layers', () => {
 
@@ -33,7 +31,6 @@ describe('Map layers', () => {
       cy.visit('/login')
       Login.loginAs(this.zkMember);
       MapLayers.pageObject.getLayerCount();
-
     })
 
     it('should display all url layers', function () {
@@ -55,7 +52,7 @@ describe('Map layers', () => {
 
       MapLayers
         .openManagementModal()
-        .fillForm(label, geoserverUrl)
+        .fillForm(label, geoserverUrl);
       MapLayers
         .selectedUrlLayersCountShouldBe(29)
         .allUrlLayersCountShouldBe(29);

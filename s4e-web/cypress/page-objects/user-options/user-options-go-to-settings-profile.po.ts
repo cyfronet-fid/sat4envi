@@ -1,6 +1,6 @@
 import { Core } from '../core.po';
 
-export class GoToSettings extends Core {
+export class UserOptionsGoToSettings extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getOpenAdministrationPaneBtn: () => cy.get('[data-e2e="open-settings-btn"]'),
@@ -8,12 +8,12 @@ export class GoToSettings extends Core {
   };
 
   static goToAdministrationPanel() {
-    GoToSettings
+    UserOptionsGoToSettings
       .pageObject
       .getOptionsBtn()
       .click();
 
-    GoToSettings
+    UserOptionsGoToSettings
       .pageObject
       .getOpenAdministrationPaneBtn()
       .click();
@@ -22,12 +22,12 @@ export class GoToSettings extends Core {
   }
 
   static gotoUserProfile() {
-    GoToSettings
+    UserOptionsGoToSettings
       .pageObject
       .getOptionsBtn()
       .click();
 
-    GoToSettings
+    UserOptionsGoToSettings
       .pageObject
       .getOpenUserProfileBtn()
       .click();

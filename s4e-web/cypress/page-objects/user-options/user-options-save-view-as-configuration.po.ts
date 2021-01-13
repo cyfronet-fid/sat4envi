@@ -1,6 +1,6 @@
 import { Core } from './../core.po';
 
-export class SaveMapViews extends Core {
+export class UserOptionsSaveMapViews extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getOpenSaveViewsBtn: () => cy.get('[data-e2e="open-save-view-modal-btn"]'),
@@ -13,75 +13,75 @@ export class SaveMapViews extends Core {
   };
 
   static openSaveViewsModal() {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getOptionsBtn()
       .click();
 
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getOpenSaveViewsBtn()
       .click();
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 
   static openViewsModal() {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getOptionsBtn()
       .click();
 
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getOpenViewsBtn()
       .click();
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 
   static addView(label: string) {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getViewLabelInput()
       .should("be.visible")
       .clear()
       .type(label);
 
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getAddBtn()
       .click();
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 
   static viewsCountShouldBe(count: number) {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getViews()
       .should('have.length', count);
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 
   static deleteNth(nth: number) {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getViewsDeleteBtns()
       .eq(nth)
       .click();
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 
   static selectNth(nth: number) {
-    SaveMapViews
+    UserOptionsSaveMapViews
       .pageObject
       .getViewLoadBtns()
       .eq(nth)
       .click();
 
-    return SaveMapViews;
+    return UserOptionsSaveMapViews;
   }
 }
