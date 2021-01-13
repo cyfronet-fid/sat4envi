@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ package pl.cyfronet.s4e.search;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class SentinelSearchConfig {
+public class SearchPanelConfigResponse {
     private final Common common;
     private final List<Section> sections;
 
@@ -33,6 +34,14 @@ public class SentinelSearchConfig {
     @RequiredArgsConstructor
     public static class Common {
         private final List<Param> params;
+    }
+
+    @Value
+    public static class SectionPrototype {
+        String name;
+        String metadataSchemaName;
+        List<Param> prefixParams;
+        List<Param> suffixParams;
     }
 
     @Getter
