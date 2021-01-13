@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(POST, prefix("/token-create", "/password-reset")).permitAll()
                 .mvcMatchers(GET, prefix("/token-validate")).permitAll()
 
-                .mvcMatchers(GET, prefix("/config", "/config/sentinel-search")).permitAll()
+                .mvcMatchers(GET, prefix("/config", "/config/search")).permitAll()
 
                 .mvcMatchers(GET, prefix("/jwt/pubkey")).permitAll()
 

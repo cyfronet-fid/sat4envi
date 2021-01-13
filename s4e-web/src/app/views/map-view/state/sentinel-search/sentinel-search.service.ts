@@ -141,7 +141,7 @@ export class SentinelSearchService {
 
     this.store.setError(null);
     this.store.setMetadataLoading();
-    const url = `${environment.apiPrefixV1}/config/sentinel-search`;
+    const url = `${environment.apiPrefixV1}/config/search`;
     return this.http.get<SentinelSearchMetadata>(url)
       .pipe(
         tap(() => this.store.setMetadataLoading(false)),
