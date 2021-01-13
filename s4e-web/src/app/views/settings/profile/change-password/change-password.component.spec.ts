@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,13 +52,13 @@ describe('ChangePasswordComponent', () => {
   });
 
   it('should not send non valid form', () => {
-    const spy = spyOn(sessionService, 'resetPassword');
+    const spy = spyOn(sessionService, 'changePassword');
     component.submitPasswordChange();
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(sessionService, 'resetPassword').and.returnValue(of(1));
+    const spy = spyOn(sessionService, 'changePassword').and.returnValue(of(1));
     const oldPassword = 'zkMember';
     const newPassword = 'ZKMEMBER';
     component.form

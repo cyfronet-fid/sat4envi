@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ResetPasswordComponent} from './reset-password.component';
+import {FormErrorModule} from '../../components/form-error/form-error.module';
+import {ShareModule} from '../../common/share.module';
+import {NgStackFormsModule} from '@ng-stack/forms';
+import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
   declarations: [
     ResetPasswordComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ShareModule,
+    FormErrorModule
   ],
   exports: [
     ResetPasswordComponent
