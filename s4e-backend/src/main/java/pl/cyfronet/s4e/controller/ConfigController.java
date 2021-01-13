@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.controller.response.ConfigResponse;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.OsmProperties;
-import pl.cyfronet.s4e.search.SentinelSearchConfig;
-import pl.cyfronet.s4e.search.SentinelSearchConfigSupplier;
+import pl.cyfronet.s4e.search.SearchPanelConfigResponse;
+import pl.cyfronet.s4e.search.SearchPanelConfigResponseSupplier;
 import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
@@ -44,7 +44,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class ConfigController {
     private final GeoServerProperties geoServerProperties;
     private final OsmProperties osmProperties;
-    private final SentinelSearchConfigSupplier sentinelSearchConfigSupplier;
+    private final SearchPanelConfigResponseSupplier searchPanelConfigResponseSupplier;
 
     @Value("${recaptcha.validation.siteKey}")
     private String recaptchaSiteKey;
@@ -68,9 +68,9 @@ public class ConfigController {
             @ApiResponse(responseCode = "200", description = "OK")
     })
     @GetMapping("/config/sentinel-search")
-    public SentinelSearchConfig sentinelSearchConfig() {
+    public SearchPanelConfigResponse sentinelSearchConfig() {
         AppUserDetails userDetails = AppUserDetailsSupplier.get();
 
-        return sentinelSearchConfigSupplier.getConfig(userDetails);
+        return searchPanelConfigResponseSupplier.getConfig(userDetails);
     }
 }
