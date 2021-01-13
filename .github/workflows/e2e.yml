@@ -48,12 +48,6 @@ jobs:
         run: docker-compose -f docker-compose-test.yml logs
       - name: Stop s4e-backend and s4e-web
         run: docker-compose -f docker-compose-test.yml down
-      - name: E2E upload screenshots
-        uses: actions/upload-artifact@v2
-        if: failure()
-        with:
-          name: e2e-results
-          path: s4e-web/cypress/screenshots
     # Enable after downloading files in E2E has been resolved
     #- name: E2E upload Report PDF
     #  uses: actions/upload-artifact@v2
