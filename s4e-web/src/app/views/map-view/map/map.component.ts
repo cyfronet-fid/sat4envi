@@ -45,6 +45,7 @@ import BaseLayer from 'ol/layer/Base';
 import {getPointResolution} from 'ol/proj';
 import {Fill, Stroke, Style} from 'ol/style';
 import {defaults, ScaleLine} from 'ol/control';
+import {ImageTile} from 'ol';
 
 @Component({
   selector: 's4e-map',
@@ -60,6 +61,21 @@ export class MapComponent implements OnInit, OnDestroy {
     centerCoordinates: environment.projection.coordinates,
     zoomLevel: MapComponent.DEFAULT_ZOOM_LEVEL
   });
+
+  private _tileLoadFunction = (imageTile: ImageTile, src: string) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', src);
+    xhr.responseType = 'arraybuffer';
+    // This ensures the authentication token is sent on CORS requests to {a-c}.maps domains.
+    // Such requests will nevertheless fail if the target domain doesn't expose Access-Control-Allow-Credentials=true header.
+    xhr.withCredentials = true;
+    xhr.onload = () => {
+      const arrayBufferView = new Uint8Array(xhr.response);
+      const blob = new Blob([arrayBufferView], { type: 'image/png' });
+      (imageTile.getImage() as HTMLImageElement).src = window.URL.createObjectURL(blob);
+    };
+    xhr.send();
+  }
 
   @Input()
   set isSentinelSearch(isSentinelSearch: boolean) {
@@ -380,6 +396,7 @@ export class MapComponent implements OnInit, OnDestroy {
         'TIME': isoTimeWithoutMs,
         'TILED': true,
       },
+      tileLoadFunction: this._tileLoadFunction
     });
 
     new TileLoader(source).start$.then(() => this._loaderService.startBackground());
