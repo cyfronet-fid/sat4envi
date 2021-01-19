@@ -35,6 +35,7 @@ export interface ProductCategory {
   id: number | undefined;
   label: string;
   iconPath: string;
+  rank: number;
 }
 
 export interface UIProductCategory extends ProductCategory {
@@ -51,6 +52,7 @@ export interface Product {
   layerName: string;
   favourite: boolean;
   productCategory: ProductCategory;
+  rank: number;
 }
 
 export interface ProductWithUICategory extends Product {
