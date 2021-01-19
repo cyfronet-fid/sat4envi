@@ -21,10 +21,10 @@ import {TestBed} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
-import {ProductFactory} from './product.factory.spec';
+import {ProductCategoryFactory, ProductFactory} from './product.factory.spec';
 import {take, toArray} from 'rxjs/operators';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {ReplaySubject, Subject} from 'rxjs';
+import {of, ReplaySubject, Subject} from 'rxjs';
 import {Product, PRODUCT_MODE_FAVOURITE} from './product.model';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 
@@ -47,6 +47,27 @@ describe('ProductQuery', () => {
 
   it('should create an instance', () => {
     expect(query).toBeTruthy();
+  });
+  
+  it('should sort values by rank value', async () => {
+    const rankSort = (a: any, b: any) => a.rank < b.rank ? -1 : 1;
+    const firstCategoryProducts = ProductFactory.buildList(5, {productCategory: ProductCategoryFactory.build()})
+      .map(product => {
+        product['category'] = product['productCategory'];
+        return product;
+      });
+    const secondCategoryProducts = ProductFactory.buildList(5, {productCategory: ProductCategoryFactory.build()})
+      .map(product => {
+        product['category'] = product['productCategory'];
+        return product;
+      });
+
+    spyOn(query, 'selectAllFilteredAsUILayer')
+      .and.returnValue(of([...secondCategoryProducts, ...firstCategoryProducts]));
+    const sortedCategoriesProducts = await query.selectGroupedProducts().toPromise();
+
+    expect(sortedCategoriesProducts[0]).toEqual(firstCategoryProducts.sort(rankSort));
+    expect(sortedCategoriesProducts[1]).toEqual(secondCategoryProducts.sort(rankSort));
   });
 
   it('should selectFavourites', async () => {

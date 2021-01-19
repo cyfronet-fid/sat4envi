@@ -25,7 +25,7 @@ import {
   PRODUCT_MODE_QUERY_KEY,
   ProductState,
   ProductUIState,
-  TIMELINE_RESOLUTION_QUERY_KEY
+  TIMELINE_RESOLUTION_QUERY_KEY, UIProductCategory
 } from './product.model';
 import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
@@ -56,24 +56,28 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   public selectGroupedProducts(): Observable<IUILayer[][]> {
+    const rankSort = (a: any, b: any) => a.rank < b.rank ? -1 : 1;
+    const orderCategories = (products: IUILayer[]) => {
+      const nonUniqueCategories = products
+        .reduce((acc, product) => acc = [...acc, product.category], []);
+      const uniqueCategories = Array.from(new Set(nonUniqueCategories.map(category => category.id)))
+        .map(uniqueId => nonUniqueCategories.find(category => category.id === uniqueId));
+
+      return uniqueCategories.sort(rankSort)
+        .map(category => `${category.label}-${category.id}`);
+    }
+    const orderProducts = (products: IUILayer[]) => {
+      const orderedCategories = orderCategories(products);
+      let orderedProducts = orderedCategories.map(() => []);
+      products
+        .forEach(product => orderedProducts[orderedCategories.indexOf(`${product.category.label}-${product.category.id}`)].push(product));
+      orderedProducts =  orderedProducts
+        .map(products => products.sort(rankSort))
+      return orderedProducts;
+    }
+
     return this.selectAllFilteredAsUILayer()
-      .pipe(map(products => Object.values<IUILayer[]>(
-        products
-          .reduce((accumulator, layer) => {
-              const category = layer.category;
-              if (!category) {
-                return accumulator;
-              }
-
-            Object.keys(accumulator).some(key => key === category.id.toString())
-                ?  accumulator[category.id].push(layer)
-                : accumulator[category.id] = [layer];
-
-              return accumulator;
-            },
-            {}
-          )
-        )
+      .pipe(map(products => orderProducts(products)
         .filter(categoryProducts => !!categoryProducts && categoryProducts.length > 0)
       ));
   }
