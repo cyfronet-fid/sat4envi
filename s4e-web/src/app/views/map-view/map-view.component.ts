@@ -60,6 +60,7 @@ import {ViewConfigurationService} from './state/view-configuration/view-configur
 import {filterFalse, filterNotNull, mapAnyTrue} from '../../utils/rxjs/observable';
 import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query';
 import {InstitutionService} from '../settings/state/institution/institution.service';
+import {InstitutionQuery} from '../settings/state/institution/institution.query';
 
 
 @Component({
@@ -106,6 +107,11 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public hasHeightContrast$ = this.viewConfigurationQuery.select('highContrast');
   public hasLargeFont$ = this.viewConfigurationQuery.select('largeFont');
   public areSentinelSearchResultsOpen$ = this.sentinelSearchQuery.selectShowSearchResults();
+  public isAdminOfOneInstitution$ = this.institutionQuery
+    .selectHasOnlyOneAdministrationInstitution()
+  public hasAnyAdminInstitution$ = this.institutionQuery
+    .selectAdministrationInstitutions$()
+    .pipe(filter(institutions => !!institutions && institutions.length > 0));
 
   @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
@@ -132,6 +138,7 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private reportTemplateStore: ReportTemplateStore,
     private viewConfigurationService: ViewConfigurationService,
     private sentinelSearchQuery: SentinelSearchQuery,
+    private institutionQuery: InstitutionQuery,
     private institutionService: InstitutionService
   ) {
   }
@@ -176,6 +183,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
         untilDestroyed(this),
         filterNotNull()
       ).subscribe(() => this.openReportModal());
+
+    if (this.sessionQuery.isLoggedIn()) {
+      this.institutionService.get();
+    }
   }
 
   selectScene(sceneId: number) {

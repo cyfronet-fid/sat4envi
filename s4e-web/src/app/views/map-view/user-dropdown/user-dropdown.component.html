@@ -103,7 +103,14 @@
       <ng-container *ngIf="userLoggedIn">
         <dt i18n>Zarządzanie kontem</dt>
         <dd>
-          <a routerLink="/settings/dashboard" data-e2e="open-settings-btn" i18n>Panel administracyjny</a>
+          <a
+            *ngIf="hasAnyAdminInstitution"
+            [routerLink]="isAdminOfOneInstitution ? '/settings/dashboard' : '/settings/institutions'"
+            data-e2e="open-settings-btn"
+            i18n
+          >
+            Panel administracyjny
+          </a>
         </dd>
         <dd>
           <a routerLink="/settings/profile" data-e2e="open-profile-btn" i18n>Twój profil</a>
