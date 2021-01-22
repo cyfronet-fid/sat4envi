@@ -1,0 +1,34 @@
+  {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "id": "FWI.metadata.v1.json",
+  "title": "FWI_Products.metadata.v1",
+  "description": "Schema for FWI products metadata",
+  "required": [
+    "product_type",
+    "sensing_time",
+    "polygon",
+    "format",
+    "schema"
+  ],
+  "type": "object",
+  "properties": {
+    "product_type": {
+      "type": "string",
+      "pattern": "^[-_a-zA-Z0-9]+$"
+    },
+    "sensing_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "polygon": {
+      "type": "string",
+      "pattern": "^(-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)( -?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?)+$"
+    },
+    "format": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    }
+  }
+}

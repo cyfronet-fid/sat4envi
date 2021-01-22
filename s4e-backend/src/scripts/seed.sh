@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# Copyright 2020 ACC Cyfronet AGH
+# Copyright 2021 ACC Cyfronet AGH
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -151,7 +151,24 @@ for (( i=0; i<count; i++)); do
     --data @- > $temp_file
   handle_error "Call to $url returned an error for $product_name:"
 done
-unset count
+unset count product_name
+
+# Create license grants
+echo "Creating license grants"
+count=$(jq 'length' < $configuration_path/license-grants.json)
+url=$api_endpoint/api/admin/license-grants
+for (( i=0; i<count; i++)); do
+  inst_slug=$(jq -r ".[$i].institutionSlug" $configuration_path/license-grants.json)
+  product_id=$(jq -r ".[$i].productId" $configuration_path/license-grants.json)
+  echo "  Creating license grant for ($inst_slug, $product_id)"
+  jq ".[$i]" $configuration_path/license-grants.json | \
+  curl --silent --include --url $url \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $auth_token" \
+    --data @- > $temp_file
+  handle_error "Call to $url returned an error for ($inst_slug, $product_id):"
+done
+unset count inst_slug product_id
 
 # Sync chosen prefixes
 echo "Synchronizing prefixes"
