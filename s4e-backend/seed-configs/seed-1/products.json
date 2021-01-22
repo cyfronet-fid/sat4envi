@@ -675,5 +675,65 @@
       }
     },
     "rank": 23000
+  },
+  {
+    "name": "D_FWI",
+    "displayName": "FWI: dobowy",
+    "description": "Dobowy Fire Weather Index.",
+    "downloadOnly": false,
+    "authorizedOnly": false,
+    "accessType": "PRIVATE",
+    "layerName": "d_fwi",
+    "sceneSchemaName": "FWI.scene.v1.json",
+    "metadataSchemaName": "FWI.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "rgb_file"
+    },
+    "productCategoryName": "other",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_ZK_daily_fire.svg",
+      "leftDescription": {
+        "0.03": "0",
+        "0.15": "5",
+        "0.272": "10",
+        "0.522": "20",
+        "0.769": "30"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    },
+    "rank": 24000
+  },
+  {
+    "name": "H_FWI",
+    "displayName": "FWI: godzinny",
+    "description": "Godzinny Fire Weather Index.",
+    "downloadOnly": false,
+    "authorizedOnly": false,
+    "accessType": "PRIVATE",
+    "layerName": "h_fwi",
+    "sceneSchemaName": "FWI.scene.v1.json",
+    "metadataSchemaName": "FWI.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "rgb_file"
+    },
+    "productCategoryName": "other",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_ZK_daily_fire.svg",
+      "leftDescription": {
+        "0.03": "0",
+        "0.15": "5",
+        "0.272": "10",
+        "0.522": "20",
+        "0.769": "30"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    },
+    "rank": 25000
   }
 ]

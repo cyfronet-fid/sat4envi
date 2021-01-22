@@ -151,6 +151,7 @@ The script will:
 - set necessary DB properties,
 - create schemas,
 - create products,
+- create license grants,
 - synchronize scene prefixes,
 - reset GeoServer workspace
 - recreate overlays and synchronize them with GeoServer,
@@ -159,6 +160,7 @@ The script will:
 The seed-config consists of a list of Schemas, Products and prefixes to scan.
 Schemas are placed in separate files in directory `schema/`, their type is determined by name.
 Products are put in `products.json`, which is an array of Product creation requests.
+License grants are put in `license-grants.json`, which is an array of LicenseGrant creation requests.
 The prefixes to be scanned are put line by line in `prefixes.list`.
 
 The existing seed-config can be used as a base for creating custom ones, just make sure to update `gs-gateway`
