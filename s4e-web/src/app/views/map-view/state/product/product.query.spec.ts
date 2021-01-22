@@ -48,7 +48,7 @@ describe('ProductQuery', () => {
   it('should create an instance', () => {
     expect(query).toBeTruthy();
   });
-  
+
   it('should sort values by rank value', async () => {
     const rankSort = (a: any, b: any) => a.rank < b.rank ? -1 : 1;
     const firstCategoryProducts = ProductFactory.buildList(5, {productCategory: ProductCategoryFactory.build()})

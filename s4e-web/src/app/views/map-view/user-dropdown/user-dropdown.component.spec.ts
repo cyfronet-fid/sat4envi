@@ -18,6 +18,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserDropdownComponent } from './user-dropdown.component';
+import {RouterTestingModule} from '@angular/router/testing';
 
 describe('UserDropdownComponent', () => {
   let component: UserDropdownComponent;
@@ -25,7 +26,10 @@ describe('UserDropdownComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserDropdownComponent ]
+      declarations: [ UserDropdownComponent ],
+      imports: [
+        RouterTestingModule
+      ]
     })
     .compileComponents();
   }));

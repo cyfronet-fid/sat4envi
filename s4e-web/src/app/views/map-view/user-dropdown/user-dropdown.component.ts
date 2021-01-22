@@ -42,6 +42,8 @@ export class UserDropdownComponent implements OnInit {
   @Input() hasLargeFont: boolean = false;
   @Input() userLoggedIn: boolean = false;
   @Input() showAdvanced: boolean = false;
+  @Input() hasAnyAdminInstitution: boolean = false;
+  @Input() isAdminOfOneInstitution: boolean = true;
 
   constructor() { }
 

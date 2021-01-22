@@ -33,7 +33,6 @@ import {
   INSTITUTIONS_LIST_PATH,
   SETTINGS_PATH
 } from './settings.breadcrumbs';
-import {multipleInstitutionAdminDashboardMatcher, singleInstitutionAdminDashboardMatcher} from './dashboards.routes';
 import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 import {IsAdminGuard} from './guards/is-admin.guard';
 import {GLOBAL_OVERLAYS_PATH, INSTITUTION_OVERLAYS_PATH, WmsOverlaysComponent} from './wms-overlays/wms-overlays.component';
@@ -46,11 +45,7 @@ export const settingsRoutes: Routes = [
     canActivate: [IsLoggedIn],
     children: [
       {
-        matcher: multipleInstitutionAdminDashboardMatcher,
-        redirectTo: INSTITUTIONS_LIST_PATH
-      },
-      {
-        matcher: singleInstitutionAdminDashboardMatcher,
+        path: 'dashboard',
         component: DashboardComponent
       },
       {
