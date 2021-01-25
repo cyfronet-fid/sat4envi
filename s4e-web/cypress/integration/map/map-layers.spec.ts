@@ -67,8 +67,8 @@ describe('Map layers', () => {
       const label = 'Test';
       const geoserverUrl = '/test-wms';
       const layers = [
-        'development:opad_h05_12h',
-        'development:rgb24_micro'
+        'main:opad_h05_12h',
+        'main:rgb24_micro'
       ].join(',');
 
       cy.server();
@@ -106,7 +106,7 @@ describe('Map layers', () => {
       const label = 'Test';
       const geoserverUrl = '/wms';
       const layers = [
-        'development:opad_h05_12h']
+        'main:opad_h05_12h']
 
       cy.server();
       cy.route({
@@ -294,5 +294,5 @@ describe('Map layers', () => {
         GeneralModal
           .closeModal();
       });
-    }); 
+    });
 });

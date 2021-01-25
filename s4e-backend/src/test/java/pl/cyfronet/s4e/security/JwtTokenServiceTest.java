@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class JwtTokenServiceTest {
     public void shouldGenerateClaims() throws NotFoundException {
         LicenseHelper licenseHelper = mock(LicenseHelper.class);
         when(licenseHelper.readLicenseAuthorityToLayerName(new SimpleGrantedAuthority("LICENSE_READ_123")))
-                .thenReturn("development:layer_123");
+                .thenReturn("main:layer_123");
         JwtTokenService service = new JwtTokenService(10000L, objectMapper, JWT_KEY_PAIR, licenseHelper);
 
         String[] authorities = new String[]{
@@ -69,7 +69,7 @@ class JwtTokenServiceTest {
         List<String> jwsAuthorities = jwsClaims.getBody().get(SecurityConstants.JWT_AUTHORITIES_CLAIM, List.class);
         assertThat(jwsAuthorities, containsInAnyOrder(authorities));
         List<String> layers = jwsClaims.getBody().get(SecurityConstants.JWT_LAYERS_CLAIM, List.class);
-        assertThat(layers, contains("development:layer_123"));
+        assertThat(layers, contains("main:layer_123"));
         val priorityAccess = jwsClaims.getBody().get(SecurityConstants.JWT_PRIORITY_ACCESS_CLAIM, Boolean.class);
         assertThat(priorityAccess, is(true));
     }
