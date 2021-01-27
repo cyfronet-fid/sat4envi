@@ -161,6 +161,7 @@ export class MapLayers extends Core {
       .getSubmitFormBtn()
       .click();
 
+    cy.wait('@getMap', { timeout: 10000 });
     cy.wait('@addedNewLayer', { timeout: 10000 });
 
     return MapLayers;

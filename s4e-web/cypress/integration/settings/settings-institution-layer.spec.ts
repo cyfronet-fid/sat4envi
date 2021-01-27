@@ -43,13 +43,14 @@ describe('Institution Layer', () => {
 
     cy.route({
       method: 'GET',
-      url: `https://localhost:4200/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=${layers}&*`,
+      url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=${layers}&*`,
       headers: {
           'Content-type': 'image/png'
       },
       status: 200,
       response: this.image
-    });
+    })
+      .as('getMap');
 
     UserOptionsGoToSettings
       .gotoUserProfile();
