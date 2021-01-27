@@ -12,7 +12,6 @@ before(() => {
   cy.fixture('users/admin.json').as('admin');
   cy.fixture('institutions.json').as('institutions');
 });
-
 describe('Institution crud', () => {
 
   before(function () {
@@ -116,21 +115,6 @@ describe('Institution crud', () => {
       .selectInstitutionByName(this.institutions[1].name)
       .selectedInstitutionShouldBe(this.institutions[1].name)
       .shouldDisplayInstitutionProfile(this.institutions[1].name);
-  });
-
-  after(function () {
-    SettingsNav
-      .logOut()
-    Login
-      .loginAs(this.admin);
-    UserOptionsGoToSettings
-      .gotoUserProfile();
-    SettingsNav
-      .goToManagePrivilege();
-    SettingsAdministratorPrivilage
-      .removeDeleteInstitutionPrivilege('zkAdmin');
-    SettingsNav
-      .logOut();
   });
 });
 

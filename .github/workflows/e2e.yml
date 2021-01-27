@@ -41,7 +41,6 @@ jobs:
         run: npm run e2e
         working-directory: s4e-web
         env:
-          CYPRESS_BASE_URL: https://localhost:4202
           CYPRESS_DONT_DELETE_DOWNLOADED_FILES: true
       - name: Containers logs
         if: failure()

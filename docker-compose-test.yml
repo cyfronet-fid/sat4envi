@@ -16,6 +16,7 @@ services:
       - geoserver-test
       - minio-test
       - broker-test
+      - mailhog-e2e
   s4e-web-e2e:
     image: nginx:alpine
     ports:
@@ -88,6 +89,15 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${BROKER_TEST_USERNAME:-rabbittest}
       RABBITMQ_DEFAULT_PASS: ${BROKER_TEST_PASSWORD:-rabbittest123}
+  mailhog-e2e:
+    image: mailhog/mailhog
+    logging:
+      driver: 'none'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - net-test
 
 networks:
   net-test:

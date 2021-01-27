@@ -38,11 +38,31 @@ describe('Register', () => {
 	context('Register user', () => {
 
 		it("should register new user", function () {
+      cy.deleteAllMails();
+
 			Registration
 				.fillForm(this.userToRegister)
 				.clickReCaptcha()
 				.sendForm()
-				.beOnConfirmationPage()
+				.beOnConfirmationPage();
+
+      cy.getAllMails()
+        .filterBySubject("Potwierdzenie adresu email")
+        .should('have.length', 1)
+        .firstMail()
+        .getMailDocumentContent()
+        .then(($document: Document) =>
+          // TODO: Go to activation URL
+          {
+            expect(
+              Array
+                .from($document.getElementsByTagName('a'))
+                .map(el => el.href)
+                .filter((href: string) => href.includes('/activate'))
+                .length
+            ).eq(1)
+          }
+        );
 		});
 	});
 });

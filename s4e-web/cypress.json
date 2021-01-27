@@ -1,5 +1,5 @@
 {
-  "baseUrl": "https://localhost:4200",
+  "baseUrl": "https://localhost:4202",
   "defaultCommandTimeout": 6000,
   "viewportWidth": 1400,
   "viewportHeight": 1200,
@@ -8,5 +8,10 @@
     "runMode": 2,
     "openMode": 1
   },
-  "watchForFileChanges": false
+  "watchForFileChanges": false,
+  "env": {
+    "MAIL_HOG_BASE_URL": "http://127.0.0.1:8025",
+    "MAIL_HOG_API_V2": "api/v2",
+    "MAIL_HOG_API_V1": "api/v1"
+  }
 }
