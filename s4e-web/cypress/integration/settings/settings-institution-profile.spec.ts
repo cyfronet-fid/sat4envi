@@ -12,7 +12,6 @@ before(() => {
   cy.fixture('users/admin.json').as('admin');
   cy.fixture('institutions.json').as('institutions');
 });
-
 describe('Institution crud', () => {
 
   before(function () {
