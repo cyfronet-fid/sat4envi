@@ -36,9 +36,9 @@
   <ng-template let-inst="item">
     <td
       [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15"
-      data-e2e="institution-name"
+      
     >
-      <a routerLink="../institution" queryParamsHandling="merge"
+      <a routerLink="../institution" data-e2e="institution-name" queryParamsHandling="merge"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
     <td>
       <a

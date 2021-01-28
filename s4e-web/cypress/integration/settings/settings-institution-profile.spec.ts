@@ -1,91 +1,137 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { InstitutionSearch } from '../../page-objects/settings/settings-institution-search.po';
-import { SideNav } from '../../page-objects/settings/settings-side-nav.po';
-import { InstitutionProfile } from '../../page-objects/settings/settings-institution-profile.po';
-import promisify from 'cypress-promise';
-import { InstitutionFactory } from '../../../src/app/views/settings/state/institution/institution.factory.spec';
+import { UserOptionsGoToSettings } from "../../page-objects/user-options/user-options-go-to-settings-profile.po";
+import { SettingsInstitutions } from "../../page-objects/settings/settings-institution-profile.po";
+import { SettingsNav } from "../../page-objects/settings/settings-navigation.po";
+import { ConfirmModal } from "../../page-objects/modal/confirm-modal.po"
+import { SettingsAdministratorPrivilage } from "../../page-objects/settings/settings-superadmin-add-privilege.po"
 
-// context.skip('Settings institution profile', () => {
-//   beforeEach(() => {
-//     cy.fixture('users/zkAdmin.json').as('zkAdmin');
-//   });
+before(() => {
+  cy.fixture('users/zkAdmin.json').as('zkAdmin');
+  cy.fixture('users/admin.json').as('admin');
+  cy.fixture('institutions.json').as('institutions');
+});
 
-//   beforeEach(function () {
-//     Login
-//       .loginAs(this.zkAdmin)
-//       .goToSettingsAs(this.zkAdmin)
-//       .changeContextTo(SideNav)
-//       .goToNthInstitutionProfile(0);
-//   });
+describe('Institution crud', () => {
 
-//   it('should display institution description', async () => {
-//     const institutionLabel = await promisify(
-//       InstitutionSearch
-//           .pageObject
-//           .getSearch()
-//           .invoke('val')
-//     );
+  before(function () {
+    cy.visit('/login');
+    Login
+      .loginAs(this.admin);
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsNav
+      .goToManagePrivilege();
+    SettingsAdministratorPrivilage
+      .addDeleteInstitutionPrivilege('zkAdmin');
+    SettingsNav
+      .logOut();
+  });
 
-//     cy.wait(500);
+  beforeEach(function () {
+    cy.visit('/login');
+    Login
+      .loginAs(this.zkAdmin);
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsNav
+      .goToInstitutionsList();
 
-//     InstitutionProfile
-//       .pageObject
-//       .getInstitutionDetails()
-//       .should('contain', institutionLabel);
+    SettingsInstitutions.pageObject.getInstitutionsCount();
+  });
 
-//     InstitutionProfile
-//       .pageObject
-//       .getEmblem()
-//       .should('be.visible');
+  it('should add, edit and delete new institution', function () {
+    SettingsInstitutions
+      .goToAddNewInstitutionPage()
+      .fillForm(this.institutions[5])
+      .submit()
+      .shouldDisplayInstitutionProfile(this.institutions[5].name);
+    SettingsNav
+      .goToInstitutionsList();
+    SettingsInstitutions
+      .allInstititutionCountShouldBe(this.institutionsCount + 1)
+      .shouldBeOnInstitutionList(this.institutions[5].name)
+      .selectInstitutionByName(this.institutions[5].name)
+      .goToEditInstitutionPage()
+      .editForm("editedCityName", this.institutions[5])
+      .submit()
+      .editedInstitutionShouldContain("editedCityName");
+    SettingsNav
+      .goToInstitutionsList();
+    SettingsInstitutions
+      .removeInstitution(this.institutions[5].name);
+    ConfirmModal
+      .accept();
+    SettingsInstitutions
+      .allInstititutionCountShouldBe(this.institutionsCount);
+  });
 
-//     InstitutionProfile
-//       .pageObject
-//       .getPostalCodeWithCity()
-//       .should('be.visible');
-//   });
+  it('should add, edit and delete child institution', function () {
+    SettingsInstitutions
+      .selectNthInstitution(0)
+      .goToAddChildInstitutionPage()
+      .fillForm(this.institutions[6], false)
+      .submit()
+      .shouldDisplayInstitutionProfile(this.institutions[6].name)
+      .selectedInstitutionShouldBe(this.institutions[6].name)
+      .goToEditInstitutionPage()
+      .editForm("editedCityName", this.institutions[6])
+      .submit()
+      .editedInstitutionShouldContain("editedCityName");
+    SettingsNav
+      .goToInstitutionsList();
+    SettingsInstitutions
+      .allInstititutionCountShouldBe(this.institutionsCount + 1)
+      .shouldBeOnInstitutionList(this.institutions[6].name)
+      .selectNthInstitution(0)
+      .shouldBeOnInstitutionChildrenList(this.institutions[6].name)
+      .selectInstitutionChildByName(this.institutions[6].name)
+      .shouldDisplayInstitutionProfile(this.institutions[6].name)
+    SettingsNav
+      .goToInstitutionsList();
+    SettingsInstitutions
+      .removeInstitution(this.institutions[6].name);
+    ConfirmModal
+      .accept()
+    SettingsInstitutions
+      .allInstititutionCountShouldBe(this.institutionsCount);
+  });
 
-//   it('should add institution child, display and remove it', async () => {
-//     const parentInstitutionLabel = await promisify(
-//       InstitutionSearch
-//           .pageObject
-//           .getSearch()
-//           .invoke('val')
-//     );
+  it('shouldn\'t add institution without filled fields', function () {
+    SettingsInstitutions
+      .goToAddNewInstitutionPage()
+      .submit()
+      .errorsCountShouldBe(3);
+  });
 
-//     // add child
-//     const institution = InstitutionFactory.build();
-//     InstitutionProfile
-//       .childrenCountShouldBe(0)
-//       .goToAddChildForm()
-//       .openParentInstitutionModal()
-//       .selectFirstParentInstitution()
-//       .submitAndClose()
-//       .fillFormWith(institution)
-//       .submit();
+  it('should change institution', function () {
+    SettingsInstitutions
+      .selectInstitutionByName(this.institutions[0].name)
+      .selectedInstitutionShouldBe(this.institutions[0].name)
+      .shouldDisplayInstitutionProfile(this.institutions[0].name);
+    SettingsNav
+      .changeInstitution();
+    SettingsInstitutions
+      .selectInstitutionByName(this.institutions[1].name)
+      .selectedInstitutionShouldBe(this.institutions[1].name)
+      .shouldDisplayInstitutionProfile(this.institutions[1].name);
+  });
 
-//     InstitutionProfile
-//       .pageObject
-//       .getInstitutionDetails()
-//       .should('have.text', institution.name);
+  after(function () {
+    SettingsNav
+      .logOut()
+    Login
+      .loginAs(this.admin);
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsNav
+      .goToManagePrivilege();
+    SettingsAdministratorPrivilage
+      .removeDeleteInstitutionPrivilege('zkAdmin');
+    SettingsNav
+      .logOut();
+  });
+});
 
-//     InstitutionProfile
-//       .pageObject
-//       .getEmblem()
-//       .should('exist');
 
-//     InstitutionProfile
-//       .pageObject
-//       .getPostalCodeWithCity()
-//       .should('have.text', institution.city);
-
-//     // remove child
-//     InstitutionSearch
-//       .selectNthInstitutionResultByLabel(1, parentInstitutionLabel)
-//       .changeContextTo(InstitutionProfile)
-//       .childrenCountShouldBe(1)
-//       .removeNthChild(1)
-//       .childrenCountShouldBe(0);
-//   });
-// });

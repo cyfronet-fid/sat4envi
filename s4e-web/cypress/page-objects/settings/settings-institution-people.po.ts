@@ -1,114 +1,165 @@
-import { ConfirmModal } from './../modal/confirm-modal.po';
 import { Core } from '../core.po';
 
-export class InstitutionPeople extends Core {
+export class SettingsInstitutionPeople extends Core {
   static pageObject = {
-    // invitations modal
+    getInstitutionPeopleBtn: () => cy.get('[data-e2e="people"]'),
     getOpenSendInvitationBtn: () => cy.get('[data-e2e="open-send-invitation-btn"]'),
-    getInvitationEmailInput: () => cy.get('[data-e2e="invitation-email-input"]')
-      .find('input'),
+    getInvitationEmailInput: () => cy.get('[data-e2e="invitation-email-input"]').find('input'),
     getSubmitFormBtn: () => cy.get('[data-e2e="send-invitation-btn"]'),
-
-    // list
-    getParentAndInvitationClass: '[data-e2e="entity-row"]',
-    getPeopleAndInvitations: () => cy.get(InstitutionPeople.pageObject.getParentAndInvitationClass),
+    getPeopleAndInvitations: () => cy.get('[data-e2e="entity-row"]'),
     getDeleteBtnClass: '[data-e2e="delete-invitation-btn"]',
-    getEditBtnClass: '[data-e2e="edit-invitation-btn"]',
-    getResendBtnClass: '[data-e2e="resend-invitation-btn"]'
+    getResendBtnClass: '[data-e2e="resend-invitation-btn"]',
+    getAdminInvitationBtn: () => cy.get('[data-e2e="adminInvitation"]'),
+    getAdminPrivilegeBtn: '[data-e2e="adminPrivilage"]',
+    getConfirmationMessage: () => cy.get('.message')
   };
 
-  static fillEmail(email: string) {
-    cy.wait(500);
+  static goToPeopleInInstitutionPage() {
+    SettingsInstitutionPeople
+      .pageObject
+      .getInstitutionPeopleBtn()
+      .click()
 
-    InstitutionPeople
+    cy.location('href').should('include', '/settings/people');
+
+    return SettingsInstitutionPeople;
+  }
+
+  static fillEmail(email: string) {
+    SettingsInstitutionPeople
       .pageObject
       .getInvitationEmailInput()
       .clear()
-      .type(email, { force: true });
+      .type(email);
 
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
   }
 
   static addInvitation(email: string) {
-    InstitutionPeople
+    cy.route("POST", "/api/v1/institutions/*/invitations").as("sendInvitation")
+
+
+    SettingsInstitutionPeople
       .pageObject
       .getOpenSendInvitationBtn()
       .click();
 
-    InstitutionPeople
+    SettingsInstitutionPeople
       .fillEmail(email);
 
-    InstitutionPeople
+    SettingsInstitutionPeople
       .pageObject
       .getSubmitFormBtn()
-      .click({ force: true });
+      .click();
 
-    cy.wait(500);
+    cy.wait("@sendInvitation")
 
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
   }
 
   static invitationsCountShouldBe(count: number) {
-    InstitutionPeople
+    SettingsInstitutionPeople
       .pageObject
       .getPeopleAndInvitations()
-      .find(InstitutionPeople.pageObject.getResendBtnClass)
+      .find(SettingsInstitutionPeople.pageObject.getResendBtnClass)
       .should('have.length', count);
 
-    InstitutionPeople
-      .pageObject
-      .getPeopleAndInvitations()
-      .find(InstitutionPeople.pageObject.getEditBtnClass)
-      .should('have.length', count);
-
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
   }
 
   static invitationWithEmailShouldExist(email: string) {
-    InstitutionPeople
+    SettingsInstitutionPeople
       .pageObject
       .getPeopleAndInvitations()
       .contains(email)
       .should('have.length', 1);
 
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
   }
 
-  static removeBy(email: string) {
-    InstitutionPeople
+  static removeFromInstitution(email: string) {
+    SettingsInstitutionPeople
       .pageObject
       .getPeopleAndInvitations()
       .contains(email)
-      .should('have.length', 1)
       .parent()
-      .find(InstitutionPeople.pageObject.getDeleteBtnClass)
-      .click({ force:  true });
+      .find(SettingsInstitutionPeople.pageObject.getDeleteBtnClass)
+      .click();
 
-    ConfirmModal.accept();
-
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
   }
 
-  static resendToNewEmail(oldEmail: string, newEmail: string) {
-    InstitutionPeople
+  static resendToNewEmail(email: string) {
+    cy.route("PUT", "/api/v1/institutions/*/invitations").as("sendInvitation")
+
+    SettingsInstitutionPeople
       .pageObject
       .getPeopleAndInvitations()
-      .contains(oldEmail)
-      .should('have.length', 1)
+      .contains(email)
       .parent()
-      .find(InstitutionPeople.pageObject.getEditBtnClass)
-      .click({ force: true });
+      .find(SettingsInstitutionPeople.pageObject.getResendBtnClass)
+      .click();
 
-    InstitutionPeople
-      .fillEmail(newEmail);
-
-    InstitutionPeople
+    SettingsInstitutionPeople
       .pageObject
-      .getSubmitFormBtn()
-      .click({ force: true });
+      .getConfirmationMessage()
+      .should("be.visible")
 
-    cy.wait(500);
+    cy.wait("@sendInvitation")
 
-    return InstitutionPeople;
+    return SettingsInstitutionPeople;
+  }
+
+  static addAdministratorPrivileges(email: string) {
+    cy.route("POST", "/api/v1/institutions/*/admins/*").as("addAdministratorPrivileges")
+
+    SettingsInstitutionPeople
+      .pageObject
+      .getPeopleAndInvitations()
+      .contains(email)
+      .parent()
+      .find(SettingsInstitutionPeople.pageObject.getAdminPrivilegeBtn)
+      .click();
+
+    SettingsInstitutionPeople
+      .pageObject
+      .getConfirmationMessage()
+      .should("be.visible")
+
+    cy.wait("@addAdministratorPrivileges")
+
+    return SettingsInstitutionPeople;
+  }
+  static deleteAdministratorPrivileges(email: string) {
+    cy.route("DELETE", "/api/v1/institutions/*/admins/*").as("deleteAdministratorPrivileges")
+
+    SettingsInstitutionPeople
+      .pageObject
+      .getPeopleAndInvitations()
+      .contains(email)
+      .parent()
+      .find(SettingsInstitutionPeople.pageObject.getAdminPrivilegeBtn)
+      .click();
+
+    SettingsInstitutionPeople
+      .pageObject
+      .getConfirmationMessage()
+      .should("be.visible")
+
+    cy.wait("@deleteAdministratorPrivileges")
+
+    return SettingsInstitutionPeople;
+  }
+
+  static userShouldHaveAdministratorPrivileges(email: string, value: string) {
+    SettingsInstitutionPeople
+      .pageObject
+      .getPeopleAndInvitations()
+      .contains(email)
+      .parent()
+      .find(SettingsInstitutionPeople.pageObject.getAdminPrivilegeBtn)
+      .should(value)
+
+    return SettingsInstitutionPeople;
   }
 }

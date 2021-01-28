@@ -6884,7 +6884,7 @@
       </EX_GeographicBoundingBox>
       <BoundingBox CRS="CRS:84" minx="-52.70000000000003" miny="23.39999999999997" maxx="70.0" maxy="75.50000000000009"/>
       <Layer queryable="1" opaque="0">
-        <Name>development:108m</Name>
+        <Name>main:108m</Name>
         <Title>108m</Title>
         <Abstract/>
         <KeywordList/>
@@ -6910,7 +6910,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:Panstwo</Name>
+        <Name>main:Panstwo</Name>
         <Title>Panstwo</Title>
         <Abstract/>
         <KeywordList>
@@ -6938,7 +6938,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:airmass</Name>
+        <Name>main:airmass</Name>
         <Title>airmass</Title>
         <Abstract/>
         <KeywordList/>
@@ -6964,7 +6964,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:dust</Name>
+        <Name>main:dust</Name>
         <Title>dust</Title>
         <Abstract/>
         <KeywordList/>
@@ -6990,7 +6990,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:gminy</Name>
+        <Name>main:gminy</Name>
         <Title>gminy</Title>
         <Abstract/>
         <KeywordList>
@@ -7008,7 +7008,7 @@
         <BoundingBox CRS="CRS:84" minx="13.897674153638448" miny="48.96041619338145" maxx="24.621414587593396" maxy="54.83842364812015"/>
         <BoundingBox CRS="EPSG:2180" minx="133223.725152462" miny="171677.555189595" maxx="775019.1449917834" maxy="861895.746988281"/>
         <Style>
-          <Name>development:wojewodztwa</Name>
+          <Name>main:wojewodztwa</Name>
           <Title>Wojewodztwa style</Title>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
@@ -7017,7 +7017,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:jednostki_ewidencyjne</Name>
+        <Name>main:jednostki_ewidencyjne</Name>
         <Title>jednostki_ewidencyjne</Title>
         <Abstract/>
         <KeywordList>
@@ -7035,7 +7035,7 @@
         <BoundingBox CRS="CRS:84" minx="13.897674153638448" miny="48.96041619338145" maxx="24.621414587593396" maxy="54.83842364812015"/>
         <BoundingBox CRS="EPSG:2180" minx="133223.725152462" miny="171677.555189595" maxx="775019.1449917834" maxy="861895.746988281"/>
         <Style>
-          <Name>development:wojewodztwa</Name>
+          <Name>main:wojewodztwa</Name>
           <Title>Wojewodztwa style</Title>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
@@ -7044,7 +7044,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:natcol</Name>
+        <Name>main:natcol</Name>
         <Title>natcol</Title>
         <Abstract/>
         <KeywordList/>
@@ -7070,7 +7070,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:obreby_ewidencyjne</Name>
+        <Name>main:obreby_ewidencyjne</Name>
         <Title>obreby_ewidencyjne</Title>
         <Abstract/>
         <KeywordList>
@@ -7088,7 +7088,7 @@
         <BoundingBox CRS="CRS:84" minx="13.897674153638448" miny="48.96041619338145" maxx="24.621414587593396" maxy="54.83842364812015"/>
         <BoundingBox CRS="EPSG:2180" minx="133223.725152462" miny="171677.555189595" maxx="775019.1449917834" maxy="861895.746988281"/>
         <Style>
-          <Name>development:wojewodztwa</Name>
+          <Name>main:wojewodztwa</Name>
           <Title>Wojewodztwa style</Title>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
@@ -7097,7 +7097,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:opad_h03</Name>
+        <Name>main:opad_h03</Name>
         <Title>opad_h03</Title>
         <Abstract/>
         <KeywordList/>
@@ -7123,7 +7123,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:opad_h05_03h</Name>
+        <Name>main:opad_h05_03h</Name>
         <Title>opad_h05_03h</Title>
         <Abstract/>
         <KeywordList/>
@@ -7149,7 +7149,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:opad_h05_06h</Name>
+        <Name>main:opad_h05_06h</Name>
         <Title>opad_h05_06h</Title>
         <Abstract/>
         <KeywordList/>
@@ -7175,7 +7175,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:opad_h05_12h</Name>
+        <Name>main:opad_h05_12h</Name>
         <Title>opad_h05_12h</Title>
         <Abstract/>
         <KeywordList/>
@@ -7201,7 +7201,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:opad_h05_24h</Name>
+        <Name>main:opad_h05_24h</Name>
         <Title>opad_h05_24h</Title>
         <Abstract/>
         <KeywordList/>
@@ -7227,7 +7227,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:ost</Name>
+        <Name>main:ost</Name>
         <Title>ost</Title>
         <Abstract/>
         <KeywordList/>
@@ -7253,7 +7253,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:polsafi</Name>
+        <Name>main:polsafi</Name>
         <Title>polsafi</Title>
         <Abstract/>
         <KeywordList/>
@@ -7279,7 +7279,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:powiaty</Name>
+        <Name>main:powiaty</Name>
         <Title>powiaty</Title>
         <Abstract/>
         <KeywordList>
@@ -7297,7 +7297,7 @@
         <BoundingBox CRS="CRS:84" minx="13.897674153638448" miny="48.96041619338145" maxx="24.621414587593396" maxy="54.83842364812015"/>
         <BoundingBox CRS="EPSG:2180" minx="133223.725152462" miny="171677.555189595" maxx="775019.1449917834" maxy="861895.746988281"/>
         <Style>
-          <Name>development:wojewodztwa</Name>
+          <Name>main:wojewodztwa</Name>
           <Title>Wojewodztwa style</Title>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>
@@ -7306,7 +7306,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:rgb24_micro</Name>
+        <Name>main:rgb24_micro</Name>
         <Title>rgb24_micro</Title>
         <Abstract/>
         <KeywordList/>
@@ -7332,7 +7332,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:sentinel_1_grdh</Name>
+        <Name>main:sentinel_1_grdh</Name>
         <Title>sentinel_1_grdh</Title>
         <Abstract/>
         <KeywordList/>
@@ -7358,7 +7358,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:sentinel_1_grdm</Name>
+        <Name>main:sentinel_1_grdm</Name>
         <Title>sentinel_1_grdm</Title>
         <Abstract/>
         <KeywordList/>
@@ -7384,7 +7384,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:sentinel_1_slc</Name>
+        <Name>main:sentinel_1_slc</Name>
         <Title>sentinel_1_slc</Title>
         <Abstract/>
         <KeywordList/>
@@ -7410,7 +7410,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:sentinel_2_l1c</Name>
+        <Name>main:sentinel_2_l1c</Name>
         <Title>sentinel_2_l1c</Title>
         <Abstract/>
         <KeywordList/>
@@ -7436,7 +7436,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:sentinel_2_l2a</Name>
+        <Name>main:sentinel_2_l2a</Name>
         <Title>sentinel_2_l2a</Title>
         <Abstract/>
         <KeywordList/>
@@ -7462,7 +7462,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:setvak_eu</Name>
+        <Name>main:setvak_eu</Name>
         <Title>setvak_eu</Title>
         <Abstract/>
         <KeywordList/>
@@ -7488,7 +7488,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:setvak_pl</Name>
+        <Name>main:setvak_pl</Name>
         <Title>setvak_pl</Title>
         <Abstract/>
         <KeywordList/>
@@ -7514,7 +7514,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:soil_moisture_sm1</Name>
+        <Name>main:soil_moisture_sm1</Name>
         <Title>soil_moisture_sm1</Title>
         <Abstract/>
         <KeywordList/>
@@ -7540,7 +7540,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:soil_moisture_sm2</Name>
+        <Name>main:soil_moisture_sm2</Name>
         <Title>soil_moisture_sm2</Title>
         <Abstract/>
         <KeywordList/>
@@ -7566,7 +7566,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:soil_moisture_sm3</Name>
+        <Name>main:soil_moisture_sm3</Name>
         <Title>soil_moisture_sm3</Title>
         <Abstract/>
         <KeywordList/>
@@ -7592,7 +7592,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:soil_moisture_sm4</Name>
+        <Name>main:soil_moisture_sm4</Name>
         <Title>soil_moisture_sm4</Title>
         <Abstract/>
         <KeywordList/>
@@ -7618,7 +7618,7 @@
         </Style>
       </Layer>
       <Layer queryable="1" opaque="0">
-        <Name>development:wojewodztwa</Name>
+        <Name>main:wojewodztwa</Name>
         <Title>wojewodztwa</Title>
         <Abstract/>
         <KeywordList>
@@ -7636,7 +7636,7 @@
         <BoundingBox CRS="CRS:84" minx="13.897674154074387" miny="48.96041619310344" maxx="24.62141458696759" maxy="54.83842364812016"/>
         <BoundingBox CRS="EPSG:2180" minx="133223.72511880752" miny="171677.5552177691" maxx="775019.144991762" maxy="861895.7469477779"/>
         <Style>
-          <Name>development:wojewodztwa</Name>
+          <Name>main:wojewodztwa</Name>
           <Title>Wojewodztwa style</Title>
           <LegendURL width="20" height="20">
             <Format>image/png</Format>

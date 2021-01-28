@@ -19,7 +19,7 @@ import { InstitutionQuery } from './state/institution/institution.query';
 import { InstitutionsSearchResultsStore } from './state/institutions-search/institutions-search-results.store';
 import {InstitutionService} from './state/institution/institution.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {filter, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
@@ -47,11 +47,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
     .isAnyInstitutionActive$(this._activatedRoute);
   public activeInstitution$: Observable<Institution> = this.institutionsSearchResultsQuery
     .selectActive$(this._activatedRoute);
-  public isManagerOfActive$ = this._institutionQuery
-    .isManagerOf$(this.activeInstitution$);
   public isAdminOfOneInstitution$ = this._institutionQuery
     .selectHasOnlyOneAdministrationInstitution();
-  public isSuperAdmin$ = this._sessionQuery.select('admin');
+
+  public dashboardUrl$ = forkJoin([this.hasAnyAdminInstitution$, this.isAdminOfOneInstitution$])
+    .pipe(map(([hasAnyInstitution, hasOneInstitution]) => {
+      if (!hasAnyInstitution) {
+        return '/settings';
+      }
+
+      return hasOneInstitution ? '/settings/dashboard' : '/settings/institutions';
+    }))
 
   public canGrantInstitutionDeleteAuthority;
 

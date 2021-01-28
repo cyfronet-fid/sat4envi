@@ -162,10 +162,10 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
         : this._institutionService.createInstitutionChild$(this.form.value)
     )
       .pipe(
-        switchMap((updatedInstitution: Institution) =>
+        switchMap((updatedInstitution: Institution) => forkJoin([of(updatedInstitution), this._sessionService.loadProfile$()])),
+        switchMap(([updatedInstitution, session]) =>
           (adminsEmailsList.length > 0) ? forkJoin(adminsEmailsList.map(email => this._invitationService.send(updatedInstitution.slug, email, true))) : of([])
-        ),
-        switchMap(() => this._sessionService.loadProfile$())
+        )
       ).subscribe();
   }
 

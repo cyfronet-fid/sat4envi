@@ -1,6 +1,6 @@
 import { Core } from '../core.po';
 
-export class GenerateReport extends Core {
+export class UserOptionsGenerateReport extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getGenerateReportBtn: () => cy.get('[data-e2e="open-generate-report-modal"]'),
@@ -16,98 +16,98 @@ export class GenerateReport extends Core {
   };
 
   static openGenerateReportModal() {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getOptionsBtn()
       .click();
 
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getGenerateReportBtn()
       .click();
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static openGenerateTemplateReportModal() {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getOptionsBtn()
       .click();
 
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getGenerateTemplateReportBtn()
       .click();
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static fillFields(caption: string, notes: string) {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getCaptionInput()
       .type(caption);
 
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getNotesInput()
       .type(notes);
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static saveReportToDisk() {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getSaveBtn()
       .click();
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static saveReportAsTemplate() {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getSaveAsTemplateBtn()
       .click();
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static reportsCountShouldBe(count: number) {
 
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getReports()
       .should('have.length', count);
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static loadNthReport(nth: number) {
-  
-    GenerateReport
+
+    UserOptionsGenerateReport
       .pageObject
       .getLoadReportBtn()
       .eq(nth)
       .click()
 
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getGenerateReportModal()
       .should("be.visible")
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   }
 
   static deleteNthReportTemplate(nth: number) {
-    GenerateReport
+    UserOptionsGenerateReport
       .pageObject
       .getDeleteTemplateBtn()
       .eq(nth)
       .click()
 
-    return GenerateReport;
+    return UserOptionsGenerateReport;
   };
 };

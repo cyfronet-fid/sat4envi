@@ -3,7 +3,7 @@
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { MapDataSearch } from '../../page-objects/map/map-data-search.po';
 import { GeneralModal } from '../../page-objects/modal/general-modal.po';
-import { GenerateReport } from '../../page-objects/user-options/user-options-report.po';
+
 
 before(function () {
   cy.fixture('users/zkMember.json').as('zkMember');
@@ -31,28 +31,34 @@ describe('Sentinel data search', () => {
 
   context("Data search for logged in user", () => {
 
-    beforeEach(function(){
+    beforeEach(function () {
       cy.visit('/login');
       Login
         .loginAs(this.zkMember)
     });
 
-    it("should search product data", () => {
+    it("should search product data and display artifacts", () => {
       MapDataSearch
         .goToSearchData()
         .selectNthProduct(0)
         .search()
-    });
-
-    it("should display artifacts", () => {
-      MapDataSearch
-        .goToSearchData()
-        .selectNthProduct(0)
-        .search()
-        .selectNthDataDetails(0)   
+        .selectNthDataDetails(0)
       GeneralModal
-      .closeModal()
-
-    })
+        .closeModal()
+      MapDataSearch
+        .returnToSelectForm()
+        .selectNthProduct(1)
+        .search()
+        .selectNthDataDetails(0)
+      GeneralModal
+        .closeModal()
+      MapDataSearch
+        .returnToSelectForm()
+        .selectNthProduct(2)
+        .search()
+        .selectNthDataDetails(0)
+      GeneralModal
+        .closeModal()
+    });
   });
 });

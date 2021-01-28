@@ -1,7 +1,7 @@
 import { Core } from '../core.po';
 
 
-export class MailToExpert extends Core {
+export class UserOptionsMailToExpert extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getSendMailToExpertBtn: () => cy.get('[data-e2e="open-mail-to-expert-modal-btn"]'),
@@ -12,47 +12,47 @@ export class MailToExpert extends Core {
   };
 
   static openSendMailToExpertModal() {
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getOptionsBtn()
       .click()
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getSendMailToExpertBtn()
       .click()
 
-    return MailToExpert;
+    return UserOptionsMailToExpert;
   }
 
   static addMessageToSupport(select: string, message: string) {
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getSupportTypeInput()
       .select(select)
 
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getTextArea()
       .type(message)
 
-    return MailToExpert;
+    return UserOptionsMailToExpert;
   };
 
   static sendMessageToSupport() {
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getSendBtn()
       .click()
 
-    return MailToExpert;
+    return UserOptionsMailToExpert;
   };
 
   static confirmationShouldToAppear() {
-    MailToExpert
+    UserOptionsMailToExpert
       .pageObject
       .getConfirmationMessage()
       .should("be.visible");
 
-    return MailToExpert;
+    return UserOptionsMailToExpert;
   };
 };

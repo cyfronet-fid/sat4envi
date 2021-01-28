@@ -46,6 +46,7 @@
         [required]="true"
         [disabled]="!!this.activeInstitution || (isAddingChild$ | async)"
         (click)="openParentInstitutionModal()"
+        data-e2e="parentName"
         i18n-label
       ></ext-input>
     </section>
@@ -59,6 +60,7 @@
             label="Nazwa instytucji"
             placeholder="Wybierz instytucję"
             [required]="true"
+            data-e2e="name"
             i18n-label
           ></ext-input>
         </li>
@@ -67,6 +69,7 @@
             formControlName="address"
             label="Ulica"
             [required]="false"
+            data-e2e="address"
             i18n-label
           ></ext-input>
         </li>
@@ -76,6 +79,7 @@
             label="Kod pocztowy"
             placeholder="xx-xxx"
             [required]="false"
+            data-e2e="postalCode"
             i18n-label
           ></ext-input>
         </li>
@@ -84,6 +88,7 @@
             formControlName="city"
             label="Miejscowość"
             [required]="true"
+            data-e2e="city"
             i18n-label
           ></ext-input>
         </li>
@@ -93,6 +98,7 @@
             label="Telefon"
             placeholder="+48 xxx xxx xxx"
             [required]="false"
+            data-e2e="phone"
             i18n-label
           ></ext-input>
         </li>
@@ -101,6 +107,7 @@
             formControlName="secondaryPhone"
             label="Telefon dodatkowy"
             placeholder="+48 xxx xxx xxx"
+            data-e2e="secondaryPhone"
             [required]="false"
             i18n-label
           ></ext-input>
@@ -150,6 +157,7 @@
         type="text"
         formControlName="adminsEmails"
         id="emails"
+        data-e2e="emails"
       />
       <ng-container *ngIf="hasErrors('adminsEmails')" >
         <span
@@ -169,7 +177,7 @@
       <button type="submit" data-e2e="submit-btn" class="button button--secondary button--small" i18n>
         Zapisz instytucję
       </button>
-      <button type="button" (click)="resetForm()" class="button button--small button--borderBlack" i18n>Anuluj</button>
+      <button type="button" data-e2e="cancel-btn" (click)="resetForm()" class="button button--small button--borderBlack" i18n>Anuluj</button>
     </footer>
   </form>
 </section>

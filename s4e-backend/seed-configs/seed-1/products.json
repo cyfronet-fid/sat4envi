@@ -53,7 +53,7 @@
     "displayName": "Sentinel 2 L1C",
     "description": "Kompozycja barwna RGB TRue Colors utworzona z kanałów spektralnych czujnika MSI/Sentinel-2  0.665 µm, 0.559µm i 0.492 µm. Obraz przypomina fotografię Ziemi wykonaną np. z samolotu. Kompozycja pozwala na rozpoznawanie rodzaju pokrycia terenu oraz detekcję zachmurzenia, które na tych obrazach jest białe bądź jasno szare. Bardzo dobra rodzielczość przestrzenna (10m) pozwala na detekcję i monitorowanie stosunkowo niewielkich struktur na powierzchni ziemi oraz w polu zachmurzenia.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "sentinel_2_l1c",
     "sceneSchemaName": "Sentinel-2.scene.v1.json",
@@ -70,7 +70,7 @@
     "displayName": "Sentinel 2 L2A",
     "description": "Kompozycja barwna RGB TRue Colors utworzona z kanałów spektralnych czujnika MSI/Sentinel-2  0.665 µm, 0.559µm i 0.492 µm. Obraz przypomina fotografię Ziemi wykonaną np. z samolotu. Kompozycja pozwala na rozpoznawanie rodzaju pokrycia terenu oraz detekcję zachmurzenia, które na tych obrazach jest białe bądź jasno szare. Bardzo dobra rodzielczość przestrzenna (10m) pozwala na detekcję i monitorowanie stosunkowo niewielkich struktur na powierzchni ziemi oraz w polu zachmurzenia.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "sentinel_2_l2a",
     "sceneSchemaName": "Sentinel-2.scene.v1.json",
@@ -119,7 +119,7 @@
     "displayName": "Pył w atmosferze",
     "description": "Kompozycja barwna RGB utworzona z kanałów spektralnych czujnika  SEVIRI/METEOSAT (12.0-10.8)/(10.8-8.7)/10.8. Została zaprojektowana do detekcji pyłów w atmosferze. Na obecność piasku w atmosferze wskazuje kolor różowy, a  pyłu wulkanicznego - kolor pomarańczowy. Kompozycja ta może być również wykorzystywana do rozpoznawania zachmurzenia różnych pieter.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "dust",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -154,7 +154,7 @@
     "displayName": "Detekcja chmur lodowych i śniegu",
     "description": "Kompozycja barwna RGB Natural Colors utworzona z kanałów spektralnych czujnika SEVIRI/Meteosat 1.6 µm, 0.8 µm i 0.6 µm. Pozwala na detekcję powierzchni lądu pokrytej wegetacją oraz rozróżnienia chmur lodowych od wodnych. Chmury lodowe, śnieg oraz lód na powierzchni widoczne są tu w cyjanie, przy czym odróżnienie śniegu na powierzchni gruntu od chmur lodowych jest możliwe jedynie na podstawie charakterystycznej struktury śniegu (o ile występuje). Z kolei fotosyntetycznie aktywna wegetacja zaznaczona jest kolorem zielonym (i jego odcieniami). Pustynie, odsłonięta gleba i wyschnięta wegetacja widoczne są w odcieniach brązu.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "natcol",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -281,7 +281,7 @@
     "displayName": "Suma opadu (3h)",
     "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "opad_h05_03h",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -329,7 +329,7 @@
     "displayName": "Suma opadu (6h)",
     "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "opad_h05_06h",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -377,7 +377,7 @@
     "displayName": "Suma opadu (12h)",
     "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "opad_h05_12h",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -425,7 +425,7 @@
     "displayName": "Suma opadu (24h)",
     "description": "Produkt generowany na podstawie danych SEVIRI/METEOSAT oraz danych z czujników mikrofalowych satelitów okołobiegunowych przez EUMETSAT H-SAF. Przedstawia  sumę opadu w mm za ostatnie 3, 6, 12 lub 24 godziny. Każdy z tych produktów jest generowany co 3 godziny zaczynając od 00:00UTC.\n\nWidoczne na obrazie nieciągłości w polu opadu są efektem zastosowanego algorytmu, w którym parametry wejściowe zmieniają się z długością geograficzną.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "opad_h05_24h",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -473,7 +473,7 @@
     "displayName": "Chmury konwekcyjne wysoko wypiętrzone",
     "description": "Obraz satelitarny będący różnicą kanałów 6.2 i 10.8 µm czujnika SEVIRI/METEOSAT. Wartości różnicy większe od 0K wskazują na obszary w chmurze, w których występują silne prądy wstępujące, co z kolei prowadzi do silnego wypiętrzenia wierzchołków chmur (kolor czerwony i fioletowy). Obszary te mogą być powiązane z gwałtownymi zjawiskami takimi jak: silne opady deszczu, silne porywy wiatru lub nawet tornada.",
     "downloadOnly": false,
-    "authorizedOnly": false,
+    "authorizedOnly": true,
     "accessType": "OPEN",
     "layerName": "ost",
     "sceneSchemaName": "MSG.scene.v1.json",
@@ -675,5 +675,289 @@
       }
     },
     "rank": 23000
+  },
+  {
+    "name": "D_FWI",
+    "displayName": "FWI: dobowy",
+    "description": "Dobowy Fire Weather Index.",
+    "downloadOnly": false,
+    "authorizedOnly": false,
+    "accessType": "PRIVATE",
+    "layerName": "d_fwi",
+    "sceneSchemaName": "FWI.scene.v1.json",
+    "metadataSchemaName": "FWI.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "rgb_file"
+    },
+    "productCategoryName": "other",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_ZK_daily_fire.svg",
+      "leftDescription": {
+        "0.03": "0",
+        "0.15": "5",
+        "0.272": "10",
+        "0.522": "20",
+        "0.769": "30"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    },
+    "rank": 24000
+  },
+  {
+    "name": "H_FWI",
+    "displayName": "FWI: godzinny",
+    "description": "Godzinny Fire Weather Index.",
+    "downloadOnly": false,
+    "authorizedOnly": false,
+    "accessType": "PRIVATE",
+    "layerName": "h_fwi",
+    "sceneSchemaName": "FWI.scene.v1.json",
+    "metadataSchemaName": "FWI.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "rgb_file"
+    },
+    "productCategoryName": "other",
+    "legend": {
+      "type": "gradient",
+      "url": "/assets/images/legend_ZK_daily_fire.svg",
+      "leftDescription": {
+        "0.03": "0",
+        "0.15": "5",
+        "0.272": "10",
+        "0.522": "20",
+        "0.769": "30"
+      },
+      "rightDescription": {},
+      "topMetric": {},
+      "bottomMetric": {}
+    },
+    "rank": 25000
+  },
+  {
+    "name": "kan_600",
+    "displayName": "METEOSAT (0.6 μm)",
+    "description": "Obraz satelitarny w kanale 0.6 μm. Dostępny jedynie w dzień. Odcienie szarości informują o albedo (zdolności odbijania promieniowania słonecznego) obiektów: im  większe  albedo  tym  jaśniejszy kolor.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_600",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 26000
+  },
+  {
+    "name": "kan_800",
+    "displayName": "METEOSAT (0.8 μm)",
+    "description": "Obraz satelitarny w kanale 0.8 μm. Dostępny jedynie w dzień. Odcienie szarości informują o albedo (zdolności odbijania promieniowania słonecznego): im większe albedo tym jaśniejszy kolor. W kanale tym bardzo dobrze jest widoczna wegetacja, której albedo jest większe niż w kanale 0.6 μm.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_800",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 27000
+  },
+  {
+    "name": "kan_1600",
+    "displayName": "METEOSAT (1.6 μm)",
+    "description": "Obraz satelitarny w kanale 1.6μm, dostępny jedynie w porze dziennej. Odcienie szarości informują o albedo (zdolności odbijania promieniowania słonecznego): im większe albedo tym jaśniejszy kolor. Cechą charakterystyczną tej części widma jest niskie albedo śniegu i lodu dlatego na obrazie w tym kanale ląd pokryty śniegiem oraz chmury lodowe są czarne. Analiza obrazów w tym kanale oraz w innym kanale pasma widzialnego (np. 0.8μm) pozwala na odróżnienie chmur wodnych (obszary białe na obu obrazach) od chmur lodowych (obszary ciemno szare na obrazie 1.6 μm i białe na obrazie 0.8 μm).",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_1600",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 28000
+  },
+  {
+    "name": "kan_3900",
+    "displayName": "METEOSAT (3.9 μm)",
+    "description": "Obraz satelitarny Meteosat dla obszaru Europy w kanale 3.9 μm. Dostępny przez całą dobę. Uwaga: obrazy nocne i dzienne bardzo różnią się od siebie i należy stosować inną interpretację odcienie szarości.\n\nNa obrazach nocnych odcienie szarości odpowiadają temperaturze jasnościowej obiektów: im zimniejszy obiekt tym jaśniejszy kolor.\n\nW dzień dochodzi składowa słoneczna (istotne jest również albedo obiektów) co sprawia, że obiekty silnie odbijające promieniowanie słoneczne (np. chmury o małych kropelkach wody) w ciągu dnia ‘ocieplają się’ i stają się czarne. Natomiast chmury o dużych kropelkach wody lub chmury lodowe stają się delikatnie ciemniejsze lub nie zmieniają swego koloru wcale.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_3900",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 29000
+  },
+  {
+    "name": "kan_6200",
+    "displayName": "METEOSAT (6.2 μm)",
+    "description": "Obraz satelitarny w kanale 6.2 μm. Dostępny przez całą dobę. Kanał znajdujący się w paśmie absorpcyjnym pary wodnej. Odcienie szarości odpowiadają zawartości pary wodnej w górnej troposferze (im jaśniejszy odcień szarości tym więcej pary wodnej znajduje się w górnej troposferze). Kolor biały to wysoko wypiętrzone chmury a czarny to powietrze suche. Ląd i chmury niższych pięter widoczne są jedynie w obszarach występowania powietrza suchego.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_6200",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 30000
+  },
+  {
+    "name": "kan_7300",
+    "displayName": "METEOSAT (7.3 μm)",
+    "description": "Obraz satelitarny Meteosat dla obszaru Europy w kanale 7.3 μm. Dostępny przez całą dobę. Kanał znajdujący się w paśmie absorpcyjnym pary wodnej. Odcienie szarości odpowiadają zawartości pary wodnej w średniej troposferze (im jaśniejszy odcień szarości kolor tym więcej pary wodnej w średniej troposferze); Kolor biały to wysoko i średnio wypiętrzone chmury a czarny to powietrze suche. Ląd i chmury niższych pięter widoczne są jedynie w obszarach występowania powietrza suchego.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_7300",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 31000
+  },
+  {
+    "name": "kan_8700",
+    "displayName": "METEOSAT (8.7 μm)",
+    "description": "Obraz satelitarny kanale 8.7 μm. Dostępny przez całą dobę: Odcienie szarości odpowiadają jasnościowej temperaturze obiektów (im zimniejszy obiekt tym jaśniejszy kolor). Pojawienie się koloru granatowego oznacza wartości temperatury spoza zakresu przypisanego odcieniom szarości. Kolorem tym oznaczona jest bardzo gorąca powierzchnia lądu.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_8700",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 32000
+  },
+  {
+    "name": "kan_9700",
+    "displayName": "METEOSAT (9.7 μm)",
+    "description": "Obraz satelitarny w kanale 9.7 μm. Dostępny przez całą dobę. Kanał znajdujący się w paśmie absorpcyjnym ozonu. Odcienie szarości odpowiadają zawartości ozonu w kolumnie powietrza. Im jaśniejszy odcień szarości tym więcej ozonu w kolumnie powietrza. Na obrazach widoczne są również wysoko chmury oznaczone kolorem jasnoszarym (chmury średniego pietra) oraz kolorem białym (chmury wysokowypiętrzone).",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_9700",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 33000
+  },
+  {
+    "name": "kan_10800",
+    "displayName": "METEOSAT (10.8 μm)",
+    "description": "Obraz satelitarny w kanale 10.8 μm. Dostępny przez całą dobę. Kanał znajdujący się w tzw. „oknie atmosferycznym”, w którym atmosfera nie absorbuje promieniowania. Odcienie szarości odpowiadają temperaturze obiektów (zbliżonej do rzeczywistej). Pojawienie się koloru granatowego oznacza wartości temperatury spoza zakresu przypisanego odcieniom szarości. Kolorem tym oznaczona jest bardzo gorąca powierzchnia lądu.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_10800",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 34000
+  },
+  {
+    "name": "kan_12000",
+    "displayName": "METEOSAT (12.0 μm)",
+    "description": "Obraz satelitarny w kanale 12.0 μm. Dostępny przez całą dobę. Kanał znajdujący się w tzw. „oknie atmosferycznym” co oznacza, że atmosfera nie absorbuje promieniowania. Odcienie szarości odpowiadają temperaturze obiektów (zbliżonej do rzeczywistej). Pojawienie się koloru granatowego oznacza wartości temperatury spoza zakresu przypisanego odcieniom szarości. Kolorem tym oznaczona jest bardzo gorąca powierzchnia lądu.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_12000",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 35000
+  },
+  {
+    "name": "kan_13400",
+    "displayName": "METEOSAT (13.4 μm)",
+    "description": "Obraz satelitarny w kanale 13.4 μm. Dostępny przez całą dobę. Położony w paśmie absorpcyjnym dwutlenku węgla. Niesie informację o zawartości temperaturze górnych warstw atmosfery im jaśniejszy odcień szarości tym niższa temperatura. Powierzchnia ziemi jest niewidoczna. Chmur średniego pietra i wysoko wypiętrzone widoczne jako obiekty jasnoszare.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "EUMETSAT",
+    "layerName": "kan_13400",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 36000
+  },
+  {
+    "name": "kan_59",
+    "displayName": "HRV",
+    "description": "Obraz satelitarny w kanale HRV (High Resolution Visible) 0.4-1.1 μm. Dostępny jedynie w dzień. Odcienie szarości informują o albedo (zdolności odbijania promieniowania słonecznego): im większe albedo tym jaśniejszy kolor. Dzięki lepszej rozdzielczości przestrzennej (3km zamiast 5km) na obrazach w tym kanale lepiej widoczna jest struktura zachmurzenia oraz powierzchni ziemi.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "OPEN",
+    "layerName": "kan_59",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "atmosphere-meteorology",
+    "rank": 37000
+  },
+  {
+    "name": "RGB_day_micro",
+    "displayName": "RGB Mikrofizyka Dzienna (Day Micro)",
+    "description": "Obraz satelitarny będący kompozycją barwną RGB złożoną z trzech kanałów spektralnych zlokalizowanych w paśmie okna atmosferycznego podczerwieni termalnej oraz paśmie promieniowania słonecznego. Kompozycja tworzona jest z danych z satelitów okołobiegunowych MODIS i AVHRR.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "OPEN",
+    "layerName": "rgb_day_micro",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "other",
+    "rank": 38000
+  },
+  {
+    "name": "RGB_night_micro",
+    "displayName": "RGB Mikrofizyka Nocna (Night Micro)",
+    "description": "Obraz satelitarny będący kompozycją barwną RGB złożoną z trzech kanałów spektralnych położonych w paśmie okien atmosferycznych podczerwieni termalnej. Dostępny przez całą dobę, ale jedynie w nocy niesie jakościowe informacje. Kompozycja jest generowana zarówno z danych z satelitów geostacjonarnych SEVIRI/METEOSAT jak i z danych z satelitów okołobiegunowych MODIS/Terra i Aqua oraz AVHRR/NOAA i Metop.",
+    "downloadOnly": false,
+    "authorizedOnly": true,
+    "accessType": "OPEN",
+    "layerName": "rgb_night_micro",
+    "sceneSchemaName": "MSG.scene.v1.json",
+    "metadataSchemaName": "MSG.metadata.v1.json",
+    "granuleArtifactRule": {
+      "default": "product_file"
+    },
+    "productCategoryName": "other",
+    "rank": 39000
   }
 ]

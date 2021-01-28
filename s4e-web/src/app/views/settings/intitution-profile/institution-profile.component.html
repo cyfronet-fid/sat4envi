@@ -20,18 +20,18 @@
     Profil instytucji
   </li>
   <li>
-    <a routerLink="/settings/people" queryParamsHandling="merge">
+    <a routerLink="/settings/people" data-e2e="people" queryParamsHandling="merge">
       Osoby w instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']"
+    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
        queryParamsHandling="merge">
       Warstwy WMS dla instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/manage-products']"
+    <a [routerLink]="['/settings/manage-products']" data-e2e="manage-products"
        queryParamsHandling="merge">
       Zarządzaj produktami
     </a>
@@ -80,6 +80,7 @@
         [routerLink]="['/settings/edit-institution']"
         queryParamsHandling="merge"
         data-ut="edit-institution"
+        data-e2e="edit-institution"
         i18n
       >
         Edytuj dane
@@ -128,7 +129,7 @@
   </ng-container>
   <ng-template let-inst="item">
     <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
-      <a routerLink="../institution" queryParamsHandling="merge"
+      <a routerLink="../institution" queryParamsHandling="merge" data-e2e="childrenInstitution"
          [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
     <td>
       <ng-container *ngIf="isManagerOf(inst) || (isAdmin$ | async)">
