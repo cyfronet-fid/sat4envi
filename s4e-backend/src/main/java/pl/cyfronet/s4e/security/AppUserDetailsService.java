@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.cyfronet.s4e.bean.*;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.data.repository.PropertyRepository;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static pl.cyfronet.s4e.Constants.PROPERTY_EUMETSAT_AUTHORITY_WHITELIST;
 import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_READ_AUTHORITY_PREFIX;
 import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_WRITE_AUTHORITY_PREFIX;
 
@@ -42,7 +41,10 @@ import static pl.cyfronet.s4e.security.SecurityConstants.LICENSE_WRITE_AUTHORITY
 @RequiredArgsConstructor
 @Slf4j
 public class AppUserDetailsService implements UserDetailsService {
+    private static final List<String> DEFAULT_EUMETSAT_AUTHORITY_WHITELIST = List.of("ROLE_MEMBER_ZK", "ROLE_MEMBER_PAK");
+
     private final AppUserRepository appUserRepository;
+    private final PropertyRepository propertyRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -60,19 +62,22 @@ public class AppUserDetailsService implements UserDetailsService {
                 appUser.getEmail(),
                 appUser.getName(),
                 appUser.getSurname(),
-                getAuthorities(appUser),
+                getEffectiveAuthorities(appUser.getAuthorities(), appUser.getRoles()),
                 appUser.getPassword(),
                 appUser.isEnabled());
     }
 
-    private Set<SimpleGrantedAuthority> getAuthorities(AppUser appUser) {
-        val sourceAuthorities = new HashSet<>(appUser.getAuthorities());
+    protected Set<SimpleGrantedAuthority> getEffectiveAuthorities(
+            Set<String> userAuthorities,
+            Set<UserRole> userRoles
+    ) {
+        val sourceAuthorities = new HashSet<>(userAuthorities);
 
-        appUser.getRoles().stream()
+        userRoles.stream()
                 .map(this::toRole)
                 .forEach(sourceAuthorities::add);
 
-        appUser.getRoles().stream()
+        userRoles.stream()
                 .map(UserRole::getInstitution)
                 .map(Institution::getLicenseGrants)
                 .flatMap(Collection::stream)
@@ -82,7 +87,7 @@ public class AppUserDetailsService implements UserDetailsService {
                 .mapToObj(id -> LICENSE_READ_AUTHORITY_PREFIX + id)
                 .forEach(sourceAuthorities::add);
 
-        appUser.getRoles().stream()
+        userRoles.stream()
                 .filter(userRole -> userRole.getRole() == AppRole.INST_ADMIN)
                 .map(UserRole::getInstitution)
                 .map(Institution::getLicenseGrants)
@@ -94,20 +99,20 @@ public class AppUserDetailsService implements UserDetailsService {
                 .mapToObj(id -> LICENSE_WRITE_AUTHORITY_PREFIX + id)
                 .forEach(sourceAuthorities::add);
 
-        boolean grantEumetsatLicense = appUser.getRoles().stream()
-                .map(UserRole::getInstitution)
-                .anyMatch(Institution::isEumetsatLicense);
-
-        if (grantEumetsatLicense) {
-            sourceAuthorities.add("LICENSE_EUMETSAT");
-        }
-
-        if (appUser.getRoles().stream().map(UserRole::getInstitution).anyMatch(Institution::isZk)) {
+        if (userRoles.stream().map(UserRole::getInstitution).anyMatch(Institution::isZk)) {
             sourceAuthorities.add("ROLE_MEMBER_ZK");
         }
 
-        if (appUser.getRoles().stream().map(UserRole::getInstitution).anyMatch(Institution::isPak)) {
+        if (userRoles.stream().map(UserRole::getInstitution).anyMatch(Institution::isPak)) {
             sourceAuthorities.add("ROLE_MEMBER_PAK");
+        }
+
+        boolean grantEumetsatLicense = userRoles.stream()
+                .map(UserRole::getInstitution)
+                .anyMatch(Institution::isEumetsatLicense);
+
+        if (grantEumetsatLicense || eumetsatAuthorityWhitelist().stream().anyMatch(sourceAuthorities::contains)) {
+            sourceAuthorities.add("LICENSE_EUMETSAT");
         }
 
         return sourceAuthorities.stream()
@@ -117,5 +122,18 @@ public class AppUserDetailsService implements UserDetailsService {
 
     private String toRole(UserRole userRole) {
         return "ROLE_" + userRole.getRole().name() + "_" + userRole.getInstitution().getSlug();
+    }
+
+    /**
+     * If user already has an authority from the list then grant her EUMETSAT_LICENSE too.
+     *
+     * @return list of authorities
+     */
+    private List<String> eumetsatAuthorityWhitelist() {
+        return propertyRepository.findByName(PROPERTY_EUMETSAT_AUTHORITY_WHITELIST)
+                .map(Property::getValue)
+                .map(str -> str.split(","))
+                .map(Arrays::asList)
+                .orElse(DEFAULT_EUMETSAT_AUTHORITY_WHITELIST);
     }
 }

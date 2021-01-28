@@ -118,6 +118,11 @@ Example: `mailto://s4e-sync-1/`.
 `expert_help_email`: the mail to which all the expert help requests go.
 Example: `expert@mail.pl`.
 
+`eumetsat_authority_whitelist`: having a role from this list grants LICENSE_EUMETSAT as well when generating user
+authorities.
+Authorities are comma-separated.
+Default and example: `ROLE_MEMBER_ZK,ROLE_MEMBER_PAK`.
+
 
 #### Seeding Products
 

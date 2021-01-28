@@ -102,7 +102,7 @@ describe('Map layers', () => {
 
       const label = 'Test';
       const geoserverUrl = '/wms';
-      const layers = [
+      const layer = [
         'main:opad_h05_12h']
 
       cy.server();
@@ -117,9 +117,19 @@ describe('Map layers', () => {
       })
         .as('getCapabilities');
 
+      cy.route({
+        method: 'GET',
+        url: `https://localhost:4200/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=${layer}&*`,
+        headers: {
+          'Content-type': 'image/png'
+        },
+        status: 200,
+        response: this.scene
+      })
+
       MapLayers
         .openManagementModal()
-        .fillForm(label, `${geoserverUrl}?LAYERS=${layers}`)
+        .fillForm(label, `${geoserverUrl}?LAYERS=${layer}`)
         .addNew()
       GeneralModal
         .closeModal();
@@ -142,154 +152,154 @@ describe('Map layers', () => {
 
     });
   });
-    context("Error handling", () => {
+  context("Error handling", () => {
 
-      beforeEach(function () {
-        cy.visit('/login')
-        Login.loginAs(this.zkMember);
-      })
+    beforeEach(function () {
+      cy.visit('/login')
+      Login.loginAs(this.zkMember);
+    })
 
-      it('should display url errors', function () {
-        const label = 'Test';
-        const url = [
-          'https://test-page.pl/?SERVICE=unknown',
-          'REQUEST=unknown',
-          'LAYERS=unkn?own',
-          'STYLES=unkn?own',
-          'FORMAT=image/unknown',
-          'TRANSPARENT=none',
-          'VERSION=x.y.z',
-          'HEIGHT=none',
-          'WIDTH=none',
-          'CRS=unknown',
-          'BBOX=unknown,unknown,unknown,unknown'
-        ].join('&');
+    it('should display url errors', function () {
+      const label = 'Test';
+      const url = [
+        'https://test-page.pl/?SERVICE=unknown',
+        'REQUEST=unknown',
+        'LAYERS=unkn?own',
+        'STYLES=unkn?own',
+        'FORMAT=image/unknown',
+        'TRANSPARENT=none',
+        'VERSION=x.y.z',
+        'HEIGHT=none',
+        'WIDTH=none',
+        'CRS=unknown',
+        'BBOX=unknown,unknown,unknown,unknown'
+      ].join('&');
 
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, url, false)
-          .errorsCountShouldBe(6);
-        GeneralModal
-          .closeModal();
-      });
-
-      it('handle 400 error', function () {
-        const label = 'Test';
-        const geoserverUrl = '/test-wms';
-
-        cy.server();
-        cy.route({
-          method: 'GET',
-          url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
-          headers: {
-            'Content-type': 'text/xml'
-          },
-          status: 400,
-          response: { errors: 'CannotGET /...' }
-        })
-          .as('getCapabilities');
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, geoserverUrl, false)
-          .errorShouldBeDispalyed();
-        GeneralModal
-          .closeModal();
-      });
-
-      it('handle 404 error', function () {
-        const label = 'Test';
-        const geoserverUrl = '/test-wms';
-
-        cy.server();
-        cy.route({
-          method: 'GET',
-          url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
-          headers: {
-            'Content-type': 'text/xml'
-          },
-          status: 404,
-          response: { errors: 'CannotGET /...' }
-        })
-          .as('getCapabilities');
-
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, geoserverUrl, false)
-          .errorShouldBeDispalyed();
-        GeneralModal
-          .closeModal();
-      });
-
-      it('handle 500 error', function () {
-        const label = 'Test';
-        const geoserverUrl = '/test-wms';
-
-        cy.server();
-        cy.route({
-          method: 'GET',
-          url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
-          headers: {
-            'Content-type': 'text/xml'
-          },
-          status: 500,
-          response: { errors: 'CannotGET /...' }
-        })
-          .as('getCapabilities');
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, geoserverUrl, false)
-          .errorShouldBeDispalyed();
-        GeneralModal
-          .closeModal();
-      });
-
-      it('handle 503 error', function () {
-        const label = 'Test';
-        const geoserverUrl = '/test-wms';
-
-        cy.server();
-        cy.route({
-          method: 'GET',
-          url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
-          headers: {
-            'Content-type': 'text/xml'
-          },
-          status: 503,
-          response: { errors: 'CannotGET /...' }
-        })
-          .as('getCapabilities');
-
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, geoserverUrl, false)
-          .errorShouldBeDispalyed();
-        GeneralModal
-          .closeModal();
-      });
-
-      it('handle response does not have the correct formats ', function () {
-        const label = 'Test';
-        const geoserverUrl = '/test-wms';
-        const incorrectResponse = "Response does not have the correct formats"
-
-        cy.server();
-        cy.route({
-          method: 'GET',
-          url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
-          headers: {
-            'Content-type': 'text/xml'
-          },
-          status: 200,
-          response: incorrectResponse
-        })
-          .as('getCapabilities');
-
-        MapLayers
-          .openManagementModal()
-          .fillForm(label, geoserverUrl)
-          .errorShouldBeDispalyed();
-        GeneralModal
-          .closeModal();
-      });
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, url, false)
+        .errorsCountShouldBe(6);
+      GeneralModal
+        .closeModal();
     });
+
+    it('handle 400 error', function () {
+      const label = 'Test';
+      const geoserverUrl = '/test-wms';
+
+      cy.server();
+      cy.route({
+        method: 'GET',
+        url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
+        headers: {
+          'Content-type': 'text/xml'
+        },
+        status: 400,
+        response: { errors: 'CannotGET /...' }
+      })
+        .as('getCapabilities');
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, geoserverUrl, false)
+        .errorShouldBeDispalyed();
+      GeneralModal
+        .closeModal();
+    });
+
+    it('handle 404 error', function () {
+      const label = 'Test';
+      const geoserverUrl = '/test-wms';
+
+      cy.server();
+      cy.route({
+        method: 'GET',
+        url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
+        headers: {
+          'Content-type': 'text/xml'
+        },
+        status: 404,
+        response: { errors: 'CannotGET /...' }
+      })
+        .as('getCapabilities');
+
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, geoserverUrl, false)
+        .errorShouldBeDispalyed();
+      GeneralModal
+        .closeModal();
+    });
+
+    it('handle 500 error', function () {
+      const label = 'Test';
+      const geoserverUrl = '/test-wms';
+
+      cy.server();
+      cy.route({
+        method: 'GET',
+        url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
+        headers: {
+          'Content-type': 'text/xml'
+        },
+        status: 500,
+        response: { errors: 'CannotGET /...' }
+      })
+        .as('getCapabilities');
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, geoserverUrl, false)
+        .errorShouldBeDispalyed();
+      GeneralModal
+        .closeModal();
+    });
+
+    it('handle 503 error', function () {
+      const label = 'Test';
+      const geoserverUrl = '/test-wms';
+
+      cy.server();
+      cy.route({
+        method: 'GET',
+        url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
+        headers: {
+          'Content-type': 'text/xml'
+        },
+        status: 503,
+        response: { errors: 'CannotGET /...' }
+      })
+        .as('getCapabilities');
+
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, geoserverUrl, false)
+        .errorShouldBeDispalyed();
+      GeneralModal
+        .closeModal();
+    });
+
+    it('handle response does not have the correct formats ', function () {
+      const label = 'Test';
+      const geoserverUrl = '/test-wms';
+      const incorrectResponse = "Response does not have the correct formats"
+
+      cy.server();
+      cy.route({
+        method: 'GET',
+        url: `${geoserverUrl}?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities`,
+        headers: {
+          'Content-type': 'text/xml'
+        },
+        status: 200,
+        response: incorrectResponse
+      })
+        .as('getCapabilities');
+
+      MapLayers
+        .openManagementModal()
+        .fillForm(label, geoserverUrl)
+        .errorShouldBeDispalyed();
+      GeneralModal
+        .closeModal();
+    });
+  });
 });

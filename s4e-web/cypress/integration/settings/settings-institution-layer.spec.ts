@@ -11,6 +11,7 @@ import { SettingsNav } from "../../page-objects/settings/settings-navigation.po"
 before(() => {
   cy.fixture('users/zkAdmin.json').as('zkAdmin');
   cy.fixture('layer-capability.xml').as('geoserverResponse');
+  cy.fixture('scene.png').as('scene');
 });
 
 describe('Institution Layer', () => {
@@ -25,7 +26,7 @@ describe('Institution Layer', () => {
   it('should add layer to institution', function () {
     const label = 'Test';
     const geoserverUrl = '/wms';
-    const layers = [
+    const layer = [
       'main:opad_h05_12h']
 
     cy.server();
@@ -40,6 +41,16 @@ describe('Institution Layer', () => {
     })
       .as('getCapabilities');
 
+    cy.route({
+      method: 'GET',
+      url: `https://localhost:4200/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=${layer}&*`,
+      headers: {
+        'Content-type': 'image/png'
+      },
+      status: 200,
+      response: this.scene
+    })
+
     UserOptionsGoToSettings
       .gotoUserProfile();
     SettingsInstitutions
@@ -48,7 +59,7 @@ describe('Institution Layer', () => {
       .goToAddInstitutionLayerPage()
       .institutionLayersCountShouldBe(0)
       .addLayer()
-      .fillForm(label, `${geoserverUrl}?LAYERS=${layers}`)
+      .fillForm(label, `${geoserverUrl}?LAYERS=${layer}`)
       .addNew()
       .institutionLayersCountShouldBe(1);
     SettingsNav
