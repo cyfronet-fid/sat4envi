@@ -1,30 +1,40 @@
 /// <reference types="Cypress" />
 
 import { Login } from '../../page-objects/auth/auth-login.po';
-import { SideNav } from '../../page-objects/settings/settings-side-nav.po';
+import { SettingsNav } from '../../page-objects/settings/settings-navigation.po'
+import { UserOptionsGoToSettings } from "../../page-objects/user-options/user-options-go-to-settings-profile.po"
+import { SettingsUserPasswordChange } from "../../page-objects/settings/settings-change-password.po"
 
-// context.skip('Settings change password', () => {
-//   beforeEach(() => {
-//     cy.fixture('users/zkMember.json').as('zkMember');
-//   });
+before(() => {
+  cy.fixture('users/zkAdmin.json').as('zkAdmin');
+});
 
-//   it('should change password and login with it', function () {
-//     Login
-//       .loginAs(this.zkMember)
-//       .goToSettingsAs(this.zkMember)
-//       .goToUserProfile()
-//       .goToPasswordChange()
-//       .changePassword(this.zkMember.password, this.zkMember.password.toUpperCase())
-//       .changeContextTo(SideNav)
-//       .logout();
+describe('Settings change password', () => {
 
-//     Login
-//       .loginAs({...this.zkMember, password: this.zkMember.password.toUpperCase()})
-//       .goToSettingsAs({...this.zkMember, password: this.zkMember.password.toUpperCase()})
-//       .goToUserProfile()
-//       .goToPasswordChange()
-//       .changePassword(this.zkMember.password.toUpperCase(), this.zkMember.password)
-//       .changeContextTo(SideNav)
-//       .logout();
-//   });
-// });
+  beforeEach(function () {
+    cy.visit('/login');
+    Login
+      .loginAs(this.zkAdmin);
+  });
+
+  it('should change password and login with it', function () {
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsUserPasswordChange
+      .goToChangePasswordPage()
+      .changePassword(this.zkAdmin.password, this.zkAdmin.password.toUpperCase());
+    SettingsNav
+      .logOut();
+    Login
+      .fillForm(this.zkAdmin)
+      .sendForm()
+      .hasErrorLogin();
+    Login
+      .loginAs({ ...this.zkAdmin, password: this.zkAdmin.password.toUpperCase() });
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsUserPasswordChange
+      .goToChangePasswordPage()
+      .changePassword(this.zkAdmin.password.toUpperCase(), this.zkAdmin.password);
+  })
+});

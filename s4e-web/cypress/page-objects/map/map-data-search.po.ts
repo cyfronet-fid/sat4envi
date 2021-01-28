@@ -11,7 +11,8 @@ export class MapDataSearch extends Core {
     getAllResultsDownloadBtn: () => cy.get('[data-e2e="download-link"]'),
     getAllResultsDetailsBtn: () => cy.get('[data-e2e="show-details-button"]'),
     getDetailsModal: () => cy.get('[data-e2e="modal-body"]'),
-    getResultDownloadAllArtifactsBtn: () => cy.get('[data-e2e="btn--download-all"]')
+    getResultDownloadAllArtifactsBtn: () => cy.get('[data-e2e="btn--download-all"]'),
+    getBackBtn: () => cy.get('[data-e2e="back-button"]')
   }
 
   static goToSearchData() {
@@ -54,7 +55,7 @@ export class MapDataSearch extends Core {
       .pageObject
       .getSearchBtn()
       .should("be.visible")
-      .then((element)=>{
+      .then((element) => {
         element.trigger('click') //for avoid detached from DOM
       })
 
@@ -100,6 +101,15 @@ export class MapDataSearch extends Core {
       .pageObject
       .getResultDownloadAllArtifactsBtn()
       .invoke('removeAttr', 'target')
+      .click()
+
+    return MapDataSearch
+  }
+
+  static returnToSelectForm() {
+    MapDataSearch
+      .pageObject
+      .getBackBtn()
       .click()
 
     return MapDataSearch

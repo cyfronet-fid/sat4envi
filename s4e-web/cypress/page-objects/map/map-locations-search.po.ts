@@ -1,124 +1,124 @@
 import { Core } from '../core.po';
 
-export class LocationsSearch extends Core {
+export class MapLocationsSearch extends Core {
   static readonly pageObject = {
     getSearch: () => cy.get('[data-e2e="search-input"]'),
     getSearchResults: () => cy.get('[data-e2e="search-result"]'),
-    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'), 
+    getSearchResultsList: () => cy.get('[data-e2e="search-results-list"]'),
     getSearchResultsType: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.type'),
     getSearchResultsVoivodeship: (searchResult: Cypress.Chainable<JQuery<HTMLElement>>) => searchResult.get('.voivodeship'),
-    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'), 
-    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]') 
+    getClearSearchBtn: () => cy.get('[data-e2e="clear-search-btn"]'),
+    getSelectActiveResultBtn: () => cy.get('[data-e2e="select-active-result-btn"]')
   }
 
   static type(value: string) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearch()
       .type(value);
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
-  static searchCitiesBy(name:string){
+  static searchCitiesBy(name: string) {
     cy.server()
     cy.route('GET', `/api/v1/places?namePrefix=${name}`).as('getCityList');
 
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearch()
       .type(name);
-      
+
     cy.wait('@getCityList')
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static nthResultShouldHaveLabel(nth: number, label: string) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearchResults()
       .eq(nth)
       .contains(label)
       .should('be.visible');
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static nthResultShouldHaveType(nth: number, type: string) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearchResultsType(
-        LocationsSearch
-        .pageObject
-        .getSearchResults()
-        .eq(nth)
-        .should('be.visible')
+        MapLocationsSearch
+          .pageObject
+          .getSearchResults()
+          .eq(nth)
+          .should('be.visible')
       )
       .should('contain', type);
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static nthResultShouldHaveVoivodeship(nth: number, voivodeship: string) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearchResultsVoivodeship(
-        LocationsSearch
-        .pageObject
-        .getSearchResults()
-        .eq(nth)
-        .should('be.visible')
+        MapLocationsSearch
+          .pageObject
+          .getSearchResults()
+          .eq(nth)
+          .should('be.visible')
       )
       .should('contain', voivodeship);
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static selectNthResult(nth: number) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearchResults()
       .eq(nth)
       .click();
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static searchShouldHaveValue(value: string) {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearch()
       .should('be.visible')
       .should('have.value', value);
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static resultsShouldBeClosed() {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSearchResultsList()
       .should('not.be.visible');
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static clearSearch() {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getClearSearchBtn()
       .click();
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 
   static selectActiveResult() {
-    LocationsSearch
+    MapLocationsSearch
       .pageObject
       .getSelectActiveResultBtn()
       .click();
 
-    return LocationsSearch;
+    return MapLocationsSearch;
   }
 };

@@ -25,13 +25,13 @@
     Osoby w instytucji
   </li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']"
+    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
        queryParamsHandling="merge">
       Warstwy WMS dla instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/manage-products']"
+    <a [routerLink]="['/settings/manage-products']" data-e2e="manage-products"
        queryParamsHandling="merge">
       Zarządzaj produktami
     </a>
@@ -75,6 +75,7 @@
         type="checkbox"
         (click)="toggleAdminRoleFor(user)"
         [checked]="isAdmin(user)"
+        data-e2e="adminPrivilage"
       />
     </td>
     <td *ngIf="isInvitation(user)"></td>
