@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,4 +25,5 @@ public final class Constants {
     public static final String GEOSERVER_PRG_PATH = "/opt/geoserver/prg/";
 
     public static final String PROPERTY_EXPERT_HELP_EMAIL = "expert_help_email";
+    public static final String PROPERTY_EUMETSAT_AUTHORITY_WHITELIST = "eumetsat_authority_whitelist";
 }
