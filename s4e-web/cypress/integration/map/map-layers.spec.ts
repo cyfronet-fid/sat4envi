@@ -125,7 +125,7 @@ describe('Map layers', () => {
         },
         status: 200,
         response: this.scene
-      })
+      });
 
       MapLayers
         .openManagementModal()

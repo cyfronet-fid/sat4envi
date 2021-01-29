@@ -49,7 +49,7 @@ describe('Institution Layer', () => {
       },
       status: 200,
       response: this.scene
-    })
+    });
 
     UserOptionsGoToSettings
       .gotoUserProfile();
