@@ -18,39 +18,26 @@
 /*==============================
 ==== HIGH CONTRAST COLORS ======
 ==== AND WCAG Changes ==========
-==============================
-
-$color-white: #fff;
-$color-black: #000;
-$color-red: #f00;
-$color-yellow: #FFC300;
-
-$color-grey: #505050;
-$color-grey-primary: #F5F5F5;
-$color-grey-secondary: #D8DDE0;
-$color-grey-tertiary: #41414C;
-$color-grey-quaternary: #B4B4B4;
-$color-bluish: #d3edff;
-$color-primary: #61FBAF;
-$color-primary-darker: #149B58;
-$color-secondary: #2B74BB;
-$color-tertiary: #F9FCFE;
-$color-tertiary-darken: darken($color-tertiary, 8%);
-$color-tertiary-second: #F6F6F6;
-$color-hover: rgba(255, 250, 201, 0.53);
-$color-hover-secondary: #E7FFD3;
-$color-white-50: rgba(255,255,255,0.5);
-
-$color-header: #3c3c3c;
-$color-text: $color-grey-tertiary;
-
-$color-error: #BA4343;
-
-$border-radius-default: 5px;
-$border-radius-circle: 50px;*/
+==============================*/
 
 html.wcag_fs {
   font-size: 22px !important;
+
+  .searchResult__item {
+    height: auto !important;
+  }
+
+  .timeline__item {
+    width: 14px;
+    height: 15px;
+    top: -2px;
+  }
+
+  .timeline__item--multiple .multiple__dot {
+    height: 19px !important;
+    width: 19px !important;
+    top: -6px !important;
+  }
 }
 
 body.wcag_hc {
