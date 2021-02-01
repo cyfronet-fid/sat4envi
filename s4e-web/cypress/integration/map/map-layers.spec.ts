@@ -8,6 +8,7 @@ import { ConfirmModal } from '../../page-objects/modal/confirm-modal.po';
 before(() => {
   cy.fixture('users/zkMember.json').as('zkMember');
   cy.fixture('layer-capability.xml').as('geoserverResponse');
+  cy.fixture('image.png').as('image');
 });
 
 describe('Map layers', () => {
@@ -116,6 +117,16 @@ describe('Map layers', () => {
         response: this.geoserverResponse
       })
         .as('getCapabilities');
+
+      cy.route({
+        method: 'GET',
+        url: `https://localhost:4200/wms?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=true&LAYERS=${layers}&*`,
+        headers: {
+            'Content-type': 'image/png'
+        },
+        status: 200,
+        response: this.image
+      });
 
       MapLayers
         .openManagementModal()
