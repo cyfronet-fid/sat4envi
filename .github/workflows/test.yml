@@ -3,7 +3,7 @@ name: Build & Test
 on: [push]
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -33,7 +33,7 @@ jobs:
         run: docker-compose -f docker-compose-test.yml down
 
   gs-gateway:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -56,7 +56,7 @@ jobs:
         working-directory: gs-gateway
 
   web:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
