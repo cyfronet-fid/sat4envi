@@ -69,6 +69,7 @@ function responseParser(responseText) {
           item.Content.Headers.Subject[0]
             .replace('=?UTF-8?Q?', '')
             .replace('?=', '')
+            
         )
           .replace('_', ' '),
         content: new DOMParser().parseFromString(unescape(/<!DOCTYPE html>([\s\S]*)<\/html>/gmi.exec(item.Content.Body)[0]), 'text/html')

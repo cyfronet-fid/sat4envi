@@ -1,5 +1,6 @@
 /// <reference types = "Cypress" />
 
+import { Login } from '../../page-objects/auth/auth-login.po';
 import { Registration } from '../../page-objects/auth/auth-register.po';
 
 before(() => {
@@ -37,7 +38,7 @@ describe('Register', () => {
 
 	context('Register user', () => {
 
-		it("should register new user", function () {
+		it.only("should register new user", function () {
       cy.deleteAllMails();
 
 			Registration
@@ -54,15 +55,20 @@ describe('Register', () => {
         .then(($document: Document) =>
           // TODO: Go to activation URL
           {
-            expect(
-              Array
+            const activateUrl = Array
                 .from($document.getElementsByTagName('a'))
                 .map(el => el.href)
-                .filter((href: string) => href.includes('/activate'))
-                .length
-            ).eq(1)
+                .filter((href: string) => href.includes('/activate')).toString().replace("127.0.0.1", "localhost").replace("=", '')
+
+            cy.visit(activateUrl)  
+            Login
+              .loginAs(this.userToRegister)
+             
           }
-        );
+         
+      );
 		});
 	});
 });
+
+

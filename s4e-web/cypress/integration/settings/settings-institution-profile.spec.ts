@@ -116,6 +116,21 @@ describe('Institution crud', () => {
       .selectedInstitutionShouldBe(this.institutions[1].name)
       .shouldDisplayInstitutionProfile(this.institutions[1].name);
   });
+
+  after(function () {
+    SettingsNav
+      .logOut()
+    Login
+      .loginAs(this.admin);
+    UserOptionsGoToSettings
+      .gotoUserProfile();
+    SettingsNav
+      .goToManagePrivilege();
+    SettingsAdministratorPrivilage
+      .removeDeleteInstitutionPrivilege('zkAdmin');
+    SettingsNav
+      .logOut();
+  });
 });
 
 
