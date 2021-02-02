@@ -74,7 +74,6 @@ export class Login extends Core {
   }
 
   static loginAs(user: User) {
-
     Login
       .fillForm(user)
       .sendForm();
