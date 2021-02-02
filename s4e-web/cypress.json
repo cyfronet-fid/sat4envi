@@ -8,6 +8,7 @@
     "runMode": 2,
     "openMode": 1
   },
+  "projectId": "7qp766",
   "watchForFileChanges": false,
   "env": {
     "MAIL_HOG_BASE_URL": "http://127.0.0.1:8025",

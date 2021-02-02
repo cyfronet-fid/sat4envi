@@ -62,7 +62,7 @@ describe('Register', () => {
                 .length
             ).eq(1)
           }
-        );
+       );
 		});
 	});
 });

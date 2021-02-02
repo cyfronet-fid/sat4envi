@@ -17,7 +17,7 @@
 import './commands'
 
 // Alternatively you can use CommonJS syntax:
-// require('./commands')
+//require('./commands')
 require('cypress-failed-log')
 
 Cypress.on('uncaught:exception', (err, runnable) => false);
