@@ -26,31 +26,31 @@
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
 
-        <spring-boot.version>2.4.1</spring-boot.version>
+        <spring-boot.version>2.4.2</spring-boot.version>
 
-        <awssdk.version>2.15.57</awssdk.version>
-        <commonmark.version>0.16.1</commonmark.version>
+        <awssdk.version>2.15.74</awssdk.version>
+        <commonmark.version>0.17.0</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
         <geotools.version>23.2</geotools.version>
-        <greenmail.version>1.6.1</greenmail.version>
+        <greenmail.version>1.6.2</greenmail.version>
         <guava.version>30.1-jre</guava.version>
-        <hibernate-types.version>2.10.1</hibernate-types.version>
+        <hibernate-types.version>2.10.2</hibernate-types.version>
         <jakarta.json-api.version>2.0.0</jakarta.json-api.version>
         <jjwt.version>0.11.2</jjwt.version>
-        <joy.version>2.0.0</joy.version>
+        <joy.version>2.1.0</joy.version>
         <justify.version>3.1.0</justify.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <mapstruct.version>1.4.1.Final</mapstruct.version>
+        <mapstruct.version>1.4.2.Final</mapstruct.version>
         <poiooxml.version>4.1.2</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.4</slugify.version>
-        <springdoc-openapi.version>1.5.2</springdoc-openapi.version>
-        <unirest.version>3.11.09</unirest.version>
-        <bucket4j-starter.version>0.2.0</bucket4j-starter.version>
+        <springdoc-openapi.version>1.5.3</springdoc-openapi.version>
+        <unirest.version>3.11.10</unirest.version>
+        <bucket4j-starter.version>0.3.3</bucket4j-starter.version>
         <!--
         update sentry version only when fid instance is updated
         -->
-        <sentry.version>1.6.3</sentry.version>
+        <sentry.version>1.7.30</sentry.version>
     </properties>
 
     <build>
