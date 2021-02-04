@@ -87,8 +87,6 @@ export class Login extends Core {
     cy.wait('@login');
     cy.wait('@me')
 
-    cy.wait(5000)
-    
     cy.location('href').should('include', '/map/products?')
 
     return Login;
