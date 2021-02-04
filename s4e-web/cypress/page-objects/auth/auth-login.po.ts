@@ -76,12 +76,18 @@ export class Login extends Core {
   static loginAs(user: User) {
     cy.server();
     cy.route('POST', "/api/v1/login").as("login");
+    cy.route('GET', "/api/v1/users/me").as("me");
 
     Login
       .fillForm(user)
       .sendForm();
 
+    cy.wait(5000)
+
     cy.wait('@login');
+    cy.wait('@me')
+
+    cy.wait(5000)
     
     cy.location('href').should('include', '/map/products?');
 
