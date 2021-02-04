@@ -37,7 +37,7 @@ export class Login extends Core {
       .pageObject
       .getSubmitBtn()
       .invoke("removeAttr", "disabled")
-      .click()
+      .click();
 
     return Login;
   }
