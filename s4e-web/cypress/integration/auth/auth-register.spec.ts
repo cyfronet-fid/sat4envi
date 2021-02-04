@@ -31,7 +31,7 @@ describe('Register', () => {
 			Registration
 				.fillForm({ ...this.userToRegister, repeatPassword: 'incorrectPassword' })
 				.sendForm()
-				.errorsCountShouldBe(1);
+				.errorsCountShouldBe(1)
 		});
 	});
 
