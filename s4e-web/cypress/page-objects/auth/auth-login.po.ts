@@ -84,7 +84,7 @@ export class Login extends Core {
 
     cy.wait(5000)
 
-    cy.wait('@login')
+    cy.wait('@login');
     cy.wait('@me')
 
     cy.wait(5000)
