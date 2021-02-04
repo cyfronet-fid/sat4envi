@@ -63,7 +63,7 @@ describe('Auth', () => {
     it('should not allow login page for user with session', function () {
       Login
         .loginAs(this.superAdmin)
-        .loginPageShouldNotBeAllowed();
+        .loginPageShouldNotBeAllowed()
 
     });
   });
