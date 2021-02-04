@@ -46,7 +46,7 @@ export class Login extends Core {
     Login
       .pageObject
       .getSubmitBtn()
-      .click();
+      .click()
 
     return Login;
   }
