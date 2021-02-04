@@ -76,7 +76,7 @@ export class Login extends Core {
   static loginAs(user: User) {
     cy.server();
     cy.route('POST', "/api/v1/login").as("login");
-    cy.route('GET', "/api/v1/users/me").as("me")
+    cy.route('GET', "/api/v1/users/me").as("me");
 
     Login
       .fillForm(user)
