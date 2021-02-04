@@ -27,7 +27,7 @@ export class Login extends Core {
       .pageObject
       .getPasswordInput()
       .clear()
-      .type(user.password);
+      .type(user.password)
 
     return Login;
   }
