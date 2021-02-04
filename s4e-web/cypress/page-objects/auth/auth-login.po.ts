@@ -82,10 +82,10 @@ export class Login extends Core {
       .fillForm(user)
       .sendForm();
 
-    //cy.wait(5000)
+    cy.wait(5000);
 
     cy.wait('@login');
-    cy.wait('@me', {timeout:10000});
+    cy.wait('@me');
 
     cy.location('href').should('include', '/map/products?')
 
