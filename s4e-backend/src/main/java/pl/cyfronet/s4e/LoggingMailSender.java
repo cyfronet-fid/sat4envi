@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package pl.cyfronet.s4e;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -28,8 +28,8 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.internet.MimeMessage;
 
-@Profile("development")
 @Component
+@ConditionalOnProperty(name = "mail.logging-mail-sender.enabled", havingValue = "true")
 @Slf4j
 public class LoggingMailSender extends JavaMailSenderImpl {
     @Override
