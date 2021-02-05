@@ -15,10 +15,15 @@
  *
  */
 
-package pl.cyfronet.s4e.sync;
+package pl.cyfronet.s4e.data.repository;
 
-import pl.cyfronet.s4e.sync.context.Context;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.transaction.annotation.Transactional;
+import pl.cyfronet.s4e.bean.SyncRecord;
 
-public interface SceneAcceptor {
-    Error accept(Context context);
+@Transactional(readOnly = true)
+public interface SyncRecordRepository extends
+        PagingAndSortingRepository<SyncRecord, Long>,
+        QuerydslPredicateExecutor<SyncRecord> {
 }

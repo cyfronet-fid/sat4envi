@@ -188,6 +188,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/swagger-ui/**"
                 )).permitAll()
 
+                .mvcMatchers(GET, prefix("/sync-records"))
+                    .access("hasRole('ADMIN') || hasAuthority('OP_SYNC_RECORD_READ')")
+                .mvcMatchers(DELETE, prefix("/sync-records"))
+                    .access("hasRole('ADMIN')")
+
                 .mvcMatchers(ADMIN_PREFIX + "/**").hasRole("ADMIN")
 
                 .anyRequest().denyAll();

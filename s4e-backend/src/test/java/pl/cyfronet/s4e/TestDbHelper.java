@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ package pl.cyfronet.s4e;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.cyfronet.s4e.data.repository.*;
+import pl.cyfronet.s4e.data.repository.SyncRecordRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class TestDbHelper {
     private final SldStyleRepository sldStyleRepository;
     private final PropertyRepository propertyRepository;
     private final ProductCategoryRepository productCategoryRepository;
+    private final SyncRecordRepository syncRecordRepository;
 
     public void clean() {
         productCategoryRepository.deleteAllByNameNot(ProductCategoryRepository.DEFAULT_CATEGORY_NAME);
@@ -46,5 +48,6 @@ public class TestDbHelper {
         prgOverlayRepository.deleteAll();
         sldStyleRepository.deleteAll();
         propertyRepository.deleteAll();
+        syncRecordRepository.deleteAll();
     }
 }

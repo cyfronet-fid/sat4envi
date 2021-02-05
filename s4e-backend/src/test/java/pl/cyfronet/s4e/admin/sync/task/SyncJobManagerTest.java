@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import pl.cyfronet.s4e.TestAwaitilityConfiguration;
 import pl.cyfronet.s4e.TestClock;
 import pl.cyfronet.s4e.admin.sync.PrefixScanner;
+import pl.cyfronet.s4e.sync.ContextRecorder;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
+import pl.cyfronet.s4e.sync.context.Context;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.Semaphore;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -45,6 +48,7 @@ class SyncJobManagerTest {
     private ThreadPoolTaskExecutor executor;
     private PrefixScanner prefixScanner;
     private SceneAcceptor sceneAcceptor;
+    private ContextRecorder contextRecorder;
     private TestClock clock;
     private SyncJobManager syncJobManager;
 
@@ -61,8 +65,9 @@ class SyncJobManagerTest {
         ChunkedRunner chunkedRunner = new ChunkedRunner(2, executor);
         prefixScanner = mock(PrefixScanner.class);
         sceneAcceptor = mock(SceneAcceptor.class);
+        contextRecorder = mock(ContextRecorder.class);
         clock = new TestClock(LocalDateTime.now());
-        syncJobManager =  new SyncJobManager(chunkedRunner, prefixScanner, sceneAcceptor, clock);
+        syncJobManager =  new SyncJobManager(chunkedRunner, prefixScanner, sceneAcceptor, contextRecorder, clock);
     }
 
     @AfterEach
@@ -77,11 +82,11 @@ class SyncJobManagerTest {
 
         // 2. Run it.
         Semaphore semaphoreA = new Semaphore(0);
-        when(sceneAcceptor.accept("a.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("a.scene"))).thenAnswer(invocationOnMock -> {
             semaphoreA.acquire();
             return null;
         });
-        when(sceneAcceptor.accept("b.scene")).thenReturn(mock(Error.class));
+        when(sceneAcceptor.accept(new Context("b.scene"))).thenReturn(mock(Error.class));
 
         clock.forward(Durations.ONE_SECOND);
 
@@ -116,12 +121,12 @@ class SyncJobManagerTest {
 
         // 2. Run it.
         Semaphore semaphore1 = new Semaphore(0);
-        when(sceneAcceptor.accept("a.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("a.scene"))).thenAnswer(invocationOnMock -> {
             semaphore1.acquire();
             return null;
         });
         Semaphore semaphore2 = new Semaphore(0);
-        when(sceneAcceptor.accept("b.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("b.scene"))).thenAnswer(invocationOnMock -> {
             semaphore2.acquire();
             return mock(Error.class);
         });
@@ -152,7 +157,7 @@ class SyncJobManagerTest {
         await().until(runningDetails::getSuccessesCount, is(equalTo(1L)));
 
         // 5. Ensure the third job is not executed.
-        verify(sceneAcceptor, never()).accept("c.scene");
+        verify(sceneAcceptor, never()).accept(new Context("c.scene"));
     }
 
     @Test
@@ -163,12 +168,12 @@ class SyncJobManagerTest {
         // 2. Run it.
         Semaphore semaphoreA = new Semaphore(0);
         Semaphore semaphoreC = new Semaphore(0);
-        when(sceneAcceptor.accept("a.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("a.scene"))).thenAnswer(invocationOnMock -> {
             semaphoreA.acquire();
             return null;
         });
-        when(sceneAcceptor.accept("b.scene")).thenReturn(mock(Error.class));
-        when(sceneAcceptor.accept("c.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("b.scene"))).thenReturn(mock(Error.class));
+        when(sceneAcceptor.accept(new Context("c.scene"))).thenAnswer(invocationOnMock -> {
             semaphoreC.acquire();
             return null;
         });
@@ -201,7 +206,7 @@ class SyncJobManagerTest {
         await().until(runningDetails::getSuccessesCount, is(equalTo(2L)));
 
         // 5. Ensure the fourth job is not executed.
-        verify(sceneAcceptor, never()).accept("d.scene");
+        verify(sceneAcceptor, never()).accept(new Context("d.scene"));
     }
 
     @Test
@@ -212,11 +217,11 @@ class SyncJobManagerTest {
         // 2. Run it.
         Semaphore semaphoreA = new Semaphore(0);
         Semaphore semaphoreB = new Semaphore(0);
-        when(sceneAcceptor.accept("a.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("a.scene"))).thenAnswer(invocationOnMock -> {
             semaphoreA.acquire();
             return null;
         });
-        when(sceneAcceptor.accept("b.scene")).thenAnswer(invocationOnMock -> {
+        when(sceneAcceptor.accept(new Context("b.scene"))).thenAnswer(invocationOnMock -> {
             semaphoreB.acquire();
             return mock(Error.class);
         });
@@ -249,7 +254,7 @@ class SyncJobManagerTest {
         await().until(runningDetails::getErrorsCount, is(equalTo(1L)));
 
         // 5. Ensure the third job is not executed.
-        verify(sceneAcceptor, never()).accept("c.scene");
+        verify(sceneAcceptor, never()).accept(new Context("c.scene"));
     }
 
     private SyncJob createSyncJob(boolean failFast, Supplier<Stream<String>> keysPrefixSupplier) {

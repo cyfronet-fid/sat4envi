@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ public class Error {
     public static final String ERR_ARTIFACTS_NOT_FOUND = "artifacts_not_found";
     public static final String ERR_ARTIFACT_PATH_INCORRECT = "artifact_path_incorrect";
     public static final String ERR_METADATA_FOOTPRINT_TRANSFORM_FAILED = "metadata_footprint_transform_failed";
+    public static final String ERR_SCENE_S3PATH_NULL = "scene_s3path_null";
 
     private final String sceneKey;
     private final String code;

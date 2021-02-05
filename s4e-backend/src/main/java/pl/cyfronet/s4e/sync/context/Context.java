@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,31 @@
 package pl.cyfronet.s4e.sync.context;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.Prototype;
 import pl.cyfronet.s4e.sync.step.LoadProduct;
 
+import java.time.LocalDateTime;
+
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Context implements BaseContext {
+    private String initiatedByMethod;
+    @EqualsAndHashCode.Include private String sceneKey;
+    private String eventName;
+    private LocalDateTime receivedAt;
+
     private final SceneJsonFileContext scene = new SceneJsonFileContext();
     private final JsonFileContext metadata = new JsonFileContext();
     private LoadProduct.ProductProjection product;
     private Prototype.PrototypeBuilder prototype;
     private final Error.ErrorBuilder error;
 
+    private Long sceneId;
+
     public Context(String sceneKey) {
+        this.sceneKey = sceneKey;
         error = Error.builder(sceneKey);
         scene.setKey(sceneKey);
     }

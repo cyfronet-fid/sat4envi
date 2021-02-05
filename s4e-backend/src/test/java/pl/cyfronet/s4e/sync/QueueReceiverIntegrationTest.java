@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.data.repository.SyncRecordRepository;
 
 import java.nio.charset.StandardCharsets;
 
@@ -53,6 +54,9 @@ import static pl.cyfronet.s4e.sync.SceneAcceptorTestHelper.SCENE_KEY;
 public class QueueReceiverIntegrationTest {
     @Autowired
     private SceneRepository sceneRepository;
+
+    @Autowired
+    private SyncRecordRepository syncRecordRepository;
 
     @Autowired
     private SceneAcceptorTestHelper sceneAcceptorTestHelper;
@@ -86,6 +90,18 @@ public class QueueReceiverIntegrationTest {
         sendMessage(incomingQueueName, SCENE_KEY, eventName);
 
         await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
+        await().until(() -> syncRecordRepository.count() == 1L);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post" })
+    public void shouldHandleNonExistentScene(String eventName) {
+        assertThat(sceneRepository.count(), is(equalTo(0L)));
+
+        sendMessage(incomingQueueName, "doesnt/exist.scene", eventName);
+
+        await().until(() -> syncRecordRepository.count() == 1L);
+        assertThat(sceneRepository.count(), is(equalTo(0L)));
     }
 
     @Test
@@ -95,10 +111,12 @@ public class QueueReceiverIntegrationTest {
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectCreated:Put");
 
         await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(1));
+        await().until(() -> syncRecordRepository.count() == 1L);
 
         sendMessage(incomingQueueName, SCENE_KEY, "s3:ObjectRemoved:Delete");
 
         await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(0));
+        await().until(() -> syncRecordRepository.count() == 2L);
     }
 
     private void sendMessage(String routingKey, String sceneKey, String eventName) {

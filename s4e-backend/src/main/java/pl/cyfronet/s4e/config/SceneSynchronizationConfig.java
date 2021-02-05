@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,26 @@
 
 package pl.cyfronet.s4e.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.cyfronet.s4e.sync.LoggingAcceptor;
-import pl.cyfronet.s4e.sync.PipelineFactory;
-import pl.cyfronet.s4e.sync.SceneAcceptor;
-import pl.cyfronet.s4e.sync.SceneAcceptorImpl;
+import pl.cyfronet.s4e.data.repository.SyncRecordRepository;
+import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.sync.*;
 
 @Configuration
 public class SceneSynchronizationConfig {
+    @Autowired
+    private SyncRecordRepository syncRecordRepository;
+
+    @Autowired
+    private SceneService sceneService;
+
+    @Bean
+    public ContextRecorder contextRecorder() {
+        return new ContextRecorder(syncRecordRepository, sceneService);
+    }
+
     @Bean
     public SceneAcceptor sceneAcceptor(PipelineFactory pipelineFactory) {
         return new LoggingAcceptor(new SceneAcceptorImpl(pipelineFactory));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.properties.AmqpProperties;
 import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.sync.ContextRecorder;
 import pl.cyfronet.s4e.sync.NotificationDispatcher;
 import pl.cyfronet.s4e.sync.QueueReceiver;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
+
+import java.time.Clock;
 
 @Configuration
 @ConditionalOnProperty(prefix = "amqp", name = "enabled")
@@ -52,6 +55,12 @@ public class AmqpConfig {
     @Autowired
     private SceneService sceneService;
 
+    @Autowired
+    private ContextRecorder contextRecorder;
+
+    @Autowired
+    private Clock clock;
+
     @Bean
     public String incomingQueueName() {
         return amqpProperties.getQueues().getIncoming();
@@ -71,7 +80,7 @@ public class AmqpConfig {
 
     @Bean
     public NotificationDispatcher notificationDispatcher() {
-        return new NotificationDispatcher(sceneAcceptor, sceneService);
+        return new NotificationDispatcher(sceneAcceptor, sceneService, contextRecorder, clock);
     }
 
     @Bean

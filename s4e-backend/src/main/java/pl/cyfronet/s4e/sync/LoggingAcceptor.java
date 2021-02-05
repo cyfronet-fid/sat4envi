@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package pl.cyfronet.s4e.sync;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import pl.cyfronet.s4e.sync.context.Context;
 
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class LoggingAcceptor implements SceneAcceptor {
     private final SceneAcceptor delegate;
 
     @Override
-    public Error accept(String sceneKey) {
-        Error error = delegate.accept(sceneKey);
+    public Error accept(Context context) {
+        Error error = delegate.accept(context);
         if (error != null) {
             handleError(error);
         }
