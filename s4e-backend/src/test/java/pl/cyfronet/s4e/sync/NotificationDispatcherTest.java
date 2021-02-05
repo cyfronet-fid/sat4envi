@@ -27,6 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.sync.context.Context;
+
+import java.time.Clock;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -39,11 +42,14 @@ class NotificationDispatcherTest {
     @Mock
     private SceneService sceneService;
 
+    @Mock
+    private ContextRecorder contextRecorder;
+
     private NotificationDispatcher notificationDispatcher;
 
     @BeforeEach
     public void beforeEach() {
-        notificationDispatcher = new NotificationDispatcher(sceneAcceptor, sceneService);
+        notificationDispatcher = new NotificationDispatcher(sceneAcceptor, sceneService, contextRecorder, Clock.systemUTC());
     }
 
     @Test
@@ -68,7 +74,7 @@ class NotificationDispatcherTest {
     @Test
     public void shouldRejectIfAcceptReturnsError() {
         Notification notification = mockNotification("s3:ObjectCreated:Put", "key");
-        doReturn(Error.builder("key").build()).when(sceneAcceptor).accept("key");
+        doReturn(Error.builder("key").build()).when(sceneAcceptor).accept(new Context("key"));
 
         assertRejects(notification);
     }

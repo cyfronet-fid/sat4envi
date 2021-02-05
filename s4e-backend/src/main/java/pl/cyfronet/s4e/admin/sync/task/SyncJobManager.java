@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,16 @@ package pl.cyfronet.s4e.admin.sync.task;
 
 import lombok.RequiredArgsConstructor;
 import pl.cyfronet.s4e.admin.sync.PrefixScanner;
+import pl.cyfronet.s4e.sync.ContextRecorder;
 import pl.cyfronet.s4e.sync.Error;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
+import pl.cyfronet.s4e.sync.context.Context;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.Temporal;
 import java.util.Iterator;
 import java.util.Set;
@@ -37,6 +40,7 @@ public class SyncJobManager {
     private final ChunkedRunner chunkedRunner;
     private final PrefixScanner prefixScanner;
     private final SceneAcceptor sceneAcceptor;
+    private final ContextRecorder contextRecorder;
     private final Clock clock;
 
     public SyncJob create(String name, String prefix, boolean failFast) {
@@ -91,7 +95,11 @@ public class SyncJobManager {
                     synchronized (syncJob) {
                         runningMetric.setRunningCount(runningMetric.getRunningCount() + 1);
                     }
-                    Error error = sceneAcceptor.accept(sceneKey);
+                    Context context = new Context(sceneKey);
+                    context.setInitiatedByMethod("job");
+                    context.setReceivedAt(LocalDateTime.ofInstant(clock.instant(), ZoneId.of("UTC")));
+                    Error error = sceneAcceptor.accept(context);
+                    contextRecorder.record(context, error);
                     if (syncJob.isFailFast() && error != null) {
                         synchronized (syncJob) {
                             boolean jobCancelledAlready = syncJob.getState() != SyncJob.State.RUNNING;

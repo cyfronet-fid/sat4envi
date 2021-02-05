@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,6 +177,7 @@ public class PipelineFactory {
         append(pipeline, Persist.<Context>builder()
                 .scenePersister(() -> scenePersister)
                 .prototype(c -> c.getPrototype().build())
+                .updateSceneId(Context::setSceneId)
                 .build()
         );
     }

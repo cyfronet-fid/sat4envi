@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import pl.cyfronet.s4e.IntegrationTest;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.sync.context.Context;
 import pl.cyfronet.s4e.util.GeometryUtil;
 
 import static org.awaitility.Awaitility.await;
@@ -66,7 +67,7 @@ class SceneAcceptorIntegrationTest {
 
         assertThat(sceneRepository.count(), is(equalTo(0L)));
 
-        sceneAcceptor.accept(SCENE_KEY);
+        sceneAcceptor.accept(new Context(SCENE_KEY));
 
         await().until(() -> sceneRepository.findAllByProductId(productId), hasSize(greaterThan(0)));
 

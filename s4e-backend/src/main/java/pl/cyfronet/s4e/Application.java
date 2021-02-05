@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package pl.cyfronet.s4e;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import org.springdoc.core.SpringDocUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
@@ -37,6 +38,10 @@ import org.springframework.cache.annotation.EnableCaching;
 public class Application {
 
     public static void main(String[] args) {
+        SpringDocUtils.getConfig().replaceWithClass(
+                org.springframework.data.domain.Pageable.class,
+                org.springdoc.core.converters.models.Pageable.class
+        );
         SpringApplication.run(Application.class, args);
     }
 

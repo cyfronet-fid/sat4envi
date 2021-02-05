@@ -23,7 +23,11 @@ import lombok.val;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.SceneService;
+import pl.cyfronet.s4e.sync.context.Context;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -36,6 +40,8 @@ public class NotificationDispatcher {
 
     private final SceneAcceptor sceneAcceptor;
     private final SceneService sceneService;
+    private final ContextRecorder contextRecorder;
+    private final Clock clock;
 
     public void dispatch(Notification notification) {
         if (notification == null) {
@@ -52,35 +58,48 @@ public class NotificationDispatcher {
         val eventName = notification.getEventName();
         val objectKey = notification.getObjectKey();
 
+        Context context = new Context(objectKey);
+        context.setEventName(eventName);
+        context.setInitiatedByMethod("amqp");
+        context.setReceivedAt(LocalDateTime.ofInstant(clock.instant(), ZoneId.of("UTC")));
+
         if (eventName == null || objectKey == null) {
             log.warn("A notification with null eventName or objectKey received, rejecting");
+            contextRecorder.record(context, null);
             throw new AmqpRejectAndDontRequeueException("A notification with null eventName or objectKey received");
         }
 
         if (ACCEPT_EVENTS.contains(eventName)) {
-            accept(objectKey);
+            accept(context);
         } else if (DELETE_EVENTS.contains(eventName)) {
-            delete(objectKey);
+            delete(context);
         } else {
-            String message = "Notification with unsupported eventName: " +
-                    "eventName='" + eventName + "', objectKey='" + objectKey + "'";
-            log.warn(message + ", rejecting");
-            throw new AmqpRejectAndDontRequeueException(message);
+            unknown(context);
         }
     }
 
-    private void accept(String sceneKey) {
-        Error error = sceneAcceptor.accept(sceneKey);
+    private void accept(Context context) {
+        Error error = sceneAcceptor.accept(context);
+        contextRecorder.record(context, error);
         if (error != null) {
             throw new AmqpRejectAndDontRequeueException(error.getCode());
         }
     }
 
-    private void delete(String sceneKey) {
+    private void delete(Context context) {
         try {
-            sceneService.deleteBySceneKey(sceneKey);
+            sceneService.deleteBySceneKey(context.getScene().getKey());
+            contextRecorder.record(context, null);
         } catch (NotFoundException e) {
-            log.warn("An unsupported attempt to delete a non-existent scene: sceneKey='{}'", sceneKey);
+            log.warn("An unsupported attempt to delete a non-existent scene: sceneKey='{}'", context.getScene().getKey());
         }
+    }
+
+    private void unknown(Context context) {
+        String message = "Notification with unsupported eventName: " +
+                "eventName='" + context.getEventName() + "', objectKey='" + context.getScene().getKey() + "'";
+        log.warn(message + ", rejecting");
+        contextRecorder.record(context, context.getError().code("unsupported_event_name").build());
+        throw new AmqpRejectAndDontRequeueException(message);
     }
 }

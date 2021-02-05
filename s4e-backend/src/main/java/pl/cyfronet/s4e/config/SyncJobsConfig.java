@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import pl.cyfronet.s4e.admin.sync.task.SyncJobManager;
 import pl.cyfronet.s4e.admin.sync.task.SyncJobStore;
 import pl.cyfronet.s4e.properties.S3Properties;
 import pl.cyfronet.s4e.properties.SyncJobsProperties;
+import pl.cyfronet.s4e.sync.ContextRecorder;
 import pl.cyfronet.s4e.sync.SceneAcceptor;
 import software.amazon.awssdk.services.s3.S3Client;
 
@@ -47,6 +48,9 @@ public class SyncJobsConfig {
 
     @Autowired
     private SceneAcceptor sceneAcceptor;
+
+    @Autowired
+    private ContextRecorder contextRecorder;
 
     @Autowired
     private Clock clock;
@@ -69,7 +73,7 @@ public class SyncJobsConfig {
 
     @Bean
     public SyncJobManager syncJobManager() {
-        return new SyncJobManager(chunkedRunner(), prefixScanner(), sceneAcceptor, clock);
+        return new SyncJobManager(chunkedRunner(), prefixScanner(), sceneAcceptor, contextRecorder, clock);
     }
 
     @Bean
