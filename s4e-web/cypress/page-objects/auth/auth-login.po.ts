@@ -12,6 +12,7 @@ export class Login extends Core {
     getPasswordInput: () => cy.get('input[data-e2e="login-password-input"]'),
     getSubmitBtn: () => cy.get('button[data-e2e="login-submit-btn"]'),
     getGoToMapBtn: () => cy.get('a[data-e2e="go-to-map-btn"]'),
+    getRegisterBtn: () => cy.get('[data-e2e="register-btn"]'),
 
     getFieldErrors: () => cy.get('.invalid-feedback > .ng-star-inserted'),
     getError: () => cy.get('.message')
@@ -68,7 +69,8 @@ export class Login extends Core {
 
     Login
       .pageObject
-      .getError();
+      .getError()
+      .should('be.visible')
 
     return Login;
   }
@@ -115,5 +117,14 @@ export class Login extends Core {
       .click()
 
     cy.location('href').should('include', '/map/products?');
+  }
+
+  static goToRegisterPage(){
+    Login
+    .pageObject
+    .getRegisterBtn()
+    .click();
+
+    cy.location('href').should('include', '/register');
   }
 };

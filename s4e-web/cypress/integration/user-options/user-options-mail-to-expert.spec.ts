@@ -17,6 +17,8 @@ describe("Mail to Expert", () => {
   });
 
   it("should send mail to expert", () => {
+    cy.deleteAllMails();
+
     UserOptionsMailToExpert
       .openSendMailToExpertModal()
       .addMessageToSupport('Wsparcie zdalne', "Test Message")
@@ -25,5 +27,10 @@ describe("Mail to Expert", () => {
       .accept()
     UserOptionsMailToExpert
       .confirmationShouldToAppear()
+
+    cy.getMailBySubject("Prośba")
+   
+    cy.getMailBySubject("Potwierdzenie prośby")
+    
   })
 });

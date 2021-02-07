@@ -79,9 +79,9 @@ export class Registration {
 
   static sendForm() {
     Registration
-    .pageObject
-    .getSubmitBtn()
-    .click();
+      .pageObject
+      .getSubmitBtn()
+      .click();
 
     return Registration;
   }
@@ -115,6 +115,16 @@ export class Registration {
 
     return Registration;
 
+  }
+
+  static registerAs(user: User) {
+    Registration
+      .fillForm(user)
+      .clickReCaptcha()
+      .sendForm()
+      .beOnConfirmationPage();
+
+    return Registration;
   }
 
   static beOnConfirmationPage() {

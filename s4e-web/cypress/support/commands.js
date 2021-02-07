@@ -46,7 +46,7 @@ const MAILHOG_API_V1 = Cypress.env('MAIL_HOG_BASE_URL') + "/" + Cypress.env('MAI
 Cypress.Commands.add(`deleteAllMails`, () => {
   const url = `${MAILHOG_API_V1}/messages`;
   const method = 'DELETE';
-  return cy.wrap(fetch(url, {method}));
+  return cy.wrap(fetch(url, { method }));
 });
 
 const MAILHOG_API_V2 = Cypress.env('MAIL_HOG_BASE_URL') + "/" + Cypress.env('MAIL_HOG_API_V2');
@@ -69,7 +69,7 @@ function responseParser(responseText) {
           item.Content.Headers.Subject[0]
             .replace('=?UTF-8?Q?', '')
             .replace('?=', '')
-            
+
         )
           .replace('_', ' '),
         content: new DOMParser().parseFromString(unescape(/<!DOCTYPE html>([\s\S]*)<\/html>/gmi.exec(item.Content.Body)[0]), 'text/html')
@@ -91,7 +91,7 @@ Cypress.Commands.add(`getAllMails`, () => {
   };
   const mode = 'cors';
   return cy.wait(1000)
-    .then(() => fetch(url, {method, headers, mode})
+    .then(() => fetch(url, { method, headers, mode })
       .then(response => response.text())
       .then(responseAsText => responseParser(responseAsText))
     );
@@ -100,27 +100,27 @@ Cypress.Commands.add(`getAllMails`, () => {
 // FILTERS
 Cypress.Commands.add(
   `firstMail`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mails$) => cy.wrap(mails$).then(mails => !!mails ? mails[0] : null)
 );
 
 Cypress.Commands.add(
   `filterBySubject`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mails$, subject) => cy.wrap(mails$)
     .then(mails => mails.filter((mail) => mail.subject.includes(subject)))
 );
 
 Cypress.Commands.add(
   `filterByRecipient`,
-  {prevSubject: true},
-  (mails$, recipient) =>  cy.wrap(mails$)
+  { prevSubject: true },
+  (mails$, recipient) => cy.wrap(mails$)
     .then(mails => mails.filter((mail) => mail.to.includes(recipient)))
 );
 
 Cypress.Commands.add(
   `filterBySender`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mails$, from) => cy.wrap(mails$)
     .then(mails => mails.filter((mail) => mail.from.includes(from)))
 );
@@ -128,32 +128,32 @@ Cypress.Commands.add(
 // SINGLE MAIL OPERATIONS
 Cypress.Commands.add(
   `getMailSubject`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mail) => cy.wrap(mail).its('subject')
 );
 
 Cypress.Commands.add(
   `getMailDocumentContent`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mail) => cy.wrap(mail).its('content')
 );
 
 Cypress.Commands.add(
   `getMailSender`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mail) => cy.wrap(mail).its('from')
 );
 
 Cypress.Commands.add(
   `getMailRecipients`,
-  {prevSubject: true},
+  { prevSubject: true },
   (mail) => cy.wrap(mail).its('to')
 );
 
 // Assertions
 Cypress.Commands.add(
   'hasMailWithSubject',
-  {prevSubject: true},
+  { prevSubject: true },
   (mails$, subject) => cy.wrap(mails$)
     .filterBySubject(subject)
     .should('not.have.length', 0)
@@ -161,9 +161,85 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'hasMailTo',
-  {prevSubject: true},
+  { prevSubject: true },
   (mails$, recipient) => cy.wrap(mails$)
     .filterByRecipient(recipient)
     .should('not.have.length', 0)
 );
+
+Cypress.Commands.add("clickActivateLink", () => {
+  cy.getAllMails()
+    .filterBySubject("Potwierdzenie adresu email")
+    .firstMail()
+    .getMailDocumentContent()
+    .then(($document) => {
+      const activateUrl = Array
+        .from($document.getElementsByTagName('a'))
+        .map(el => el.href)
+        .filter((href) => href.includes('/activate')).toString().replace("127.0.0.1", "localhost").replace("=", '');
+
+      cy.visit(activateUrl)
+    });
+});
+
+Cypress.Commands.add("clickAcceptJoinToInstitutionLink", () => {
+  cy.getAllMails()
+    .filterBySubject("Zaproszenie")
+    .firstMail()
+    .getMailDocumentContent()
+    .then(($document) => {
+      const joinUrl = Array
+        .from($document.getElementsByTagName('a'))
+        .map(el => el.href)
+        .filter((href) => href.includes('login?token=')).toString().replace(/=/g, "")
+        .replace("127.0.0.1:4202/login?token", "localhost:4202/login?token=");
+
+      cy.visit(joinUrl)
+    });
+})
+
+Cypress.Commands.add("clickRejectJoinToInstitutionLink", () => {
+  cy.getAllMails()
+    .filterBySubject("Zaproszenie")
+    .firstMail()
+    .getMailDocumentContent()
+    .then(($document) => {
+      const joinUrl = Array
+        .from($document.getElementsByTagName('a'))
+        .map(el => el.href)
+        .filter((href) => href.includes('login?reject')).toString().replace(/=/g, "")
+        .replace("127.0.0.1:4202/login?rejecttrue&token", "localhost:4202/login?reject=true&token=");
+
+      cy.visit(joinUrl)
+    });
+});
+
+Cypress.Commands.add("clickShareView", () => {
+  cy.getAllMails()
+    .filterBySubject("Udostępnienie linku")
+    .should('have.length', 1)
+    .firstMail()
+    .getMailDocumentContent()
+    .then(($document) =>
+    {
+      const viewUrl = Array
+        .from($document.getElementsByTagName('a'))
+        .map(el => el.href)
+        .filter((href) => href.includes('/map/products?product')).toString().replace("127.0.0.1", "localhost")
+
+      cy.visit(viewUrl)
+    });
+});
+
+Cypress.Commands.add("getMailBySubject", (subject) => {
+  cy.getAllMails()
+    .filterBySubject(subject)
+    .should('have.length', 1)
+});
+
+
+
+
+
+
 

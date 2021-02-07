@@ -35,7 +35,7 @@ export class SettingsInstitutionPeople extends Core {
     return SettingsInstitutionPeople;
   }
 
-  static addInvitation(email: string) {
+  static addInvitation(email: string, administrator: boolean) {
     cy.route("POST", "/api/v1/institutions/*/invitations").as("sendInvitation")
 
 
@@ -46,6 +46,13 @@ export class SettingsInstitutionPeople extends Core {
 
     SettingsInstitutionPeople
       .fillEmail(email);
+
+    if (administrator) {
+      SettingsInstitutionPeople
+        .pageObject
+        .getAdminInvitationBtn()
+        .click()
+    }
 
     SettingsInstitutionPeople
       .pageObject

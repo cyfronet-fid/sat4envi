@@ -2,6 +2,9 @@
 
 import { Login } from '../../page-objects/auth/auth-login.po';
 import { Registration } from '../../page-objects/auth/auth-register.po';
+import { SettingsUserDeleteAccount } from "../../page-objects/settings/settings-delete-account.po";
+import { UserOptionsGoToSettings } from "../../page-objects/user-options/user-options-go-to-settings-profile.po";
+import { ConfirmModal } from "../../page-objects/modal/confirm-modal.po";
 
 before(() => {
   cy.fixture("users/userToRegister.json").as("userToRegister");
@@ -9,66 +12,58 @@ before(() => {
 
 describe('Register', () => {
 
-	beforeEach(() => {
-		cy.visit("/register");
-	});
+  beforeEach(() => {
+    cy.visit("/register");
+  });
 
-	context("Valid form", () => {
+  context("Valid form", () => {
 
-		it("shouldn't send empty form", function () {
-			Registration
-				.sendForm()
-				.errorsCountShouldBe(9);
-		});
+    it("shouldn't send empty form", function () {
+      Registration
+        .sendForm()
+        .errorsCountShouldBe(9);
+    });
 
-		it("shouldn't send form on incorrect email", function () {
-			Registration
-				.fillForm({ ...this.userToRegister, email: 'incorrect.pl' })
-				.sendForm()
-				.errorsCountShouldBe(1);
-		});
+    it("shouldn't send form on incorrect email", function () {
+      Registration
+        .fillForm({ ...this.userToRegister, email: 'incorrect.pl' })
+        .sendForm()
+        .errorsCountShouldBe(1);
+    });
 
-		it("shouldn't send form on different passwords", function () {
-			Registration
-				.fillForm({ ...this.userToRegister, repeatPassword: 'incorrectPassword' })
-				.sendForm()
-				.errorsCountShouldBe(1);
-		});
-	});
+    it("shouldn't send form on different passwords", function () {
+      Registration
+        .fillForm({ ...this.userToRegister, repeatPassword: 'incorrectPassword' })
+        .sendForm()
+        .errorsCountShouldBe(1);
+    });
+  });
 
-	context('Register user', () => {
+  context('Register user and delete account', () => {
 
-		it.only("should register new user", function () {
+    it("should register new user", function () {
       cy.deleteAllMails();
 
-			Registration
-				.fillForm(this.userToRegister)
-				.clickReCaptcha()
-				.sendForm()
-				.beOnConfirmationPage();
+      Registration
+        .registerAs(this.userToRegister)
 
-      cy.getAllMails()
-        .filterBySubject("Potwierdzenie adresu email")
-        .should('have.length', 1)
-        .firstMail()
-        .getMailDocumentContent()
-        .then(($document: Document) =>
-          // TODO: Go to activation URL
-          {
-            const activateUrl = Array
-                .from($document.getElementsByTagName('a'))
-                .map(el => el.href)
-                .filter((href: string) => href.includes('/activate')).toString().replace("127.0.0.1", "localhost").replace("=", '')
+      cy.clickActivateLink()
 
-            cy.visit(activateUrl)  
-            Login
-              .loginAs(this.userToRegister)
-             
-          }
-         
-      );
-		});
-	});
+      cy.visit('/login')
+      Login
+        .loginAs(this.userToRegister)
+      UserOptionsGoToSettings
+        .gotoUserProfile();
+      SettingsUserDeleteAccount
+        .deleteAccount(this.userToRegister.password)
+      ConfirmModal
+       .accept()
+      Login
+        .fillForm(this.userToRegister)
+        .sendForm()
+        .hasErrorLogin()
+    });
+  });
 });
 
 
