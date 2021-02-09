@@ -15,12 +15,21 @@
  *
  */
 
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import { SentinelSectionComponent } from './sentinel-section.component';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
+import {SentinelSectionComponent} from './sentinel-section.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {SentinelSearchMetadataFactory, SentinelSectionFactory} from '../../state/sentinel-search/sentinel-search.factory.spec';
+import {
+  SentinelSearchMetadataFactory,
+  SentinelSectionFactory
+} from '../../state/sentinel-search/sentinel-search.factory.spec';
 import {FormControl} from '@angular/forms';
 import {SentinelSearchService} from '../../state/sentinel-search/sentinel-search.service';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
@@ -28,7 +37,6 @@ import {ReplaySubject, Subject} from 'rxjs';
 import {take} from 'rxjs/operators';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-
 
 describe('SentinelSectionComponent', () => {
   let component: SentinelSectionComponent;
@@ -38,18 +46,19 @@ describe('SentinelSectionComponent', () => {
   let query: SentinelSearchQuery;
   let visibleSentinels$: Subject<string[]>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
+      }).compileComponents();
+
+      service = TestBed.inject(SentinelSearchService);
+      query = TestBed.inject(SentinelSearchQuery);
+      visibleSentinels$ = new ReplaySubject(1);
+
+      spyOn(query, 'selectVisibleSentinels').and.returnValue(visibleSentinels$);
     })
-    .compileComponents();
-
-    service = TestBed.get(SentinelSearchService);
-    query = TestBed.get(SentinelSearchQuery);
-    visibleSentinels$ = new ReplaySubject(1);
-
-    spyOn(query, 'selectVisibleSentinels').and.returnValue(visibleSentinels$);
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SentinelSectionComponent);
@@ -104,9 +113,20 @@ describe('SentinelSectionComponent', () => {
     const onChange = jest.fn();
 
     component.registerOnChange(onChange);
-    expect(onChange).toHaveBeenCalledWith({productType: 'GRDM', satellitePlatform: 'Sentinel-1A'});
-    component.form.setValue({productType: '_SLC', satellitePlatform: 'Sentinel-1A', cloudCover: 10});
-    expect(onChange).toHaveBeenCalledWith({productType: '_SLC', satellitePlatform: 'Sentinel-1A', cloudCover: 10});
+    expect(onChange).toHaveBeenCalledWith({
+      productType: 'GRDM',
+      satellitePlatform: 'Sentinel-1A'
+    });
+    component.form.setValue({
+      productType: '_SLC',
+      satellitePlatform: 'Sentinel-1A',
+      cloudCover: 10
+    });
+    expect(onChange).toHaveBeenCalledWith({
+      productType: '_SLC',
+      satellitePlatform: 'Sentinel-1A',
+      cloudCover: 10
+    });
   });
 
   it('should propagate {} if it is not selected', () => {
@@ -115,7 +135,10 @@ describe('SentinelSectionComponent', () => {
     component.registerOnChange(onChange);
     expect(onChange).toHaveBeenCalledWith({});
     visibleSentinels$.next([component.sentinel.name]);
-    expect(onChange).toHaveBeenCalledWith({productType: 'GRDM', satellitePlatform: 'Sentinel-1A'});
+    expect(onChange).toHaveBeenCalledWith({
+      productType: 'GRDM',
+      satellitePlatform: 'Sentinel-1A'
+    });
   });
 
   it('setting new sentinel should reevaluate selectedFc value  based on the new sentinel name', () => {
@@ -130,16 +153,20 @@ describe('SentinelSectionComponent', () => {
   });
 
   it('content should be visible depending on the visible$', () => {
-    expect(de.query(By.css('[data-test="sentinel-section-content"]:not([hidden=""])'))).toBeTruthy();
+    expect(
+      de.query(By.css('[data-test="sentinel-section-content"]:not([hidden=""])'))
+    ).toBeTruthy();
     visibleSentinels$.next([]);
     fixture.detectChanges();
-    expect(de.query(By.css('[data-test="sentinel-section-content"][hidden=""]'))).toBeTruthy();
+    expect(
+      de.query(By.css('[data-test="sentinel-section-content"][hidden=""]'))
+    ).toBeTruthy();
   });
 
   it('should callOnChange when visibility or value changes', fakeAsync(() => {
     const spy = jest.fn();
     component.registerOnChange(spy);
-    component.form.setValue({productType: '', satellitePlatform: 'Sentinel-1A'})
+    component.form.setValue({productType: '', satellitePlatform: 'Sentinel-1A'});
     expect(spy).toHaveBeenNthCalledWith(4, {satellitePlatform: 'Sentinel-1A'});
     visibleSentinels$.next([]);
     expect(spy).toHaveBeenNthCalledWith(6, {});

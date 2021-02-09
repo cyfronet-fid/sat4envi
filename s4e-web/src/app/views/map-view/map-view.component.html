@@ -1,4 +1,3 @@
-
 <!--
   ~ Copyright 2021 ACC Cyfronet AGH
   ~
@@ -21,13 +20,25 @@
   [@sidebar]="(sidebarOpen$ | async) ? 'open' : 'closed'"
   [ngClass]="{open: isMobileSidebarOpen}"
 >
-  <div class="collapse" (click)="mapService.toggleSidebar()" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"></div>
+  <div
+    class="collapse"
+    (click)="mapService.toggleSidebar()"
+    [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+  ></div>
   <ul class="switch">
     <li [class.active]="isLinkActive('products')">
-      <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n>Zdjęcia Satelitarne</a>
+      <a [routerLink]="['./products']" queryParamsHandling="preserve" i18n
+        >Zdjęcia Satelitarne</a
+      >
     </li>
     <li [class.active]="isLinkActive('sentinel-search')">
-      <a [routerLink]="['./sentinel-search']" data-e2e='data-sentinel-search' queryParamsHandling="preserve" i18n>Szukaj Danych</a>
+      <a
+        [routerLink]="['./sentinel-search']"
+        data-e2e="data-sentinel-search"
+        queryParamsHandling="preserve"
+        i18n
+        >Szukaj Danych</a
+      >
     </li>
   </ul>
   <div class="sidebar-content">
@@ -35,45 +46,49 @@
   </div>
 </div>
 
-<s4e-legend *ngIf="legend$ | async"
-            [isOpen]="(legendState$ | async).isOpen"
-            (opened)="toggleLegend()"
-            [activeLegend]="legend$ | async"
-            class="legend"></s4e-legend>
+<s4e-legend
+  *ngIf="legend$ | async"
+  [isOpen]="(legendState$ | async).isOpen"
+  (opened)="toggleLegend()"
+  [activeLegend]="legend$ | async"
+  class="legend"
+></s4e-legend>
 
-<s4e-timeline class="section timeline"
-              *ngIf="(activeProducts$ | async) != null"
-              [scenes]="(timelineUI$ | async)?.scenes"
-              [startTime]="(timelineUI$ | async)?.startTime"
-              [currentDate]="currentTimelineDate$ | async"
-              (dateSelected)="setDate($event)"
-              [availableDates]="availableDates$ | async"
-              (lastAvailableScene)="getLastAvailableScene()"
-              (loadAvailableDates)="loadAvailableDates($event)"
-              (nextScene)="nextScene()"
-              (previousScene)="previousScene()"
-              (nextDay)="nextDay()"
-              (increaseResolution)="increaseResolution()"
-              (decreaseResolution)="decreaseResolution()"
-              [resolution]="timelineResolution$ | async"
-              (previousDay)="previousDay()"
-              (openSceneSelection)="openSceneSelectionModal()"
-              [loading]="scenesAreLoading$ | async"
-              [activeScene]="activeScene$ | async"
-              (selectedScene)="selectScene($event?.id)"
-              [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+<s4e-timeline
+  class="section timeline"
+  *ngIf="(activeProducts$ | async) != null"
+  [scenes]="(timelineUI$ | async)?.scenes"
+  [startTime]="(timelineUI$ | async)?.startTime"
+  [currentDate]="currentTimelineDate$ | async"
+  (dateSelected)="setDate($event)"
+  [datesEnabled]="datesEnabled$ | async"
+  (lastAvailableScene)="getLastAvailableScene()"
+  (loadAvailableDates)="loadAvailableDates($event)"
+  (nextScene)="nextScene()"
+  (previousScene)="previousScene()"
+  (nextDay)="nextDay()"
+  (increaseResolution)="increaseResolution()"
+  (decreaseResolution)="decreaseResolution()"
+  [resolution]="timelineResolution$ | async"
+  (previousDay)="previousDay()"
+  (openSceneSelection)="openSceneSelectionModal()"
+  [loading]="scenesAreLoading$ | async"
+  [activeScene]="activeScene$ | async"
+  (selectedScene)="selectScene($event?.id)"
+  [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
 >
 </s4e-timeline>
 
-<s4e-map class="section map"
-         #map
-         [isSentinelSearch]="isLinkActive('sentinel-search')"
-         [blockPolygonDrawing]="areSentinelSearchResultsOpen$ | async"
-         [overlays]="overlays$ | async"
-         [activeScene]="activeScene$ | async"
-         [activeView]="activeView$ | async"
-         (viewChanged)="viewChanged($event)"
-         [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+<s4e-map
+  class="section map"
+  #map
+  [isSentinelSearch]="isLinkActive('sentinel-search')"
+  [blockPolygonDrawing]="areSentinelSearchResultsOpen$ | async"
+  [overlays]="overlays$ | async"
+  [activeScene]="activeScene$ | async"
+  [activeView]="activeView$ | async"
+  (viewChanged)="viewChanged($event)"
+  [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
 >
 </s4e-map>
 <div
@@ -85,10 +100,12 @@
     (click)="toggleLoginOptions()"
     id="user-login-button"
     data-e2e="loginOptions-btn"
-    [className]="(userLoggedIn$ | async) ? 'dropdown__button dropdown__button--loginactive' : 'dropdown__button dropdown__button--login'"
-
-  >
-  </button>
+    [className]="
+      (userLoggedIn$ | async)
+        ? 'dropdown__button dropdown__button--loginactive'
+        : 'dropdown__button dropdown__button--login'
+    "
+  ></button>
   <ng-container *ngIf="showLoginOptions$ | async">
     <s4e-user-dropdown
       [showAdvanced]="userIsAuthorizedForAdditionalFunctionalities$ | async"
@@ -109,28 +126,37 @@
       (openSceneDetailsModal)="showDetailsModal()"
       (toggleHighContrast)="toggleHighContrast()"
       (toggleLargeFont)="toggleLargeFont()"
-      (toggleLoginOptions)="toggleLoginOptions($event)"></s4e-user-dropdown>
+      (toggleLoginOptions)="toggleLoginOptions($event)"
+    ></s4e-user-dropdown>
   </ng-container>
 </div>
 
 <button
   (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
   class="dropdown__button dropdown__button--products"
->
-</button>
+></button>
 
-<button *ngIf="activeProducts$ | async"
-        (click)="toggleProductDescription()"
-        id="product-description-button"
-        class="dropdown__button dropdown__button--product"
-        [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'">
-</button>
+<button
+  *ngIf="activeProducts$ | async"
+  (click)="toggleProductDescription()"
+  id="product-description-button"
+  class="dropdown__button dropdown__button--product"
+  [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+></button>
 <ng-container *ngIf="showProductDescription$ | async">
-  <div class="dropdown__content dropdown__content--product" [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'">
+  <div
+    class="dropdown__content dropdown__content--product"
+    [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
+  >
     <span class="dropdown__header" i18n>Opis produktu</span>
-    <div class="dropdown__close dropdown" (click)="toggleProductDescription(false)"></div>
-    <h2>{{(activeProducts$ | async).displayName}}</h2>
-    <div class="dropdown__description" [innerHTML]="(activeProducts$ | async).description">
-    </div>
+    <div
+      class="dropdown__close dropdown"
+      (click)="toggleProductDescription(false)"
+    ></div>
+    <h2>{{ (activeProducts$ | async).displayName }}</h2>
+    <div
+      class="dropdown__description"
+      [innerHTML]="(activeProducts$ | async).description"
+    ></div>
   </div>
 </ng-container>

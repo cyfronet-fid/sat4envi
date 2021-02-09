@@ -15,7 +15,7 @@
  *
  */
 
-import {OnDestroy, OnInit} from '@angular/core';
+import {OnDestroy, OnInit, Directive} from '@angular/core';
 import {ModalService} from '../../state/modal.service';
 import {FormGroup} from '@ng-stack/forms';
 import {environment} from '../../../../environments/environment';
@@ -26,24 +26,31 @@ import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {ModalQuery} from '../../state/modal.query';
 
 export class ModalComponent<ReturnType = void> {
-  constructor(protected modalService: ModalService, public registeredId?: string) {
-  }
+  constructor(protected modalService: ModalService, public registeredId?: string) {}
 
   public dismiss(returnValue?: ReturnType): void {
     this.modalService.hide(this.registeredId, returnValue);
   }
 }
 
-export abstract class FormModalComponent<FormKey extends keyof FormState, ReturnType = void> extends ModalComponent<ReturnType> implements OnInit, OnDestroy {
+@Directive()
+export abstract class FormModalComponent<
+    FormKey extends keyof FormState,
+    ReturnType = void
+  >
+  extends ModalComponent<ReturnType>
+  implements OnInit, OnDestroy {
   formKey: FormKey;
   form: FormGroup<FormState[FormKey]>;
   isLoading$: Observable<boolean>;
 
-  protected constructor(protected fm: AkitaNgFormsManager<FormState>,
-                        protected modalService: ModalService,
-                        protected modalQuery: ModalQuery,
-                        registeredId: string,
-                        formKey: FormKey) {
+  protected constructor(
+    protected fm: AkitaNgFormsManager<FormState>,
+    protected modalService: ModalService,
+    protected modalQuery: ModalQuery,
+    registeredId: string,
+    formKey: FormKey
+  ) {
     super(modalService, registeredId);
     this.formKey = formKey;
   }
@@ -56,7 +63,8 @@ export abstract class FormModalComponent<FormKey extends keyof FormState, Return
     if (environment.hmr) {
       devRestoreFormState(this.fm.query.getValue()[this.formKey], this.form);
       this.fm.upsert(this.formKey, this.form);
-      this.modalQuery.modalClosed$(this.registeredId)
+      this.modalQuery
+        .modalClosed$(this.registeredId)
         .subscribe(() => this.fm.remove(this.formKey));
     }
   }

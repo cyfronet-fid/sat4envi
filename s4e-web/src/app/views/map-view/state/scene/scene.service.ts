@@ -34,7 +34,10 @@ import {Router} from '@angular/router';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {ModalQuery} from '../../../../modal/state/modal.query';
-import {makeDetailsModal, SENTINEL_SEARCH_RESULT_MODAL_ID} from '../../sentinel-search/search-result-modal/search-result-modal.model';
+import {
+  makeDetailsModal,
+  SENTINEL_SEARCH_RESULT_MODAL_ID
+} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import {filterTrue} from '../../../../utils/rxjs/observable';
 import {fromPromise} from 'rxjs/internal-compatibility';
 import {createSentinelSearchResult} from '../sentinel-search/sentinel-search.model';
@@ -44,34 +47,45 @@ import {Observable} from 'rxjs';
 export class SceneService {
   private _activatedQueue: ActivatedQueue;
 
-  constructor(private store: SceneStore,
-              private sceneQuery: SceneQuery,
-              private productQuery: ProductQuery,
-              private productStore: ProductStore,
-              private legendService: LegendService,
-              private modalQuery: ModalQuery,
-              private modalService: ModalService,
-              private routerQuery: RouterQuery,
-              private router: Router,
-              private http: HttpClient) {
+  constructor(
+    private store: SceneStore,
+    private sceneQuery: SceneQuery,
+    private productQuery: ProductQuery,
+    private productStore: ProductStore,
+    private legendService: LegendService,
+    private modalQuery: ModalQuery,
+    private modalService: ModalService,
+    private routerQuery: RouterQuery,
+    private router: Router,
+    private http: HttpClient
+  ) {
     this._activatedQueue = new ActivatedQueue(this.sceneQuery, this.store, false);
   }
 
-  get(product: Product, date: string, setActive?: 'last' | 'first'): Observable<SceneResponse[]> {
+  get(
+    product: Product,
+    date: string,
+    setActive?: 'last' | 'first'
+  ): Observable<SceneResponse[]> {
     const url = `${environment.apiPrefixV1}/products/${product.id}/scenes`;
     const urlParams = {params: {date, timeZone: timezone()}};
 
-    return this.http.get<SceneResponse[]>(url, urlParams)
-      .pipe(
-        handleHttpRequest$(this.store),
-        map(scenes => scenes.map(scene => createSentinelSearchResult(scene)).map(scene => ({...scene, layerName: product.layerName}))),
-        tap(scenes => applyTransaction(() => {
+    return this.http.get<SceneResponse[]>(url, urlParams).pipe(
+      handleHttpRequest$(this.store),
+      map(scenes =>
+        scenes
+          .map(scene => createSentinelSearchResult(scene))
+          .map(scene => ({...scene, layerName: product.layerName}))
+      ),
+      tap(scenes =>
+        applyTransaction(() => {
           this.store.set(scenes);
           let activeScene: Scene = null;
           if (scenes.length > 0) {
-            activeScene = setActive === 'last' && scenes[scenes.length - 1]
-              || setActive === 'first' && scenes[0]
-              || null;
+            activeScene =
+              (setActive === 'last' && scenes[scenes.length - 1]) ||
+              (setActive === 'first' && scenes[0]) ||
+              null;
           }
           if (activeScene) {
             this.store.setActive(activeScene.id);
@@ -79,16 +93,21 @@ export class SceneService {
           } else {
             this.store.setActive(null);
           }
-        }))
-      );
+        })
+      )
+    );
   }
 
   setActive(sceneId: number | null, manualTrigger: boolean = false) {
     this.store.setActive(sceneId);
     if (manualTrigger) {
-      this.productStore.update(
-        state => ({...state, ui: {...state.ui, manuallySelectedDate: this.sceneQuery.getEntity(sceneId).timestamp}})
-      );
+      this.productStore.update(state => ({
+        ...state,
+        ui: {
+          ...state.ui,
+          manuallySelectedDate: this.sceneQuery.getEntity(sceneId).timestamp
+        }
+      }));
     }
   }
 
@@ -116,7 +135,9 @@ export class SceneService {
       map(param => param === '1'),
       filterTrue(),
       switchMap(() => {
-        this.modalService.show(makeDetailsModal(false, 'scene', this.sceneQuery.getActive() as any));
+        this.modalService.show(
+          makeDetailsModal(false, 'scene', this.sceneQuery.getActive() as any)
+        );
         return this.modalQuery.modalClosed$(SENTINEL_SEARCH_RESULT_MODAL_ID);
       }),
       switchMap(() => fromPromise(this.showModalForActive(false)))

@@ -29,6 +29,8 @@ export class S4EDatePipe extends DatePipe {
   }
 
   transform(value: any, args?: any): any {
-    return value == null ? '' : super.transform(moment.utc(value, environment.backendDateFormat).toDate());
+    return value == null
+      ? ''
+      : super.transform(moment.utc(value, environment.backendDateFormat).toDate());
   }
 }

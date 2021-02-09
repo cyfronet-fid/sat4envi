@@ -31,9 +31,6 @@ import {RouterModule} from '@angular/router';
       }
     ])
   ],
-  exports: [
-    ErrorsComponent
-  ]
+  exports: [ErrorsComponent]
 })
-export class ErrorsModule {
-}
+export class ErrorsModule {}

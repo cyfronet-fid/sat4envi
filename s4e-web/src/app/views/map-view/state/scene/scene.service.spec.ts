@@ -16,7 +16,10 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {SceneService} from './scene.service';
 import {SceneStore} from './scene.store.service';
 import {SceneQuery} from './scene.query';
@@ -33,7 +36,10 @@ import {timezone} from '../../../../utils/miscellaneous/date-utils';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 import {RouterTestingModule} from '@angular/router/testing';
 import {MapModule} from '../../map.module';
-import {artifactDownloadLink, createSentinelSearchResult} from '../sentinel-search/sentinel-search.model';
+import {
+  artifactDownloadLink,
+  createSentinelSearchResult
+} from '../sentinel-search/sentinel-search.model';
 
 describe('SceneService', () => {
   let sceneService: SceneService;
@@ -48,11 +54,11 @@ describe('SceneService', () => {
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
-    http = TestBed.get(HttpTestingController);
-    sceneService = TestBed.get(SceneService);
-    sceneStore = TestBed.get(SceneStore);
-    sceneQuery = TestBed.get(SceneQuery);
-    legendQuery = TestBed.get(LegendQuery);
+    http = TestBed.inject(HttpTestingController);
+    sceneService = TestBed.inject(SceneService);
+    sceneStore = TestBed.inject(SceneStore);
+    sceneQuery = TestBed.inject(SceneQuery);
+    legendQuery = TestBed.inject(LegendQuery);
   });
 
   it('should create', () => {
@@ -60,11 +66,11 @@ describe('SceneService', () => {
   });
 
   describe('setActive', () => {
-    it('should set legend to Product\'s if Scene does not have one', () => {
+    it("should set legend to Product's if Scene does not have one", () => {
       const legend = LegendFactory.build();
       const scene = SceneFactory.build();
       const product = ProductFactory.build({legend});
-      const productStore: ProductStore = TestBed.get(ProductStore);
+      const productStore: ProductStore = TestBed.inject(ProductStore);
       sceneStore.set([scene]);
       productStore.set([product]);
       productStore.setActive(product.id);
@@ -73,18 +79,16 @@ describe('SceneService', () => {
   });
 
   describe('get', () => {
-    it('loading should be set', (done) => {
+    it('loading should be set', done => {
       const productId = 1;
       const product = ProductFactory.build({id: productId});
       const dateF = '2019-10-01';
       const stream = sceneQuery.selectLoading();
 
-      stream
-        .pipe(take(2), toArray())
-        .subscribe(data => {
-          expect(data).toEqual([true, false]);
-          done();
-        });
+      stream.pipe(take(2), toArray()).subscribe(data => {
+        expect(data).toEqual([true, false]);
+        done();
+      });
 
       sceneService.get(product, dateF).subscribe();
 
@@ -105,11 +109,11 @@ describe('SceneService', () => {
       const request = http.expectOne(url);
     });
 
-    it('should set state in store', (done) => {
+    it('should set state in store', done => {
       const dateF = '2019-10-01';
       const product = ProductFactory.build();
       const productId = product.id;
-      const productStore: ProductStore = TestBed.get(ProductStore);
+      const productStore: ProductStore = TestBed.inject(ProductStore);
       productStore.add(product);
       const scene = SceneResponseFactory.build();
 
@@ -117,7 +121,10 @@ describe('SceneService', () => {
         .selectAll()
         .pipe(take(2), toArray())
         .subscribe(data => {
-          expect(data).toEqual([[], [{...createSentinelSearchResult(scene), layerName: product.layerName}]]);
+          expect(data).toEqual([
+            [],
+            [{...createSentinelSearchResult(scene), layerName: product.layerName}]
+          ]);
           done();
         });
 

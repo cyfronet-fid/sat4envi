@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {LegendDesignerComponent} from './legend-designer.component';
 import {MapModule} from '../../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -26,13 +26,14 @@ describe('LegendDesignerComponent', () => {
   let component: LegendDesignerComponent;
   let fixture: ComponentFixture<LegendDesignerComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      providers: [LocalStorageTestingProvider],
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [LocalStorageTestingProvider],
+        imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LegendDesignerComponent);

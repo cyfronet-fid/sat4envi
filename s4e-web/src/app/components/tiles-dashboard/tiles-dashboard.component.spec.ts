@@ -15,9 +15,9 @@
  *
  */
 
-import { TilesDashboardModule } from './tiles-dashboard.module';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { DebugElement, Component } from '@angular/core';
+import {TilesDashboardModule} from './tiles-dashboard.module';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {DebugElement, Component} from '@angular/core';
 
 @Component({
   selector: 's4e-tiles-dashboards-mock-component',
@@ -38,17 +38,14 @@ describe('TilesDashboardComponent', () => {
   let fixture: ComponentFixture<TilesDashboardMockComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        TilesDashboardModule
-      ],
-      declarations: [
-        TilesDashboardMockComponent
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [TilesDashboardModule],
+        declarations: [TilesDashboardMockComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(TilesDashboardMockComponent);

@@ -16,16 +16,22 @@
  */
 
 import {
-  Component, ElementRef, forwardRef, Input, Optional, ViewChild,
+  Component,
+  ElementRef,
+  forwardRef,
+  Input,
+  Optional,
+  ViewChild,
   ViewEncapsulation,
   OnInit,
   OnDestroy
 } from '@angular/core';
 import {ControlContainer, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'ext-textarea',
   templateUrl: './textarea.component.html',
@@ -41,7 +47,7 @@ import {ExtFormDirective} from '../form-directive/ext-form.directive';
 })
 export class TextareaComponent extends GeneralInput {
   @Input('placeholder') _placeholder: string;
-  @ViewChild('input') inputRef: ElementRef;
+  @ViewChild('input', {static: true}) inputRef: ElementRef;
 
   constructor(cc: ControlContainer, @Optional() extForm: ExtFormDirective) {
     super(cc, extForm);
@@ -61,7 +67,7 @@ export class TextareaComponent extends GeneralInput {
   writeValue(value: any): void {
     if (value !== undefined) {
       this.currentValue = value;
-      this.fc.setValue(value)
+      this.fc.setValue(value);
     }
   }
 

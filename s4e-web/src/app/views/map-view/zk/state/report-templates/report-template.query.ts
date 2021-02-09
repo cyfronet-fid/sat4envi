@@ -21,7 +21,10 @@ import {ReportTemplateStore} from './report-template.store';
 import {ReportTemplate, ReportTemplateState} from './report-template.model';
 
 @Injectable({providedIn: 'root'})
-export class ReportTemplateQuery extends QueryEntity<ReportTemplateState, ReportTemplate> {
+export class ReportTemplateQuery extends QueryEntity<
+  ReportTemplateState,
+  ReportTemplate
+> {
   constructor(protected store: ReportTemplateStore) {
     super(store);
   }

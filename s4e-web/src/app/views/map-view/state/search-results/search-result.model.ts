@@ -30,5 +30,3 @@ export function createInitialState<T>(): SearchResultsState<T> {
     searchResult: null
   };
 }
-
-

@@ -5,8 +5,8 @@ Sat4Env frontend.
 
 #### Requirements
 
-* nodejs `11.10.1`
-* npm `^5`
+* nodejs `14.15.5`
+* npm `^6`
 
 #### Setting up development environment
 

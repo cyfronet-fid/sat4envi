@@ -25,5 +25,3 @@ export interface LocationSearchResult {
   type: string;
   voivodeship: string;
 }
-
-

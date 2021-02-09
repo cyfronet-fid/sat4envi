@@ -19,22 +19,22 @@
   <div class="intro">
     <div class="logo logo--white"></div>
     <div class="intro__content">
-      <h1>
-        Dane satelitarne na wyciągnięcie ręki
-      </h1>
+      <h1>Dane satelitarne na wyciągnięcie ręki</h1>
       <p>
-        Kompleksowy system udostępniania danych satelitarnych
-        z programu Copernicus oraz z innych satelitów środowiskowych i meteorologicznych
+        Kompleksowy system udostępniania danych satelitarnych z programu Copernicus
+        oraz z innych satelitów środowiskowych i meteorologicznych
       </p>
     </div>
-    <img src="../../../assets/images/logo_partners.png" width="72%" alt="Partnerzy: IMGW, Cyfronet, CBK"/>
+    <img
+      src="../../../assets/images/logo_partners.png"
+      width="72%"
+      alt="Partnerzy: IMGW, Cyfronet, CBK"
+    />
   </div>
   <div class="content">
     <div class="logo logo--color"></div>
     <section class="content__switch content__switch--right">
-      <p>
-        Masz już konto?
-      </p>
+      <p>Masz już konto?</p>
       <a class="button" routerLink="/login" queryParamsHandling="merge">
         Zaloguj się
       </a>
@@ -43,12 +43,14 @@
       <!--suppress AngularInvalidExpressionResultType -->
       <form (ngSubmit)="register()" [formGroup]="form" class="form">
         <h2 class="content__header" i18n>Rejestracja</h2>
-        <p>Sat4envi to otwarte dane dla każdego. Zarejestrowani użytkownicy mają dostęp do dodatkowych produktów
-          oraz mogą pobierać udostępnione dane. Zarejestruj się całkowicie za darmo!
+        <p>
+          Sat4envi to otwarte dane dla każdego. Zarejestrowani użytkownicy mają
+          dostęp do dodatkowych produktów oraz mogą pobierać udostępnione dane.
+          Zarejestruj się całkowicie za darmo!
         </p>
         <p>
-          Wszystkie poniższe dane są wymagane. Po wysłaniu zgłoszenia otrzymasz na podany adres email link
-          weryfikacyjny. Nie zapomnij w niego kliknąć.
+          Wszystkie poniższe dane są wymagane. Po wysłaniu zgłoszenia otrzymasz na
+          podany adres email link weryfikacyjny. Nie zapomnij w niego kliknąć.
         </p>
         <div class="alert alert-danger" *ngIf="form.errors">
           <ul s4e-form-error [control]="form"></ul>
@@ -57,36 +59,65 @@
         <ul class="form__list">
           <li class="form__element" class="form__element--50">
             <label for="registration-name" i18n>Imię</label>
-            <input class="form-control" formControlName="name" id="registration-name" data-e2e="registration-name" type="text">
+            <input
+              class="form-control"
+              formControlName="name"
+              id="registration-name"
+              data-e2e="registration-name"
+              type="text"
+            />
             <ul s4e-form-error [control]="form.controls.name"></ul>
           </li>
           <li class="form__element" class="form__element--50">
             <label for="registration-surname" i18n>Nazwisko</label>
-            <input class="form-control" formControlName="surname" id="registration-surname" data-e2e="registration-surname" type="text">
+            <input
+              class="form-control"
+              formControlName="surname"
+              id="registration-surname"
+              data-e2e="registration-surname"
+              type="text"
+            />
             <ul s4e-form-error [control]="form.controls.surname"></ul>
           </li>
           <li class="form__element" class="form__element--clear">
             <label for="registration-login" i18n>Email</label>
-            <input class="form-control" formControlName="email" id="registration-login" data-e2e="registration-email" autocomplete="new-password"
-                   type="text">
+            <input
+              class="form-control"
+              formControlName="email"
+              id="registration-login"
+              data-e2e="registration-email"
+              autocomplete="new-password"
+              type="text"
+            />
             <ul s4e-form-error [control]="form.controls.email"></ul>
           </li>
 
           <li class="form__element">
             <label for="registration-password" i18n>Hasło</label>
-            <input class="form-control" formControlName="password" id="registration-password" data-e2e="registration-password" type="password"
-                   autocomplete="new-password">
+            <input
+              class="form-control"
+              formControlName="password"
+              id="registration-password"
+              data-e2e="registration-password"
+              type="password"
+              autocomplete="new-password"
+            />
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
 
           <li class="form__element">
             <label for="registration-password-repeat" i18n>Powtórz hasło</label>
-            <input class="form-control" formControlName="passwordRepeat" id="registration-password-repeat" data-e2e="registration-password-repeat"
-                   type="password">
+            <input
+              class="form-control"
+              formControlName="passwordRepeat"
+              id="registration-password-repeat"
+              data-e2e="registration-password-repeat"
+              type="password"
+            />
             <ul s4e-form-error [control]="form.controls.passwordRepeat"></ul>
           </li>
 
-          <li class="form__element form__element--50" id="domain-controller" >
+          <li class="form__element form__element--50" id="domain-controller">
             <label for="registration-domain" i18n>Domena zawodowa</label>
             <select
               class="form-control"
@@ -94,7 +125,10 @@
               id="registration-domain"
               data-e2e="registration-domain"
             >
-              <option *ngFor="let domain of scientificDomainTypes" [value]="domain.value">
+              <option
+                *ngFor="let domain of scientificDomainTypes"
+                [value]="domain.value"
+              >
                 {{ domain.label }}
               </option>
             </select>
@@ -138,20 +172,34 @@
               formControlName="policy"
               id="registration-policy"
               data-e2e="registration-policy"
-            >
+            />
             <label for="registration-policy" i18n>
-              Akceptuję <a href="https://sat4envi.imgw.pl/?page_id=506" target="_blank">politykę prywatności</a>
+              Akceptuję
+              <a href="https://sat4envi.imgw.pl/?page_id=506" target="_blank"
+                >politykę prywatności</a
+              >
             </label>
             <ul s4e-form-error [control]="form.controls.policy"></ul>
           </li>
 
-          <li class="form__element ">
-            <re-captcha formControlName="recaptcha" [siteKey]="remoteConfiguration.get().recaptchaSiteKey"></re-captcha>
+          <li class="form__element">
+            <re-captcha
+              formControlName="recaptcha"
+              [siteKey]="remoteConfiguration.get().recaptchaSiteKey"
+            ></re-captcha>
           </li>
 
           <li class="form__element">
-            <button class="button button--primary" data-e2e="btn-submit" type="submit">
-              <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+            <button
+              class="button button--primary"
+              data-e2e="btn-submit"
+              type="submit"
+            >
+              <fa-icon
+                [hidden]="!(loading$ | async)"
+                [icon]="['fas', 'circle-notch']"
+                [spin]="true"
+              ></fa-icon>
               <ng-container i18n>Utwórz konto</ng-container>
             </button>
           </li>
@@ -160,15 +208,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-

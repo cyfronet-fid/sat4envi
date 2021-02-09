@@ -25,24 +25,28 @@ import {Institution} from '../institution/institution.model';
 
 @Injectable({providedIn: 'root'})
 export class InstitutionsSearchResultsService {
-
-  constructor(private _store: InstitutionsSearchResultsStore,
-              private _guidGenerationService: AkitaGuidService,
-              private _institutionService: InstitutionService,
-              private _InstitutionQuery: InstitutionQuery,
-              private _http: HttpClient) {
-  }
+  constructor(
+    private _store: InstitutionsSearchResultsStore,
+    private _guidGenerationService: AkitaGuidService,
+    private _institutionService: InstitutionService,
+    private _InstitutionQuery: InstitutionQuery,
+    private _http: HttpClient
+  ) {}
 
   get(partialInstitutionName: string) {
     this._store.update({isOpen: true, queryString: partialInstitutionName});
 
     this._store.setLoading(true);
-    this._InstitutionQuery.selectAll()
-      .subscribe(institutions => this._store.set(
-        institutions.filter((institution) => institution.name
-          .toLocaleLowerCase()
-          .indexOf(partialInstitutionName.toLocaleLowerCase()) > -1
-        )
+    this._InstitutionQuery
+      .selectAll()
+      .subscribe(institutions =>
+        this._store.set(
+          institutions.filter(
+            institution =>
+              institution.name
+                .toLocaleLowerCase()
+                .indexOf(partialInstitutionName.toLocaleLowerCase()) > -1
+          )
         )
       );
   }

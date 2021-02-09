@@ -17,10 +17,9 @@
 
 import {ExtFormDirective} from './ext-form.directive';
 import {Component, DebugElement, Input} from '@angular/core';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
-
 
 /**
  * This directive is used mainly to manipulate DOM,
@@ -31,12 +30,11 @@ import {S4EFormsModule} from '../form.module';
 @Component({
   selector: 'mock-directive',
   template: '<form extForm [isLoading]="isLoading"></form>',
-  styles: [],
+  styles: []
 })
 class MockDirectiveComponent {
   @Input() isLoading: boolean = false;
 }
-
 
 describe('ExtFormDirective', () => {
   let component: MockDirectiveComponent;
@@ -44,14 +42,16 @@ describe('ExtFormDirective', () => {
   let element: DebugElement;
   let directive: ExtFormDirective;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [S4EFormsModule],
-      declarations: [MockDirectiveComponent]
-    });
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [S4EFormsModule],
+        declarations: [MockDirectiveComponent]
+      });
 
-    TestBed.compileComponents();
-  }));
+      TestBed.compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MockDirectiveComponent);

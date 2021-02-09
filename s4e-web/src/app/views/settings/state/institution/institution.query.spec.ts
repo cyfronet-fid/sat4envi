@@ -15,18 +15,26 @@
  *
  */
 
-import { InstitutionQuery } from './institution.query';
-import { InstitutionStore } from './institution.store';
+import {InstitutionQuery} from './institution.query';
+import {InstitutionStore} from './institution.store';
+import {TestBed} from '@angular/core/testing';
+import {SettingsModule} from '../../settings.module';
+import {RemoteConfigurationTestingProvider} from '../../../../app.configuration.spec';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('InstitutionQuery', () => {
   let query: InstitutionQuery;
 
   beforeEach(() => {
-    query = new InstitutionQuery(new InstitutionStore);
+    TestBed.configureTestingModule({
+      imports: [SettingsModule, RouterTestingModule, HttpClientTestingModule],
+      providers: [RemoteConfigurationTestingProvider]
+    });
+    query = TestBed.inject(InstitutionQuery);
   });
 
   it('should create an instance', () => {
     expect(query).toBeTruthy();
   });
-
 });

@@ -16,7 +16,7 @@
  */
 
 import {disableEnableForm, resizeImage} from './miscellaneous';
-import {async, TestBed} from '@angular/core/testing';
+import {TestBed, waitForAsync} from '@angular/core/testing';
 import {InjectorModule} from '../../common/injector.module';
 import {Injector} from '@angular/core';
 import {FormControl, FormGroup} from '@ng-stack/forms';
@@ -52,11 +52,13 @@ describe('deserializeJsonResponse', function () {
     login: string;
   }
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [InjectorModule],
-      providers: [Injector],
-    });
-    TestBed.get(InjectorModule);
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [InjectorModule],
+        providers: [Injector]
+      });
+      TestBed.inject(InjectorModule);
+    })
+  );
 });

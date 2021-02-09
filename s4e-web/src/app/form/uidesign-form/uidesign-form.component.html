@@ -19,7 +19,10 @@
   <h3>Standard Controls</h3>
   <form [formGroup]="customForm">
     <ext-input label="Input #1" formControlName="input"></ext-input>
-    <ext-input label="Input #2 (Disabled)" formControlName="inputDisabled"></ext-input>
+    <ext-input
+      label="Input #2 (Disabled)"
+      formControlName="inputDisabled"
+    ></ext-input>
     <ext-select [required]="false" label="Select #1" formControlName="select">
       <option [ngValue]="1">user1@mail.pl</option>
       <option [ngValue]="2">user2@mail.pl</option>
@@ -27,14 +30,38 @@
       <option [ngValue]="4">user4@mail.pl</option>
     </ext-select>
 
-    <ext-textarea label="Textarea #1" [required]="false" formControlName="textarea"></ext-textarea>
-    <ext-datepicker label="Datepicker #1" [required]="false" formControlName="datepicker"></ext-datepicker>
-    <ext-datepicker label="Datepicker #2" [required]="false" formControlName="datepicker" [showExtraButton]="true"></ext-datepicker>
-    <ext-checkbox label="Checkbox #1" [required]="false" formControlName="checkbox"></ext-checkbox>
+    <ext-textarea
+      label="Textarea #1"
+      [required]="false"
+      formControlName="textarea"
+    ></ext-textarea>
+    <ext-datepicker
+      label="Datepicker #1"
+      [required]="false"
+      formControlName="datepicker"
+    ></ext-datepicker>
+    <ext-datepicker
+      label="Datepicker #2"
+      [required]="false"
+      formControlName="datepicker"
+      [showExtraButton]="true"
+    ></ext-datepicker>
+    <ext-checkbox
+      label="Checkbox #1"
+      [required]="false"
+      formControlName="checkbox"
+    ></ext-checkbox>
 
     <ext-button cssClass="button--primary button--small">Submit</ext-button>
-    <ext-button cssClass="button--primary button--small" [isLoading]="true">Submit Working</ext-button>
-    <ext-button cssClass="button--primary button--small" [disabled]="true" [isLoading]="true">Disabled</ext-button>
+    <ext-button cssClass="button--primary button--small" [isLoading]="true"
+      >Submit Working</ext-button
+    >
+    <ext-button
+      cssClass="button--primary button--small"
+      [disabled]="true"
+      [isLoading]="true"
+      >Disabled</ext-button
+    >
   </form>
 </div>
 
@@ -49,9 +76,17 @@
       <option [ngValue]="4">user4@mail.pl</option>
     </ext-select>
 
-    <ext-checkbox label="Checkbox #1" [required]="false" formControlName="checkbox"></ext-checkbox>
+    <ext-checkbox
+      label="Checkbox #1"
+      [required]="false"
+      formControlName="checkbox"
+    ></ext-checkbox>
 
-    <ext-button cssClass="button--primary button--small" [disabled]="true" [isLoading]="true">Disabled</ext-button>
+    <ext-button
+      cssClass="button--primary button--small"
+      [disabled]="true"
+      [isLoading]="true"
+      >Disabled</ext-button
+    >
   </form>
 </div>
-

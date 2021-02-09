@@ -25,7 +25,7 @@ import {ModalService} from '../../state/modal.service';
 })
 export class GenericModalComponent {
   @Input() buttonX: boolean;
-  @Input() modalId: string|null;
+  @Input() modalId: string | null;
 
   /**
    * This method will be executed when clicking x on the modal.
@@ -35,14 +35,14 @@ export class GenericModalComponent {
    * (close) output.
    */
   @Input() xclicked: () => void = () => {
-    if(this.modalId != null) {
+    if (this.modalId != null) {
       this.modalService.hide(this.modalId);
     }
   };
 
   @Output() close: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private modalService: ModalService) { }
+  constructor(private modalService: ModalService) {}
 
   dismiss() {
     this.xclicked();

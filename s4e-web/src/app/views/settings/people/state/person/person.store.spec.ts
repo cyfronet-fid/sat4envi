@@ -15,7 +15,7 @@
  *
  */
 
-import { PersonStore } from './person.store';
+import {PersonStore} from './person.store';
 
 describe('PersonStore', () => {
   let store: PersonStore;
@@ -27,5 +27,4 @@ describe('PersonStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

@@ -27,5 +27,4 @@ describe('InstitutionsSearchResultsStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

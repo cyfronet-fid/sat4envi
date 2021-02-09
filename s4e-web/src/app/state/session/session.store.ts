@@ -25,6 +25,4 @@ export class SessionStore extends Store<Session> {
   constructor() {
     super(createSession({}));
   }
-
 }
-

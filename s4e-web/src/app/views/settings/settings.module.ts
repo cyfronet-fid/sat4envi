@@ -30,7 +30,7 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {S4EFormsModule} from '../../form/form.module';
 import {ManageInstitutionsModule} from './manage-institutions/manage-institutions.module';
 import {SETTINGS_PATH} from './settings.breadcrumbs';
-import { EventsModule } from 'src/app/utils/search/events.module';
+import {EventsModule} from 'src/app/utils/search/events.module';
 import {ManageAuthoritiesComponent} from './manage-authorities/manage-authorities.component';
 import {ManageProductsComponent} from './manage-products/manage-products.component';
 import {GenericListViewModule} from './components/generic-list-view/generic-list-view.module';

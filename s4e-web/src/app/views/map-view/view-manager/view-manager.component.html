@@ -16,26 +16,26 @@
   -->
 
 <ng-container *ngIf="!(loading$ | async); else loadingRef">
-    <s4e-search
-      placeholder="Wpisz szukaną miejscowość..."
-      [query]="searchResultsQuery"
-      [store]="searchResultsStore"
-      [value]="searchValue"
-      (valueChange)="searchForPlaces($event)"
-      (selectResult)="navigateToPlace($event)"
-    >
-      <ng-template #result let-result>
-        <span class="name">{{ result.name }}</span>
-        <span class="type">{{ result.type }}</span>
-        <span class="voivodeship">{{ result.voivodeship}}</span>
-      </ng-template>
-    </s4e-search>
+  <s4e-search
+    placeholder="Wpisz szukaną miejscowość..."
+    [query]="searchResultsQuery"
+    [store]="searchResultsStore"
+    [value]="searchValue"
+    (valueChange)="searchForPlaces($event)"
+    (selectResult)="navigateToPlace($event)"
+  >
+    <ng-template #result let-result>
+      <span class="name">{{ result.name }}</span>
+      <span class="type">{{ result.type }}</span>
+      <span class="voivodeship">{{ result.voivodeship }}</span>
+    </ng-template>
+  </s4e-search>
 
   <s4e-items-picker
     #picker
     mwlResizable
     resizeCursorPrecision="10"
-    [resizeEdges]="{ top: true }"
+    [resizeEdges]="{top: true}"
     (resizeEnd)="onResizeEnd($event)"
     class="section layers"
     [loading]="overlaysLoading$ | async"
@@ -43,23 +43,49 @@
     (itemSelected)="selectOverlay($event)"
     data-e2e="layers-list"
   >
-  <div s4e-caption i18n>
-    <span>Warstwy WMS</span>
-    <button *ngIf="isLoggedIn" (click)="showOverlayListModal()" class="layers__manager" data-e2e="sidebar-management-btn">Konfiguruj WMS</button>
-  </div>
+    <div s4e-caption i18n>
+      <span>Warstwy WMS</span>
+      <button
+        *ngIf="isLoggedIn"
+        (click)="showOverlayListModal()"
+        class="layers__manager"
+        data-e2e="sidebar-management-btn"
+      >
+        Konfiguruj WMS
+      </button>
+    </div>
   </s4e-items-picker>
 
   <div class="products-list" data-e2e="product-list">
-    <div *ngIf="isLoggedIn"  class="products-filtration">
-      <a data-e2e="product-list-btn"
-         [ngClass]="{'active': !isFavouriteFiltration}" (click)="setViewModeToFavourite(false)" i18n>Lista produktów</a>
-      <a data-e2e="favourite-list-btn"
-         [ngClass]="{'active': isFavouriteFiltration}" (click)="setViewModeToFavourite(true)">
-        <span class="badge"><small data-e2e="favourite-count">{{ favouriteProductsCount$ | async }}</small></span>
+    <div *ngIf="isLoggedIn" class="products-filtration">
+      <a
+        data-e2e="product-list-btn"
+        [ngClass]="{active: !isFavouriteFiltration}"
+        (click)="setViewModeToFavourite(false)"
+        i18n
+        >Lista produktów</a
+      >
+      <a
+        data-e2e="favourite-list-btn"
+        [ngClass]="{active: isFavouriteFiltration}"
+        (click)="setViewModeToFavourite(true)"
+      >
+        <span class="badge"
+          ><small data-e2e="favourite-count">{{
+            favouriteProductsCount$ | async
+          }}</small></span
+        >
         <ng-container i18n>Ulubione</ng-container>
       </a>
     </div>
-    <ng-container *ngIf="isLoggedIn && isFavouriteFiltration && (favouriteProductsCount$ | async) === 0; else products">
+    <ng-container
+      *ngIf="
+        isLoggedIn &&
+          isFavouriteFiltration &&
+          (favouriteProductsCount$ | async) === 0;
+        else products
+      "
+    >
       <div class="products products--favourite">
         <header>
           <span class="products__title products__title--favourite">Ulubione</span>
@@ -74,13 +100,15 @@
     </ng-container>
     <ng-template #products>
       <s4e-items-picker
-        *ngFor="let categoryProducts of (groupedProducts$ | async)"
+        *ngFor="let categoryProducts of groupedProducts$ | async"
         class="section products"
         [loading]="productsLoading$ | async"
         [items]="categoryProducts"
         [hasFavourite]="isLoggedIn"
         [collapsed]="categoryProducts[0].category.collapsed"
-        (collapse)="productService.toggleCategoryCollapse(categoryProducts[0].category.id)"
+        (collapse)="
+          productService.toggleCategoryCollapse(categoryProducts[0].category.id)
+        "
         (itemSelected)="selectProduct($event)"
         (isFavouriteSelected)="isFavouriteProduct($event.ID, $event.isFavourite)"
       >

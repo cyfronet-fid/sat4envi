@@ -15,12 +15,12 @@
  *
  */
 
-import { Observable, Observer } from 'rxjs';
+import {Observable, Observer} from 'rxjs';
 
 export namespace File {
   export function getFirst($event) {
     const hasFirstFile = !!$event.target.files && !!$event.target.files[0];
-    return hasFirstFile && $event.target.files[0] || null;
+    return (hasFirstFile && $event.target.files[0]) || null;
   }
 }
 
@@ -56,15 +56,15 @@ export namespace ImageBase64 {
           observer.next(getBase64Image(img));
           observer.complete();
         };
-        img.onerror = (err) => observer.error(err);
+        img.onerror = err => observer.error(err);
       };
-      reader.onerror = (error) => observer.error(error);
+      reader.onerror = error => observer.error(error);
     });
   }
 
   export function getFromXhr(imageXhr: XMLHttpRequest): string {
     const arrayBufferView = new Uint8Array(imageXhr.response);
-    const blob = new Blob([arrayBufferView], { type: 'image/png' });
+    const blob = new Blob([arrayBufferView], {type: 'image/png'});
     const urlCreator = (window as any).URL || (window as any).webkitURL;
     return urlCreator.createObjectURL(blob);
   }
@@ -79,7 +79,7 @@ export namespace ImageBase64 {
         observer.next(getBase64Image(img));
         observer.complete();
       };
-      img.onerror = (err) => observer.error(err);
+      img.onerror = err => observer.error(err);
     });
   }
 
@@ -99,18 +99,14 @@ export namespace ImageBase64 {
 
     // scale up
     if (width > MAX_WIDTH || height > MAX_HEIGHT) {
-      scale = width > height
-        ? width / MAX_WIDTH
-        : height / MAX_HEIGHT;
+      scale = width > height ? width / MAX_WIDTH : height / MAX_HEIGHT;
 
       scale = !scale || scale === 0 ? 1 : scale;
     }
 
     // scale down
     if (width < MIN_WIDTH || img.height < MIN_HEIGHT) {
-      scale = width < height
-        ? width / MIN_WIDTH
-        : height / MIN_HEIGHT;
+      scale = width < height ? width / MIN_WIDTH : height / MIN_HEIGHT;
     }
     width = width / scale;
     height = height / scale;

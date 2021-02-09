@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class SettingsAdministratorPrivilage extends Core {
   static readonly pageObject = {
@@ -7,32 +7,34 @@ export class SettingsAdministratorPrivilage extends Core {
   };
 
   static addDeleteInstitutionPrivilege(user: string) {
-
-    SettingsAdministratorPrivilage
-      .pageObject
+    SettingsAdministratorPrivilage.pageObject
       .getAdministrator()
       .contains(user)
       .parent()
-      .find(SettingsAdministratorPrivilage.pageObject.getDeleteInstitutionPrivilegeCheckbox)
-      .then(($element) => {
-        if ($element.is(':not(:checked)')){
-          $element.click()
+      .find(
+        SettingsAdministratorPrivilage.pageObject
+          .getDeleteInstitutionPrivilegeCheckbox
+      )
+      .then($element => {
+        if ($element.is(':not(:checked)')) {
+          $element.click();
         }
-      })
+      });
   }
 
   static removeDeleteInstitutionPrivilege(user: string) {
-
-    SettingsAdministratorPrivilage
-      .pageObject
+    SettingsAdministratorPrivilage.pageObject
       .getAdministrator()
       .contains(user)
       .parent()
-      .find(SettingsAdministratorPrivilage.pageObject.getDeleteInstitutionPrivilegeCheckbox)
-      .then(($element) => {
-        if ($element.is(':checked')){
-          $element.click()
+      .find(
+        SettingsAdministratorPrivilage.pageObject
+          .getDeleteInstitutionPrivilegeCheckbox
+      )
+      .then($element => {
+        if ($element.is(':checked')) {
+          $element.click();
         }
-      })
+      });
   }
-};
+}

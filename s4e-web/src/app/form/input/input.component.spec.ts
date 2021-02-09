@@ -39,8 +39,7 @@ describe('InputComponent', () => {
     TestBed.configureTestingModule({
       imports: [S4EFormsModule],
       providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -54,7 +53,11 @@ describe('InputComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  async function setComponentTypeInputAndExpect(type: string, input: string, expected: any) {
+  async function setComponentTypeInputAndExpect(
+    type: string,
+    input: string,
+    expected: any
+  ) {
     let spy = jest.fn();
     const element = fixture.debugElement.query(By.css('input')).nativeElement;
     component.type = type;

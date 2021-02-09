@@ -41,11 +41,15 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'prefix',
         redirectTo: '/map/products'
-      },
+      }
     ]
   },
-  ...(environment.production ? [] : [{
-    path: 'ui-legend-designer',
-    component: LegendDesignerComponent
-  }])
+  ...(environment.production
+    ? []
+    : [
+        {
+          path: 'ui-legend-designer',
+          component: LegendDesignerComponent
+        }
+      ])
 ];

@@ -15,7 +15,7 @@
  *
  */
 
-import { InvitationStore } from './invitation.store';
+import {InvitationStore} from './invitation.store';
 
 describe('InvitationStore', () => {
   let store: InvitationStore;
@@ -27,5 +27,4 @@ describe('InvitationStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

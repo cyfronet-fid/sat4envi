@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class SettingsNav extends Core {
   static readonly pageObject = {
@@ -11,10 +11,7 @@ export class SettingsNav extends Core {
   };
 
   static logOut() {
-    SettingsNav
-      .pageObject
-      .getLogOutBtn()
-      .click();
+    SettingsNav.pageObject.getLogOutBtn().click();
 
     cy.location('pathname').should('eq', '/login');
 
@@ -22,10 +19,7 @@ export class SettingsNav extends Core {
   }
 
   static changeInstitution() {
-    SettingsNav
-      .pageObject
-      .getChangeInstitutionBtn()
-      .click();
+    SettingsNav.pageObject.getChangeInstitutionBtn().click();
 
     cy.location('pathname').should('eq', '/settings/institutions');
 
@@ -33,10 +27,7 @@ export class SettingsNav extends Core {
   }
 
   static returnToMap() {
-    SettingsNav
-      .pageObject
-      .getReturnToMapBtn()
-      .click();
+    SettingsNav.pageObject.getReturnToMapBtn().click();
 
     cy.location('href').should('include', '/map/products');
 
@@ -44,10 +35,7 @@ export class SettingsNav extends Core {
   }
 
   static goToUserProfile() {
-    SettingsNav
-      .pageObject
-      .getUserProfileBtn()
-      .click();
+    SettingsNav.pageObject.getUserProfileBtn().click();
 
     cy.location('pathname').should('eq', '/settings/profile');
 
@@ -55,10 +43,7 @@ export class SettingsNav extends Core {
   }
 
   static goToInstitutionsList() {
-    SettingsNav
-      .pageObject
-      .getInstitutionsListBtn()
-      .click();
+    SettingsNav.pageObject.getInstitutionsListBtn().click();
 
     cy.location('pathname').should('eq', '/settings/institutions');
 
@@ -66,10 +51,7 @@ export class SettingsNav extends Core {
   }
 
   static goToManagePrivilege() {
-    SettingsNav
-      .pageObject
-      .getManagePrivilegeBtn()
-      .click();
+    SettingsNav.pageObject.getManagePrivilegeBtn().click();
 
     cy.location('pathname').should('eq', '/settings/manage-authorities');
 
@@ -77,15 +59,9 @@ export class SettingsNav extends Core {
   }
 
   static institutionNavigationShouldHaveValue(value: string) {
-    SettingsNav
-      .pageObject
-      .getChangeInstitutionBtn()
-      .should(value)
+    SettingsNav.pageObject.getChangeInstitutionBtn().should(value);
 
-    SettingsNav
-      .pageObject
-      .getInstitutionsListBtn()
-      .should(value)
+    SettingsNav.pageObject.getInstitutionsListBtn().should(value);
 
     return SettingsNav;
   }

@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ConfirmModalComponent} from './confirm-modal.component';
 import {By} from '@angular/platform-browser';
 import {ModalModule} from '../../modal.module';
@@ -33,20 +33,29 @@ describe('ConfirmModalComponent', () => {
   const content = 'CNT';
   const title = 'TITLE';
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule],
-      providers: [
-        {provide: MODAL_DEF, useValue: createModal({id: CONFIRM_MODAL_ID, size: 'sm', content, title} as ConfirmModal)}
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: createModal({
+              id: CONFIRM_MODAL_ID,
+              size: 'sm',
+              content,
+              title
+            } as ConfirmModal)
+          }
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ConfirmModalComponent);
     component = fixture.componentInstance;
-    service = TestBed.get(ModalService);
+    service = TestBed.inject(ModalService);
     compiled = fixture.debugElement.nativeElement;
     fixture.detectChanges();
   });

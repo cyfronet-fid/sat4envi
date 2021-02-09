@@ -16,7 +16,13 @@
  */
 
 import {Injectable} from '@angular/core';
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest
+} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {catchError, filter, finalize, map, pairwise, tap} from 'rxjs/operators';
 import {Router, RoutesRecognized} from '@angular/router';
@@ -30,13 +36,12 @@ import {
   HTTP_502_BAD_GATEWAY
 } from '../../errors/errors.model';
 import {HttpErrorHelper} from './error.helper';
-import {NotificationService} from 'notifications';
 import {BACK_LINK_QUERY_PARAM} from '../../state/session/session.service';
 import {resetStores} from '@datorama/akita';
-
+import {NotificationService} from '../../notifications/state/notification.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ErrorInterceptor implements HttpInterceptor {
   private _backLink: string;
@@ -51,28 +56,36 @@ export class ErrorInterceptor implements HttpInterceptor {
         pairwise(),
         map((event: [RoutesRecognized, RoutesRecognized]) => event[0].url)
       )
-      .subscribe((lastUrl: string) => this._backLink = !!lastUrl ? '/' + lastUrl : null);
+      .subscribe(
+        (lastUrl: string) => (this._backLink = !!lastUrl ? '/' + lastUrl : null)
+      );
   }
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     request = HttpErrorHelper.addDefaultHeaders(request);
 
-    return next.handle(request)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          if (HttpErrorHelper.hasMutuallyExclusiveOptions(request)) {
-            console.error('HTTP request has mutually exclusive options, make sure that only one skip header is provided');
-          } else if (!HttpErrorHelper.skipHandling(error, request)) {
-            if (HttpErrorHelper.isClientSideError(error)) {
-              // this is client side unexpected error, generally this should not happen
-              console.error(error.message);
-            } else if (HttpErrorHelper.isServerSideError(error)) {
-              return throwError(error).pipe(finalize(() => this._handleServerError(error)));
-            }
+    return next.handle(request).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (HttpErrorHelper.hasMutuallyExclusiveOptions(request)) {
+          console.error(
+            'HTTP request has mutually exclusive options, make sure that only one skip header is provided'
+          );
+        } else if (!HttpErrorHelper.skipHandling(error, request)) {
+          if (HttpErrorHelper.isClientSideError(error)) {
+            // this is client side unexpected error, generally this should not happen
+            console.error(error.message);
+          } else if (HttpErrorHelper.isServerSideError(error)) {
+            return throwError(error).pipe(
+              finalize(() => this._handleServerError(error))
+            );
           }
-          return throwError(error);
-        })
-      );
+        }
+        return throwError(error);
+      })
+    );
   }
 
   private _handleServerError = (error: HttpErrorResponse) => {
@@ -82,22 +95,21 @@ export class ErrorInterceptor implements HttpInterceptor {
         resetStores();
         this._notificationService.addGeneral({
           type: 'error',
-          content: 'Wystąpił błąd: Nie jesteś zalogowany lub twoja sesja się przedawniła'
+          content:
+            'Wystąpił błąd: Nie jesteś zalogowany lub twoja sesja się przedawniła'
         });
-        this._router.navigate(
-          ['login'],
-          {
-            queryParams: !!this._backLink
-              ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
-              : {}
-          }
-        );
+        this._router.navigate(['login'], {
+          queryParams: !!this._backLink
+            ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
+            : {}
+        });
         break;
       case HTTP_101_TIMEOUT:
       case HTTP_404_BAD_REQUEST:
         this._notificationService.addGeneral({
           type: 'error',
-          content: 'Wystąpił błąd: Nieprawidłowe zapytanie lub zbyt długi czas oczekiwania na odpowiedź serwera'
+          content:
+            'Wystąpił błąd: Nieprawidłowe zapytanie lub zbyt długi czas oczekiwania na odpowiedź serwera'
         });
         break;
       case HTTP_404_NOT_FOUND:
@@ -105,14 +117,11 @@ export class ErrorInterceptor implements HttpInterceptor {
         break;
       case HTTP_502_BAD_GATEWAY:
       case HTTP_500_INTERNAL_SERVER_ERROR:
-        this._router.navigate(
-          ['errors', error.status],
-          {
-            queryParams: !!this._backLink
-              ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
-              : {}
-          }
-        );
+        this._router.navigate(['errors', error.status], {
+          queryParams: !!this._backLink
+            ? {[BACK_LINK_QUERY_PARAM]: this._backLink}
+            : {}
+        });
         break;
       default:
         this._notificationService.addGeneral({

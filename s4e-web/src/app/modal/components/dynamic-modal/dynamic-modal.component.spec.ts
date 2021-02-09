@@ -15,7 +15,12 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  waitForAsync
+} from '@angular/core/testing';
 import {DynamicModalComponent} from './dynamic-modal.component';
 import {ModalModule} from '../../modal.module';
 import {createModal} from '../../state/modal.model';
@@ -26,14 +31,11 @@ describe('DynamicModalComponent', () => {
   let component: DynamicModalComponent;
   let fixture: ComponentFixture<DynamicModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ModalModule
-      ]
-    })
-      .compileComponents();
-  }));
+      imports: [ModalModule]
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DynamicModalComponent);
@@ -50,6 +52,8 @@ describe('DynamicModalComponent', () => {
     fixture.detectChanges();
     expect(component.componentRef).toBeTruthy();
     expect(component.componentRef.instance).toBeInstanceOf(DummyModalComponent);
-    expect((component.componentRef.instance as DummyModalComponent).registeredId).toEqual(DUMMY_MODAL_ID)
+    expect(
+      (component.componentRef.instance as DummyModalComponent).registeredId
+    ).toEqual(DUMMY_MODAL_ID);
   });
 });

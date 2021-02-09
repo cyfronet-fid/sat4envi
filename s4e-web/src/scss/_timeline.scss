@@ -24,8 +24,12 @@
   left: 440px;
   padding: 0 50px 30px 50px;
   margin: 0 -50px 0 -50px;
-  background: rgb(31,31,31);
-  background: linear-gradient(0deg, rgba(31,31,31,0.8043418050814075) 0%, rgba(255,255,255,0) 55%);
+  background: rgb(31, 31, 31);
+  background: linear-gradient(
+    0deg,
+    rgba(31, 31, 31, 0.8043418050814075) 0%,
+    rgba(255, 255, 255, 0) 55%
+  );
   box-sizing: border-box;
 
   &.closed {
@@ -33,7 +37,6 @@
     left: 0;
     margin: 0;
   }
-
 
   &__manager {
     margin-bottom: 20px;
@@ -54,11 +57,11 @@
         padding-left: 10px;
         padding-right: 10px;
 
-        input[type="checkbox"] {
+        input[type='checkbox'] {
           display: none;
         }
 
-        label[for="live"] {
+        label[for='live'] {
           cursor: pointer;
           display: flex;
         }
@@ -96,7 +99,6 @@
           }
         }
       } /* live button end */
-
 
       span {
         margin: 0 5px;
@@ -140,7 +142,7 @@
 
           &:after {
             background: $color-black;
-            content: " ";
+            content: ' ';
             position: absolute;
             width: 12px;
             height: 1px;
@@ -157,7 +159,7 @@
           &:after,
           &:before {
             background: $color-black;
-            content: " ";
+            content: ' ';
             position: absolute;
             width: 12px;
             height: 1px;
@@ -191,10 +193,7 @@
         }
       }
     }
-
-
   } /* timeline__manager */
-
 
   &__grid {
     position: relative;
@@ -203,7 +202,7 @@
     justify-content: space-between;
 
     &:before {
-      content: " ";
+      content: ' ';
       height: 2px;
       border-radius: $border-radius-circle;
       background-color: $color-white;
@@ -213,7 +212,7 @@
       left: 0;
       top: 4px;
       z-index: 1;
-      filter: drop-shadow(0px 0px 13px rgba(0,0,0,0.41));
+      filter: drop-shadow(0px 0px 13px rgba(0, 0, 0, 0.41));
     }
   }
 
@@ -226,7 +225,7 @@
     border-radius: $border-radius-circle;
     background-color: $color-white;
     cursor: pointer;
-    filter: drop-shadow(0px 0px 13px rgba(0,0,0,0.41));
+    filter: drop-shadow(0px 0px 13px rgba(0, 0, 0, 0.41));
     transition: 0.4s;
 
     &.active {
@@ -261,7 +260,8 @@
     &--multiple {
       left: 150px;
 
-      &:hover, &.active {
+      &:hover,
+      &.active {
         margin: 0 !important;
         width: 10px !important;
         height: 10px !important;
@@ -277,7 +277,6 @@
       }
 
       .multiple {
-
         &__dot {
           position: absolute;
           border-radius: $border-radius-circle;
@@ -329,7 +328,6 @@
               border: 1px solid $color-grey-quaternary;
               padding: 4px;
             }
-
           }
 
           &:after {
@@ -339,7 +337,7 @@
             border-bottom: 10px solid transparent;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            content: "";
+            content: '';
             position: absolute;
             bottom: -20px;
             border-radius: 2px;
@@ -348,7 +346,6 @@
         }
       }
     }
-
   } /* timeline__item */
 
   &__hourmark {

@@ -16,25 +16,26 @@
   -->
 
 <main>
-  <h1> Jak skorzystać z API Sat4Envi</h1>
+  <h1>Jak skorzystać z API Sat4Envi</h1>
   <p>Informacje:</p>
   <p>
-    Składnia curl:<br>
-    curl [OPCJE]... [URL]...<br><br>
-    BŁĄD:<br>
-    curl: (60) SSL certificate problem: unable to get local issuer certificate More details here: https://curl.haxx.se/docs/sslcerts.html<br>
+    Składnia curl:<br />
+    curl [OPCJE]... [URL]...<br /><br />
+    BŁĄD:<br />
+    curl: (60) SSL certificate problem: unable to get local issuer certificate More
+    details here: https://curl.haxx.se/docs/sslcerts.html<br />
     Aby połączyć się z HOST w sposób niebezpieczny, można użyć `-k'.
   </p>
   <p>
-    Składnia wget:<br>
-    wget [OPCJE]... [URL]...<br><br>
-    BŁĄD: błąd kontroli certyfikatu dla HOST, wystawionego przez `CN=GEANT OV RSA CA 4,O=GEANT Vereniging,C=NL':<br>
-    Błąd lokalnej kontroli centrum certyfikacji.<br>
-    Aby połączyć się z HOST w sposób niebezpieczny, można użyć `--no-check-certificate'.
+    Składnia wget:<br />
+    wget [OPCJE]... [URL]...<br /><br />
+    BŁĄD: błąd kontroli certyfikatu dla HOST, wystawionego przez `CN=GEANT OV RSA CA
+    4,O=GEANT Vereniging,C=NL':<br />
+    Błąd lokalnej kontroli centrum certyfikacji.<br />
+    Aby połączyć się z HOST w sposób niebezpieczny, można użyć
+    `--no-check-certificate'.
   </p>
-  <p>
-    HOST: {{API_BASE}}
-  </p>
+  <p>HOST: {{ API_BASE }}</p>
 
   <h2>Pobranie klucza API (tzw. token)</h2>
 
@@ -48,29 +49,34 @@
 
   <label>Przykład:</label>
   <code>
-    curl -LX POST '{{API_BASE}}/token' -H 'Content-Type: application/json' --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+    curl -LX POST '{{ API_BASE }}/token' -H 'Content-Type: application/json'
+    --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
   </code>
   <code>
-    wget --method POST "{{API_BASE}}/token" --header 'Content-Type: application/json' --body-data '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+    wget --method POST "{{ API_BASE }}/token" --header 'Content-Type:
+    application/json' --body-data '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
   </code>
 
   <label>Response:</label>
-  <code>
-      &#123;
-      "email": "EMAIL",
-      "token": "..."
-      &#125;
-  </code>
+  <code> &#123; "email": "EMAIL", "token": "..." &#125; </code>
   <h2>Search</h2>
-  Endpoint [GET]: /dhus/search?rows=&#123;rozmiar&#125;&start=&#123;liczba&#125;&orderby=&#123;pole&#125; &#123;sortowanie&#125;&q=&#123;zapytanie&#125;
+  Endpoint [GET]:
+  /dhus/search?rows=&#123;rozmiar&#125;&start=&#123;liczba&#125;&orderby=&#123;pole&#125;
+  &#123;sortowanie&#125;&q=&#123;zapytanie&#125;
 
   <h2>Opis parametrów</h2>
   <ul>
     <li>rows = &#123;rozmiar&#125; //default = 10; rozmiar = [0 - 100]</li>
     <li>start = &#123;liczba&#125; //default = 0</li>
-    <li>orderby = &#123;pole&#125; &#123;sortowanie&#125; // pole = &#123;beginposition, ingestiondate, id&#125;  sort = &#123;ASC, DESC&#125;</li>
+    <li>
+      orderby = &#123;pole&#125; &#123;sortowanie&#125; // pole =
+      &#123;beginposition, ingestiondate, id&#125; sort = &#123;ASC, DESC&#125;
+    </li>
     <li>timeZone = &#123;strefa&#125; // default=UTC</li>
-    <li>q = &#123;key&#125; : &#123;value&#125; AND &#123;key&#125; : &#123;value&#125; ... // zapytanie</li>
+    <li>
+      q = &#123;key&#125; : &#123;value&#125; AND &#123;key&#125; : &#123;value&#125;
+      ... // zapytanie
+    </li>
   </ul>
 
   <h2>Obsługiwane parametry zapytania:</h2>
@@ -91,16 +97,10 @@
     <li>NOW-&#123;n&#125;DAY(S) //&#123;n&#125; → liczba: 1,2,3..</li>
     <li>NOW-&#123;n&#125;MONTH(S) //&#123;n&#125; → liczba: 1,2,3..</li>
   </ul>
-  <label>
-    Przykład
-  </label>
-  <code>
-    beginposition:[NOW-2DAYS TO NOW]
-  </code>
+  <label> Przykład </label>
+  <code> beginposition:[NOW-2DAYS TO NOW] </code>
 
-
-
-  <h3>TEXT format   &#123;key&#125; : &#123;value&#125;</h3>
+  <h3>TEXT format &#123;key&#125; : &#123;value&#125;</h3>
   <ul>
     <li>platformname → np. platformname:Sentinel-1A</li>
     <li>collection</li>
@@ -108,51 +108,70 @@
     <li>producttype → np. producttype:GRDH</li>
     <li>polarisationmode → np. polarisationmode:HH HV</li>
     <li>sensoroperationalmode → np. sensoroperationalmode:IW</li>
-    <li>orbitnumber / lastorbitnumber → np. orbitnumber:22 czy lastorbitnumber:22</li>
-    <li>relativeorbitnumber / lastrelativeorbitnumber  → np. relativeorbitnumber:22 czy lastrelativeorbitnumber:22</li>
-    <li>footprint (koordynaty są zawsze w kolejności: długość i szerokość geograficzna)
+    <li>
+      orbitnumber / lastorbitnumber → np. orbitnumber:22 czy lastorbitnumber:22
+    </li>
+    <li>
+      relativeorbitnumber / lastrelativeorbitnumber → np. relativeorbitnumber:22 czy
+      lastrelativeorbitnumber:22
+    </li>
+    <li>
+      footprint (koordynaty są zawsze w kolejności: długość i szerokość geograficzna)
       <ul>
         <li>POINT → np. footprint:"Intersects(19.5000 55.8000)"</li>
-        <li>POLYGON → np. footprint:"Intersects(POLYGON((19.60 55.90,15.70 56.60,16.10 57.40,20.05 57.34,19.60 55.90)))"</li>
+        <li>
+          POLYGON → np. footprint:"Intersects(POLYGON((19.60 55.90,15.70 56.60,16.10
+          57.40,20.05 57.34,19.60 55.90)))"
+        </li>
       </ul>
     </li>
   </ul>
 
-  <h3>NUMBER format → &#123;key&#125; : &#123;value&#125; // [liczba] w zakresie [0 - 100] </h3>
+  <h3>
+    NUMBER format → &#123;key&#125; : &#123;value&#125; // [liczba] w zakresie [0 -
+    100]
+  </h3>
   <ul>
     <li>cloudcoveragepercentage</li>
     <li>cloudcoveragepercentage:50</li>
   </ul>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{API_BASE}}/dhus/search?rows=10&start=0&orderby=beginposition%20DESC&q=relativeorbitnumber:22%20AND%20sensoroperationalmode:IW" -H 'Cookie: token=TOKEN'
+    curl -LX GET "{{
+      API_BASE
+    }}/dhus/search?rows=10&start=0&orderby=beginposition%20DESC&q=relativeorbitnumber:22%20AND%20sensoroperationalmode:IW"
+    -H 'Cookie: token=TOKEN'
   </code>
   <code>
-    wget --method GET "{{API_BASE}}/dhus/search?rows=10&start=0&orderby=beginposition DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW" --header 'Cookie: token=TOKEN'
+    wget --method GET "{{
+      API_BASE
+    }}/dhus/search?rows=10&start=0&orderby=beginposition
+    DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW" --header 'Cookie:
+    token=TOKEN'
   </code>
 
   <p><i>wymaga dodania tokenu autoryzacyjnego</i></p>
 
   <h2>Download</h2>
   <h3>Pobranie archiwum</h3>
-  <p>
-    Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/$value
-  </p>
+  <p>Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/$value</p>
   <h3>Opis parametrów:</h3>
-  <p>
-    &#123;id&#125; → id sceny
-  </p>
+  <p>&#123;id&#125; → id sceny</p>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{API_BASE}}/dhus/odata/v1/Products('550')/\$value" -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
+    curl -LX GET "{{ API_BASE }}/dhus/odata/v1/Products('550')/\$value" -H 'Cookie:
+    token=TOKEN' -o FILE_OUTPUT
   </code>
   <code>
-    wget --method GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/\$value" --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
+    wget --method GET "{{ API_BASE }}/dhus/odata/v1/Products('172210')/\$value"
+    --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
   </code>
 
-
   <h3>Pobranie dowolnego artefaktu</h3>
-  <p>Endpoint [GET]: /dhus/odata/v1/Products('&#123;id&#125;')/Nodes('filename')/Nodes('&#123;type&#125;')/$value</p>
+  <p>
+    Endpoint [GET]:
+    /dhus/odata/v1/Products('&#123;id&#125;')/Nodes('filename')/Nodes('&#123;type&#125;')/$value
+  </p>
   <p>Opis parametrów:</p>
   <ul>
     <li>&#123;id&#125; → id sceny</li>
@@ -160,10 +179,16 @@
   </ul>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value" -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
+    curl -LX GET "{{
+      API_BASE
+    }}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value"
+    -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
   </code>
   <code>
-    wget --method GET "{{API_BASE}}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value" --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
+    wget --method GET "{{
+      API_BASE
+    }}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value"
+    --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
   </code>
   <p>
     <i>wymaga dodania tokenu autoryzacyjnego</i>
@@ -171,18 +196,35 @@
 
   <h2>API SOK</h2>
   <p>
-    API systemu SOK Sat4Envi udostępnione jest pod prefixem: <code>{{API_BASE}}</code>
-    Dokumentacja API została dostosowana do standardu <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a>
-    i jest dostępna w formacie <a href="{{API_BASE}}/docs" target="_blank">JSON</a> oraz
-    <a href="{{API_BASE}}/docs.yaml" target="_blank">YAML</a>.
+    API systemu SOK Sat4Envi udostępnione jest pod prefixem:
+    <code>{{ API_BASE }}</code> Dokumentacja API została dostosowana do standardu
+    <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a> i
+    jest dostępna w formacie
+    <a href="{{ API_BASE }}/docs" target="_blank">JSON</a> oraz
+    <a href="{{ API_BASE }}/docs.yaml" target="_blank">YAML</a>.
   </p>
   <p>
-    Udostępniona jest również <a href="{{API_BASE}}/docs.html" target="_blank">graficzna przeglądarka Swagger-UI</a>.
+    Udostępniona jest również
+    <a href="{{ API_BASE }}/docs.html" target="_blank"
+      >graficzna przeglądarka Swagger-UI</a
+    >.
   </p>
 
   <h2>API Web Map Service (WMS)</h2>
-  <p>Aby pobrać warstwy udostępniane w serwisie Sat4Envi, należy skorzystać z metody GetCapabilities serwera WMS.</p>
-  <p>API jest zgodne ze standardem WMS (v. 1.3.0), a opis pozostałych metod opisany w dokumentacji standardu pod adresem <a href="https://www.ogc.org/standards/wms" target="_blank">https://www.ogc.org/standards/wms</a></p>
-  <p>API WMS jest dostępne pod adresem {{API_WMS}}.</p>
-  <p>Każdy produkt udostępniony jest jako warstwa WMS z możliwością czasowego zawężenia wyników przez użycie parametru TIME.</p>
+  <p>
+    Aby pobrać warstwy udostępniane w serwisie Sat4Envi, należy skorzystać z metody
+    GetCapabilities serwera WMS.
+  </p>
+  <p>
+    API jest zgodne ze standardem WMS (v. 1.3.0), a opis pozostałych metod opisany w
+    dokumentacji standardu pod adresem
+    <a href="https://www.ogc.org/standards/wms" target="_blank"
+      >https://www.ogc.org/standards/wms</a
+    >
+  </p>
+  <p>API WMS jest dostępne pod adresem {{ API_WMS }}.</p>
+  <p>
+    Każdy produkt udostępniony jest jako warstwa WMS z możliwością czasowego
+    zawężenia wyników przez użycie parametru TIME.
+  </p>
 </main>

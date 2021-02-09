@@ -26,7 +26,7 @@ describe('DateUtilsService', () => {
     TestBed.configureTestingModule({
       providers: [DateUtilsService]
     });
-    service = TestBed.get(DateUtilsService);
+    service = TestBed.inject(DateUtilsService);
   });
 
   it('should be created', () => {

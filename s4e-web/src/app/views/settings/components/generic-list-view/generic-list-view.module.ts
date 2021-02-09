@@ -23,18 +23,8 @@ import {GenericListViewComponent} from './generic-list-view.component';
 import {S4EFormsModule} from '../../../../form/form.module';
 
 @NgModule({
-  declarations: [
-    GenericListViewComponent
-  ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    RouterModule,
-    S4EFormsModule,
-  ],
-  exports: [
-    GenericListViewComponent
-  ]
+  declarations: [GenericListViewComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, S4EFormsModule],
+  exports: [GenericListViewComponent]
 })
-export class GenericListViewModule {
-}
+export class GenericListViewModule {}

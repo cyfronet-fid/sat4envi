@@ -17,7 +17,12 @@
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TextareaComponent} from './textarea.component';
-import {ControlContainer, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {
+  ControlContainer,
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule
+} from '@angular/forms';
 import {Component, DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
 import {S4EFormsModule} from '../form.module';
@@ -33,7 +38,8 @@ class MockedControlContainer {
 }
 
 @Component({
-  template: '<form [formGroup]="form"><ext-textarea formControlName="content"></ext-textarea></form>'
+  template:
+    '<form [formGroup]="form"><ext-textarea formControlName="content"></ext-textarea></form>'
 })
 class TestHostComponent {
   form: FormGroup;
@@ -45,7 +51,6 @@ class TestHostComponent {
   }
 }
 
-
 describe('InputComponent', () => {
   describe('self component', () => {
     let component: TextareaComponent;
@@ -56,8 +61,7 @@ describe('InputComponent', () => {
         imports: [S4EFormsModule, ReactiveFormsModule],
         declarations: [TestHostComponent],
         providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
-      })
-        .compileComponents();
+      }).compileComponents();
     });
 
     beforeEach(() => {

@@ -21,18 +21,22 @@
       Profil instytucji
     </a>
   </li>
-  <li class="active">
-    Osoby w instytucji
-  </li>
+  <li class="active">Osoby w instytucji</li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
-       queryParamsHandling="merge">
+    <a
+      [routerLink]="['/settings/institution-wms-overlays']"
+      data-e2e="layer"
+      queryParamsHandling="merge"
+    >
       Warstwy WMS dla instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/manage-products']" data-e2e="manage-products"
-       queryParamsHandling="merge">
+    <a
+      [routerLink]="['/settings/manage-products']"
+      data-e2e="manage-products"
+      queryParamsHandling="merge"
+    >
       Zarządzaj produktami
     </a>
   </li>
@@ -55,8 +59,8 @@
   <ng-container caption i18n>Zarządzaj ludźmi</ng-container>
   <ng-container search-label i18n>Szukaj ludzi:</ng-container>
   <ng-container description>
-    W tym miejscu masz możliwość edytowania, dodawania i usuwania osób,
-    które mają dostęp do zasobów ustalonych dla {{ (activeInstitution$ | async)?.name }}
+    W tym miejscu masz możliwość edytowania, dodawania i usuwania osób, które mają
+    dostęp do zasobów ustalonych dla {{ (activeInstitution$ | async)?.name }}
   </ng-container>
   <ng-container table-header>
     <th i18n>Imię i nazwisko</th>
@@ -66,8 +70,8 @@
     <th i18n>Akcje</th>
   </ng-container>
   <ng-template let-user="item">
-    <td i18n>{{user.name}} {{user.surname}}</td>
-    <td i18n>{{user.email}}</td>
+    <td i18n>{{ user.name }} {{ user.surname }}</td>
+    <td i18n>{{ user.email }}</td>
 
     <td *ngIf="!isInvitation(user)">
       <input
@@ -100,7 +104,7 @@
           data-e2e="delete-invitation-btn"
           data-ut="delete-btn"
         >
-          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15" />
         </a>
       </ng-container>
     </td>

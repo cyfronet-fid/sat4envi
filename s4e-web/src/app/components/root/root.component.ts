@@ -18,11 +18,12 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {resetStores} from '@datorama/akita';
 import {environment} from '../../../environments/environment';
-import {NotificationService} from 'notifications';
 import {ViewConfigurationQuery} from '../../views/map-view/state/view-configuration/view-configuration.query';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {DOCUMENT} from '@angular/common';
+import {NotificationService} from '../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-root',
   templateUrl: './root.component.html',
@@ -40,19 +41,23 @@ export class RootComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.viewConfigurationQuery.select('highContrast')
+    this.viewConfigurationQuery
+      .select('highContrast')
       .pipe(untilDestroyed(this))
-      .subscribe(isHeightContrast => isHeightContrast
-        ? this.document.body.classList.add('wcag_hc')
-        : this.document.body.classList.remove('wcag_hc')
+      .subscribe(isHeightContrast =>
+        isHeightContrast
+          ? this.document.body.classList.add('wcag_hc')
+          : this.document.body.classList.remove('wcag_hc')
       );
 
     const htmlTag = this.document.getElementsByTagName('html')[0];
-    this.viewConfigurationQuery.select('largeFont')
+    this.viewConfigurationQuery
+      .select('largeFont')
       .pipe(untilDestroyed(this))
-      .subscribe(isLargeFont => isLargeFont
-        ? htmlTag.classList.add('wcag_fs')
-        : htmlTag.classList.remove('wcag_fs')
+      .subscribe(isLargeFont =>
+        isLargeFont
+          ? htmlTag.classList.add('wcag_fs')
+          : htmlTag.classList.remove('wcag_fs')
       );
   }
 
@@ -85,4 +90,3 @@ export class RootComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 }
-

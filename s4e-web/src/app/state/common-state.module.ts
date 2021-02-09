@@ -22,13 +22,7 @@ import {SessionService} from './session/session.service';
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule
-  ],
-  providers: [
-    SessionQuery,
-    SessionService,
-  ]
+  imports: [CommonModule],
+  providers: [SessionQuery, SessionService]
 })
-export class CommonStateModule {
-}
+export class CommonStateModule {}

@@ -22,13 +22,13 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClient} from '@angular/common/http';
 import {of} from 'rxjs';
 import {ReportTemplateStore} from './report-template.store';
-import {NotificationService} from 'notifications';
 import {ProductQuery} from '../../../state/product/product.query';
 import {OverlayQuery} from '../../../state/overlay/overlay.query';
 import {ReportTemplateFactory} from './report-template.factory.spec';
 import {ProductService} from '../../../state/product/product.service';
 import {OverlayService} from '../../../state/overlay/overlay.service';
 import {LocalStorageTestingProvider} from '../../../../../app.configuration.spec';
+import {NotificationService} from '../../../../../notifications/state/notification.service';
 
 describe('Report template Service', () => {
   let reportTemplatesService: ReportTemplateService;
@@ -46,67 +46,68 @@ describe('Report template Service', () => {
       imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
-    store = TestBed.get(ReportTemplateStore);
-    reportTemplatesService = TestBed.get(ReportTemplateService);
-    httpClient = TestBed.get(HttpClient);
-    notificationService = TestBed.get(NotificationService);
-    productQuery = TestBed.get(ProductQuery);
-    overlayQuery = TestBed.get(OverlayQuery);
-    productService = TestBed.get(ProductService);
-    overlayService = TestBed.get(OverlayService);
+    store = TestBed.inject(ReportTemplateStore);
+    reportTemplatesService = TestBed.inject(ReportTemplateService);
+    httpClient = TestBed.inject(HttpClient);
+    notificationService = TestBed.inject(NotificationService);
+    productQuery = TestBed.inject(ProductQuery);
+    overlayQuery = TestBed.inject(OverlayQuery);
+    productService = TestBed.inject(ProductService);
+    overlayService = TestBed.inject(OverlayService);
   });
 
   it('should be created', () => {
     expect(reportTemplatesService).toBeDefined();
   });
   it('should delete template', () => {
-    const spyHttp = spyOn(httpClient, 'delete')
-      .and.returnValue(of());
+    const spyHttp = spyOn(httpClient, 'delete').and.returnValue(of());
     const spyStoreRemove = spyOn(store, 'remove');
     const spyNotifications = spyOn(notificationService, 'addGeneral');
 
     const reportTemplateToRemove = ReportTemplateFactory.build();
-    reportTemplatesService.delete$(reportTemplateToRemove)
-      .subscribe(() => {
-        expect(spyHttp).toHaveBeenCalled();
-        expect(spyStoreRemove).toHaveBeenCalledWith(reportTemplateToRemove.uuid);
-        expect(spyNotifications).toHaveBeenCalled();
-      });
+    reportTemplatesService.delete$(reportTemplateToRemove).subscribe(() => {
+      expect(spyHttp).toHaveBeenCalled();
+      expect(spyStoreRemove).toHaveBeenCalledWith(reportTemplateToRemove.uuid);
+      expect(spyNotifications).toHaveBeenCalled();
+    });
   });
   it('should create template', () => {
-    spyOn(productQuery, 'getActive')
-      .and.returnValue({id: 1});
-    spyOn(overlayQuery, 'getActive')
-      .and.returnValue([1, 2, 3]);
+    spyOn(productQuery, 'getActive').and.returnValue({id: 1});
+    spyOn(overlayQuery, 'getActive').and.returnValue([1, 2, 3]);
 
     const createdReportTemplate = ReportTemplateFactory.build();
-    const spyHttp = spyOn(httpClient, 'post')
-      .and.returnValue(of());
+    const spyHttp = spyOn(httpClient, 'post').and.returnValue(of());
     const spyStoreAdd = spyOn(store, 'add');
     const spyNotifications = spyOn(notificationService, 'addGeneral');
 
-    reportTemplatesService.create$(reportTemplatesService as any)
-      .subscribe(() => {
-        expect(spyHttp).toHaveBeenCalled();
-        expect(spyStoreAdd).toHaveBeenCalledWith(createdReportTemplate);
-        expect(spyNotifications).toHaveBeenCalled();
-      });
+    reportTemplatesService.create$(reportTemplatesService as any).subscribe(() => {
+      expect(spyHttp).toHaveBeenCalled();
+      expect(spyStoreAdd).toHaveBeenCalledWith(createdReportTemplate);
+      expect(spyNotifications).toHaveBeenCalled();
+    });
   });
   it('should load template', () => {
-    const spyProductServiceSetActive = spyOn(productService, 'setActive$')
-      .and.returnValue(of());;
-    const spyProductServiceGetLastScene = spyOn(productService, 'getLastAvailableScene$')
-      .and.returnValue(of());;
+    const spyProductServiceSetActive = spyOn(
+      productService,
+      'setActive$'
+    ).and.returnValue(of());
+    const spyProductServiceGetLastScene = spyOn(
+      productService,
+      'getLastAvailableScene$'
+    ).and.returnValue(of());
     const spyOverlayServiceSetActive = spyOn(overlayService, 'setAllActive');
     const spyStoreSetActive = spyOn(store, 'setActive');
 
     const reportTemplate = ReportTemplateFactory.build();
-    reportTemplatesService.load$(reportTemplate)
-      .subscribe(() => {
-        expect(spyProductServiceSetActive).toHaveBeenCalledWith(reportTemplate.productId);
-        expect(spyProductServiceGetLastScene).toHaveBeenCalled();
-        expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(reportTemplate.overlayIds);
-        expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.uuid);
-      });
+    reportTemplatesService.load$(reportTemplate).subscribe(() => {
+      expect(spyProductServiceSetActive).toHaveBeenCalledWith(
+        reportTemplate.productId
+      );
+      expect(spyProductServiceGetLastScene).toHaveBeenCalled();
+      expect(spyOverlayServiceSetActive).toHaveBeenCalledWith(
+        reportTemplate.overlayIds
+      );
+      expect(spyStoreSetActive).toHaveBeenCalledWith(reportTemplate.uuid);
+    });
   });
 });

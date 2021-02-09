@@ -15,20 +15,19 @@
  *
  */
 
-import { SessionService } from './../../../state/session/session.service';
-import { environment } from './../../../../environments/environment';
-import { handleHttpRequest$ } from 'src/app/common/store.util';
+import {SessionService} from './../../../state/session/session.service';
+import {environment} from './../../../../environments/environment';
+import {handleHttpRequest$} from 'src/app/common/store.util';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {RegisterStore} from './register.store';
 import {tap} from 'rxjs/operators';
 import {Router} from '@angular/router';
-import { RegisterFormState } from './register.model';
+import {RegisterFormState} from './register.model';
 import {tokenize} from '@angular/compiler/src/ml_parser/lexer';
 
 @Injectable({providedIn: 'root'})
 export class RegisterService {
-
   constructor(
     private _store: RegisterStore,
     private _sessionService: SessionService,
@@ -45,7 +44,8 @@ export class RegisterService {
       url = `${url}&${tokenQueryParam}`;
     }
 
-    this._http.post<RegisterFormState>(url, {...request})
+    this._http
+      .post<RegisterFormState>(url, {...request})
       .pipe(
         handleHttpRequest$(this._store),
         tap(() => this._router.navigateByUrl('/'))
@@ -53,9 +53,10 @@ export class RegisterService {
       .subscribe(
         () => this._router.navigateByUrl('/register-confirmation'),
         errorResponse => {
-          const errorMessage = errorResponse.status === 400
-            ? errorResponse.error
-            : {__general__: [errorResponse.error]};
+          const errorMessage =
+            errorResponse.status === 400
+              ? errorResponse.error
+              : {__general__: [errorResponse.error]};
           this._store.setError(errorMessage);
         }
       );

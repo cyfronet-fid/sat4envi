@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ModalModule} from '../../modal.module';
 import {Component} from '@angular/core';
 import {ModalService} from '../../state/modal.service';
@@ -24,15 +24,27 @@ import {By} from '@angular/platform-browser';
 @Component({
   selector: 's4e-generic-mock-component',
   template: `
-      <s4e-generic-modal [buttonX]="buttonX" [modalId]="registeredId" (close)="close()">
-          <div class="s4e-modal-header">Mock Component</div>
-          <div class="s4e-modal-body">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eleifend sit amet lacus in luctus.
-          </div>
-          <div class="s4e-modal-footer">
-              <button class="button button--primary" type="submit" (click)="dismiss()" i18n>Ok</button>
-          </div>
-      </s4e-generic-modal>
+    <s4e-generic-modal
+      [buttonX]="buttonX"
+      [modalId]="registeredId"
+      (close)="close()"
+    >
+      <div class="s4e-modal-header">Mock Component</div>
+      <div class="s4e-modal-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eleifend sit
+        amet lacus in luctus.
+      </div>
+      <div class="s4e-modal-footer">
+        <button
+          class="button button--primary"
+          type="submit"
+          (click)="dismiss()"
+          i18n
+        >
+          Ok
+        </button>
+      </div>
+    </s4e-generic-modal>
   `
 })
 export class GenericModalMockComponent {
@@ -47,22 +59,19 @@ describe('GenericModalComponent', () => {
   let service: ModalService;
   let fixture: ComponentFixture<GenericModalMockComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ModalModule
-      ],
-      declarations: [
-        GenericModalMockComponent
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalModule],
+        declarations: [GenericModalMockComponent]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GenericModalMockComponent);
     component = fixture.componentInstance;
-    service = TestBed.get(ModalService);
+    service = TestBed.inject(ModalService);
     fixture.detectChanges();
   });
 
@@ -94,10 +103,12 @@ describe('GenericModalComponent', () => {
     expect(fixture.debugElement.query(By.css('button.close'))).toBeFalsy();
   });
 
-  it('dismiss should call xclicked', (done) => {
+  it('dismiss should call xclicked', done => {
     const xclicked = () => done();
 
-    fixture.debugElement.query(By.css('s4e-generic-modal')).componentInstance.xclicked = xclicked;
+    fixture.debugElement.query(
+      By.css('s4e-generic-modal')
+    ).componentInstance.xclicked = xclicked;
     fixture.debugElement.query(By.css('button.close')).nativeElement.click();
   });
 });

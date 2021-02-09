@@ -15,27 +15,33 @@
  *
  */
 
-import { Institution } from './../../state/institution/institution.model';
-import { InvitationFormModal } from './../invitation-form/invitation-form-modal.model';
-import { ModalQuery } from './../../../../modal/state/modal.query';
-import { INVITATION_FORM_MODAL_ID } from '../invitation-form/invitation-form-modal.model';
-import { ModalService } from './../../../../modal/state/modal.service';
+import {Institution} from '../../state/institution/institution.model';
+import {
+  INVITATION_FORM_MODAL_ID,
+  InvitationFormModal
+} from '../invitation-form/invitation-form-modal.model';
+import {ModalQuery} from '../../../../modal/state/modal.query';
+import {ModalService} from '../../../../modal/state/modal.service';
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { Observable, merge, combineLatest, concat } from 'rxjs';
+import {combineLatest, merge, Observable} from 'rxjs';
 import {InstitutionQuery} from '../../state/institution/institution.query';
 import {InstitutionService} from '../../state/institution/institution.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
-import { reduce, mergeMap, map, tap, switchMap, shareReplay, toArray, filter } from 'rxjs/operators';
-import { isInvitation, invitationToPerson } from '../state/invitation/invitation.model';
-import { Person } from '../state/person/person.model';
-import { PersonQuery } from '../state/person/person.query';
-import { InvitationQuery } from '../state/invitation/invitation.query';
-import { PersonService } from '../state/person/person.service';
-import { InvitationService } from '../state/invitation/invitation.service';
+import {ActivatedRoute} from '@angular/router';
+import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
+import {map, reduce, shareReplay, switchMap, tap} from 'rxjs/operators';
+import {
+  invitationToPerson,
+  isInvitation
+} from '../state/invitation/invitation.model';
+import {Person} from '../state/person/person.model';
+import {PersonQuery} from '../state/person/person.query';
+import {InvitationQuery} from '../state/invitation/invitation.query';
+import {PersonService} from '../state/person/person.service';
+import {InvitationService} from '../state/invitation/invitation.service';
 import {SessionQuery} from '../../../../state/session/session.query';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-people',
   templateUrl: './person-list.component.html',
@@ -48,33 +54,36 @@ export class PersonListComponent implements OnInit, OnDestroy {
   public areLoading$ = merge(
     this._personQuery.selectLoading(),
     this._invitationQuery.selectLoading()
-  )
-    .pipe(reduce((acc, isLoading) => acc = acc || isLoading, false));
+  ).pipe(reduce((acc, isLoading) => (acc = acc || isLoading), false));
   public errors$ = merge(
     this._personQuery.selectError(),
     this._invitationQuery.selectError()
   );
-  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery
-    .selectActive$(this._activatedRoute);
+  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery.selectActive$(
+    this._activatedRoute
+  );
 
   private _institution$ = this._institutionsSearchResultsQuery
     .selectActive$(this._activatedRoute)
     .pipe(
       untilDestroyed(this),
-      tap((institution) => this._invitationService.getBy(institution)),
+      tap(institution => this._invitationService.getBy(institution)),
       shareReplay(1)
     );
-  private _invitationsAsPersons$ = this._invitationQuery.selectAll()
-    .pipe(map((invitations) => invitations
-      .map((invitation) => invitationToPerson(invitation))
-    ));
+  private _invitationsAsPersons$ = this._invitationQuery
+    .selectAll()
+    .pipe(
+      map(invitations =>
+        invitations.map(invitation => invitationToPerson(invitation))
+      )
+    );
   private _loadPersons$ = this._institutionService
     .connectInstitutionToQuery$(this._activatedRoute)
     .pipe(
       untilDestroyed(this),
-      tap((institutionSlug) => this._personService.fetchAll(institutionSlug))
+      tap(institutionSlug => this._personService.fetchAll(institutionSlug))
     );
-  public currentUserEmail: string|null;
+  public currentUserEmail: string | null;
 
   constructor(
     private _personQuery: PersonQuery,
@@ -94,14 +103,15 @@ export class PersonListComponent implements OnInit, OnDestroy {
     this.users$ = combineLatest(
       this._personQuery.selectAll(),
       this._invitationsAsPersons$
-    )
-      .pipe(map(([persons, invitations]) => [...persons, ...invitations]));
+    ).pipe(map(([persons, invitations]) => [...persons, ...invitations]));
 
-
-    this._institution$.subscribe((institution) => this.institution = institution);
+    this._institution$.subscribe(institution => (this.institution = institution));
     this._loadPersons$.subscribe();
 
-    this._sessionQuery.select('email').pipe(untilDestroyed(this)).subscribe(email => this.currentUserEmail = email);
+    this._sessionQuery
+      .select('email')
+      .pipe(untilDestroyed(this))
+      .subscribe(email => (this.currentUserEmail = email));
   }
 
   sendInvitation(invitation: any | null = null) {
@@ -113,7 +123,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
     } as InvitationFormModal;
     this._modalService.show<InvitationFormModal>(invitationModal);
 
-    this._modalQuery.modalClosed$(INVITATION_FORM_MODAL_ID)
+    this._modalQuery
+      .modalClosed$(INVITATION_FORM_MODAL_ID)
       .pipe(
         untilDestroyed(this),
         switchMap(() => this._loadPersons$)
@@ -157,7 +168,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
 
   protected async _handleUserDeletion(person: Person) {
     const title = 'Usuń członka instytucji';
-    const description = 'Czy na pewno chcesz usunąć tę osobę z instytucji? Operacja jest nieodwracalna.';
+    const description =
+      'Czy na pewno chcesz usunąć tę osobę z instytucji? Operacja jest nieodwracalna.';
     const hasBeenConfirmed = await this._modalService.confirm(title, description);
     if (hasBeenConfirmed) {
       this._personService.delete(person);
@@ -166,7 +178,8 @@ export class PersonListComponent implements OnInit, OnDestroy {
 
   protected async _handleInvitationDeletion(invitation: any) {
     const title = 'Usuń zaproszenie';
-    const description = 'Czy na pewno chcesz usunąć zaproszenie? Operacja jest nieodwracalna.';
+    const description =
+      'Czy na pewno chcesz usunąć zaproszenie? Operacja jest nieodwracalna.';
     const hasBeenConfirmed = await this._modalService.confirm(title, description);
     if (hasBeenConfirmed) {
       this._invitationService.delete(invitation, this.institution);

@@ -15,7 +15,7 @@
  *
  */
 
-import { Modal } from 'src/app/modal/state/modal.model';
+import {Modal} from 'src/app/modal/state/modal.model';
 
 export interface JwtTokenForm {
   password: string;

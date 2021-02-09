@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {DummyModalComponent} from './dummy-modal.component';
 import {ModalModule} from '../../modal.module';
 import {MODAL_DEF} from '../../modal.providers';
@@ -26,15 +26,16 @@ describe('DummyModalComponent', () => {
   let component: DummyModalComponent;
   let fixture: ComponentFixture<DummyModalComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule],
-      providers: [
-        {provide: MODAL_DEF, useValue: createModal({id: ALERT_MODAL_ID})}
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalModule],
+        providers: [
+          {provide: MODAL_DEF, useValue: createModal({id: ALERT_MODAL_ID})}
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DummyModalComponent);

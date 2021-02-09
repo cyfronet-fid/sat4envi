@@ -18,7 +18,10 @@
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {DetailsModal, SENTINEL_SEARCH_RESULT_MODAL_ID} from './search-result-modal.model';
+import {
+  DetailsModal,
+  SENTINEL_SEARCH_RESULT_MODAL_ID
+} from './search-result-modal.model';
 import {Observable, of, ReplaySubject} from 'rxjs';
 import {SentinelSearchResult} from '../../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchQuery} from '../../state/sentinel-search/sentinel-search.query';
@@ -31,7 +34,9 @@ import {MODAL_DEF} from '../../../../modal/modal.providers';
   templateUrl: './search-result-modal.component.html',
   styleUrls: ['./search-result-modal.component.scss']
 })
-export class SearchResultModalComponent extends ModalComponent implements OnInit, OnDestroy {
+export class SearchResultModalComponent
+  extends ModalComponent
+  implements OnInit, OnDestroy {
   searchResult$: Observable<SentinelSearchResult>;
   isFirst$: Observable<boolean>;
   isLast$: Observable<boolean>;
@@ -66,8 +71,7 @@ export class SearchResultModalComponent extends ModalComponent implements OnInit
     this._sentinelSearchService.nextActive();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   interceptDownload($event: MouseEvent, dismiss: boolean = true) {
     if (!this._sessionQuery.isLoggedIn()) {

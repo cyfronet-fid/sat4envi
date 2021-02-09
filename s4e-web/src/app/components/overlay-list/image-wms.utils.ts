@@ -16,7 +16,7 @@
  */
 
 import {from, Observable, Subscriber, throwError} from 'rxjs';
-import { getImageXhr } from 'src/app/views/settings/manage-institutions/institution-form/files.utils';
+import {getImageXhr} from 'src/app/views/settings/manage-institutions/institution-form/files.utils';
 import ImageWrapper from 'ol/Image';
 import WMSCapabilities from 'ol/format/WMSCapabilities';
 import {getImageWmsFrom} from '../../views/map-view/state/overlay/overlay.utils';
@@ -32,8 +32,8 @@ export interface ILayer {
 
 export interface CapabilitiesMetadata {
   layers: ILayer[];
-  crs: string,
-  extent: number[]
+  crs: string;
+  extent: number[];
 }
 
 /**
@@ -58,17 +58,18 @@ export function getToggledLayerInUrl(url: string, layer: string): string {
  * @param url
  * @throws Error on CORS and status code of response other than 200
  */
-export function fetchCapabilitiesMetadata$(url: string): Observable<CapabilitiesMetadata> {
-  return layerMetadataFrom$(url)
-    .pipe(
-      map(layersMetadata => {
-        const {crs, extent, ...rest} = layersMetadata.BoundingBox[0];
-        const layers = unpackLayers(layersMetadata)
-            .filter(layer => !!layer.Name)
-            .map(layer => ({name: layer.Name, title: layer.Title}));
-        return {layers, crs, extent};
-      })
-    );
+export function fetchCapabilitiesMetadata$(
+  url: string
+): Observable<CapabilitiesMetadata> {
+  return layerMetadataFrom$(url).pipe(
+    map(layersMetadata => {
+      const {crs, extent, ...rest} = layersMetadata.BoundingBox[0];
+      const layers = unpackLayers(layersMetadata)
+        .filter(layer => !!layer.Name)
+        .map(layer => ({name: layer.Name, title: layer.Title}));
+      return {layers, crs, extent};
+    })
+  );
 }
 
 /**
@@ -85,26 +86,22 @@ export function validateImage$(url, crs, extent) {
 
     const source = getImageWmsFrom({url});
     source.setImageLoadFunction(getImageWmsLoader(observer$));
-    source
-      .getImage(extent, 1,1, new Projection({code: crs}))
-      .load();
-  })
+    source.getImage(extent, 1, 1, new Projection({code: crs})).load();
+  });
 }
-
 
 function layerMetadataFrom$(url: string) {
   const capabilitiesUrl = getCapabilitiesUrlFrom(url);
-  return from(fetch(capabilitiesUrl))
-    .pipe(
-      tap(response => {
-        if (response.status !== 200) {
-          throwError(getErrorMessageBy(response.status));
-        }
-      }),
-      switchMap(response => (response as any).text()),
-      map((responseText: any) => (new WMSCapabilities()).read(responseText)),
-      map(parsedCapabilities => parsedCapabilities.Capability.Layer)
-    );
+  return from(fetch(capabilitiesUrl)).pipe(
+    tap(response => {
+      if (response.status !== 200) {
+        throwError(getErrorMessageBy(response.status));
+      }
+    }),
+    switchMap(response => (response as any).text()),
+    map((responseText: any) => new WMSCapabilities().read(responseText)),
+    map(parsedCapabilities => parsedCapabilities.Capability.Layer)
+  );
 }
 
 function getCapabilitiesUrlFrom(url: string) {
@@ -131,9 +128,9 @@ function unpackLayers(layer: any, depth = 0) {
 
   return [
     layer,
-    ...layer.Layer
-      .map(layer => unpackLayers(layer, depth + 1))
-      .reduce((finalLayers, layers) => finalLayers = [...finalLayers, ...layers])
+    ...layer.Layer.map(layer => unpackLayers(layer, depth + 1)).reduce(
+      (finalLayers, layers) => (finalLayers = [...finalLayers, ...layers])
+    )
   ];
 }
 
@@ -146,7 +143,7 @@ function getImageWmsLoader(getValidUrl$: Subscriber<string>) {
     handleBrowserEncodingError(image, getValidUrl$);
 
     const decodedUrl = decodeURIComponent(src);
-    const urlParser = (new UrlParser(decodedUrl));
+    const urlParser = new UrlParser(decodedUrl);
     urlParser.setValues('WIDTH', '30');
     urlParser.setValues('HEIGHT', '50');
     const imgXhr = getImageXhr(urlParser.getFullUrl());
@@ -164,14 +161,17 @@ function getHandledXhr(xhr: XMLHttpRequest, getValidUrl$: Subscriber<string>) {
   xhr.onload = () => {
     handleHttpError(xhr, getValidUrl$);
     handleHttpResponseImageTypeError(xhr, getValidUrl$);
-  }
+  };
   xhr.onerror = () => handleHttpCorsAndOtherErrors(xhr, getValidUrl$);
 
   xhr.send();
   return xhr;
 }
 
-function handleHttpCorsAndOtherErrors(xhr: XMLHttpRequest, getValidUrl$: Subscriber<string>) {
+function handleHttpCorsAndOtherErrors(
+  xhr: XMLHttpRequest,
+  getValidUrl$: Subscriber<string>
+) {
   if (xhr.response.byteLength === 0) {
     getValidUrl$.error(`
       Cross-Origin Request Blocked:
@@ -184,12 +184,14 @@ function handleHttpCorsAndOtherErrors(xhr: XMLHttpRequest, getValidUrl$: Subscri
   getValidUrl$.error(`Wystąpił nieznany błąd o statusie: ${xhr.status}`);
 }
 
-function handleBrowserEncodingError(image: ImageWrapper, getValidUrl$: Subscriber<string>) {
+function handleBrowserEncodingError(
+  image: ImageWrapper,
+  getValidUrl$: Subscriber<string>
+) {
   const browserLackEncodeBase64 = typeof window.btoa !== 'function';
   if (browserLackEncodeBase64) {
-    image
-      .getImage()
-      .onerror = () => getValidUrl$.error('Wystąpił błąd enkodowania obrazu WMS');
+    image.getImage().onerror = () =>
+      getValidUrl$.error('Wystąpił błąd enkodowania obrazu WMS');
   }
 }
 
@@ -200,10 +202,15 @@ function handleHttpError(xhr: XMLHttpRequest, getValidUrl$: Subscriber<string>) 
   }
 }
 
-function handleHttpResponseImageTypeError(xhr: XMLHttpRequest, getValidUrl$: Subscriber<string>) {
+function handleHttpResponseImageTypeError(
+  xhr: XMLHttpRequest,
+  getValidUrl$: Subscriber<string>
+) {
   const contentType = xhr.getResponseHeader('content-type');
   if (!contentType) {
-    getValidUrl$.error(`Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`);
+    getValidUrl$.error(
+      `Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`
+    );
     return;
   }
 
@@ -211,12 +218,14 @@ function handleHttpResponseImageTypeError(xhr: XMLHttpRequest, getValidUrl$: Sub
 
   const isInvalidImage = xhr.status === 200 && !isImage;
   if (isInvalidImage) {
-    getValidUrl$.error(`Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`);
+    getValidUrl$.error(
+      `Odpowiedź serwera nie jest zdjęciem, sprawdź poprawność URL!`
+    );
   }
 }
 
 function getErrorMessageBy(statusCode: number): string | null {
-  switch(statusCode) {
+  switch (statusCode) {
     /* Client error codes */
     case 400:
       return `

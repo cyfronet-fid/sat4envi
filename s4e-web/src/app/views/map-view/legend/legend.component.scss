@@ -15,7 +15,7 @@
  *
  */
 
-@import "../../../../scss/variables";
+@import '../../../../scss/variables';
 
 $legend-height: 600px;
 
@@ -52,19 +52,17 @@ $legend-height: 600px;
   }
 }
 
-
-
 .chart__label {
   position: absolute;
 }
 
 .chart__label span,
 .legend__metric {
-    background: $color-white-80;
-    display: inline-block;
-    border-radius: $border-radius-default;
-    padding: 3px;
-    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background: $color-white-80;
+  display: inline-block;
+  border-radius: $border-radius-default;
+  padding: 3px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
 
 .legend__metric {
@@ -82,8 +80,6 @@ $legend-height: 600px;
   }
 }
 
-
-
 .legend__left {
   width: 200px;
   height: $legend-height;
@@ -92,13 +88,12 @@ $legend-height: 600px;
 
   li {
     font-family: $font-secondary;
-    font-size: .875rem;
+    font-size: 0.875rem;
     padding-left: 10px;
     width: calc(100% - 25px);
     text-align: right;
     font-weight: 600;
   }
-
 }
 
 .toggle-legend {
@@ -106,4 +101,3 @@ $legend-height: 600px;
   top: calc(50% + 205px);
   right: 0;
 }
-

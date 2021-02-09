@@ -1,13 +1,13 @@
-import { User } from '../auth/auth-login.po'
-import { Core } from '../core.po';
+import {User} from '../auth/auth-login.po';
+import {Core} from '../core.po';
 
 export class UserOptionsTokenModal extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getOptionsDropdown: () => cy.get('[data-e2e="options-dropdown"]'),
     getApiBtn: () => cy.get('[data-e2e="open-jwt-token-btn"]'),
-    getPasswordInput: () => cy.get('[data-e2e="jwt-token-password-input"]')
-      .find('input'),
+    getPasswordInput: () =>
+      cy.get('[data-e2e="jwt-token-password-input"]').find('input'),
     getLoadTokenBtn: () => cy.get('[data-e2e="load-jwt-token-btn"]'),
     getTokenTextarea: () => cy.get('[data-e2e="jwt-token-txt"]'),
     getCopyToClipboardBtn: () => cy.get('[data-e2e="copy-to-clipboard"]'),
@@ -15,39 +15,26 @@ export class UserOptionsTokenModal extends Core {
   };
 
   static openJwtTokenModal() {
-    UserOptionsTokenModal
-      .pageObject
-      .getOptionsBtn()
-      .should("be.visible")
-      .click()
+    UserOptionsTokenModal.pageObject.getOptionsBtn().should('be.visible').click();
 
-    UserOptionsTokenModal
-      .pageObject
-      .getApiBtn()
-      .click()
+    UserOptionsTokenModal.pageObject.getApiBtn().click();
 
     return UserOptionsTokenModal;
   }
 
   static authenticateAs(user: User) {
-    UserOptionsTokenModal
-      .pageObject
+    UserOptionsTokenModal.pageObject
       .getPasswordInput()
       .should('be.visible')
       .type(user.password);
 
-    UserOptionsTokenModal
-      .pageObject
-      .getLoadTokenBtn()
-      .should('be.visible')
-      .click();
+    UserOptionsTokenModal.pageObject.getLoadTokenBtn().should('be.visible').click();
 
     return UserOptionsTokenModal;
   }
 
   static tokenShouldContain(text: string) {
-    UserOptionsTokenModal
-      .pageObject
+    UserOptionsTokenModal.pageObject
       .getTokenTextarea()
       .should('be.visible')
       .invoke('text')
@@ -57,22 +44,18 @@ export class UserOptionsTokenModal extends Core {
   }
 
   static shouldHaveVisibleToken() {
-    UserOptionsTokenModal
-      .pageObject
-      .getTokenTextarea()
-      .should('be.visible');
+    UserOptionsTokenModal.pageObject.getTokenTextarea().should('be.visible');
 
     return UserOptionsTokenModal;
   }
 
   static goToApiManual() {
-    UserOptionsTokenModal
-      .pageObject
+    UserOptionsTokenModal.pageObject
       .getApiManual()
       .invoke('removeAttr', 'target')
-      .click()
+      .click();
 
-    cy.location('pathname').should('eq', '/howto')
+    cy.location('pathname').should('eq', '/howto');
 
     return UserOptionsTokenModal;
   }

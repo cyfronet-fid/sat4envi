@@ -15,28 +15,54 @@
  *
  */
 
-import {NotificationService} from 'notifications';
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {Overlay, OverlayUI, OwnerType, PERSONAL_OWNER_TYPE} from '../../views/map-view/state/overlay/overlay.model';
+import {
+  Overlay,
+  OverlayUI,
+  OwnerType,
+  PERSONAL_OWNER_TYPE
+} from '../../views/map-view/state/overlay/overlay.model';
 import {ModalService} from '../../modal/state/modal.service';
 import {OverlayQuery} from '../../views/map-view/state/overlay/overlay.query';
-import {disableEnableForm, validateAllFormFields} from '../../utils/miscellaneous/miscellaneous';
+import {
+  disableEnableForm,
+  validateAllFormFields
+} from '../../utils/miscellaneous/miscellaneous';
 import {OverlayService} from '../../views/map-view/state/overlay/overlay.service';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {UrlParser, OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS} from './wms-url.utils';
-import {empty, EMPTY, Observable, Subject, throwError} from 'rxjs';
-import {catchError, debounceTime, filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS, UrlParser} from './wms-url.utils';
+import {BehaviorSubject, EMPTY, forkJoin, NEVER, of, Subject} from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  defaultIfEmpty,
+  filter,
+  map,
+  pairwise,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import {ActivatedRoute} from '@angular/router';
 import {OverlayStore} from '../../views/map-view/state/overlay/overlay.store';
-import {CapabilitiesMetadata, fetchCapabilitiesMetadata$, getToggledLayerInUrl, ILayer, validateImage$} from './image-wms.utils';
-import * as Url from 'url';
+import {
+  CapabilitiesMetadata,
+  fetchCapabilitiesMetadata$,
+  getToggledLayerInUrl,
+  ILayer,
+  validateImage$
+} from './image-wms.utils';
+import {NotificationService} from '../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {logIt} from '../../utils/rxjs/observable';
+import {FormArray} from '@angular/forms';
 
 export interface OverlayForm {
   url: string;
   label: string;
 }
 
+@UntilDestroy()
 @Component({
   selector: 's4e-overlay-list',
   templateUrl: './overlay-list.component.html',
@@ -44,44 +70,47 @@ export interface OverlayForm {
 })
 export class OverlayListComponent implements OnInit, OnDestroy {
   public newOwner: OwnerType;
-  public overlaysFilter: (overlays: (Overlay & OverlayUI)[]) => (Overlay & OverlayUI)[];
+  public overlaysFilter: (
+    overlays: (Overlay & OverlayUI)[]
+  ) => (Overlay & OverlayUI)[] = overlays => overlays;
   public isAddLoading$ = this._overlayQuery.ui.select('showNewOverlayForm');
-  public isAddingNewLayer$ = this._overlayQuery.ui.select('loadingNew').pipe(untilDestroyed(this));
+  public isAddingNewLayer$ = this._overlayQuery.ui.select('loadingNew');
   public isLoading$ = this._overlayQuery.selectLoading();
-  public setInstitutionalFilter$ = this._activatedRoute.queryParamMap
-    .pipe(
-      untilDestroyed(this),
-      filter(() => !!this.newOwner && this.newOwner === 'INSTITUTIONAL'),
-      filter(paramsMap => paramsMap.has('institution')),
-      map(paramsMap => paramsMap.get('institution')),
-      tap(institutionSlug => this.overlaysFilter = overlays => overlays
-        .filter(overlay => !overlay.ownerType || overlay.ownerType === 'INSTITUTIONAL')
-        .filter(overlay => !!overlay.institutionSlug && overlay.institutionSlug === institutionSlug)
-      )
-    );
+  public setInstitutionalFilter$ = this._activatedRoute.queryParamMap.pipe(
+    filter(() => !!this.newOwner && this.newOwner === 'INSTITUTIONAL'),
+    filter(paramsMap => paramsMap.has('institution')),
+    map(paramsMap => paramsMap.get('institution')),
+    tap(
+      institutionSlug =>
+        (this.overlaysFilter = overlays =>
+          overlays
+            .filter(
+              overlay => !overlay.ownerType || overlay.ownerType === 'INSTITUTIONAL'
+            )
+            .filter(
+              overlay =>
+                !!overlay.institutionSlug &&
+                overlay.institutionSlug === institutionSlug
+            ))
+    )
+  );
   public newOverlayForm: FormGroup<OverlayForm> = new FormGroup<OverlayForm>({
     label: new FormControl<string>('', [Validators.required]),
-    url: new FormControl<string>('', [Validators.required, ...OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS])
+    url: new FormControl<string>('', [
+      Validators.required,
+      ...OPTIONAL_WMS_URL_QUERY_PARAMS_VALIDATORS
+    ])
   });
-  public visibilityFCList: FormControl<boolean>[] = [];
-  private _overlaysChanged$: Subject<void> = new Subject();
-  public overlays$: Observable<(Overlay & OverlayUI)[]> = this._overlayQuery.selectAllWithUIState()
-    .pipe(
-      map(overlays => this.overlaysFilter(overlays)),
-      tap(overlays => {
-        this._overlaysChanged$.next();
-        this.visibilityFCList = overlays.map(overlay => {
-          const fc = new FormControl<boolean>(overlay.visible);
-          fc.valueChanges
-            .pipe(takeUntil(this._overlaysChanged$))
-            .subscribe(visible => this._overlayService.setVisible(overlay.id, visible));
-          return fc;
-        });
-      })
-    );
+  public visibilityFCList: FormArray = new FormArray([]);
+  private overlaysSub$ = new BehaviorSubject<(Overlay & OverlayUI)[] | null>(null);
+  public overlays$ = this.overlaysSub$.asObservable().pipe(
+    startWith([]),
+    filter(val => val != null)
+  );
 
   public latestCapabilities: CapabilitiesMetadata;
   private _lastUrl;
+  // this is a hack to work around no {emitEvent: } option in FormArray.push method
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -90,8 +119,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     private _overlayStore: OverlayStore,
     private _overlayService: OverlayService,
     private _notificationService: NotificationService
-  ) {
-  }
+  ) {}
 
   @Input()
   set newOverlayOwner(newOwner: OwnerType) {
@@ -99,8 +127,10 @@ export class OverlayListComponent implements OnInit, OnDestroy {
 
     switch (newOwner) {
       case 'GLOBAL':
-        this.overlaysFilter = overlays => overlays
-          .filter(overlay => !overlay.ownerType || overlay.ownerType === 'GLOBAL');
+        this.overlaysFilter = overlays =>
+          overlays.filter(
+            overlay => !overlay.ownerType || overlay.ownerType === 'GLOBAL'
+          );
         break;
       case 'PERSONAL':
         this.overlaysFilter = overlays => overlays;
@@ -110,13 +140,62 @@ export class OverlayListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!this.newOwner) {
-      throw Error('Owner of new overlays haven\'t been set');
+      throw Error("Owner of new overlays haven't been set");
     }
 
     this._overlayService.get().subscribe();
     this.setInstitutionalFilter$.subscribe();
-    this.isAddingNewLayer$.subscribe(loadingNew => disableEnableForm(loadingNew, this.newOverlayForm));
+    this.isAddingNewLayer$.subscribe(loadingNew =>
+      disableEnableForm(loadingNew, this.newOverlayForm)
+    );
     this._overlayStore.ui.update({loadingNew: false});
+
+    this._overlayQuery
+      .selectAllWithUIState()
+      .pipe(map(overlays => this.overlaysFilter(overlays)))
+      .subscribe(overlays => {
+        this.overlaysSub$.next(null);
+        this.visibilityFCList.clear();
+        overlays.forEach(overlay =>
+          this.visibilityFCList.push(new FormControl<boolean>(overlay.visible))
+        );
+        this.overlaysSub$.next(overlays);
+      });
+
+    this.overlaysSub$
+      .asObservable()
+      .pipe(
+        untilDestroyed(this),
+        switchMap(overlays =>
+          overlays == null
+            ? NEVER
+            : this.visibilityFCList.valueChanges.pipe(
+                startWith(overlays.map(ol => ol.visible)),
+                pairwise(),
+                map(oldNew => [...oldNew, overlays])
+              )
+        ),
+        switchMap(([oldOverlays, newOverlays, overlays]) => {
+          const changed: {id: number; visible: boolean}[] = [];
+
+          if (
+            oldOverlays.length === newOverlays.length &&
+            newOverlays.length === overlays.length
+          ) {
+            for (let i = 0; i < overlays.length; ++i) {
+              if (oldOverlays[i] !== newOverlays[i]) {
+                changed.push({id: overlays[i].id, visible: newOverlays[i]});
+              }
+            }
+          }
+          return forkJoin(
+            changed.map(change =>
+              this._overlayService.setVisible$(change.id, change.visible)
+            )
+          );
+        })
+      )
+      .subscribe();
 
     // metadata loading
     this.newOverlayForm.valueChanges
@@ -136,8 +215,8 @@ export class OverlayListComponent implements OnInit, OnDestroy {
             return true;
           }
 
-          const hasLoadedLayers = !!this.latestCapabilities
-            && !!this.latestCapabilities.layers;
+          const hasLoadedLayers =
+            !!this.latestCapabilities && !!this.latestCapabilities.layers;
           if (!hasLoadedLayers) {
             return true;
           }
@@ -146,8 +225,9 @@ export class OverlayListComponent implements OnInit, OnDestroy {
         }),
         map(url => {
           const urlParser = new UrlParser(url);
-          const isGetCapabilitiesUrl = urlParser.has('request')
-            && urlParser
+          const isGetCapabilitiesUrl =
+            urlParser.has('request') &&
+            urlParser
               .getParamValueOf('request')
               .toLowerCase()
               .includes('GetCapabilities'.toLowerCase());
@@ -160,8 +240,8 @@ export class OverlayListComponent implements OnInit, OnDestroy {
           return url;
         }),
         tap(() => this._overlayStore.ui.update({loadingNew: true})),
-        switchMap(url => fetchCapabilitiesMetadata$(url)
-          .pipe(
+        switchMap(url =>
+          fetchCapabilitiesMetadata$(url).pipe(
             catchError(error => {
               this._notificationService.addGeneral({
                 content: `
@@ -197,16 +277,21 @@ export class OverlayListComponent implements OnInit, OnDestroy {
   }
 
   async removeOverlay(id: number) {
-    if (await this._modalService.confirm(
-      'Usuń nakładkę',
-      'Czy na pewno chcesz usunąć tę nakładkę? Operacja jest nieodwracalna.'
-    )) {
+    if (
+      await this._modalService.confirm(
+        'Usuń nakładkę',
+        'Czy na pewno chcesz usunąć tę nakładkę? Operacja jest nieodwracalna.'
+      )
+    ) {
       switch (this.newOwner) {
         case 'INSTITUTIONAL':
           this._activatedRoute.queryParamMap
             .pipe(untilDestroyed(this))
-            .subscribe(params => this._overlayService
-              .deleteInstitutionalOverlay(id, params.get('institution'))
+            .subscribe(params =>
+              this._overlayService.deleteInstitutionalOverlay(
+                id,
+                params.get('institution')
+              )
             );
           break;
         case 'GLOBAL':
@@ -226,16 +311,19 @@ export class OverlayListComponent implements OnInit, OnDestroy {
 
   toggleLayerInUrl(layer: ILayer) {
     const actualUrl = this.newOverlayForm.controls.url.value.trim();
-    this.newOverlayForm.patchValue({url: getToggledLayerInUrl(actualUrl, layer.name)});
+    this.newOverlayForm.patchValue({
+      url: getToggledLayerInUrl(actualUrl, layer.name)
+    });
   }
 
   hasErrors(controlName: string) {
-    const formControl = this.newOverlayForm
-      .controls[controlName] as FormControl;
-    return !!formControl
-      && formControl.touched
-      && !!formControl.errors
-      && Object.keys(formControl.errors).length > 0;
+    const formControl = this.newOverlayForm.controls[controlName] as FormControl;
+    return (
+      !!formControl &&
+      formControl.touched &&
+      !!formControl.errors &&
+      Object.keys(formControl.errors).length > 0
+    );
   }
 
   addNewOverlay() {
@@ -257,11 +345,9 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     }
 
     if (
-      urlParser.has('styles')
-      && (
-        !urlParser.getParamValueOf('styles')
-        || urlParser.getParamValueOf('styles') === ''
-      )
+      urlParser.has('styles') &&
+      (!urlParser.getParamValueOf('styles') ||
+        urlParser.getParamValueOf('styles') === '')
     ) {
       urlParser.remove('styles');
     }
@@ -270,8 +356,8 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     validateImage$(urlParser.getFullUrl(), crs, extent)
       .pipe(
         untilDestroyed(this),
-        switchMap(() => this._activatedRoute.queryParamMap
-          .pipe(untilDestroyed(this))
+        switchMap(() =>
+          this._activatedRoute.queryParamMap.pipe(untilDestroyed(this))
         ),
         switchMap(queryParams => {
           const label = this.newOverlayForm.controls.label.value.trim();
@@ -282,8 +368,10 @@ export class OverlayListComponent implements OnInit, OnDestroy {
             case 'GLOBAL':
               return this._overlayService.createGlobalOverlay$(newOverlay);
             case 'INSTITUTIONAL':
-              return this._overlayService
-                .createInstitutionalOverlay$(newOverlay, queryParams.get('institution'));
+              return this._overlayService.createInstitutionalOverlay$(
+                newOverlay,
+                queryParams.get('institution')
+              );
           }
         })
       )
@@ -307,7 +395,7 @@ export class OverlayListComponent implements OnInit, OnDestroy {
     return overlay.ownerType === PERSONAL_OWNER_TYPE;
   }
 
-  getOverlayId(overlay: Overlay): number {
+  getOverlayId(index: number, overlay: Overlay): number {
     return overlay.id;
   }
 

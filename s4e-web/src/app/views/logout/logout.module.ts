@@ -22,11 +22,7 @@ import {LogoutComponent} from './logout.component';
 
 @NgModule({
   declarations: [LogoutComponent],
-  imports: [
-    CommonModule,
-    CommonStateModule
-  ],
+  imports: [CommonModule, CommonStateModule],
   exports: [LogoutComponent]
 })
-export class LogoutModule {
-}
+export class LogoutModule {}

@@ -18,19 +18,43 @@
 <ext-form-control [options]="formControlOptions">
   <div class="datepicker">
     <!--suppress HtmlFormInputWithoutLabel -->
-    <input class="form-control {{inputClass}}"
-           [owlDateTime]="inputButton"  type="text"
-           autocomplete="off"
-           [ngClass]="{'is-invalid': hasErrors(), 'input-xs': size === 'xs', 'input-sm': size === 'sm', 'input-lg': size === 'lg', 'now-btn': showNowButton, 'extra-button': showExtraButton}"
-           [attr.id]="elementId"
-           [attr.aria-describedby]="controlId + ' Help'"
-           [placeholder]="_placeholder"
-           #input
-           (blur)="onTouched()"
-           [formControl]="inputFormControl">
-    <button *ngIf="showExtraButton"
-            [ngClass]="{'btn-xs': size === 'xs', 'btn-sm': size === 'sm', 'btn-lg': size === 'lg'}"
-            [owlDateTimeTrigger]="inputButton" [disabled]="_disabled"></button>
-    <owl-date-time #inputButton [pickerMode]="'popup'" [pickerType]="'calendar'"></owl-date-time>
+    <input
+      class="form-control {{ inputClass }}"
+      bsDatepicker
+      #datepicker="bsDatepicker"
+      [bsConfig]="{
+        containerClass: 'theme-blank',
+        adaptivePosition: true,
+        dateInputFormat: 'YYYY-MM-DD'
+      }"
+      [placement]="placement"
+      type="text"
+      autocomplete="off"
+      [ngClass]="{
+        'is-invalid': hasErrors(),
+        'input-xs': size === 'xs',
+        'input-sm': size === 'sm',
+        'input-lg': size === 'lg',
+        'now-btn': showNowButton,
+        'extra-button': showExtraButton
+      }"
+      [attr.id]="elementId"
+      [attr.aria-describedby]="controlId + ' Help'"
+      [placeholder]="_placeholder"
+      #input
+      (blur)="onTouched()"
+      [formControl]="inputFormControl"
+    />
+    <button
+      *ngIf="showExtraButton"
+      [ngClass]="{
+        'btn-xs': size === 'xs',
+        'btn-sm': size === 'sm',
+        'btn-lg': size === 'lg'
+      }"
+      (click)="datepicker.show()"
+      [disabled]="_disabled"
+    ></button>
+    <!--    <owl-date-time #inputButton [pickerMode]="'popup'" [pickerType]="'calendar'"></owl-date-time>-->
   </div>
 </ext-form-control>

@@ -15,16 +15,15 @@
  *
  */
 
-import { environment } from './../../../environments/environment';
+import {environment} from '../../../environments/environment';
 import {Injectable} from '@angular/core';
 import moment from 'moment';
 
 @Injectable()
 export class DateUtilsService {
-  constructor() {
-  }
+  constructor() {}
 
-  dateToApiString(value: Date|null): any {
+  dateToApiString(value: Date | null): any {
     if (value == null) {
       return null;
     }

@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MapModule} from '../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -36,17 +36,18 @@ describe('ViewManagerComponent', () => {
   let productService: ProductService;
   let timelineService: TimelineService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      providers: [LocalStorageTestingProvider],
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [LocalStorageTestingProvider],
+        imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+      }).compileComponents();
+      productQuery = TestBed.inject(ProductQuery);
+      productStore = TestBed.inject(ProductStore);
+      productService = TestBed.inject(ProductService);
+      timelineService = TestBed.inject(TimelineService);
     })
-      .compileComponents();
-    productQuery = TestBed.get(ProductQuery);
-    productStore = TestBed.get(ProductStore);
-    productService = TestBed.get(ProductService);
-    timelineService = TestBed.get(TimelineService);
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ViewManagerComponent);
@@ -57,10 +58,10 @@ describe('ViewManagerComponent', () => {
   it('selectProduct should set product', async () => {
     const product = ProductFactory.build();
     productStore.set([product]);
-    const spy = spyOn(productService, 'setActive$')
-      .and.returnValue(of());
-    spyOn(timelineService, 'confirmTurningOfLiveMode')
-      .and.returnValue(of(true).toPromise());
+    const spy = spyOn(productService, 'setActive$').and.returnValue(of());
+    spyOn(timelineService, 'confirmTurningOfLiveMode').and.returnValue(
+      of(true).toPromise()
+    );
     await component.selectProduct(product.id);
     expect(spy).toHaveBeenCalledWith(product.id);
   });
@@ -69,10 +70,10 @@ describe('ViewManagerComponent', () => {
     const product = ProductFactory.build();
     productStore.set([product]);
     productStore.setActive(product.id);
-    const spy = spyOn(productService, 'setActive$')
-      .and.returnValue(of());
-    spyOn(timelineService, 'confirmTurningOfLiveMode')
-      .and.returnValue(of(true).toPromise());
+    const spy = spyOn(productService, 'setActive$').and.returnValue(of());
+    spyOn(timelineService, 'confirmTurningOfLiveMode').and.returnValue(
+      of(true).toPromise()
+    );
     await component.selectProduct(product.id);
     expect(spy).toHaveBeenCalledWith(null);
   });

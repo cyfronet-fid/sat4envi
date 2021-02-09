@@ -16,15 +16,28 @@
   -->
 
 <div *ngIf="(modals$ | async).length > 0" class="backdrop"></div>
-<div *ngFor="let modal of (modals$ | async);trackBy:getModalId; index as $index"
-     [attr.data-modal-id]="modal?.id"
-     [@listAnimation]="true"
-     class="modal"
-     [ngClass]="{fade: showAnimations}"
-     tabindex="-1" role="dialog">
-  <div *ngIf="(modals$ | async).length > 0" class="backdrop backdrop-transparent"></div>
-  <div class="modal-dialog"
-       [ngClass]="{'modal-sm': modal.size === 'sm', 'modal-lg': modal.size === 'lg', 'modal-md': modal.size === 'md', 'modal-full-screen': modal.size === 'fl'}">
+<div
+  *ngFor="let modal of modals$ | async; trackBy: getModalId; index as $index"
+  [attr.data-modal-id]="modal?.id"
+  [@listAnimation]="true"
+  class="modal"
+  [ngClass]="{fade: showAnimations}"
+  tabindex="-1"
+  role="dialog"
+>
+  <div
+    *ngIf="(modals$ | async).length > 0"
+    class="backdrop backdrop-transparent"
+  ></div>
+  <div
+    class="modal-dialog"
+    [ngClass]="{
+      'modal-sm': modal.size === 'sm',
+      'modal-lg': modal.size === 'lg',
+      'modal-md': modal.size === 'md',
+      'modal-full-screen': modal.size === 'fl'
+    }"
+  >
     <div class="modal-content">
       <s4e-dynamic-modal [modal]="modal"></s4e-dynamic-modal>
     </div>

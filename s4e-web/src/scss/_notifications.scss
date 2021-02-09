@@ -1,0 +1,73 @@
+/*!
+ * Copyright 2021 ACC Cyfronet AGH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+.ui-notification {
+  border-radius: $ui-notification-border-radius;
+  //position: fixed;
+  z-index: 9999;
+  min-height: 40px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+  margin-top: 10px;
+  color: $btn-primary-color;
+  background: $brand-primary;
+  //.transition(all ease 0.5s);
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+  &.killed {
+    opacity: 0;
+    //.transition(opacity ease 1s);
+  }
+  & > h3 {
+    display: block;
+    margin: 0;
+    padding: 10px 0px 5px 10px;
+    text-align: left;
+    font-size: $font-size-base;
+    font-weight: bold;
+    border-bottom: 1px solid fade_out($btn-primary-color, 0.7);
+  }
+  & a {
+    color: $btn-primary-color;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  > .message {
+    padding: 10px;
+  }
+  &.warning {
+    color: $btn-warning-color;
+    background: $brand-warning;
+  }
+  &.error {
+    color: $btn-danger-color;
+    background: $brand-danger;
+  }
+  &.success {
+    color: $btn-success-color;
+    background: $brand-success;
+  }
+  &.info {
+    color: $btn-info-color;
+    background: $brand-info;
+  }
+}

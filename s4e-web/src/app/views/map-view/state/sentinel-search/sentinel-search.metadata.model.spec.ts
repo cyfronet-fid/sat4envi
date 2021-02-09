@@ -23,10 +23,7 @@ describe('convertSentinelParam2FormControl', () => {
     const formControlDef = {
       queryParam: 'satellitePlatform',
       type: 'select',
-      values: [
-        'Sentinel-1A',
-        'Sentinel-1B'
-      ]
+      values: ['Sentinel-1A', 'Sentinel-1B']
     };
 
     const fc = convertSentinelParam2FormControl(formControlDef);
@@ -59,7 +56,9 @@ describe('convertSentinelParam2FormControl', () => {
 
   it('should work form datetime', () => {
     const formControlDef = {queryParam: 'sensingFrom', type: 'datetime'};
-    expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(FormControl);
+    expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(
+      FormControl
+    );
   });
 
   it('should work form text', () => {
@@ -68,6 +67,8 @@ describe('convertSentinelParam2FormControl', () => {
       type: 'text'
     };
 
-    expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(FormControl);
+    expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(
+      FormControl
+    );
   });
 });

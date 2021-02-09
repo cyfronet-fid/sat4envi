@@ -27,13 +27,12 @@ export interface ReportForm {
 }
 
 export interface ReportModal extends Modal {
-  image: MapData
-  sceneDate:  string;
+  image: MapData;
+  sceneDate: string;
   productName: string;
-  legend: Legend|null;
+  legend: Legend | null;
 }
 
 export function isReportModal(modal: Modal): modal is ReportModal {
-  return modal.id === REPORT_MODAL_ID
-    && (modal as ReportModal).image != null
+  return modal.id === REPORT_MODAL_ID && (modal as ReportModal).image != null;
 }

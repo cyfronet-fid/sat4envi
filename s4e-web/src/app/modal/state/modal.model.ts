@@ -17,7 +17,7 @@
 
 import {EntityState, guid} from '@datorama/akita';
 
-export type ModalSize = 'sm'|'md'|'lg'|'fl';
+export type ModalSize = 'sm' | 'md' | 'lg' | 'fl';
 
 export interface Modal {
   id: string;
@@ -25,7 +25,7 @@ export interface Modal {
   size: ModalSize;
 }
 
-export interface ModalWithReturnValue<T> extends Modal{
+export interface ModalWithReturnValue<T> extends Modal {
   returnValue: T;
   hasReturnValue: true;
 }

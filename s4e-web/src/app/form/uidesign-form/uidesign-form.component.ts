@@ -15,7 +15,7 @@
  *
  */
 
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import environment from 'src/environments/environment';
 
@@ -31,11 +31,10 @@ export class UIDesignFormComponent implements OnInit {
     select: new FormControl(1),
     textarea: new FormControl(''),
     datepicker: new FormControl(null),
-    checkbox: new FormControl(true),
+    checkbox: new FormControl(true)
   });
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
     setTimeout(() => {

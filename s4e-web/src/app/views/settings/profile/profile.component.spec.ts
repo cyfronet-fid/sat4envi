@@ -15,10 +15,16 @@
  *
  */
 
-import { InstitutionFactory } from './../state/institution/institution.factory.spec';
-import { of } from 'rxjs';
-import { InstitutionQuery } from './../state/institution/institution.query';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {InstitutionFactory} from './../state/institution/institution.factory.spec';
+import {of} from 'rxjs';
+import {InstitutionQuery} from './../state/institution/institution.query';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {SessionService} from '../../../state/session/session.service';
 import {ProfileComponent} from './profile.component';
@@ -26,8 +32,8 @@ import {SessionQuery} from '../../../state/session/session.query';
 import {SessionStore} from '../../../state/session/session.store';
 import {ProfileModule} from './profile.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import {DebugElement} from '@angular/core';
+import {By} from '@angular/platform-browser';
 import {ModalService} from '../../../modal/state/modal.service';
 
 describe('ProfileComponent', () => {
@@ -40,27 +46,24 @@ describe('ProfileComponent', () => {
   let modalService: ModalService;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ProfileModule,
-        HttpClientTestingModule,
-        RouterTestingModule
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ProfileModule, HttpClientTestingModule, RouterTestingModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
-    sessionService = TestBed.get(SessionService);
-    sessionQuery = TestBed.get(SessionQuery);
-    sessionStore = TestBed.get(SessionStore);
-    modalService = TestBed.get(ModalService);
+    sessionService = TestBed.inject(SessionService);
+    sessionQuery = TestBed.inject(SessionQuery);
+    sessionStore = TestBed.inject(SessionStore);
+    modalService = TestBed.inject(ModalService);
 
-    institutionQuery = TestBed.get(InstitutionQuery);
+    institutionQuery = TestBed.inject(InstitutionQuery);
   });
 
   it('should create', () => {

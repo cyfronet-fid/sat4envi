@@ -26,7 +26,7 @@ import {Modal} from '../../state/modal.model';
   templateUrl: './dummy-modal.component.html',
   styleUrls: ['./dummy-modal.component.scss']
 })
-export class DummyModalComponent extends ModalComponent{
+export class DummyModalComponent extends ModalComponent {
   constructor(modalService: ModalService, @Inject(MODAL_DEF) modal: Modal) {
     super(modalService, modal.id);
   }

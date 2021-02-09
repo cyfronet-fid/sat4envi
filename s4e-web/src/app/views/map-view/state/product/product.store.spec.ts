@@ -17,7 +17,10 @@
 
 import {ProductStore} from './product.store';
 import {TestBed} from '@angular/core/testing';
-import {LocalStorageTestingProvider, makeLocalStorageTestingProvider} from '../../../../app.configuration.spec';
+import {
+  LocalStorageTestingProvider,
+  makeLocalStorageTestingProvider
+} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -32,13 +35,17 @@ describe('ProductStore', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [makeLocalStorageTestingProvider({[COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY]: JSON.stringify([1])})],
+      providers: [
+        makeLocalStorageTestingProvider({
+          [COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY]: JSON.stringify([1])
+        })
+      ],
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    storage = TestBed.get(LocalStorage);
-    query = TestBed.get(ProductQuery);
-    store = TestBed.get(ProductStore);
+    storage = TestBed.inject(LocalStorage) as Storage;
+    query = TestBed.inject(ProductQuery);
+    store = TestBed.inject(ProductStore);
   });
 
   it('should create an instance', () => {
@@ -46,6 +53,6 @@ describe('ProductStore', () => {
   });
 
   it('should initialize with localstorage', () => {
-    expect(query.ui.getValue().collapsedCategories).toEqual([1])
+    expect(query.ui.getValue().collapsedCategories).toEqual([1]);
   });
 });

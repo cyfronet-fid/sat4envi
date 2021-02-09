@@ -29,20 +29,17 @@ export class FormErrorComponent implements OnInit {
   @Input() errors: ValidatorsModel | {server?: string[]};
   @Input() control: AbstractControl;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getServerErrorMessages() {
-    const errors = !!this.control && this.control.errors || this.errors;
+    const errors = (!!this.control && this.control.errors) || this.errors;
     const hasServerErrors = !!errors && !!errors.server;
-    const singleServerError = hasServerErrors
-      && typeof errors.server === 'string'
-      && [errors.server];
-    const serverErrors = hasServerErrors
-      && errors.server instanceof Array
-      && errors.server;
+    const singleServerError = hasServerErrors &&
+      typeof errors.server === 'string' && [errors.server];
+    const serverErrors =
+      hasServerErrors && errors.server instanceof Array && errors.server;
 
     return serverErrors || singleServerError || [];
   }

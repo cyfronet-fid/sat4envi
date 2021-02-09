@@ -15,20 +15,23 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {DatepickerComponent} from './datepicker.component';
 import {S4EFormsModule} from '../form.module';
+import {BsLocaleService} from 'ngx-bootstrap/datepicker';
 
 describe('DatepickerComponent', () => {
   let component: DatepickerComponent;
   let fixture: ComponentFixture<DatepickerComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [S4EFormsModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [S4EFormsModule],
+        providers: [BsLocaleService]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DatepickerComponent);

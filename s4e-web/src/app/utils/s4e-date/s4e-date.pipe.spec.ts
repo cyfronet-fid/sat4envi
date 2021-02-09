@@ -15,11 +15,11 @@
  *
  */
 
-import { S4EDatePipe } from './s4e-date.pipe';
+import {S4EDatePipe} from './s4e-date.pipe';
 
 describe('S4EDatePipe', () => {
   it('create an instance', () => {
-    const pipe = new S4EDatePipe();
+    const pipe = new S4EDatePipe('pl');
     expect(pipe).toBeTruthy();
   });
 });

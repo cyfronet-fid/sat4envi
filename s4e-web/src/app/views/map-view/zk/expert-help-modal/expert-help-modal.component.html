@@ -21,22 +21,27 @@
     <div class="s4e-modal-body report" data-e2e="modal-body">
       <div class="form">
         <p class="infobox">
-          Wiadomość z formularza zostanie dostarczona drogą elektroniczną
-          do eksperta Sat4Envi, który pomoże w analizie widocznej sceny w zakresie merytorycznym.
+          Wiadomość z formularza zostanie dostarczona drogą elektroniczną do eksperta
+          Sat4Envi, który pomoże w analizie widocznej sceny w zakresie merytorycznym.
           Nie jest to pomoc techniczna. Dalsza korespondencja będzie prowadzona drogą
           mailową.
         </p>
         <ul>
           <li>
-            <label for="helpType">
-              Rodzaj wsparcia
-            </label>
-            <select id="helpType" formControlName="helpType" [ngModel]='null' data-e2e="helpType">
-              <option [ngValue]="null" disabled>-- Wybierz rodzaj wsparcia --</option>
+            <label for="helpType"> Rodzaj wsparcia </label>
+            <select
+              id="helpType"
+              formControlName="helpType"
+              [ngModel]="null"
+              data-e2e="helpType"
+            >
+              <option [ngValue]="null" disabled>
+                -- Wybierz rodzaj wsparcia --
+              </option>
               <option [ngValue]="'REMOTE'">Wsparcie zdalne</option>
               <option [ngValue]="'AT_LOCATION'">Wsparcie wyjazdowe</option>
             </select>
-            <ng-container *ngIf="hasErrors('helpType')" >
+            <ng-container *ngIf="hasErrors('helpType')">
               <span
                 class="error"
                 *ngFor="let error of form.controls.helpType.errors | keyvalue"
@@ -52,20 +57,20 @@
             </ng-container>
           </li>
           <li>
-            <label for="issueDescription">
-              Opis pożądanego zakresu wsparcia
-            </label>
+            <label for="issueDescription"> Opis pożądanego zakresu wsparcia </label>
             <textarea
-              style="resize: none;"
+              style="resize: none"
               id="issueDescription"
               name="issueDescription"
               data-e2e="issueDescription"
               formControlName="issueDescription"
             ></textarea>
-            <ng-container *ngIf="hasErrors('issueDescription')" >
+            <ng-container *ngIf="hasErrors('issueDescription')">
               <span
                 class="error"
-                *ngFor="let error of form.controls.issueDescription.errors | keyvalue"
+                *ngFor="
+                  let error of form.controls.issueDescription.errors | keyvalue
+                "
                 [ngSwitch]="error.key"
               >
                 <ng-container *ngSwitchCase="'required'" i18n>

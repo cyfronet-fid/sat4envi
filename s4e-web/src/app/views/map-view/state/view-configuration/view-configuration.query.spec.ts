@@ -34,6 +34,7 @@ import {ProductFactory} from '../product/product.factory.spec';
 import {SceneStore} from '../scene/scene.store.service';
 import {SceneFactory} from '../scene/scene.factory.spec';
 import {MapStore} from '../map/map.store';
+import {GLOBAL_OWNER_TYPE} from '../overlay/overlay.model';
 
 describe('ViewConfigurationQuery', () => {
   let query: ViewConfigurationQuery;
@@ -53,16 +54,16 @@ describe('ViewConfigurationQuery', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    query = TestBed.get(ViewConfigurationQuery);
-    store = TestBed.get(ViewConfigurationStore);
-    productStore = TestBed.get(ProductStore);
-    productQuery = TestBed.get(ProductQuery);
-    overlayQuery = TestBed.get(OverlayQuery);
-    overlayStore = TestBed.get(OverlayStore);
-    mapQuery = TestBed.get(MapQuery);
-    sceneQuery = TestBed.get(SceneQuery);
-    sceneStore = TestBed.get(SceneStore);
-    mapStore = TestBed.get(MapStore);
+    query = TestBed.inject(ViewConfigurationQuery);
+    store = TestBed.inject(ViewConfigurationStore);
+    productStore = TestBed.inject(ProductStore);
+    productQuery = TestBed.inject(ProductQuery);
+    overlayQuery = TestBed.inject(OverlayQuery);
+    overlayStore = TestBed.inject(OverlayStore);
+    mapQuery = TestBed.inject(MapQuery);
+    sceneQuery = TestBed.inject(SceneQuery);
+    sceneStore = TestBed.inject(SceneStore);
+    mapStore = TestBed.inject(MapStore);
   });
 
   it('should create an instance', () => {
@@ -70,17 +71,19 @@ describe('ViewConfigurationQuery', () => {
   });
 
   it('mapToExtended should work', () => {
+    const overlayId = 1;
     const viewConfig: ViewConfiguration = {
       caption: 'dummyCaption',
       configuration: {
-        overlays: ['ov1'],
+        overlays: [overlayId],
         productId: 1,
         sceneId: 23,
         date: '01-01-2020',
         viewPosition: {
           zoomLevel: 10,
           centerCoordinates: [100, 200]
-        }
+        },
+        manualDate: null
       },
       thumbnail: 'base64thumbnail',
       uuid: 'dummyUuid'
@@ -92,43 +95,65 @@ describe('ViewConfigurationQuery', () => {
       imageUrl: '',
       legend: undefined,
       id: 1,
-      name: 'product 1 name'
+      name: 'product 1 name',
+      displayName: '',
+      favourite: false,
+      layerName: '',
+      productCategory: {label: '', iconPath: '', id: 1, rank: 1},
+      rank: 1
     });
     let overlaySpy = jest.spyOn(overlayQuery, 'getEntity');
     overlaySpy.mockReturnValueOnce({
-      label: 'overlay 1 caption', id: 'ov1', type: undefined
+      label: 'overlay 1 caption',
+      id: overlayId,
+      createdAt: '',
+      institutionSlug: '',
+      url: '',
+      visible: true,
+      ownerType: GLOBAL_OWNER_TYPE
     });
-
 
     const viewConfigEx: ViewConfigurationEx = {
       caption: 'dummyCaption',
       configuration: {
-        overlays: ['ov1'],
+        overlays: [overlayId],
         productId: 1,
         sceneId: 23,
         date: '01-01-2020',
         viewPosition: {
           zoomLevel: 10,
           centerCoordinates: [100, 200]
-        }
+        },
+        manualDate: null
       },
-      configurationNames: {overlays: ['overlay 1 caption'], product: 'product 1 name', selectedDate: '01-01-2020'},
+      configurationNames: {
+        overlays: ['overlay 1 caption'],
+        product: 'product 1 name',
+        selectedDate: '01-01-2020'
+      },
       thumbnail: 'base64thumbnail',
       uuid: 'dummyUuid'
     };
 
     expect(query.mapToExtended(viewConfig)).toEqual(viewConfigEx);
     expect(productSpy).toHaveBeenCalledWith(1);
-    expect(overlaySpy).toHaveBeenCalledWith('ov1');
+    expect(overlaySpy).toHaveBeenCalledWith(overlayId);
   });
 
   it('getCurrent should work', () => {
     const product = ProductFactory.build();
     productStore.set([product]);
     productStore.setActive(product.id);
-    productStore.update(state => (
-      {...state, ui: {...state.ui, selectedMonth: 11, selectedYear: 2020, selectedDay: 11, selectedDate: '11-11-2020'}}
-    ));
+    productStore.update(state => ({
+      ...state,
+      ui: {
+        ...state.ui,
+        selectedMonth: 11,
+        selectedYear: 2020,
+        selectedDay: 11,
+        selectedDate: '11-11-2020'
+      }
+    }));
 
     const overlays = OverlayFactory.buildList(2);
     overlayStore.set(overlays);
@@ -159,9 +184,14 @@ describe('ViewConfigurationQuery', () => {
         viewPosition: {
           zoomLevel: 9,
           centerCoordinates: [56, 67]
-        }
+        },
+        manualDate: undefined
       },
-      configurationNames: {overlays: overlays.map(ol => ol.label), product: product.displayName, selectedDate: '11-11-2020'},
+      configurationNames: {
+        overlays: overlays.map(ol => ol.label),
+        product: product.displayName,
+        selectedDate: '11-11-2020'
+      },
       thumbnail: null
     };
 

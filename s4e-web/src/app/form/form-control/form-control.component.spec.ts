@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {FormControlComponent} from './form-control.component';
 import {S4EFormsModule} from '../form.module';
 
@@ -23,12 +23,13 @@ describe('FormControlComponent', () => {
   let component: FormControlComponent;
   let fixture: ComponentFixture<FormControlComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [S4EFormsModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [S4EFormsModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FormControlComponent);

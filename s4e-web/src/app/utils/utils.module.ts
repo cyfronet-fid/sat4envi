@@ -24,23 +24,8 @@ import {IsEmptyPipe} from './is-empty/is-empty.pipe';
 import {HourPipe} from './time/hour.pipe';
 
 @NgModule({
-  declarations: [
-    ErrorKeysPipe,
-    S4EDatePipe,
-    GroupArrayPipe,
-    IsEmptyPipe,
-    HourPipe
-  ],
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    ErrorKeysPipe,
-    GroupArrayPipe,
-    S4EDatePipe,
-    IsEmptyPipe,
-    HourPipe
-  ]
+  declarations: [ErrorKeysPipe, S4EDatePipe, GroupArrayPipe, IsEmptyPipe, HourPipe],
+  imports: [CommonModule],
+  exports: [ErrorKeysPipe, GroupArrayPipe, S4EDatePipe, IsEmptyPipe, HourPipe]
 })
-export class UtilsModule {
-}
+export class UtilsModule {}

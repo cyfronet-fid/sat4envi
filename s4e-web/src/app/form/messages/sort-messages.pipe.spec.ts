@@ -15,7 +15,7 @@
  *
  */
 
-import { SortMessagesPipe } from './sort-messages.pipe';
+import {SortMessagesPipe} from './sort-messages.pipe';
 
 describe('SortMessagesPipe', () => {
   it('create an instance', () => {

@@ -17,8 +17,7 @@
 
 import {Injector, NgModule} from '@angular/core';
 
-@NgModule({
-})
+@NgModule({})
 export class InjectorModule {
   static Injector: Injector;
 

@@ -15,7 +15,7 @@
  *
  */
 
-import { SceneStore } from './scene.store.service';
+import {SceneStore} from './scene.store.service';
 
 describe('SceneStore', () => {
   let store: SceneStore;
@@ -27,5 +27,4 @@ describe('SceneStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

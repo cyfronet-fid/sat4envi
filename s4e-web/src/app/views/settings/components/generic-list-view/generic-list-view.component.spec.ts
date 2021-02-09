@@ -15,7 +15,13 @@
  *
  */
 
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 import {GenericListViewComponent} from './generic-list-view.component';
 import {GenericListViewModule} from './generic-list-view.module';
 import * as Factory from 'factory.ts';
@@ -38,12 +44,13 @@ describe('GenericListViewComponent', () => {
   let fixture: ComponentFixture<GenericListViewComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [GenericListViewModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [GenericListViewModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(GenericListViewComponent);
@@ -93,12 +100,16 @@ describe('GenericListViewComponent', () => {
 @Component({
   selector: 'mock-generic-list',
   template: `
-    <s4e-generic-list-view [loading]="loading"
-                           [items]="items"
-                           [error]="error">
+    <s4e-generic-list-view [loading]="loading" [items]="items" [error]="error">
       <ng-container add-button>
-        <button class="button button--secondary button--large" routerLink="../add-item"
-                queryParamsHandling="preserve" i18n>Nowy Item</button>
+        <button
+          class="button button--secondary button--large"
+          routerLink="../add-item"
+          queryParamsHandling="preserve"
+          i18n
+        >
+          Nowy Item
+        </button>
       </ng-container>
       <ng-container description>
         [TODO] Tu możesz zarządzać itemami...
@@ -109,8 +120,8 @@ describe('GenericListViewComponent', () => {
         <th i18n>ID</th>
       </ng-container>
       <ng-template let-item="item">
-        <td [attr.data-test-id]="item.id">{{item.name}}</td>
-        <td>{{item.id}}</td>
+        <td [attr.data-test-id]="item.id">{{ item.name }}</td>
+        <td>{{ item.id }}</td>
       </ng-template>
     </s4e-generic-list-view>
   `,
@@ -119,22 +130,22 @@ describe('GenericListViewComponent', () => {
 class MockGenericListViewComponent {
   loading: boolean = false;
   items: Item[] = [];
-  error: any|null = null;
+  error: any | null = null;
 }
-
 
 describe('GenericListViewComponent MockComponent', () => {
   let component: MockGenericListViewComponent;
   let fixture: ComponentFixture<MockGenericListViewComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MockGenericListViewComponent],
-      imports: [GenericListViewModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MockGenericListViewComponent],
+        imports: [GenericListViewModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MockGenericListViewComponent);

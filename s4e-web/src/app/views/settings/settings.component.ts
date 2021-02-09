@@ -15,20 +15,20 @@
  *
  */
 
-import { InstitutionQuery } from './state/institution/institution.query';
-import { InstitutionsSearchResultsStore } from './state/institutions-search/institutions-search-results.store';
+import {InstitutionQuery} from './state/institution/institution.query';
+import {InstitutionsSearchResultsStore} from './state/institutions-search/institutions-search-results.store';
 import {InstitutionService} from './state/institution/institution.service';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
 import {filter, finalize, map, switchMap, tap} from 'rxjs/operators';
 import {InstitutionsSearchResultsQuery} from './state/institutions-search/institutions-search-results.query';
 import {InstitutionsSearchResultsService} from './state/institutions-search/institutions-search-results.service';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {Institution} from './state/institution/institution.model';
-import {environment} from 'src/environments/environment';
 import {SessionQuery} from '../../state/session/session.query';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-settings',
   templateUrl: './settings.component.html',
@@ -41,23 +41,27 @@ export class SettingsComponent implements OnInit, OnDestroy {
   public hasAnyAdminInstitution$ = this._institutionQuery
     .selectAdministrationInstitutions$()
     .pipe(filter(institutions => !!institutions && institutions.length > 0));
-  public showInstitutions$: Observable<boolean> = this._sessionQuery
-    .selectCanSeeInstitutions();
-  public isInstitutionActive$: Observable<boolean> = this.institutionsSearchResultsQuery
-    .isAnyInstitutionActive$(this._activatedRoute);
-  public activeInstitution$: Observable<Institution> = this.institutionsSearchResultsQuery
-    .selectActive$(this._activatedRoute);
-  public isAdminOfOneInstitution$ = this._institutionQuery
-    .selectHasOnlyOneAdministrationInstitution();
+  public showInstitutions$: Observable<boolean> = this._sessionQuery.selectCanSeeInstitutions();
+  public isInstitutionActive$: Observable<boolean> = this.institutionsSearchResultsQuery.isAnyInstitutionActive$(
+    this._activatedRoute
+  );
+  public activeInstitution$: Observable<Institution> = this.institutionsSearchResultsQuery.selectActive$(
+    this._activatedRoute
+  );
+  public isAdminOfOneInstitution$ = this._institutionQuery.selectHasOnlyOneAdministrationInstitution();
 
-  public dashboardUrl$ = forkJoin([this.hasAnyAdminInstitution$, this.isAdminOfOneInstitution$])
-    .pipe(map(([hasAnyInstitution, hasOneInstitution]) => {
+  public dashboardUrl$ = forkJoin([
+    this.hasAnyAdminInstitution$,
+    this.isAdminOfOneInstitution$
+  ]).pipe(
+    map(([hasAnyInstitution, hasOneInstitution]) => {
       if (!hasAnyInstitution) {
         return '/settings';
       }
 
       return hasOneInstitution ? '/settings/dashboard' : '/settings/institutions';
-    }))
+    })
+  );
 
   public canGrantInstitutionDeleteAuthority;
 
@@ -100,19 +104,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   selectInstitution(institution: Institution | null) {
-    this.searchValue = !!institution && institution.name || '';
+    this.searchValue = (!!institution && institution.name) || '';
     this._institutionsSearchResultsService.setSelectedInstitution(institution);
 
-    this._router.navigate(
-      !!institution ? [] : ['/settings'],
-      {
-        relativeTo: this._activatedRoute,
-        queryParams: {
-          institution: !!institution && institution.slug || null
-        },
-        queryParamsHandling: 'merge'
-      }
-    );
+    this._router.navigate(!!institution ? [] : ['/settings'], {
+      relativeTo: this._activatedRoute,
+      queryParams: {
+        institution: (!!institution && institution.slug) || null
+      },
+      queryParamsHandling: 'merge'
+    });
   }
 
   ngOnDestroy() {}

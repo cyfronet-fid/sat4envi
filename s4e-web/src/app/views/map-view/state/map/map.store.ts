@@ -27,4 +27,3 @@ export class MapStore extends Store<MapState> {
     super(createInitialState(storage));
   }
 }
-

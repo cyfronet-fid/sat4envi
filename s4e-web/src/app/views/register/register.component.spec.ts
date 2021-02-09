@@ -15,7 +15,13 @@
  *
  */
 
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 
 import {RegisterComponent} from './register.component';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -24,8 +30,8 @@ import {RegisterService} from './state/register.service';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {By} from '@angular/platform-browser';
 import {RecaptchaFormsModule, RecaptchaModule} from 'ng-recaptcha';
-import { RegisterFactory } from './register.factory.spec';
-import { RemoteConfigurationTestingProvider } from 'src/app/app.configuration.spec';
+import {RegisterFactory} from './register.factory.spec';
+import {RemoteConfigurationTestingProvider} from 'src/app/app.configuration.spec';
 import {ActivatedRoute} from '@angular/router';
 import {of} from 'rxjs';
 
@@ -35,33 +41,33 @@ describe('RegisterComponent', () => {
   let registerService: RegisterService;
   let activatedRoute: ActivatedRoute;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        ShareModule,
-        FormErrorModule,
-        RecaptchaModule,
-        RecaptchaFormsModule
-      ],
-      declarations: [RegisterComponent],
-      providers: [RemoteConfigurationTestingProvider]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule,
+          ShareModule,
+          FormErrorModule,
+          RecaptchaModule,
+          RecaptchaFormsModule
+        ],
+        declarations: [RegisterComponent],
+        providers: [RemoteConfigurationTestingProvider]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    registerService = TestBed.get(RegisterService);
-    activatedRoute = TestBed.get(ActivatedRoute);
+    registerService = TestBed.inject(RegisterService);
+    activatedRoute = TestBed.inject(ActivatedRoute);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 
   it('should not send non valid form', () => {
     const spy = spyOn(registerService, 'register');
@@ -73,7 +79,6 @@ describe('RegisterComponent', () => {
     component.form.controls.password.setValue('');
     expect(component.form.controls.password.valid).toBeFalsy();
     expect(component.form.controls.passwordRepeat.valid).toBeFalsy();
-
 
     component.form.controls.password.setValue('pass1234');
     expect(component.form.controls.password.valid).toBeTruthy();
@@ -97,15 +102,13 @@ describe('RegisterComponent', () => {
     const spy = spyOn(component, 'register');
     fixture.debugElement
       .query(By.css('button[type="submit"]'))
-      .nativeElement
-      .click();
+      .nativeElement.click();
     expect(spy).toBeCalledWith();
   });
 
   it('should call RegisterService.register on submit', fakeAsync(() => {
-    const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
-    spyOn(activatedRoute, 'queryParams')
-      .and.returnValue(of());
+    const spy = spyOn(TestBed.inject(RegisterService), 'register').and.stub();
+    spyOn(activatedRoute, 'queryParams').and.returnValue(of());
 
     const userRegister = RegisterFactory.build();
     component.form.setValue(userRegister);
@@ -123,7 +126,7 @@ describe('RegisterComponent', () => {
     component.form.setValue(userRegister);
     component.register();
 
-    const spy = spyOn(TestBed.get(RegisterService), 'register').and.stub();
+    const spy = spyOn(TestBed.inject(RegisterService), 'register').and.stub();
 
     component.register();
 

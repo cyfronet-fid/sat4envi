@@ -26,10 +26,11 @@ export interface DetailsModal extends Modal {
   entity: SentinelSearchResult | null;
 }
 
-export function makeDetailsModal(showNavigation: boolean = true,
-                                 mode: 'sentinel' | 'scene' = 'sentinel',
-                                 entity: SentinelSearchResult | null = null): DetailsModal
-{
+export function makeDetailsModal(
+  showNavigation: boolean = true,
+  mode: 'sentinel' | 'scene' = 'sentinel',
+  entity: SentinelSearchResult | null = null
+): DetailsModal {
   return {
     ...createModal({id: SENTINEL_SEARCH_RESULT_MODAL_ID, size: 'lg'}),
     showNavigation,

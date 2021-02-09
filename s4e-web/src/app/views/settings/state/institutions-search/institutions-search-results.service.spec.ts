@@ -15,15 +15,18 @@
  *
  */
 
-import { InstitutionsSearchResultsStore } from './institutions-search-results.store';
-import { InstitutionsSearchResultsQuery } from './institutions-search-results.query';
+import {InstitutionsSearchResultsStore} from './institutions-search-results.store';
+import {InstitutionsSearchResultsQuery} from './institutions-search-results.query';
 import {TestBed, fakeAsync, tick} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import { InstitutionsSearchResultsService } from './institutions-search-results.service';
-import { AkitaGuidService } from 'src/app/views/map-view/state/search-results/guid.service';
-import { InstitutionQuery } from '../institution/institution.query';
-import { of } from 'rxjs';
+import {InstitutionsSearchResultsService} from './institutions-search-results.service';
+import {AkitaGuidService} from 'src/app/views/map-view/state/search-results/guid.service';
+import {InstitutionQuery} from '../institution/institution.query';
+import {of} from 'rxjs';
 
 describe('InstitutionsSearchResultsService', () => {
   let institutionSearchResultsService: InstitutionsSearchResultsService;
@@ -41,18 +44,17 @@ describe('InstitutionsSearchResultsService', () => {
         InstitutionsSearchResultsStore,
         AkitaGuidService
       ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ]
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
-    http = TestBed.get(HttpTestingController);
-    institutionSearchResultsService = TestBed.get(InstitutionsSearchResultsService);
-    institutionSearchResultsStore = TestBed.get(InstitutionsSearchResultsStore);
-    institutionSearchResultsQuery = TestBed.get(InstitutionsSearchResultsQuery);
-    institutionQuery = TestBed.get(InstitutionQuery);
-    guidService = TestBed.get(AkitaGuidService);
+    http = TestBed.inject(HttpTestingController);
+    institutionSearchResultsService = TestBed.inject(
+      InstitutionsSearchResultsService
+    );
+    institutionSearchResultsStore = TestBed.inject(InstitutionsSearchResultsStore);
+    institutionSearchResultsQuery = TestBed.inject(InstitutionsSearchResultsQuery);
+    institutionQuery = TestBed.inject(InstitutionQuery);
+    guidService = TestBed.inject(AkitaGuidService);
   });
 
   it('should be created', () => {
@@ -81,6 +83,5 @@ describe('InstitutionsSearchResultsService', () => {
       expect(institutionSearchResultsQuery.getValue().queryString).toEqual('zarz');
       expect(institutionSearchResultsQuery.getAll()).toEqual([sampleResult]);
     }));
-
   });
 });

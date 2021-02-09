@@ -22,11 +22,10 @@ describe('ActivateQuery', () => {
   let query: ActivateQuery;
 
   beforeEach(() => {
-    query = new ActivateQuery(new ActivateStore);
+    query = new ActivateQuery(new ActivateStore());
   });
 
   it('should create an instance', () => {
     expect(query).toBeTruthy();
   });
-
 });

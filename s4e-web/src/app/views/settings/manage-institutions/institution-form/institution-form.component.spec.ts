@@ -15,18 +15,18 @@
  *
  */
 
-import { InstitutionProfileModule } from './../../intitution-profile/institution-profile.module';
-import { ReplaySubject, Subject, of } from 'rxjs';
-import { InstitutionFactory } from '../../state/institution/institution.factory.spec';
-import { InstitutionService } from '../../state/institution/institution.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { ManageInstitutionsModule } from '../manage-institutions.module';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {InstitutionProfileModule} from './../../intitution-profile/institution-profile.module';
+import {ReplaySubject, Subject, of} from 'rxjs';
+import {InstitutionFactory} from '../../state/institution/institution.factory.spec';
+import {InstitutionService} from '../../state/institution/institution.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {ManageInstitutionsModule} from '../manage-institutions.module';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { InstitutionFormComponent } from './institution-form.component';
-import { Data, ActivatedRoute, convertToParamMap, ParamMap } from '@angular/router';
-import { InstitutionProfileComponent } from '../../intitution-profile/institution-profile.component';
+import {InstitutionFormComponent} from './institution-form.component';
+import {Data, ActivatedRoute, convertToParamMap, ParamMap} from '@angular/router';
+import {InstitutionProfileComponent} from '../../intitution-profile/institution-profile.component';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -34,8 +34,8 @@ class ActivatedRouteStub {
   snapshot = {};
 
   constructor() {
-    this.queryParamMap.next(convertToParamMap({ institution: 'test#1' }));
-    this.data.next({ isEditMode: false });
+    this.queryParamMap.next(convertToParamMap({institution: 'test#1'}));
+    this.data.next({isEditMode: false});
   }
 }
 
@@ -44,27 +44,25 @@ describe('InstitutionFormComponent', () => {
   let fixture: ComponentFixture<InstitutionFormComponent>;
   let institutionService: InstitutionService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ManageInstitutionsModule,
-        InstitutionProfileModule,
-        RouterTestingModule
-          .withRoutes([
-            { path: 'settings/institution', component: InstitutionProfileComponent }
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          ManageInstitutionsModule,
+          InstitutionProfileModule,
+          RouterTestingModule.withRoutes([
+            {path: 'settings/institution', component: InstitutionProfileComponent}
           ]),
-        HttpClientTestingModule
-      ],
-      providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
-      ]
+          HttpClientTestingModule
+        ],
+        providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+      }).compileComponents();
+      fixture = TestBed.createComponent(InstitutionFormComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      institutionService = TestBed.inject(InstitutionService);
     })
-    .compileComponents();
-    fixture = TestBed.createComponent(InstitutionFormComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    institutionService = TestBed.get(InstitutionService);
-  }));
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -77,24 +75,39 @@ describe('InstitutionFormComponent', () => {
   });
 
   it('should send valid form', () => {
-    const spy = spyOn(institutionService, 'createInstitutionChild$').and.returnValue(of());
-    const {id, ...formInstitution} = InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'});
-    component.form.setValue(formInstitution as undefined);
+    const spy = spyOn(institutionService, 'createInstitutionChild$').and.returnValue(
+      of()
+    );
+    const {id, ...formInstitution} = InstitutionFactory.build({
+      parentSlug: 'test-parent-1',
+      parentName: 'Test Parent'
+    });
+    component.form.setValue(formInstitution);
     component.updateInstitution();
     expect(spy).toHaveBeenCalled();
   });
 
   it('should validate parent institution name', () => {
-    component.form.controls.parentName .setValue('');
-    expect(component.form.controls.parentName .valid).toBeFalsy();
-    component.form.controls.parentName .setValue(InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'}).parentName);
-    expect(component.form.controls.parentName .valid).toBeTruthy();
+    component.form.controls.parentName.setValue('');
+    expect(component.form.controls.parentName.valid).toBeFalsy();
+    component.form.controls.parentName.setValue(
+      InstitutionFactory.build({
+        parentSlug: 'test-parent-1',
+        parentName: 'Test Parent'
+      }).parentName
+    );
+    expect(component.form.controls.parentName.valid).toBeTruthy();
   });
 
   it('should validate parent institution slug', () => {
     component.form.controls.parentSlug.setValue('');
     expect(component.form.controls.parentSlug.valid).toBeFalsy();
-    component.form.controls.parentSlug.setValue(InstitutionFactory.build({parentSlug: 'test-parent-1', parentName: 'Test Parent'}).parentSlug);
+    component.form.controls.parentSlug.setValue(
+      InstitutionFactory.build({
+        parentSlug: 'test-parent-1',
+        parentName: 'Test Parent'
+      }).parentSlug
+    );
     expect(component.form.controls.parentSlug.valid).toBeTruthy();
   });
 
@@ -115,7 +128,9 @@ describe('InstitutionFormComponent', () => {
   it('should validate postal code', () => {
     component.form.controls.postalCode.setValue('');
     expect(component.form.controls.postalCode.valid).toBeTruthy();
-    component.form.controls.postalCode.setValue(InstitutionFactory.build().postalCode);
+    component.form.controls.postalCode.setValue(
+      InstitutionFactory.build().postalCode
+    );
     expect(component.form.controls.postalCode.valid).toBeTruthy();
   });
 
@@ -143,14 +158,18 @@ describe('InstitutionFormComponent', () => {
   it('should validate additional phone', () => {
     component.form.controls.secondaryPhone.setValue('');
     expect(component.form.controls.secondaryPhone.valid).toBeTruthy();
-    component.form.controls.secondaryPhone.setValue(InstitutionFactory.build().secondaryPhone);
+    component.form.controls.secondaryPhone.setValue(
+      InstitutionFactory.build().secondaryPhone
+    );
     expect(component.form.controls.secondaryPhone.valid).toBeTruthy();
   });
 
   it('should validate institution admin email', () => {
     component.form.controls.adminsEmails.setValue('');
     expect(component.form.controls.adminsEmails.valid).toBeTruthy();
-    component.form.controls.adminsEmails.setValue(InstitutionFactory.build().adminsEmails);
+    component.form.controls.adminsEmails.setValue(
+      InstitutionFactory.build().adminsEmails
+    );
     expect(component.form.controls.adminsEmails.valid).toBeTruthy();
   });
 });

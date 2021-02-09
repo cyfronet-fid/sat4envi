@@ -17,10 +17,18 @@
 
 import {RemoteConfiguration} from 'src/app/utils/initializer/config.service';
 import {environment} from '../../../../environments/environment';
-import {NotificationService} from 'notifications';
 import {TileLoader} from '../state/utils/layers-loader.util';
 import {SessionQuery} from '../../../state/session/session.query';
-import {Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import {Layer, Tile} from 'ol/layer';
@@ -29,7 +37,6 @@ import {UIOverlay} from '../state/overlay/overlay.model';
 import proj4 from 'proj4';
 import {Scene} from '../state/scene/scene.model';
 import {BehaviorSubject, combineLatest, Observable, of, ReplaySubject} from 'rxjs';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {distinctUntilChanged, filter, map} from 'rxjs/operators';
 import {MapData, ViewPosition} from '../state/map/map.model';
 import moment from 'moment';
@@ -46,7 +53,10 @@ import {getPointResolution} from 'ol/proj';
 import {Fill, Stroke, Style} from 'ol/style';
 import {defaults, ScaleLine} from 'ol/control';
 import {ImageTile} from 'ol';
+import {NotificationService} from '../../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-map',
   templateUrl: './map.component.html',
@@ -55,7 +65,8 @@ import {ImageTile} from 'ol';
 export class MapComponent implements OnInit, OnDestroy {
   static readonly DEFAULT_ZOOM_LEVEL = 10;
   @Output() viewChanged = new EventEmitter<ViewPosition>();
-  @ViewChild('linkDownload', {read: ElementRef}) linkDownload: ElementRef;
+  @ViewChild('linkDownload', {read: ElementRef, static: true})
+  linkDownload: ElementRef;
 
   activeView$ = new BehaviorSubject<ViewPosition>({
     centerCoordinates: environment.projection.coordinates,
@@ -71,11 +82,13 @@ export class MapComponent implements OnInit, OnDestroy {
     xhr.withCredentials = true;
     xhr.onload = () => {
       const arrayBufferView = new Uint8Array(xhr.response);
-      const blob = new Blob([arrayBufferView], { type: 'image/png' });
-      (imageTile.getImage() as HTMLImageElement).src = window.URL.createObjectURL(blob);
+      const blob = new Blob([arrayBufferView], {type: 'image/png'});
+      (imageTile.getImage() as HTMLImageElement).src = window.URL.createObjectURL(
+        blob
+      );
     };
     xhr.send();
-  }
+  };
 
   @Input()
   set isSentinelSearch(isSentinelSearch: boolean) {
@@ -96,9 +109,7 @@ export class MapComponent implements OnInit, OnDestroy {
       return;
     }
 
-    isBlocked
-      ? this._disableDrawing()
-      : this._enableDrawing();
+    isBlocked ? this._disableDrawing() : this._enableDrawing();
 
     this._isBlocked = isBlocked;
   }
@@ -170,14 +181,10 @@ export class MapComponent implements OnInit, OnDestroy {
         center: centerOfPolandWebMercator,
         zoom: this.activeView$.getValue().zoomLevel,
         maxZoom: environment.maxZoom
-      }),
+      })
     });
-    this.map.on(
-      'rendercomplete',
-      () => setTimeout(
-        () => this._loaderService.stopBackground(),
-        500
-      )
+    this.map.on('rendercomplete', () =>
+      setTimeout(() => this._loaderService.stopBackground(), 500)
     );
 
     const source = new OSM({
@@ -201,7 +208,8 @@ export class MapComponent implements OnInit, OnDestroy {
         this.updateLayers(gr);
       });
 
-    this._sentinelSearchQuery.selectHovered()
+    this._sentinelSearchQuery
+      .selectHovered()
       .pipe(
         untilDestroyed(this),
         filter(hovered => !!hovered || !!this._sentinelPolygonVectorLayer),
@@ -213,18 +221,17 @@ export class MapComponent implements OnInit, OnDestroy {
 
           return !!hovered;
         }),
-        map(hovered => new WKT().readFeature(
-          hovered.footprint,
-          {
+        map(hovered =>
+          new WKT().readFeature(hovered.footprint, {
             dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857',
-          }
-        )),
+            featureProjection: 'EPSG:3857'
+          })
+        ),
         map(polygonFeature => {
           this._sentinelPolygonVectorLayer = new VectorLayer({
             source: new VectorSource({
-              features: [polygonFeature],
-            }),
+              features: [polygonFeature]
+            })
           });
           return this._sentinelPolygonVectorLayer;
         })
@@ -237,7 +244,9 @@ export class MapComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const hasDrawingLayer = this.map.getLayers().getArray()
+      const hasDrawingLayer = this.map
+        .getLayers()
+        .getArray()
         .includes(this._polygonDrawing.layer);
       if (!hasDrawingLayer) {
         this._addPolygonDrawing();
@@ -250,20 +259,26 @@ export class MapComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const isDrawing = this.map.getInteractions().getArray()
+      const isDrawing = this.map
+        .getInteractions()
+        .getArray()
         .includes(this._polygonDrawing.drawing);
       if (isDrawing) {
         return;
       }
 
-      const hasPolygon = this.map.getLayers().getArray()
+      const hasPolygon = this.map
+        .getLayers()
+        .getArray()
         .includes(this._polygonDrawing.polygon);
       if (!this._removePolygon && hasPolygon) {
         this._removePolygon = true;
         return;
       }
     });
-    this.activeView$.pipe(untilDestroyed(this)).subscribe(view => this.setView(view));
+    this.activeView$
+      .pipe(untilDestroyed(this))
+      .subscribe(view => this.setView(view));
   }
 
   ngOnDestroy(): void {
@@ -277,15 +292,15 @@ export class MapComponent implements OnInit, OnDestroy {
       centerCoordinates: view.getCenter(),
       zoomLevel: view.getZoom()
     });
-  }
+  };
 
   public getMapData(): Observable<MapData | null> {
     if (!this.map) {
       return of(null);
     }
 
-
-    const mapCanvas: HTMLCanvasElement = this.map.getViewport().firstChild as HTMLCanvasElement;
+    const mapCanvas: HTMLCanvasElement = this.map.getViewport()
+      .firstChild as HTMLCanvasElement;
 
     const pointResolution = getPointResolution(
       this.map.getView().getProjection(),
@@ -298,7 +313,12 @@ export class MapComponent implements OnInit, OnDestroy {
     // :IMPORTANT this will work only on new browsers!
     this.map.once('rendercomplete', () => {
       const data = mapCanvas.toDataURL('image/png');
-      r.next({image: data, width: mapCanvas.width, height: mapCanvas.height, pointResolution});
+      r.next({
+        image: data,
+        width: mapCanvas.width,
+        height: mapCanvas.height,
+        pointResolution
+      });
       r.complete();
     });
     this.map.renderSync();
@@ -307,12 +327,14 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   public downloadMap() {
-    this.getMapData()
-      .subscribe(mapData => {
-        this.linkDownload.nativeElement.setAttribute('download', `SNAPSHOT.${new Date().toISOString()}.png`);
-        this.linkDownload.nativeElement.href = mapData.image;
-        this.linkDownload.nativeElement.click();
-      });
+    this.getMapData().subscribe(mapData => {
+      this.linkDownload.nativeElement.setAttribute(
+        'download',
+        `SNAPSHOT.${new Date().toISOString()}.png`
+      );
+      this.linkDownload.nativeElement.href = mapData.image;
+      this.linkDownload.nativeElement.click();
+    });
   }
 
   public updateSize() {
@@ -347,8 +369,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _replaceScenePolygon(scene: Scene | null) {
-    const hasPolygon = this.map.getLayers().getArray()
-      .includes(this._scenePolygon);
+    const hasPolygon = this.map.getLayers().getArray().includes(this._scenePolygon);
     if (hasPolygon) {
       this.map.removeLayer(this._scenePolygon);
     }
@@ -359,13 +380,12 @@ export class MapComponent implements OnInit, OnDestroy {
 
     this._scenePolygon = new VectorLayer({
       source: new VectorSource({
-        features: [new WKT().readFeature(
-          scene.footprint,
-          {
+        features: [
+          new WKT().readFeature(scene.footprint, {
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
-          }
-        )],
+          })
+        ]
       }),
       style: new Style({
         fill: new Fill({
@@ -392,9 +412,10 @@ export class MapComponent implements OnInit, OnDestroy {
       url: this._remoteConfiguration.get().geoserverUrl,
       serverType: 'geoserver',
       params: {
-        'LAYERS': this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
-        'TIME': isoTimeWithoutMs,
-        'TILED': true,
+        LAYERS:
+          this._remoteConfiguration.get().geoserverWorkspace + ':' + scene.layerName,
+        TIME: isoTimeWithoutMs,
+        TILED: true
       },
       tileLoadFunction: this._tileLoadFunction
     });
@@ -414,48 +435,50 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _enableDrawing() {
-    if (!this._polygonDrawing.drawing
-      || this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    if (
+      !this._polygonDrawing.drawing ||
+      this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
     ) {
       return;
     }
 
     this.map.addInteraction(this._polygonDrawing.drawing);
-    this._polygonDrawing.drawing
-      .on('drawstart', () => {
-        this._polygonDrawing.layer.getSource()
-          .forEachFeature(feature => this._polygonDrawing.layer.getSource().removeFeature(feature));
-        if (!!this._polygonDrawing.polygon) {
-          this.map.removeLayer(this._polygonDrawing.polygon);
-        }
+    this._polygonDrawing.drawing.on('drawstart', () => {
+      this._polygonDrawing.layer
+        .getSource()
+        .forEachFeature(feature =>
+          this._polygonDrawing.layer.getSource().removeFeature(feature)
+        );
+      if (!!this._polygonDrawing.polygon) {
+        this.map.removeLayer(this._polygonDrawing.polygon);
+      }
+    });
+    this._polygonDrawing.drawing.on('drawend', event => {
+      const polygonGeometry = event.feature.getGeometry();
+      const polygonWkt = new WKT().writeGeometry(polygonGeometry, {
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857'
       });
-    this._polygonDrawing.drawing
-      .on('drawend', (event) => {
-        const polygonGeometry = event.feature.getGeometry();
-        const polygonWkt = new WKT().writeGeometry(polygonGeometry, {
-          dataProjection: 'EPSG:4326',
-          featureProjection: 'EPSG:3857'
-        });
-        this._sentinelSearchService.setFootprint(polygonWkt);
-        this._polygonDrawing.polygon = new VectorLayer({
-          source: new VectorSource({
-            features: [new WKT().readFeature(
-              polygonWkt,
-              {
-                dataProjection: 'EPSG:4326',
-                featureProjection: 'EPSG:3857'
-              }
-            )],
-          }),
-        });
-        this.map.addLayer(this._polygonDrawing.polygon);
-        this.map.removeInteraction(this._polygonDrawing.drawing);
+      this._sentinelSearchService.setFootprint(polygonWkt);
+      this._polygonDrawing.polygon = new VectorLayer({
+        source: new VectorSource({
+          features: [
+            new WKT().readFeature(polygonWkt, {
+              dataProjection: 'EPSG:4326',
+              featureProjection: 'EPSG:3857'
+            })
+          ]
+        })
       });
+      this.map.addLayer(this._polygonDrawing.polygon);
+      this.map.removeInteraction(this._polygonDrawing.drawing);
+    });
   }
 
   private _disableDrawing() {
-    if (!!this._polygonDrawing.drawing
-      && this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    if (
+      !!this._polygonDrawing.drawing &&
+      this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
     ) {
       this.map.removeInteraction(this._polygonDrawing.drawing);
     }
@@ -466,16 +489,20 @@ export class MapComponent implements OnInit, OnDestroy {
 
     if (!!this._polygonDrawing.layer) {
       this.map.removeLayer(this._polygonDrawing.layer);
-      this._polygonDrawing.layer.getSource()
-        .forEachFeature(feature => this._polygonDrawing.layer.getSource().removeFeature(feature));
+      this._polygonDrawing.layer
+        .getSource()
+        .forEachFeature(feature =>
+          this._polygonDrawing.layer.getSource().removeFeature(feature)
+        );
     }
 
     if (!!this._polygonDrawing.polygon) {
       this.map.removeLayer(this._polygonDrawing.polygon);
     }
 
-    if (!!this._polygonDrawing.drawing
-      && this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
+    if (
+      !!this._polygonDrawing.drawing &&
+      this.map.getInteractions().getArray().includes(this._polygonDrawing.drawing)
     ) {
       this.map.removeInteraction(this._polygonDrawing.drawing);
     }

@@ -18,8 +18,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Legend} from '../../state/legend/legend.model';
 import {FormControl} from '@ng-stack/forms';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-legend-designer',
   templateUrl: './legend-designer.component.html',
@@ -47,7 +48,9 @@ export class LegendDesignerComponent implements OnInit, OnDestroy {
   invalidJSON: boolean = false;
   isOpen = true;
 
-  jsonFc: FormControl<string> = new FormControl<string>(JSON.stringify(this.legend, null, 2));
+  jsonFc: FormControl<string> = new FormControl<string>(
+    JSON.stringify(this.legend, null, 2)
+  );
 
   constructor() {
     this.jsonFc.valueChanges.pipe(untilDestroyed(this)).subscribe(json => {
@@ -57,12 +60,10 @@ export class LegendDesignerComponent implements OnInit, OnDestroy {
       } catch (e) {
         this.invalidJSON = true;
       }
-    })
+    });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 }

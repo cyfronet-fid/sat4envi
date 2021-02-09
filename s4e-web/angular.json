@@ -4,19 +4,28 @@
   "newProjectRoot": "projects",
   "projects": {
     "s4e-angular": {
+      "i18n": {
+        "locales": {
+          "en": {
+            "translation": "src/i18n/messages.en.xlf",
+            "baseHref": ""
+          }
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "s4e",
       "schematics": {
         "@schematics/angular:component": {
-          "styleext": "scss"
+          "style": "scss"
         }
       },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "target/webapp",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -33,10 +42,22 @@
             ],
             "scripts": [
               "node_modules/canvg/dist/browser/canvg.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "jspdf",
+              "pixelworks",
+              "pbf",
+              "rbush"
             ]
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -46,7 +67,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -54,6 +74,12 @@
               "buildOptimizer": true
             },
             "production.private": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -63,7 +89,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -71,6 +96,12 @@
               "buildOptimizer": true
             },
             "hmr": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -79,6 +110,12 @@
               ]
             },
             "hmr.private": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -87,6 +124,12 @@
               ]
             },
             "hmr-no-persist": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -96,9 +139,14 @@
             },
             "en": {
               "aot": true,
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "outputPath": "dist/s4e-angular-en",
               "i18nFile": "src/i18n/messages.en.xlf",
-              "i18nFormat": "xlf",
               "i18nLocale": "en"
             }
           }
@@ -107,6 +155,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "s4e-angular:build",
+            "proxyConfig": "proxy.conf.json",
             "ssl": true,
             "sslCert": ".angular-ssl/server.crt",
             "sslKey": ".angular-ssl/server.key"
@@ -181,44 +230,6 @@
                 "en"
               ]
             }
-          }
-        }
-      }
-    },
-    "notifications": {
-      "root": "projects/notifications",
-      "sourceRoot": "projects/notifications/src",
-      "projectType": "library",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/notifications/tsconfig.lib.json",
-            "project": "projects/notifications/ng-package.json"
-          }
-        },
-        "test": {
-          "builder": "@angular-builders/jest:run",
-          "options": {
-            "tsConfig": "projects/notifications/tsconfig.spec.json",
-            "styles": [
-              "projects/notifications/src/scss/notifications.scss"
-            ],
-            "scripts": []
-          }
-
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/notifications/tsconfig.lib.json",
-              "projects/notifications/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }

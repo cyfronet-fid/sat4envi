@@ -15,11 +15,14 @@
  *
  */
 
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import { RemoteConfiguration, ConfigurationLoader } from './config.service';
-import { RemoteConfigurationFactory } from 'src/app/app.configuration.spec';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
+import {RemoteConfiguration, ConfigurationLoader} from './config.service';
+import {RemoteConfigurationFactory} from 'src/app/app.configuration.spec';
 
 describe('Configuration service', () => {
   let http: HttpTestingController;
@@ -28,16 +31,13 @@ describe('Configuration service', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ConfigurationLoader,
-        RemoteConfiguration
-      ],
+      providers: [ConfigurationLoader, RemoteConfiguration],
       imports: [HttpClientTestingModule]
     });
 
-    remoteConfiguration = TestBed.get(RemoteConfiguration);
-    configurationLoader = TestBed.get(ConfigurationLoader);
-    http = TestBed.get(HttpTestingController);
+    remoteConfiguration = TestBed.inject(RemoteConfiguration);
+    configurationLoader = TestBed.inject(ConfigurationLoader);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -58,5 +58,4 @@ describe('Configuration service', () => {
     http.verify();
     expect(spy).toHaveBeenCalledWith(configuration);
   });
-
 });

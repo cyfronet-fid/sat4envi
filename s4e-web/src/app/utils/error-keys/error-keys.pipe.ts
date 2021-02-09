@@ -15,7 +15,7 @@
  *
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import {Pipe, PipeTransform} from '@angular/core';
 import {HashMap} from '@datorama/akita';
 
 @Pipe({
@@ -25,5 +25,4 @@ export class ErrorKeysPipe implements PipeTransform {
   transform(value: HashMap<any>, args?: any): string[] {
     return Object.keys(value || {}).filter(key => key !== '__highlight__');
   }
-
 }

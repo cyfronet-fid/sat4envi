@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {SearchResultsComponent} from './search-results.component';
 import {MapModule} from '../../map.module';
 import {take, toArray} from 'rxjs/operators';
@@ -32,13 +32,14 @@ describe('SearchResultsComponent', () => {
   let fixture: ComponentFixture<SearchResultsComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule],
-      providers: [RemoteConfigurationTestingProvider]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, RouterTestingModule, HttpClientTestingModule],
+        providers: [RemoteConfigurationTestingProvider]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SearchResultsComponent);
@@ -66,31 +67,48 @@ describe('SearchResultsComponent', () => {
     });
 
     it('should display results', () => {
-      expect(de.queryAll(By.css('[data-test="search-result-entry"]')).length).toBe(1);
+      expect(de.queryAll(By.css('[data-test="search-result-entry"]')).length).toBe(
+        1
+      );
     });
 
     it('should have thumbnail', () => {
-      expect(de.query(By.css('.search-result__quicklook')).styles)
-        .toEqual({background: `url(api/v1/scenes/${result.id}/download/thumbnail)`});
+      expect(
+        de
+          .query(By.css('.search-result__quicklook'))
+          .nativeElement.getAttribute('style')
+      ).toBe(`background: url(api/v1/scenes/${result.id}/download/thumbnail);`);
     });
 
     it('should have empty thumbnail', () => {
       result.image = null;
       component.searchResults = [result];
       fixture.detectChanges();
-      expect(de.query(By.css('.search-result__quicklook')).styles)
-        .toEqual({background: ''});
+      expect(
+        de
+          .query(By.css('.search-result__quicklook'))
+          .nativeElement.getAttribute('styles')
+      ).toBeFalsy();
     });
 
     it('should emit showDetails when details button is clicked', async () => {
       const showDetailsEmitted = component.showDetails.pipe(take(1)).toPromise();
-      de.query(By.css('[data-test="search-result-entry"]:first-child [data-test="show-details-button"]')).nativeElement.click();
+      de.query(
+        By.css(
+          '[data-test="search-result-entry"]:first-child [data-test="show-details-button"]'
+        )
+      ).nativeElement.click();
       expect(await showDetailsEmitted).toEqual(result);
     });
 
     it('download link should have result.url as href', () => {
-      expect(de.query(By.css('[data-test="search-result-entry"]:first-child a.download-link.download')).attributes.href)
-        .toBe(result.url);
+      expect(
+        de.query(
+          By.css(
+            '[data-test="search-result-entry"]:first-child a.download-link.download'
+          )
+        ).attributes.href
+      ).toBe(result.url);
     });
   });
 
@@ -150,17 +168,31 @@ describe('SearchResultsComponent', () => {
     });
 
     it('clicking on page should emit changePage', async () => {
-      const changePage$ = component.changePage.asObservable().pipe(take(4), toArray()).toPromise();
-      de.queryAll(By.css('.pagination > li'))[1].query(By.css('a')).nativeElement.click();
-      de.queryAll(By.css('.pagination > li'))[2].query(By.css('a')).nativeElement.click();
-      de.queryAll(By.css('.pagination > li'))[3].query(By.css('a')).nativeElement.click();
-      de.queryAll(By.css('.pagination > li'))[4].query(By.css('a')).nativeElement.click();
+      const changePage$ = component.changePage
+        .asObservable()
+        .pipe(take(4), toArray())
+        .toPromise();
+      de.queryAll(By.css('.pagination > li'))[1]
+        .query(By.css('a'))
+        .nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[2]
+        .query(By.css('a'))
+        .nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[3]
+        .query(By.css('a'))
+        .nativeElement.click();
+      de.queryAll(By.css('.pagination > li'))[4]
+        .query(By.css('a'))
+        .nativeElement.click();
       expect(await changePage$).toEqual([0, 1, 2, 3]);
     });
 
-    it('prev should be disabled on first page', async() => {
-      const changePage$ = component.changePage.asObservable().pipe(take(1)).toPromise();
-      const prevA = de.query(By.css('.pagination > li:first-child > a'))
+    it('prev should be disabled on first page', async () => {
+      const changePage$ = component.changePage
+        .asObservable()
+        .pipe(take(1))
+        .toPromise();
+      const prevA = de.query(By.css('.pagination > li:first-child > a'));
       expect(prevA.classes.disabled).toBeTruthy();
       prevA.nativeElement.click();
       component.currentPage = 1;
@@ -172,8 +204,11 @@ describe('SearchResultsComponent', () => {
     it('next should be disabled on last page', async () => {
       component.currentPage = 3;
       fixture.detectChanges();
-      const changePage$ = component.changePage.asObservable().pipe(take(1)).toPromise();
-      const nextA = de.query(By.css('.pagination > li:last-child > a'))
+      const changePage$ = component.changePage
+        .asObservable()
+        .pipe(take(1))
+        .toPromise();
+      const nextA = de.query(By.css('.pagination > li:last-child > a'));
       expect(nextA.classes.disabled).toBeTruthy();
       nextA.nativeElement.click();
       component.currentPage = 2;

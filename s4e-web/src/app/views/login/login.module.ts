@@ -22,17 +22,8 @@ import {ShareModule} from '../../common/share.module';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 
 @NgModule({
-  declarations: [
-    LoginComponent
-  ],
-  imports: [
-    CommonModule,
-    FormErrorModule,
-    ShareModule
-  ],
-  exports: [
-    LoginComponent
-  ]
+  declarations: [LoginComponent],
+  imports: [CommonModule, FormErrorModule, ShareModule],
+  exports: [LoginComponent]
 })
-export class LoginModule {
-}
+export class LoginModule {}

@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ModalOutletComponent} from './modal-outlet.component';
 import {ModalModule} from '../../modal.module';
 
@@ -23,14 +23,13 @@ describe('ModalOutletComponent', () => {
   let component: ModalOutletComponent;
   let fixture: ComponentFixture<ModalOutletComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ModalModule
-      ],
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ModalOutletComponent);

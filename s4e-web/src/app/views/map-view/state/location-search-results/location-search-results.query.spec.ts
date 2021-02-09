@@ -16,8 +16,8 @@
  */
 
 import {LocationSearchResultsStore} from './locations-search-results.store';
-import { LocationSearchResultsQuery } from './location-search-results.query';
-import { TestBed } from '@angular/core/testing';
+import {LocationSearchResultsQuery} from './location-search-results.query';
+import {TestBed} from '@angular/core/testing';
 
 describe('LocationSearchResultsQuery', () => {
   let query: LocationSearchResultsQuery;

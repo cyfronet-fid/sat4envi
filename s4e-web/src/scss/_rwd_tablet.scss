@@ -15,8 +15,7 @@
  *
  */
 
-@media only screen and (min-width: 701px) and (max-width: 1050px){
-
+@media only screen and (min-width: 701px) and (max-width: 1050px) {
   .testinfo {
     left: 42% !important;
     width: 150px !important;
@@ -26,7 +25,6 @@
     &.open {
       display: block !important;
     }
-
   }
 
   .timeline {
@@ -42,20 +40,18 @@
 
   .dropdown {
     &__button {
-
       &--product {
         left: 80px !important;
       }
 
       &--login,
-      &--loginactive{
+      &--loginactive {
         right: 70px !important;
       }
 
       &--zk {
         right: 130px !important;
       }
-
     }
 
     &__content {
@@ -74,7 +70,6 @@
   s4e-settings {
     .settings {
       .navigation {
-
         &__list {
           display: none;
         }
@@ -133,7 +128,7 @@
   }
 }
 
-@media only all and (max-width: 800px)  {
+@media only all and (max-width: 800px) {
   .container {
     flex-direction: column;
 
@@ -150,7 +145,7 @@
         padding: 25px;
 
         .logo__partners {
-          display:block;
+          display: block;
           margin-top: 50px;
         }
       }
@@ -162,7 +157,6 @@
           p {
             display: none;
           }
-
         }
       }
     }
@@ -186,7 +180,6 @@
     }
   }
 
-
   .timeline {
     padding: 0;
     .timecontrol {
@@ -196,7 +189,7 @@
 
       &--interval,
       &--clock,
-      &--live span:last-child{
+      &--live span:last-child {
         display: none;
       }
 
@@ -214,9 +207,8 @@
     &__item--noproduct {
       bottom: 10px;
       line-height: 1.2;
-      width:100%;
+      width: 100%;
       margin: 0 7px;
     }
   }
-
 }

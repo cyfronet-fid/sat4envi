@@ -15,20 +15,21 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { FormInputErrorsComponent } from './form-input-errors.component';
+import {FormInputErrorsComponent} from './form-input-errors.component';
 
 describe('FormInputErrorsComponent', () => {
   let component: FormInputErrorsComponent;
   let fixture: ComponentFixture<FormInputErrorsComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ FormInputErrorsComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [FormInputErrorsComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(FormInputErrorsComponent);

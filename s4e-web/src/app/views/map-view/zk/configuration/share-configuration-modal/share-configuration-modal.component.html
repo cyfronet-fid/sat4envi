@@ -22,27 +22,70 @@
       <aside>
         <strong i18n>Podgląd widoku</strong>
         <div #reportTemplate class="report-template">
-          <img id="map-miniature" [src]="image" alt="Podgląd widoku, który chcesz wysłać"/>
+          <img
+            id="map-miniature"
+            [src]="image"
+            alt="Podgląd widoku, który chcesz wysłać"
+          />
         </div>
 
         <strong>Link do widoku</strong>
         <div class="report__details">
-          <a id="share-link" target="_blank" [attr.href]="displayHref"><small>{{displayHref}}</small></a>
+          <a id="share-link" target="_blank" [attr.href]="displayHref"
+            ><small>{{ displayHref }}</small></a
+          >
         </div>
       </aside>
       <div class="form">
         <ul>
-          <li><ext-input formControlName="emails" data-e2e="emails" label="Adresaci" i18n-label help="Możesz wpisać kilka adresów e-mail po przecinku" i18n-help></ext-input></li>
-          <li><ext-input formControlName="caption" data-e2e="caption" label="Tytuł wiadomości" i18n-label></ext-input></li>
-          <li><ext-textarea formControlName="description" data-e2e="description" label="Dodatkowe informacje" i18n-label></ext-textarea></li>
+          <li>
+            <ext-input
+              formControlName="emails"
+              data-e2e="emails"
+              label="Adresaci"
+              i18n-label
+              help="Możesz wpisać kilka adresów e-mail po przecinku"
+              i18n-help
+            ></ext-input>
+          </li>
+          <li>
+            <ext-input
+              formControlName="caption"
+              data-e2e="caption"
+              label="Tytuł wiadomości"
+              i18n-label
+            ></ext-input>
+          </li>
+          <li>
+            <ext-textarea
+              formControlName="description"
+              data-e2e="description"
+              label="Dodatkowe informacje"
+              i18n-label
+            ></ext-textarea>
+          </li>
         </ul>
       </div>
     </div>
     <div class="s4e-modal-footer">
-      <button class="button button--primary button--small"
-              type="submit" [disabled]="(isLoading$ | async)" data-e2e="btn-submit" i18n>Wyślij Wiadomość</button>
-      <button class="button button--cancel button--small"
-              type="button" [disabled]="(isLoading$ | async)" (click)="dismiss()" i18n>Anuluj</button>
+      <button
+        class="button button--primary button--small"
+        type="submit"
+        [disabled]="isLoading$ | async"
+        data-e2e="btn-submit"
+        i18n
+      >
+        Wyślij Wiadomość
+      </button>
+      <button
+        class="button button--cancel button--small"
+        type="button"
+        [disabled]="isLoading$ | async"
+        (click)="dismiss()"
+        i18n
+      >
+        Anuluj
+      </button>
     </div>
   </s4e-generic-modal>
 </form>

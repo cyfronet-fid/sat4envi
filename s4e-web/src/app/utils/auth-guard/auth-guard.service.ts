@@ -16,9 +16,18 @@
  */
 
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  CanActivate,
+  Router,
+  RouterStateSnapshot,
+  UrlTree
+} from '@angular/router';
 import {SessionQuery} from '../../state/session/session.query';
-import { InvitationService, TOKEN_QUERY_PARAMETER } from 'src/app/views/settings/people/state/invitation/invitation.service';
+import {
+  InvitationService,
+  TOKEN_QUERY_PARAMETER
+} from 'src/app/views/settings/people/state/invitation/invitation.service';
 
 @Injectable({providedIn: 'root'})
 export class IsLoggedIn implements CanActivate {
@@ -28,8 +37,10 @@ export class IsLoggedIn implements CanActivate {
     protected _router: Router
   ) {}
 
-  canActivate(next: ActivatedRouteSnapshot,
-              state: RouterStateSnapshot): UrlTree | boolean {
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): UrlTree | boolean {
     if (!this._sessionQuery.isLoggedIn()) {
       return this._router.parseUrl('/login');
     }
@@ -37,10 +48,8 @@ export class IsLoggedIn implements CanActivate {
   }
 }
 
-
 @Injectable({providedIn: 'root'})
 export class IsNotLoggedIn extends IsLoggedIn implements CanActivate {
-
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot

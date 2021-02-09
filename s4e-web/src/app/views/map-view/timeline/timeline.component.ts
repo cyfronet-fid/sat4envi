@@ -16,6 +16,7 @@
  */
 
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -31,23 +32,35 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {combineLatest, merge, Observable, of, ReplaySubject, Subject} from 'rxjs';
-import {OWL_DATE_TIME_FORMATS} from 'ng-pick-datetime';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {debounceTime, map} from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  combineLatest,
+  merge,
+  Observable,
+  of,
+  ReplaySubject,
+  Subject
+} from 'rxjs';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
-import {yyyymm, yyyymmdd} from '../../../utils/miscellaneous/date-utils';
+import {yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 import {AkitaGuidService} from '../state/search-results/guid.service';
 import {DEFAULT_TIMELINE_RESOLUTION} from '../state/product/product.model';
 import moment from 'moment';
-import {distinctUntilChangedDE} from '../../../utils/rxjs/observable';
+import {distinctUntilChangedDE, logIt} from '../../../utils/rxjs/observable';
 import {TimelineService} from '../state/scene/timeline.service';
 import {SceneQuery} from '../state/scene/scene.query';
+import {
+  BsDatepickerDirective,
+  DatepickerDateCustomClasses
+} from 'ngx-bootstrap/datepicker';
+import {BsDatePickerUtils} from './bs-date-picker-utils';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {FormControl} from '@ng-stack/forms';
 
 export interface Day {
   label: string;
   products: Scene[];
-
 }
 
 export interface DataPoint {
@@ -57,22 +70,30 @@ export interface DataPoint {
 }
 
 export const DATEPICKER_FORMAT_CUSTOMIZATION = {
-  fullPickerInput: {year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+  fullPickerInput: {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  },
   datePickerInput: {year: 'numeric', month: 'numeric', day: 'numeric'},
   timePickerInput: {hour: 'numeric', minute: 'numeric'},
   monthYearLabel: {year: 'numeric', month: 'short'},
   dateA11yLabel: {year: 'numeric', month: '2-digit', day: '2-digit'},
-  monthYearA11yLabel: {year: 'numeric', month: 'long'},
+  monthYearA11yLabel: {year: 'numeric', month: 'long'}
 };
 
 export class PointStacker {
-  constructor(private scenePointWidth: number, private scenePointMaximumSpace: number) {
-  }
+  constructor(
+    private scenePointWidth: number,
+    private scenePointMaximumSpace: number
+  ) {}
 
   stack(scenes: SceneWithUI[], width: number, activeScene: Scene): DataPoint[] {
     const retScenes: DataPoint[] = [];
 
-    for (let i = 0; i < scenes.length;) {
+    for (let i = 0; i < scenes.length; ) {
       const scenePoint = [];
       let j = i;
       const startPosition = scenes[i].position * width * 0.01;
@@ -89,38 +110,46 @@ export class PointStacker {
         if (j === scenes.length) {
           break;
         }
-      } while ((scenes[j].position * width * 0.01 - startPosition) < this.scenePointWidth + 2 * this.scenePointMaximumSpace);
+      } while (
+        scenes[j].position * width * 0.01 - startPosition <
+        this.scenePointWidth + 2 * this.scenePointMaximumSpace
+      );
 
       const position = (endPosition - startPosition) * 0.5 + startPosition;
       i = j;
-      retScenes.push({points: scenePoint, position: position * 100.0 / width, selected: selected});
+      retScenes.push({
+        points: scenePoint,
+        position: (position * 100.0) / width,
+        selected: selected
+      });
     }
 
     return retScenes;
   }
 }
 
+@UntilDestroy()
 @Component({
   selector: 's4e-timeline',
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
-  providers: [
-    {provide: OWL_DATE_TIME_FORMATS, useValue: DATEPICKER_FORMAT_CUSTOMIZATION}
-  ]
+  providers: []
 })
-export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
+export class TimelineComponent
+  implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   static readonly HOURMARKS_COUNT = 6;
-  @ViewChild('datepicker', {read: ElementRef}) datepicker: ElementRef;
+  @ViewChild('datepicker', {read: BsDatepickerDirective, static: true})
+  datepicker: BsDatepickerDirective;
   @Input() loading: boolean = true;
   @Input() resolution: number = DEFAULT_TIMELINE_RESOLUTION;
   currentDate: string = '';
-  startAt = null;
   public activeScene: Scene | null = null;
   @Input() startTime: string;
   hourmarks: string[] = [];
   public scenes$: Observable<DataPoint[]>;
   public activeStackedPoint: DataPoint | null = null;
-  public isLive$ = this.sceneQuery.selectLoading()
+  public isLive$ = this.sceneQuery
+    .selectLoading()
     .pipe(map(() => this.sceneQuery.getValue().isLiveMode));
   @Output() dateSelected = new EventEmitter<string>();
   @Output() selectedScene = new EventEmitter<Scene>();
@@ -138,9 +167,13 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
   private pointStacker = new PointStacker(10, 15);
   private readonly _activeScene$: ReplaySubject<Scene | null> = new ReplaySubject(1);
   private readonly _timelineWidth$: ReplaySubject<number> = new ReplaySubject(1);
-  private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(1);
+  private readonly _scenesWithUi$: ReplaySubject<SceneWithUI[]> = new ReplaySubject(
+    1
+  );
   // }
   private updateStream = new Subject<void>();
+
+  private isDatepickerOpen$ = new BehaviorSubject(false);
 
   // tslint:disable-next-line:no-shadowed-variable
   constructor(
@@ -154,17 +187,6 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     //class name can not start with number
     this.componentId = `D${this.guidService.guid()}`;
   }
-  // @Input() set products(products: Scene[] | null) {
-  //   this.days = [];
-  //   let currDay: Day;
-  //   for (const product of (products || [])) {
-  //     const day = formatDate(product.timestamp, 'shortDate', this.LOCALE_ID);
-  //     if (currDay === undefined || currDay.label !== day) {
-  //       currDay = {label: day, products: []};
-  //       this.days.push(currDay);
-  //     }
-  //     currDay.products.push(product);
-  //   }
 
   @Input('activeScene') set _activeScene(scene: Scene | null) {
     this.activeScene = scene;
@@ -175,42 +197,57 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     this._scenesWithUi$.next(scenes);
   }
 
-  private _availableDates: string[] = [];
+  public dateClasses: DatepickerDateCustomClasses[] = [];
 
   @Input()
-  public set availableDates(value: string[]) {
-    this._availableDates = value;
-    if (this.pickerState == true) {
-      this.hackCalendar();
-    }
+  public set datesEnabled(dates: Date[]) {
+    this.dateClasses = dates.map(date => ({
+      date,
+      classes: ['calendar-data-available']
+    }));
   }
+
+  datepickerFc = new FormControl<Date>();
 
   @Input('currentDate') set _currentDate(v: string) {
     this.currentDate = v;
-    this.startAt = v;
+    this.datepickerFc.setValue(new Date(v), {emitEvent: false});
   }
 
-  public filterInactiveDays = (date: Date) => {
-    this.loadAvailableDates.emit(yyyymm(date));
-    this.updateStream.next();
-    return true;
-  };
+  bsDatePickerUtils!: BsDatePickerUtils;
+
+  ngAfterViewInit(): void {
+    this.bsDatePickerUtils = new BsDatePickerUtils(this.datepicker);
+
+    this.isDatepickerOpen$
+      .pipe(
+        switchMap(open =>
+          open
+            ? this.bsDatePickerUtils
+                .monthChanged$()
+                .pipe(tap(yearMonth => this.loadAvailableDates.emit(yearMonth)))
+            : of(null)
+        ),
+        logIt(),
+        untilDestroyed(this)
+      )
+      .subscribe();
+  }
 
   toggleLiveMode() {
     this.timelineService.toggleLiveMode();
   }
 
-  async selectDate($event: { value: Date }) {
+  async selectDate(date: Date) {
     const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
-    if (!turnOfLiveMode) {
+    if (!turnOfLiveMode || date == null) {
       return;
     }
 
-    this.dateSelected.emit(yyyymmdd($event.value));
+    this.dateSelected.emit(yyyymmdd(date));
   }
 
-  monthSelected($event: any) {
-  }
+  monthSelected($event: any) {}
 
   async goToPreviousDay() {
     const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
@@ -256,10 +293,8 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
       }
     }
 
+    this.isDatepickerOpen$.next(open);
     this.pickerState = open;
-    if (this.pickerState) {
-      this.hackCalendar();
-    }
   }
 
   async selectScene(scene: Scene) {
@@ -281,31 +316,23 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
     this.lastAvailableScene.emit();
   }
 
-  hackCalendar() {
-    this._availableDates
-      .map(date => date.split('-').reverse().join('.'))
-      .map(date => document.querySelector(`.${this.componentId} .owl-dt-calendar-cell[aria-label='${date}'] .owl-dt-calendar-cell-content`))
-      .filter(element => element != null)
-      .forEach(element => this.renderer.addClass(element, 'calendar-data-available'));
-  }
-
   ngOnInit(): void {
-    this.updateStream
-      .pipe(untilDestroyed(this), debounceTime(50))
-      .subscribe(() => this.hackCalendar());
-
     this.scenes$ = this.aggregateScenes();
 
     this.onResize();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.resolution || changes.startTime) {
       this.hourmarks = [];
-      for (let i = 0; i < this.resolution && this.hourmarks.length < TimelineComponent.HOURMARKS_COUNT; i += (this.resolution / TimelineComponent.HOURMARKS_COUNT)) {
+      for (
+        let i = 0;
+        i < this.resolution &&
+        this.hourmarks.length < TimelineComponent.HOURMARKS_COUNT;
+        i += this.resolution / TimelineComponent.HOURMARKS_COUNT
+      ) {
         let date = moment(this.startTime);
         date.add(i, 'hours');
         this.hourmarks.push(date.format('HH:mm'));
@@ -315,7 +342,9 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
 
   @HostListener('window:resize', ['$event'])
   onResize(event?) {
-    this._timelineWidth$.next((this.element.nativeElement as HTMLElement).clientWidth);
+    this._timelineWidth$.next(
+      (this.element.nativeElement as HTMLElement).clientWidth
+    );
   }
 
   private aggregateScenes(): Observable<DataPoint[]> {
@@ -324,8 +353,13 @@ export class TimelineComponent implements OnInit, OnDestroy, OnChanges {
       combineLatest([
         this._scenesWithUi$.asObservable(),
         this._timelineWidth$.asObservable(),
-        this._activeScene$.asObservable(),
+        this._activeScene$.asObservable()
       ])
-    ).pipe(distinctUntilChangedDE(), map(([scenes, width, activeScene]) => this.pointStacker.stack(scenes, width, activeScene)));
+    ).pipe(
+      distinctUntilChangedDE(),
+      map(([scenes, width, activeScene]) =>
+        this.pointStacker.stack(scenes, width, activeScene)
+      )
+    );
   }
 }

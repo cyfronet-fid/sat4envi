@@ -26,4 +26,3 @@ export class ModalStore extends EntityStore<ModalState, Modal> {
     super();
   }
 }
-

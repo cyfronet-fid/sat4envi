@@ -27,9 +27,9 @@ export class ButtonComponent {
   @Input('disabled') _disabled: boolean = false;
   @Input() cssClass: string = 'button--primary button--small';
   @Input() type: string = 'button';
-  @Input() onClick: () => void|Promise<boolean>|Observable<boolean> = () => {};
+  @Input() onClick: () => void | Promise<boolean> | Observable<boolean> = () => {};
 
   @Input() isLoading: boolean = false;
 
-  constructor() { }
+  constructor() {}
 }

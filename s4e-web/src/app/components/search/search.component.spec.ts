@@ -15,14 +15,14 @@
  *
  */
 
-import { QueryEntity, EntityStore, StoreConfig } from '@datorama/akita';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SearchComponent } from './search.component';
-import { SearchModule } from './search.module';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { Component, DebugElement, Directive } from '@angular/core';
-import { By } from '@angular/platform-browser';
-import { of } from 'rxjs';
+import {QueryEntity, EntityStore, StoreConfig} from '@datorama/akita';
+import {RouterTestingModule} from '@angular/router/testing';
+import {SearchComponent} from './search.component';
+import {SearchModule} from './search.module';
+import {ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import {Component, DebugElement, Directive} from '@angular/core';
+import {By} from '@angular/platform-browser';
+import {of} from 'rxjs';
 import {LocationSearchResultsStore} from '../../views/map-view/state/location-search-results/locations-search-results.store';
 
 const SEARCH_RESULTS = [
@@ -46,7 +46,6 @@ class StoreMock extends EntityStore<any> {}
       [store]="store"
       [value]="searchValue"
       (valueChange)="refreshResults($event)"
-
       (selectResult)="selectResult($event)"
     >
       <ng-template #result let-result>
@@ -78,15 +77,9 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        SearchModule,
-        RouterTestingModule
-      ],
-      declarations: [
-        SearchMockComponent
-      ]
-    })
-    .compileComponents();
+      imports: [SearchModule, RouterTestingModule],
+      declarations: [SearchMockComponent]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -105,11 +98,10 @@ describe('SearchComponent', () => {
 
   it('should display search results', () => {
     const valueToSearch = 'example';
-    sendInput(valueToSearch)
-      .then(() => {
-        const results = de.queryAll(By.css('.name'));
-        expect(results.length).toEqual(2);
-      });
+    sendInput(valueToSearch).then(() => {
+      const results = de.queryAll(By.css('.name'));
+      expect(results.length).toEqual(2);
+    });
   });
 
   it('should emit empty string on reset button click', () => {
@@ -129,31 +121,30 @@ describe('SearchComponent', () => {
   it('should select active result on search button click', () => {
     const selectResultSpy = spyOn(component, 'selectResult');
     const valueToSearch = 'example';
-    sendInput(valueToSearch)
-      .then(() => {
-        const selectActiveResultBtn = searchDe.query(By.css('.search__button')).nativeElement;
-        selectActiveResultBtn.click();
-        fixture.detectChanges();
+    sendInput(valueToSearch).then(() => {
+      const selectActiveResultBtn = searchDe.query(By.css('.search__button'))
+        .nativeElement;
+      selectActiveResultBtn.click();
+      fixture.detectChanges();
 
-        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
-      });
+      expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
+    });
   });
 
   it('should emit result on select result click', () => {
     const selectResultSpy = spyOn(component, 'selectResult');
     const valueToSearch = 'example';
-    sendInput(valueToSearch)
-      .then(() => {
-        const results = de.queryAll(By.css('.name'));
-        expect(results.length).toEqual(2);
+    sendInput(valueToSearch).then(() => {
+      const results = de.queryAll(By.css('.name'));
+      expect(results.length).toEqual(2);
 
-        const firstResult = de.queryAll(By.css('.name'))[0].nativeElement;
-        firstResult.click();
+      const firstResult = de.queryAll(By.css('.name'))[0].nativeElement;
+      firstResult.click();
 
-        fixture.detectChanges();
+      fixture.detectChanges();
 
-        expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
-      });
+      expect(selectResultSpy).toHaveBeenCalledWith(SEARCH_RESULTS[0]);
+    });
   });
 
   function sendInput(text: string) {

@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class SettingsManageProducts extends Core {
   static readonly pageObject = {
@@ -7,23 +7,18 @@ export class SettingsManageProducts extends Core {
   };
 
   static goToManageProductsPage() {
-    SettingsManageProducts
-      .pageObject
-      .getManageProductsBtn()
-      .click()
+    SettingsManageProducts.pageObject.getManageProductsBtn().click();
 
-      cy.location('href').should('include', '/settings/manage-products');
+    cy.location('href').should('include', '/settings/manage-products');
 
     return SettingsManageProducts;
   }
 
   static productsCountShouldBe(count: number) {
-  
-    SettingsManageProducts
-      .pageObject
+    SettingsManageProducts.pageObject
       .getInstitutionProducts()
       .should('have.length', count);
 
     return SettingsManageProducts;
   }
-};
+}

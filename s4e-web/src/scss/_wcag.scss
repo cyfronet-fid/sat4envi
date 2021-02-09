@@ -56,7 +56,7 @@ body.wcag_hc {
   }
 
   .intro {
-    background: url("/../assets/images/bg_auth_grey.png") no-repeat !important;
+    background: url('/../assets/images/bg_auth_grey.png') no-repeat !important;
   }
 
   .button {
@@ -95,16 +95,7 @@ body.wcag_hc {
   .search-result,
   .modal-body,
   .timecontrol label,
-  .timecontrol span
-  {
+  .timecontrol span {
     color: $color-black !important;
   }
-
 }
-
-
-
-
-
-
-

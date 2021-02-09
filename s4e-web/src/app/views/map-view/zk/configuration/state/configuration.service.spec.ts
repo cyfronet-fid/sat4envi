@@ -16,16 +16,19 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {ConfigurationService} from './configuration.service';
 import {ConfigurationStore} from './configuration.store';
 import {ConfigurationQuery} from './configuration.query';
 import {take, toArray, catchError} from 'rxjs/operators';
 import {MapModule} from '../../../map.module';
-import {NotificationService} from 'notifications';
 import {RouterTestingModule} from '@angular/router/testing';
 import environment from 'src/environments/environment';
-import { of } from 'rxjs';
+import {of} from 'rxjs';
+import {NotificationService} from '../../../../../notifications/state/notification.service';
 
 describe('ConfigurationService', () => {
   let service: ConfigurationService;
@@ -39,11 +42,11 @@ describe('ConfigurationService', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    notifications = TestBed.get(NotificationService);
-    query = TestBed.get(ConfigurationQuery);
-    service = TestBed.get(ConfigurationService);
-    store = TestBed.get(ConfigurationStore);
-    http = TestBed.get(HttpTestingController);
+    notifications = TestBed.inject(NotificationService);
+    query = TestBed.inject(ConfigurationQuery);
+    service = TestBed.inject(ConfigurationService);
+    store = TestBed.inject(ConfigurationStore);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -61,18 +64,29 @@ describe('ConfigurationService', () => {
 
     it('should call http, pass data and return true if ok', async () => {
       spyOn(notifications, 'addGeneral').and.stub();
-      service.shareConfiguration(body).subscribe((value) => expect(value).toBeTruthy());
-      const req = http.expectOne({method: 'POST', url: `${environment.apiPrefixV1}/share-link`});
+      service
+        .shareConfiguration(body)
+        .subscribe(value => expect(value).toBeTruthy());
+      const req = http.expectOne({
+        method: 'POST',
+        url: `${environment.apiPrefixV1}/share-link`
+      });
       req.flush({});
 
       expect(req.request.body).toEqual(body);
 
-      const notification = {content: 'Link został wysłany na adres a@a', type: 'success'};
+      const notification = {
+        content: 'Link został wysłany na adres a@a',
+        type: 'success'
+      };
       expect(notifications.addGeneral).toHaveBeenCalledWith(notification);
     });
 
     it('should return set store error and return false if http errored', async () => {
-      const error = service.shareConfiguration(body).pipe(catchError(error => of(error))).toPromise();
+      const error = service
+        .shareConfiguration(body)
+        .pipe(catchError(error => of(error)))
+        .toPromise();
       const url = `${environment.apiPrefixV1}/share-link`;
       const req = http.expectOne({method: 'POST', url});
       req.flush({}, {status: 500, statusText: 'server error'});
@@ -81,8 +95,9 @@ describe('ConfigurationService', () => {
       expect((await error).status).toEqual(500);
     });
 
-    it('should set loading', (done) => {
-      query.selectLoading()
+    it('should set loading', done => {
+      query
+        .selectLoading()
         .pipe(take(3), toArray())
         .subscribe(data => {
           expect(data).toEqual([false, true, false]);

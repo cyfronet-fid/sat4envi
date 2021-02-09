@@ -19,9 +19,12 @@ import {Injectable} from '@angular/core';
 import {EntityStore, StoreConfig} from '@datorama/akita';
 import {SentinelSearchResult, SentinelSearchState} from './sentinel-search.model';
 
-@Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'SentinelSearchResult' })
-export class SentinelSearchStore extends EntityStore<SentinelSearchState, SentinelSearchResult> {
+@Injectable({providedIn: 'root'})
+@StoreConfig({name: 'SentinelSearchResult'})
+export class SentinelSearchStore extends EntityStore<
+  SentinelSearchState,
+  SentinelSearchResult
+> {
   constructor() {
     super({
       loading: false,
@@ -49,7 +52,6 @@ export class SentinelSearchStore extends EntityStore<SentinelSearchState, Sentin
   }
 
   setLoaded(loaded: boolean = true) {
-    this.update({loaded})
+    this.update({loaded});
   }
 }
-
