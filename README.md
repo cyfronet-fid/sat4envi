@@ -223,6 +223,9 @@ Application can be configured to listen to notifications from an AMQP queue with
 
 In profile `development` this feature is enabled, and in `production` it has to be enabled by setting
 `amqp.enabled=true` or `AMQP_ENABLED=true`.
+By default, we disable RabbitHealthIndicator as it doesn't respond to lack of `@EnableRabbit` when RabbitTemplate
+is on classpath.
+To enable it, set `management.health.rabbit.enabled=true` or `MANAGEMENT_HEALTH_RABBIT_ENABLED=true`.
 
 By default, the listener subscribes to queue `s4e.scenes.incoming`.
 When an error occurs during scene processing, the message is rejected with option not to requeue it.
