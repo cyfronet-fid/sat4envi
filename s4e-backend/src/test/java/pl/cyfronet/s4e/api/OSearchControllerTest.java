@@ -24,6 +24,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
@@ -103,6 +105,7 @@ public class OSearchControllerTest {
     private Scene buildScene(Product product, long number) {
         JsonNode metadataContent = SceneTestHelper.getMetadataContentWithNumber(number);
         Scene scene = SceneTestHelper.sceneWithMetadataBuilder(product, metadataContent).build();
+        scene.setSceneKey("path/to/" + number + ".scene");
         scene.setSceneContent(SceneTestHelper.getSceneContent());
         return scene;
     }
@@ -137,6 +140,31 @@ public class OSearchControllerTest {
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(10))));
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+                "beginposition asc,    path/to/0.scene,  path/to/1.scene",
+                "beginposition desc,   path/to/29.scene, path/to/28.scene",
+                "ingestiondate asc,    path/to/0.scene,  path/to/1.scene",
+                "ingestiondate desc,   path/to/29.scene, path/to/28.scene",
+                // Default to desc ordering:
+                "ingestiondate,        path/to/29.scene, path/to/28.scene",
+                "ingestiondate desc q, path/to/29.scene, path/to/28.scene",
+                "foo bar baz,          path/to/29.scene, path/to/28.scene",
+                "foo,                  path/to/29.scene, path/to/28.scene",
+                "foo bar,              path/to/29.scene, path/to/28.scene",
+                ",                     path/to/29.scene, path/to/28.scene",
+        })
+        public void shouldApplyOrderBy(String orderBy, String sceneKey1, String sceneKey2) throws Exception {
+            mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("rows", "2")
+                    .param("orderby", orderBy)
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(2))))
+                    .andExpect(jsonPath("$[0].sceneKey", is(equalTo(sceneKey1))))
+                    .andExpect(jsonPath("$[1].sceneKey", is(equalTo(sceneKey2))));
         }
 
         @Test
