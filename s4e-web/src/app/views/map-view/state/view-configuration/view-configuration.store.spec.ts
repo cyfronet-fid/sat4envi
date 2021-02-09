@@ -15,7 +15,7 @@
  *
  */
 
-import { ViewConfigurationStore } from './view-configuration.store';
+import {ViewConfigurationStore} from './view-configuration.store';
 import {TestBed} from '@angular/core/testing';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
@@ -31,11 +31,10 @@ describe('ViewConfigurationStore', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    store = TestBed.get(ViewConfigurationStore);
+    store = TestBed.inject(ViewConfigurationStore);
   });
 
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

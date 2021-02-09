@@ -27,6 +27,6 @@ export interface ReportTemplate {
   productId?: number;
 }
 
-export interface ReportTemplateState extends EntityState<ReportTemplate>, ActiveState<string> {
-
-}
+export interface ReportTemplateState
+  extends EntityState<ReportTemplate>,
+    ActiveState<string> {}

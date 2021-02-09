@@ -28,9 +28,13 @@
       >
         <div>
           <div>
-            <p><strong>Tytuł: </strong> <span>{{reportTemplate.caption}}</span></p>
+            <p>
+              <strong>Tytuł: </strong> <span>{{ reportTemplate.caption }}</span>
+            </p>
             <p *ngIf="!!reportTemplate.createdAt">
-              <small>Data utworzenia: {{  reportTemplate.createdAt | S4EDate}}</small>
+              <small
+                >Data utworzenia: {{ reportTemplate.createdAt | S4EDate }}</small
+              >
             </p>
           </div>
           <div class="right-details">
@@ -50,20 +54,28 @@
               data-e2e="btn-delete"
               i18n
             >
-              <img _ngcontent-c103="" alt="Delete" src="/assets/images/ico_delete.svg" width="15">
+              <img
+                _ngcontent-c103=""
+                alt="Delete"
+                src="/assets/images/ico_delete.svg"
+                width="15"
+              />
             </button>
           </div>
         </div>
         <p>
           <strong i18n>Notatka:</strong>
           <br />
-          <span>{{reportTemplate.notes}}</span>
+          <span>{{ reportTemplate.notes }}</span>
         </p>
       </li>
     </ul>
 
     <ng-template #noReportsTemplatesMessage>
-      <p>Nie posiadasz żadnych szablonów raportów. Wejdź w zakładkę `Wygeneruj raport (pdf)`, by dodać nowy szablon.</p>
+      <p>
+        Nie posiadasz żadnych szablonów raportów. Wejdź w zakładkę `Wygeneruj raport
+        (pdf)`, by dodać nowy szablon.
+      </p>
     </ng-template>
   </div>
   <div class="s4e-modal-footer">

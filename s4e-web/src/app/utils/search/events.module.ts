@@ -15,15 +15,13 @@
  *
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EventsDirective } from './events.directive';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {EventsDirective} from './events.directive';
 
 @NgModule({
   declarations: [EventsDirective],
-  imports: [
-    CommonModule
-  ],
+  imports: [CommonModule],
   exports: [EventsDirective]
 })
-export class EventsModule { }
+export class EventsModule {}

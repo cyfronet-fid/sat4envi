@@ -32,7 +32,7 @@ describe('MapQuery', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    query = TestBed.get(MapStore);
+    query = TestBed.inject(MapQuery);
   });
 
   it('should create an instance', () => {

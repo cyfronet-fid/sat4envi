@@ -15,9 +15,12 @@
  *
  */
 
-import { RegisterFactory } from '../register.factory.spec';
+import {RegisterFactory} from '../register.factory.spec';
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {RegisterService} from './register.service';
 import {RegisterStore} from './register.store';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -37,10 +40,10 @@ describe('RegisterService', () => {
       imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
-    http = TestBed.get(HttpTestingController);
-    registerService = TestBed.get(RegisterService);
-    registerStore = TestBed.get(RegisterStore);
-    registerQuery = TestBed.get(RegisterQuery);
+    http = TestBed.inject(HttpTestingController);
+    registerService = TestBed.inject(RegisterService);
+    registerStore = TestBed.inject(RegisterStore);
+    registerQuery = TestBed.inject(RegisterQuery);
   });
 
   it('should be created', () => {
@@ -48,12 +51,13 @@ describe('RegisterService', () => {
   });
 
   describe('register', () => {
-
     it('should correctly pass userRegister', () => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
+      const req = http.expectOne(
+        `${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`
+      );
       expect(req.request.method).toBe('POST');
 
       expect(req.request.body).toEqual(request);
@@ -62,13 +66,15 @@ describe('RegisterService', () => {
     });
 
     it('should redirect on success', fakeAsync(() => {
-      const router = TestBed.get(Router);
+      const router = TestBed.inject(Router);
       const spy = spyOn(router, 'navigateByUrl').and.stub();
 
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
+      const req = http.expectOne(
+        `${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`
+      );
       req.flush({});
 
       tick(1000);
@@ -77,14 +83,16 @@ describe('RegisterService', () => {
     }));
 
     it('should redirect on success with invite to institution', fakeAsync(() => {
-      const router = TestBed.get(Router);
+      const router = TestBed.inject(Router);
       const spy = spyOn(router, 'navigateByUrl').and.stub();
 
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
-      const token = 'ddddddddddddddd'
+      const token = 'ddddddddddddddd';
       registerService.register(request, recaptcha, token);
-      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}&token=${token}`);
+      const req = http.expectOne(
+        `${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}&token=${token}`
+      );
       req.flush({});
 
       tick(1000);
@@ -92,12 +100,17 @@ describe('RegisterService', () => {
       expect(spy).toBeCalledWith('/register-confirmation');
     }));
 
-    it('should handle error 400', (done) => {
+    it('should handle error 400', done => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
-      req.flush({email: ['Invalid email']}, {status: 400, statusText: 'Bad Request'});
+      const req = http.expectOne(
+        `${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`
+      );
+      req.flush(
+        {email: ['Invalid email']},
+        {status: 400, statusText: 'Bad Request'}
+      );
 
       registerQuery.selectError().subscribe(error => {
         expect(error).toEqual({email: ['Invalid email']});
@@ -107,11 +120,13 @@ describe('RegisterService', () => {
       http.verify();
     });
 
-    it('should handle other errors', (done) => {
+    it('should handle other errors', done => {
       const userRegister = RegisterFactory.build();
       const {recaptcha, passwordRepeat, ...request} = userRegister;
       registerService.register(request, recaptcha);
-      const req = http.expectOne(`${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`);
+      const req = http.expectOne(
+        `${environment.apiPrefixV1}/register?g-recaptcha-response=${userRegister.recaptcha}`
+      );
       req.flush('Server Failed', {status: 500, statusText: 'Server Error'});
 
       registerQuery.selectError().subscribe(error => {

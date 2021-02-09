@@ -17,7 +17,7 @@
 
 import {InvitationService} from '../../people/state/invitation/invitation.service';
 import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {Component} from '@angular/core';
 import {ModalService} from 'src/app/modal/state/modal.service';
@@ -27,32 +27,39 @@ import {
   PARENT_INSTITUTION_MODAL_ID,
   ParentInstitutionModal
 } from '../parent-institution-modal/parent-institution-modal.model';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {filter, map, switchMap} from 'rxjs/operators';
+import {filter, finalize, map, switchMap} from 'rxjs/operators';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
 import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
 import {FormState} from 'src/app/state/form/form.model';
 import {InstitutionQuery} from '../../state/institution/institution.query';
-import {Institution, InstitutionForm} from '../../state/institution/institution.model';
+import {
+  Institution,
+  InstitutionForm
+} from '../../state/institution/institution.model';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {File, ImageBase64} from './files.utils';
 import {combineLatest, forkJoin, of} from 'rxjs';
-import {ADD_INSTITUTION_PATH, EDIT_INSTITUTION_PATH, INSTITUTION_PROFILE_PATH, INSTITUTIONS_LIST_PATH} from '../../settings.breadcrumbs';
+import {EDIT_INSTITUTION_PATH} from '../../settings.breadcrumbs';
 import {emailListValidator} from '../../email-list-validator.utils';
 import {SessionService} from '../../../../state/session/session.service';
-import {NotificationService} from 'notifications';
+import {NotificationService} from '../../../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-add-institution',
   templateUrl: './institution-form.component.html',
   styleUrls: ['./institution-form.component.scss']
 })
-export class InstitutionFormComponent extends GenericFormComponent<InstitutionQuery, InstitutionForm> {
+export class InstitutionFormComponent extends GenericFormComponent<
+  InstitutionQuery,
+  InstitutionForm
+> {
   form: FormGroup<InstitutionForm> = new FormGroup<InstitutionForm>({
+    adminsEmails: new FormControl<string>('', emailListValidator),
     parentName: new FormControl<string>(null, Validators.required),
     parentSlug: new FormControl<string>(null, Validators.required),
-
     slug: new FormControl<string>(),
     name: new FormControl<string>(null, Validators.required),
     address: new FormControl<string>(),
@@ -60,12 +67,13 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     city: new FormControl<string>(null, Validators.required),
     phone: new FormControl<string>(),
     emblem: new FormControl<string>(),
-    secondaryPhone: new FormControl<string>(),
-    adminsEmails: new FormControl<string>(null, emailListValidator)
+    secondaryPhone: new FormControl<string>()
   });
   activeInstitution: Institution;
   emblemImgSrc: string;
-  isAddingChild$ = this._institutionsSearchResultsQuery.isChildAddition$(this._activatedRoute);
+  isAddingChild$ = this._institutionsSearchResultsQuery.isChildAddition$(
+    this._activatedRoute
+  );
 
   constructor(
     private _formsManager: AkitaNgFormsManager<FormState>,
@@ -95,28 +103,27 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       return;
     }
 
-    ImageBase64
-      .getFromFile$(emblem)
-      .subscribe(
-        (imageBase64) => {
-          if (imageBase64 === '') {
-            $event.target.value = '';
-            this.form.controls.emblem.setErrors({'incorrect': true});
-            this.emblemImgSrc = null;
-            return;
-          }
-
-          this.form.controls.emblem.setValue(imageBase64);
-          this.emblemImgSrc = 'data:image/png;base64,' + this.form.controls.emblem.value;
-          this.form.controls.emblem.setErrors(null);
-        },
-        (error) => {
-          console.error('Error while image loading: ', error);
+    ImageBase64.getFromFile$(emblem).subscribe(
+      imageBase64 => {
+        if (imageBase64 === '') {
           $event.target.value = '';
-          this.form.controls.emblem.setErrors({'niewłaściwy format zdjęcia': true});
+          this.form.controls.emblem.setErrors({incorrect: true});
           this.emblemImgSrc = null;
+          return;
         }
-      );
+
+        this.form.controls.emblem.setValue(imageBase64);
+        this.emblemImgSrc =
+          'data:image/png;base64,' + this.form.controls.emblem.value;
+        this.form.controls.emblem.setErrors(null);
+      },
+      error => {
+        console.error('Error while image loading: ', error);
+        $event.target.value = '';
+        this.form.controls.emblem.setErrors({'niewłaściwy format zdjęcia': true});
+        this.emblemImgSrc = null;
+      }
+    );
   }
 
   openParentInstitutionModal() {
@@ -129,13 +136,14 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       id: PARENT_INSTITUTION_MODAL_ID,
       size: 'lg',
       hasReturnValue: true,
-      selectedInstitution: !!this.form.value.parentName && {name, slug} || null
+      selectedInstitution: (!!this.form.value.parentName && {name, slug}) || null
     });
 
-    this._modalQuery.modalClosed$(PARENT_INSTITUTION_MODAL_ID)
+    this._modalQuery
+      .modalClosed$(PARENT_INSTITUTION_MODAL_ID)
       .pipe(
         untilDestroyed(this),
-        map(modal => isParentInstitutionModal(modal) ? modal.returnValue : null)
+        map(modal => (isParentInstitutionModal(modal) ? modal.returnValue : null))
       )
       .toPromise()
       .then((institution: Institution) => {
@@ -153,29 +161,52 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
     }
 
     const {adminsEmails, ...institution} = this.form.value;
-    const adminsEmailsList: string[] = (adminsEmails || '').split(',').filter(email => !!email).map(email => email.trim());
+    const adminsEmailsList: string[] = (adminsEmails || '')
+      .split(',')
+      .filter(email => !!email)
+      .map(email => email.trim());
 
+    this.form.disable();
 
-    (
-      this.activeInstitution
-        ? this._institutionService.updateInstitution$(this.form.value)
-        : this._institutionService.createInstitutionChild$(this.form.value)
+    (this.activeInstitution
+      ? this._institutionService.updateInstitution$(this.form.value)
+      : this._institutionService.createInstitutionChild$(this.form.value)
     )
       .pipe(
-        switchMap((updatedInstitution: Institution) => forkJoin([of(updatedInstitution), this._sessionService.loadProfile$()])),
+        switchMap((updatedInstitution: Institution) =>
+          forkJoin([of(updatedInstitution), this._sessionService.loadProfile$()])
+        ),
         switchMap(([updatedInstitution, session]) =>
-          (adminsEmailsList.length > 0) ? forkJoin(adminsEmailsList.map(email => this._invitationService.send(updatedInstitution.slug, email, true))) : of([])
-        )
-      ).subscribe();
+          (adminsEmailsList.length > 0
+            ? forkJoin(
+                adminsEmailsList.map(email =>
+                  this._invitationService.send(updatedInstitution.slug, email, true)
+                )
+              )
+            : of([])
+          ).pipe(map(() => updatedInstitution))
+        ),
+        switchMap(updatedInstitution =>
+          this._router.navigate(['/settings/institution'], {
+            queryParamsHandling: 'merge',
+            queryParams: {
+              institution: updatedInstitution.slug
+            }
+          })
+        ),
+        finalize(() => this.form.enable())
+      )
+      .subscribe();
   }
 
   hasErrors(controlName: string) {
-    const formControl = this.form
-      .controls[controlName] as FormControl;
-    return !!formControl
-      && formControl.touched
-      && !!formControl.errors
-      && Object.keys(formControl.errors).length > 0;
+    const formControl = this.form.controls[controlName] as FormControl;
+    return (
+      !!formControl &&
+      formControl.touched &&
+      !!formControl.errors &&
+      Object.keys(formControl.errors).length > 0
+    );
   }
 
   resetForm() {
@@ -183,13 +214,10 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       ? this._setFormWith(this.form, this.activeInstitution)
       : this.form.reset();
 
-    this._router.navigate(
-      ['/settings/institution'],
-      {
-        relativeTo: this._activatedRoute,
-        queryParamsHandling: 'merge'
-      }
-    );
+    this._router.navigate(['/settings/institution'], {
+      relativeTo: this._activatedRoute,
+      queryParamsHandling: 'merge'
+    });
   }
 
   protected _updateFormState() {
@@ -202,8 +230,13 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
         filter(([institution, isChildAddition]) => !!institution)
       )
       .subscribe(([institution, isChildAddition]) => {
-        const {slug: parentSlug, name: parentName, ...x} = institution as Institution;
-        const parentInstitution = (isChildAddition && {parentSlug, parentName} || institution) as any;
+        const {
+          slug: parentSlug,
+          name: parentName,
+          ...x
+        } = institution as Institution;
+        const parentInstitution = ((isChildAddition && {parentSlug, parentName}) ||
+          institution) as any;
         this._setParent(this.form, parentInstitution);
 
         const isEditMode = this._router.url.includes(EDIT_INSTITUTION_PATH);
@@ -220,33 +253,36 @@ export class InstitutionFormComponent extends GenericFormComponent<InstitutionQu
       form.controls.parentName.disable();
     }
 
-
     const {parentSlug, parentName, ...x} = institution;
     form.patchValue({parentSlug, parentName});
   }
 
-  protected _setFormWith(form: FormGroup<Institution>, activeInstitution: Institution) {
+  protected _setFormWith(
+    form: FormGroup<Institution>,
+    activeInstitution: Institution
+  ) {
     form.patchValue(activeInstitution);
-    ImageBase64.getFromUrl$(activeInstitution.emblem)
-      .subscribe(
-        (imgBase64) => {
-          form.controls.emblem.setValue(imgBase64);
-          this.emblemImgSrc = 'data:image/png;base64,' + this.form.controls.emblem.value;
+    ImageBase64.getFromUrl$(activeInstitution.emblem).subscribe(
+      imgBase64 => {
+        form.controls.emblem.setValue(imgBase64);
+        this.emblemImgSrc =
+          'data:image/png;base64,' + this.form.controls.emblem.value;
+        this.form.controls.emblem.setErrors(null);
+      },
+      error => {
+        this.emblemImgSrc = null;
+        if (error.target.src.indexOf('/static/emblems') > -1) {
           this.form.controls.emblem.setErrors(null);
-        },
-        (error) => {
-          this.emblemImgSrc = null;
-          if (error.target.src.indexOf('/static/emblems') > -1) {
-            this.form.controls.emblem.setErrors(null);
-            this.form.controls.emblem.setValue(null);
-            return;
-          }
-
-          this._notificationService.addGeneral({
-            content: 'Wgrane zdjęcie jest w niewłaściwym formacie, jest uszkodzone lub link źródłowy jest niepoprawny',
-            type: 'error'
-          })
+          this.form.controls.emblem.setValue(null);
+          return;
         }
-      );
+
+        this._notificationService.addGeneral({
+          content:
+            'Wgrane zdjęcie jest w niewłaściwym formacie, jest uszkodzone lub link źródłowy jest niepoprawny',
+          type: 'error'
+        });
+      }
+    );
   }
 }

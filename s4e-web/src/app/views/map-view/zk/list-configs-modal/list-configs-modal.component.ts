@@ -26,7 +26,10 @@ import {isListConfigsModal, LIST_CONFIGS_MODAL_ID} from './list-configs-modal.mo
 import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
 import {ViewConfigurationQuery} from '../../state/view-configuration/view-configuration.query';
-import {ViewConfiguration, ViewConfigurationEx} from '../../state/view-configuration/view-configuration.model';
+import {
+  ViewConfiguration,
+  ViewConfigurationEx
+} from '../../state/view-configuration/view-configuration.model';
 import {Observable} from 'rxjs';
 import {MapService} from '../../state/map/map.service';
 import {switchMap} from 'rxjs/operators';
@@ -42,13 +45,15 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
   errorMsg: string;
   private configs$: Observable<ViewConfigurationEx[]>;
 
-  constructor(modalService: ModalService,
-              @Inject(MODAL_DEF) modal: Modal,
-              private modalQuery: ModalQuery,
-              protected fm: AkitaNgFormsManager<FormState>,
-              private configurationService: ViewConfigurationService,
-              private configurationQuery: ViewConfigurationQuery,
-              private mapService: MapService) {
+  constructor(
+    modalService: ModalService,
+    @Inject(MODAL_DEF) modal: Modal,
+    private modalQuery: ModalQuery,
+    protected fm: AkitaNgFormsManager<FormState>,
+    private configurationService: ViewConfigurationService,
+    private configurationQuery: ViewConfigurationQuery,
+    private mapService: MapService
+  ) {
     super(modalService, modal.id);
 
     if (!isListConfigsModal(modal)) {
@@ -63,7 +68,12 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
   }
 
   async deleteConfig(config: ViewConfiguration) {
-    if (await this.modalService.confirm('Potwierdź operacje', `Na pewno usunąć konfiguracje ${config.caption}`)) {
+    if (
+      await this.modalService.confirm(
+        'Potwierdź operacje',
+        `Na pewno usunąć konfiguracje ${config.caption}`
+      )
+    ) {
       this.configurationService.delete(config.uuid);
     }
   }
@@ -74,7 +84,9 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
   }
 
   sendTo(configuration: ViewConfiguration) {
-    this.mapService.updateStoreByView(configuration.configuration).subscribe(() => this.configurationService.setActive(configuration.uuid));
+    this.mapService
+      .updateStoreByView(configuration.configuration)
+      .subscribe(() => this.configurationService.setActive(configuration.uuid));
     this.dismiss();
   }
 }

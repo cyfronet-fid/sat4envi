@@ -15,9 +15,9 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { ResetPasswordComponent } from './reset-password.component';
+import {ResetPasswordComponent} from './reset-password.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, convertToParamMap, ParamMap, Router} from '@angular/router';
 import {of, ReplaySubject, Subject} from 'rxjs';
@@ -39,22 +39,20 @@ describe('ResetPasswordComponent', () => {
   let router: Router;
   let sessionService: SessionService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ResetPasswordModule,
-        RouterTestingModule
-      ],
-      providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ResetPasswordModule, RouterTestingModule],
+        providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResetPasswordComponent);
-    activatedRoute = TestBed.get(ActivatedRoute);
-    router = TestBed.get(Router);
-    sessionService = TestBed.get(SessionService);
+    activatedRoute = (<unknown>TestBed.inject(ActivatedRoute)) as ActivatedRouteStub;
+    router = TestBed.inject(Router);
+    sessionService = TestBed.inject(SessionService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -64,8 +62,10 @@ describe('ResetPasswordComponent', () => {
   });
 
   it('should send password reset URL to the email', () => {
-    const spySendPasswordResetToken = spyOn(sessionService, 'sendPasswordResetToken$')
-      .and.returnValue(of());
+    const spySendPasswordResetToken = spyOn(
+      sessionService,
+      'sendPasswordResetToken$'
+    ).and.returnValue(of());
     activatedRoute.paramMap.next(convertToParamMap({}));
     const email = 'correctEmail@mail.com';
     component.sendTokenForm.patchValue({email});
@@ -75,8 +75,9 @@ describe('ResetPasswordComponent', () => {
   });
 
   it('should reset password', () => {
-    const spyResetPassword = spyOn(sessionService, 'resetPassword$')
-      .and.returnValue(of());
+    const spyResetPassword = spyOn(sessionService, 'resetPassword$').and.returnValue(
+      of()
+    );
     const token = 'test1';
     activatedRoute.paramMap.next(convertToParamMap({token}));
     const password = 'correctPass123';

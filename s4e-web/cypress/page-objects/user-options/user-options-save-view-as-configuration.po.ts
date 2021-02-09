@@ -1,4 +1,4 @@
-import { Core } from './../core.po';
+import {Core} from './../core.po';
 
 export class UserOptionsSaveMapViews extends Core {
   static pageObject = {
@@ -13,74 +13,47 @@ export class UserOptionsSaveMapViews extends Core {
   };
 
   static openSaveViewsModal() {
-    UserOptionsSaveMapViews
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsSaveMapViews.pageObject.getOptionsBtn().click();
 
-    UserOptionsSaveMapViews
-      .pageObject
-      .getOpenSaveViewsBtn()
-      .click();
+    UserOptionsSaveMapViews.pageObject.getOpenSaveViewsBtn().click();
 
     return UserOptionsSaveMapViews;
   }
 
   static openViewsModal() {
-    UserOptionsSaveMapViews
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsSaveMapViews.pageObject.getOptionsBtn().click();
 
-    UserOptionsSaveMapViews
-      .pageObject
-      .getOpenViewsBtn()
-      .click();
+    UserOptionsSaveMapViews.pageObject.getOpenViewsBtn().click();
 
     return UserOptionsSaveMapViews;
   }
 
   static addView(label: string) {
-    UserOptionsSaveMapViews
-      .pageObject
+    UserOptionsSaveMapViews.pageObject
       .getViewLabelInput()
-      .should("be.visible")
+      .should('be.visible')
       .clear()
       .type(label);
 
-    UserOptionsSaveMapViews
-      .pageObject
-      .getAddBtn()
-      .click();
+    UserOptionsSaveMapViews.pageObject.getAddBtn().click();
 
     return UserOptionsSaveMapViews;
   }
 
   static viewsCountShouldBe(count: number) {
-    UserOptionsSaveMapViews
-      .pageObject
-      .getViews()
-      .should('have.length', count);
+    UserOptionsSaveMapViews.pageObject.getViews().should('have.length', count);
 
     return UserOptionsSaveMapViews;
   }
 
   static deleteNth(nth: number) {
-    UserOptionsSaveMapViews
-      .pageObject
-      .getViewsDeleteBtns()
-      .eq(nth)
-      .click();
+    UserOptionsSaveMapViews.pageObject.getViewsDeleteBtns().eq(nth).click();
 
     return UserOptionsSaveMapViews;
   }
 
   static selectNth(nth: number) {
-    UserOptionsSaveMapViews
-      .pageObject
-      .getViewLoadBtns()
-      .eq(nth)
-      .click();
+    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(nth).click();
 
     return UserOptionsSaveMapViews;
   }

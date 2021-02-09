@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class UserOptionsGoToSettings extends Core {
   static pageObject = {
@@ -8,30 +8,18 @@ export class UserOptionsGoToSettings extends Core {
   };
 
   static goToAdministrationPanel() {
-    UserOptionsGoToSettings
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsGoToSettings.pageObject.getOptionsBtn().click();
 
-    UserOptionsGoToSettings
-      .pageObject
-      .getOpenAdministrationPaneBtn()
-      .click();
+    UserOptionsGoToSettings.pageObject.getOpenAdministrationPaneBtn().click();
 
-    cy.location("pathname").should("eq", "/settings/institutions");
+    cy.location('pathname').should('eq', '/settings/institutions');
   }
 
   static gotoUserProfile() {
-    UserOptionsGoToSettings
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsGoToSettings.pageObject.getOptionsBtn().click();
 
-    UserOptionsGoToSettings
-      .pageObject
-      .getOpenUserProfileBtn()
-      .click();
+    UserOptionsGoToSettings.pageObject.getOpenUserProfileBtn().click();
 
-    cy.location("pathname").should("eq", "/settings/profile");
+    cy.location('pathname').should('eq', '/settings/profile');
   }
-};
+}

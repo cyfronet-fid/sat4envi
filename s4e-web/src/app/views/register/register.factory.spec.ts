@@ -15,7 +15,7 @@
  *
  */
 
-import { RegisterFormState } from './state/register.model';
+import {RegisterFormState} from './state/register.model';
 import * as Factory from 'factory.ts';
 
 export const RegisterFactory = Factory.makeFactory<RegisterFormState>({
@@ -28,5 +28,5 @@ export const RegisterFactory = Factory.makeFactory<RegisterFormState>({
   usage: 'COMMERCIAL',
   country: 'PL',
   surname: Factory.each(i => `surname#${i}`),
-  name: Factory.each(i => `name#${i}`),
+  name: Factory.each(i => `name#${i}`)
 });

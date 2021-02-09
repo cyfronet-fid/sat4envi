@@ -15,8 +15,8 @@
  *
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {ResetPasswordComponent} from './reset-password.component';
 import {FormErrorModule} from '../../components/form-error/form-error.module';
 import {ShareModule} from '../../common/share.module';
@@ -24,16 +24,8 @@ import {NgStackFormsModule} from '@ng-stack/forms';
 import {ReactiveFormsModule} from '@angular/forms';
 
 @NgModule({
-  declarations: [
-    ResetPasswordComponent
-  ],
-  imports: [
-    CommonModule,
-    ShareModule,
-    FormErrorModule
-  ],
-  exports: [
-    ResetPasswordComponent
-  ]
+  declarations: [ResetPasswordComponent],
+  imports: [CommonModule, ShareModule, FormErrorModule],
+  exports: [ResetPasswordComponent]
 })
-export class ResetPasswordModule { }
+export class ResetPasswordModule {}

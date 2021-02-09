@@ -15,7 +15,7 @@
  *
  */
 
-import { ReportTemplateStore } from './report-template.store';
+import {ReportTemplateStore} from './report-template.store';
 
 describe('Report template store', () => {
   let store: ReportTemplateStore;
@@ -27,5 +27,4 @@ describe('Report template store', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

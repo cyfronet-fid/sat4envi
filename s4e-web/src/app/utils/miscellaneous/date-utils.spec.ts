@@ -17,10 +17,8 @@
 
 import {yyyymm, yyyymmdd} from './date-utils';
 
-
 describe('convertion to string', () => {
-  beforeEach(() => {
-  });
+  beforeEach(() => {});
 
   it('should format year month day', () => {
     let date = new Date(2019, 0, 19);

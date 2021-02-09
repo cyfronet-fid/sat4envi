@@ -15,7 +15,7 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component} from '@angular/core';
 import {ModalComponent} from './modal.component';
 import {ModalService} from '../../state/modal.service';
@@ -40,23 +40,19 @@ describe('ModalComponent', () => {
   let fixture: ComponentFixture<ModalComponent>;
   let service: ModalService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        MockModalComponent,
-      ],
-      imports: [
-        ModalModule
-      ],
-      providers: [
-        makeModalProvider(MODAL_ID, MockModalComponent)
-      ]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MockModalComponent],
+        imports: [ModalModule],
+        providers: [makeModalProvider(MODAL_ID, MockModalComponent)]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MockModalComponent);
-    service = TestBed.get(ModalService);
+    service = TestBed.inject(ModalService);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

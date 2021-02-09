@@ -18,7 +18,7 @@
 import {of} from 'rxjs';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ChangePasswordComponent} from './change-password.component';
 import {SessionService} from '../../../../state/session/session.service';
 import {ProfileModule} from '../profile.module';
@@ -28,18 +28,15 @@ describe('ChangePasswordComponent', () => {
   let fixture: ComponentFixture<ChangePasswordComponent>;
   let sessionService: SessionService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ProfileModule,
-        RouterTestingModule,
-        HttpClientTestingModule
-      ]
-    })
-      .compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ProfileModule, RouterTestingModule, HttpClientTestingModule]
+      }).compileComponents();
 
-    sessionService = TestBed.get(SessionService);
-  }));
+      sessionService = TestBed.inject(SessionService);
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ChangePasswordComponent);
@@ -61,8 +58,7 @@ describe('ChangePasswordComponent', () => {
     const spy = spyOn(sessionService, 'changePassword').and.returnValue(of(1));
     const oldPassword = 'zkMember';
     const newPassword = 'ZKMEMBER';
-    component.form
-      .setValue({oldPassword, newPassword});
+    component.form.setValue({oldPassword, newPassword});
     component.submitPasswordChange();
     expect(spy).toHaveBeenCalledWith(oldPassword, newPassword);
   });

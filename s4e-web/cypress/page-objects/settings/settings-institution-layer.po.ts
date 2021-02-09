@@ -1,6 +1,6 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 import 'cypress-file-upload';
-import { InstitutionForm } from '../../../src/app/views/settings/state/institution/institution.model';
+import {InstitutionForm} from '../../../src/app/views/settings/state/institution/institution.model';
 
 export class SettingsInstitutionLayer extends Core {
   static readonly pageObject = {
@@ -18,10 +18,7 @@ export class SettingsInstitutionLayer extends Core {
   };
 
   static goToAddInstitutionLayerPage() {
-    SettingsInstitutionLayer
-      .pageObject
-      .getInstitutionLayer()
-      .click()
+    SettingsInstitutionLayer.pageObject.getInstitutionLayer().click();
 
     cy.location('href').should('include', '/settings/institution-wms-overlays');
 
@@ -29,26 +26,19 @@ export class SettingsInstitutionLayer extends Core {
   }
 
   static addLayer() {
-    SettingsInstitutionLayer
-      .pageObject
-      .getAddLayer()
-      .click()
+    SettingsInstitutionLayer.pageObject.getAddLayer().click();
 
-    return SettingsInstitutionLayer
+    return SettingsInstitutionLayer;
   }
 
   static fillForm(label: string, url: string, waitForResponse = true) {
-    SettingsInstitutionLayer
-      .pageObject
-      .getUrlInput()
-      .type(url)
+    SettingsInstitutionLayer.pageObject.getUrlInput().type(url);
 
-    if (waitForResponse) { cy.wait('@getCapabilities') };
+    if (waitForResponse) {
+      cy.wait('@getCapabilities');
+    }
 
-    SettingsInstitutionLayer
-      .pageObject
-      .getLabelInput()
-      .type(label);
+    SettingsInstitutionLayer.pageObject.getLabelInput().type(label);
 
     return SettingsInstitutionLayer;
   }
@@ -56,19 +46,15 @@ export class SettingsInstitutionLayer extends Core {
   static addNew() {
     cy.route('POST', '/api/v1/institutions/*/overlays').as('addedInstitutionLayer');
 
-    SettingsInstitutionLayer
-      .pageObject
-      .getSubmitFormBtn()
-      .click();
+    SettingsInstitutionLayer.pageObject.getSubmitFormBtn().click();
 
-    cy.wait('@addedInstitutionLayer', { timeout: 20000 });
+    cy.wait('@addedInstitutionLayer', {timeout: 20000});
 
     return SettingsInstitutionLayer;
   }
 
   static institutionLayersCountShouldBe(count: number) {
-    SettingsInstitutionLayer
-      .pageObject
+    SettingsInstitutionLayer.pageObject
       .getAddedInstitutionLayer()
       .should('have.length', count);
 
@@ -76,12 +62,8 @@ export class SettingsInstitutionLayer extends Core {
   }
 
   static deleteNthInstitutionLayer(nth: number) {
-    SettingsInstitutionLayer
-      .pageObject
-      .getDeleteInstitutionLayer()
-      .eq(nth)
-      .click()
+    SettingsInstitutionLayer.pageObject.getDeleteInstitutionLayer().eq(nth).click();
 
     return SettingsInstitutionLayer;
   }
-};
+}

@@ -15,10 +15,10 @@
  *
  */
 
-import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { PersonService } from './person.service';
-import { PersonStore } from './person.store';
+import {TestBed} from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {PersonService} from './person.service';
+import {PersonStore} from './person.store';
 
 describe('PersonService', () => {
   let personService: PersonService;
@@ -27,15 +27,14 @@ describe('PersonService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [PersonService, PersonStore],
-      imports: [ HttpClientTestingModule ]
+      imports: [HttpClientTestingModule]
     });
 
-    personService = TestBed.get(PersonService);
-    personStore = TestBed.get(PersonStore);
+    personService = TestBed.inject(PersonService);
+    personStore = TestBed.inject(PersonStore);
   });
 
   it('should be created', () => {
     expect(personService).toBeDefined();
   });
-
 });

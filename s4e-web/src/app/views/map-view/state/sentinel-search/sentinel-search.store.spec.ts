@@ -15,7 +15,7 @@
  *
  */
 
-import { SentinelSearchStore } from './sentinel-search.store';
+import {SentinelSearchStore} from './sentinel-search.store';
 
 describe('SentinelSearchResultStore', () => {
   let store: SentinelSearchStore;
@@ -27,5 +27,4 @@ describe('SentinelSearchResultStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

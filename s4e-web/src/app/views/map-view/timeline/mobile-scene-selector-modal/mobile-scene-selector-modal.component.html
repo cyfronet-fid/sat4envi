@@ -1,13 +1,15 @@
 <s4e-generic-modal [buttonX]="true" (close)="dismiss()">
   <div class="s4e-modal-body" class="scene-list">
     <ul>
-      <li *ngFor="let scene of (scenes$ | async)"
-          [attr.title]="scene.timestamp | hour"
-          [attr.data-scene-id]="scene.id"
-          [attr.data-active-id]="activeSceneId$ | async"
-          [ngClass]="{active: (activeSceneId$ | async) == scene.id}"
-          (click)="selectScene(scene)">
-        <span>{{ scene.timestamp | date : 'shortTime' }} #{{scene.id}}</span>
+      <li
+        *ngFor="let scene of scenes$ | async"
+        [attr.title]="scene.timestamp | hour"
+        [attr.data-scene-id]="scene.id"
+        [attr.data-active-id]="activeSceneId$ | async"
+        [ngClass]="{active: (activeSceneId$ | async) == scene.id}"
+        (click)="selectScene(scene)"
+      >
+        <span>{{ scene.timestamp | date: 'shortTime' }} #{{ scene.id }}</span>
       </li>
     </ul>
   </div>

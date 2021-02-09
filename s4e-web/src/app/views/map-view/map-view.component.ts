@@ -41,15 +41,23 @@ import {ProductQuery} from './state/product/product.query';
 import {SceneQuery, TimelineUI} from './state/scene/scene.query';
 import {MapComponent} from './map/map.component';
 import {ModalService} from '../../modal/state/modal.service';
-import {SAVE_CONFIG_MODAL_ID, SaveConfigModal} from './zk/save-config-modal/save-config-modal.model';
-import {LIST_CONFIGS_MODAL_ID, ListConfigsModal} from './zk/list-configs-modal/list-configs-modal.model';
+import {
+  SAVE_CONFIG_MODAL_ID,
+  SaveConfigModal
+} from './zk/save-config-modal/save-config-modal.model';
+import {
+  LIST_CONFIGS_MODAL_ID,
+  ListConfigsModal
+} from './zk/list-configs-modal/list-configs-modal.model';
 import {ViewConfigurationQuery} from './state/view-configuration/view-configuration.query';
 import {REPORT_MODAL_ID, ReportModal} from './zk/report-modal/report-modal.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import proj4 from 'proj4';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {delay, filter, finalize, map, switchMap, take, tap} from 'rxjs/operators';
-import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from './zk/configuration/state/configuration.model';
+import {
+  ConfigurationModal,
+  SHARE_CONFIGURATION_MODAL_ID
+} from './zk/configuration/state/configuration.model';
 import {resizeImage} from '../../utils/miscellaneous/miscellaneous';
 import {LocationSearchResultsQuery} from './state/location-search-results/location-search-results.query';
 import {animate, state, style, transition, trigger} from '@angular/animations';
@@ -62,26 +70,29 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
 import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query';
 import {InstitutionService} from '../settings/state/institution/institution.service';
 import {InstitutionQuery} from '../settings/state/institution/institution.query';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
-
+@UntilDestroy()
 @Component({
   selector: 's4e-map-view',
   templateUrl: './map-view.component.html',
   styleUrls: ['./map-view.component.scss'],
   animations: [
     trigger('sidebar', [
-      state('open', style({
-        left: '0'
-      })),
-      state('closed', style({
-        left: '-400px'
-      })),
-      transition('open => closed', [
-        animate('300ms ease-out')
-      ]),
-      transition('closed => open', [
-        animate('300ms ease-out')
-      ])
+      state(
+        'open',
+        style({
+          left: '0'
+        })
+      ),
+      state(
+        'closed',
+        style({
+          left: '-400px'
+        })
+      ),
+      transition('open => closed', [animate('300ms ease-out')]),
+      transition('closed => open', [animate('300ms ease-out')])
     ])
   ]
 })
@@ -95,26 +106,30 @@ export class MapViewComponent implements OnInit, OnDestroy {
   public userLoggedIn$: Observable<boolean> = this.sessionQuery.isLoggedIn$();
   public activeView$: Observable<ViewPosition> = this.mapQuery.select('view');
   public currentTimelineDate$: Observable<string> = this.productQuery.selectSelectedDate();
-  public availableDates$: Observable<string[]> = this.productQuery.selectAvailableDates();
-  public showLoginOptions$: Observable<boolean> = this.mapQuery.select('loginOptionsOpened');
+  public datesEnabled$: Observable<
+    Date[]
+  > = this.productQuery.selectAvailableDates();
+  public showLoginOptions$: Observable<boolean> = this.mapQuery.select(
+    'loginOptionsOpened'
+  );
   public showProductDescription$: Observable<boolean> = this.mapQuery.selectShowProductDescription();
-  public overlays$: Observable<UIOverlay[]> = this.overlayQuery.selectVisibleAsUIOverlays();
-  public userIsAuthorizedForAdditionalFunctionalities$: Observable<boolean> = combineLatest([
-    this.sessionQuery.selectPakMember(),
-    this.sessionQuery.selectMemberZK()
-  ]).pipe(mapAnyTrue());
+  public overlays$: Observable<
+    UIOverlay[]
+  > = this.overlayQuery.selectVisibleAsUIOverlays();
+  public userIsAuthorizedForAdditionalFunctionalities$: Observable<boolean> = combineLatest(
+    [this.sessionQuery.selectPakMember(), this.sessionQuery.selectMemberZK()]
+  ).pipe(mapAnyTrue());
   public timelineResolution$: Observable<number> = this.productQuery.selectTimelineResolution();
   public legend$ = this.legendQuery.selectLegend();
   public hasHeightContrast$ = this.viewConfigurationQuery.select('highContrast');
   public hasLargeFont$ = this.viewConfigurationQuery.select('largeFont');
   public areSentinelSearchResultsOpen$ = this.sentinelSearchQuery.selectShowSearchResults();
-  public isAdminOfOneInstitution$ = this.institutionQuery
-    .selectHasOnlyOneAdministrationInstitution()
+  public isAdminOfOneInstitution$ = this.institutionQuery.selectHasOnlyOneAdministrationInstitution();
   public hasAnyAdminInstitution$ = this.institutionQuery
     .selectAdministrationInstitutions$()
-    .pipe(filter(institutions => !!institutions && institutions.length > 0));
+    .pipe(map(institutions => !!institutions && institutions.length > 0));
 
-  @ViewChild('map', {read: MapComponent}) mapComponent: MapComponent;
+  @ViewChild('map', {read: MapComponent, static: true}) mapComponent: MapComponent;
   sidebarOpen$: Observable<boolean> = this.mapQuery.select('sidebarOpen');
 
   constructor(
@@ -141,35 +156,41 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private sentinelSearchQuery: SentinelSearchQuery,
     private institutionQuery: InstitutionQuery,
     private institutionService: InstitutionService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.sidebarOpen$.pipe(delay(0), untilDestroyed(this))
+    this.sidebarOpen$
+      .pipe(delay(0), untilDestroyed(this))
       .subscribe(() => this.mapComponent.updateSize());
 
     this.mapService.setView({
-      centerCoordinates: proj4(environment.projection.toProjection, environment.projection.coordinates),
+      centerCoordinates: proj4(
+        environment.projection.toProjection,
+        environment.projection.coordinates
+      ),
       zoomLevel: 6
     });
 
-    this.mapService.loadMapQueryParams()
+    this.mapService
+      .loadMapQueryParams()
       .pipe(
         untilDestroyed(this),
-        switchMap(() => forkJoin([
-          this.productService.get(),
-          this.overlayService.get()
-        ])),
-        switchMap(() => this.mapService.connectStoreToRouter()
-          // IMPORTANT!! Due to navigations this switch map is never destroyed
-          // , so it must to be done in here
-          .pipe(untilDestroyed(this))
+        switchMap(() =>
+          forkJoin([this.productService.get(), this.overlayService.get()])
+        ),
+        switchMap(() =>
+          this.mapService
+            .connectStoreToRouter()
+            // IMPORTANT!! Due to navigations this switch map is never destroyed
+            // , so it must to be done in here
+            .pipe(untilDestroyed(this))
         ),
         switchMap(() => this.sceneService.connectQueryToDetailsModal$())
       )
       .subscribe();
 
-    this.viewConfigurationQuery.selectLoading()
+    this.viewConfigurationQuery
+      .selectLoading()
       .pipe(
         filterFalse(),
         map(() => this.viewConfigurationQuery.getActive()),
@@ -179,11 +200,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
       )
       .subscribe();
 
-    this.reportTemplateQuery.selectActive()
-      .pipe(
-        untilDestroyed(this),
-        filterNotNull()
-      ).subscribe(() => this.openReportModal());
+    this.reportTemplateQuery
+      .selectActive()
+      .pipe(untilDestroyed(this), filterNotNull())
+      .subscribe(() => this.openReportModal());
 
     if (this.sessionQuery.isLoggedIn()) {
       this.institutionService.get();
@@ -199,7 +219,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   setDate($event: string) {
-    this.sceneService.get(this.productQuery.getActive(), $event, 'first').subscribe();
+    this.sceneService
+      .get(this.productQuery.getActive(), $event, 'first')
+      .subscribe();
     this.productService.setSelectedDate($event, true);
   }
 
@@ -244,43 +266,51 @@ export class MapViewComponent implements OnInit, OnDestroy {
     forkJoin([
       this.mapComponent.getMapData(),
       this.productQuery.selectActive().pipe(take(1)),
-      this.sceneQuery.selectActive().pipe(map(s => s == null ? null : s.timestamp), take(1))
+      this.sceneQuery.selectActive().pipe(
+        map(s => (s == null ? null : s.timestamp)),
+        take(1)
+      )
     ])
       .pipe(
         untilDestroyed(this),
         filter(([mapData, product, sceneDate]) => !!mapData)
       )
-      .subscribe(([mapData, product, sceneDate]) => this.modalService.show<ReportModal>({
-        id: REPORT_MODAL_ID,
-        size: 'lg',
-        image: mapData,
-        productName: product == null ? '' : product.displayName,
-        legend: product == null ? null : product.legend,
-        sceneDate: sceneDate
-      }));
+      .subscribe(([mapData, product, sceneDate]) =>
+        this.modalService.show<ReportModal>({
+          id: REPORT_MODAL_ID,
+          size: 'lg',
+          image: mapData,
+          productName: product == null ? '' : product.displayName,
+          legend: product == null ? null : product.legend,
+          sceneDate: sceneDate
+        })
+      );
     this.toggleZKOptions(false);
   }
 
   openSaveViewModal() {
-    this.mapComponent.getMapData().pipe(
-      switchMap(data => resizeImage(data.image, 170, 105))
-    )
-      .subscribe(mapData => this.modalService.show<SaveConfigModal>(
-        {
+    this.mapComponent
+      .getMapData()
+      .pipe(switchMap(data => resizeImage(data.image, 170, 105)))
+      .subscribe(mapData =>
+        this.modalService.show<SaveConfigModal>({
           id: SAVE_CONFIG_MODAL_ID,
           size: 'lg',
           viewConfiguration: {
             ...this.viewConfigurationQuery.getCurrent(),
             thumbnail: mapData
           }
-        }
-      ));
+        })
+      );
     this.toggleZKOptions(false);
   }
 
   openShareViewModal() {
     this._openShareViewModal$()
-      .pipe(untilDestroyed(this),tap(() => console.trace()),)
+      .pipe(
+        untilDestroyed(this),
+        tap(() => console.trace())
+      )
       .subscribe();
   }
 
@@ -290,13 +320,13 @@ export class MapViewComponent implements OnInit, OnDestroy {
 
   openListViewModal() {
     this.modalService.show<ListConfigsModal>({
-      id: LIST_CONFIGS_MODAL_ID, size: 'lg'
+      id: LIST_CONFIGS_MODAL_ID,
+      size: 'lg'
     });
     this.toggleZKOptions(false);
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   openJwtTokenModal() {
     this.modalService.show<Modal>({
@@ -347,26 +377,26 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   private _openShareViewModal$() {
-    const createUrl = (query) => this.router.createUrlTree([], {queryParams: query});
-    const serializeUrl = (query) => this.router.serializeUrl(createUrl(query));
+    const createUrl = query => this.router.createUrlTree([], {queryParams: query});
+    const serializeUrl = query => this.router.serializeUrl(createUrl(query));
     const mapData$ = this.mapComponent
       .getMapData()
       .pipe(switchMap(data => resizeImage(data.image, 400, 247)));
-    const path$ = this.mapQuery
-      .selectQueryParamsFromStore()
-      .pipe(
-        take(1),
-        map(query => serializeUrl(query))
-      );
-    return combineLatest(mapData$, path$)
-      .pipe(
-        tap(([mapData, path]) => this.modalService.show<ConfigurationModal>({
-          id: SHARE_CONFIGURATION_MODAL_ID, size: 'lg',
+    const path$ = this.mapQuery.selectQueryParamsFromStore().pipe(
+      take(1),
+      map(query => serializeUrl(query))
+    );
+    return combineLatest(mapData$, path$).pipe(
+      tap(([mapData, path]) =>
+        this.modalService.show<ConfigurationModal>({
+          id: SHARE_CONFIGURATION_MODAL_ID,
+          size: 'lg',
           mapImage: mapData,
           configurationUrl: path
-        })),
-        finalize(() => this.toggleZKOptions(false))
-      );
+        })
+      ),
+      finalize(() => this.toggleZKOptions(false))
+    );
   }
 
   showDetailsModal() {

@@ -22,7 +22,9 @@ main {
   margin: 40px auto;
 }
 
-h1,h2,h3 {
+h1,
+h2,
+h3 {
   font-family: $font-secondary;
 }
 
@@ -59,7 +61,7 @@ code {
 }
 
 ul {
-   margin: 10px 0 20px 0;
+  margin: 10px 0 20px 0;
 }
 
 li {

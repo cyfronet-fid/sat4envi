@@ -15,13 +15,13 @@
  *
  */
 
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {IsLoggedIn, IsNotLoggedIn} from './auth-guard.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {SessionQuery} from '../../state/session/session.query';
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 @Component({selector: 'neutral', template: ''})
 class NeutralComponent {}
@@ -39,45 +39,44 @@ describe('IsLoggedIn & IsNotLoggedIn', () => {
     TestBed.configureTestingModule({
       declarations: [SubComponent, LoginComponent, NeutralComponent],
       imports: [
-        RouterTestingModule.withRoutes(
-          [
-            {path: 'map/products', component: NeutralComponent},
-            {path: 'login', canActivate: [IsNotLoggedIn], component: LoginComponent},
-            {path: 'sub', canActivate: [IsLoggedIn], component: SubComponent}
-          ]
-        ),
+        RouterTestingModule.withRoutes([
+          {path: 'map/products', component: NeutralComponent},
+          {path: 'login', canActivate: [IsNotLoggedIn], component: LoginComponent},
+          {path: 'sub', canActivate: [IsLoggedIn], component: SubComponent}
+        ]),
         HttpClientTestingModule
       ],
-      providers: [IsLoggedIn, IsNotLoggedIn, SessionQuery],
+      providers: [IsLoggedIn, IsNotLoggedIn, SessionQuery]
     });
-    router = TestBed.get(Router);
-    query = TestBed.get(SessionQuery);
+    router = TestBed.inject(Router);
+    query = TestBed.inject(SessionQuery);
   });
   describe('IsLoggedIn', () => {
     it('should create', () => {
-      expect(TestBed.get(IsLoggedIn)).toBeTruthy();
+      expect(TestBed.inject(IsLoggedIn)).toBeTruthy();
     });
 
     it('should let in if user is logged in', async () => {
       spyOn(query, 'isLoggedIn').and.returnValue(true);
-      expect(await router.navigate(['/sub'])).toBeTruthy();
+      await router.navigate(['/sub']);
+      expect(router.isActive('/sub', true)).toBeTruthy();
     });
 
     it('should redirect to root if user is not logged in', async () => {
       spyOn(query, 'isLoggedIn').and.returnValue(false);
-      expect(await router.navigate(['/sub'])).toBeFalsy();
+      await router.navigate(['/sub']);
       expect(router.isActive('/login', true)).toBeTruthy();
     });
   });
 
   describe('IsNotLoggedIn', () => {
     it('should create', () => {
-      expect(TestBed.get(IsNotLoggedIn)).toBeTruthy();
+      expect(TestBed.inject(IsNotLoggedIn)).toBeTruthy();
     });
 
     it('should redirect to root if user is logged in', async () => {
       spyOn(query, 'isLoggedIn').and.returnValue(true);
-      expect(await router.navigate(['/login'])).toBeFalsy();
+      await router.navigate(['/login']);
       expect(router.isActive('/map/products', true)).toBeTruthy();
     });
 

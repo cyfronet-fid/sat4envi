@@ -15,12 +15,15 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {SentinelFormComponent} from './sentinel-form.component';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {SentinelFloatParamFactory, SentinelSearchMetadataFactory} from '../../state/sentinel-search/sentinel-search.factory.spec';
+import {
+  SentinelFloatParamFactory,
+  SentinelSearchMetadataFactory
+} from '../../state/sentinel-search/sentinel-search.factory.spec';
 import {FormControl} from '@angular/forms';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
@@ -30,12 +33,13 @@ describe('SentinelFormComponent', () => {
   let fixture: ComponentFixture<SentinelFormComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SentinelFormComponent);
@@ -59,7 +63,9 @@ describe('SentinelFormComponent', () => {
     const spy = spyOn((component as any).valueChangeSub, 'unsubscribe');
     spyOn(component, 'onChange');
 
-    component.paramsDef = [SentinelFloatParamFactory.build({queryParam: 'testParam'} as any)];
+    component.paramsDef = [
+      SentinelFloatParamFactory.build({queryParam: 'testParam'} as any)
+    ];
     expect(spy).toHaveBeenCalled();
     expect(component.onChange).toHaveBeenCalled();
 
@@ -69,7 +75,9 @@ describe('SentinelFormComponent', () => {
 
   it('floatTooltip should have message for float with min and max', () => {
     expect(
-      component.floatTooltip(SentinelFloatParamFactory.build({min: 0, max: 5} as any))
+      component.floatTooltip(
+        SentinelFloatParamFactory.build({min: 0, max: 5} as any)
+      )
     ).toBe('od 0 do 5');
   });
 
@@ -77,10 +85,17 @@ describe('SentinelFormComponent', () => {
     const onChange = jest.fn();
 
     component.registerOnChange(onChange);
-    expect(onChange).toHaveBeenCalledWith({productType: 'GRDM', satellitePlatform: 'Sentinel-1A'});
+    expect(onChange).toHaveBeenCalledWith({
+      productType: 'GRDM',
+      satellitePlatform: 'Sentinel-1A'
+    });
     component.form.get('productType').setValue('SLC_');
     component.form.get('cloudCover').setValue(10);
-    expect(onChange).toHaveBeenCalledWith({productType: 'SLC_', satellitePlatform: 'Sentinel-1A', cloudCover: 10});
+    expect(onChange).toHaveBeenCalledWith({
+      productType: 'SLC_',
+      satellitePlatform: 'Sentinel-1A',
+      cloudCover: 10
+    });
   });
 
   it('should disable form', () => {
@@ -102,7 +117,9 @@ describe('SentinelFormComponent', () => {
 
   it('should retain disable state when changing paramsDef', () => {
     component.setDisabledState(true);
-    component.paramsDef = [SentinelFloatParamFactory.build({queryParam: 'testParam'} as any)];
+    component.paramsDef = [
+      SentinelFloatParamFactory.build({queryParam: 'testParam'} as any)
+    ];
     expect(component.form.disabled).toBeTruthy();
   });
 

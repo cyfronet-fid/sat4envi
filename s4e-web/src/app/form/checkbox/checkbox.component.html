@@ -17,12 +17,14 @@
 
 <ext-form-control [options]="formControlOptions">
   <!--suppress HtmlFormInputWithoutLabel -->
-  <input type="checkbox"
-         class="form-check-input"
-         [attr.id]="elementId"
-         [attr.aria-describedby]="controlId + 'Help'"
-         [ngClass]="{'is-invalid': hasErrors()}"
-         [formControl]="fc"
-         #input
-         (change)="onChange($event, input.checked)">
+  <input
+    type="checkbox"
+    class="form-check-input"
+    [attr.id]="elementId"
+    [attr.aria-describedby]="controlId + 'Help'"
+    [ngClass]="{'is-invalid': hasErrors()}"
+    [formControl]="fc"
+    #input
+    (change)="onChange($event, input.checked)"
+  />
 </ext-form-control>

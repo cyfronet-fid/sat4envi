@@ -29,7 +29,6 @@ export interface Legend {
 }
 
 export interface LegendState {
-  legend: Legend|null;
+  legend: Legend | null;
   isOpen: boolean;
 }
-

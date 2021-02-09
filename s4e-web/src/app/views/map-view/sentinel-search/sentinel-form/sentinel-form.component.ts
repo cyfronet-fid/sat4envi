@@ -18,7 +18,8 @@
 import {Component, forwardRef, Input, OnDestroy, OnInit} from '@angular/core';
 import {
   convertSentinelParam2FormControl,
-  isSentinelFloatParam, isSentinelSelectParam,
+  isSentinelFloatParam,
+  isSentinelSelectParam,
   SentinelParam,
   SentinelSelectParam
 } from '../../state/sentinel-search/sentinel-search.metadata.model';
@@ -26,13 +27,17 @@ import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
-  FormGroup, NG_VALIDATORS,
+  FormGroup,
+  NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
   Validators
 } from '@angular/forms';
-import {disableEnableForm, stripEmpty} from '../../../../utils/miscellaneous/miscellaneous';
+import {
+  disableEnableForm,
+  stripEmpty
+} from '../../../../utils/miscellaneous/miscellaneous';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -48,22 +53,26 @@ import {Subscription} from 'rxjs';
     {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => SentinelFormComponent),
-      multi: true,
+      multi: true
     }
-  ],
+  ]
 })
 export class SentinelFormComponent implements ControlValueAccessor, Validator {
   @Input('paramsDef') set paramsDef(sentinelParams: SentinelParam[]) {
-    if(this.valueChangeSub) {
+    if (this.valueChangeSub) {
       this.valueChangeSub.unsubscribe();
     }
     this._paramsDef = sentinelParams;
     this.form = new FormGroup({});
 
-    this._paramsDef.forEach((fcDef) => this.form.addControl(fcDef.queryParam, convertSentinelParam2FormControl(fcDef)));
+    this._paramsDef.forEach(fcDef =>
+      this.form.addControl(fcDef.queryParam, convertSentinelParam2FormControl(fcDef))
+    );
 
     disableEnableForm(this.isDisabled, this.form);
-    this.valueChangeSub = this.form.valueChanges.subscribe(val => this.onChange(val));
+    this.valueChangeSub = this.form.valueChanges.subscribe(val =>
+      this.onChange(val)
+    );
     this.onChange(this.form.value);
   }
 
@@ -73,12 +82,12 @@ export class SentinelFormComponent implements ControlValueAccessor, Validator {
 
   public form: FormGroup = new FormGroup({});
   private _paramsDef: SentinelParam[] = [];
-  private valueChangeSub: Subscription|null = null;
+  private valueChangeSub: Subscription | null = null;
 
-  constructor() { }
+  constructor() {}
 
-  selectOptions(def: SentinelParam): string|null[] {
-    return (def as SentinelSelectParam).values
+  selectOptions(def: SentinelParam): string | null[] {
+    return (def as SentinelSelectParam).values;
   }
 
   floatTooltip(def: SentinelParam) {

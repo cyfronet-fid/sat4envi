@@ -15,9 +15,9 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { LegendComponent } from './legend.component';
+import {LegendComponent} from './legend.component';
 import {LegendFactory} from '../state/legend/legend.factory.spec';
 import {By} from '@angular/platform-browser';
 
@@ -25,12 +25,13 @@ describe('LegendComponent', () => {
   let component: LegendComponent;
   let fixture: ComponentFixture<LegendComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LegendComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [LegendComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LegendComponent);

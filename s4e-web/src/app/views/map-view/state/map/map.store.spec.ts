@@ -31,7 +31,7 @@ describe('MapStore', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    store = TestBed.get(MapStore);
+    store = TestBed.inject(MapStore);
   });
 
   it('should create an instance', () => {

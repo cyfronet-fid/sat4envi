@@ -19,63 +19,71 @@
   <div class="s4e-modal-header" i18n>Wczytaj konfiguracje</div>
   <div class="s4e-modal-body">
     <ng-container *ngIf="!(loading$ | async); else loadingRef">
-      <div class="s4e-modal-table" *ngIf="(configs$ | async).length > 0; else noConfigurations">
-          <section
-            class="saved__element"
-            role="menuitem"
-            *ngFor="let config of (configs$ | async)"
-            data-e2e="view"
-          >
-            <header>
-              {{config.caption}}
-            </header>
-            <div class="content">
-              <figure>
-                <img [src]="config.thumbnail" alt="View thumbnail" i18n-alt alt="Miniatura mapy" />
-              </figure>
-              <ul>
-                <li>
-                  <strong>Produkt:</strong>
-                  {{config.configurationNames.product || 'Nie wybrano'}},
-                </li>
-                <li>
-                  <strong>Data:</strong>
-                  {{config.configurationNames.selectedDate || 'Nie wybrano'}},
-                </li>
-                <li>
-                  <strong>Nakładki:</strong>
-                  {{config.configurationNames.overlays.toString() || 'Nie wybrano'}}
-                </li>
-              </ul>
-              <div class="buttons__container">
-                <button
-                  class="button button--primary button--small"
-                  type="button"
-                  (click)="loadConfig(config)"
-                  data-e2e="view-load-btn"
-                  i18n
-                >
-                  Wczytaj
-                </button>
-                <button
-                  class="button button--primary button--small"
-                  type="button"
-                  (click)="sendTo(config)"
-                  i18n
-                >
-                  Wyślij do
-                </button>
-                <button
-                  class="button button--cancel button--small"
-                  (click)="deleteConfig(config)"
-                  data-e2e="view-delete-btn"
-                  i18n
-                >
-                  Kasuj
-                </button>
-              </div>
+      <div
+        class="s4e-modal-table"
+        *ngIf="(configs$ | async).length > 0; else noConfigurations"
+      >
+        <section
+          class="saved__element"
+          role="menuitem"
+          *ngFor="let config of configs$ | async"
+          data-e2e="view"
+        >
+          <header>
+            {{ config.caption }}
+          </header>
+          <div class="content">
+            <figure>
+              <img
+                [src]="config.thumbnail"
+                alt="View thumbnail"
+                i18n-alt
+                alt="Miniatura mapy"
+              />
+            </figure>
+            <ul>
+              <li>
+                <strong>Produkt:</strong>
+                {{ config.configurationNames.product || 'Nie wybrano' }},
+              </li>
+              <li>
+                <strong>Data:</strong>
+                {{ config.configurationNames.selectedDate || 'Nie wybrano' }},
+              </li>
+              <li>
+                <strong>Nakładki:</strong>
+                {{ config.configurationNames.overlays.toString() || 'Nie wybrano' }}
+              </li>
+            </ul>
+            <div class="buttons__container">
+              <button
+                class="button button--primary button--small"
+                type="button"
+                (click)="loadConfig(config)"
+                data-e2e="view-load-btn"
+                i18n
+              >
+                Wczytaj
+              </button>
+              <button
+                class="button button--primary button--small"
+                type="button"
+                (click)="sendTo(config)"
+                i18n
+              >
+                Wyślij do
+              </button>
+              <button
+                class="button button--cancel button--small"
+                (click)="deleteConfig(config)"
+                data-e2e="view-delete-btn"
+                i18n
+              >
+                Kasuj
+              </button>
             </div>
-          </section>
+          </div>
+        </section>
       </div>
       <ng-template #noConfigurations>
         <span i18n>Brak zapisanych widoków</span>
@@ -89,9 +97,21 @@
   </div>
   <div class="s4e-modal-footer">
     <div *ngIf="errorMsg" class="alert alert-danger">
-      <ng-container>{{errorMsg}}</ng-container>
+      <ng-container>{{ errorMsg }}</ng-container>
     </div>
-    <fa-icon [hidden]="!isWorking" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
-    <button class="button button--cancel button--small" type="button" *ngIf="!isWorking" (click)="dismiss()" i18n>Anuluj</button>
+    <fa-icon
+      [hidden]="!isWorking"
+      [icon]="['fas', 'circle-notch']"
+      [spin]="true"
+    ></fa-icon>
+    <button
+      class="button button--cancel button--small"
+      type="button"
+      *ngIf="!isWorking"
+      (click)="dismiss()"
+      i18n
+    >
+      Anuluj
+    </button>
   </div>
 </s4e-generic-modal>

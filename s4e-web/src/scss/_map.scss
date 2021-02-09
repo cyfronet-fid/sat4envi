@@ -15,7 +15,7 @@
  *
  */
 
-@import "variables";
+@import 'variables';
 
 .zk-options {
   position: absolute;
@@ -35,22 +35,17 @@
   right: 0;
   left: 0;
   bottom: 0;
-  opacity: 0.0;
+  opacity: 0;
   z-index: 20;
 }
 
-
-
-
-
 .dropdown {
-
   &__button {
     width: 50px;
     height: 50px;
     position: absolute;
     border-radius: $border-radius-circle;
-    box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
+    box-shadow: 0 0 35px -10px rgba(0, 0, 0, 0.3);
     z-index: 1;
 
     &--zk {
@@ -60,7 +55,8 @@
       background-size: 25px;
     }
 
-    &--login, &--loginactive {
+    &--login,
+    &--loginactive {
       background: url(/../assets/images/ico_user.svg) $color-white no-repeat center;
       top: 12px;
       right: 70px;
@@ -99,7 +95,7 @@
     display: flex;
     flex-direction: column;
     padding: $space-xsmall;
-    box-shadow: 0 0 35px -10px rgba(0,0,0, 0.3);
+    box-shadow: 0 0 35px -10px rgba(0, 0, 0, 0.3);
     z-index: 6;
 
     &--zk {
@@ -143,8 +139,7 @@
       }
     }
 
-    section
-    {
+    section {
       display: flex;
       flex-direction: row;
     }
@@ -217,11 +212,11 @@
     img {
       margin-right: $space-default;
     }
-
   }
 
   &__close {
-    background: url(/../../../assets/images/ico_close.svg) $color-white no-repeat center;
+    background: url(/../../../assets/images/ico_close.svg) $color-white no-repeat
+      center;
     width: 50px;
     height: 50px;
     position: absolute;
@@ -242,7 +237,6 @@
   }
 }
 
-
 .sidebar-content {
   //margin-right: -15px;
   //margin-left: -15px;
@@ -253,8 +247,7 @@
   padding-right: 15px;
 }
 
-
-.section.map.closed #map{
+.section.map.closed #map {
   left: 0;
   width: 100%;
 }

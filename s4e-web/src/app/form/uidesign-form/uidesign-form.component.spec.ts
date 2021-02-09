@@ -15,21 +15,24 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { UIDesignFormComponent } from './uidesign-form.component';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {UIDesignFormComponent} from './uidesign-form.component';
 import {S4EFormsModule} from '../form.module';
+import {BsLocaleService} from 'ngx-bootstrap/datepicker';
+import {FontAwesomeTestingModule} from '@fortawesome/angular-fontawesome/testing';
 
 describe('UIDesignFormComponent', () => {
   let component: UIDesignFormComponent;
   let fixture: ComponentFixture<UIDesignFormComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [S4EFormsModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [S4EFormsModule, FontAwesomeTestingModule],
+        providers: [BsLocaleService]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(UIDesignFormComponent);

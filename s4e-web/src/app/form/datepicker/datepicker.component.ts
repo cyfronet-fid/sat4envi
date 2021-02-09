@@ -15,9 +15,15 @@
  *
  */
 
-import { untilDestroyed } from 'ngx-take-until-destroy';
 import {
-  Component, EventEmitter, forwardRef, Host, Input, Optional, Output, SkipSelf,
+  Component,
+  EventEmitter,
+  forwardRef,
+  Host,
+  Input,
+  Optional,
+  Output,
+  SkipSelf,
   ViewEncapsulation,
   OnDestroy,
   OnInit
@@ -27,7 +33,9 @@ import {GeneralInput} from '../general-input/general-input';
 import {DateUtilsService} from '../../utils/s4e-date/date-utils.service';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
 import {disableEnableForm} from '../../utils/miscellaneous/miscellaneous';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'ext-datepicker',
   templateUrl: './datepicker.component.html',
@@ -45,13 +53,15 @@ export class DatepickerComponent extends GeneralInput {
   _placeholder: string = 'RRRR-MM-DD';
   inputFormControl: FormControl = new FormControl();
 
-  constructor(private dateUtils: DateUtilsService,
-              @Optional() extForm: ExtFormDirective,
-              @Optional() @Host() @SkipSelf() cc: ControlContainer) {
+  constructor(
+    private dateUtils: DateUtilsService,
+    @Optional() extForm: ExtFormDirective,
+    @Optional() @Host() @SkipSelf() cc: ControlContainer
+  ) {
     super(cc, extForm);
   }
 
-  @Input() placement: 'top'|'bottom'|'left'|'right' = 'bottom';
+  @Input() placement: 'top' | 'bottom' | 'left' | 'right' = 'right';
   @Input() showNowButton: boolean = false;
   @Input() showExtraButton: boolean = true;
   @Input() extraButtonIcon: string = 'question-sign';
@@ -75,7 +85,6 @@ export class DatepickerComponent extends GeneralInput {
     this.currentValue = value;
     this.inputFormControl.setValue(value);
   }
-
 
   setDisabledState(isDisabled: boolean) {
     super.setDisabledState(isDisabled);

@@ -15,37 +15,52 @@
  *
  */
 
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import {of, throwError} from 'rxjs';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
+import {DebugElement} from '@angular/core';
 import {RemoteConfigurationTestingProvider} from '../../app.configuration.spec';
 import {MapModule} from '../../views/map-view/map.module';
 import {OverlayService} from '../../views/map-view/state/overlay/overlay.service';
 import {OverlayListComponent} from './overlay-list.component';
-import {catchError} from 'rxjs/operators';
+import {ReplaySubject, Subject} from 'rxjs';
+import {ActivatedRoute, convertToParamMap, Data, ParamMap} from '@angular/router';
+
+class ActivatedRouteStub {
+  queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
+  data: Subject<Data> = new ReplaySubject(1);
+
+  constructor() {
+    this.queryParamMap.next(convertToParamMap({institution: '1'}));
+    this.data.next({isEditMode: false});
+  }
+}
 
 describe('OverlayListModalComponent', () => {
   let component: OverlayListComponent;
   let fixture: ComponentFixture<OverlayListComponent>;
   let de: DebugElement;
   let overlayService: OverlayService;
+  let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [RemoteConfigurationTestingProvider]
+  beforeEach(
+    waitForAsync(() => {
+      activatedRoute = new ActivatedRouteStub();
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+        providers: [
+          RemoteConfigurationTestingProvider,
+          {provide: ActivatedRoute, useValue: activatedRoute}
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(OverlayListComponent);
     component = fixture.componentInstance;
     de = fixture.debugElement;
-    overlayService = TestBed.get(OverlayService);
+    overlayService = TestBed.inject(OverlayService);
   });
 
   it('should create', () => {

@@ -15,12 +15,11 @@
  *
  */
 
-@media (max-height: 700px), (max-width: 700px)  {
-
+@media (max-height: 700px), (max-width: 700px) {
   /* RWD Height legend scaled */
   s4e-legend {
     transform: scale(0.75) !important;
-    &[ng-reflect-_is-open=true]{
+    &[ng-reflect-_is-open='true'] {
       right: -16px;
     }
   }
@@ -28,17 +27,17 @@
 
 @media (max-height: 700px) {
   /* RWD Auth Pages */
- s4e-login {
-   .intro {
-     min-height: 700px;
-   }
+  s4e-login {
+    .intro {
+      min-height: 700px;
+    }
 
-   .container {
-     overflow: hidden;
-   }
+    .container {
+      overflow: hidden;
+    }
 
-   .content__switch--left {
-     bottom: 10px !important;
-   }
- }
+    .content__switch--left {
+      bottom: 10px !important;
+    }
+  }
 }

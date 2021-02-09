@@ -27,19 +27,12 @@ describe('SessionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        SessionService,
-        SessionStore,
-        HttpClientTestingModule
-      ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule.withRoutes([])
-      ]
+      providers: [SessionService, SessionStore, HttpClientTestingModule],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([])]
     });
 
-    sessionService = TestBed.get(SessionService);
-    sessionStore = TestBed.get(SessionStore);
+    sessionService = TestBed.inject(SessionService);
+    sessionStore = TestBed.inject(SessionStore);
   });
 
   it('should be created', () => {

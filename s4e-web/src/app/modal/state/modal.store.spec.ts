@@ -15,7 +15,7 @@
  *
  */
 
-import { ModalStore } from './modal.store';
+import {ModalStore} from './modal.store';
 
 describe('ModalStore', () => {
   let store: ModalStore;
@@ -27,5 +27,4 @@ describe('ModalStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

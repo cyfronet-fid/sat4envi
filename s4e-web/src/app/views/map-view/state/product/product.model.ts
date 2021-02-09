@@ -17,7 +17,7 @@
 
 import {Legend} from '../legend/legend.model';
 import {ActiveState, EntityState} from '@datorama/akita';
-export const COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY = 'collapsedCategories'
+export const COLLAPSED_CATEGORIES_LOCAL_STORAGE_KEY = 'collapsedCategories';
 export const PRODUCT_MODE_QUERY_KEY = 'pmode';
 export const PRODUCT_MODE_FAVOURITE = 'favourite';
 export const TIMELINE_RESOLUTION_QUERY_KEY = 'resolution';
@@ -70,17 +70,17 @@ export interface LicensedProduct {
 }
 
 export interface ProductState extends EntityState<Product>, ActiveState<number> {
-    ui: {
-        loadedMonths: string[];
-        selectedDate: string;
-        selectedDay: number;
-        selectedYear: number;
-        selectedMonth: number;
-        availableDays: string[];
-        manuallySelectedDate: string;
-    };
-    licensedProducts: LicensedProduct[];
-    loaded: boolean;
+  ui: {
+    loadedMonths: string[];
+    selectedDate: string;
+    selectedDay: number;
+    selectedYear: number;
+    selectedMonth: number;
+    availableDays: string[];
+    manuallySelectedDate: string;
+  };
+  licensedProducts: LicensedProduct[];
+  loaded: boolean;
 }
 
 export interface ProductUI {
@@ -93,21 +93,21 @@ export interface ProductUIState extends EntityState<ProductUI> {
 }
 
 export function createProductState(state: Partial<ProductState> = {}): ProductState {
-    return {
-        active: null,
-        error: null,
-        loading: true,
-        ui: {
-            loadedMonths: [],
-            selectedDate: null,
-            selectedDay: null,
-            selectedYear: null,
-            selectedMonth: null,
-            manuallySelectedDate: null,
-            availableDays: [],
-        },
-      licensedProducts: [],
-        loaded: false,
-        ...state
-    };
+  return {
+    active: null,
+    error: null,
+    loading: true,
+    ui: {
+      loadedMonths: [],
+      selectedDate: null,
+      selectedDay: null,
+      selectedYear: null,
+      selectedMonth: null,
+      manuallySelectedDate: null,
+      availableDays: []
+    },
+    licensedProducts: [],
+    loaded: false,
+    ...state
+  };
 }

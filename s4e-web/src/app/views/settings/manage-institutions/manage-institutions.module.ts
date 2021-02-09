@@ -48,16 +48,10 @@ import {OverlayListModule} from '../../../components/overlay-list/overlay-list.m
     GenericListViewModule,
     OverlayListModule
   ],
-  exports: [
-    InstitutionFormComponent,
-    InstitutionListComponent
-  ],
+  exports: [InstitutionFormComponent, InstitutionListComponent],
   providers: [
     makeModalProvider(PARENT_INSTITUTION_MODAL_ID, ParentInstitutionModalComponent)
   ],
-  entryComponents: [
-    ParentInstitutionModalComponent
-  ]
+  entryComponents: [ParentInstitutionModalComponent]
 })
-export class ManageInstitutionsModule {
-}
+export class ManageInstitutionsModule {}

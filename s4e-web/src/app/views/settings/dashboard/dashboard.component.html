@@ -27,14 +27,24 @@
   </p>
   <ng-container dashboard-tiles>
     <s4e-tile data-e2e="go-to-people-list-tile">
-      <img src="./assets/images/ico_people.svg" alt="Ikona ludzi" width="50" tile-image />
+      <img
+        src="./assets/images/ico_people.svg"
+        alt="Ikona ludzi"
+        width="50"
+        tile-image
+      />
       <header class="panel__header" tile-title>Ludzie</header>
-      <p i18n tile-description>Panel służy do zarządzania osobami, które są pracownikami lub współpracownikami instytucji.</p>
+      <p i18n tile-description>
+        Panel służy do zarządzania osobami, które są pracownikami lub
+        współpracownikami instytucji.
+      </p>
       <button
         routerLink="../people"
         queryParamsHandling="merge"
         class="button button--secondary"
-        [disabled]="!((isInstitutionActive$ | async) && (isManagerOfActive$ | async))"
+        [disabled]="
+          !((isInstitutionActive$ | async) && (isManagerOfActive$ | async))
+        "
         footer-navigation
       >
         Zarządzaj ludźmi
@@ -42,9 +52,17 @@
     </s4e-tile>
 
     <s4e-tile data-e2e="go-to-institution-profile-tile">
-      <img src="./assets/images/ico_institution.svg" alt="Ikona instytucji" width="50" tile-image />
+      <img
+        src="./assets/images/ico_institution.svg"
+        alt="Ikona instytucji"
+        width="50"
+        tile-image
+      />
       <header class="panel__header" tile-title>Profil instytucji</header>
-      <p i18n tile-description>To instytucja, której jesteś administratorem. Możesz edytować tam podstawowe informacje.</p>
+      <p i18n tile-description>
+        To instytucja, której jesteś administratorem. Możesz edytować tam podstawowe
+        informacje.
+      </p>
       <button
         routerLink="../institution"
         queryParamsHandling="merge"

@@ -30,15 +30,23 @@
         <table class="modal__table modal__table--saveconfig">
           <tr>
             <td>Produkt</td>
-            <td i18n>{{ viewConfig.configurationNames.product || 'Nie wybrano'}}</td>
+            <td i18n>
+              {{ viewConfig.configurationNames.product || 'Nie wybrano' }}
+            </td>
           </tr>
           <tr>
             <td>Data</td>
-            <td i18n>{{viewConfig.configurationNames.selectedDate || 'Nie wybrano'}}</td>
+            <td i18n>
+              {{ viewConfig.configurationNames.selectedDate || 'Nie wybrano' }}
+            </td>
           </tr>
           <tr>
             <td>Nakładki</td>
-            <td i18n>{{viewConfig.configurationNames.overlays.toString() || 'Nie wybrano'}}
+            <td i18n>
+              {{
+                viewConfig.configurationNames.overlays.toString() || 'Nie wybrano'
+              }}
+            </td>
           </tr>
         </table>
         <ext-input
@@ -51,7 +59,11 @@
       </div>
     </div>
     <div class="s4e-modal-footer">
-      <fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+      <fa-icon
+        [hidden]="!(loading$ | async)"
+        [icon]="['fas', 'circle-notch']"
+        [spin]="true"
+      ></fa-icon>
       <button
         class="button button--primary button--small"
         type="submit"
@@ -61,7 +73,14 @@
       >
         Zapisz konfigurację
       </button>
-      <button class="button button--cancel button--small" type="button" *ngIf="!(loading$ | async)" (click)="dismiss()" i18n>Anuluj
+      <button
+        class="button button--cancel button--small"
+        type="button"
+        *ngIf="!(loading$ | async)"
+        (click)="dismiss()"
+        i18n
+      >
+        Anuluj
       </button>
     </div>
   </s4e-generic-modal>

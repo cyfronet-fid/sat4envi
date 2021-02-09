@@ -1,56 +1,50 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class MapProducts extends Core {
-
   static readonly pageObject = {
-    getAllProductsInAllCategories: () => cy.get('[data-e2e="product-list"] [data-e2e="products__item"]'),
+    getAllProductsInAllCategories: () =>
+      cy.get('[data-e2e="product-list"] [data-e2e="products__item"]'),
     getProductNavbar: () => cy.get('[data-e2e="product-list"]'),
-    getProductsNameBtn: () => cy.get('[data-e2e="product-list"] [data-e2e="picker-item-label"]'),
+    getProductsNameBtn: () =>
+      cy.get('[data-e2e="product-list"] [data-e2e="picker-item-label"]'),
     getLegend: () => cy.get('[data-e2e="legend__chart"]'),
     getOnLiveBtn: () => cy.get('[data-e2e="btn-live"]'),
     getSpinnerIcon: () => cy.get('.products__visibility__spinner')
   };
 
   static selectProductByName(partialName: string) {
-    cy.route('GET', '/api/v1/products/*').as('turnOnProduct')
+    cy.route('GET', '/api/v1/products/*').as('turnOnProduct');
 
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getProductsNameBtn()
       .contains(partialName)
-      .should("be.visible")
+      .should('be.visible')
       .click();
 
     cy.wait('@turnOnProduct');
 
-    MapProducts
-      .pageObject
-      .getSpinnerIcon()
-      .should('not.exist');
+    MapProducts.pageObject.getSpinnerIcon().should('not.exist');
 
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getProductsNameBtn()
       .contains(partialName)
-      .should("have.class", "active");
+      .should('have.class', 'active');
 
     return MapProducts;
   }
 
   static selectNthProduct(number: number) {
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getProductsNameBtn()
       .eq(number)
-      .should("be.visible")
+      .should('be.visible')
       .click();
 
     return MapProducts;
   }
 
   static productsCountShouldBe(count: number) {
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getAllProductsInAllCategories()
       .should('have.length', count);
 
@@ -58,46 +52,42 @@ export class MapProducts extends Core {
   }
 
   static legendShouldBeVisible() {
-    MapProducts
-      .pageObject
-      .getLegend()
-      .should("be.visible");
+    MapProducts.pageObject.getLegend().should('be.visible');
 
     return MapProducts;
   }
 
   static turnOnOnLiveView() {
-    cy.route('GET', "/api/v1/products/*/scenes/most-recent?{*,*/*}").as('loadResentScene');
+    cy.route('GET', '/api/v1/products/*/scenes/most-recent?{*,*/*}').as(
+      'loadResentScene'
+    );
 
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getOnLiveBtn()
       .click()
-      .find("label")
-      .should("have.class", "active")
+      .find('label')
+      .should('have.class', 'active');
     cy.wait('@loadResentScene');
 
     return MapProducts;
   }
 
   static turnOffOnLiveView() {
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getOnLiveBtn()
       .click()
-      .find("label")
-      .should("not.have.class", "active");
+      .find('label')
+      .should('not.have.class', 'active');
 
     return MapProducts;
   }
 
   static productWithNameShouldNotBeVisible(partialName: string) {
-    MapProducts
-      .pageObject
+    MapProducts.pageObject
       .getProductsNameBtn()
       .contains(partialName)
-      .should("not.be.visible")
+      .should('not.exist');
 
     return MapProducts;
   }
-};
+}

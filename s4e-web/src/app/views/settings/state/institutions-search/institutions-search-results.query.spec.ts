@@ -15,16 +15,22 @@
  *
  */
 
-import { InstitutionProfileComponent } from './../../intitution-profile/institution-profile.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { InstitutionFactory } from './../institution/institution.factory.spec';
-import { InstitutionsSearchResultsQuery } from './institutions-search-results.query';
-import { InstitutionsSearchResultsStore } from './institutions-search-results.store';
-import { InstitutionService } from '../institution/institution.service';
-import { Subject, ReplaySubject, of } from 'rxjs';
-import { ParamMap, convertToParamMap, ActivatedRoute, Data, Router } from '@angular/router';
-import { TestBed, async } from '@angular/core/testing';
+import {InstitutionProfileComponent} from './../../intitution-profile/institution-profile.component';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {InstitutionFactory} from './../institution/institution.factory.spec';
+import {InstitutionsSearchResultsQuery} from './institutions-search-results.query';
+import {InstitutionsSearchResultsStore} from './institutions-search-results.store';
+import {InstitutionService} from '../institution/institution.service';
+import {Subject, ReplaySubject, of} from 'rxjs';
+import {
+  ParamMap,
+  convertToParamMap,
+  ActivatedRoute,
+  Data,
+  Router
+} from '@angular/router';
+import {TestBed, waitForAsync} from '@angular/core/testing';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -32,7 +38,7 @@ class ActivatedRouteStub {
 
   constructor() {
     this.queryParamMap.next(convertToParamMap({}));
-    this.data.next({ isEditMode: false });
+    this.data.next({isEditMode: false});
   }
 }
 
@@ -42,22 +48,25 @@ describe('InstitutionSearchResultsQuery', () => {
   let institutionService: InstitutionService;
   let router: Router;
 
-  beforeEach(async (() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
-      ]
-    });
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule, RouterTestingModule],
+        providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+      });
 
-    institutionService = TestBed.get(InstitutionService);
-    router = TestBed.get(Router);
-    query = new InstitutionsSearchResultsQuery(new InstitutionsSearchResultsStore(), institutionService);
-    activatedRoute = <ActivatedRouteStub>TestBed.get(ActivatedRoute);
-  }));
+      institutionService = TestBed.inject(InstitutionService);
+      router = TestBed.inject(Router);
+      query = new InstitutionsSearchResultsQuery(
+        new InstitutionsSearchResultsStore(),
+        institutionService,
+        router
+      );
+      activatedRoute = (<unknown>(
+        TestBed.inject(ActivatedRoute)
+      )) as ActivatedRouteStub;
+    })
+  );
 
   it('should create an instance', () => {
     expect(query).toBeTruthy();
@@ -65,21 +74,22 @@ describe('InstitutionSearchResultsQuery', () => {
 
   it('should get selected institution', () => {
     const institution = InstitutionFactory.build();
-    const institutionServiceSpy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
-    router.navigate(
-      [],
-      {
-        relativeTo: activatedRoute as any,
-        queryParams: { institution: institution.slug },
-        queryParamsHandling: 'merge',
-        skipLocationChange: true
-      }
+    const institutionServiceSpy = spyOn(
+      institutionService,
+      'findBy'
+    ).and.returnValue(of(institution));
+    router.navigate([], {
+      relativeTo: activatedRoute as any,
+      queryParams: {institution: institution.slug},
+      queryParamsHandling: 'merge',
+      skipLocationChange: true
+    });
+    activatedRoute.queryParamMap.next(
+      convertToParamMap({institution: institution.slug})
     );
-    activatedRoute.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
-    query.selectActive$(activatedRoute as any)
-      .subscribe((activeInstitution) => {
-        expect(activeInstitution).toEqual(institution);
-        expect(institutionServiceSpy).toHaveBeenCalledWith(institution.slug);
-      });
+    query.selectActive$(activatedRoute as any).subscribe(activeInstitution => {
+      expect(activeInstitution).toEqual(institution);
+      expect(institutionServiceSpy).toHaveBeenCalledWith(institution.slug);
+    });
   });
 });

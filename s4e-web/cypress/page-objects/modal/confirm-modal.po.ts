@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class ConfirmModal extends Core {
   static readonly pageObject = {
@@ -8,19 +8,13 @@ export class ConfirmModal extends Core {
   };
 
   static contentShouldContain(txt: string) {
-    ConfirmModal
-      .pageObject
-      .getContent()
-      .should('contain', txt);
+    ConfirmModal.pageObject.getContent().should('contain', txt);
 
     return ConfirmModal;
   }
 
   static accept() {
-    ConfirmModal
-      .pageObject
-      .getAcceptBtn()
-      .click();
+    ConfirmModal.pageObject.getAcceptBtn().click();
   }
 
   static acceptAndChangeContextTo<T>(context: T) {
@@ -30,10 +24,7 @@ export class ConfirmModal extends Core {
   }
 
   static cancelAndChangeContextTo<T>(context: T) {
-    ConfirmModal
-      .pageObject
-      .getCancelBtn()
-      .click();
+    ConfirmModal.pageObject.getCancelBtn().click();
 
     return context;
   }

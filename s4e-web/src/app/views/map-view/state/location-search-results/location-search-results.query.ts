@@ -18,7 +18,7 @@
 import {Injectable} from '@angular/core';
 import {LocationSearchResultsStore} from './locations-search-results.store';
 import {LocationSearchResult} from './location-search-result.model';
-import { SearchResultsQuery } from '../search-results/search-results.query';
+import {SearchResultsQuery} from '../search-results/search-results.query';
 
 @Injectable({
   providedIn: 'root'

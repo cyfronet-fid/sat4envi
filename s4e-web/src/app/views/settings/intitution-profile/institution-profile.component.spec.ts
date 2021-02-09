@@ -15,19 +15,24 @@
  *
  */
 
-import { SessionService } from './../../../state/session/session.service';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { By } from '@angular/platform-browser';
-import { InstitutionFactory } from './../state/institution/institution.factory.spec';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {RouterTestingModule} from '@angular/router/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {By} from '@angular/platform-browser';
+import {InstitutionFactory} from '../state/institution/institution.factory.spec';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 
-import { InstitutionProfileComponent } from './institution-profile.component';
-import { InstitutionProfileModule } from './institution-profile.module';
-import { convertToParamMap, ParamMap, ActivatedRoute, Router } from '@angular/router';
-import { Subject, ReplaySubject, of } from 'rxjs';
-import { DebugElement } from '@angular/core';
-import { InstitutionService } from '../state/institution/institution.service';
+import {InstitutionProfileComponent} from './institution-profile.component';
+import {InstitutionProfileModule} from './institution-profile.module';
+import {convertToParamMap, ParamMap, ActivatedRoute, Router} from '@angular/router';
+import {Subject, ReplaySubject, of} from 'rxjs';
+import {DebugElement} from '@angular/core';
+import {InstitutionService} from '../state/institution/institution.service';
 
 class ActivatedRouteStub {
   paramMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -47,27 +52,26 @@ describe('InstitutionProfileComponent', () => {
   let router: Router;
   let de: DebugElement;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        InstitutionProfileModule,
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
-      ]
-    })
-    .compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          InstitutionProfileModule,
+          HttpClientTestingModule,
+          RouterTestingModule
+        ],
+        providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+      }).compileComponents();
 
-    fixture = TestBed.createComponent(InstitutionProfileComponent);
-    component = fixture.componentInstance;
-    route = <ActivatedRouteStub>TestBed.get(ActivatedRoute);
-    router = TestBed.get(Router);
-    institutionService = TestBed.get(InstitutionService);
-    de = fixture.debugElement;
-    fixture.detectChanges();
-  }));
+      fixture = TestBed.createComponent(InstitutionProfileComponent);
+      component = fixture.componentInstance;
+      route = (<unknown>TestBed.inject(ActivatedRoute)) as ActivatedRouteStub;
+      router = TestBed.inject(Router);
+      institutionService = TestBed.inject(InstitutionService);
+      de = fixture.debugElement;
+      fixture.detectChanges();
+    })
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -75,8 +79,10 @@ describe('InstitutionProfileComponent', () => {
 
   it('Should display institution on init', fakeAsync(() => {
     const institution = InstitutionFactory.build();
-    const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
-    route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
+    const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(
+      of(institution)
+    );
+    route.queryParamMap.next(convertToParamMap({institution: institution.slug}));
     component.isManagerOfActive$ = of(true);
     tick();
     fixture.detectChanges();
@@ -96,10 +102,14 @@ describe('InstitutionProfileComponent', () => {
     expect(postalCode.nativeElement.innerHTML).toContain(institution.postalCode);
 
     const phone = de.query(By.css('#institution-phone'));
-    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);
+    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(
+      institution.phone
+    );
 
     const secondaryPhone = de.query(By.css('#institution-second-phone'));
-    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.secondaryPhone);
+    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(
+      institution.secondaryPhone
+    );
 
     const editInstitutionBtn = de.query(By.css('[data-ut="edit-institution"]'));
     expect(editInstitutionBtn).toBeTruthy();
@@ -116,9 +126,11 @@ describe('InstitutionProfileComponent', () => {
 
   it('Should display only institution details when user is only member', fakeAsync(() => {
     const institution = InstitutionFactory.build();
-    const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(of(institution));
+    const spyFindBy = spyOn(institutionService, 'findBy').and.returnValue(
+      of(institution)
+    );
     component.isManagerOfActive$ = of(false);
-    route.queryParamMap.next(convertToParamMap({ institution: institution.slug }));
+    route.queryParamMap.next(convertToParamMap({institution: institution.slug}));
     tick();
     fixture.detectChanges();
 
@@ -137,10 +149,14 @@ describe('InstitutionProfileComponent', () => {
     expect(postalCode.nativeElement.innerHTML).toContain(institution.postalCode);
 
     const phone = de.query(By.css('#institution-phone'));
-    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.phone);
+    expect(phone.nativeElement.innerHTML.split(':')[1].trim()).toContain(
+      institution.phone
+    );
 
     const secondaryPhone = de.query(By.css('#institution-second-phone'));
-    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(institution.secondaryPhone);
+    expect(secondaryPhone.nativeElement.innerHTML.split(':')[1].trim()).toContain(
+      institution.secondaryPhone
+    );
 
     const editInstitutionBtn = de.query(By.css('[data-ut="edit-institution"]'));
     expect(editInstitutionBtn).toBeFalsy();

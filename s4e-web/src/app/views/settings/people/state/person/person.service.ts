@@ -15,22 +15,20 @@
  *
  */
 
-import { NotificationService } from 'notifications';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {PersonStore} from './person.store';
 import {Person, UserRole} from './person.model';
-import { InstitutionQuery } from '../../../state/institution/institution.query';
+import {InstitutionQuery} from '../../../state/institution/institution.query';
 import environment from 'src/environments/environment';
-import { handleHttpRequest$ } from 'src/app/common/store.util';
-import { Injectable } from '@angular/core';
-import {filter, map, switchMap, tap} from 'rxjs/operators';
+import {handleHttpRequest$} from 'src/app/common/store.util';
+import {Injectable} from '@angular/core';
+import {map, switchMap, tap} from 'rxjs/operators';
 import {forkJoin} from 'rxjs';
 import {Institution} from '../../../state/institution/institution.model';
-import {RequestOptions} from '@angular/http';
+import {NotificationService} from '../../../../../notifications/state/notification.service';
 
 @Injectable({providedIn: 'root'})
 export class PersonService {
-
   constructor(
     private _store: PersonStore,
     private _institutionQuery: InstitutionQuery,
@@ -41,40 +39,47 @@ export class PersonService {
   fetchAllAdmins$() {
     this._store.set([]);
     const isAdmin = person => person.roles.some(role => role.role === 'INST_ADMIN');
-    return this._institutionQuery.selectAll()
-      .pipe(
-        switchMap(institutions => forkJoin(
-          institutions.map(institution => this.fetchAllBy$(institution)
-            .pipe(
+    return this._institutionQuery.selectAll().pipe(
+      switchMap(institutions =>
+        forkJoin(
+          institutions.map(institution =>
+            this.fetchAllBy$(institution).pipe(
               handleHttpRequest$(this._store),
               map(persons => persons.filter(person => isAdmin(person)))
             )
-          ))
-        ),
-        map(institutionsPersons => institutionsPersons
-          .reduce((persons, institutionPersons) => persons = [...persons, ...institutionPersons])
-        ),
-        map(nonUniquePersons => {
-          const nonUniquePersonsEmails = nonUniquePersons.map(person => person.email);
-          const uniquePersonsIndexes = Array.from(new Set(nonUniquePersonsEmails))
-            .map(uniqueEmail => nonUniquePersonsEmails.indexOf(uniqueEmail));
+          )
+        )
+      ),
+      map(institutionsPersons =>
+        institutionsPersons.reduce(
+          (persons, institutionPersons) =>
+            (persons = [...persons, ...institutionPersons])
+        )
+      ),
+      map(nonUniquePersons => {
+        const nonUniquePersonsEmails = nonUniquePersons.map(person => person.email);
+        const uniquePersonsIndexes = Array.from(
+          new Set(nonUniquePersonsEmails)
+        ).map(uniqueEmail => nonUniquePersonsEmails.indexOf(uniqueEmail));
 
-          return uniquePersonsIndexes
-            .map(uniquePersonIndex => nonUniquePersons[uniquePersonIndex]);
-        }),
-        switchMap(persons => this._updateWithPrivileges(persons)),
-        tap(persons => this._store.set(persons))
-      );
+        return uniquePersonsIndexes.map(
+          uniquePersonIndex => nonUniquePersons[uniquePersonIndex]
+        );
+      }),
+      switchMap(persons => this._updateWithPrivileges(persons)),
+      tap(persons => this._store.set(persons))
+    );
   }
 
   fetchAllBy$(institution: Institution) {
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/members`;
-    return  this._http.get<Person[]>(url).pipe(handleHttpRequest$(this._store));
+    return this._http.get<Person[]>(url).pipe(handleHttpRequest$(this._store));
   }
 
   fetchAll(institutionSlug: string) {
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/members`;
-    this._http.get<Person[]>(url)
+    this._http
+      .get<Person[]>(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe((persons: Person[]) => this._store.set(persons));
   }
@@ -82,15 +87,16 @@ export class PersonService {
   addAdminRoleFor(person: Person) {
     const institutionSlug = this._institutionQuery.getActiveId();
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/admins/${person.id}`;
-    this._http.post(url, {})
+    this._http
+      .post(url, {})
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => {
-          const newRole: UserRole = {
-            institutionSlug,
-            role: 'INST_ADMIN'
-          };
-          this._store.update(person.email, {roles: [...person.roles, newRole]});
-          this._notificationService.addGeneral({
+        const newRole: UserRole = {
+          institutionSlug,
+          role: 'INST_ADMIN'
+        };
+        this._store.update(person.email, {roles: [...person.roles, newRole]});
+        this._notificationService.addGeneral({
           content: `${person.email} otrzymał rolę administratora`,
           type: 'success'
         });
@@ -100,10 +106,16 @@ export class PersonService {
   removeAdminRoleFor(person: Person) {
     const institutionSlug = this._institutionQuery.getActiveId();
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/admins/${person.id}`;
-    this._http.delete(url)
+    this._http
+      .delete(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => {
-        this._store.update(person.email, {roles: person.roles.filter(role => role.role !== 'INST_ADMIN' && role.institutionSlug !== institutionSlug)});
+        this._store.update(person.email, {
+          roles: person.roles.filter(
+            role =>
+              role.role !== 'INST_ADMIN' && role.institutionSlug !== institutionSlug
+          )
+        });
         this._notificationService.addGeneral({
           content: `Rola administratora dla ${person.email} została usunięta`,
           type: 'success'
@@ -114,7 +126,8 @@ export class PersonService {
   delete(person: Person) {
     const institutionSlug = this._institutionQuery.getActiveId();
     const url = `${environment.apiPrefixV1}/institutions/${institutionSlug}/members/${person.id}`;
-    this._http.delete(url)
+    this._http
+      .delete(url)
       .pipe(handleHttpRequest$(this._store))
       .subscribe(() => this._store.remove(person.email));
   }
@@ -127,30 +140,26 @@ export class PersonService {
       }),
       body: {email: person.email}
     };
-    const removePrivilege$ = this._http.delete(url + 'OP_INSTITUTION_DELETE', body)
+    const removePrivilege$ = this._http
+      .delete(url + 'OP_INSTITUTION_DELETE', body)
       .pipe(
         handleHttpRequest$(this._store),
         tap(() => {
-          this._store.replace(
-            person.email,
-            {
-              ...person,
-              hasGrantedDeleteInstitution: false
-            }
-          );
+          this._store.replace(person.email, {
+            ...person,
+            hasGrantedDeleteInstitution: false
+          });
         })
       );
-    const addPrivilege$ = this._http.put(url + 'OP_INSTITUTION_DELETE', {email: person.email})
+    const addPrivilege$ = this._http
+      .put(url + 'OP_INSTITUTION_DELETE', {email: person.email})
       .pipe(
         handleHttpRequest$(this._store),
         tap(() => {
-          this._store.replace(
-            person.email,
-            {
-              ...person,
-              hasGrantedDeleteInstitution: true
-            }
-          );
+          this._store.replace(person.email, {
+            ...person,
+            hasGrantedDeleteInstitution: true
+          });
         })
       );
     return person.hasGrantedDeleteInstitution ? removePrivilege$ : addPrivilege$;
@@ -158,13 +167,16 @@ export class PersonService {
 
   private _updateWithPrivileges(persons: Person[]) {
     const url = `${environment.apiPrefixV1}/users/authority/OP_INSTITUTION_DELETE`;
-    return this._http.get<{email: string}[]>(url)
-      .pipe(
-        map(emails => emails.map(email => email.email)),
-        map(emails => persons.map(person => {
-          person.hasGrantedDeleteInstitution = emails.some(email => email === person.email);
+    return this._http.get<{email: string}[]>(url).pipe(
+      map(emails => emails.map(email => email.email)),
+      map(emails =>
+        persons.map(person => {
+          person.hasGrantedDeleteInstitution = emails.some(
+            email => email === person.email
+          );
           return person;
-        }))
-      );
+        })
+      )
+    );
   }
 }

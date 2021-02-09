@@ -15,12 +15,20 @@
  *
  */
 
-import {Component, forwardRef, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewEncapsulation
+} from '@angular/core';
 import {ControlValueAccessor, FormArray, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {CheckBoxEntry} from './check-box-list.model';
 import {FormControl} from '@ng-stack/forms';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-check-box-list',
   templateUrl: './check-box-list.component.html',
@@ -34,7 +42,8 @@ import {untilDestroyed} from 'ngx-take-until-destroy';
     }
   ]
 })
-export class CheckBoxListComponent<T> implements OnInit, OnDestroy, ControlValueAccessor {
+export class CheckBoxListComponent<T>
+  implements OnInit, OnDestroy, ControlValueAccessor {
   form: FormArray = new FormArray([]);
   private _items: CheckBoxEntry<T>[] = [];
 
@@ -47,24 +56,32 @@ export class CheckBoxListComponent<T> implements OnInit, OnDestroy, ControlValue
     while (this.form.length !== 0) {
       this.form.removeAt(0);
     }
-    this._items.forEach(item => this.form.push(new FormControl<boolean>(false)))
+    this._items.forEach(item => this.form.push(new FormControl<boolean>(false)));
   }
   protected propagateChange: Function = (_: any) => {};
   protected onTouched: any = () => {};
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    this.form.valueChanges.pipe(untilDestroyed(this)).subscribe((values: boolean[]) => {
-      this.propagateChange({_: values.map((v, i) => this.items[i].value).filter((v, i) => values[i])});
-    });
+    this.form.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe((values: boolean[]) => {
+        this.propagateChange({
+          _: values.map((v, i) => this.items[i].value).filter((v, i) => values[i])
+        });
+      });
   }
 
   ngOnDestroy(): void {}
 
   writeValue(obj: any): void {
-    if (obj == null) {obj = {_: []};}
-    if(obj._ == null || !Array.isArray(obj._)) {
-      throw new Error(`CheckBoxListComponent requires array as a value, value is: ${obj._}`)
+    if (obj == null) {
+      obj = {_: []};
+    }
+    if (obj._ == null || !Array.isArray(obj._)) {
+      throw new Error(
+        `CheckBoxListComponent requires array as a value, value is: ${obj._}`
+      );
     }
     obj = obj._;
     this.items.forEach((item, i) => {

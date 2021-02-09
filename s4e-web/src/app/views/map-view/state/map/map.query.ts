@@ -28,19 +28,27 @@ import {mapAllTrue} from '../../../../utils/rxjs/observable';
 
 @Injectable({providedIn: 'root'})
 export class MapQuery extends Query<MapState> {
-  constructor(protected store: MapStore,
-              private overlayQuery: OverlayQuery,
-              private productQuery: ProductQuery,
-              private sceneQuery: SceneQuery) {
+  constructor(
+    protected store: MapStore,
+    private overlayQuery: OverlayQuery,
+    private productQuery: ProductQuery,
+    private sceneQuery: SceneQuery
+  ) {
     super(store);
   }
 
   selectQueryParamsFromStore() {
     return combineLatest([
-      this.overlayQuery.selectActiveUIOverlays().pipe(map(overlays => overlays.map(o => o.id)), distinctUntilChanged()),
+      this.overlayQuery.selectActiveUIOverlays().pipe(
+        map(overlays => overlays.map(o => o.id)),
+        distinctUntilChanged()
+      ),
       this.productQuery.select().pipe(distinctUntilChanged()),
       this.sceneQuery.selectActive().pipe(distinctUntilChanged()),
-      this.select().pipe(map(mv => mv.view), distinctUntilChanged())
+      this.select().pipe(
+        map(mv => mv.view),
+        distinctUntilChanged()
+      )
     ]).pipe(
       map(([overlays, product, scene, zoom]) => ({
         overlays: overlays.length === 0 ? null : overlays,

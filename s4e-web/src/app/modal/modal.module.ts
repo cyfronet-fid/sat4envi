@@ -40,13 +40,8 @@ import {DUMMY_MODAL_ID} from './components/dummy-modal/dummy-modal.model';
     ConfirmModalComponent,
     GenericModalComponent
   ],
-  imports: [
-    CommonModule
-  ],
-  exports: [
-    ModalOutletComponent,
-    GenericModalComponent,
-  ],
+  imports: [CommonModule],
+  exports: [ModalOutletComponent, GenericModalComponent],
   providers: [
     makeModalProvider(DUMMY_MODAL_ID, DummyModalComponent),
     makeModalProvider(ALERT_MODAL_ID, AlertModalComponent),
@@ -55,11 +50,6 @@ import {DUMMY_MODAL_ID} from './components/dummy-modal/dummy-modal.model';
     ModalQuery,
     ModalStore
   ],
-  entryComponents: [
-    DummyModalComponent,
-    ConfirmModalComponent,
-    AlertModalComponent,
-  ]
+  entryComponents: [DummyModalComponent, ConfirmModalComponent, AlertModalComponent]
 })
-export class ModalModule {
-}
+export class ModalModule {}

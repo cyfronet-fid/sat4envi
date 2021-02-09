@@ -15,6 +15,7 @@
 
   <properties>
     <npm.build.run-script-arg>build</npm.build.run-script-arg>
+    <npm.lint.run-script-arg>lint</npm.lint.run-script-arg>
   </properties>
 
   <profiles>
@@ -61,7 +62,7 @@
         <artifactId>frontend-maven-plugin</artifactId>
         <configuration>
           <installDirectory>target</installDirectory>
-          <nodeVersion>v11.10.1</nodeVersion>
+          <nodeVersion>v14.15.5</nodeVersion>
         </configuration>
         <executions>
           <execution>
@@ -77,6 +78,19 @@
             <goals>
               <goal>npm</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>npm run-script lint</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run-script ${npm.lint.run-script-arg}</arguments>
+              <environmentVariables>
+                <NG_VERSION>${project.version}</NG_VERSION>
+              </environmentVariables>
+            </configuration>
           </execution>
           <execution>
             <id>npm run-script build</id>

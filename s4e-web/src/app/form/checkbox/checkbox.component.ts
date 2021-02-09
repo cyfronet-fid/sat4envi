@@ -33,7 +33,6 @@ import {NG_VALUE_ACCESSOR} from '@angular/forms';
   ]
 })
 export class CheckboxComponent extends GeneralInput {
-
   writeValue(value: any): void {
     if (value !== undefined) {
       this.currentValue = value;

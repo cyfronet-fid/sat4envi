@@ -18,7 +18,7 @@
 import {HourPipe} from './hour.pipe';
 import {TestBed} from '@angular/core/testing';
 import {UtilsModule} from '../utils.module';
-import momentTz from 'moment-timezone';
+import * as momentTz from 'moment-timezone';
 
 describe('TimePipe', () => {
   let pipe: HourPipe;
@@ -27,7 +27,7 @@ describe('TimePipe', () => {
       imports: [UtilsModule],
       providers: [HourPipe]
     });
-    pipe = TestBed.get(HourPipe);
+    pipe = TestBed.inject(HourPipe);
   });
 
   it('create an instance', () => {
@@ -35,7 +35,7 @@ describe('TimePipe', () => {
   });
 
   it('should return hours', () => {
-    momentTz.tz.setDefault('Europe/Warsaw')
+    momentTz.tz.setDefault('Europe/Warsaw');
     expect(pipe.transform('2020-09-09T02:56:49.140Z')).toBe('04:56');
   });
 

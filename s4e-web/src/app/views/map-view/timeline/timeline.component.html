@@ -17,78 +17,133 @@
 
 <div>
   <section class="timeline__manager">
-    <div class="timecontrol timecontrol--live button button--small button--default" data-e2e="btn-live">
+    <div
+      class="timecontrol timecontrol--live button button--small button--default"
+      data-e2e="btn-live"
+    >
       <label for="live" [ngClass]="{active: isLive$ | async}" i18n>
         <span class="live--dot"></span><span>Na żywo</span>
       </label>
       <input type="checkbox" id="live" name="live" (change)="toggleLiveMode()" />
     </div>
     <div class="timecontrol timecontrol--date">
-      <span (click)="goToPreviousDay()" class="timecontrol__button timecontrol__button--prev"></span>
-      <span [owlDateTimeTrigger]="datepicker">{{currentDate}}</span>
-      <input style="visibility: hidden; width: 1px; display: inline-block;" [owlDateTimeFilter]="filterInactiveDays"
-             (dateTimeChange)="selectDate($event)"
-             [owlDateTime]="datepicker" [selectMode]="'single'" placeholder="Date Time">
-      <span [owlDateTimeTrigger]="datepicker" class="timeline__changedate" data-e2e="timeline__changedate"></span>
-      <owl-date-time #datepicker
-                     [startAt]="currentDate"
-                     [panelClass]="componentId"
-                     (afterPickerOpen)="setPickerOpenState(true)"
-                     (afterPickerClosed)="setPickerOpenState(false)"
-                     [pickerMode]="'popup'" [pickerType]="'calendar'"
-                     (monthSelected)="monthSelected($event)"></owl-date-time>
-      <span (click)="goToNextDay()" class="timecontrol__button timecontrol__button--next"></span>
+      <span
+        (click)="goToPreviousDay()"
+        class="timecontrol__button timecontrol__button--prev"
+      ></span>
+      <span (click)="datepicker.show()">{{ currentDate }}</span>
+      <input
+        style="visibility: hidden; width: 1px; display: inline-block"
+        bsDatepicker
+        [bsConfig]="{
+          containerClass: 'theme-blank',
+          adaptivePosition: true,
+          customTodayClass: 'today',
+          dateInputFormat: 'YYYY-MM-DD'
+        }"
+        [formControl]="datepickerFc"
+        [dateCustomClasses]="dateClasses"
+        (onShown)="setPickerOpenState(true)"
+        (onHidden)="setPickerOpenState(false)"
+        #datepicker="bsDatepicker"
+        (bsValueChange)="selectDate($event)"
+        placeholder="Date Time"
+      />
+      <span
+        (click)="datepicker.show()"
+        class="timeline__changedate"
+        data-e2e="timeline__changedate"
+      ></span>
+      <span
+        (click)="goToNextDay()"
+        class="timecontrol__button timecontrol__button--next"
+      ></span>
     </div>
     <div class="timecontrol timecontrol--clock">
-      <span (click)="goToPreviousScene()" class="timecontrol__button timecontrol__button--prev"></span>
-      <span>{{activeScene?.timestamp | hour}}</span>
-      <span (click)="goToNextScene()" class="timecontrol__button timecontrol__button--next"></span>
+      <span
+        (click)="goToPreviousScene()"
+        class="timecontrol__button timecontrol__button--prev"
+      ></span>
+      <span>{{ activeScene?.timestamp | hour }}</span>
+      <span
+        (click)="goToNextScene()"
+        class="timecontrol__button timecontrol__button--next"
+      ></span>
     </div>
     <div class="timecontrol timecontrol--interval">
-      <span (click)="increaseResolution.emit()" class="timecontrol__button timecontrol__button--minus"></span>
-      <span>{{resolution}}h</span>
-      <span (click)="decreaseResolution.emit()" class="timecontrol__button timecontrol__button--plus"></span>
+      <span
+        (click)="increaseResolution.emit()"
+        class="timecontrol__button timecontrol__button--minus"
+      ></span>
+      <span>{{ resolution }}h</span>
+      <span
+        (click)="decreaseResolution.emit()"
+        class="timecontrol__button timecontrol__button--plus"
+      ></span>
     </div>
 
     <!-- This button launches modal for mobile view -->
-    <button class="timecontrol timecontrol--scenemobile" (click)="openSceneSelection.emit()"
-            [disabled]="((scenes$ | async)?.length) == 0">
-      <span>{{activeScene?.timestamp | hour}}</span>
+    <button
+      class="timecontrol timecontrol--scenemobile"
+      (click)="openSceneSelection.emit()"
+      [disabled]="(scenes$ | async)?.length == 0"
+    >
+      <span>{{ activeScene?.timestamp | hour }}</span>
       <span class="timecontrol__button timecontrol__button--clock"></span>
     </button>
   </section>
   <div class="timeline__grid">
-    <div class="timeline__item timeline__item--noproduct" *ngIf="!((scenes$ | async)?.length) && !loading" i18n>Brak
-      scen w tym dniu, wybierz inną datę, lub <a href="javascript:void(0)" (click)="goToLastAvailableScene()">przejdź
-        do ostatniej zarejestrowanej sceny</a>
+    <div
+      class="timeline__item timeline__item--noproduct"
+      *ngIf="!(scenes$ | async)?.length && !loading"
+      i18n
+    >
+      Brak scen w tym dniu, wybierz inną datę, lub
+      <a href="javascript:void(0)" (click)="goToLastAvailableScene()"
+        >przejdź do ostatniej zarejestrowanej sceny</a
+      >
     </div>
     <ul>
-      <ng-container *ngFor="let scenePoint of (scenes$ | async)">
-        <li class="timeline__item"
-            *ngIf="scenePoint.points.length === 1; else aggregatePoint"
-            [attr.title]="scenePoint.points[0].timestamp | hour"
-            [attr.data-scene-id]="scenePoint.points[0].id"
-            [attr.data-active-id]="activeScene?.id"
-            [ngClass]="{active: scenePoint.selected}"
-            [style.left.%]="scenePoint.points[0].position"
-            (click)="selectScene(scenePoint.points[0])">
-          <span>{{ scenePoint.points[0].timestamp | date : 'shortTime' }}</span>
+      <ng-container *ngFor="let scenePoint of scenes$ | async">
+        <li
+          class="timeline__item"
+          *ngIf="scenePoint.points.length === 1; else aggregatePoint"
+          [attr.title]="scenePoint.points[0].timestamp | hour"
+          [attr.data-scene-id]="scenePoint.points[0].id"
+          [attr.data-active-id]="activeScene?.id"
+          [ngClass]="{active: scenePoint.selected}"
+          [style.left.%]="scenePoint.points[0].position"
+          (click)="selectScene(scenePoint.points[0])"
+        >
+          <span>{{ scenePoint.points[0].timestamp | date: 'shortTime' }}</span>
         </li>
         <ng-template #aggregatePoint>
-          <li class="timeline__item timeline__item--multiple"
-              (click)="activeStackedPoint === scenePoint ? activeStackedPoint = null : activeStackedPoint = scenePoint"
-              [ngClass]="{active: scenePoint.selected}"
-              [attr.title]="(scenePoint.points[0].timestamp | hour) + ' - ' + (scenePoint.points[scenePoint.points.length - 1].timestamp | hour)"
-              [style.left.%]="scenePoint.position">
+          <li
+            class="timeline__item timeline__item--multiple"
+            (click)="
+              activeStackedPoint === scenePoint
+                ? (activeStackedPoint = null)
+                : (activeStackedPoint = scenePoint)
+            "
+            [ngClass]="{active: scenePoint.selected}"
+            [attr.title]="
+              (scenePoint.points[0].timestamp | hour) +
+              ' - ' +
+              (scenePoint.points[scenePoint.points.length - 1].timestamp | hour)
+            "
+            [style.left.%]="scenePoint.position"
+          >
             <div class="multiple__popup" *ngIf="activeStackedPoint === scenePoint">
               <header>Dostępne sceny</header>
               <ul>
-                <li *ngFor="let scene of scenePoint.points"
-                    title=""
-                    [attr.data-scene-id]="scene.id"
-                    [attr.data-hour]="scene.timestamp | hour : true"
-                    (click)="selectScene(scene)">
-                  {{scene.timestamp | hour : true}}
+                <li
+                  *ngFor="let scene of scenePoint.points"
+                  title=""
+                  [attr.data-scene-id]="scene.id"
+                  [attr.data-hour]="scene.timestamp | hour: true"
+                  (click)="selectScene(scene)"
+                >
+                  {{ scene.timestamp | hour: true }}
                 </li>
               </ul>
             </div>
@@ -103,6 +158,6 @@
     </ul>
   </div>
   <div class="timeline__hourmark">
-    <span *ngFor="let hour of hourmarks" class="hourmark">{{hour}}</span>
+    <span *ngFor="let hour of hourmarks" class="hourmark">{{ hour }}</span>
   </div>
 </div>

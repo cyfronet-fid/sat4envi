@@ -22,7 +22,10 @@ import {EntityState} from '@datorama/akita';
 export const GLOBAL_OWNER_TYPE = 'GLOBAL';
 export const INSTITUTIONAL_OWNER_TYPE = 'INSTITUTIONAL';
 export const PERSONAL_OWNER_TYPE = 'PERSONAL';
-export type OwnerType = typeof GLOBAL_OWNER_TYPE | typeof PERSONAL_OWNER_TYPE | typeof INSTITUTIONAL_OWNER_TYPE;
+export type OwnerType =
+  | typeof GLOBAL_OWNER_TYPE
+  | typeof PERSONAL_OWNER_TYPE
+  | typeof INSTITUTIONAL_OWNER_TYPE;
 
 export interface Overlay {
   id: number;
@@ -31,7 +34,7 @@ export interface Overlay {
   url: string;
   label: string;
   visible: boolean;
-  createdAt: string|null;
+  createdAt: string | null;
 }
 
 /**

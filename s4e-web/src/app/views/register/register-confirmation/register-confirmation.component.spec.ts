@@ -15,20 +15,21 @@
  *
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { RegisterConfirmationComponent } from './register-confirmation.component';
+import {RegisterConfirmationComponent} from './register-confirmation.component';
 
 describe('RegisterConfirmationComponent', () => {
   let component: RegisterConfirmationComponent;
   let fixture: ComponentFixture<RegisterConfirmationComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ RegisterConfirmationComponent ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [RegisterConfirmationComponent]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(RegisterConfirmationComponent);

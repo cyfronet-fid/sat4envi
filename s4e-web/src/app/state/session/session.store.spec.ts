@@ -15,7 +15,7 @@
  *
  */
 
-import { SessionStore } from './session.store';
+import {SessionStore} from './session.store';
 
 describe('SessionStore', () => {
   let store: SessionStore;
@@ -27,5 +27,4 @@ describe('SessionStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

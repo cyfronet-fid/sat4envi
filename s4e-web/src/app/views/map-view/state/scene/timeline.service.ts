@@ -15,7 +15,7 @@
  *
  */
 
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {ProductService} from '../product/product.service';
@@ -25,14 +25,13 @@ import {SceneQuery} from './scene.query';
 import environment from '../../../../../environments/environment';
 import {interval, Subscription} from 'rxjs';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class TimelineService {
-  private _handleUpdater$ = this._sceneQuery.selectLoading()
-    .pipe(
-      filter(isLoading => !isLoading),
-      map(() => this._sceneQuery.getValue().isLiveMode),
-      tap(isLiveMode => isLiveMode ? this._turnOnUpdater() : this._turnOffUpdater())
-    );
+  private _handleUpdater$ = this._sceneQuery.selectLoading().pipe(
+    filter(isLoading => !isLoading),
+    map(() => this._sceneQuery.getValue().isLiveMode),
+    tap(isLiveMode => (isLiveMode ? this._turnOnUpdater() : this._turnOffUpdater()))
+  );
 
   private _intervalSubscription: Subscription;
 
@@ -47,9 +46,8 @@ export class TimelineService {
 
   toggleLiveMode(isLiveMode?: boolean) {
     this._sceneStore.setLoading(true);
-    isLiveMode = isLiveMode != null
-      ? isLiveMode
-      : !this._sceneQuery.getValue().isLiveMode;
+    isLiveMode =
+      isLiveMode != null ? isLiveMode : !this._sceneQuery.getValue().isLiveMode;
 
     this._sceneStore.update({...this._sceneQuery.getValue(), isLiveMode});
     this._sceneStore.setLoading(false);
@@ -69,7 +67,7 @@ export class TimelineService {
       'Czy na pewno chcesz wyjść?'
     );
     if (isLeavingLiveMode) {
-        this._sceneStore.update({isLiveMode: false});
+      this._sceneStore.update({isLiveMode: false});
     }
 
     this._sceneStore.setLoading(false);
@@ -81,12 +79,13 @@ export class TimelineService {
       return;
     }
 
-    this._intervalSubscription = this._productService.getLastAvailableScene$()
+    this._intervalSubscription = this._productService
+      .getLastAvailableScene$()
       .pipe(
         switchMap(() => interval(environment.liveSceneUpdateRateInMs)),
         switchMap(() => this._productService.getLastAvailableScene$())
       )
-    .subscribe();
+      .subscribe();
   }
 
   private _turnOffUpdater() {

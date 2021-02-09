@@ -16,23 +16,35 @@
   -->
 
 <span *ngFor="let error of errors" [ngSwitch]="error.key" class="error">
-    <ng-container *ngSwitchCase="'email'" i18n>To pole musi być emailem</ng-container>
-    <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
-    <ng-container *ngSwitchCase="'mustMatch'" i18n>Hasła muszą być takie same</ng-container>
-    <ng-container *ngSwitchCase="'maxlength'" i18n>Maksymalna liczba znaków: {{error.value.requiredLength}}</ng-container>
-    <ng-container *ngSwitchCase="'minlength'" i18n>Minimalna liczba znaków: {{error.value.requiredLength}}</ng-container>
-    <ng-container *ngSwitchCase="'min'" i18n>Wymagana minimalna wartość {{error.value.min}}</ng-container>
-    <ng-container *ngSwitchCase="'max'" i18n>Wymagana maksymalna wartość {{error.value.max}}</ng-container>
-    <ng-container *ngSwitchCase="'__general__'">{{error.value}}</ng-container>
-    <ng-container *ngSwitchCase="'server'">
-      <ng-container [ngSwitch]="error.value">
-        <ng-container *ngSwitchCase="'HttpErrorResponse'" i18n>Formularz został niepoprawnie wypełniony</ng-container>
-        <ng-container *ngSwitchDefault i18n>
-          <ng-container *ngFor="let message of error.value">{{message}}<br></ng-container>
-        </ng-container>
+  <ng-container *ngSwitchCase="'email'" i18n>To pole musi być emailem</ng-container>
+  <ng-container *ngSwitchCase="'required'" i18n>To pole jest wymagane</ng-container>
+  <ng-container *ngSwitchCase="'mustMatch'" i18n
+    >Hasła muszą być takie same</ng-container
+  >
+  <ng-container *ngSwitchCase="'maxlength'" i18n
+    >Maksymalna liczba znaków: {{ error.value.requiredLength }}</ng-container
+  >
+  <ng-container *ngSwitchCase="'minlength'" i18n
+    >Minimalna liczba znaków: {{ error.value.requiredLength }}</ng-container
+  >
+  <ng-container *ngSwitchCase="'min'" i18n
+    >Wymagana minimalna wartość {{ error.value.min }}</ng-container
+  >
+  <ng-container *ngSwitchCase="'max'" i18n
+    >Wymagana maksymalna wartość {{ error.value.max }}</ng-container
+  >
+  <ng-container *ngSwitchCase="'__general__'">{{ error.value }}</ng-container>
+  <ng-container *ngSwitchCase="'server'">
+    <ng-container [ngSwitch]="error.value">
+      <ng-container *ngSwitchCase="'HttpErrorResponse'" i18n
+        >Formularz został niepoprawnie wypełniony</ng-container
+      >
+      <ng-container *ngSwitchDefault i18n>
+        <ng-container *ngFor="let message of error.value"
+          >{{ message }}<br
+        /></ng-container>
       </ng-container>
     </ng-container>
-    <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
+  </ng-container>
+  <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
 </span>
-
-

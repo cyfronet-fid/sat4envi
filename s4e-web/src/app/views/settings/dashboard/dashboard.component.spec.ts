@@ -15,18 +15,24 @@
  *
  */
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TileComponent } from './../../../components/tiles-dashboard/tile/tile.component';
-import { DashboardModule } from './dashboard.module';
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {TileComponent} from '../../../components/tiles-dashboard/tile/tile.component';
+import {DashboardModule} from './dashboard.module';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 
-import { DashboardComponent } from './dashboard.component';
+import {DashboardComponent} from './dashboard.component';
 import {RouterTestingModule} from '@angular/router/testing';
-import { DebugElement } from '@angular/core';
-import { Router, convertToParamMap, ParamMap, ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { By } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
-import { Subject, ReplaySubject, of } from 'rxjs';
+import {DebugElement} from '@angular/core';
+import {ActivatedRoute, convertToParamMap, ParamMap, Router} from '@angular/router';
+import {By} from '@angular/platform-browser';
+import {CommonModule} from '@angular/common';
+import {of, ReplaySubject, Subject} from 'rxjs';
 
 class ActivatedRouteStub {
   queryParamMap: Subject<ParamMap> = new ReplaySubject(1);
@@ -44,37 +50,38 @@ describe('DashboardComponent', () => {
   let spy: any;
   let activatedRoute: ActivatedRouteStub;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        RouterTestingModule.withRoutes([]),
-        DashboardModule,
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
-      providers: [
-        {provide: ActivatedRoute, useClass: ActivatedRouteStub}
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          CommonModule,
+          RouterTestingModule.withRoutes([]),
+          DashboardModule,
+          HttpClientTestingModule,
+          RouterTestingModule
+        ],
+        providers: [{provide: ActivatedRoute, useClass: ActivatedRouteStub}]
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(DashboardComponent);
+      component = fixture.componentInstance;
+      de = fixture.debugElement;
+      router = TestBed.inject(Router);
+      activatedRoute = (<unknown>(
+        TestBed.inject(ActivatedRoute)
+      )) as ActivatedRouteStub;
+      spy = spyOn(router, 'navigate').and.stub();
+
+      fixture.detectChanges();
     })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(DashboardComponent);
-    component = fixture.componentInstance;
-    de = fixture.debugElement;
-    router = TestBed.get(Router);
-    activatedRoute = <ActivatedRouteStub>TestBed.get(ActivatedRoute);
-    spy = spyOn(router, 'navigate').and.stub();
-
-    fixture.detectChanges();
-  }));
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should enable buttons on known institution', fakeAsync( () => {
-    activatedRoute.queryParamMap.next(convertToParamMap({ institution: 'test '}));
+  it('should enable buttons on known institution', fakeAsync(() => {
+    activatedRoute.queryParamMap.next(convertToParamMap({institution: 'test '}));
     component.isManagerOfActive$ = of(true);
     tick();
     fixture.detectChanges();
@@ -88,7 +95,7 @@ describe('DashboardComponent', () => {
     }
   }));
 
-  it('should disable buttons when institution param is not known', fakeAsync( () => {
+  it('should disable buttons when institution param is not known', fakeAsync(() => {
     activatedRoute.queryParamMap.next(convertToParamMap({}));
     tick();
     fixture.detectChanges();

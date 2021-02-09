@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export interface User {
   email: string;
@@ -6,7 +6,6 @@ export interface User {
 }
 
 export class Login extends Core {
-
   static readonly pageObject = {
     getLoginInput: () => cy.get('input[data-e2e="login-email-input"]'),
     getPasswordInput: () => cy.get('input[data-e2e="login-password-input"]'),
@@ -18,47 +17,28 @@ export class Login extends Core {
   };
 
   static fillForm(user: User) {
-    Login
-      .pageObject
-      .getLoginInput()
-      .clear()
-      .type(user.email);
-    Login
-      .pageObject
-      .getPasswordInput()
-      .clear()
-      .type(user.password);
+    Login.pageObject.getLoginInput().clear().type(user.email);
+    Login.pageObject.getPasswordInput().clear().type(user.password);
 
     return Login;
   }
 
   static unfillForm() {
-    Login
-      .pageObject
-      .getSubmitBtn()
-      .invoke("removeAttr", "disabled")
-      .click()
+    Login.pageObject.getSubmitBtn().invoke('removeAttr', 'disabled').click();
 
     return Login;
   }
 
   static sendForm() {
-    Login
-      .pageObject
-      .getSubmitBtn()
-      .click();
+    Login.pageObject.getSubmitBtn().click();
 
     return Login;
   }
 
-
   static errorsCountShouldBe(count: number) {
     cy.location('pathname').should('eq', '/login');
 
-    Login
-      .pageObject
-      .getFieldErrors()
-      .should('have.length', count);
+    Login.pageObject.getFieldErrors().should('have.length', count);
 
     return Login;
   }
@@ -66,22 +46,18 @@ export class Login extends Core {
   static hasErrorLogin() {
     cy.location('pathname').should('eq', '/login');
 
-    Login
-      .pageObject
-      .getError();
+    Login.pageObject.getError();
 
     return Login;
   }
 
   static loginAs(user: User) {
     cy.server();
-    cy.route('GET', "/api/v1/users/me").as("me");
+    cy.route('GET', '/api/v1/users/me').as('me');
 
-    Login
-      .fillForm(user)
-      .sendForm();
+    Login.fillForm(user).sendForm();
 
-    cy.wait('@me')
+    cy.wait('@me');
 
     cy.location('href').should('include', '/map/products?');
 
@@ -93,27 +69,21 @@ export class Login extends Core {
     cy.route({
       method: 'POST',
       url: '**/logout'
-    })
-      .as('@logoutRequest');
+    }).as('@logoutRequest');
     cy.visit('/logout');
-    cy.wait('@logoutRequest')
-      .wait(300);
+    cy.wait('@logoutRequest').wait(300);
   }
 
   static loginPageShouldNotBeAllowed() {
-    cy.visit('/login')
+    cy.visit('/login');
     cy.url().should('not.contain', '/login');
 
     return Login;
   }
 
   static goToMap() {
-
-    Login
-      .pageObject
-      .getGoToMapBtn()
-      .click()
+    Login.pageObject.getGoToMapBtn().click();
 
     cy.location('href').should('include', '/map/products?');
   }
-};
+}

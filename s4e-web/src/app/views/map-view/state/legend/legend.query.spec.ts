@@ -33,8 +33,8 @@ describe('LegendQuery', () => {
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
-    store = TestBed.get(LegendStore);
-    query = TestBed.get(LegendQuery);
+    store = TestBed.inject(LegendStore);
+    query = TestBed.inject(LegendQuery);
   });
 
   it('should create an instance', () => {

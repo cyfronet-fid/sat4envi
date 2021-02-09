@@ -1,30 +1,24 @@
 /// <reference types="Cypress" />
 
-import { Login } from '../../page-objects/auth/auth-login.po';
-import { MapLocationsSearch } from '../../page-objects/map/map-locations-search.po';
+import {Login} from '../../page-objects/auth/auth-login.po';
+import {MapLocationsSearch} from '../../page-objects/map/map-locations-search.po';
 
 before(() => {
   cy.fixture('users/zkMember.json').as('zkMember');
 });
 
 describe('Map Locations Search', () => {
-
   beforeEach(function () {
-    cy.visit('/login')
-    Login
-      .loginAs(this.zkMember)
+    cy.visit('/login');
+    Login.loginAs(this.zkMember);
   });
 
   beforeEach(() => {
-    MapLocationsSearch
-      .pageObject
-      .getSearch()
-      .clear();
+    MapLocationsSearch.pageObject.getSearch().clear();
   });
 
   it('should display searched places', () => {
-    MapLocationsSearch
-      .searchCitiesBy('warsz')
+    MapLocationsSearch.searchCitiesBy('warsz')
       .nthResultShouldHaveLabel(8, 'Warszewo')
       .nthResultShouldHaveType(8, 'wieś')
       .nthResultShouldHaveVoivodeship(8, 'warmińsko-mazurskie')
@@ -34,8 +28,7 @@ describe('Map Locations Search', () => {
   });
 
   it('should clear input', () => {
-    MapLocationsSearch
-      .searchCitiesBy('szczeci')
+    MapLocationsSearch.searchCitiesBy('szczeci')
       .nthResultShouldHaveLabel(0, 'Szczecin')
       .nthResultShouldHaveType(0, 'miasto')
       .nthResultShouldHaveVoivodeship(0, 'zachodniopomorskie')
@@ -44,20 +37,16 @@ describe('Map Locations Search', () => {
   });
 
   it('should select active place on enter press', () => {
-    MapLocationsSearch
-      .searchCitiesBy('katow')
+    MapLocationsSearch.searchCitiesBy('katow')
       .nthResultShouldHaveLabel(0, 'Katowice')
       .type('{enter}')
       .searchShouldHaveValue('Katowice');
   });
 
   it('should navigate with arrows', () => {
-    MapLocationsSearch
-      .searchCitiesBy('warsz')
+    MapLocationsSearch.searchCitiesBy('warsz')
       .nthResultShouldHaveLabel(1, 'Warszawiaki')
-      .type('{downarrow}{enter}')
-    MapLocationsSearch
-      .searchShouldHaveValue('Warszawiaki');
+      .type('{downarrow}{enter}');
+    MapLocationsSearch.searchShouldHaveValue('Warszawiaki');
   });
 });
-

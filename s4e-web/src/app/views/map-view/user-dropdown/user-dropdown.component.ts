@@ -37,7 +37,7 @@ export class UserDropdownComponent implements OnInit {
   @Output() toggleHighContrast = new EventEmitter<void>();
   @Output() toggleLargeFont = new EventEmitter<void>();
 
-  @Input() activeScene: Scene|null = null;
+  @Input() activeScene: Scene | null = null;
   @Input() hasHeightContrast: boolean = false;
   @Input() hasLargeFont: boolean = false;
   @Input() userLoggedIn: boolean = false;
@@ -45,9 +45,7 @@ export class UserDropdownComponent implements OnInit {
   @Input() hasAnyAdminInstitution: boolean = false;
   @Input() isAdminOfOneInstitution: boolean = true;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

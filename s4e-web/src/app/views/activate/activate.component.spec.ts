@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {ActivateComponent} from './activate.component';
 import {ActivateService} from './state/activate.service';
 import {ActivateModule} from './activate.module';
@@ -26,19 +26,20 @@ describe('ActivateComponent', () => {
   let fixture: ComponentFixture<ActivateComponent>;
   let activateService: ActivateService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ActivateModule, RouterTestingModule],
-      declarations: []
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ActivateModule, RouterTestingModule],
+        declarations: []
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ActivateComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    activateService = TestBed.get(ActivateService);
+    activateService = TestBed.inject(ActivateService);
   });
 
   it('should create', () => {

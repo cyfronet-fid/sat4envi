@@ -16,7 +16,10 @@
  */
 
 import {FormControl, FormGroup} from '@ng-stack/forms';
-import {FormControl as AngularFormControl, FormGroup as AngularFormGroup} from '@angular/forms';
+import {
+  FormControl as AngularFormControl,
+  FormGroup as AngularFormGroup
+} from '@angular/forms';
 import {FormState} from '../../state/form/form.model';
 import {environment} from '../../../environments/environment';
 import {HashMap} from '@datorama/akita';
@@ -27,9 +30,14 @@ import {InjectorModule} from '../../common/injector.module';
 import {map, take} from 'rxjs/operators';
 import {DOCUMENT} from '@angular/common';
 
-export type ServerApiError = HashMap<string[]> | { __exception__: string, __stacktrace__: string, __general__: string[] }
+export type ServerApiError =
+  | HashMap<string[]>
+  | {__exception__: string; __stacktrace__: string; __general__: string[]};
 
-export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormControl<any> | AngularFormGroup | AngularFormControl) {
+export function disableEnableForm(
+  disable: boolean,
+  form: FormGroup<any> | FormControl<any> | AngularFormGroup | AngularFormControl
+) {
   if (disable) {
     form.disable();
   } else {
@@ -37,7 +45,10 @@ export function disableEnableForm(disable: boolean, form: FormGroup<any> | FormC
   }
 }
 
-export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManager?: { formKey: keyof FormState, fm: AkitaNgFormsManager<FormState> }) {
+export function validateAllFormFields(
+  formGroup: FormGroup<any>,
+  updateFormManager?: {formKey: keyof FormState; fm: AkitaNgFormsManager<FormState>}
+) {
   Object.keys(formGroup.controls)
     .filter(field => !!formGroup.get(field))
     .forEach(field => {
@@ -54,7 +65,10 @@ export function validateAllFormFields(formGroup: FormGroup<any>, updateFormManag
   }
 }
 
-export function devRestoreFormState<K extends keyof FormState>(formValue: any, form: FormGroup) {
+export function devRestoreFormState<K extends keyof FormState>(
+  formValue: any,
+  form: FormGroup
+) {
   if (environment.hmr === false || formValue == null) {
     return;
   }
@@ -62,63 +76,70 @@ export function devRestoreFormState<K extends keyof FormState>(formValue: any, f
   Object.keys(form.controls)
     .filter(field => {
       if (!formValue.controls[field]) {
-        console.error(`Control for field ${field} can't be found`)
+        console.error(`Control for field ${field} can't be found`);
       }
 
       return !!formValue.controls[field];
     })
     .forEach(field => {
-    const control = form.get(field);
-    control.setErrors(formValue.controls[field].errors);
+      const control = form.get(field);
+      control.setErrors(formValue.controls[field].errors);
 
-    if (formValue.controls[field].disabled) {
-      control.disable({onlySelf: true, emitEvent: false});
-    } else {
-      control.enable({onlySelf: true, emitEvent: false});
-    }
+      if (formValue.controls[field].disabled) {
+        control.disable({onlySelf: true, emitEvent: false});
+      } else {
+        control.enable({onlySelf: true, emitEvent: false});
+      }
 
-    if (formValue.controls[field].touched) {
-      control.markAsTouched({onlySelf: true});
-    } else {
-      control.markAsUntouched({onlySelf: true});
-    }
+      if (formValue.controls[field].touched) {
+        control.markAsTouched({onlySelf: true});
+      } else {
+        control.markAsUntouched({onlySelf: true});
+      }
 
-    if (formValue.controls[field].dirty) {
-      control.markAsDirty({onlySelf: true});
-    } else {
-      control.markAsPristine({onlySelf: true});
-    }
+      if (formValue.controls[field].dirty) {
+        control.markAsDirty({onlySelf: true});
+      } else {
+        control.markAsPristine({onlySelf: true});
+      }
 
-    if (control instanceof FormControl) {
-      (control as FormControl).setValue(formValue.controls[field].value, {emitEvent: false, emitModelToViewChange: true});
-    } else if (control instanceof FormGroup) {
-      this.devRestoreFormState(formValue, control);
-    }
-  });
+      if (control instanceof FormControl) {
+        (control as FormControl).setValue(formValue.controls[field].value, {
+          emitEvent: false,
+          emitModelToViewChange: true
+        });
+      } else if (control instanceof FormGroup) {
+        this.devRestoreFormState(formValue, control);
+      }
+    });
 }
 
-
-export function resizeImage(data: Base64Image, outWidth: number, outHeight: number): Observable<Base64Image> {
+export function resizeImage(
+  data: Base64Image,
+  outWidth: number,
+  outHeight: number
+): Observable<Base64Image> {
   const document = InjectorModule.Injector.get<Document>(DOCUMENT);
-  let canvas: HTMLCanvasElement = document.createElement('canvas') as HTMLCanvasElement;
+  let canvas: HTMLCanvasElement = document.createElement(
+    'canvas'
+  ) as HTMLCanvasElement;
   canvas.width = outWidth;
   canvas.height = outHeight;
   const ctx = canvas.getContext('2d');
 
-  const out: Observable<any> = new Observable(
-    (observer) => {
-      const image = new Image();
-      image.onload = () => {
-        observer.next(image);
-        observer.complete();
-      };
+  const out: Observable<any> = new Observable(observer => {
+    const image = new Image();
+    image.onload = () => {
+      observer.next(image);
+      observer.complete();
+    };
 
-      image.src = data;
-    });
+    image.src = data;
+  });
 
   return out.pipe(
     take(1),
-    map((img) => {
+    map(img => {
       let w: number;
       let h: number;
       let x: number = 0;
@@ -128,7 +149,7 @@ export function resizeImage(data: Base64Image, outWidth: number, outHeight: numb
       const imgRatio = img.width / img.height;
 
       // img is wider
-      if (ratio  < imgRatio) {
+      if (ratio < imgRatio) {
         h = outHeight;
         w = imgRatio * h;
         x = -(w * 0.5 - outWidth * 0.5);
@@ -142,7 +163,8 @@ export function resizeImage(data: Base64Image, outWidth: number, outHeight: numb
 
       ctx.drawImage(img, x, y, w, h);
       return canvas.toDataURL('image/png');
-    }));
+    })
+  );
 }
 
 export function toHashMap<T>(list: T[], key: keyof T): HashMap<T> {
@@ -159,9 +181,11 @@ export function isEmptyObject(obj: object): boolean {
 export function stripEmpty(obj: object): object {
   const r = {};
 
-  Object.entries(obj).filter(([k, v]) => v != null && v != '').forEach(([k, v]) => {
-    r[k] = v
-  });
+  Object.entries(obj)
+    .filter(([k, v]) => v != null && v != '')
+    .forEach(([k, v]) => {
+      r[k] = v;
+    });
 
   return r;
 }

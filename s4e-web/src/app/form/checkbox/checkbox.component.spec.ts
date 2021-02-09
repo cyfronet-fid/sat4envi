@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {CheckboxComponent} from './checkbox.component';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ControlContainer} from '@angular/forms';
@@ -38,13 +38,15 @@ describe('CheckboxComponent', () => {
   let element: DebugElement;
   let fixture: ComponentFixture<CheckboxComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ S4EFormsModule, RouterTestingModule],
-      providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
-    });
-    TestBed.compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [S4EFormsModule, RouterTestingModule],
+        providers: [{provide: ControlContainer, useClass: MockedControlContainer}]
+      });
+      TestBed.compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckboxComponent);
@@ -61,7 +63,7 @@ describe('CheckboxComponent', () => {
   it('should toggle', async () => {
     let currentValue: boolean;
 
-    component.registerOnChange(val => currentValue = val);
+    component.registerOnChange(val => (currentValue = val));
     element.query(By.css('input[type="checkbox"]')).nativeElement.click();
     expect(currentValue).toBeTruthy();
     element.query(By.css('input[type="checkbox"]')).nativeElement.click();
@@ -72,7 +74,7 @@ describe('CheckboxComponent', () => {
   it('should toggle after clicking label', () => {
     let currentValue: boolean;
 
-    component.registerOnChange(val => currentValue = val);
+    component.registerOnChange(val => (currentValue = val));
     element.query(By.css('label')).nativeElement.click();
     // noinspection JSUnusedAssignment - overwritten by component.registerOnChange
     expect(currentValue).toBeTruthy();

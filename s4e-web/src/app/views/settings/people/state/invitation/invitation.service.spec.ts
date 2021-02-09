@@ -15,16 +15,18 @@
  *
  */
 
-import { InvitationStore } from './invitation.store';
-import { InvitationQuery } from './invitation.query';
-import { InstitutionFactory } from './../../../state/institution/institution.factory.spec';
-import { InvitationFactory } from './invitation.factory.spec';
-import { TestBed, async } from '@angular/core/testing';
-
-import { InvitationService } from './invitation.service';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import {InvitationStore} from './invitation.store';
+import {InvitationQuery} from './invitation.query';
+import {InstitutionFactory} from '../../../state/institution/institution.factory.spec';
+import {InvitationFactory} from './invitation.factory.spec';
+import {TestBed} from '@angular/core/testing';
+import {InvitationService} from './invitation.service';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 import environment from 'src/environments/environment';
 
 describe('InvitationService', () => {
@@ -36,17 +38,14 @@ describe('InvitationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-      ]
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
     TestBed.configureTestingModule({});
 
-    service = TestBed.get(InvitationService);
-    http = TestBed.get(HttpTestingController);
-    query = TestBed.get(InvitationQuery);
-    store = TestBed.get(InvitationStore);
+    service = TestBed.inject(InvitationService);
+    http = TestBed.inject(HttpTestingController);
+    query = TestBed.inject(InvitationQuery);
+    store = TestBed.inject(InvitationStore);
   });
 
   it('should be created', () => {
@@ -59,15 +58,19 @@ describe('InvitationService', () => {
 
     const newInvitation = InvitationFactory.build();
     const institution = InstitutionFactory.build();
-    service.resend({oldEmail: invitation.email, newEmail: newInvitation.email}, institution);
+    service.resend(
+      {oldEmail: invitation.email, newEmail: newInvitation.email, forAdmin: false},
+      institution
+    );
 
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}/invitations`;
     const method = 'PUT';
     const req = http.expectOne({method, url});
     req.flush(newInvitation);
 
-    query.selectAll()
-      .subscribe((invitations) => expect(invitations).toBeEqual([newInvitation]));
+    query
+      .selectAll()
+      .subscribe(invitations => expect(invitations).toEqual([newInvitation]));
   });
   it('should delete invitation and remove it from store', () => {
     const invitation = InvitationFactory.build();
@@ -82,8 +85,7 @@ describe('InvitationService', () => {
     const req = http.expectOne({method, url});
     req.flush({});
 
-    query.selectAll()
-      .subscribe((invitations) => expect(invitations).toBeEqual([]));
+    query.selectAll().subscribe(invitations => expect(invitations).toEqual([]));
   });
   it('should send invitation and add it into store', () => {
     store.set([]);
@@ -97,7 +99,8 @@ describe('InvitationService', () => {
     const req = http.expectOne({method, url});
     req.flush(newInvitation);
 
-    query.selectAll()
-      .subscribe((invitations) => expect(invitations).toBeEqual([newInvitation]));
+    query
+      .selectAll()
+      .subscribe(invitations => expect(invitations).toEqual([newInvitation]));
   });
 });

@@ -15,7 +15,7 @@
  *
  */
 
-import { filter } from 'rxjs/operators';
+import {filter} from 'rxjs/operators';
 import {Component, Inject} from '@angular/core';
 import {FormModalComponent} from '../../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../../modal/state/modal.service';
@@ -24,7 +24,11 @@ import {ModalQuery} from '../../../../../modal/state/modal.query';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../../state/form/form.model';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {ConfigurationModal, isConfigurationModal, ShareConfigurationForm} from '../state/configuration.model';
+import {
+  ConfigurationModal,
+  isConfigurationModal,
+  ShareConfigurationForm
+} from '../state/configuration.model';
 import {Base64Image} from '../../../../../common/types';
 import {assertModalType} from '../../../../../modal/utils/modal/misc';
 import {DOCUMENT} from '@angular/common';
@@ -36,9 +40,16 @@ import {ConfigurationQuery} from '../state/configuration.query';
 
 const EMAIL_REGEXP = /^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)*$/i;
 
-export const EmailListValidator: ValidatorFn<{ email: true }> = (control: AbstractControl) => {
+export const EmailListValidator: ValidatorFn<{email: true}> = (
+  control: AbstractControl
+) => {
   // run EMAIL_REGEXP over every email in string, if there is one which does not match return error dict
-  if ((control.value || '').split(',').map(s => s.trim().match(EMAIL_REGEXP)).indexOf(null) != -1) {
+  if (
+    (control.value || '')
+      .split(',')
+      .map(s => s.trim().match(EMAIL_REGEXP))
+      .indexOf(null) != -1
+  ) {
     return {email: true};
   }
   return null;
@@ -54,13 +65,15 @@ export class ShareConfigurationModalComponent extends FormModalComponent<'config
   public configurationUrl: string = '';
   public displayHref: string = '';
 
-  constructor(modalService: ModalService,
-              @Inject(MODAL_DEF) modal: ConfigurationModal,
-              modalQuery: ModalQuery,
-              private configurationService: ConfigurationService,
-              private configurationQuery: ConfigurationQuery,
-              @Inject(DOCUMENT) document: Document,
-              fm: AkitaNgFormsManager<FormState>) {
+  constructor(
+    modalService: ModalService,
+    @Inject(MODAL_DEF) modal: ConfigurationModal,
+    modalQuery: ModalQuery,
+    private configurationService: ConfigurationService,
+    private configurationQuery: ConfigurationQuery,
+    @Inject(DOCUMENT) document: Document,
+    fm: AkitaNgFormsManager<FormState>
+  ) {
     super(fm, modalService, modalQuery, modal.id, 'configurationShare');
     assertModalType(isConfigurationModal, modal);
     this.image = modal.mapImage;
@@ -73,7 +86,7 @@ export class ShareConfigurationModalComponent extends FormModalComponent<'config
     return new FormGroup<ShareConfigurationForm>({
       caption: new FormControl<string>('', Validators.required),
       description: new FormControl<string>(null, Validators.required),
-      emails: new FormControl<string>('', [Validators.required, EmailListValidator]),
+      emails: new FormControl<string>('', [Validators.required, EmailListValidator])
     });
   }
 
@@ -90,7 +103,8 @@ export class ShareConfigurationModalComponent extends FormModalComponent<'config
       path: this.configurationUrl,
       thumbnail: this.image.replace(/^data:image\/[a-z]+;base64,/, '')
     };
-    this.configurationService.shareConfiguration(configuration)
+    this.configurationService
+      .shareConfiguration(configuration)
       .pipe(filter(value => value))
       .subscribe(() => this.dismiss());
   }

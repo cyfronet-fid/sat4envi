@@ -15,12 +15,11 @@
  *
  */
 
-import {catchError, map} from 'rxjs/operators';
-import { InstitutionQuery } from './../state/institution/institution.query';
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {InstitutionQuery} from '../state/institution/institution.query';
+import {Component} from '@angular/core';
 import {SessionQuery} from '../../../state/session/session.query';
-import {forkJoin, Observable, throwError} from 'rxjs';
-import {Institution, InstitutionForm} from '../state/institution/institution.model';
+import {Observable} from 'rxjs';
+import {Institution} from '../state/institution/institution.model';
 import {SessionService} from '../../../state/session/session.service';
 import {GenericFormComponent} from '../../../utils/miscellaneous/generic-form.component';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
@@ -29,20 +28,30 @@ import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {validateAllFormFields} from '../../../utils/miscellaneous/miscellaneous';
 import {ModalService} from '../../../modal/state/modal.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {NotificationService} from 'notifications';
+import {NotificationService} from '../../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {password: string}> {
+export class ProfileComponent extends GenericFormComponent<
+  InstitutionQuery,
+  {password: string}
+> {
   public error$ = this._institutionQuery.selectError();
   public isLoading$ = this._institutionQuery.selectLoading();
-  public userEmail$: Observable<string> = this._sessionQuery.select(state => state.email);
-  public userName$: Observable<string> = this._sessionQuery.select(state => state.name);
-  public userSurname$: Observable<string> = this._sessionQuery.select(state => state.surname);
+  public userEmail$: Observable<string> = this._sessionQuery.select(
+    state => state.email
+  );
+  public userName$: Observable<string> = this._sessionQuery.select(
+    state => state.name
+  );
+  public userSurname$: Observable<string> = this._sessionQuery.select(
+    state => state.surname
+  );
 
   public institutions$ = this._institutionQuery.selectAll();
 
@@ -80,7 +89,8 @@ export class ProfileComponent extends GenericFormComponent<InstitutionQuery, {pa
       return;
     }
 
-    this._sessionService.removeAccount$(this._sessionQuery.getValue().email, this.form.value.password)
+    this._sessionService
+      .removeAccount$(this._sessionQuery.getValue().email, this.form.value.password)
       .pipe(untilDestroyed(this))
       .subscribe(
         () => this._sessionService.logout(),

@@ -19,8 +19,8 @@ import {Component, Input, OnInit, Optional} from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
 
-export type VisualType = "standard"|"input-group"|"blank";
-export type ControlSize = "md"|"lg"|"sm"|"xs";
+export type VisualType = 'standard' | 'input-group' | 'blank';
+export type ControlSize = 'md' | 'lg' | 'sm' | 'xs';
 
 export interface IFormControlOptions {
   labelSize: number;
@@ -56,27 +56,26 @@ export class FormControlComponent implements OnInit {
     control: undefined,
     size: 'sm',
     errors: [],
-    showErrorMessages: true,
+    showErrorMessages: true
   };
 
   @Input('options') set options(newOptions: Partial<IFormControlOptions>) {
     this._options = {...this._options, ...newOptions} as IFormControlOptions;
   }
-  constructor(@Optional() private extForm: ExtFormDirective) { }
+  constructor(@Optional() private extForm: ExtFormDirective) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  isWarning() {
+  isWarning() {}
 
-  }
-
-  isSuccess() {
-
-  }
+  isSuccess() {}
 
   isError(): boolean {
-    return this._options.control && this._options.control.invalid && this._options.control.touched;
+    return (
+      this._options.control &&
+      this._options.control.invalid &&
+      this._options.control.touched
+    );
   }
 
   getErrors(): string[] {
@@ -85,7 +84,7 @@ export class FormControlComponent implements OnInit {
     }
     return this._options.errors.length > 0
       ? this._options.errors
-      : this._options.control.errors as string[];
+      : (this._options.control.errors as string[]);
   }
 
   get visualType(): VisualType {
@@ -93,6 +92,10 @@ export class FormControlComponent implements OnInit {
   }
 
   public getLabelSize(): number {
-    return this._options.labelSize || (this.extForm && this.extForm.labelSize) || FormControlComponent.DEFAULT_LABEL_SIZE;
+    return (
+      this._options.labelSize ||
+      (this.extForm && this.extForm.labelSize) ||
+      FormControlComponent.DEFAULT_LABEL_SIZE
+    );
   }
 }

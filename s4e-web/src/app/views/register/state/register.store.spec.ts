@@ -15,7 +15,7 @@
  *
  */
 
-import { RegisterStore } from './register.store';
+import {RegisterStore} from './register.store';
 
 describe('RegisterStore', () => {
   let store: RegisterStore;
@@ -27,5 +27,4 @@ describe('RegisterStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

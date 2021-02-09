@@ -71,7 +71,7 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
   mission: string;
   instrument: string;
   timestamp: string;
-  artifactsWithLinks: {artifact: string, url: string}[];
+  artifactsWithLinks: {artifact: string; url: string}[];
   // this should be calculated from the response
   url: string;
 }
@@ -79,7 +79,6 @@ export interface SentinelSearchResult extends SentinelSearchResultResponse {
 export function artifactDownloadLink(id: number, artifact: string): string {
   return `${environment.apiPrefixV1}/scenes/${id}/download/${artifact}`;
 }
-
 
 /**
  * A factory function that creates SentinelSearchResult
@@ -96,12 +95,17 @@ export function createSentinelSearchResult(params: BaseSceneResponse) {
     metadataContent: {},
     artifacts: [],
     footprint: '',
-    artifactsWithLinks: (params.artifacts || []).map(artifact => ({artifact, url: artifactDownloadLink(params.id, artifact)})),
+    artifactsWithLinks: (params.artifacts || []).map(artifact => ({
+      artifact,
+      url: artifactDownloadLink(params.id, artifact)
+    })),
     ...params
   } as SentinelSearchResult;
 }
 
-export interface SentinelSearchState extends EntityState<SentinelSearchResult>, ActiveState {
+export interface SentinelSearchState
+  extends EntityState<SentinelSearchResult>,
+    ActiveState {
   metadata: SentinelSearchMetadata;
   metadataLoading: boolean;
   metadataLoaded: boolean;

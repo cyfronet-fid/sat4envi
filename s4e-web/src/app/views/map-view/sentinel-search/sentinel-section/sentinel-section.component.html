@@ -16,11 +16,22 @@
   -->
 
 <div class="section products">
-  <header (click)="toggleVisibility()" data-test="sentinel-section-header" data-e2e="sentinel-section-header">
-    <input type="checkbox" [formControl]="selectedFc" data-e2e="sentinel-checkbox">
-    <span class="products__title products__title--sentinel" data-e2e="products__title--sentinel">{{sentinel.name}}</span>
+  <header
+    (click)="toggleVisibility()"
+    data-test="sentinel-section-header"
+    data-e2e="sentinel-section-header"
+  >
+    <input type="checkbox" [formControl]="selectedFc" data-e2e="sentinel-checkbox" />
+    <span
+      class="products__title products__title--sentinel"
+      data-e2e="products__title--sentinel"
+      >{{ sentinel.name }}</span
+    >
   </header>
   <div [hidden]="!(visible$ | async)" data-test="sentinel-section-content">
-    <s4e-sentinel-form [formControl]="form" [paramsDef]="sentinel.params"></s4e-sentinel-form>
+    <s4e-sentinel-form
+      [formControl]="form"
+      [paramsDef]="sentinel.params"
+    ></s4e-sentinel-form>
   </div>
 </div>

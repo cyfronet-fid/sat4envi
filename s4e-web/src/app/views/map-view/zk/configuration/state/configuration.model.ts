@@ -41,14 +41,13 @@ export interface ConfigurationModal extends Modal {
 }
 
 export function isConfigurationModal(modal: Modal): modal is ConfigurationModal {
-  return modal.id === SHARE_CONFIGURATION_MODAL_ID
-    && (modal as ConfigurationModal).mapImage != null
-    && (modal as ConfigurationModal).configurationUrl != null;
+  return (
+    modal.id === SHARE_CONFIGURATION_MODAL_ID &&
+    (modal as ConfigurationModal).mapImage != null &&
+    (modal as ConfigurationModal).configurationUrl != null
+  );
 }
 
-
-export interface Configuration {
-
-}
+export interface Configuration {}
 
 export interface ConfigurationState extends EntityState<Configuration> {}

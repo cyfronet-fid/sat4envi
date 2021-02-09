@@ -15,10 +15,10 @@
  *
  */
 
-import { IRemoteConfiguration } from './app.configuration';
+import {IRemoteConfiguration} from './app.configuration';
 import {Provider} from '@angular/core';
-import { RemoteConfiguration } from './utils/initializer/config.service';
-import { of } from 'rxjs';
+import {RemoteConfiguration} from './utils/initializer/config.service';
+import {of} from 'rxjs';
 import * as Factory from 'factory.ts';
 import {LocalStorage} from './app.providers';
 import {HashMap} from '@datorama/akita';
@@ -27,7 +27,7 @@ export const RemoteConfigurationFactory = Factory.makeFactory<IRemoteConfigurati
   osmUrl: '/osm/{z}/{x}/{y}.png',
   geoserverUrl: 'http://localhost:8080/geoserver/wms',
   geoserverWorkspace: 'testing',
-  recaptchaSiteKey: 'abc123',
+  recaptchaSiteKey: 'abc123'
 });
 
 export const RemoteConfigurationTestingProvider: Provider = {
@@ -66,7 +66,9 @@ export const LocalStorageTestingProvider: Provider = {
   useValue: new LocalStorageMock()
 };
 
-export function makeLocalStorageTestingProvider(initState: HashMap<string>): Provider {
+export function makeLocalStorageTestingProvider(
+  initState: HashMap<string>
+): Provider {
   return {
     provide: LocalStorage,
     useValue: new LocalStorageMock(initState)

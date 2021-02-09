@@ -26,10 +26,9 @@
       (keydown.enter)="selectActive()"
       (keydown.arrowup)="activatePreviousResult()"
       (keydown.arrowdown)="activateNextResult()"
-
       #search
       class="search__input"
-      placeholder="{{ placeholder}}"
+      placeholder="{{ placeholder }}"
       i18n-placeholder
       [formControl]="searchFormControl"
       (focus)="valueChange.emit(searchFormControl.value)"
@@ -55,27 +54,23 @@
 
   <div *ngIf="areResultsOpen">
     <div *ngIf="!isLoading; else emptyResultSet" class="searchResults">
-      <div
-        class="searchresult__container"
-        data-e2e="search-results-list"
-      >
+      <div class="searchresult__container" data-e2e="search-results-list">
         <div *ngIf="!hasResults">
-          <span class="search__notfound"i18n>
-            Nie znaleziono wynikow
-          </span>
+          <span class="search__notfound" i18n> Nie znaleziono wynikow </span>
         </div>
         <ul>
-          <li class="searchResult__item"
+          <li
+            class="searchResult__item"
             *ngFor="let result of results"
-            [ngClass]="{'active': isActive(result)}"
+            [ngClass]="{active: isActive(result)}"
             (click)="selectActive()"
             (mouseenter)="activateHovered(result)"
             data-e2e="search-result"
           >
             <ng-container
-              *ngTemplateOutlet="resultTemplate, context: { $implicit: result }"
+              *ngTemplateOutlet="resultTemplate; context: {$implicit: result}"
             >
-          </ng-container>
+            </ng-container>
           </li>
         </ul>
       </div>

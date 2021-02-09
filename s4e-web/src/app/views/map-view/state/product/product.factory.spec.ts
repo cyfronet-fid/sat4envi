@@ -16,7 +16,7 @@
  */
 
 import * as Factory from 'factory.ts';
-import { Product, ProductCategory } from './product.model';
+import {Product, ProductCategory} from './product.model';
 
 export const ProductCategoryFactory = Factory.makeFactory<ProductCategory>({
   id: Factory.each(i => i),

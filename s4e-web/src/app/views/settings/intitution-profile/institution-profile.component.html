@@ -16,23 +16,27 @@
   -->
 
 <ul *ngIf="isManagerOfActive$ | async" class="content__tabs">
-  <li class="active" >
-    Profil instytucji
-  </li>
+  <li class="active">Profil instytucji</li>
   <li>
     <a routerLink="/settings/people" data-e2e="people" queryParamsHandling="merge">
       Osoby w instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
-       queryParamsHandling="merge">
+    <a
+      [routerLink]="['/settings/institution-wms-overlays']"
+      data-e2e="layer"
+      queryParamsHandling="merge"
+    >
       Warstwy WMS dla instytucji
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/manage-products']" data-e2e="manage-products"
-       queryParamsHandling="merge">
+    <a
+      [routerLink]="['/settings/manage-products']"
+      data-e2e="manage-products"
+      queryParamsHandling="merge"
+    >
       Zarządzaj produktami
     </a>
   </li>
@@ -41,14 +45,13 @@
   <h1 i18n>Profil instytucji</h1>
 </header>
 <section class="content__details profile">
-  <ng-container *ngIf="(activeInstitution$ | async) as institution">
-    <div
-      class="profile__content"
-      data-e2e="institution-details"
-    >
+  <ng-container *ngIf="activeInstitution$ | async as institution">
+    <div class="profile__content" data-e2e="institution-details">
       <h2 id="institution-title">{{ institution.name }}</h2>
       <ul>
-        <li *ngIf="!!institution.address" id="institution-address">{{ institution.address }}</li>
+        <li *ngIf="!!institution.address" id="institution-address">
+          {{ institution.address }}
+        </li>
         <li
           *ngIf="!!institution.postalCode || !!institution.city"
           id="institution-postal-code"
@@ -121,7 +124,8 @@
   <ng-container description></ng-container>
   <h3 caption-inside>
     <ng-container i18n>Jednostki podległe</ng-container>
-  </h3>>
+  </h3>
+  >
   <ng-container search-label i18n>Szukaj instytucji:</ng-container>
   <ng-container table-header>
     <th i18n>Nazwa instytucji</th>
@@ -129,20 +133,31 @@
   </ng-container>
   <ng-template let-inst="item">
     <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
-      <a routerLink="../institution" queryParamsHandling="merge" data-e2e="childrenInstitution"
-         [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
+      <a
+        routerLink="../institution"
+        queryParamsHandling="merge"
+        data-e2e="childrenInstitution"
+        [queryParams]="{institution: inst.slug}"
+        >{{ inst.name }}</a
+      >
+    </td>
     <td>
       <ng-container *ngIf="isManagerOf(inst) || (isAdmin$ | async)">
-        <a routerLink="../institution" queryParamsHandling="merge"
+        <a
+          routerLink="../institution"
+          queryParamsHandling="merge"
           data-e2e="edit"
-          [queryParams]="{institution: inst.slug}">
-          <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+          [queryParams]="{institution: inst.slug}"
+        >
+          <img src="/assets/images/ico_edit.svg" alt="Edit" width="15" />
         </a>
-        <a href="javascript:void(0)"
+        <a
+          href="javascript:void(0)"
           *ngIf="isAdmin$ | async"
           data-e2e="delete"
-          (click)="deleteInstitution(inst.slug)">
-          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+          (click)="deleteInstitution(inst.slug)"
+        >
+          <img src="/assets/images/ico_delete.svg" alt="Delete" width="15" />
         </a>
       </ng-container>
     </td>

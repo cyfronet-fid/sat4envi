@@ -20,8 +20,10 @@ import {combineLatest, Observable} from 'rxjs';
 import {SentinelSearchResult} from '../state/sentinel-search/sentinel-search.model';
 import {SentinelSearchService} from '../state/sentinel-search/sentinel-search.service';
 import {SentinelSearchQuery} from '../state/sentinel-search/sentinel-search.query';
-import {FormControl as AngularFormControl, FormGroup as AngularFormGroup} from '@angular/forms';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {
+  FormControl as AngularFormControl,
+  FormGroup as AngularFormGroup
+} from '@angular/forms';
 import {disableEnableForm} from '../../../utils/miscellaneous/miscellaneous';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {Router} from '@angular/router';
@@ -31,7 +33,9 @@ import {debounceTime, delay, map, shareReplay, switchMap} from 'rxjs/operators';
 import {logIt, mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
 import {SessionQuery} from '../../../state/session/session.query';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-sentinel-search',
   templateUrl: './sentinel-search.component.html',
@@ -56,14 +60,14 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   resultTotalCount$ = this.query.select('resultTotalCount');
   currentPage$ = this.query.selectCurrentPage();
 
-
-  constructor(private fm: AkitaNgFormsManager<FormState>,
-              private router: Router,
-              private query: SentinelSearchQuery,
-              private service: SentinelSearchService,
-              private sessionQuery: SessionQuery,
-              private modalService: ModalService) {
-  }
+  constructor(
+    private fm: AkitaNgFormsManager<FormState>,
+    private router: Router,
+    private query: SentinelSearchQuery,
+    private service: SentinelSearchService,
+    private sessionQuery: SessionQuery,
+    private modalService: ModalService
+  ) {}
 
   ngOnInit() {
     this.loading$ = this.query.selectLoading();
@@ -81,30 +85,32 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
     this.disableSearchBtn$ = combineLatest([
       this.loading$,
       this.loadingMetadata$,
-      this.query.selectSelectedSentinels().pipe(map(sentinels => sentinels.length === 0))
+      this.query
+        .selectSelectedSentinels()
+        .pipe(map(sentinels => sentinels.length === 0))
     ]).pipe(mapAnyTrue());
 
-    const componentRequirementsLoaded$ = this.service.getSentinels$()
-      .pipe(
-        map(metadata => this._makeFormFromMetadata(metadata)),
-        shareReplay(1)
-      )
+    const componentRequirementsLoaded$ = this.service.getSentinels$().pipe(
+      map(metadata => this._makeFormFromMetadata(metadata)),
+      shareReplay(1)
+    );
 
     componentRequirementsLoaded$
       .pipe(
-        switchMap((form) => this.service.connectQueryToForm(form)),
+        switchMap(form => this.service.connectQueryToForm(form)),
         switchMap(() => this.loading$),
         debounceTime(50),
         untilDestroyed(this)
       )
-      .subscribe((loading) => disableEnableForm(loading, this.form));
+      .subscribe(loading => disableEnableForm(loading, this.form));
 
     componentRequirementsLoaded$
       .pipe(
         debounceTime(50),
         switchMap(() => this.service.connectQueryToActiveModal()),
         untilDestroyed(this)
-      ).subscribe()
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
@@ -140,7 +146,9 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
     const form = new AngularFormGroup({
       common: new AngularFormControl({})
     });
-    metadata.sections.forEach(sentinel => form.setControl(sentinel.name, new AngularFormControl({})));
+    metadata.sections.forEach(sentinel =>
+      form.setControl(sentinel.name, new AngularFormControl({}))
+    );
     this.form = form;
     return form;
   }
