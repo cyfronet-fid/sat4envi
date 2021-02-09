@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -30,6 +32,7 @@ import pl.cyfronet.s4e.bean.AppRole;
 import pl.cyfronet.s4e.bean.AppUser;
 import pl.cyfronet.s4e.controller.request.DeleteUserRoleRequest;
 import pl.cyfronet.s4e.data.repository.AppUserRepository;
+import pl.cyfronet.s4e.security.SecurityConstants;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,6 +80,18 @@ public class SecurityTest {
     @Test
     public void shouldReturn401ForUserWithoutAuthentication() throws Exception {
         mockMvc.perform(get(API_PREFIX_V1 + "/users/me"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // 401
+    @ParameterizedTest
+    @ValueSource(strings = { "", " " })
+    public void shouldReturn401ForUserWithBlankAuthentication(String blankToken) throws Exception {
+        mockMvc.perform(get(API_PREFIX_V1 + "/users/me")
+                .with(mockRequest -> {
+                    mockRequest.addHeader(SecurityConstants.HEADER_NAME, "Bearer " + blankToken);
+                    return mockRequest;
+                }))
                 .andExpect(status().isUnauthorized());
     }
 
