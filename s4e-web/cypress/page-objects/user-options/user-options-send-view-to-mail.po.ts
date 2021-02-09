@@ -1,4 +1,4 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class UserOptionsSendView extends Core {
   static pageObject = {
@@ -9,52 +9,31 @@ export class UserOptionsSendView extends Core {
     getDescriptionInput: () => cy.get('[data-e2e="description"]'),
     getSendBtn: () => cy.get('[data-e2e="btn-submit"]'),
 
-    getMessage: () => cy.get(".message")
+    getMessage: () => cy.get('.message')
   };
 
   static openSendViewsModal() {
-    UserOptionsSendView
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsSendView.pageObject.getOptionsBtn().click();
 
-    UserOptionsSendView
-      .pageObject
-      .getOpenSendViewToMail()
-      .click();
+    UserOptionsSendView.pageObject.getOpenSendViewToMail().click();
 
     return UserOptionsSendView;
   }
 
   static fillFields(email: string, caption: string, description: string) {
-    UserOptionsSendView
-      .pageObject
-      .getEmailsInput()
-      .type(email);
+    UserOptionsSendView.pageObject.getEmailsInput().type(email);
 
-    UserOptionsSendView
-      .pageObject
-      .getContainInput()
-      .type(caption);
+    UserOptionsSendView.pageObject.getContainInput().type(caption);
 
-    UserOptionsSendView
-      .pageObject
-      .getDescriptionInput()
-      .type(description);
+    UserOptionsSendView.pageObject.getDescriptionInput().type(description);
 
     return UserOptionsSendView;
   }
 
   static sendView() {
-    UserOptionsSendView
-      .pageObject
-      .getSendBtn()
-      .click();
+    UserOptionsSendView.pageObject.getSendBtn().click();
 
-    UserOptionsSendView
-      .pageObject
-      .getMessage()
-      .should("be.visible");
+    UserOptionsSendView.pageObject.getMessage().should('be.visible');
 
     return UserOptionsSendView;
   }

@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component} from '@angular/core';
 import {ControlContainer} from '@angular/forms';
 import {GeneralInput} from './general-input';
@@ -37,20 +37,21 @@ class MockExtFormDirective {
   isLoading: boolean = false;
 }
 
-class MockControlContainer {
-}
+class MockControlContainer {}
 
 describe('GeneralInput', () => {
   let component: GeneralInput;
   let fixture: ComponentFixture<MockGeneralInput>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [MockGeneralInput],
-      imports: [],
-      providers: [{provide: ControlContainer, useClass: MockControlContainer}]
-    }).compileComponents();
-  }));
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [MockGeneralInput],
+        imports: [],
+        providers: [{provide: ControlContainer, useClass: MockControlContainer}]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MockGeneralInput);

@@ -16,11 +16,18 @@
  */
 
 import {Injectable} from '@angular/core';
-import {EntityState, EntityStore, EntityUIStore, MultiActiveState, StoreConfig} from '@datorama/akita';
+import {
+  EntityState,
+  EntityStore,
+  EntityUIStore,
+  MultiActiveState,
+  StoreConfig
+} from '@datorama/akita';
 import {Overlay, OverlayUIState} from './overlay.model';
 
-export interface OverlayState extends EntityState<Overlay>, MultiActiveState<number> {
-}
+export interface OverlayState
+  extends EntityState<Overlay>,
+    MultiActiveState<number> {}
 
 @Injectable({providedIn: 'root'})
 @StoreConfig({name: 'Overlay'})
@@ -31,9 +38,13 @@ export class OverlayStore extends EntityStore<OverlayState, Overlay> {
     super({
       active: []
     });
-    this.createUIStore({showNewOverlayForm: false, loadingNew: false})
-      .setInitialEntityState({LoadingVisible: false, LoadingDelete: false, LoadingPublic: false});
+    this.createUIStore({
+      showNewOverlayForm: false,
+      loadingNew: false
+    }).setInitialEntityState({
+      loadingVisible: false,
+      loadingDelete: false,
+      loadingPublic: false
+    });
   }
-
 }
-

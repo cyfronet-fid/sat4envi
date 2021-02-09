@@ -15,7 +15,7 @@
  *
  */
 
-import { ConfigurationLoader } from './utils/initializer/config.service';
+import {ConfigurationLoader} from './utils/initializer/config.service';
 import {LogoutModule} from './views/logout/logout.module';
 import {APP_INITIALIZER, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
@@ -42,20 +42,34 @@ import {InjectorModule} from './common/injector.module';
 import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
-import {NotificationsModule} from 'notifications';
 import {ErrorsModule} from './errors/errors.module';
-import {NgxUiLoaderConfig, NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
+import {
+  NgxUiLoaderConfig,
+  NgxUiLoaderModule,
+  PB_DIRECTION,
+  POSITION,
+  SPINNER
+} from 'ngx-ui-loader';
 import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {LocalStorage, LOCATION} from './app.providers';
 import {ProfileLoaderService} from './state/session/session.service';
+import {NotificationsModule} from './notifications/notifications.module';
+import {BsDatepickerModule, BsLocaleService} from 'ngx-bootstrap/datepicker';
+import {defineLocale} from 'ngx-bootstrap/chronos';
+import {plLocale} from 'ngx-bootstrap/locale';
 
+defineLocale('pl', plLocale);
 registerLocaleData(localePl, 'pl');
 
-export function initializeConfiguration(loader: ConfigurationLoader): () => Promise<any> {
+export function initializeConfiguration(
+  loader: ConfigurationLoader
+): () => Promise<any> {
   return () => loader.load$();
 }
 
-export function initializeProfile(profileLoaderService: ProfileLoaderService): () => Promise<any> {
+export function initializeProfile(
+  profileLoaderService: ProfileLoaderService
+): () => Promise<any> {
   return () => profileLoaderService.loadProfile$().toPromise();
 }
 
@@ -73,14 +87,16 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
 };
 
 @NgModule({
-  declarations: [
-    RootComponent
-  ],
+  declarations: [RootComponent],
   imports: [
     AkitaNgRouterStoreModule,
     ...(environment.production ? [] : [AkitaNgDevtools.forRoot()]),
-    RouterModule.forRoot(appRoutes, {enableTracing: false}),
+    RouterModule.forRoot(appRoutes, {
+      enableTracing: false,
+      relativeLinkResolution: 'legacy'
+    }),
     ...ShareModule.modulesForRoot(),
+    BsDatepickerModule.forRoot(),
     LoginModule,
     LogoutModule,
     RegisterModule,
@@ -100,18 +116,29 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   ],
   providers: [
     ConfigurationLoader,
-    {provide: APP_INITIALIZER, useFactory: initializeConfiguration, deps: [ConfigurationLoader], multi: true},
-    {provide: APP_INITIALIZER, useFactory: initializeProfile, deps: [ProfileLoaderService], multi: true},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeConfiguration,
+      deps: [ConfigurationLoader],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeProfile,
+      deps: [ProfileLoaderService],
+      multi: true
+    },
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'},
     {provide: LocalStorage, useValue: window.localStorage},
-    {provide: LOCATION, useValue: window.location},
+    {provide: LOCATION, useValue: window.location}
   ],
   bootstrap: [RootComponent],
-  exports: [LoginComponent],
+  exports: [LoginComponent]
 })
 export class AppModule {
-  constructor() {
+  constructor(locale: BsLocaleService) {
+    locale.use('pl');
     akitaConfig({resettable: true});
   }
 }

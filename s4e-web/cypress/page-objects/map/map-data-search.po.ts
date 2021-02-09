@@ -1,7 +1,6 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class MapDataSearch extends Core {
-
   static readonly pageObject = {
     getGoToSearchDataBtn: () => cy.get('[data-e2e="data-sentinel-search"]'),
     getSentinelsBtn: () => cy.get('[data-e2e="sentinel-checkbox"]'),
@@ -13,109 +12,87 @@ export class MapDataSearch extends Core {
     getDetailsModal: () => cy.get('[data-e2e="modal-body"]'),
     getResultDownloadAllArtifactsBtn: () => cy.get('[data-e2e="btn--download-all"]'),
     getBackBtn: () => cy.get('[data-e2e="back-button"]')
-  }
+  };
 
   static goToSearchData() {
-    cy.server()
-    cy.route('GET', "/api/v1/config/search").as("search")
+    cy.server();
+    cy.route('GET', '/api/v1/config/search').as('search');
 
-    MapDataSearch
-      .pageObject
-      .getGoToSearchDataBtn()
-      .click();
+    MapDataSearch.pageObject.getGoToSearchDataBtn().click();
 
-    cy.wait('@search')
+    cy.wait('@search');
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static selectNthProduct(number: number) {
-
     cy.location('href').should('include', '/map/sentinel-search');
 
-    MapDataSearch
-      .pageObject
+    MapDataSearch.pageObject
       .getSentinelsBtn()
       .eq(number)
-      .should("be.visible")
-      .then((element) => {
-        element.trigger('click') //for avoid detached from DOM
-      })
+      .should('be.visible')
+      .then(element => {
+        element.trigger('click'); //for avoid detached from DOM
+      });
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static search() {
-    cy.server()
-    cy.route('GET', "/api/v1/search/*").as("loadedData")
+    cy.server();
+    cy.route('GET', '/api/v1/search/*').as('loadedData');
 
     cy.location('href').should('include', 'selected');
 
-    MapDataSearch
-      .pageObject
+    MapDataSearch.pageObject
       .getSearchBtn()
-      .should("be.visible")
-      .then((element) => {
-        element.trigger('click') //for avoid detached from DOM
-      })
+      .should('be.visible')
+      .then(element => {
+        element.trigger('click'); //for avoid detached from DOM
+      });
 
-    MapDataSearch
-      .pageObject
-      .getResultList()
-      .should("be.visible");
+    MapDataSearch.pageObject.getResultList().should('be.visible');
 
-    cy.wait('@loadedData')
+    cy.wait('@loadedData');
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static downloadNthData(number: number) {
-
-    MapDataSearch
-      .pageObject
+    MapDataSearch.pageObject
       .getAllResultsDownloadBtn()
       .eq(number)
       .invoke('removeAttr', 'target')
-      .click()
+      .click();
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static selectNthDataDetails(number: number) {
-    MapDataSearch
-      .pageObject
-      .getAllResultsDetailsBtn()
-      .eq(number)
-      .click()
+    MapDataSearch.pageObject.getAllResultsDetailsBtn().eq(number).click();
 
-    MapDataSearch
-      .pageObject
-      .getDetailsModal()
-      .should('be.visible')
+    MapDataSearch.pageObject.getDetailsModal().should('be.visible');
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static downloadArtifacts() {
-    MapDataSearch
-      .pageObject
+    MapDataSearch.pageObject
       .getResultDownloadAllArtifactsBtn()
       .invoke('removeAttr', 'target')
-      .click()
+      .click();
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static returnToSelectForm() {
-    MapDataSearch
-      .pageObject
-      .getBackBtn()
-      .click()
+    MapDataSearch.pageObject.getBackBtn().click();
 
-    return MapDataSearch
+    return MapDataSearch;
   }
 
   static shouldReturnToLoginPage() {
     cy.location('pathname').should('eq', '/login');
   }
-};
+}

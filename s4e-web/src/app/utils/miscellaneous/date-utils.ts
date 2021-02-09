@@ -35,5 +35,5 @@ export function yyyymm(date: Date) {
 }
 
 export function timezone(): string {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
 }

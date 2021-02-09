@@ -15,11 +15,11 @@
  *
  */
 
-import { ExpertHelpModalComponent } from './zk/expert-help-modal/expert-help-modal.component';
-import { EXPERT_HELP_MODAL_ID } from './zk/expert-help-modal/expert-help-modal.model';
-import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal/jwt-token-modal.model';
-import { JwtTokenModalComponent } from './jwt-token-modal/jwt-token-modal.component';
-import { FormErrorModule } from 'src/app/components/form-error/form-error.module';
+import {ExpertHelpModalComponent} from './zk/expert-help-modal/expert-help-modal.component';
+import {EXPERT_HELP_MODAL_ID} from './zk/expert-help-modal/expert-help-modal.model';
+import {JWT_TOKEN_MODAL_ID} from './jwt-token-modal/jwt-token-modal.model';
+import {JwtTokenModalComponent} from './jwt-token-modal/jwt-token-modal.component';
+import {FormErrorModule} from 'src/app/components/form-error/form-error.module';
 import {NgModule} from '@angular/core';
 import {SearchModule} from '../../components/search/search.module';
 import {MapViewComponent} from './map-view.component';
@@ -39,7 +39,7 @@ import {LegendStore} from './state/legend/legend.store';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
 import {AkitaGuidService} from './state/search-results/guid.service';
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ProductQuery} from './state/product/product.query';
 import {ProductService} from './state/product/product.service';
@@ -68,11 +68,14 @@ import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
 import {routes} from './map.routes.module';
 import {SearchResultModalComponent} from './sentinel-search/search-result-modal/search-result-modal.component';
 import {SENTINEL_SEARCH_RESULT_MODAL_ID} from './sentinel-search/search-result-modal/search-result-modal.model';
-import { ResizableModule } from 'angular-resizable-element';
-import { EventsModule } from 'src/app/utils/search/events.module';
+import {ResizableModule} from 'angular-resizable-element';
+import {EventsModule} from 'src/app/utils/search/events.module';
 import {OVERLAY_LIST_MODAL_ID} from './view-manager/overlay-list-modal/overlay-list-modal.model';
 import {OverlayListModalComponent} from './view-manager/overlay-list-modal/overlay-list-modal.component';
-import {SearchResultsComponent, ToPaginationArrayPipe} from './sentinel-search/search-results/search-results.component';
+import {
+  SearchResultsComponent,
+  ToPaginationArrayPipe
+} from './sentinel-search/search-results/search-results.component';
 import {ReportTemplatesModalComponent} from './zk/report-templates-modal/report-templates-modal.component';
 import {REPORT_TEMPLATES_MODAL_ID} from './zk/report-templates-modal/report-templates-modal.model';
 import {LegendDesignerComponent} from './legend/legend-designer/legend-designer.component';
@@ -110,17 +113,14 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
     UserDropdownComponent,
     MobileSceneSelectorModalComponent
   ],
-  exports: [
-    MapViewComponent,
-  ],
+  exports: [MapViewComponent],
   imports: [
     BrowserAnimationsModule,
     ShareModule,
     FormsModule,
     BrowserAnimationsModule,
     AkitaNgRouterStoreModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
+    BsDatepickerModule,
     ModalModule,
     RouterModule.forChild(routes),
     S4EFormsModule,
@@ -128,8 +128,7 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
     FormErrorModule,
     ResizableModule,
     EventsModule,
-    OverlayListModule,
-    // OwlNativeDateTimeModule
+    OverlayListModule
   ],
   providers: [
     MapQuery,
@@ -149,7 +148,10 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
     LegendService,
     AkitaGuidService,
     makeModalProvider(REPORT_MODAL_ID, ReportModalComponent),
-    makeModalProvider(SHARE_CONFIGURATION_MODAL_ID, ShareConfigurationModalComponent),
+    makeModalProvider(
+      SHARE_CONFIGURATION_MODAL_ID,
+      ShareConfigurationModalComponent
+    ),
     makeModalProvider(SAVE_CONFIG_MODAL_ID, SaveConfigModalComponent),
     makeModalProvider(LIST_CONFIGS_MODAL_ID, ListConfigsModalComponent),
     makeModalProvider(SENTINEL_SEARCH_RESULT_MODAL_ID, SearchResultModalComponent),
@@ -157,7 +159,10 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
     makeModalProvider(JWT_TOKEN_MODAL_ID, JwtTokenModalComponent),
     makeModalProvider(EXPERT_HELP_MODAL_ID, ExpertHelpModalComponent),
     makeModalProvider(REPORT_TEMPLATES_MODAL_ID, ReportTemplatesModalComponent),
-    makeModalProvider(MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID, MobileSceneSelectorModalComponent)
+    makeModalProvider(
+      MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID,
+      MobileSceneSelectorModalComponent
+    )
   ],
   entryComponents: [
     ReportModalComponent,
@@ -172,5 +177,4 @@ import {MOBILE_MODAL_SCENE_SELECTOR_MODAL_ID} from './timeline/mobile-scene-sele
     MobileSceneSelectorModalComponent
   ]
 })
-export class MapModule {
-}
+export class MapModule {}

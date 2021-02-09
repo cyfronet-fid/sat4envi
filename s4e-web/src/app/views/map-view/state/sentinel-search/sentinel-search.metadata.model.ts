@@ -29,7 +29,9 @@ export interface SentinelFloatParam extends SentinelParam {
   max: number;
 }
 
-export function isSentinelFloatParam(param: SentinelParam): param is SentinelFloatParam {
+export function isSentinelFloatParam(
+  param: SentinelParam
+): param is SentinelFloatParam {
   return param.type == 'float';
 }
 
@@ -37,7 +39,9 @@ export interface SentinelDateTimeParam extends SentinelParam {
   type: 'datetime';
 }
 
-export function isSentinelDateTimeParam(param: SentinelParam): param is SentinelDateTimeParam {
+export function isSentinelDateTimeParam(
+  param: SentinelParam
+): param is SentinelDateTimeParam {
   return param.type == 'datetime';
 }
 
@@ -45,16 +49,20 @@ export interface SentinelTextParam extends SentinelParam {
   type: 'text';
 }
 
-export function isSentinelTextParam(param: SentinelParam): param is SentinelTextParam {
+export function isSentinelTextParam(
+  param: SentinelParam
+): param is SentinelTextParam {
   return param.type == 'text';
 }
 
 export interface SentinelSelectParam extends SentinelParam {
   type: 'select';
-  values: string|null[];
+  values: string | null[];
 }
 
-export function isSentinelSelectParam(param: SentinelParam): param is SentinelSelectParam {
+export function isSentinelSelectParam(
+  param: SentinelParam
+): param is SentinelSelectParam {
   return param.type == 'select';
 }
 
@@ -65,12 +73,14 @@ export interface SentinelSection {
 
 export interface SentinelSearchMetadata {
   common: {
-    params: SentinelParam[]
-  },
-  sections: SentinelSection[]
+    params: SentinelParam[];
+  };
+  sections: SentinelSection[];
 }
 
-export function convertSentinelParam2FormControl(formControlDef: SentinelParam): FormControl {
+export function convertSentinelParam2FormControl(
+  formControlDef: SentinelParam
+): FormControl {
   const fc = new FormControl();
 
   if (isSentinelSelectParam(formControlDef)) {
@@ -78,10 +88,10 @@ export function convertSentinelParam2FormControl(formControlDef: SentinelParam):
     fc.setValue(formControlDef.values[0]);
   } else if (isSentinelFloatParam(formControlDef)) {
     const validators = [];
-    if(formControlDef.min != null) {
+    if (formControlDef.min != null) {
       validators.push(Validators.min(formControlDef.min));
     }
-    if(formControlDef.max != null) {
+    if (formControlDef.max != null) {
       validators.push(Validators.max(formControlDef.max));
     }
     fc.setValidators(validators);

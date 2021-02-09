@@ -20,7 +20,7 @@
     <ng-content select="[s4e-caption]"></ng-content>
   </span>
   <span class="products__hint">
-    <a href="#">{{help}}</a>
+    <a href="#">{{ help }}</a>
   </span>
   <span class="products__toggle"></span>
 </header>
@@ -54,16 +54,30 @@
         data-e2e="picker-item-label"
         [ngClass]="item.active ? 'active' : ''"
       >
-        {{item.label}}
+        {{ item.label }}
       </button>
       <ng-container *ngIf="hasFavourite">
         <div class="products__favourite">
-          <button *ngIf="!item.isFavouriteLoading; else itemFavLoading"
-                  (click)="item.favourite = !item.favourite; isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite});">
-            <i class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{ item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn' }}" title="Dodaj produkt do ulubionych"></i>
+          <button
+            *ngIf="!item.isFavouriteLoading; else itemFavLoading"
+            (click)="
+              item.favourite = !item.favourite;
+              isFavouriteSelected.emit({ID: item.cid, isFavourite: item.favourite})
+            "
+          >
+            <i
+              class="{{ item.favourite ? 'fas' : 'far' }} fa-star {{
+                item.favourite ? 'e2e-favourite-btn' : 'e2e-non-favourite-btn'
+              }}"
+              title="Dodaj produkt do ulubionych"
+            ></i>
           </button>
           <ng-template #itemFavLoading>
-            <fa-icon class="item-fav-spinner" [icon]="['fas', 'spinner']" [spin]="true"></fa-icon>
+            <fa-icon
+              class="item-fav-spinner"
+              [icon]="['fas', 'spinner']"
+              [spin]="true"
+            ></fa-icon>
           </ng-template>
         </div>
       </ng-container>

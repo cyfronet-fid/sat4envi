@@ -21,9 +21,9 @@ export interface LoginFormState {
 }
 
 export interface Role {
-  role: 'INST_ADMIN'|'INST_MANAGER'|'GROUP_MANAGER'|'INST_MEMBER',
-  institutionSlug: string|null,
-  groupSlug: string|null,
+  role: 'INST_ADMIN' | 'INST_MANAGER' | 'GROUP_MANAGER' | 'INST_MEMBER';
+  institutionSlug: string | null;
+  groupSlug: string | null;
 }
 
 export interface Session {

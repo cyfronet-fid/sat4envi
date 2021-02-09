@@ -15,12 +15,33 @@
  *
  */
 
-.calendar-data-available {
-  background-color: #ffe055;
-
-  &.owl-dt-calendar-cell-selected {
-    background-color: #c60000;
-  }
+bs-datepicker-container {
+  z-index: 20000;
 }
 
+.bs-datepicker.theme-blank {
+  .bs-datepicker-head {
+    background-color: unset;
+    height: 30px;
 
+    button {
+      color: #3c3c3c;
+    }
+  }
+
+  .selected {
+    background-color: #2b74bb;
+  }
+
+  .calendar-data-available {
+    background-color: #ffe055;
+
+    &.selected {
+      background-color: #c60000;
+    }
+  }
+
+  .bs-datepicker-container {
+    padding: 0;
+  }
+}

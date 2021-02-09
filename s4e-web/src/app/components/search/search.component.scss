@@ -15,10 +15,11 @@
  *
  */
 
-@import "../../../scss/variables";
+@import '../../../scss/variables';
 
-section, .section {
-  clear:both;
+section,
+.section {
+  clear: both;
   border-radius: $border-radius-default;
   display: block;
   position: relative;
@@ -53,7 +54,7 @@ section, .section {
       position: relative;
 
       &:before {
-        content: " ";
+        content: ' ';
         width: 1px;
         background: $color-grey-secondary;
         position: absolute;
@@ -64,7 +65,6 @@ section, .section {
         z-index: 2;
       }
     }
-
   }
 }
 

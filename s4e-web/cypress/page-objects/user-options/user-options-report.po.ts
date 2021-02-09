@@ -1,10 +1,11 @@
-import { Core } from '../core.po';
+import {Core} from '../core.po';
 
 export class UserOptionsGenerateReport extends Core {
   static pageObject = {
     getOptionsBtn: () => cy.get('[data-e2e="loginOptions-btn"]'),
     getGenerateReportBtn: () => cy.get('[data-e2e="open-generate-report-modal"]'),
-    getGenerateTemplateReportBtn: () => cy.get('[data-e2e="open-template-report-modal"]'),
+    getGenerateTemplateReportBtn: () =>
+      cy.get('[data-e2e="open-template-report-modal"]'),
     getGenerateReportModal: () => cy.get('[data-e2e="modal-container"]'),
     getCaptionInput: () => cy.get('[data-e2e="caption"]'),
     getNotesInput: () => cy.get('[data-e2e="notes"]'),
@@ -16,98 +17,60 @@ export class UserOptionsGenerateReport extends Core {
   };
 
   static openGenerateReportModal() {
-    UserOptionsGenerateReport
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getOptionsBtn().click();
 
-    UserOptionsGenerateReport
-      .pageObject
-      .getGenerateReportBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getGenerateReportBtn().click();
 
     return UserOptionsGenerateReport;
   }
 
   static openGenerateTemplateReportModal() {
-    UserOptionsGenerateReport
-      .pageObject
-      .getOptionsBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getOptionsBtn().click();
 
-    UserOptionsGenerateReport
-      .pageObject
-      .getGenerateTemplateReportBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getGenerateTemplateReportBtn().click();
 
     return UserOptionsGenerateReport;
   }
 
   static fillFields(caption: string, notes: string) {
-    UserOptionsGenerateReport
-      .pageObject
-      .getCaptionInput()
-      .type(caption);
+    UserOptionsGenerateReport.pageObject.getCaptionInput().type(caption);
 
-    UserOptionsGenerateReport
-      .pageObject
-      .getNotesInput()
-      .type(notes);
+    UserOptionsGenerateReport.pageObject.getNotesInput().type(notes);
 
     return UserOptionsGenerateReport;
   }
 
   static saveReportToDisk() {
-    UserOptionsGenerateReport
-      .pageObject
-      .getSaveBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getSaveBtn().click();
 
     return UserOptionsGenerateReport;
   }
 
   static saveReportAsTemplate() {
-    UserOptionsGenerateReport
-      .pageObject
-      .getSaveAsTemplateBtn()
-      .click();
+    UserOptionsGenerateReport.pageObject.getSaveAsTemplateBtn().click();
 
     return UserOptionsGenerateReport;
   }
 
   static reportsCountShouldBe(count: number) {
-
-    UserOptionsGenerateReport
-      .pageObject
-      .getReports()
-      .should('have.length', count);
+    UserOptionsGenerateReport.pageObject.getReports().should('have.length', count);
 
     return UserOptionsGenerateReport;
   }
 
   static loadNthReport(nth: number) {
+    UserOptionsGenerateReport.pageObject.getLoadReportBtn().eq(nth).click();
 
-    UserOptionsGenerateReport
-      .pageObject
-      .getLoadReportBtn()
-      .eq(nth)
-      .click()
-
-    UserOptionsGenerateReport
-      .pageObject
+    UserOptionsGenerateReport.pageObject
       .getGenerateReportModal()
-      .should("be.visible")
+      .should('be.visible');
 
     return UserOptionsGenerateReport;
   }
 
   static deleteNthReportTemplate(nth: number) {
-    UserOptionsGenerateReport
-      .pageObject
-      .getDeleteTemplateBtn()
-      .eq(nth)
-      .click()
+    UserOptionsGenerateReport.pageObject.getDeleteTemplateBtn().eq(nth).click();
 
     return UserOptionsGenerateReport;
-  };
-};
+  }
+}

@@ -40,23 +40,25 @@ import {SelectComponent} from './select.component';
 @Directive({
   selector: 'option'
 })
-export class ExtOptionDirective implements AfterViewInit{
+export class ExtOptionDirective implements AfterViewInit {
   @Input() ngValue: any = undefined;
   @Input() value: string = undefined;
 
-  constructor(public element: ElementRef, private option: NgSelectOption, @Optional() private parent: SelectComponent) {}
+  constructor(
+    public element: ElementRef,
+    private option: NgSelectOption,
+    @Optional() private parent: SelectComponent
+  ) {}
 
   ngAfterViewInit(): void {
-    if(this.parent == null || this.parent.constructor !== SelectComponent) return;
+    if (this.parent == null || this.parent.constructor !== SelectComponent) return;
 
     const select: any = this.parent.select;
     // noinspection TypeScriptUnresolvedFunction
     this.option.id = (select as any)._registerOption();
     (this.option as any)._select = select;
 
-    if(this.ngValue != null)
-      this.option.ngValue = this.ngValue;
-    else if(this.value != null)
-      this.option.value = this.value
+    if (this.ngValue != null) this.option.ngValue = this.ngValue;
+    else if (this.value != null) this.option.value = this.value;
   }
 }

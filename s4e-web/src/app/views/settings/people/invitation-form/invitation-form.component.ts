@@ -15,27 +15,31 @@
  *
  */
 
-import { Validators } from '@angular/forms';
-import { NotificationService } from 'notifications';
-import { Institution } from './../../state/institution/institution.model';
-import { INVITATION_FORM_MODAL_ID, isInvitationFormModal, InvitationFormModal } from './invitation-form-modal.model';
-import { ModalQuery } from 'src/app/modal/state/modal.query';
-import { ModalService } from 'src/app/modal/state/modal.service';
+import {Validators} from '@angular/forms';
+import {Institution} from '../../state/institution/institution.model';
+import {
+  INVITATION_FORM_MODAL_ID,
+  isInvitationFormModal,
+  InvitationFormModal
+} from './invitation-form-modal.model';
+import {ModalQuery} from 'src/app/modal/state/modal.query';
+import {ModalService} from 'src/app/modal/state/modal.service';
 import {Component, Inject} from '@angular/core';
 import {FormControl, FormGroup} from '@ng-stack/forms';
 import {InstitutionService} from '../../state/institution/institution.service';
 import {ActivatedRoute} from '@angular/router';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from '../../../../state/form/form.model';
-import { FormModalComponent } from 'src/app/modal/utils/modal/modal.component';
-import { assertModalType } from 'src/app/modal/utils/modal/misc';
-import { MODAL_DEF } from 'src/app/modal/modal.providers';
-import { InstitutionsSearchResultsQuery } from '../../state/institutions-search/institutions-search-results.query';
-import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
-import { InvitationForm } from './invitation-form.model';
-import { Invitation } from '../state/invitation/invitation.model';
-import { InvitationService } from '../state/invitation/invitation.service';
+import {FormModalComponent} from 'src/app/modal/utils/modal/modal.component';
+import {assertModalType} from 'src/app/modal/utils/modal/misc';
+import {MODAL_DEF} from 'src/app/modal/modal.providers';
+import {InstitutionsSearchResultsQuery} from '../../state/institutions-search/institutions-search-results.query';
+import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
+import {InvitationForm} from './invitation-form.model';
+import {Invitation} from '../state/invitation/invitation.model';
+import {InvitationService} from '../state/invitation/invitation.service';
 import {InvitationQuery} from '../state/invitation/invitation.query';
+import {NotificationService} from '../../../../notifications/state/notification.service';
 
 @Component({
   templateUrl: './invitation-form.component.html',
@@ -86,9 +90,13 @@ export class InvitationFormComponent extends FormModalComponent<'invitation'> {
     const {email, forAdmin} = this.form.value;
     const invitationExist = !!this._invitationQuery.getEntity(email);
     !!this.invitation || invitationExist
-      ? this._invitationService
-        .resend({oldEmail: email, newEmail: email, forAdmin}, this.institution)
-      : this._invitationService.send(this.institution.slug, email, forAdmin).subscribe();
+      ? this._invitationService.resend(
+          {oldEmail: email, newEmail: email, forAdmin},
+          this.institution
+        )
+      : this._invitationService
+          .send(this.institution.slug, email, forAdmin)
+          .subscribe();
     this.dismiss();
   }
 }

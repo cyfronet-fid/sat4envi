@@ -15,7 +15,7 @@
  *
  */
 
-import { LegendStore } from './legend.store';
+import {LegendStore} from './legend.store';
 import {TestBed} from '@angular/core/testing';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
@@ -28,10 +28,10 @@ describe('LegendStore', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [LocalStorageTestingProvider],
-      imports: [ MapModule, RouterTestingModule, HttpClientTestingModule ]
+      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
-    store = TestBed.get(LegendStore);
+    store = TestBed.inject(LegendStore);
   });
 
   it('should create an instance', () => {

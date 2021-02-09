@@ -15,7 +15,7 @@
  *
  */
 
-import { ConfigurationStore } from './configuration.store';
+import {ConfigurationStore} from './configuration.store';
 
 describe('ConfigurationStore', () => {
   let store: ConfigurationStore;
@@ -27,5 +27,4 @@ describe('ConfigurationStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

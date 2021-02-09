@@ -16,7 +16,7 @@
  */
 
 import {SessionQuery} from './session.query';
-import {async, TestBed} from '@angular/core/testing';
+import {TestBed, waitForAsync} from '@angular/core/testing';
 import {CommonStateModule} from '../common-state.module';
 import {take} from 'rxjs/operators';
 import {SessionStore} from './session.store';
@@ -26,14 +26,16 @@ describe('SessionQuery', () => {
   let query: SessionQuery;
   let store: SessionStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [CommonStateModule],
-    });
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [CommonStateModule]
+      });
 
-    query = TestBed.get(SessionQuery);
-    store = TestBed.get(SessionStore);
-  }));
+      query = TestBed.inject(SessionQuery);
+      store = TestBed.inject(SessionStore);
+    })
+  );
 
   it('should create an instance', () => {
     expect(query).toBeTruthy();

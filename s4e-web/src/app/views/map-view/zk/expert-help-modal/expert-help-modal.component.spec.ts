@@ -15,16 +15,21 @@
  *
  */
 
-import { NotificationService } from 'notifications';
-import { ExpertHelpService } from './../state/expert-help.service';
-import { EXPERT_HELP_MODAL_ID } from './expert-help-modal.model';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MapModule } from './../../map.module';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {ExpertHelpService} from '../state/expert-help.service';
+import {EXPERT_HELP_MODAL_ID} from './expert-help-modal.model';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MapModule} from '../../map.module';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 
-import { ExpertHelpModalComponent } from './expert-help-modal.component';
-import { MODAL_DEF } from 'src/app/modal/modal.providers';
-import { of } from 'rxjs';
+import {ExpertHelpModalComponent} from './expert-help-modal.component';
+import {MODAL_DEF} from 'src/app/modal/modal.providers';
+import {of} from 'rxjs';
 
 describe('ExpertHelpModalComponent', () => {
   let component: ExpertHelpModalComponent;
@@ -32,25 +37,24 @@ describe('ExpertHelpModalComponent', () => {
 
   let expertHelpService: ExpertHelpService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        MapModule,
-        RouterTestingModule
-      ],
-      providers: [
-        {
-          provide: MODAL_DEF, useValue: {
-            id: EXPERT_HELP_MODAL_ID,
-            size: 'lg'
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, RouterTestingModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: EXPERT_HELP_MODAL_ID,
+              size: 'lg'
+            }
           }
-        }
-      ]
-    })
-    .compileComponents();
+        ]
+      }).compileComponents();
 
-    expertHelpService = TestBed.get(ExpertHelpService);
-  }));
+      expertHelpService = TestBed.inject(ExpertHelpService);
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ExpertHelpModalComponent);
@@ -63,8 +67,10 @@ describe('ExpertHelpModalComponent', () => {
   });
 
   it('should valid form', () => {
-    const spyExpertHelpService = spyOn(expertHelpService, 'sendHelpRequest$')
-      .and.returnValue(of());
+    const spyExpertHelpService = spyOn(
+      expertHelpService,
+      'sendHelpRequest$'
+    ).and.returnValue(of());
 
     component.form.setValue({helpType: 'REMOTE', issueDescription: null});
     component.sendIssue$();

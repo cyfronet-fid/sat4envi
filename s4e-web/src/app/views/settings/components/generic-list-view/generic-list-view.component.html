@@ -36,14 +36,19 @@
       <span>
         <ng-content select="[search-label]"></ng-content>
       </span>
-      <input data-test-generic-list-query [formControl]="queryFc" placeholder="Zacznij wpisywać szukaną nazwę a my zawęzimy wyniki" i18n-placeholder="">
+      <input
+        data-test-generic-list-query
+        [formControl]="queryFc"
+        placeholder="Zacznij wpisywać szukaną nazwę a my zawęzimy wyniki"
+        i18n-placeholder=""
+      />
     </div>
     <table data-e2e="generic-list-data-table" class="table">
       <ng-container *ngIf="!loading; else tableLoading">
         <thead>
           <tr>
             <th class="table-selection" *ngIf="selectable">
-              <input type="checkbox" [formControl]="selectAllFc">
+              <input type="checkbox" [formControl]="selectAllFc" />
             </th>
             <ng-content select="[table-header]"></ng-content>
           </tr>
@@ -51,9 +56,12 @@
         <tbody>
           <tr *ngFor="let item of items; index as $index" data-e2e="entity-row">
             <td *ngIf="selectable">
-              <input type="checkbox" [formControl]="itemSelectFc.controls[$index]">
+              <input type="checkbox" [formControl]="itemSelectFc.controls[$index]" />
             </td>
-            <ng-container [ngTemplateOutlet]="tableRow" [ngTemplateOutletContext]="{item: item}"></ng-container>
+            <ng-container
+              [ngTemplateOutlet]="tableRow"
+              [ngTemplateOutletContext]="{item: item}"
+            ></ng-container>
           </tr>
           <tr *ngIf="items.length === 0">
             <td colspan="100%" class="table-message">Brak pasujących elementów</td>
@@ -62,9 +70,11 @@
       </ng-container>
       <ng-template #tableLoading>
         <tbody>
-        <tr>
-          <td data-test="loading" colspan="4" style="text-align: center" i18n>Ładowanie...</td>
-        </tr>
+          <tr>
+            <td data-test="loading" colspan="4" style="text-align: center" i18n>
+              Ładowanie...
+            </td>
+          </tr>
         </tbody>
       </ng-template>
     </table>
@@ -73,5 +83,3 @@
     <p i18n class="">Nie posiadasz uprawnień do przeglądania instytucji</p>
   </ng-template>
 </section>
-
-

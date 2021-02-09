@@ -24,7 +24,8 @@ export const SessionFactory = Factory.makeFactory<Session>({
   surname: 'Adminsky',
   roles: [],
   memberZK: true,
-  admin: true
+  admin: true,
+  authorities: []
 });
 
 export const RoleFactory = Factory.makeFactory<Role>({

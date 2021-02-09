@@ -1,27 +1,12 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "allowJs": true,
     "outDir": "../out-tsc/spec",
-    "module": "commonjs",
-    "types": [
-      "ol",
-      "openlayers",
-      "jest",
-      "jsdom",
-      "node"
-    ]
+    "types": ["ol", "openlayers", "jest", "jsdom", "node"]
   },
-  "files": [
-    "polyfills.ts"
-  ],
-  "modulePathIgnorePatterns": [
-    "projects/notifications"
-  ],
-  "include": [
-    "**/*.spec.ts",
-    "**/*.d.ts"
-  ]
+  "files": ["polyfills.ts"],
+  "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

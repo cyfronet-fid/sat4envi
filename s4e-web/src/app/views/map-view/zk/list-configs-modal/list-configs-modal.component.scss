@@ -15,9 +15,7 @@
  *
  */
 
-@import "../../../../../scss/variables";
-
-
+@import '../../../../../scss/variables';
 
 .saved__element {
   background: $color-white;
@@ -57,7 +55,6 @@
       display: flex;
       flex-wrap: wrap;
       margin-left: auto;
-
 
       button {
         padding: $space-xsmall $space-xlarge;

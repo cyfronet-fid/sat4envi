@@ -15,7 +15,7 @@
  *
  */
 
-@import "src/scss/settings";
+@import 'src/scss/settings';
 
 .navigation__list {
   position: relative;
@@ -29,7 +29,7 @@
 
 s4e-search {
   & .type,
-  & .voivodeship{
+  & .voivodeship {
     font-style: italic;
     color: $color-grey;
     opacity: 0.5;
@@ -45,6 +45,6 @@ s4e-search {
   pointer-events: none;
   cursor: default;
   color: gray !important;
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed;
 }

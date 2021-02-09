@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MapComponent} from './map.component';
 import {ShareModule} from '../../../common/share.module';
 import {ReplaySubject} from 'rxjs';
@@ -23,22 +23,19 @@ import {take} from 'rxjs/operators';
 import {RouterTestingModule} from '@angular/router/testing';
 import {RemoteConfigurationTestingProvider} from '../../../app.configuration.spec';
 
-
 describe('MapComponent', () => {
   let component: MapComponent;
   let fixture: ComponentFixture<MapComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      providers: [RemoteConfigurationTestingProvider],
-      imports: [
-        ShareModule,
-        RouterTestingModule
-      ],
-      declarations: [MapComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [RemoteConfigurationTestingProvider],
+        imports: [ShareModule, RouterTestingModule],
+        declarations: [MapComponent]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MapComponent);
@@ -51,7 +48,7 @@ describe('MapComponent', () => {
     component.ngOnInit();
   });
 
-  it('should getMapData generate image', (done) => {
+  it('should getMapData generate image', done => {
     const spy = spyOn((component as any).map, 'renderSync');
 
     spyOn((component as any).map, 'once').and.callFake((event, callback) => {
@@ -59,10 +56,18 @@ describe('MapComponent', () => {
       callback();
     });
 
-    component.getMapData().pipe(take(1)).subscribe(data => {
-      expect(data).toEqual({height: 150, width: 300, image: 'data:image/png;base64,00', 'pointResolution': 152.87405656527181});
-      done();
-    });
+    component
+      .getMapData()
+      .pipe(take(1))
+      .subscribe(data => {
+        expect(data).toEqual({
+          height: 150,
+          width: 300,
+          image: 'data:image/png;base64,00',
+          pointResolution: 152.87405656527181
+        });
+        done();
+      });
     expect(spy).toHaveBeenCalled();
   });
 
@@ -75,7 +80,9 @@ describe('MapComponent', () => {
     mapImage.next({image: image, width: 1, height: 1});
     mapImage.complete();
 
-    expect(component.linkDownload.nativeElement.getAttribute('download')).toContain('SNAPSHOT');
+    expect(component.linkDownload.nativeElement.getAttribute('download')).toContain(
+      'SNAPSHOT'
+    );
     expect(component.linkDownload.nativeElement.getAttribute('href')).toEqual(image);
     expect(spy).toHaveBeenCalled();
   });

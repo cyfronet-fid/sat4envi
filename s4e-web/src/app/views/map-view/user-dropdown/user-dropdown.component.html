@@ -17,7 +17,12 @@
 
 <div class="dropdown__content dropdown__content--login" data-e2e="options-dropdown">
   <div class="dropdown__header">
-    <img src="/assets/images/logo_s4e_color.png" width="60" i18n-alt alt="Logo Sat4Envi"/>
+    <img
+      src="/assets/images/logo_s4e_color.png"
+      width="60"
+      i18n-alt
+      alt="Logo Sat4Envi"
+    />
   </div>
   <div class="dropdown__close" (click)="toggleLoginOptions.emit(false)"></div>
   <section>
@@ -25,87 +30,105 @@
       <dl>
         <ng-container *ngIf="showAdvanced">
           <dt i18n>Operacje widoku</dt>
-          <dd><a
-            (click)="openShareViewModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-send-view-btn"
-            i18n
-          >
-            Wyślij widok na adres email
-          </a></dd>
-          <dd><a
-            (click)="openSaveViewModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-save-view-modal-btn"
-            i18n
-          >
-            Zapisz konfigurację widoku w aplikacji
-          </a></dd>
-          <dd><a
-            (click)="openListViewModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-views-modal-btn"
-            i18n
-          >
-            Wczytaj zapisaną konfigurację
-          </a></dd>
-          <dd><a
-            (click)="openExpertHelpModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-mail-to-expert-modal-btn"
-            i18n
-          >
-            Wsparcie eksperckie
-          </a></dd>
+          <dd>
+            <a
+              (click)="openShareViewModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-send-view-btn"
+              i18n
+            >
+              Wyślij widok na adres email
+            </a>
+          </dd>
+          <dd>
+            <a
+              (click)="openSaveViewModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-save-view-modal-btn"
+              i18n
+            >
+              Zapisz konfigurację widoku w aplikacji
+            </a>
+          </dd>
+          <dd>
+            <a
+              (click)="openListViewModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-views-modal-btn"
+              i18n
+            >
+              Wczytaj zapisaną konfigurację
+            </a>
+          </dd>
+          <dd>
+            <a
+              (click)="openExpertHelpModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-mail-to-expert-modal-btn"
+              i18n
+            >
+              Wsparcie eksperckie
+            </a>
+          </dd>
 
           <dt i18n>Raporty</dt>
-          <dd><a
-            (click)="openReportModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-generate-report-modal"
-            i18n
-          >
-            Wygeneruj raport PDF
-          </a></dd>
-          <dd><a
-            (click)="openReportTemplatesModal.emit()"
-            href="javascript:undefined"
-            data-e2e="open-template-report-modal"
-            i18n
-          >
-            Szablony raportów
-          </a></dd>
+          <dd>
+            <a
+              (click)="openReportModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-generate-report-modal"
+              i18n
+            >
+              Wygeneruj raport PDF
+            </a>
+          </dd>
+          <dd>
+            <a
+              (click)="openReportTemplatesModal.emit()"
+              href="javascript:undefined"
+              data-e2e="open-template-report-modal"
+              i18n
+            >
+              Szablony raportów
+            </a>
+          </dd>
         </ng-container>
         <dt i18n>Zapisywanie na dysk</dt>
-        <dd><a
-          data-test-download-original
-          [ngClass]="{disabled: activeScene == null}"
-          (click)="openSceneDetailsModal.emit()"
-          data-e2e="open-save-on-disk-metadata-modal"
-          target="_blank"
-          i18n
-        >
-          Metadane i dane surowe
-        </a></dd>
-        <dd><a
-          (click)="downloadMapImage.emit()"
-          href="javascript:undefined"
-          data-e2e="open-save-on-disk-image"
-          i18n
-        >
-          Zapisz na dysku jako obraz PNG
-        </a></dd>
-
+        <dd>
+          <a
+            data-test-download-original
+            [ngClass]="{disabled: activeScene == null}"
+            (click)="openSceneDetailsModal.emit()"
+            data-e2e="open-save-on-disk-metadata-modal"
+            target="_blank"
+            i18n
+          >
+            Metadane i dane surowe
+          </a>
+        </dd>
+        <dd>
+          <a
+            (click)="downloadMapImage.emit()"
+            href="javascript:undefined"
+            data-e2e="open-save-on-disk-image"
+            i18n
+          >
+            Zapisz na dysku jako obraz PNG
+          </a>
+        </dd>
       </dl>
     </ng-container>
     <dl>
-
       <ng-container *ngIf="userLoggedIn">
         <dt i18n>Zarządzanie kontem</dt>
         <dd>
           <a
             *ngIf="hasAnyAdminInstitution"
-            [routerLink]="isAdminOfOneInstitution ? '/settings/dashboard' : '/settings/institutions'"
+            [routerLink]="
+              isAdminOfOneInstitution
+                ? '/settings/dashboard'
+                : '/settings/institutions'
+            "
             data-e2e="open-settings-btn"
             i18n
           >
@@ -113,7 +136,9 @@
           </a>
         </dd>
         <dd>
-          <a routerLink="/settings/profile" data-e2e="open-profile-btn" i18n>Twój profil</a>
+          <a routerLink="/settings/profile" data-e2e="open-profile-btn" i18n
+            >Twój profil</a
+          >
         </dd>
         <dd>
           <a
@@ -126,7 +151,6 @@
           </a>
         </dd>
       </ng-container>
-
 
       <dt i18n>Dostępność</dt>
       <dd>
@@ -141,7 +165,13 @@
       </dd>
       <ng-template #loggedInRef>
         <dd class="dropdown__login">
-          <a routerLink="/logout" class="button button--small button--primary" data-e2e="logout-btn" i18n>Wyloguj</a>
+          <a
+            routerLink="/logout"
+            class="button button--small button--primary"
+            data-e2e="logout-btn"
+            i18n
+            >Wyloguj</a
+          >
         </dd>
       </ng-template>
       <ng-container *ngIf="!userLoggedIn; else loggedInRef">
@@ -152,7 +182,5 @@
         </dd>
       </ng-container>
     </dl>
-
-
   </section>
 </div>

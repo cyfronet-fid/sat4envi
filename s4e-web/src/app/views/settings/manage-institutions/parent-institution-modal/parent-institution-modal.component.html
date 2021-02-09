@@ -19,8 +19,8 @@
   <div class="s4e-modal-header" i18n>Wybierz instytucję nadrzedną</div>
   <div class="s4e-modal-body">
     <p i18n>
-      W tym oknie możesz wybrać instytucję nadrzędną.
-      Wyszukiwarka pomoże zawęzić wyniki wyszukiwań w czasie rzeczywistym.
+      W tym oknie możesz wybrać instytucję nadrzędną. Wyszukiwarka pomoże zawęzić
+      wyniki wyszukiwań w czasie rzeczywistym.
     </p>
     <section class="search">
       <input
@@ -32,14 +32,21 @@
         [formControl]="institutionsSearch"
         i18n
       />
-      <button class="reset_search_button" *ngIf="!(institutionsSearch.value == '')" (click)="institutionsSearch.setValue('')">
-        <img src="../../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt/>
+      <button
+        class="reset_search_button"
+        *ngIf="!(institutionsSearch.value == '')"
+        (click)="institutionsSearch.setValue('')"
+      >
+        <img src="../../../../../assets/images/ico_x.svg" alt="Clear" i18n-alt />
       </button>
     </section>
 
     <h3 i18n>Lista dostępnych instytucji</h3>
     <ul class="box-list">
-      <li *ngFor="let institution of searchedInstitutions; index as index$" class="box-list__element box-list__element--radio">
+      <li
+        *ngFor="let institution of searchedInstitutions; index as index$"
+        class="box-list__element box-list__element--radio"
+      >
         <input
           type="radio"
           [attr.id]="'institution' + index$"
@@ -47,13 +54,33 @@
           [checked]="isSelected(institution)"
           (click)="selectedInstitution = institution"
           data-e2e="selectParentInstitution"
+        />
+        <label
+          data-e2e="institution-radio"
+          [attr.for]="'institution' + index$"
+          i18n
+          >{{ institution.name }}</label
         >
-        <label data-e2e="institution-radio" [attr.for]="'institution' + index$" i18n>{{ institution.name }}</label>
       </li>
     </ul>
   </div>
   <div class="s4e-modal-footer">
-    <button class="button button--primary button--small" data-e2e="btn-submit" type="submit" (click)="accept()" i18n>Przypisz do instytucji</button>
-    <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Anuluj</button>
+    <button
+      class="button button--primary button--small"
+      data-e2e="btn-submit"
+      type="submit"
+      (click)="accept()"
+      i18n
+    >
+      Przypisz do instytucji
+    </button>
+    <button
+      class="button button--cancel button--small"
+      type="button"
+      (click)="dismiss()"
+      i18n
+    >
+      Anuluj
+    </button>
   </div>
 </s4e-generic-modal>

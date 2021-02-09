@@ -19,9 +19,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {PersonQuery} from '../people/state/person/person.query';
 import {PersonService} from '../people/state/person/person.service';
 import {SessionQuery} from '../../../state/session/session.query';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {Person} from '../people/state/person/person.model';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-people',
   templateUrl: './manage-authorities.component.html',
@@ -43,11 +44,12 @@ export class ManageAuthoritiesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._personService.fetchAllAdmins$()
-      .pipe(untilDestroyed(this))
-      .subscribe();
+    this._personService.fetchAllAdmins$().pipe(untilDestroyed(this)).subscribe();
     this.canGrantDeleteAuthority = this._sessionQuery.canGrantInstitutionDeleteAuthority();
-    this._sessionQuery.select('email').pipe(untilDestroyed(this)).subscribe(email => this.currentUserEmail = email);
+    this._sessionQuery
+      .select('email')
+      .pipe(untilDestroyed(this))
+      .subscribe(email => (this.currentUserEmail = email));
   }
 
   toggleDeleteAuthority(person: Person) {

@@ -26,16 +26,16 @@ export function pubNoSub$<T = any>(obs: Observable<T>): Observable<T> {
 }
 
 export function mapAnyTrue<T = any>() {
-  return (input$: Observable<T | T[]>) => input$.pipe(
-    map(obj => Array.isArray(obj) ? obj : [obj]),
-    map(arr => arr.filter(element => element).length > 0),
-  );
+  return (input$: Observable<T | T[]>) =>
+    input$.pipe(
+      map(obj => (Array.isArray(obj) ? obj : [obj])),
+      map(arr => arr.filter(element => element).length > 0)
+    );
 }
 
 export function mapAllTrue() {
-  return (input$: Observable<boolean[]>) => input$.pipe(
-    map(arr => arr.findIndex(el => el != true) === -1)
-  );
+  return (input$: Observable<boolean[]>) =>
+    input$.pipe(map(arr => arr.findIndex(el => el != true) === -1));
 }
 
 export function filterTrue<T>() {
@@ -54,16 +54,18 @@ export function filterNotNull<T>() {
   return (input$: Observable<T>) => input$.pipe(filter(obj => obj != null));
 }
 
-export function logIt<T>(identifier?: string): (source: Observable<T>) => Observable<T> {
+export function logIt<T>(
+  identifier?: string
+): (source: Observable<T>) => Observable<T> {
   return function (source: Observable<T>) {
     return source.pipe(
-      tap(val => identifier ? console.log(identifier, val) : console.log(val))
-    )
-  }
+      tap(val => (identifier ? console.log(identifier, val) : console.log(val)))
+    );
+  };
 }
 
 export function distinctUntilChangedDE<T>() {
   return (source: Observable<T>) => {
-    return source.pipe(distinctUntilChanged((a, b) => equal(a, b)))
-  }
+    return source.pipe(distinctUntilChanged((a, b) => equal(a, b)));
+  };
 }

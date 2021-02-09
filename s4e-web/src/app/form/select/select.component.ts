@@ -15,13 +15,29 @@
  *
  */
 
-import { untilDestroyed } from 'ngx-take-until-destroy';
-import { Component, forwardRef, Host, Optional, SkipSelf, ViewChild, ViewEncapsulation, OnInit, OnDestroy } from '@angular/core';
-import {ControlContainer, FormControl, NG_VALUE_ACCESSOR, SelectControlValueAccessor} from '@angular/forms';
+import {
+  Component,
+  forwardRef,
+  Host,
+  Optional,
+  SkipSelf,
+  ViewChild,
+  ViewEncapsulation,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
+import {
+  ControlContainer,
+  FormControl,
+  NG_VALUE_ACCESSOR,
+  SelectControlValueAccessor
+} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
 import {DateUtilsService} from '../../utils/s4e-date/date-utils.service';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'ext-select',
   templateUrl: './select.component.html',
@@ -37,11 +53,14 @@ import {ExtFormDirective} from '../form-directive/ext-form.directive';
 })
 export class SelectComponent extends GeneralInput {
   inputFormControl: FormControl = new FormControl();
-  @ViewChild(SelectControlValueAccessor) select: SelectControlValueAccessor;
+  @ViewChild(SelectControlValueAccessor, {static: true})
+  select: SelectControlValueAccessor;
 
-  constructor(private dateUtils: DateUtilsService,
-              @Optional() extForm: ExtFormDirective,
-              @Optional() @Host() @SkipSelf() cc: ControlContainer) {
+  constructor(
+    private dateUtils: DateUtilsService,
+    @Optional() extForm: ExtFormDirective,
+    @Optional() @Host() @SkipSelf() cc: ControlContainer
+  ) {
     super(cc, extForm);
   }
 

@@ -20,30 +20,56 @@
     <div class="s4e-modal-header" i18n>Stwórz raport PDF</div>
     <div class="s4e-modal-body report" data-e2e="modal-body">
       <aside>
-        <div #reportTemplate class="report-template" style="display: block; width: 275px; height: 275px;">
-          <img #minimap style="display: block;" id="map-miniature" i18n-alt alt="Miniatura" [src]="image">
+        <div
+          #reportTemplate
+          class="report-template"
+          style="display: block; width: 275px; height: 275px"
+        >
+          <img
+            #minimap
+            style="display: block"
+            id="map-miniature"
+            i18n-alt
+            alt="Miniatura"
+            [src]="image"
+          />
         </div>
         <strong i18n>Podgląd obszaru</strong>
-        <span i18n>Przesuwając powyższą mapę możesz dostosować widok. Aby zmienić oddalenie, użyj kółka myszy.</span>
+        <span i18n
+          >Przesuwając powyższą mapę możesz dostosować widok. Aby zmienić oddalenie,
+          użyj kółka myszy.</span
+        >
 
         <ul class="report__details" *ngIf="sceneDate || productName">
           <li *ngIf="sceneDate">
             <strong>Data</strong>
-            <span>{{sceneDate}}</span>
+            <span>{{ sceneDate }}</span>
           </li>
           <li *ngIf="productName">
             <strong>Źródło</strong>
-            <span>{{productName}}</span>
+            <span>{{ productName }}</span>
           </li>
         </ul>
       </aside>
       <div class="form">
         <ul>
           <li>
-            <ext-input id="caption" data-e2e="caption" formControlName="caption" label="Tytuł" i18n-label ></ext-input>
+            <ext-input
+              id="caption"
+              data-e2e="caption"
+              formControlName="caption"
+              label="Tytuł"
+              i18n-label
+            ></ext-input>
           </li>
           <li>
-            <ext-textarea id="notes" data-e2e="notes" formControlName="notes" label="Opis" i18n-label></ext-textarea>
+            <ext-textarea
+              id="notes"
+              data-e2e="notes"
+              formControlName="notes"
+              label="Opis"
+              i18n-label
+            ></ext-textarea>
           </li>
         </ul>
       </div>
@@ -51,7 +77,8 @@
     <div class="s4e-modal-footer">
       <button
         class="button button--primary button--small"
-        type="submit" [disabled]="disabled$ | async"
+        type="submit"
+        [disabled]="disabled$ | async"
         data-e2e="btn-submit"
         (click)="accept()"
         i18n
@@ -60,7 +87,8 @@
       </button>
       <button
         class="button button--primary button--small"
-        type="submit" [disabled]="disabled$ | async"
+        type="submit"
+        [disabled]="disabled$ | async"
         data-e2e="submit-as-template-btn"
         (click)="saveAsTemplate()"
         i18n

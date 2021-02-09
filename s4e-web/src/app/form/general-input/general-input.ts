@@ -16,16 +16,34 @@
  */
 
 import {
-  AfterContentInit, ElementRef, Host, HostBinding, Input, OnDestroy, OnInit, Optional, SkipSelf,
-  ViewChild
+  AfterContentInit,
+  ElementRef,
+  Host,
+  HostBinding,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  SkipSelf,
+  ViewChild,
+  Directive
 } from '@angular/core';
 import {
-  ControlContainer, ControlValueAccessor, FormControl, FormControlName} from '@angular/forms';
-import {ControlSize, IFormControlOptions, VisualType} from '../form-control/form-control.component';
+  ControlContainer,
+  ControlValueAccessor,
+  FormControl,
+  FormControlName
+} from '@angular/forms';
+import {
+  ControlSize,
+  IFormControlOptions,
+  VisualType
+} from '../form-control/form-control.component';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
 
-
-export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, AfterContentInit {
+@Directive()
+export class GeneralInput
+  implements OnInit, OnDestroy, ControlValueAccessor, AfterContentInit {
   public fc: FormControl = new FormControl();
   public currentValue: any;
   public control: FormControlName;
@@ -35,7 +53,7 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
   public elementId: string = '';
 
   @HostBinding('class.input-sm') inputSm: boolean = false;
-  @ViewChild('input') inputRef: ElementRef;
+  @ViewChild('input', {static: true}) inputRef: ElementRef;
 
   get size(): ControlSize {
     return this.formControlOptions.size;
@@ -56,11 +74,17 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
   @Input() controlId: string;
   @Input()
   set required(value: boolean) {
-    this.formControlOptions = {...this.formControlOptions, required: value} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      required: value
+    } as IFormControlOptions;
   }
   @Input()
   set tooltipText(value: string) {
-    this.formControlOptions = {...this.formControlOptions, tooltip: value} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      tooltip: value
+    } as IFormControlOptions;
   }
   @Input() formGroupClass: string = 'form-group-sm';
   @Input() inputClass: string = '';
@@ -73,21 +97,36 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
     this.disabled = isDisabled;
   }
   @Input() set visualType(newValue: VisualType) {
-    this.formControlOptions = {...this.formControlOptions, visualType: newValue} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      visualType: newValue
+    } as IFormControlOptions;
   }
   @Input() set showErrorMessages(newValue: boolean) {
-    this.formControlOptions = {...this.formControlOptions, showErrorMessages: newValue} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      showErrorMessages: newValue
+    } as IFormControlOptions;
   }
   @Input() set labelSize(value: number) {
-    this.formControlOptions = {...this.formControlOptions, labelSize: value} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      labelSize: value
+    } as IFormControlOptions;
   }
   @Input() set label(newValue: string) {
     this._label = newValue;
-    this.formControlOptions = {...this.formControlOptions, label: newValue} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      label: newValue
+    } as IFormControlOptions;
     this.onSetLabel(newValue);
   }
   @Input('help') set _help(val: string) {
-    this.formControlOptions = {...this.formControlOptions, help: val} as IFormControlOptions;
+    this.formControlOptions = {
+      ...this.formControlOptions,
+      help: val
+    } as IFormControlOptions;
   }
 
   // propagate changes into the custom form control
@@ -95,9 +134,10 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
   protected _label = '';
   protected onSetLabel(newValue: string) {}
 
-  constructor(@Optional() @Host() @SkipSelf() protected controlContainer: ControlContainer,
-              @Optional() protected extForm: ExtFormDirective) {
-  }
+  constructor(
+    @Optional() @Host() @SkipSelf() protected controlContainer: ControlContainer,
+    @Optional() protected extForm: ExtFormDirective
+  ) {}
 
   public focus() {
     this.inputRef.nativeElement.focus();
@@ -108,18 +148,26 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
       return [];
     }
 
-    return !!this.control && Array.isArray(this.control.errors) && this.control.errors as string[]
-      || this.controlContainer.getError(this.controlId)
-      || [];
+    return (
+      (!!this.control &&
+        Array.isArray(this.control.errors) &&
+        (this.control.errors as string[])) ||
+      this.controlContainer.getError(this.controlId) ||
+      []
+    );
   }
 
   public hasErrors(): boolean {
-    if (!this.controlContainer || !!this.control && !this.control.touched) {
+    if (!this.controlContainer || (!!this.control && !this.control.touched)) {
       return false;
     }
-    return !!this.control && Array.isArray(this.control.errors) && this.control.errors.length > 0
-      || this.controlContainer.hasError(this.controlId)
-      || false;
+    return (
+      (!!this.control &&
+        Array.isArray(this.control.errors) &&
+        this.control.errors.length > 0) ||
+      this.controlContainer.hasError(this.controlId) ||
+      false
+    );
   }
 
   ngOnInit(): void {}
@@ -132,13 +180,18 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
      * to angular control, only ControlContainer. So in order to get FormControl a dirty one liner is required
      * @type {FormControl}
      */
-    const formControlNames = !!this.controlContainer && (this.controlContainer as any).directives as FormControlName[] || null;
+    const formControlNames =
+      (!!this.controlContainer &&
+        ((this.controlContainer as any).directives as FormControlName[])) ||
+      null;
     if (!!formControlNames) {
       this.control = formControlNames.find(fc => fc.valueAccessor === this);
     }
 
     if (!this.controlId && !this.control) {
-      throw Error(`controlId not specified on input (label: ${this.label}) (and formControlName is not set)`);
+      throw Error(
+        `controlId not specified on input (label: ${this.label}) (and formControlName is not set)`
+      );
     }
 
     this.calculateElementId();
@@ -169,8 +222,8 @@ export class GeneralInput implements OnInit, OnDestroy, ControlValueAccessor, Af
   }
 
   calculateElementId() {
-    const id = !!this.controlId && this.controlId
-      || !!this.control && this.control.name;
+    const id =
+      (!!this.controlId && this.controlId) || (!!this.control && this.control.name);
     this.elementId = this.idPrefix + id;
 
     this.formControlOptions = {

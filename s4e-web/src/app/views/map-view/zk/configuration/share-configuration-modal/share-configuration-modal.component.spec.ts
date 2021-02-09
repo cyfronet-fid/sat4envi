@@ -15,11 +15,17 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {EmailListValidator, ShareConfigurationModalComponent} from './share-configuration-modal.component';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
+import {
+  EmailListValidator,
+  ShareConfigurationModalComponent
+} from './share-configuration-modal.component';
 import {MapModule} from '../../../map.module';
 import {MODAL_DEF} from '../../../../../modal/modal.providers';
-import {ConfigurationModal, SHARE_CONFIGURATION_MODAL_ID} from '../state/configuration.model';
+import {
+  ConfigurationModal,
+  SHARE_CONFIGURATION_MODAL_ID
+} from '../state/configuration.model';
 import {By} from '@angular/platform-browser';
 import {FormControl} from '@ng-stack/forms';
 import {ConfigurationService} from '../state/configuration.service';
@@ -34,21 +40,24 @@ describe('ShareConfigurationModalComponent', () => {
   const mapImage = `data:image/png;base64,${base64Data}`;
   const shareURL = '/sample?a=1&b=1';
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        {
-          provide: MODAL_DEF, useValue: {
-            id: SHARE_CONFIGURATION_MODAL_ID,
-            size: 'md',
-            configurationUrl: shareURL,
-            mapImage: mapImage,
-          } as ConfigurationModal
-        }]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: SHARE_CONFIGURATION_MODAL_ID,
+              size: 'md',
+              configurationUrl: shareURL,
+              mapImage: mapImage
+            } as ConfigurationModal
+          }
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ShareConfigurationModalComponent);
@@ -61,16 +70,22 @@ describe('ShareConfigurationModalComponent', () => {
   });
 
   it('should show image from passed modal variables', () => {
-    expect((fixture.debugElement.query(By.css('#share-link')).nativeElement as HTMLLinkElement).href).toEqual(document.location.origin + shareURL);
+    expect(
+      (fixture.debugElement.query(By.css('#share-link'))
+        .nativeElement as HTMLLinkElement).href
+    ).toEqual(document.location.origin + shareURL);
   });
 
   it('should show url from passed modal variables', () => {
-    expect((fixture.debugElement.query(By.css('#map-miniature')).nativeElement as HTMLImageElement).src).toEqual(mapImage);
+    expect(
+      (fixture.debugElement.query(By.css('#map-miniature'))
+        .nativeElement as HTMLImageElement).src
+    ).toEqual(mapImage);
   });
 
   describe('invalid form', () => {
     it('should not submit', () => {
-      const spy = spyOn(TestBed.get(ConfigurationService), 'shareConfiguration');
+      const spy = spyOn(TestBed.inject(ConfigurationService), 'shareConfiguration');
       component.submit();
       expect(spy).not.toHaveBeenCalled();
     });
@@ -87,7 +102,10 @@ describe('ShareConfigurationModalComponent', () => {
     });
 
     it('should submit', () => {
-      const spy = spyOn(TestBed.get(ConfigurationService), 'shareConfiguration').and.returnValue(of(true));
+      const spy = spyOn(
+        TestBed.inject(ConfigurationService),
+        'shareConfiguration'
+      ).and.returnValue(of(true));
       component.submit();
       expect(spy).toHaveBeenCalledWith({
         caption: caption,
@@ -99,21 +117,26 @@ describe('ShareConfigurationModalComponent', () => {
     });
 
     it('if share succeeds dismiss modal', async () => {
-      spyOn(TestBed.get(ConfigurationService), 'shareConfiguration').and.returnValue(of(true));
+      spyOn(
+        TestBed.inject(ConfigurationService),
+        'shareConfiguration'
+      ).and.returnValue(of(true));
       const spy = spyOn(component, 'dismiss');
       await component.submit();
       expect(spy).toHaveBeenCalled();
     });
 
     it('if share fails do not dismiss modal', async () => {
-      spyOn(TestBed.get(ConfigurationService), 'shareConfiguration').and.returnValue(of(false));
+      spyOn(
+        TestBed.inject(ConfigurationService),
+        'shareConfiguration'
+      ).and.returnValue(of(false));
       const spy = spyOn(component, 'dismiss');
       await component.submit();
       expect(spy).not.toHaveBeenCalled();
     });
   });
 });
-
 
 describe('EmailListValidator', () => {
   it('should return null if valid', () => {
@@ -131,6 +154,8 @@ describe('EmailListValidator', () => {
   });
 
   it('should return error if single mail in string is invalid', () => {
-    expect(EmailListValidator(new FormControl<string>('a@b, invalidEmail'))).toEqual({email: true});
+    expect(
+      EmailListValidator(new FormControl<string>('a@b, invalidEmail'))
+    ).toEqual({email: true});
   });
 });

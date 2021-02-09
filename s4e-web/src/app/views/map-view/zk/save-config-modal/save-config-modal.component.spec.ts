@@ -16,7 +16,7 @@
  */
 
 import {SaveConfigModalComponent} from './save-config-modal.component';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {SAVE_CONFIG_MODAL_ID} from './save-config-modal.model';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
@@ -24,7 +24,10 @@ import {ViewConfigurationQuery} from '../../state/view-configuration/view-config
 import {ModalQuery} from '../../../../modal/state/modal.query';
 import {MapModule} from '../../map.module';
 import {By} from '@angular/platform-browser';
-import {ViewConfiguration, ViewConfigurationEx} from '../../state/view-configuration/view-configuration.model';
+import {
+  ViewConfiguration,
+  ViewConfigurationEx
+} from '../../state/view-configuration/view-configuration.model';
 import {of} from 'rxjs';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -37,39 +40,47 @@ describe('SaveConfigModalComponent', () => {
   const viewConf: ViewConfigurationEx = {
     caption: '',
     configuration: {
-      overlays: ['ov1', 'ov3'],
+      overlays: [1, 2],
       productId: 51,
       sceneId: 101,
       date: '11-11-2020',
       viewPosition: {
         zoomLevel: 10,
         centerCoordinates: [56, 67]
-      }
+      },
+      manualDate: null
     },
-    configurationNames: {overlays: ['overlay 1', 'overlay 3'], product: 'product 1', selectedDate: '11-11-2020'},
+    configurationNames: {
+      overlays: ['overlay 1', 'overlay 3'],
+      product: 'product 1',
+      selectedDate: '11-11-2020'
+    },
     thumbnail: 'data:image/png;base64,00'
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        LocalStorageTestingProvider,
-        {
-          provide: MODAL_DEF, useValue: {
-            id: SAVE_CONFIG_MODAL_ID,
-            size: 'lg',
-            viewConfiguration: viewConf
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+        providers: [
+          LocalStorageTestingProvider,
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: SAVE_CONFIG_MODAL_ID,
+              size: 'lg',
+              viewConfiguration: viewConf
+            }
           }
-        }
-      ]
-    }).compileComponents();
-  }));
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SaveConfigModalComponent);
     component = fixture.componentInstance;
-    service = TestBed.get(ViewConfigurationService);
+    service = TestBed.inject(ViewConfigurationService);
     fixture.detectChanges();
   });
 
@@ -79,7 +90,9 @@ describe('SaveConfigModalComponent', () => {
 
   it('submitting form should call accept', () => {
     const spy = spyOn(component, 'accept').and.stub();
-    fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
+    fixture.debugElement
+      .query(By.css('button[type="submit"]'))
+      .nativeElement.click();
     expect(spy).toHaveBeenCalled();
   });
 
@@ -93,7 +106,9 @@ describe('SaveConfigModalComponent', () => {
       caption: '11-11-2020'
     };
 
-    fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
+    fixture.debugElement
+      .query(By.css('button[type="submit"]'))
+      .nativeElement.click();
     expect(spy).toHaveBeenCalledWith(expected);
   });
 
@@ -110,7 +125,9 @@ describe('SaveConfigModalComponent', () => {
       caption: 'new name'
     };
 
-    fixture.debugElement.query(By.css('button[type="submit"]')).nativeElement.click();
+    fixture.debugElement
+      .query(By.css('button[type="submit"]'))
+      .nativeElement.click();
     expect(spy).toHaveBeenCalledWith(expected);
   });
 

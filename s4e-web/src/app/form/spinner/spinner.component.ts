@@ -25,9 +25,7 @@ import {Component, Input, OnInit} from '@angular/core';
 export class SpinnerComponent implements OnInit {
   @Input() isLoading: boolean = false;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

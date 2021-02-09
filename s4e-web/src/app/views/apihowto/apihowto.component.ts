@@ -23,7 +23,6 @@ import environment from '../../../environments/environment';
   templateUrl: './apihowto.component.html',
   styleUrls: ['./apihowto.component.scss']
 })
-
 export class ApihowtoComponent implements OnInit, OnDestroy {
   public readonly API_BASE: string;
   public readonly API_WMS: string;
@@ -33,9 +32,7 @@ export class ApihowtoComponent implements OnInit, OnDestroy {
     this.API_WMS = location.origin + '/wms';
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  ngOnDestroy() {
-  }
+  ngOnDestroy() {}
 }

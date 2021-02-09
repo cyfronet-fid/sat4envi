@@ -16,7 +16,11 @@
   -->
 
 <ng-container *ngIf="modal.showNavigation">
-  <button [disabled]="isFirst$ | async" (click)="previousResult()" class="modal__prev">
+  <button
+    [disabled]="isFirst$ | async"
+    (click)="previousResult()"
+    class="modal__prev"
+  >
     <i class="fa fa-chevron-left"></i>
   </button>
   <button [disabled]="isLast$ | async" (click)="nextResult()" class="modal__next">
@@ -25,22 +29,23 @@
 </ng-container>
 <s4e-generic-modal [buttonX]="true" [modalId]="registeredId" [xclicked]="xclicked">
   <div class="s4e-modal-header">
-    {{(searchResult$ | async)?.sceneKeyShort}}
+    {{ (searchResult$ | async)?.sceneKeyShort }}
   </div>
   <div class="s4e-modal-body report" data-e2e="modal-body">
     <aside *ngIf="(searchResult$ | async)?.image as imageSrc">
       <strong i18n>Quicklook</strong>
       <div class="report-template">
-        <img [attr.src]="imageSrc" width="180"/>
+        <img [attr.src]="imageSrc" width="180" />
       </div>
-
     </aside>
     <div class="form">
       <h3 i18n>Summary</h3>
       <table class="modal__table">
-        <tr *ngFor="let entry of ((searchResult$ | async)?.metadataContent | keyvalue)">
-          <td>{{entry.key}}</td>
-          <td>{{entry.value}}</td>
+        <tr
+          *ngFor="let entry of (searchResult$ | async)?.metadataContent | keyvalue"
+        >
+          <td>{{ entry.key }}</td>
+          <td>{{ entry.value }}</td>
         </tr>
       </table>
 
@@ -48,23 +53,43 @@
         <h3 i18n>Artifacts</h3>
         <table class="modal__table modal__table__artifacts">
           <tr *ngFor="let entry of (searchResult$ | async)?.artifactsWithLinks">
-            <td>{{entry.artifact}}</td>
-            <td><a [attr.href]="entry.url"
-                   (click)="interceptDownload($event, false)"
-                   data-e2e="btn--download"
-                   target="_blank" title="Pobierz Artefakt" i18n-title>
-              <i class="fa fa-download"></i>
-            </a></td>
+            <td>{{ entry.artifact }}</td>
+            <td>
+              <a
+                [attr.href]="entry.url"
+                (click)="interceptDownload($event, false)"
+                data-e2e="btn--download"
+                target="_blank"
+                title="Pobierz Artefakt"
+                i18n-title
+              >
+                <i class="fa fa-download"></i>
+              </a>
+            </td>
           </tr>
         </table>
       </ng-container>
     </div>
   </div>
   <div class="s4e-modal-footer">
-    <button class="button button--cancel button--small" type="button" (click)="dismiss()" i18n>Zamknij</button>
-    <a *ngIf="modal.mode === 'sentinel'"
-       [attr.href]="(searchResult$ | async)?.url" target="_blank"
-       (click)="interceptDownload($event)"
-       class="button button--secondary button--small" data-e2e="btn--download-all" type="button" i18n>Pobierz Plik</a>
+    <button
+      class="button button--cancel button--small"
+      type="button"
+      (click)="dismiss()"
+      i18n
+    >
+      Zamknij
+    </button>
+    <a
+      *ngIf="modal.mode === 'sentinel'"
+      [attr.href]="(searchResult$ | async)?.url"
+      target="_blank"
+      (click)="interceptDownload($event)"
+      class="button button--secondary button--small"
+      data-e2e="btn--download-all"
+      type="button"
+      i18n
+      >Pobierz Plik</a
+    >
   </div>
 </s4e-generic-modal>

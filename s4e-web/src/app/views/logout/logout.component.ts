@@ -22,9 +22,7 @@ import {Component, OnInit} from '@angular/core';
   template: ''
 })
 export class LogoutComponent implements OnInit {
-
-  constructor(private _sessionService: SessionService) {
-  }
+  constructor(private _sessionService: SessionService) {}
 
   ngOnInit() {
     this._sessionService.logout();

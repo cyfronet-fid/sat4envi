@@ -16,21 +16,31 @@
  */
 
 import {
-  ComponentFactory, ComponentFactoryResolver, ComponentRef, Directive, ElementRef, Input, OnInit, Renderer2, ViewContainerRef
+  ComponentFactory,
+  ComponentFactoryResolver,
+  ComponentRef,
+  Directive,
+  ElementRef,
+  Input,
+  OnInit,
+  Renderer2,
+  ViewContainerRef
 } from '@angular/core';
 import {SpinnerComponent} from '../spinner/spinner.component';
 
 @Directive({
   selector: '[extForm]'
 })
-export class ExtFormDirective implements OnInit{
+export class ExtFormDirective implements OnInit {
   spinnerFct: ComponentFactory<SpinnerComponent>;
-  spinnerRef: ComponentRef<SpinnerComponent>|null = null;
+  spinnerRef: ComponentRef<SpinnerComponent> | null = null;
 
-  constructor(private elementRef: ElementRef,
-              private renderer: Renderer2,
-              private cfr: ComponentFactoryResolver,
-              private vcr: ViewContainerRef) {
+  constructor(
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
+    private cfr: ComponentFactoryResolver,
+    private vcr: ViewContainerRef
+  ) {
     this.spinnerFct = this.cfr.resolveComponentFactory(SpinnerComponent);
   }
 
@@ -41,15 +51,14 @@ export class ExtFormDirective implements OnInit{
   @Input() controlIdPrefix: string = '';
   @Input() labelSize: number = 4;
   @Input() set isLoading(isLoading: boolean) {
-    if (isLoading)
-    {
+    if (isLoading) {
       this.spinnerRef = this.vcr.createComponent(this.spinnerFct);
       // this.renderer.appendChild(this.elementRef.nativeElement, this.spinnerFct.create(this.vcr.injector))
       // this.viewContainer.clear();
       // If condition is true add template to DOM
       // this.viewContainer.createComponent(this.cfr.resolveComponentFactory(SpinnerComponent));
       // this.viewContainer.createEmbeddedView(this.templateRef);
-    } else if(this.spinnerRef !== null) {
+    } else if (this.spinnerRef !== null) {
       this.spinnerRef.destroy();
       // Else remove template from DOM
       // this.viewContainer.clear();

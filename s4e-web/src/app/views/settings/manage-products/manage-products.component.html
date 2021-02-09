@@ -17,8 +17,7 @@
 
 <ul class="content__tabs">
   <li>
-    <a [routerLink]="['/settings/institution']"
-       queryParamsHandling="merge">
+    <a [routerLink]="['/settings/institution']" queryParamsHandling="merge">
       Profil instytucji
     </a>
   </li>
@@ -28,14 +27,15 @@
     </a>
   </li>
   <li>
-    <a [routerLink]="['/settings/institution-wms-overlays']" data-e2e="layer"
-       queryParamsHandling="merge">
+    <a
+      [routerLink]="['/settings/institution-wms-overlays']"
+      data-e2e="layer"
+      queryParamsHandling="merge"
+    >
       Warstwy WMS dla instytucji
     </a>
   </li>
-  <li class="active">
-    Zarządzaj produktami
-  </li>
+  <li class="active">Zarządzaj produktami</li>
 </ul>
 
 <s4e-generic-list-view
@@ -47,7 +47,8 @@
   <ng-container caption i18n>Zarządzaj produktami instytucji</ng-container>
   <ng-container search-label i18n>Szukaj ludzi:</ng-container>
   <ng-container description>
-    W tym miejscu masz możliwość włączenia/wyłączenia widoczności produktu dla członków instytucji
+    W tym miejscu masz możliwość włączenia/wyłączenia widoczności produktu dla
+    członków instytucji
   </ng-container>
   <ng-container table-header>
     <th i18n>Nazwa</th>

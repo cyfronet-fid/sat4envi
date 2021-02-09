@@ -22,12 +22,12 @@ import {ReportTemplateStore} from './report-template.store';
 import {handleHttpRequest$} from '../../../../../common/store.util';
 import {ReportTemplate} from './report-template.model';
 import {finalize, switchMap, tap} from 'rxjs/operators';
-import {NotificationService} from 'notifications';
 import {ProductQuery} from '../../../state/product/product.query';
 import {OverlayQuery} from '../../../state/overlay/overlay.query';
 import {ProductService} from '../../../state/product/product.service';
 import {OverlayService} from '../../../state/overlay/overlay.service';
 import {ProductStore} from '../../../state/product/product.store';
+import {NotificationService} from '../../../../../notifications/state/notification.service';
 
 @Injectable({providedIn: 'root'})
 export class ReportTemplateService {
@@ -47,24 +47,24 @@ export class ReportTemplateService {
   ) {}
 
   public get$() {
-    return this._http.get<ReportTemplate[]>(ReportTemplateService.URL_BASE)
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap((reportTemplates: ReportTemplate[]) => this._store.set(reportTemplates))
-      );
+    return this._http.get<ReportTemplate[]>(ReportTemplateService.URL_BASE).pipe(
+      handleHttpRequest$(this._store),
+      tap((reportTemplates: ReportTemplate[]) => this._store.set(reportTemplates))
+    );
   }
 
   public delete$(reportTemplate: ReportTemplate) {
     const url = ReportTemplateService.URL_BASE + '/' + reportTemplate.uuid;
-    return this._http.delete(url)
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap(() => this._store.remove(reportTemplate.uuid)),
-        tap(() => this._notificationService.addGeneral({
+    return this._http.delete(url).pipe(
+      handleHttpRequest$(this._store),
+      tap(() => this._store.remove(reportTemplate.uuid)),
+      tap(() =>
+        this._notificationService.addGeneral({
           content: 'Szablon raportu został usunięty',
           type: 'success'
-        }))
-      );
+        })
+      )
+    );
   }
 
   public create$(reportTemplate: Partial<ReportTemplate>) {
@@ -76,26 +76,30 @@ export class ReportTemplateService {
     const activeOverlaysIds = this._overlayQuery.getActiveId();
     reportTemplate = {...reportTemplate, overlayIds: activeOverlaysIds};
 
-    return this._http.post(ReportTemplateService.URL_BASE, reportTemplate)
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap((createdReportTemplate: ReportTemplate) => this._store.add(createdReportTemplate)),
-        tap(() => this._notificationService.addGeneral({
+    return this._http.post(ReportTemplateService.URL_BASE, reportTemplate).pipe(
+      handleHttpRequest$(this._store),
+      tap((createdReportTemplate: ReportTemplate) =>
+        this._store.add(createdReportTemplate)
+      ),
+      tap(() =>
+        this._notificationService.addGeneral({
           content: 'Szablon raportu został zapisany',
           type: 'success'
-        }))
-      );
+        })
+      )
+    );
   }
 
   public load$(reportTemplate: ReportTemplate) {
     this._overlayService.setAllActive(reportTemplate.overlayIds as any[]);
 
-    const activeProductId = !!reportTemplate.productId ? reportTemplate.productId : null;
-    return this._productService.setActive$(activeProductId)
-      .pipe(
-        switchMap(() => this._productService.getLastAvailableScene$()),
-        finalize(() => this._store.setActive(reportTemplate.uuid))
-      );
+    const activeProductId = !!reportTemplate.productId
+      ? reportTemplate.productId
+      : null;
+    return this._productService.setActive$(activeProductId).pipe(
+      switchMap(() => this._productService.getLastAvailableScene$()),
+      finalize(() => this._store.setActive(reportTemplate.uuid))
+    );
   }
 
   public setActive(active: string | null) {

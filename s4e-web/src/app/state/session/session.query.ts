@@ -26,7 +26,11 @@ const ROLE_INSTANCE_ADMIN = 'INST_ADMIN';
 const ROLE_INSTANCE_MANAGER = 'INST_MANAGER';
 const ROLE_GROUP_MANAGER = 'GROUP_MANAGER';
 
-const MANAGER_ROLES = [ROLE_INSTANCE_ADMIN, ROLE_INSTANCE_MANAGER, ROLE_GROUP_MANAGER];
+const MANAGER_ROLES = [
+  ROLE_INSTANCE_ADMIN,
+  ROLE_INSTANCE_MANAGER,
+  ROLE_GROUP_MANAGER
+];
 
 function hasAnyManagerRole(roles: Role[]) {
   return roles.some(role => MANAGER_ROLES.includes(role.role));
@@ -53,30 +57,43 @@ export class SessionQuery extends Query<Session> {
   }
 
   selectPakMember() {
-    return this.select('authorities')
-      .pipe(map(authorities => authorities.some(authority => authority === 'ROLE_MEMBER_PAK')));
+    return this.select('authorities').pipe(
+      map(authorities =>
+        authorities.some(authority => authority === 'ROLE_MEMBER_PAK')
+      )
+    );
   }
 
   canDeleteInstitution() {
-    return this.getValue().authorities.includes('OP_INSTITUTION_DELETE') || this.getValue().admin;
+    return (
+      this.getValue().authorities.includes('OP_INSTITUTION_DELETE') ||
+      this.getValue().admin
+    );
   }
   canGrantInstitutionDeleteAuthority() {
-    return this.getValue().authorities.includes('OP_GRANT_OP_INSTITUTION_DELETE') || this.getValue().admin;
+    return (
+      this.getValue().authorities.includes('OP_GRANT_OP_INSTITUTION_DELETE') ||
+      this.getValue().admin
+    );
   }
 
   hasOnlyGroupMemberRole() {
     const roles = this.getValue().roles;
-    return roles.length === 1 && roles.some((role) => role.role === ROLE_GROUP_MANAGER);
+    return (
+      roles.length === 1 && roles.some(role => role.role === ROLE_GROUP_MANAGER)
+    );
   }
   getAdministratorInstitutionsSlugs() {
     const institutionsRolesMap = this._getInstitutionsRolesMap();
-    return Object.keys(institutionsRolesMap)
-      .filter(institutionSlug => hasAnyManagerRole(institutionsRolesMap[institutionSlug]));
+    return Object.keys(institutionsRolesMap).filter(institutionSlug =>
+      hasAnyManagerRole(institutionsRolesMap[institutionSlug])
+    );
   }
   getMemberInstitutionSlugs() {
     const institutionsRolesMap = this._getInstitutionsRolesMap();
-    return Object.keys(institutionsRolesMap)
-      .filter(institutionSlug => !hasAnyManagerRole(institutionsRolesMap[institutionSlug]));
+    return Object.keys(institutionsRolesMap).filter(
+      institutionSlug => !hasAnyManagerRole(institutionsRolesMap[institutionSlug])
+    );
   }
 
   public selectMemberZK(): Observable<boolean> {
@@ -84,18 +101,23 @@ export class SessionQuery extends Query<Session> {
   }
 
   public selectCanSeeInstitutions(): Observable<boolean> {
-    return this.select().pipe(map(state => state.admin || hasAnyManagerRole(state.roles)));
+    return this.select().pipe(
+      map(state => state.admin || hasAnyManagerRole(state.roles))
+    );
   }
 
   private _getInstitutionsRolesMap() {
-    return !!this.getValue().roles && this.getValue().roles
-      .reduce((permissions, role) => {
+    return (
+      (!!this.getValue().roles &&
+        this.getValue().roles.reduce((permissions, role) => {
           return Object.keys(permissions).includes(role.institutionSlug)
-              ? {...permissions, [role.institutionSlug]: [...permissions[role.institutionSlug], role]}
-              : {...permissions, [role.institutionSlug]: [role]};
-        },
-        {}
-      )
-      || [];
+            ? {
+                ...permissions,
+                [role.institutionSlug]: [...permissions[role.institutionSlug], role]
+              }
+            : {...permissions, [role.institutionSlug]: [role]};
+        }, {})) ||
+      []
+    );
   }
 }

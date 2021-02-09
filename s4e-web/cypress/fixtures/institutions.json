@@ -1,40 +1,40 @@
 [
-{
-  "name": "Zarządzenie kryzysowe - PL",
-  "city": "Warszawa"
-},
-{
-  "name": "Zarządzanie kryzysowe - Mazowieckie",
-  "city": "Warszawa"
-},
-{
-  "name": "Zarządzanie kryzysowe - Warszawa",
-  "city": "Kraków"
-},
-{
-  "name": "Zarządzanie kryzysowe - Małopolska",
-  "city": "Kraków"
-},
-{
-  "name": "Zarządzanie kryzysowe - Kraków",
-  "city": "Kraków"
-},
-{
-  "name": "Zarzadzanie Kryzysowe - Nowa instytucja",
-  "address": "test",
-  "postalCode": "12-345",
-  "city": "test",
-  "phone": "123 456 789",
-  "secondaryPhone": "123 456 789",
-  "adminsEmails": "test@mail.pl"
-},
-{
-  "name": "Zarzadzanie kryzysowe - Podrzedna instytucja",
-  "address": "test",
-  "postalCode": "12-345",
-  "city": "test",
-  "phone": "123 456 789",
-  "secondaryPhone": "123 456 789",
-  "adminsEmails": "test@mail.pl, test2@mail.pl"
-}
+  {
+    "name": "Zarządzenie kryzysowe - PL",
+    "city": "Warszawa"
+  },
+  {
+    "name": "Zarządzanie kryzysowe - Mazowieckie",
+    "city": "Warszawa"
+  },
+  {
+    "name": "Zarządzanie kryzysowe - Warszawa",
+    "city": "Kraków"
+  },
+  {
+    "name": "Zarządzanie kryzysowe - Małopolska",
+    "city": "Kraków"
+  },
+  {
+    "name": "Zarządzanie kryzysowe - Kraków",
+    "city": "Kraków"
+  },
+  {
+    "name": "Zarzadzanie Kryzysowe - Nowa instytucja",
+    "address": "test",
+    "postalCode": "12-345",
+    "city": "test",
+    "phone": "123 456 789",
+    "secondaryPhone": "123 456 789",
+    "adminsEmails": "test@mail.pl"
+  },
+  {
+    "name": "Zarzadzanie kryzysowe - Podrzedna instytucja",
+    "address": "test",
+    "postalCode": "12-345",
+    "city": "test",
+    "phone": "123 456 789",
+    "secondaryPhone": "123 456 789",
+    "adminsEmails": "test@mail.pl, test2@mail.pl"
+  }
 ]

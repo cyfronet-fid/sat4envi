@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {SelectComponent} from './select.component';
 import {Component} from '@angular/core';
 import {By} from '@angular/platform-browser';
@@ -25,11 +25,12 @@ import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
 @Component({
   selector: 'test-select-container',
   styles: [],
-  template: '<form [formGroup]="form" novalidate extForm>' +
-  '<ext-select formControlName="select">' +
-  '<option *ngFor="let option of options" [ngValue]="option">{{option.id}}</option>' +
-  '</ext-select>' +
-  '</form>'
+  template:
+    '<form [formGroup]="form" novalidate extForm>' +
+    '<ext-select formControlName="select">' +
+    '<option *ngFor="let option of options" [ngValue]="option">{{option.id}}</option>' +
+    '</ext-select>' +
+    '</form>'
 })
 class TestSelectContainerComponent {
   form: FormGroup = new FormGroup({select: new FormControl(null)});
@@ -43,11 +44,12 @@ class TestSelectContainerComponent {
 @Component({
   selector: 'test-normal-select-container',
   styles: [],
-  template: '<form [formGroup]="form">' +
-  '<select formControlName="select">' +
-  '<option *ngFor="let option of options" [ngValue]="option">{{option.id}}</option>' +
-  '</select>' +
-  '</form>'
+  template:
+    '<form [formGroup]="form">' +
+    '<select formControlName="select">' +
+    '<option *ngFor="let option of options" [ngValue]="option">{{option.id}}</option>' +
+    '</select>' +
+    '</form>'
 })
 class TestNormalSelectContainerComponent {
   form: FormGroup = new FormGroup({select: new FormControl(null)});
@@ -56,17 +58,17 @@ class TestNormalSelectContainerComponent {
 
 describe('SelectComponent', () => {
   describe('UnitTests', () => {
-
     let component: SelectComponent;
     let fixture: ComponentFixture<SelectComponent>;
 
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestNormalSelectContainerComponent]
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [S4EFormsModule, ReactiveFormsModule],
+          declarations: [TestNormalSelectContainerComponent]
+        }).compileComponents();
       })
-        .compileComponents();
-    }));
+    );
 
     beforeEach(() => {
       fixture = TestBed.createComponent(SelectComponent);
@@ -84,13 +86,14 @@ describe('SelectComponent', () => {
     let component: TestNormalSelectContainerComponent;
     let fixture: ComponentFixture<TestNormalSelectContainerComponent>;
 
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestNormalSelectContainerComponent]
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [S4EFormsModule, ReactiveFormsModule],
+          declarations: [TestNormalSelectContainerComponent]
+        }).compileComponents();
       })
-        .compileComponents();
-    }));
+    );
 
     beforeEach(async () => {
       fixture = TestBed.createComponent(TestNormalSelectContainerComponent);
@@ -108,13 +111,14 @@ describe('SelectComponent', () => {
     let component: TestSelectContainerComponent;
     let fixture: ComponentFixture<TestSelectContainerComponent>;
 
-    beforeEach(async(() => {
-      TestBed.configureTestingModule({
-        imports: [S4EFormsModule, ReactiveFormsModule],
-        declarations: [TestSelectContainerComponent]
+    beforeEach(
+      waitForAsync(() => {
+        TestBed.configureTestingModule({
+          imports: [S4EFormsModule, ReactiveFormsModule],
+          declarations: [TestSelectContainerComponent]
+        }).compileComponents();
       })
-        .compileComponents();
-    }));
+    );
 
     beforeEach(async () => {
       fixture = TestBed.createComponent(TestSelectContainerComponent);
@@ -146,7 +150,9 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      expect(fixture.debugElement.query(By.css('select')).nativeElement.value).toEqual('1: Object');
+      expect(
+        fixture.debugElement.query(By.css('select')).nativeElement.value
+      ).toEqual('1: Object');
     });
 
     it('should have select.disabled set when disabled', async () => {
@@ -154,7 +160,10 @@ describe('SelectComponent', () => {
       fixture.detectChanges();
       await fixture.whenStable();
 
-      expect((fixture.debugElement.query(By.css('select')).nativeElement as HTMLElement).getAttribute('disabled')).not.toBeUndefined();
+      expect(
+        (fixture.debugElement.query(By.css('select'))
+          .nativeElement as HTMLElement).getAttribute('disabled')
+      ).not.toBeUndefined();
     });
   });
 });

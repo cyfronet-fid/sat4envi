@@ -21,7 +21,7 @@ import {FormControl} from '@angular/forms';
 describe('emailListValidator', () => {
   function validateValue(value: string) {
     const control = new FormControl(value);
-    return emailListValidator(control)
+    return emailListValidator(control);
   }
 
   it('should work', () => {

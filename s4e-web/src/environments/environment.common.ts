@@ -7,9 +7,9 @@ export const commonEnvironmentVariables = {
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
   /*
-  * IMPORTANT!!! Too large frequency can provide to drastically slow down of application
-  * Every nth MS UI will send request to API for latest scene
-  * */
+   * IMPORTANT!!! Too large frequency can provide to drastically slow down of application
+   * Every nth MS UI will send request to API for latest scene
+   * */
   liveSceneUpdateRateInMs: 60000
 };
 

@@ -67,7 +67,7 @@ module.exports = (on, config) => {
         }, timeout);
       });
 
-      return promise
+      return promise;
     }
   });
 };

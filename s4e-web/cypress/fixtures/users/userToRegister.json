@@ -1,10 +1,10 @@
 {
-    "name":"User",
-    "surname":"User",
-    "email":"userMember@mail.pl",
-    "password":"12341234",
-    "repeatPassword": "12341234",
-    "domain":"Klimat",
-    "usage":"W celach edukacyjnych",
-    "country":"Polska" 
+  "name": "User",
+  "surname": "User",
+  "email": "userMember@mail.pl",
+  "password": "12341234",
+  "repeatPassword": "12341234",
+  "domain": "Klimat",
+  "usage": "W celach edukacyjnych",
+  "country": "Polska"
 }

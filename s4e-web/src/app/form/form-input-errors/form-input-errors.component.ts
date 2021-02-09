@@ -24,15 +24,13 @@ import {HashMap} from '@datorama/akita';
   styleUrls: ['./form-input-errors.component.scss']
 })
 export class FormInputErrorsComponent implements OnInit {
-
   @Input() set errorList(value: HashMap<any>) {
     this.errors = Object.entries(value).map(([key, value]) => ({key, value}));
   }
 
-  public errors: {key: string, value: any}[];
+  public errors: {key: string; value: any}[];
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

@@ -23,17 +23,8 @@ import {ShareModule} from '../../common/share.module';
 import {UtilsModule} from '../../utils/utils.module';
 
 @NgModule({
-  declarations: [
-    ActivateComponent,
-  ],
-  imports: [
-    CommonModule,
-    ShareModule,
-    UtilsModule
-  ],
-  exports: [
-    ActivateComponent
-  ]
+  declarations: [ActivateComponent],
+  imports: [CommonModule, ShareModule, UtilsModule],
+  exports: [ActivateComponent]
 })
-export class ActivateModule {
-}
+export class ActivateModule {}

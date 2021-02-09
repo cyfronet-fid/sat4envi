@@ -16,8 +16,15 @@
  */
 
 import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {FormModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
@@ -37,32 +44,38 @@ import {ReportTemplateService} from '../state/report-templates/report-template.s
 import {ReportTemplateQuery} from '../state/report-templates/report-template.query';
 import {ReportTemplate} from '../state/report-templates/report-template.model';
 import {Legend} from '../../state/legend/legend.model';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
-
+@UntilDestroy()
 @Component({
   selector: 's4e-report-modal',
   templateUrl: './report-modal.component.html',
   styleUrls: ['./report-modal.component.scss']
 })
-export class ReportModalComponent extends FormModalComponent<'report'> implements OnInit, AfterViewInit, OnDestroy {
+export class ReportModalComponent
+  extends FormModalComponent<'report'>
+  implements OnInit, AfterViewInit, OnDestroy {
   public image: string = '';
-  private legend: Legend|null = null;
+  private legend: Legend | null = null;
   private pointResolution: number;
   public disabled$: Observable<boolean>;
   public reportGenerator: ReportGenerator;
   public productName: string | null = null;
   public sceneDate: string | null = null;
-  @ViewChild('reportTemplate', {read: ElementRef}) reportHTML: ElementRef;
-  @ViewChild('minimap', {read: ElementRef}) minimap: ElementRef;
+  @ViewChild('reportTemplate', {read: ElementRef, static: true})
+  reportHTML: ElementRef;
+  @ViewChild('minimap', {read: ElementRef, static: true}) minimap: ElementRef;
   private cropper: Cropper = null;
 
-  constructor(http: HttpClient,
-              modalService: ModalService,
-              @Inject(MODAL_DEF) modal: ReportModal,
-              modalQuery: ModalQuery,
-              fm: AkitaNgFormsManager<FormState>,
-              private _reportTemplateService: ReportTemplateService,
-              private _reportTemplateQuery: ReportTemplateQuery) {
+  constructor(
+    http: HttpClient,
+    modalService: ModalService,
+    @Inject(MODAL_DEF) modal: ReportModal,
+    modalQuery: ModalQuery,
+    fm: AkitaNgFormsManager<FormState>,
+    private _reportTemplateService: ReportTemplateService,
+    private _reportTemplateQuery: ReportTemplateQuery
+  ) {
     super(fm, modalService, modalQuery, modal.id, 'report');
 
     assertModalType(isReportModal, modal);
@@ -80,8 +93,14 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
 
   makeForm(): FormGroup<FormState['report']> {
     return new FormGroup<ReportForm>({
-      caption: new FormControl<string>(null, [Validators.maxLength(80), Validators.required]),
-      notes: new FormControl<string>(null, [Validators.maxLength(740), Validators.required]),
+      caption: new FormControl<string>(null, [
+        Validators.maxLength(80),
+        Validators.required
+      ]),
+      notes: new FormControl<string>(null, [
+        Validators.maxLength(740),
+        Validators.required
+      ])
     });
   }
 
@@ -89,36 +108,37 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
     // noinspection JSIgnoredPromiseFromCall
     this.reportGenerator.loadAssets(this.legend && this.legend.url);
     super.ngOnInit();
-    this.disabled$ = combineLatest([this.reportGenerator.working$, this.reportGenerator.loading$])
-      .pipe(map(([w, l]) => w || l));
+    this.disabled$ = combineLatest([
+      this.reportGenerator.working$,
+      this.reportGenerator.loading$
+    ]).pipe(map(([w, l]) => w || l));
 
-    this._reportTemplateQuery.selectActiveId()
+    this._reportTemplateQuery
+      .selectActiveId()
       .pipe(
         untilDestroyed(this),
         map(() => this._reportTemplateQuery.getActive() as ReportTemplate),
         filter(activeTemplate => !!activeTemplate)
       )
       .subscribe(activeTemplate => {
-          const {caption, notes} = activeTemplate;
-          this.form.setValue({caption, notes});
-        }
-      );
+        const {caption, notes} = activeTemplate;
+        this.form.setValue({caption, notes});
+      });
   }
 
   ngAfterViewInit(): void {
-    this.cropper = new Cropper(this.minimap.nativeElement,
-      {
-        aspectRatio: 1,
-        viewMode: 3,
-        dragMode: 'move',
-        responsive: true,
-        autoCrop: true,
-        autoCropArea: 1,
-        cropBoxMovable: false,
-        cropBoxResizable: false,
-        minCropBoxHeight: 2048,
-        minCropBoxWidth: 2048
-      });
+    this.cropper = new Cropper(this.minimap.nativeElement, {
+      aspectRatio: 1,
+      viewMode: 3,
+      dragMode: 'move',
+      responsive: true,
+      autoCrop: true,
+      autoCropArea: 1,
+      cropBoxMovable: false,
+      cropBoxResizable: false,
+      minCropBoxHeight: 2048,
+      minCropBoxWidth: 2048
+    });
     this.cropper.replace(this.image);
   }
 
@@ -158,7 +178,8 @@ export class ReportModalComponent extends FormModalComponent<'report'> implement
       return;
     }
 
-    this._reportTemplateService.create$(this.form.value)
+    this._reportTemplateService
+      .create$(this.form.value)
       .pipe(untilDestroyed(this))
       .subscribe();
   }

@@ -22,9 +22,7 @@ import {ActivateState} from './activate.model';
 
 @Injectable({providedIn: 'root'})
 export class ActivateQuery extends Query<ActivateState> {
-
   constructor(protected store: ActivateStore) {
     super(store);
   }
-
 }

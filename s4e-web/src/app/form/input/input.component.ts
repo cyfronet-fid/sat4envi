@@ -16,19 +16,25 @@
  */
 
 import {
-  Component, ElementRef, forwardRef, Input, Optional, ViewChild,
+  Component,
+  ElementRef,
+  forwardRef,
+  Input,
+  Optional,
+  ViewChild,
   ViewEncapsulation
 } from '@angular/core';
 import {ControlContainer, NG_VALUE_ACCESSOR, AbstractControl} from '@angular/forms';
 import {GeneralInput} from '../general-input/general-input';
 import {ExtFormDirective} from '../form-directive/ext-form.directive';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 const SPECIAL_TO_REGULAR_TYPES = {
   date: 'text',
   percent: 'number'
 };
 
+@UntilDestroy()
 @Component({
   selector: 'ext-input',
   templateUrl: './input.component.html',
@@ -47,7 +53,7 @@ export class InputComponent extends GeneralInput {
   public controlType: string = 'text';
 
   @Input() public css: string = '';
-  @ViewChild('input') inputRef: ElementRef;
+  @ViewChild('input', {static: true}) inputRef: ElementRef;
 
   focus(): void {
     this.inputRef.nativeElement.focus();
@@ -56,12 +62,17 @@ export class InputComponent extends GeneralInput {
   @Input('type')
   set type(type: string) {
     this.inputType = type;
-    this.controlType = !!SPECIAL_TO_REGULAR_TYPES[type] && SPECIAL_TO_REGULAR_TYPES[type] || type;
+    this.controlType =
+      (!!SPECIAL_TO_REGULAR_TYPES[type] && SPECIAL_TO_REGULAR_TYPES[type]) || type;
   }
 
   @Input('placeholder') public _placeholder: string;
 
-  constructor(cc: ControlContainer, @Optional() extForm: ExtFormDirective, private ref: ElementRef) {
+  constructor(
+    cc: ControlContainer,
+    @Optional() extForm: ExtFormDirective,
+    private ref: ElementRef
+  ) {
     super(cc, extForm);
   }
 
@@ -73,7 +84,7 @@ export class InputComponent extends GeneralInput {
   }
 
   onChange(e: Event, value: any) {
-    if(this.controlType === 'number') {
+    if (this.controlType === 'number') {
       return super.onChange(e, !value ? undefined : Number(value));
     }
     return super.onChange(e, value);

@@ -23,12 +23,16 @@ import {NgStackFormsModule} from '@ng-stack/forms';
 import {S4EFormsModule} from '../../form/form.module';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {UtilsModule} from '../../utils/utils.module';
+import {ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [OverlayListComponent],
   imports: [
     CommonModule,
     ModalModule,
+    HttpClientModule,
+    ReactiveFormsModule,
     NgStackFormsModule,
     S4EFormsModule,
     FontAwesomeModule,
@@ -36,4 +40,4 @@ import {UtilsModule} from '../../utils/utils.module';
   ],
   exports: [OverlayListComponent]
 })
-export class OverlayListModule { }
+export class OverlayListModule {}

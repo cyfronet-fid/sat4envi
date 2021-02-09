@@ -15,7 +15,7 @@
  *
  */
 
-import { OverlayStore } from './overlay.store';
+import {OverlayStore} from './overlay.store';
 
 describe('OverlayStore', () => {
   let store: OverlayStore;
@@ -27,5 +27,4 @@ describe('OverlayStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

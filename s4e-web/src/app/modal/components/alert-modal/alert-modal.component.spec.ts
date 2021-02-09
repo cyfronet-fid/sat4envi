@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {AlertModalComponent} from './alert-modal.component';
 import {By} from '@angular/platform-browser';
 import {ModalModule} from '../../modal.module';
@@ -32,19 +32,28 @@ describe('AlertModalComponent', () => {
   const content = 'CNT';
   const title = 'TITLE';
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ModalModule],
-      providers: [
-        {provide: MODAL_DEF, useValue: createModal({id: ALERT_MODAL_ID, size: 'sm', content, title} as AlertModal)}
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ModalModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: createModal({
+              id: ALERT_MODAL_ID,
+              size: 'sm',
+              content,
+              title
+            } as AlertModal)
+          }
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AlertModalComponent);
-    service = TestBed.get(ModalService);
+    service = TestBed.inject(ModalService);
     component = fixture.componentInstance;
     compiled = fixture.debugElement.nativeElement;
     fixture.detectChanges();

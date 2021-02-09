@@ -15,13 +15,23 @@
  *
  */
 
-import {Component, ContentChild, EventEmitter, Input, OnDestroy, OnInit, Output, TemplateRef} from '@angular/core';
+import {
+  Component,
+  ContentChild,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  TemplateRef
+} from '@angular/core';
 import {FormArray, FormControl} from '@ng-stack/forms';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {ID} from '@datorama/akita';
 import {Subscription} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-generic-list-view',
   templateUrl: './generic-list-view.component.html',
@@ -29,13 +39,18 @@ import {debounceTime} from 'rxjs/operators';
 })
 export class GenericListViewComponent implements OnInit, OnDestroy {
   @ContentChild(TemplateRef) tableRow: TemplateRef<any>;
-  @Input() error: any|null = null;
+  @Input() error: any | null = null;
   @Input() loading: boolean = true;
   @Input() itemIdFunction: (any) => ID = (item: any) => item.id;
-  @Input() itemSearchFunction: (item, query) => boolean = (item: any, query: string) => Object.values(item)
-    .filter(fieldVal => typeof fieldVal == 'string')
-    .map((fieldVal: string) => fieldVal.toLocaleLowerCase())
-    .join(';').indexOf(query.toLocaleLowerCase()) >= 0;
+  @Input() itemSearchFunction: (item, query) => boolean = (
+    item: any,
+    query: string
+  ) =>
+    Object.values(item)
+      .filter(fieldVal => typeof fieldVal == 'string')
+      .map((fieldVal: string) => fieldVal.toLocaleLowerCase())
+      .join(';')
+      .indexOf(query.toLocaleLowerCase()) >= 0;
 
   protected _originalItems: any[] = [];
   items: any[] = [];
@@ -43,21 +58,29 @@ export class GenericListViewComponent implements OnInit, OnDestroy {
     this._originalItems = val;
     this.items = this._originalItems;
 
-    if(this.searchable && this.offlineSearch && this.queryFc.value.length > 0) {
-      this.items = this._originalItems.filter(item => this.itemSearchFunction(item, this.queryFc.value));
+    if (this.searchable && this.offlineSearch && this.queryFc.value.length > 0) {
+      this.items = this._originalItems.filter(item =>
+        this.itemSearchFunction(item, this.queryFc.value)
+      );
     }
 
-    if(this.selectable) {
+    if (this.selectable) {
       if (this._itemSelectSub) {
         this._itemSelectSub.unsubscribe();
       }
 
-      this.itemSelectFc = new FormArray(val.map(item => new FormControl<boolean>(false)));
-      this._itemSelectSub = this.itemSelectFc.valueChanges.subscribe((selectedItems: boolean[]) => {
-        const selected = selectedItems.map((val, i) => val && this.itemIdFunction(this.items[i])).filter(v => !!v);
-        this.onselect.emit(selected);
-        this.selectAllFc.setValue(selected.length > 0, {emitEvent: false});
-      });
+      this.itemSelectFc = new FormArray(
+        val.map(item => new FormControl<boolean>(false))
+      );
+      this._itemSelectSub = this.itemSelectFc.valueChanges.subscribe(
+        (selectedItems: boolean[]) => {
+          const selected = selectedItems
+            .map((val, i) => val && this.itemIdFunction(this.items[i]))
+            .filter(v => !!v);
+          this.onselect.emit(selected);
+          this.selectAllFc.setValue(selected.length > 0, {emitEvent: false});
+        }
+      );
     }
   }
 
@@ -73,20 +96,27 @@ export class GenericListViewComponent implements OnInit, OnDestroy {
 
   private _itemSelectSub: Subscription = null;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.selectAllFc.valueChanges.pipe(untilDestroyed(this)).subscribe(value => {
       this.itemSelectFc.setValue(this.itemSelectFc.controls.map(() => value));
     });
 
-    this.queryFc.valueChanges.pipe(debounceTime(250), untilDestroyed(this)).subscribe(value => {
-      if(this.offlineSearch) {
-        this.items = value.length > 0 ? this._originalItems.filter(item => this.itemSearchFunction(item, value)) : this._originalItems;
-      } else {
-        this.onquery.emit(value);
-      }
-    });
+    this.queryFc.valueChanges
+      .pipe(debounceTime(250), untilDestroyed(this))
+      .subscribe(value => {
+        if (this.offlineSearch) {
+          this.items =
+            value.length > 0
+              ? this._originalItems.filter(item =>
+                  this.itemSearchFunction(item, value)
+                )
+              : this._originalItems;
+        } else {
+          this.onquery.emit(value);
+        }
+      });
   }
 
   ngOnDestroy(): void {}

@@ -39,12 +39,14 @@
   </div>
 </section>
 
-<s4e-generic-list-view *ngIf="!!(institutions$ | async) && (institutions$ | async).length > 0"
-                       [loading]="isLoading$ | async"
-                       [items]="institutions$ | async"
-                       [error]="error$ | async"
-                       [searchable]="true"
-                       data-ut="institutions">
+<s4e-generic-list-view
+  *ngIf="!!(institutions$ | async) && (institutions$ | async).length > 0"
+  [loading]="isLoading$ | async"
+  [items]="institutions$ | async"
+  [error]="error$ | async"
+  [searchable]="true"
+  data-ut="institutions"
+>
   <ng-container description></ng-container>
   <h2 caption-inside i18>
     <ng-container i18n>Jesteś przypisany do poniższych instytucji</ng-container>
@@ -58,12 +60,15 @@
     <th i18n>Administrator</th>
   </ng-container>
   <ng-template let-inst="item">
-    <td
-      [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15"
-      
-    >
-      <a routerLink="../institution" data-e2e="institution-name" queryParamsHandling="merge"
-         [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
+    <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
+      <a
+        routerLink="../institution"
+        data-e2e="institution-name"
+        queryParamsHandling="merge"
+        [queryParams]="{institution: inst.slug}"
+        >{{ inst.name }}</a
+      >
+    </td>
     <td>
       {{ isManagerOf(inst) ? 'tak' : 'nie' }}
     </td>
@@ -74,10 +79,14 @@
   <div class="profile__content ng-star-inserted" data-e2e="institution-details">
     <h2>Usuwanie konta</h2>
     <p>
-      Podając hasło możesz usunąć konto i wszystkie dane w aplikacji Sat4Envi z nim powiązane.
-      Pamiętaj, że jest to nieodwracalna decyzja!
+      Podając hasło możesz usunąć konto i wszystkie dane w aplikacji Sat4Envi z nim
+      powiązane. Pamiętaj, że jest to nieodwracalna decyzja!
     </p>
-    <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="removeAccount()">
+    <form
+      class="content__form informational-form"
+      [formGroup]="form"
+      (ngSubmit)="removeAccount()"
+    >
       <ext-input
         formControlName="password"
         label="Hasło"
@@ -88,10 +97,7 @@
         i18n-label
       ></ext-input>
       <br />
-      <button
-        class="button button--error button--small"
-        type="submit"
-      >
+      <button class="button button--error button--small" type="submit">
         Usuń konto
       </button>
     </form>

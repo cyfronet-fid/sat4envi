@@ -15,8 +15,8 @@
  *
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {RouterModule} from '@angular/router';
 import {environment} from '../../environments/environment';
 import {UIDesignFormComponent} from './uidesign-form/uidesign-form.component';
@@ -33,12 +33,11 @@ import {FormInputErrorsComponent} from './form-input-errors/form-input-errors.co
 import {SelectComponent} from './select/select.component';
 import {DateUtilsService} from '../utils/s4e-date/date-utils.service';
 import {CheckboxComponent} from './checkbox/checkbox.component';
-import {OwlDialogModule} from 'ng-pick-datetime/dialog';
-import {OwlDateTimeModule, OwlNativeDateTimeModule} from 'ng-pick-datetime';
 import {ButtonComponent} from './button/button.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {MessagesComponent} from './messages/messages.component';
 import {CheckBoxListComponent} from './check-box-list/check-box-list.component';
+import {BsDatepickerModule} from 'ngx-bootstrap/datepicker';
 
 @NgModule({
   declarations: [
@@ -61,17 +60,15 @@ import {CheckBoxListComponent} from './check-box-list/check-box-list.component';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    OwlDialogModule,
-    OwlDateTimeModule,
-    OwlNativeDateTimeModule,
+    BsDatepickerModule,
     FontAwesomeModule,
-    RouterModule.forChild(environment.uiDevelopment ? [
-      {path: 'ui-design', component: UIDesignFormComponent}
-    ] : [])
+    RouterModule.forChild(
+      environment.uiDevelopment
+        ? [{path: 'ui-design', component: UIDesignFormComponent}]
+        : []
+    )
   ],
-  providers: [
-    DateUtilsService
-  ],
+  providers: [DateUtilsService],
   exports: [
     TextareaComponent,
     DatepickerComponent,
@@ -86,8 +83,6 @@ import {CheckBoxListComponent} from './check-box-list/check-box-list.component';
     MessagesComponent,
     CheckBoxListComponent
   ],
-  entryComponents: [
-    SpinnerComponent
-  ]
+  entryComponents: [SpinnerComponent]
 })
-export class S4EFormsModule { }
+export class S4EFormsModule {}

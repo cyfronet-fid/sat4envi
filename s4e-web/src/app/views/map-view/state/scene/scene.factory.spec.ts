@@ -26,7 +26,8 @@ export const SceneResponseFactory = Factory.makeFactory<SceneResponse>({
   timestamp: Factory.each(i => '2019-05-01T00:00:00T'),
   metadataContent: {
     format: 'COG',
-    polygon: '58.9,-52.7 73.4,-22.0 75.5,22.9 71.5,48 66.8,57.3 59.3,64.5 47.8,70.0 38.3,53.9 23.4,40.9 31.0,15.0 26.8,-13.7 40.9,-22.7 51.6,-35 58.9,-52.7',
+    polygon:
+      '58.9,-52.7 73.4,-22.0 75.5,22.9 71.5,48 66.8,57.3 59.3,64.5 47.8,70.0 38.3,53.9 23.4,40.9 31.0,15.0 26.8,-13.7 40.9,-22.7 51.6,-35 58.9,-52.7',
     processing_level: '2',
     product_type: 'NatCol',
     schema: 'MSG.metadata.v1.json',
@@ -47,7 +48,8 @@ export const SceneFactory = Factory.makeFactory<Scene>({
   sceneKey: 'MSG_Products_WM/NatColor/20200201/202002010030_RGB_Nat_Col.scene',
   metadataContent: {
     format: 'COG',
-    polygon: '58.9,-52.7 73.4,-22.0 75.5,22.9 71.5,48 66.8,57.3 59.3,64.5 47.8,70.0 38.3,53.9 23.4,40.9 31.0,15.0 26.8,-13.7 40.9,-22.7 51.6,-35 58.9,-52.7',
+    polygon:
+      '58.9,-52.7 73.4,-22.0 75.5,22.9 71.5,48 66.8,57.3 59.3,64.5 47.8,70.0 38.3,53.9 23.4,40.9 31.0,15.0 26.8,-13.7 40.9,-22.7 51.6,-35 58.9,-52.7',
     processing_level: '2',
     product_type: 'NatCol',
     schema: 'MSG.metadata.v1.json',
@@ -55,12 +57,13 @@ export const SceneFactory = Factory.makeFactory<Scene>({
     sensor_mode: 'full_scan',
     spacecraft: 'MSG',
     productId: 7
-  }
+  },
+  footprint: ''
 });
 
 export function convertToSceneWithPosition(width: number, scenes: Scene[]) {
   return scenes.map((scene, i) => ({
     ...scene,
-    position: i * 100.0 / scenes.length
+    position: (i * 100.0) / scenes.length
   }));
 }

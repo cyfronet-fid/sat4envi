@@ -16,12 +16,10 @@
  */
 
 export interface Institution {
-  id: string;
-
+  id?: string;
   ancestorDepth?: number;
-  parentName: string|null;
-  parentSlug: string|null;
-
+  parentName: string | null;
+  parentSlug: string | null;
   slug: string;
   name: string;
   address: string;

@@ -15,22 +15,22 @@
  *
  */
 
-import { NotificationService } from 'notifications';
-import { SessionQuery } from './../../../state/session/session.query';
-import { SessionService } from './../../../state/session/session.service';
-import { JwtTokenForm } from 'src/app/views/map-view/jwt-token-modal/jwt-token-modal.model';
-import { Modal } from './../../../modal/state/modal.model';
-import { Component, OnInit, Inject } from '@angular/core';
-import { ModalService } from 'src/app/modal/state/modal.service';
-import { MODAL_DEF } from 'src/app/modal/modal.providers';
-import { ModalQuery } from 'src/app/modal/state/modal.query';
-import { AkitaNgFormsManager } from '@datorama/akita-ng-forms-manager';
-import { FormState } from 'src/app/state/form/form.model';
-import { FormModalComponent } from 'src/app/modal/utils/modal/modal.component';
-import { assertModalType } from 'src/app/modal/utils/modal/misc';
-import { isJwtTokenModal } from './jwt-token-modal.model';
-import { FormGroup, FormControl, Validators } from '@ng-stack/forms';
-import { validateAllFormFields } from 'src/app/utils/miscellaneous/miscellaneous';
+import {SessionQuery} from '../../../state/session/session.query';
+import {SessionService} from '../../../state/session/session.service';
+import {JwtTokenForm} from 'src/app/views/map-view/jwt-token-modal/jwt-token-modal.model';
+import {Modal} from '../../../modal/state/modal.model';
+import {Component, OnInit, Inject} from '@angular/core';
+import {ModalService} from 'src/app/modal/state/modal.service';
+import {MODAL_DEF} from 'src/app/modal/modal.providers';
+import {ModalQuery} from 'src/app/modal/state/modal.query';
+import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
+import {FormState} from 'src/app/state/form/form.model';
+import {FormModalComponent} from 'src/app/modal/utils/modal/modal.component';
+import {assertModalType} from 'src/app/modal/utils/modal/misc';
+import {isJwtTokenModal} from './jwt-token-modal.model';
+import {FormGroup, FormControl, Validators} from '@ng-stack/forms';
+import {validateAllFormFields} from 'src/app/utils/miscellaneous/miscellaneous';
+import {NotificationService} from '../../../notifications/state/notification.service';
 
 @Component({
   selector: 's4e-jwt-token-modal',
@@ -57,7 +57,7 @@ export class JwtTokenModalComponent extends FormModalComponent<'jwtToken'> {
 
   makeForm(): FormGroup<FormState['jwtToken']> {
     return new FormGroup<JwtTokenForm>({
-      password: new FormControl<string>(null, [Validators.required]),
+      password: new FormControl<string>(null, [Validators.required])
     });
   }
 

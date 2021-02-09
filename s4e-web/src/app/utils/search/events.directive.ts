@@ -15,15 +15,25 @@
  *
  */
 
-import { Directive, OnInit, OnDestroy, EventEmitter, Output, ViewChild, HostListener, ElementRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { untilDestroyed } from 'ngx-take-until-destroy';
-import { filter } from 'rxjs/operators';
+import {
+  Directive,
+  OnInit,
+  OnDestroy,
+  EventEmitter,
+  Output,
+  ViewChild,
+  HostListener,
+  ElementRef
+} from '@angular/core';
+import {Router, NavigationEnd} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 export function hasBeenClickedInside(source, target): boolean {
   return source.nativeElement.contains(target);
 }
 
+@UntilDestroy()
 @Directive({
   selector: '[s4eEvents]'
 })
@@ -41,10 +51,7 @@ export class EventsDirective implements OnInit, OnDestroy {
     }
   }
 
-  constructor(
-    private _elementRef: ElementRef,
-    private _router: Router
-  ) {}
+  constructor(private _elementRef: ElementRef, private _router: Router) {}
 
   ngOnInit() {
     this._router.events

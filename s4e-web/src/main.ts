@@ -1,3 +1,4 @@
+import '@angular/compiler';
 import {enableProdMode} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {AppModule} from './app/app.module';
@@ -5,7 +6,7 @@ import {environment} from './environments/environment';
 import {akitaConfig, enableAkitaProdMode, persistState} from '@datorama/akita';
 import {hmrBootstrap} from './hmr';
 
-akitaConfig({ resettable: true });
+akitaConfig({resettable: true});
 
 if (environment.production) {
   enableProdMode();
@@ -16,7 +17,8 @@ const bootstrap = () => platformBrowserDynamic().bootstrapModule(AppModule);
 
 if (environment.hmr && environment.hmrPersist) {
   persistState({
-    exclude: ['router'], key: 's4eStore',
+    exclude: ['router'],
+    key: 's4eStore'
   });
 
   if ((module as any).hot) {

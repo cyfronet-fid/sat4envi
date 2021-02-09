@@ -15,18 +15,16 @@
  *
  */
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { SearchComponent } from './search.component';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { S4EFormsModule } from 'src/app/form/form.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EventsModule } from 'src/app/utils/search/events.module';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {SearchComponent} from './search.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {S4EFormsModule} from 'src/app/form/form.module';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {EventsModule} from 'src/app/utils/search/events.module';
 
 @NgModule({
-  declarations: [
-    SearchComponent
-  ],
+  declarations: [SearchComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -35,8 +33,6 @@ import { EventsModule } from 'src/app/utils/search/events.module';
     FontAwesomeModule,
     EventsModule
   ],
-  exports: [
-    SearchComponent
-  ]
+  exports: [SearchComponent]
 })
-export class SearchModule { }
+export class SearchModule {}

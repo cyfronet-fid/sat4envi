@@ -27,8 +27,5 @@ export class DynamicSpaceDirective {
     this._renderer.setStyle(this._self.nativeElement, 'height', `${height}px`);
   }
 
-  constructor(
-    private _self: ElementRef,
-    private _renderer: Renderer2
-  ) {}
+  constructor(private _self: ElementRef, private _renderer: Renderer2) {}
 }

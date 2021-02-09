@@ -15,7 +15,16 @@
  *
  */
 
-import {Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostBinding,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges
+} from '@angular/core';
 import {Legend} from '../state/legend/legend.model';
 import {DomSanitizer, SafeStyle} from '@angular/platform-browser';
 
@@ -35,16 +44,17 @@ export class LegendComponent implements OnInit, OnChanges {
     this.width = this.isOpen ? this.OPEN_WIDTH : this.CLOSED_WIDTH;
   }
   @Output() opened = new EventEmitter<boolean>();
-  url: SafeStyle|null = null;
+  url: SafeStyle | null = null;
 
-  constructor(private domSanitizer: DomSanitizer) { }
+  constructor(private domSanitizer: DomSanitizer) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.activeLegend && changes.activeLegend.currentValue != null) {
-      this.url = this.domSanitizer.bypassSecurityTrustStyle(`url(${(changes.activeLegend.currentValue as Legend).url})`);
+      this.url = this.domSanitizer.bypassSecurityTrustStyle(
+        `url(${(changes.activeLegend.currentValue as Legend).url})`
+      );
     }
   }
 

@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2021 ACC Cyfronet AGH
  *
@@ -16,7 +15,7 @@
  *
  */
 
-import { AbstractControl } from '@angular/forms';
+import {AbstractControl} from '@angular/forms';
 import {Overlay} from '../../views/map-view/state/overlay/overlay.model';
 import * as url from 'url';
 
@@ -71,12 +70,19 @@ export class UrlParser {
   getParamsWithValues(paramsUpperCase = true): {[param: string]: string} {
     return paramsUpperCase
       ? Object.keys(this._paramsWithValues)
-        .map(fieldName => [fieldName.toUpperCase(), this._paramsWithValues[fieldName]])
-        .map(([fieldName, value]) => ({[fieldName]: value}))
-        .reduce((paramsWithValues, paramWithValue) => paramsWithValues = {
-          ...paramsWithValues,
-          ...paramWithValue
-        }, {})
+          .map(fieldName => [
+            fieldName.toUpperCase(),
+            this._paramsWithValues[fieldName]
+          ])
+          .map(([fieldName, value]) => ({[fieldName]: value}))
+          .reduce(
+            (paramsWithValues, paramWithValue) =>
+              (paramsWithValues = {
+                ...paramsWithValues,
+                ...paramWithValue
+              }),
+            {}
+          )
       : this._paramsWithValues;
   }
   getParamValueOf(field: string): string | null {
@@ -108,36 +114,36 @@ export class UrlParser {
 
     field = findFieldIn(this._paramsWithValues, field);
 
-    values
-      .forEach(value => {
-        if (!this.has(field)) {
-          return;
-        }
+    values.forEach(value => {
+      if (!this.has(field)) {
+        return;
+      }
 
-        const hasExactValue = this._paramsWithValues[field] === value;
-        if (hasExactValue) {
-          this.remove(field);
-          return;
-        }
+      const hasExactValue = this._paramsWithValues[field] === value;
+      if (hasExactValue) {
+        this.remove(field);
+        return;
+      }
 
-        this._paramsWithValues[field] = this._paramsWithValues[field]
-          .replace(new RegExp(`(,?)${value}`), '');
-      });
+      this._paramsWithValues[field] = this._paramsWithValues[field].replace(
+        new RegExp(`(,?)${value}`),
+        ''
+      );
+    });
 
     if (this.has(field) && this._paramsWithValues[field].startsWith(',')) {
       this._paramsWithValues[field] = this._paramsWithValues[field].substr(1);
     }
   }
   remove(...fields: string[]): void {
-    fields
-      .forEach(field => {
-        if (!this.has(field)) {
-          return;
-        }
+    fields.forEach(field => {
+      if (!this.has(field)) {
+        return;
+      }
 
-        field = findFieldIn(this._paramsWithValues, field);
-        delete this._paramsWithValues[field];
-      });
+      field = findFieldIn(this._paramsWithValues, field);
+      delete this._paramsWithValues[field];
+    });
   }
   has(field: string): boolean {
     return !!findFieldIn(this._paramsWithValues, field);
@@ -151,7 +157,7 @@ export class UrlParser {
     return this._paramsWithValues[field].includes(value);
   }
 
-  private _setURl(url: string|null = null): void {
+  private _setURl(url: string | null = null): void {
     url = url.trim();
     if (!url || url === '') {
       this._urlBase = null;
@@ -169,8 +175,9 @@ export class UrlParser {
 /////////////////////////////////
 
 function findFieldIn(map: Object, field: string) {
-  return Object.keys(map)
-    .find(key => !!field && key.toLowerCase() === field.toLowerCase());
+  return Object.keys(map).find(
+    key => !!field && key.toLowerCase() === field.toLowerCase()
+  );
 }
 
 function bindParamsWithUrl(
@@ -183,9 +190,14 @@ function bindParamsWithUrl(
   }
 
   const urlParamsWithValues = Object.keys(paramsWithValues)
-    .map(field => `${paramsUpperCase ? field.toUpperCase() : field}=${paramsWithValues[field]}`)
+    .map(
+      field =>
+        `${paramsUpperCase ? field.toUpperCase() : field}=${paramsWithValues[field]}`
+    )
     .join('&');
-  return `${urlBase}${Object.keys(urlParamsWithValues).length > 0 ? '?': ''}${urlParamsWithValues}`
+  return `${urlBase}${
+    Object.keys(urlParamsWithValues).length > 0 ? '?' : ''
+  }${urlParamsWithValues}`;
 }
 
 function extractParamsWithValues(url: string) {
@@ -195,8 +207,13 @@ function extractParamsWithValues(url: string) {
   }
 
   const urlParams = url.split('?')[1];
-  const urlParamsAreValid = urlParams.match(/([a-z._0-9:-]*=(([a-z._0-9:-]*(,?))+)(&?))+/i)
-  if (!urlParamsAreValid || !!urlParamsAreValid && urlParamsAreValid.length === 0) {
+  const urlParamsAreValid = urlParams.match(
+    /([a-z._0-9:-]*=(([a-z._0-9:-]*(,?))+)(&?))+/i
+  );
+  if (
+    !urlParamsAreValid ||
+    (!!urlParamsAreValid && urlParamsAreValid.length === 0)
+  ) {
     return {};
   }
 
@@ -204,10 +221,14 @@ function extractParamsWithValues(url: string) {
     .split('&')
     .map(paramWithValue => paramWithValue.split('='))
     .map(([fieldName, value]) => ({[fieldName.toLowerCase()]: value}))
-    .reduce((paramsWithValues, paramWithValue) => paramsWithValues = {
-      ...paramsWithValues,
-      ...paramWithValue
-    }, {});
+    .reduce(
+      (paramsWithValues, paramWithValue) =>
+        (paramsWithValues = {
+          ...paramsWithValues,
+          ...paramWithValue
+        }),
+      {}
+    );
 
   return paramsWithValues;
 }
@@ -219,75 +240,100 @@ interface IValidatorOutput {
   [key: string]: boolean;
 }
 
-
 /* OPTIONAL */
 const VERSION_PARAM = 'version=';
 function versionValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, VERSION_EXPRESSION, VERSION_PARAM, { version: true });
+  return _hasOptionalParam(control.value, VERSION_EXPRESSION, VERSION_PARAM, {
+    version: true
+  });
 }
 
 /* OPTIONAL */
 const SRS_PARAM = 'srs=';
 const CRS_PARAM = 'crs=';
 function srsOrCrsValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, SRS_OR_CRS_EXPRESSION, CRS_PARAM, { srsOrCrs: true })
-    || _hasOptionalParam(control.value, SRS_OR_CRS_EXPRESSION, SRS_PARAM, { srsOrCrs: true });
+  return (
+    _hasOptionalParam(control.value, SRS_OR_CRS_EXPRESSION, CRS_PARAM, {
+      srsOrCrs: true
+    }) ||
+    _hasOptionalParam(control.value, SRS_OR_CRS_EXPRESSION, SRS_PARAM, {
+      srsOrCrs: true
+    })
+  );
 }
 
 /* OPTIONAL */
 const BBOX_PARAM = 'bbox=';
 function bboxValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, BBOX_EXPRESSION, BBOX_PARAM, { bbox: true });
+  return _hasOptionalParam(control.value, BBOX_EXPRESSION, BBOX_PARAM, {bbox: true});
 }
 
 /* OPTIONAL */
 const WIDTH_PARAM = 'width=';
 function widthValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, WIDTH_EXPRESSION, WIDTH_PARAM, { width: true });
+  return _hasOptionalParam(control.value, WIDTH_EXPRESSION, WIDTH_PARAM, {
+    width: true
+  });
 }
 
 /* OPTIONAL */
 const HEIGHT_PARAM = 'height=';
 function heightValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, HEIGHT_EXPRESSION, HEIGHT_PARAM, { height: true });
+  return _hasOptionalParam(control.value, HEIGHT_EXPRESSION, HEIGHT_PARAM, {
+    height: true
+  });
 }
 
 /* OPTIONAL */
 const FORMAT_PARAM = 'format=';
 function formatValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, FORMAT_EXPRESSION, FORMAT_PARAM, { format: true });
+  return _hasOptionalParam(control.value, FORMAT_EXPRESSION, FORMAT_PARAM, {
+    format: true
+  });
 }
 
 /* OPTIONAL */
 const SERVICE_PARAM = 'service=';
 function wmsServiceValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, WMS_SERVICE_EXPRESSION, SERVICE_PARAM, { wmsService: true });
+  return _hasOptionalParam(control.value, WMS_SERVICE_EXPRESSION, SERVICE_PARAM, {
+    wmsService: true
+  });
 }
 
 /* OPTIONAL */
 const REQUEST_PARAM = 'request=';
 function requestValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, REQUEST_EXPRESSION, REQUEST_PARAM, { request: true });
+  return _hasOptionalParam(control.value, REQUEST_EXPRESSION, REQUEST_PARAM, {
+    request: true
+  });
 }
 
 /* OPTIONAL */
 const TRANSPARENT_PARAM = 'transparent=';
 function transparentValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, TRANSPARENT_EXPRESSION, TRANSPARENT_PARAM, { transparent: true });
+  return _hasOptionalParam(
+    control.value,
+    TRANSPARENT_EXPRESSION,
+    TRANSPARENT_PARAM,
+    {transparent: true}
+  );
 }
 
 /* OPTIONAL */
 const LAYERS_PARAM = 'layers=';
 function layersValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, LAYERS_EXPRESSION, LAYERS_PARAM, { layers: true });
+  return _hasOptionalParam(control.value, LAYERS_EXPRESSION, LAYERS_PARAM, {
+    layers: true
+  });
 }
 
 /* OPTIONAL */
 const STYLES_PARAM = 'styles=';
 function stylesValidator(control: AbstractControl): IValidatorOutput | null {
-  return _hasOptionalParam(control.value, STYLES_EXPRESSION, STYLES_PARAM, { styles: true });
+  return _hasOptionalParam(control.value, STYLES_EXPRESSION, STYLES_PARAM, {
+    styles: true
+  });
 }
-
 
 function _hasOptionalParam(
   url: string,
@@ -300,10 +346,12 @@ function _hasOptionalParam(
 }
 
 function _hasMatch(url: string, regex: RegExp) {
-  return (typeof url === "string") && regex.test(url);
+  return typeof url === 'string' && regex.test(url);
 }
 
 function _exist(url: string, paramName: string) {
-  return (typeof url === "string")
-    && url.toLowerCase().indexOf(paramName.toLowerCase()) > -1;
+  return (
+    typeof url === 'string' &&
+    url.toLowerCase().indexOf(paramName.toLowerCase()) > -1
+  );
 }

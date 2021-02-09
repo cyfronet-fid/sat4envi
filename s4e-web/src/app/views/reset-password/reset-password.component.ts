@@ -19,9 +19,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
 import {SessionService} from '../../state/session/session.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {filter, map, switchMap} from 'rxjs/operators';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-reset-password',
   templateUrl: './reset-password.component.html',
@@ -32,17 +33,21 @@ export class ResetPasswordComponent implements OnDestroy {
     email: new FormControl('', [Validators.required, Validators.email])
   });
   resetPasswordForm = new FormGroup<{password: string}>({
-    password: new FormControl<string>(null, [Validators.required, Validators.minLength(8)])
+    password: new FormControl<string>(null, [
+      Validators.required,
+      Validators.minLength(8)
+    ])
   });
 
-  token$ = this._activatedRoute.paramMap
-    .pipe(
-      map(paramMap => paramMap.has('token')
-        && !!paramMap.get('token')
-        && paramMap.get('token')
-        || null
-      )
-    );
+  token$ = this._activatedRoute.paramMap.pipe(
+    map(
+      paramMap =>
+        (paramMap.has('token') &&
+          !!paramMap.get('token') &&
+          paramMap.get('token')) ||
+        null
+    )
+  );
 
   constructor(
     private _activatedRoute: ActivatedRoute,
@@ -59,14 +64,15 @@ export class ResetPasswordComponent implements OnDestroy {
       .pipe(
         untilDestroyed(this),
         filter(token => !!token),
-        switchMap(token => this._sessionService
-          .resetPassword$(token, this.resetPasswordForm.value.password)
-          .pipe(untilDestroyed(this))
+        switchMap(token =>
+          this._sessionService
+            .resetPassword$(token, this.resetPasswordForm.value.password)
+            .pipe(untilDestroyed(this))
         )
       )
       .subscribe(() => {
         this.sendTokenForm.reset();
-        this._router.navigateByUrl('/login')
+        this._router.navigateByUrl('/login');
       });
   }
 
@@ -75,7 +81,8 @@ export class ResetPasswordComponent implements OnDestroy {
       return;
     }
 
-    this._sessionService.sendPasswordResetToken$(this.sendTokenForm.value.email)
+    this._sessionService
+      .sendPasswordResetToken$(this.sendTokenForm.value.email)
       .pipe(untilDestroyed(this))
       .subscribe(() => this.sendTokenForm.reset());
   }

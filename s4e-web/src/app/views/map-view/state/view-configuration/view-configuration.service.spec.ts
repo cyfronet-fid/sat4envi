@@ -16,7 +16,10 @@
  */
 
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {ViewConfigurationService} from './view-configuration.service';
 import {ViewConfigurationStore} from './view-configuration.store';
 import {take, toArray} from 'rxjs/operators';
@@ -39,10 +42,10 @@ describe('ViewConfigurationService', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    service = TestBed.get(ViewConfigurationService);
-    store = TestBed.get(ViewConfigurationStore);
-    query = TestBed.get(ViewConfigurationQuery);
-    http = TestBed.get(HttpTestingController);
+    service = TestBed.inject(ViewConfigurationService);
+    store = TestBed.inject(ViewConfigurationStore);
+    query = TestBed.inject(ViewConfigurationQuery);
+    http = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -50,7 +53,7 @@ describe('ViewConfigurationService', () => {
   });
 
   describe('get', () => {
-    it('loading should be set', (done) => {
+    it('loading should be set', done => {
       const stream = query.selectLoading();
 
       stream.pipe(take(3), toArray()).subscribe(data => {
@@ -77,10 +80,15 @@ describe('ViewConfigurationService', () => {
       const sampleView: ViewConfiguration = {
         caption: 'test',
         configuration: {
-          overlays: ['ov'], productId: 123, sceneId: 3, date: '03-03-2021', viewPosition: {
+          overlays: [1],
+          productId: 123,
+          sceneId: 3,
+          date: '03-03-2021',
+          viewPosition: {
             centerCoordinates: [1, 2],
             zoomLevel: 4
-          }
+          },
+          manualDate: null
         },
         thumbnail: 'base64string'
       };
@@ -92,7 +100,7 @@ describe('ViewConfigurationService', () => {
   });
 
   describe('delete', () => {
-    it('loading should be set', (done) => {
+    it('loading should be set', done => {
       const stream = query.selectLoading();
 
       stream.pipe(take(3), toArray()).subscribe(data => {
@@ -123,7 +131,7 @@ describe('ViewConfigurationService', () => {
   });
 
   describe('add$', () => {
-    it('loading should be set', (done) => {
+    it('loading should be set', done => {
       const stream = query.selectLoading();
 
       stream.pipe(take(3), toArray()).subscribe(data => {
@@ -131,11 +139,20 @@ describe('ViewConfigurationService', () => {
         done();
       });
 
-      service.add$({
-        caption: '',
-        configuration: {overlays: [], productId: undefined, sceneId: undefined, date: '', viewPosition: undefined},
-        thumbnail: ''
-      }).subscribe();
+      service
+        .add$({
+          caption: '',
+          configuration: {
+            overlays: [],
+            productId: undefined,
+            sceneId: undefined,
+            date: '',
+            viewPosition: undefined,
+            manualDate: null
+          },
+          thumbnail: ''
+        })
+        .subscribe();
 
       const r = http.expectOne(`${environment.apiPrefixV1}/saved-views`);
       r.flush({});
@@ -145,7 +162,12 @@ describe('ViewConfigurationService', () => {
       const viewConf: ViewConfiguration = {
         caption: 'test caption',
         configuration: {
-          overlays: ['123'], productId: 3, sceneId: 76, date: '12-12-2012', viewPosition: undefined
+          overlays: [1],
+          productId: 3,
+          sceneId: 76,
+          date: '12-12-2012',
+          viewPosition: undefined,
+          manualDate: null
         },
         thumbnail: ''
       };
@@ -156,5 +178,4 @@ describe('ViewConfigurationService', () => {
       expect(r.request.body).toBe(viewConf);
     });
   });
-
 });

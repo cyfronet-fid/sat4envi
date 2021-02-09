@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {SentinelSearchComponent} from './sentinel-search.component';
 import {MapModule} from '../map.module';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -26,9 +26,11 @@ import {SentinelSearchStore} from '../state/sentinel-search/sentinel-search.stor
 import {ReplaySubject} from 'rxjs';
 import {DebugElement} from '@angular/core';
 import {By} from '@angular/platform-browser';
-import {SentinelSearchFactory, SentinelSearchMetadataFactory} from '../state/sentinel-search/sentinel-search.factory.spec';
+import {
+  SentinelSearchFactory,
+  SentinelSearchMetadataFactory
+} from '../state/sentinel-search/sentinel-search.factory.spec';
 import {toTestPromise} from '../../../test.utils.spec';
-
 
 describe('SentinelSearchComponent', () => {
   let component: SentinelSearchComponent;
@@ -37,15 +39,21 @@ describe('SentinelSearchComponent', () => {
   let query: SentinelSearchQuery;
   let store: SentinelSearchStore;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, MapModule, RouterTestingModule, HttpClientTestingModule]
-    })
-      .compileComponents();
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [
+          NoopAnimationsModule,
+          MapModule,
+          RouterTestingModule,
+          HttpClientTestingModule
+        ]
+      }).compileComponents();
 
-    query = TestBed.get(SentinelSearchQuery);
-    store = TestBed.get(SentinelSearchStore);
-  }));
+      query = TestBed.inject(SentinelSearchQuery);
+      store = TestBed.inject(SentinelSearchStore);
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SentinelSearchComponent);
@@ -91,7 +99,7 @@ describe('SentinelSearchComponent', () => {
       beforeEach(() => {
         store.update({
           metadata: SentinelSearchMetadataFactory.build(),
-          metadataLoaded: true,
+          metadataLoaded: true
         });
         store.set([]);
       });
@@ -111,7 +119,7 @@ describe('SentinelSearchComponent', () => {
       beforeEach(() => {
         store.update({
           loaded: true,
-          metadataLoaded: true,
+          metadataLoaded: true
         });
         store.set([]);
       });

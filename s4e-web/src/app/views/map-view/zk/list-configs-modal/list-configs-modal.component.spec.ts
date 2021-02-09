@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {ViewConfigurationService} from '../../state/view-configuration/view-configuration.service';
 import {ViewConfigurationQuery} from '../../state/view-configuration/view-configuration.query';
@@ -24,7 +24,10 @@ import {MapModule} from '../../map.module';
 import {ListConfigsModalComponent} from './list-configs-modal.component';
 import {LIST_CONFIGS_MODAL_ID} from './list-configs-modal.model';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {ViewConfiguration, ViewRouterConfig} from '../../state/view-configuration/view-configuration.model';
+import {
+  ViewConfiguration,
+  ViewRouterConfig
+} from '../../state/view-configuration/view-configuration.model';
 import {MapService} from '../../state/map/map.service';
 import {RouterTestingModule} from '@angular/router/testing';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
@@ -38,28 +41,31 @@ describe('ListConfigsModalComponent', () => {
   let modalService: ModalService;
   let mapService: MapService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, RouterTestingModule],
-      providers: [
-        LocalStorageTestingProvider,
-        {
-          provide: MODAL_DEF, useValue: {
-            id: LIST_CONFIGS_MODAL_ID,
-            size: 'lg',
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, RouterTestingModule],
+        providers: [
+          LocalStorageTestingProvider,
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: LIST_CONFIGS_MODAL_ID,
+              size: 'lg'
+            }
           }
-        }
-      ]
-    }).compileComponents();
-  }));
+        ]
+      }).compileComponents();
+    })
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ListConfigsModalComponent);
     component = fixture.componentInstance;
-    service = TestBed.get(ViewConfigurationService);
-    query = TestBed.get(ViewConfigurationQuery);
-    modalService = TestBed.get(ModalService);
-    mapService = TestBed.get(MapService);
+    service = TestBed.inject(ViewConfigurationService);
+    query = TestBed.inject(ViewConfigurationQuery);
+    modalService = TestBed.inject(ModalService);
+    mapService = TestBed.inject(MapService);
     fixture.detectChanges();
   });
 
@@ -72,12 +78,19 @@ describe('ListConfigsModalComponent', () => {
     const serviceSpy = jest.spyOn(service, 'delete');
 
     await component.deleteConfig({
-        caption: '',
-        configuration: {overlays: [], productId: undefined, sceneId: undefined, date: '', viewPosition: undefined},
-        thumbnail: '',
-        uuid: 'uuid1'
-      }
-    );
+      caption: '',
+      configuration: {
+        overlays: [],
+        productId: undefined,
+        sceneId: undefined,
+        date: '',
+        viewPosition: undefined,
+        manualDate: null
+      },
+      thumbnail: '',
+      uuid: 'uuid1',
+      createdAt: undefined
+    });
     expect(serviceSpy).toHaveBeenCalledWith('uuid1');
   });
 
@@ -86,12 +99,18 @@ describe('ListConfigsModalComponent', () => {
     const serviceSpy = jest.spyOn(service, 'delete');
 
     await component.deleteConfig({
-        caption: '',
-        configuration: {overlays: [], productId: undefined, sceneId: undefined, date: '', viewPosition: undefined},
-        thumbnail: '',
-        uuid: 'uuid1'
-      }
-    );
+      caption: '',
+      configuration: {
+        overlays: [],
+        productId: undefined,
+        sceneId: undefined,
+        date: '',
+        viewPosition: undefined,
+        manualDate: null
+      },
+      thumbnail: '',
+      uuid: 'uuid1'
+    });
     expect(serviceSpy).not.toHaveBeenCalled();
   });
 
@@ -105,7 +124,8 @@ describe('ListConfigsModalComponent', () => {
       viewPosition: {
         zoomLevel: 4,
         centerCoordinates: [10, 11]
-      }
+      },
+      manualDate: null
     };
     const viewConfig: ViewConfiguration = {
       caption: 'foo',

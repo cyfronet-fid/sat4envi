@@ -15,7 +15,6 @@
  *
  */
 
-import {NotificationService} from 'notifications';
 import {Component} from '@angular/core';
 import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ModalService} from '../../../../modal/state/modal.service';

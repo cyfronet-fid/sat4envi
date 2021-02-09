@@ -34,21 +34,14 @@ describe('InstitutionService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        InstitutionService,
-        InstitutionStore,
-        AkitaGuidService
-      ],
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule
-      ],
+      providers: [InstitutionService, InstitutionStore, AkitaGuidService],
+      imports: [HttpClientTestingModule, RouterTestingModule]
     });
 
-    institutionService = TestBed.get(InstitutionService);
-    guidService = TestBed.get(AkitaGuidService);
-    institutionStore = TestBed.get(InstitutionStore);
-    http = TestBed.get(HttpClient);
+    institutionService = TestBed.inject(InstitutionService);
+    guidService = TestBed.inject(AkitaGuidService);
+    institutionStore = TestBed.inject(InstitutionStore);
+    http = TestBed.inject(HttpClient);
   });
 
   it('should be created', () => {
@@ -60,11 +53,10 @@ describe('InstitutionService', () => {
     const spyHttp = spyOn(http, 'get').and.returnValue(of(institution));
     const url = `${environment.apiPrefixV1}/institutions/${institution.slug}`;
 
-    institutionService.findBy(institution.slug)
-      .subscribe(loadedInstitution => {
-        expect(loadedInstitution).toEqual(institution);
-        expect(spyHttp).toBeCalledWith(url);
-      });
+    institutionService.findBy(institution.slug).subscribe(loadedInstitution => {
+      expect(loadedInstitution).toEqual(institution);
+      expect(spyHttp).toBeCalledWith(url);
+    });
   });
 
   it('should store institutions with ids and depth', fakeAsync(() => {
@@ -102,7 +94,7 @@ describe('InstitutionService', () => {
       {...institutions[0], id, ancestorDepth: 0},
       {...institutions[1], id, ancestorDepth: 1},
       {...institutions[3], id, ancestorDepth: 2},
-      {...institutions[2], id, ancestorDepth: 0},
+      {...institutions[2], id, ancestorDepth: 0}
     ]);
   }));
 

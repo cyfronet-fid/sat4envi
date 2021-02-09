@@ -16,16 +16,18 @@
  */
 
 import {fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController
+} from '@angular/common/http/testing';
 import {SearchResultsService} from './locations-search-results.service';
 import {LocationSearchResultsStore} from './locations-search-results.store';
 import {RouterTestingModule} from '@angular/router/testing';
-import { AkitaGuidService } from '../search-results/guid.service';
-import { LocationSearchResultsQuery } from './location-search-results.query';
+import {AkitaGuidService} from '../search-results/guid.service';
+import {LocationSearchResultsQuery} from './location-search-results.query';
 import environment from 'src/environments/environment';
 import {LocalStorageTestingProvider} from '../../../../app.configuration.spec';
 import {MapModule} from '../../map.module';
-
 
 describe('SearchResultsService', () => {
   let searchResultsService: SearchResultsService;
@@ -40,11 +42,11 @@ describe('SearchResultsService', () => {
       imports: [MapModule, HttpClientTestingModule, RouterTestingModule]
     });
 
-    http = TestBed.get(HttpTestingController);
-    searchResultsService = TestBed.get(SearchResultsService);
-    searchResultsStore = TestBed.get(LocationSearchResultsStore);
-    searchResultsQuery = TestBed.get(LocationSearchResultsQuery);
-    guidService = TestBed.get(AkitaGuidService);
+    http = TestBed.inject(HttpTestingController);
+    searchResultsService = TestBed.inject(SearchResultsService);
+    searchResultsStore = TestBed.inject(LocationSearchResultsStore);
+    searchResultsQuery = TestBed.inject(LocationSearchResultsQuery);
+    guidService = TestBed.inject(AkitaGuidService);
   });
 
   it('should be created', () => {
@@ -93,6 +95,5 @@ describe('SearchResultsService', () => {
       expect(searchResultsQuery.getValue().queryString).toEqual('k');
       expect(searchResultsQuery.getAll()).toEqual([expectedResult]);
     }));
-
   });
 });

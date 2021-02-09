@@ -19,7 +19,11 @@ import {Inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MapStore} from './map.store';
 import {MapQuery} from './map.query';
-import {PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY, SIDEBAR_OPEN_LOCAL_STORAGE_KEY, ViewPosition} from './map.model';
+import {
+  PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY,
+  SIDEBAR_OPEN_LOCAL_STORAGE_KEY,
+  ViewPosition
+} from './map.model';
 import {of} from 'rxjs';
 import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
 import {OverlayQuery} from '../overlay/overlay.query';
@@ -39,7 +43,6 @@ import view = olx.view;
 
 @Injectable({providedIn: 'root'})
 export class MapService {
-
   constructor(
     private store: MapStore,
     private mapQuery: MapQuery,
@@ -52,8 +55,7 @@ export class MapService {
     private router: Router,
     private routerQuery: RouterQuery,
     @Inject(LocalStorage) private storage: Storage
-  ) {
-  }
+  ) {}
 
   toggleZKOptions(open: boolean = true) {
     this.store.update({zkOptionsOpened: open});
@@ -65,7 +67,10 @@ export class MapService {
 
   toggleProductDescription(open: boolean = true) {
     if (open === false) {
-      this.storage.setItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY, JSON.stringify(true))
+      this.storage.setItem(
+        PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY,
+        JSON.stringify(true)
+      );
     }
     this.store.update({productDescriptionOpened: open});
   }
@@ -75,42 +80,51 @@ export class MapService {
   }
 
   public loadMapQueryParams() {
-    return this.routerQuery.selectQueryParams()
-      .pipe(
-        map((params: HashMap<string>) => {
-          const overlays: number[] = (Array.isArray(params['overlays']) ? params['overlays'] as any : [params['overlays'] as string]).map(ol => Number(ol)).filter(olId => !isNaN(olId));
-          const productId = params['product'];
-          const date = params['date'];
-          const manualDate = params['manualDate'] || null;
-          const sceneId = params['scene'];
-          const centerX = params['centerx'];
-          const centerY = params['centery'];
-          const zoom = params['zoom'];
+    return this.routerQuery.selectQueryParams().pipe(
+      map((params: HashMap<string>) => {
+        const overlays: number[] = (Array.isArray(params['overlays'])
+          ? (params['overlays'] as any)
+          : [params['overlays'] as string]
+        )
+          .map(ol => Number(ol))
+          .filter(olId => !isNaN(olId));
+        const productId = params['product'];
+        const date = params['date'];
+        const manualDate = params['manualDate'] || null;
+        const sceneId = params['scene'];
+        const centerX = params['centerx'];
+        const centerY = params['centery'];
+        const zoom = params['zoom'];
 
-          // validate data, if there is something missing throw error, which will prevent setting store from those query params
-          if (zoom == null || centerX == null || centerY == null || (date != null && !date.match(/^[0-9]+-[0-1][0-9]-[0-9][0-9]$/g))) {
-            throw new Error('queryParams do not have all required params');
-          }
+        // validate data, if there is something missing throw error, which will prevent setting store from those query params
+        if (
+          zoom == null ||
+          centerX == null ||
+          centerY == null ||
+          (date != null && !date.match(/^[0-9]+-[0-1][0-9]-[0-9][0-9]$/g))
+        ) {
+          throw new Error('queryParams do not have all required params');
+        }
 
-          const viewPosition = {
-            centerCoordinates: [Number(centerX), Number(centerY)],
-            zoomLevel: Number(zoom)
-          };
+        const viewPosition = {
+          centerCoordinates: [Number(centerX), Number(centerY)],
+          zoomLevel: Number(zoom)
+        };
 
-          return {
-            overlays,
-            viewPosition,
-            productId: productId == null ? null : Number(productId),
-            sceneId: sceneId == null ? null : Number(sceneId),
-            manualDate,
-            date,
-          } as ViewRouterConfig;
-        }),
-        take(1),
-        switchMap(viewConfig => this.updateStoreByView(viewConfig)),
-        map(() => true),
-        catchError((err) => of(false))
-      );
+        return {
+          overlays,
+          viewPosition,
+          productId: productId == null ? null : Number(productId),
+          sceneId: sceneId == null ? null : Number(sceneId),
+          manualDate,
+          date
+        } as ViewRouterConfig;
+      }),
+      take(1),
+      switchMap(viewConfig => this.updateStoreByView(viewConfig)),
+      map(() => true),
+      catchError(err => of(false))
+    );
   }
 
   public updateStoreByView(viewConfig: ViewRouterConfig) {
@@ -118,21 +132,21 @@ export class MapService {
     this.productService.setManualDate(viewConfig.manualDate);
     this.setView(viewConfig.viewPosition);
     this.overlayService.setAllActive(viewConfig.overlays);
-    return this.productService.setActive$(viewConfig.productId).pipe(tap(() => this.sceneService.setActive(viewConfig.sceneId)));
+    return this.productService
+      .setActive$(viewConfig.productId)
+      .pipe(tap(() => this.sceneService.setActive(viewConfig.sceneId)));
   }
 
   public connectStoreToRouter() {
-    return this.mapQuery.selectQueryParamsFromStore()
-      .pipe(
-        switchMap((queryParams) => this.router.navigate(
-          [],
-          {
-            replaceUrl: true,
-            queryParamsHandling: 'merge',
-            queryParams: queryParams
-          }
-        ))
-      );
+    return this.mapQuery.selectQueryParamsFromStore().pipe(
+      switchMap(queryParams =>
+        this.router.navigate([], {
+          replaceUrl: true,
+          queryParamsHandling: 'merge',
+          queryParams: queryParams
+        })
+      )
+    );
   }
 
   showSidebar(show: boolean) {
@@ -144,4 +158,3 @@ export class MapService {
     this.showSidebar(!this.mapQuery.getValue().sidebarOpen);
   }
 }
-

@@ -15,10 +15,10 @@
  *
  */
 
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { ExpertHelpForm } from "../expert-help-modal/expert-help-modal.model";
-import environment from "src/environments/environment";
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {ExpertHelpForm} from '../expert-help-modal/expert-help-modal.model';
+import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class ExpertHelpService {

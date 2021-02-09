@@ -31,12 +31,11 @@ export class ModalQuery extends QueryEntity<ModalState, Modal> {
   }
 
   modalClosed$(modalId: string): Observable<Modal> {
-    return this.selectEntity(modalId)
-      .pipe(
-        pairwise(),
-        filter(([prev, curr]) => curr == null && prev != null),
-        map(([prev, curr]) => prev),
-        take(1)
-      );
+    return this.selectEntity(modalId).pipe(
+      pairwise(),
+      filter(([prev, curr]) => curr == null && prev != null),
+      map(([prev, curr]) => prev),
+      take(1)
+    );
   }
 }

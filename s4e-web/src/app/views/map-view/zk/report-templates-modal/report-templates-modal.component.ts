@@ -26,16 +26,20 @@ import {ModalComponent} from '../../../../modal/utils/modal/modal.component';
 import {ReportTemplateQuery} from '../state/report-templates/report-template.query';
 import {Observable} from 'rxjs';
 import {ReportTemplate} from '../state/report-templates/report-template.model';
-import {untilDestroyed} from 'ngx-take-until-destroy';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
-
+@UntilDestroy()
 @Component({
   selector: 's4e-report-templates-modal',
   templateUrl: './report-templates-modal.component.html',
   styleUrls: ['./report-templates-modal.component.scss']
 })
-export class ReportTemplatesModalComponent extends ModalComponent implements OnDestroy {
-  public reportsTemplates$: Observable<ReportTemplate[]> = this._reportTemplateQuery.selectAll();
+export class ReportTemplatesModalComponent
+  extends ModalComponent
+  implements OnDestroy {
+  public reportsTemplates$: Observable<
+    ReportTemplate[]
+  > = this._reportTemplateQuery.selectAll();
 
   constructor(
     modalService: ModalService,
@@ -47,19 +51,19 @@ export class ReportTemplatesModalComponent extends ModalComponent implements OnD
   ) {
     super(modalService, REPORT_TEMPLATES_MODAL_ID);
 
-    this._reportTemplateService.get$()
-      .pipe(untilDestroyed(this))
-      .subscribe();
+    this._reportTemplateService.get$().pipe(untilDestroyed(this)).subscribe();
   }
 
   load(reportTemplate: ReportTemplate) {
-    this._reportTemplateService.load$(reportTemplate)
+    this._reportTemplateService
+      .load$(reportTemplate)
       .pipe(untilDestroyed(this))
       .subscribe(() => this.dismiss());
   }
 
   delete(reportTemplate: ReportTemplate) {
-    this._reportTemplateService.delete$(reportTemplate)
+    this._reportTemplateService
+      .delete$(reportTemplate)
       .pipe(untilDestroyed(this))
       .subscribe();
   }

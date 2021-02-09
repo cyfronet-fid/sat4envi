@@ -15,40 +15,34 @@
  *
  */
 
-import {LocationSearchResultsStore} from './../state/location-search-results/locations-search-results.store';
-import {SessionQuery} from './../../../state/session/session.query';
+import {LocationSearchResultsStore} from '../state/location-search-results/locations-search-results.store';
+import {SessionQuery} from '../../../state/session/session.query';
 import {
   Component,
+  ElementRef,
   OnDestroy,
   OnInit,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  AfterContentChecked,
-  HostListener,
-  Renderer2
+  Renderer2,
+  ViewChild
 } from '@angular/core';
 import {IUILayer} from '../state/common.model';
 import {LocationSearchResult} from '../state/location-search-results/location-search-result.model';
 import {environment} from '../../../../environments/environment';
-import {map, filter} from 'rxjs/operators';
 import {combineLatest, Observable} from 'rxjs';
 import {ProductQuery} from '../state/product/product.query';
 import {OverlayQuery} from '../state/overlay/overlay.query';
-import {MapQuery} from '../state/map/map.query';
-import {SceneQuery} from '../state/scene/scene.query';
 import {ProductService} from '../state/product/product.service';
 import {OverlayService} from '../state/overlay/overlay.service';
 import {SearchResultsService} from '../state/location-search-results/locations-search-results.service';
 import {LocationSearchResultsQuery} from '../state/location-search-results/location-search-results.query';
 import {ResizeEvent} from 'angular-resizable-element';
-import {InjectorModule} from 'src/app/common/injector.module';
 import {ModalService} from '../../../modal/state/modal.service';
 import {OVERLAY_LIST_MODAL_ID} from './overlay-list-modal/overlay-list-modal.model';
 import {TimelineService} from '../state/scene/timeline.service';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {mapAnyTrue} from '../../../utils/rxjs/observable';
+import {UntilDestroy} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-view-manager',
   templateUrl: './view-manager.component.html',
@@ -61,16 +55,21 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   set _pickerRef(pickerRef: ElementRef) {
     if (pickerRef) {
       // run after current change detection cycle
-      setTimeout(() => this.pickerRef = pickerRef);
+      setTimeout(() => (this.pickerRef = pickerRef));
     }
   }
 
   scenes: IUILayer[] = [];
-  groupedProducts$: Observable<IUILayer[][]> = this.productQuery.selectGroupedProducts();
+  groupedProducts$: Observable<
+    IUILayer[][]
+  > = this.productQuery.selectGroupedProducts();
   productsLoading$: Observable<boolean> = this.productQuery.selectLoading();
   overlays$: Observable<IUILayer[]> = this.overlayQuery.selectVisibleAsUIOverlays();
   overlaysLoading$: Observable<boolean> = this.overlayQuery.selectLoading();
-  loading$: Observable<boolean> = combineLatest([this.overlaysLoading$, this.productsLoading$]).pipe(mapAnyTrue());
+  loading$: Observable<boolean> = combineLatest([
+    this.overlaysLoading$,
+    this.productsLoading$
+  ]).pipe(mapAnyTrue());
 
   isFavouriteFiltration: boolean = false;
   searchValue: string;
@@ -92,15 +91,16 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     private _renderer: Renderer2,
     private _modalService: ModalService,
     private timelineService: TimelineService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.productQuery.selectIsFavouriteMode().subscribe(isFavourite => this.isFavouriteFiltration = isFavourite);
+    this.productQuery
+      .selectIsFavouriteMode()
+      .subscribe(isFavourite => (this.isFavouriteFiltration = isFavourite));
 
     if (environment.hmr) {
       const location = this.searchResultsQuery.getValue().searchResult;
-      this.searchValue = !!location && location.name || '';
+      this.searchValue = (!!location && location.name) || '';
       if (!!location) {
         this.navigateToPlace(location);
       }
@@ -111,8 +111,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     return this.sessionQuery.isLoggedIn();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   toggleSearchResult(show: boolean) {
     this.searchResultsService.toggleSearchResults(show);
@@ -164,14 +163,24 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
     const MIN_HEIGHT = 0;
     const OFFSET = -30;
     const sign = Math.sign(event.edges.top as number);
-    const calculatedHeight = this.pickerRef.nativeElement.offsetHeight - (event.edges.top as number) + sign * OFFSET;
+    const calculatedHeight =
+      this.pickerRef.nativeElement.offsetHeight -
+      (event.edges.top as number) +
+      sign * OFFSET;
 
-    let height = calculatedHeight > MIN_HEIGHT && calculatedHeight < MAX_HEIGHT ? calculatedHeight : MIN_HEIGHT;
+    let height =
+      calculatedHeight > MIN_HEIGHT && calculatedHeight < MAX_HEIGHT
+        ? calculatedHeight
+        : MIN_HEIGHT;
     height = calculatedHeight < MIN_HEIGHT ? MIN_HEIGHT : height;
     height = calculatedHeight > MAX_HEIGHT ? MAX_HEIGHT : height;
 
     this.spacerHeight = height + 50;
-    this._renderer.setStyle(this.pickerRef.nativeElement, 'height', `${height as number}px`);
+    this._renderer.setStyle(
+      this.pickerRef.nativeElement,
+      'height',
+      `${height as number}px`
+    );
   }
 
   showOverlayListModal() {

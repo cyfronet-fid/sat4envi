@@ -22,10 +22,11 @@ import {Observable} from 'rxjs';
 import {Institution} from '../state/institution/institution.model';
 import {InstitutionsSearchResultsQuery} from '../state/institutions-search/institutions-search-results.query';
 import {ActivatedRoute} from '@angular/router';
-import {untilDestroyed} from 'ngx-take-until-destroy';
-import {map, switchMap, take} from 'rxjs/operators';
+import {switchMap} from 'rxjs/operators';
 import {LicensedProduct} from '../../map-view/state/product/product.model';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-settings',
   templateUrl: './manage-products.component.html',
@@ -36,8 +37,9 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   public errors$ = this._productQuery.selectError();
   public licences$ = this._productQuery.select('licensedProducts');
 
-  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery
-    .selectActive$(this._activatedRoute);
+  public activeInstitution$: Observable<Institution> = this._institutionsSearchResultsQuery.selectActive$(
+    this._activatedRoute
+  );
 
   constructor(
     private _productQuery: ProductQuery,
@@ -47,13 +49,13 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this._productService.get()
-      .pipe(untilDestroyed(this))
-      .subscribe();
+    this._productService.get().pipe(untilDestroyed(this)).subscribe();
     this.activeInstitution$
       .pipe(
         untilDestroyed(this),
-        switchMap(institution => this._productService.getProductsLicencesFor$(institution))
+        switchMap(institution =>
+          this._productService.getProductsLicencesFor$(institution)
+        )
       )
       .subscribe();
   }
@@ -61,9 +63,10 @@ export class ManageProductsComponent implements OnInit, OnDestroy {
   toggleInstitutionVisibilityOf(licensedProduct: LicensedProduct) {
     this.activeInstitution$
       .pipe(
-        switchMap(institution => licensedProduct.institutionsSlugs.includes(institution.slug)
-          ? this._productService.removeProductLicence(licensedProduct, institution)
-          : this._productService.addProductLicence(licensedProduct, institution)
+        switchMap(institution =>
+          licensedProduct.institutionsSlugs.includes(institution.slug)
+            ? this._productService.removeProductLicence(licensedProduct, institution)
+            : this._productService.addProductLicence(licensedProduct, institution)
         )
       )
       .subscribe();

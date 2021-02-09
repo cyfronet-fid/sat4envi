@@ -33,7 +33,14 @@ export interface RegisterState {}
 
 interface DomainType {
   label: string;
-  value: 'ATMOSPHERE' | 'MARINE' | 'EMERGENCY' | 'LAND' | 'SECURITY' | 'CLIMATE' | 'OTHER';
+  value:
+    | 'ATMOSPHERE'
+    | 'MARINE'
+    | 'EMERGENCY'
+    | 'LAND'
+    | 'SECURITY'
+    | 'CLIMATE'
+    | 'OTHER';
 }
 export const scientificDomainsTypes: DomainType[] = [
   {

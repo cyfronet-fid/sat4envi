@@ -15,14 +15,22 @@
   ~
   -->
 
-<s4e-generic-list-view [loading]="isLoading$ | async"
-                       [items]="institutions$ | async"
-                       [error]="error$ | async"
-                       [searchable]="true">
+<s4e-generic-list-view
+  [loading]="isLoading$ | async"
+  [items]="institutions$ | async"
+  [error]="error$ | async"
+  [searchable]="true"
+>
   <ng-container add-button>
-    <button class="button button--secondary button--small" data-e2e="addInstitution"
-            routerLink="../add-institution"
-            queryParamsHandling="merge" i18n>Dodaj nową instytucję</button>
+    <button
+      class="button button--secondary button--small"
+      data-e2e="addInstitution"
+      routerLink="../add-institution"
+      queryParamsHandling="merge"
+      i18n
+    >
+      Dodaj nową instytucję
+    </button>
   </ng-container>
   <ng-container description></ng-container>
   <h1 caption i18>
@@ -34,12 +42,15 @@
     <th i18n class="table__actions">Akcje</th>
   </ng-container>
   <ng-template let-inst="item">
-    <td
-      [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15"
-      
-    >
-      <a routerLink="../institution" data-e2e="institution-name" queryParamsHandling="merge"
-         [queryParams]="{institution: inst.slug}">{{inst.name}}</a></td>
+    <td [style.padding-left.px]="(inst.ancestorDepth || 0) * 30 + 15">
+      <a
+        routerLink="../institution"
+        data-e2e="institution-name"
+        queryParamsHandling="merge"
+        [queryParams]="{institution: inst.slug}"
+        >{{ inst.name }}</a
+      >
+    </td>
     <td>
       <a
         *ngIf="isManagerOf(inst) || isAdmin"
@@ -48,14 +59,15 @@
         data-e2e="edit"
         [queryParams]="{institution: inst.slug}"
       >
-        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15"/>
+        <img src="/assets/images/ico_edit.svg" alt="Edit" width="15" />
       </a>
       <a
         *ngIf="isAdmin || hasDeleteAuthorities"
         href="javascript:void(0)"
         data-e2e="delete"
-        (click)="deleteInstitution(inst.slug)">
-        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15"/>
+        (click)="deleteInstitution(inst.slug)"
+      >
+        <img src="/assets/images/ico_delete.svg" alt="Delete" width="15" />
       </a>
     </td>
   </ng-template>

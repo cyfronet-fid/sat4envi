@@ -24,9 +24,11 @@
     (click)="dismiss()"
     data-e2e="close-btn"
   ></button>
-  <h4 class="modal-title" id="s4e-modal-label"><span>
-    <ng-content select=".s4e-modal-header"></ng-content>
-  </span></h4>
+  <h4 class="modal-title" id="s4e-modal-label">
+    <span>
+      <ng-content select=".s4e-modal-header"></ng-content>
+    </span>
+  </h4>
 </div>
 <div class="modal-body" data-e2e="modal-container">
   <ng-content select=".s4e-modal-body"></ng-content>

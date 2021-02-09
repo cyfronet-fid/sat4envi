@@ -33,30 +33,27 @@ import {
   HTTP_502_BAD_GATEWAY
 } from '../../errors/errors.model';
 import {EMPTY, Observable, of, throwError} from 'rxjs';
-import {NotificationService} from 'notifications';
 import {Router} from '@angular/router';
 import environment from 'src/environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {NotificationService} from '../../notifications/state/notification.service';
 
 export const BACK_LINK_QUERY_PARAM = 'back_link';
 
 @Injectable({providedIn: 'root'})
 export class ProfileLoaderService {
-  constructor(
-    private _store: SessionStore,
-    private _http: HttpClient,
-  ) {
-  }
+  constructor(private _store: SessionStore, private _http: HttpClient) {}
 
   loadProfile$(): Observable<Session | null> {
     const url = `${environment.apiPrefixV1}/users/me`;
-    const skipUnauthorizedHeader = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}};
-    return this._http.get<Session>(url, skipUnauthorizedHeader)
-      .pipe(
-        tap(profile => this._store.update({...profile})),
-        catchError(() => of(null)),
-      );
+    const skipUnauthorizedHeader = {
+      headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}
+    };
+    return this._http.get<Session>(url, skipUnauthorizedHeader).pipe(
+      tap(profile => this._store.update({...profile})),
+      catchError(() => of(null))
+    );
   }
 }
 
@@ -70,8 +67,7 @@ export class SessionService {
     private _http: HttpClient,
     private _router: Router,
     private _profileLoaderService: ProfileLoaderService
-  ) {
-  }
+  ) {}
 
   loadProfile$() {
     return this._profileLoaderService.loadProfile$();
@@ -83,25 +79,27 @@ export class SessionService {
 
   changePassword(oldPassword: string, newPassword: string) {
     const url = `${environment.apiPrefixV1}/password-change`;
-    return this._http.post(url, {oldPassword, newPassword})
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap(() => this._notificationService.addGeneral({
+    return this._http.post(url, {oldPassword, newPassword}).pipe(
+      handleHttpRequest$(this._store),
+      tap(() =>
+        this._notificationService.addGeneral({
           type: 'success',
           content: 'Hasło zostało zmienione'
-        }))
-      );
+        })
+      )
+    );
   }
 
   sendPasswordResetToken$(email: string) {
     const url = `${environment.apiPrefixV1}/token-create?email=${email}`;
-    return this._http.post(url, {})
-      .pipe(
-        tap(() => this._notificationService.addGeneral({
+    return this._http.post(url, {}).pipe(
+      tap(() =>
+        this._notificationService.addGeneral({
           type: 'success',
           content: 'Link do resetu hasła został wysłany na podany adres email'
-        }))
-      );
+        })
+      )
+    );
   }
 
   resetPassword$(token: string, password: string) {
@@ -114,53 +112,56 @@ export class SessionService {
       }
     };
     const url = `${environment.apiPrefixV1}/password-reset`;
-    return this._http.post(url, {token, password}, headers)
-      .pipe(
-        catchError((error: HttpErrorResponse) => {
-          switch (error.status) {
-            case HTTP_404_NOT_FOUND:
-              this._notificationService.addGeneral({
-                type: 'error',
-                content: 'Token dla resetu hasła nie istnieje'
-              });
-              break;
-            case HTTP_401_UNAUTHORIZED:
-              this._notificationService.addGeneral({
-                type: 'error',
-                content: 'Token resetu hasła przedawnił się'
-              });
-              break;
-          }
-          return EMPTY;
-        }),
-        tap(() => this._notificationService.addGeneral({
+    return this._http.post(url, {token, password}, headers).pipe(
+      catchError((error: HttpErrorResponse) => {
+        switch (error.status) {
+          case HTTP_404_NOT_FOUND:
+            this._notificationService.addGeneral({
+              type: 'error',
+              content: 'Token dla resetu hasła nie istnieje'
+            });
+            break;
+          case HTTP_401_UNAUTHORIZED:
+            this._notificationService.addGeneral({
+              type: 'error',
+              content: 'Token resetu hasła przedawnił się'
+            });
+            break;
+        }
+        return EMPTY;
+      }),
+      tap(() =>
+        this._notificationService.addGeneral({
           type: 'success',
           content: 'Hasło zostało zresetowane'
-        }))
-      );
+        })
+      )
+    );
   }
 
   @action('login')
   login$(request: LoginFormState) {
     const url = `${environment.apiPrefixV1}/login`;
-    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}}
-    return this._http.post<LoginFormState>(url, request, headers)
-      .pipe(
-        switchMap(data => this._profileLoaderService.loadProfile$()),
-        tap(() => this._store.update({email: request.email})),
-        catchError(error => {
-          this._notificationService.addGeneral({
-            content: 'Użytkownik nie istnieje, bądź hasło jest niepoprawne',
-            type: 'error'
-          })
-          return throwError(error);
-        })
-      );
+    const headers = {
+      headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}
+    };
+    return this._http.post<LoginFormState>(url, request, headers).pipe(
+      switchMap(data => this._profileLoaderService.loadProfile$()),
+      tap(() => this._store.update({email: request.email})),
+      catchError(error => {
+        this._notificationService.addGeneral({
+          content: 'Użytkownik nie istnieje, bądź hasło jest niepoprawne',
+          type: 'error'
+        });
+        return throwError(error);
+      })
+    );
   }
 
   @action('logout')
   logout() {
-    this._http.post(`${environment.apiPrefixV1}/logout`, {})
+    this._http
+      .post(`${environment.apiPrefixV1}/logout`, {})
       .pipe(
         tap(() => resetStores()),
         tap(() => this._store.reset())
@@ -171,15 +172,21 @@ export class SessionService {
   removeAccount$(email: string, password: string) {
     const url = `${environment.apiPrefixV1}/users/forget-me`;
 
-    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_403_FORBIDDEN.toString()}};
-    return this._http.post(url, {email, password}, headers)
+    const headers = {
+      headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_403_FORBIDDEN.toString()}
+    };
+    return this._http
+      .post(url, {email, password}, headers)
       .pipe(handleHttpRequest$(this._store));
   }
 
   getJwtToken$(request: LoginFormState) {
     const url = `${environment.apiPrefixV1}/token`;
-    const headers = {headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}};
-    return this._http.post<{ email: string, token: string }>(url, request, headers)
+    const headers = {
+      headers: {[ERROR_INTERCEPTOR_SKIP_HEADER]: HTTP_401_UNAUTHORIZED.toString()}
+    };
+    return this._http
+      .post<{email: string; token: string}>(url, request, headers)
       .pipe(map(response => response.token));
   }
 
@@ -188,12 +195,10 @@ export class SessionService {
   }
 
   goToLastUrl() {
-    (
-      !!this._backLink && this._backLink !== ''
-        ? this._router.navigateByUrl(this._backLink)
-        : this._router.navigate(['/map/products'])
-    );
+    !!this._backLink && this._backLink !== ''
+      ? this._router.navigateByUrl(this._backLink)
+      : this._router.navigate(['/map/products']);
 
-    delete (this._backLink);
+    delete this._backLink;
   }
 }

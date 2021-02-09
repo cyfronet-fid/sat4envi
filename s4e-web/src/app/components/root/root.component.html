@@ -18,12 +18,14 @@
 <router-outlet></router-outlet>
 <s4e-modal-outlet></s4e-modal-outlet>
 <notification-outlet></notification-outlet>
-<button *ngIf="PRODUCTION === false"
-        class="dev-reset-btn btn btn-warning btn-sm"
-        i18n-tooltip
-        tooltip="Odśwież stan REDUXa (DEV MODE)"
-        placement="left"
-        (click)="devRefreshState()">
+<button
+  *ngIf="PRODUCTION === false"
+  class="dev-reset-btn btn btn-warning btn-sm"
+  i18n-tooltip
+  tooltip="Odśwież stan REDUXa (DEV MODE)"
+  placement="left"
+  (click)="devRefreshState()"
+>
   <span class="fas fa-xs fa-redo-alt"></span>
 </button>
 

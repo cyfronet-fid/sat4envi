@@ -21,7 +21,7 @@ import * as Factory from 'factory.ts';
 export const InstitutionFactory = Factory.makeFactory<InstitutionForm>({
   id: Factory.each(i => `institution:${i}`),
 
-  parentName : null,
+  parentName: null,
   parentSlug: null,
 
   name: Factory.each(i => `test #${i}`),

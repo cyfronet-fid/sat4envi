@@ -25,7 +25,8 @@ import {HttpClient} from '@angular/common/http';
 import {action} from '@datorama/akita';
 import environment from 'src/environments/environment';
 import {OverlayForm} from '../../view-manager/overlay-list-modal/overlay-list-modal.component';
-import {throwError} from 'rxjs';
+import {NEVER, Observable, throwError} from 'rxjs';
+import {logIt} from '../../../../utils/rxjs/observable';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -33,17 +34,17 @@ import {throwError} from 'rxjs';
  */
 @Injectable({providedIn: 'root'})
 export class OverlayService {
-  constructor(private _store: OverlayStore,
-              private _http: HttpClient,
-              private _remoteConfiguration: RemoteConfiguration) {
-  }
+  constructor(
+    private _store: OverlayStore,
+    private _http: HttpClient,
+    private _remoteConfiguration: RemoteConfiguration
+  ) {}
 
   get() {
-    return this._http.get<Overlay[]>(`${environment.apiPrefixV1}/overlays`)
-      .pipe(
-        handleHttpRequest$(this._store),
-        tap(overlays => this._store.set(overlays))
-      );
+    return this._http.get<Overlay[]>(`${environment.apiPrefixV1}/overlays`).pipe(
+      handleHttpRequest$(this._store),
+      tap(overlays => this._store.set(overlays))
+    );
   }
 
   setActive(overlayId: number | null) {
@@ -55,25 +56,25 @@ export class OverlayService {
     this._store.setActive(overlayIds);
   }
 
-  setVisible(id: any, visible: boolean) {
+  setVisible$(id: any, visible: boolean): Observable<unknown> {
     this._store.ui.update(id, {loadingVisible: true});
-
     const url = `${environment.apiPrefixV1}/overlays/${id}/visible`;
-    (
-      visible
-        ? this._http.put(url, {})
-        : this._http.delete(url)
-    )
-      .pipe(finalize(() => this._store.ui.update(id, {loadingVisible: false})))
-      .subscribe(() => {
-          if (!visible) {
-            this._store.removeActive(id);
-          }
-          this._store.update(id, {visible});
-          this._store.ui.update({showNewOverlayForm: false});
-        },
-        error => this._store.ui.setError(error)
-      );
+    console.log('setVisible$ # 1', id, visible, url);
+    return (visible ? this._http.put(url, {}) : this._http.delete(url)).pipe(
+      logIt('setVisible$'),
+      tap(() => {
+        if (!visible) {
+          this._store.removeActive(id);
+        }
+        this._store.update(id, {visible});
+        this._store.ui.update({showNewOverlayForm: false});
+      }),
+      catchError(error => {
+        this._store.ui.setError(error);
+        return NEVER;
+      }),
+      finalize(() => this._store.ui.update(id, {loadingVisible: false}))
+    );
   }
 
   setNewFormVisible(show: boolean) {
@@ -111,27 +112,37 @@ export class OverlayService {
   }
 
   resetUI() {
-    this._store.ui.update({showNewOverlayForm: false, loadingNew: false, error: null, loading: false});
-    this._store.ui.update(null, {loadingDelete: false, loadingPublic: false, loadingVisible: false});
+    this._store.ui.update({
+      showNewOverlayForm: false,
+      loadingNew: false,
+      error: null,
+      loading: false
+    });
+    this._store.ui.update(null, {
+      loadingDelete: false,
+      loadingPublic: false,
+      loadingVisible: false
+    });
   }
 
   private _createOverlay$(overlay: OverlayForm, url: string) {
     this._store.ui.update({loadingNew: true});
-    return this._http.post<Overlay>(url, overlay)
-      .pipe(
-        tap(newOverlay => {
-          this._store.add(newOverlay);
-          this._store.ui.update({showNewOverlayForm: false});
-        }),
-        tap(() => this._store.ui.update({loadingNew: false}))
-      );
+    return this._http.post<Overlay>(url, overlay).pipe(
+      tap(newOverlay => {
+        this._store.add(newOverlay);
+        this._store.ui.update({showNewOverlayForm: false});
+      }),
+      tap(() => this._store.ui.update({loadingNew: false}))
+    );
   }
 
   private _deleteOverlay(id: number, baseUrl: string) {
     this._store.ui.update(id, {loadingDelete: true});
-    this._http.delete(`${baseUrl}/${id}`)
+    this._http
+      .delete(`${baseUrl}/${id}`)
       .pipe(finalize(() => this._store.ui.update(id, {loadingDelete: false})))
-      .subscribe(() => {
+      .subscribe(
+        () => {
           this._store.remove(id);
           this._store.ui.update({showNewOverlayForm: false});
         },

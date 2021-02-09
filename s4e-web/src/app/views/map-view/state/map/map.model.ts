@@ -18,7 +18,8 @@
 import environment from 'src/environments/environment';
 
 export const SIDEBAR_OPEN_LOCAL_STORAGE_KEY = 'sidebarOpen';
-export const PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY = 'productDescriptionClosed';
+export const PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY =
+  'productDescriptionClosed';
 
 export interface ViewPosition {
   centerCoordinates: [number, number];
@@ -44,10 +45,14 @@ export function createInitialState(storage: Storage): MapState {
   return {
     zkOptionsOpened: false,
     loginOptionsOpened: false,
-    productDescriptionOpened: storage.getItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY) === null
-      ? true : !JSON.parse(storage.getItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY)),
-    sidebarOpen: storage.getItem(SIDEBAR_OPEN_LOCAL_STORAGE_KEY) === null
-      ? true : JSON.parse(storage.getItem(SIDEBAR_OPEN_LOCAL_STORAGE_KEY)),
+    productDescriptionOpened:
+      storage.getItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY) === null
+        ? true
+        : !JSON.parse(storage.getItem(PRODUCT_DESCRIPTION_CLOSED_LOCAL_STORAGE_KEY)),
+    sidebarOpen:
+      storage.getItem(SIDEBAR_OPEN_LOCAL_STORAGE_KEY) === null
+        ? true
+        : JSON.parse(storage.getItem(SIDEBAR_OPEN_LOCAL_STORAGE_KEY)),
     view: {
       centerCoordinates: environment.projection.coordinates,
       zoomLevel: 10

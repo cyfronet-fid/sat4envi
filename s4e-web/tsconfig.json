@@ -3,13 +3,17 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "module": "es2020",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2015",
+    "strict": false,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -17,13 +21,5 @@
       "es2017",
       "dom"
     ],
-    "paths": {
-      "notifications": [
-        "dist/notifications"
-      ],
-      "notifications/*": [
-        "dist/notifications/*"
-      ]
-    }
   }
 }

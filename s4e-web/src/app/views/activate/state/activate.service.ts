@@ -25,7 +25,6 @@ import environment from 'src/environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class ActivateService {
-
   constructor(
     private _activateStore: ActivateStore,
     private _router: Router,
@@ -38,15 +37,20 @@ export class ActivateService {
     this._activateStore.setLoading(true);
     this._activateStore.setState('activating');
 
-    this._http.post(`${environment.apiPrefixV1}/confirm-email`, {}, {params: {token}})
-      .pipe(delay(1000), finalize(() => this._activateStore.setLoading(false)))
+    this._http
+      .post(`${environment.apiPrefixV1}/confirm-email`, {}, {params: {token}})
+      .pipe(
+        delay(1000),
+        finalize(() => this._activateStore.setLoading(false))
+      )
       .subscribe(
         () => {
           this._router.navigate(['/login']);
         },
         (error: HttpErrorResponse) => {
           this._activateStore.setError(error);
-        });
+        }
+      );
   }
 
   @action('resendToken')
@@ -55,11 +59,18 @@ export class ActivateService {
     this._activateStore.setLoading(true);
     this._activateStore.setState('resending');
 
-    this._http.post(`${environment.apiPrefixV1}/resend-registration-token-by-token`, {}, {params: {token}})
-      .pipe(delay(1000), finalize(() => this._activateStore.setLoading(false)))
+    this._http
+      .post(
+        `${environment.apiPrefixV1}/resend-registration-token-by-token`,
+        {},
+        {params: {token}}
+      )
+      .pipe(
+        delay(1000),
+        finalize(() => this._activateStore.setLoading(false))
+      )
       .subscribe(
-        () => {
-        },
+        () => {},
         (error: HttpErrorResponse) => {
           this._activateStore.setError(error);
         }

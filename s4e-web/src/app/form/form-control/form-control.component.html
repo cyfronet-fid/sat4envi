@@ -15,23 +15,35 @@
   ~
   -->
 
-<div class="form-group {{_options.formGroupClass}} row" *ngIf="visualType != 'blank'; else blank"
-     [ngClass]="{'has-success': isSuccess(), 'has-error': isError(), 'has-warning': isWarning()}">
+<div
+  class="form-group {{ _options.formGroupClass }} row"
+  *ngIf="visualType != 'blank'; else blank"
+  [ngClass]="{
+    'has-success': isSuccess(),
+    'has-error': isError(),
+    'has-warning': isWarning()
+  }"
+>
   <ng-container [ngSwitch]="visualType">
     <ng-template #standard [ngSwitchCase]="'standard'">
       <ng-container *ngTemplateOutlet="label"></ng-container>
 
-      <div class="col-md-{{12-getLabelSize()}}"
-           *ngIf="visualType === 'standard'">
+      <div
+        class="col-md-{{ 12 - getLabelSize() }}"
+        *ngIf="visualType === 'standard'"
+      >
         <ng-container *ngTemplateOutlet="contentAndFeedback"></ng-container>
 
-        <ext-form-input-errors *ngIf="_options.showErrorMessages && isError()" [errorList]="getErrors()">
+        <ext-form-input-errors
+          *ngIf="_options.showErrorMessages && isError()"
+          [errorList]="getErrors()"
+        >
         </ext-form-input-errors>
       </div>
     </ng-template>
     <ng-template #inputGroup [ngSwitchCase]="'input-group'">
       <div class="input-group input-group-sm">
-        <span class="input-group-addon addon-left">{{_options.label}}</span>
+        <span class="input-group-addon addon-left">{{ _options.label }}</span>
         <ng-container *ngTemplateOutlet="contentAndFeedback"></ng-container>
       </div>
     </ng-template>
@@ -43,25 +55,36 @@
 </ng-template>
 
 <!--this input errors are for non standard visual types-->
-<ext-form-input-errors *ngIf="_options.showErrorMessages && visualType !== 'standard' && isError()"
-                       [errorList]="getErrors()">
+<ext-form-input-errors
+  *ngIf="_options.showErrorMessages && visualType !== 'standard' && isError()"
+  [errorList]="getErrors()"
+>
 </ext-form-input-errors>
 
 <!-- TEMPLATES BELOW ARE PARTS USED BY TEMPLATES ABOVE-->
 <ng-template #contentAndFeedback>
   <ng-content select></ng-content>
-  <span *ngIf="visualType === 'blank' && isError()"
-        class="form-control-feedback ext-form-control-feedback"
-        aria-hidden="true">
+  <span
+    *ngIf="visualType === 'blank' && isError()"
+    class="form-control-feedback ext-form-control-feedback"
+    aria-hidden="true"
+  >
   </span>
 </ng-template>
 
 <ng-template #label>
-  <label [attr.for]="_options.controlId" *ngIf="visualType === 'standard'"
-         class="col-md-{{getLabelSize()}} control-label">
+  <label
+    [attr.for]="_options.controlId"
+    *ngIf="visualType === 'standard'"
+    class="col-md-{{ getLabelSize() }} control-label"
+  >
     {{ _options.label }}
     <span *ngIf="_options.required" class="required">* </span>
-    <span *ngIf="_options.tooltip" [attr.title]="_options.tooltip" class="fa fa-info-circle"></span>
-    <span *ngIf="_options.help">{{_options.help}}</span>
+    <span
+      *ngIf="_options.tooltip"
+      [attr.title]="_options.tooltip"
+      class="fa fa-info-circle"
+    ></span>
+    <span *ngIf="_options.help">{{ _options.help }}</span>
   </label>
 </ng-template>

@@ -33,16 +33,15 @@ describe('ProductQuery', () => {
   let query: ProductQuery;
   let routerQuery: RouterQuery;
 
-
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [LocalStorageTestingProvider],
       imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
     });
 
-    query = TestBed.get(ProductQuery);
-    store = TestBed.get(ProductStore);
-    routerQuery = TestBed.get(RouterQuery);
+    query = TestBed.inject(ProductQuery);
+    store = TestBed.inject(ProductStore);
+    routerQuery = TestBed.inject(RouterQuery);
   });
 
   it('should create an instance', () => {
@@ -50,34 +49,41 @@ describe('ProductQuery', () => {
   });
 
   it('should sort values by rank value', async () => {
-    const rankSort = (a: any, b: any) => a.rank < b.rank ? -1 : 1;
-    const firstCategoryProducts = ProductFactory.buildList(5, {productCategory: ProductCategoryFactory.build()})
-      .map(product => {
-        product['category'] = product['productCategory'];
-        return product;
-      });
-    const secondCategoryProducts = ProductFactory.buildList(5, {productCategory: ProductCategoryFactory.build()})
-      .map(product => {
-        product['category'] = product['productCategory'];
-        return product;
-      });
+    const rankSort = (a: any, b: any) => (a.rank < b.rank ? -1 : 1);
+    const firstCategoryProducts = ProductFactory.buildList(5, {
+      productCategory: ProductCategoryFactory.build()
+    }).map(product => {
+      product['category'] = product['productCategory'];
+      return product;
+    });
+    const secondCategoryProducts = ProductFactory.buildList(5, {
+      productCategory: ProductCategoryFactory.build()
+    }).map(product => {
+      product['category'] = product['productCategory'];
+      return product;
+    });
 
-    spyOn(query, 'selectAllFilteredAsUILayer')
-      .and.returnValue(of([...secondCategoryProducts, ...firstCategoryProducts]));
+    spyOn(query, 'selectAllFilteredAsUILayer').and.returnValue(
+      of([...secondCategoryProducts, ...firstCategoryProducts])
+    );
     const sortedCategoriesProducts = await query.selectGroupedProducts().toPromise();
 
-    expect(sortedCategoriesProducts[0]).toEqual(firstCategoryProducts.sort(rankSort));
-    expect(sortedCategoriesProducts[1]).toEqual(secondCategoryProducts.sort(rankSort));
+    expect(sortedCategoriesProducts[0]).toEqual(
+      firstCategoryProducts.sort(rankSort)
+    );
+    expect(sortedCategoriesProducts[1]).toEqual(
+      secondCategoryProducts.sort(rankSort)
+    );
   });
 
   it('should selectFavourites', async () => {
     const product = ProductFactory.build();
     store.set([product]);
-    expect(await query.selectFavourites().pipe(take(1)).toPromise())
-      .toEqual([]);
+    expect(await query.selectFavourites().pipe(take(1)).toPromise()).toEqual([]);
     store.update(product.id, {favourite: true});
-    expect(await query.selectFavourites().pipe(take(1)).toPromise())
-      .toEqual([{...product, favourite: true}]);
+    expect(await query.selectFavourites().pipe(take(1)).toPromise()).toEqual([
+      {...product, favourite: true}
+    ]);
   });
 
   it('should selectFavouritesCount', async () => {
@@ -97,7 +103,11 @@ describe('ProductQuery', () => {
       queryParams$.next(undefined);
     });
 
-    function toUILayer(product: Product, favourite: boolean = false, categoryCollapsed: boolean = false) {
+    function toUILayer(
+      product: Product,
+      favourite: boolean = false,
+      categoryCollapsed: boolean = false
+    ) {
       return {
         cid: product.id,
         label: product.displayName,
@@ -115,7 +125,10 @@ describe('ProductQuery', () => {
       const nonFavProduct = products[1];
       store.set(products);
 
-      const filtered = query.selectAllFilteredAsUILayer().pipe(take(4), toArray()).toPromise();
+      const filtered = query
+        .selectAllFilteredAsUILayer()
+        .pipe(take(4), toArray())
+        .toPromise();
 
       queryParams$.next(PRODUCT_MODE_FAVOURITE);
 
@@ -135,7 +148,10 @@ describe('ProductQuery', () => {
       const product = ProductFactory.build();
       store.set([product]);
 
-      const filtered = query.selectAllFilteredAsUILayer().pipe(take(2), toArray()).toPromise();
+      const filtered = query
+        .selectAllFilteredAsUILayer()
+        .pipe(take(2), toArray())
+        .toPromise();
 
       store.ui.update({collapsedCategories: [product.productCategory.id]});
 
@@ -147,11 +163,10 @@ describe('ProductQuery', () => {
   });
 
   it('should selectIsFavouriteMode', async () => {
-
     const queryParams$ = new ReplaySubject(1);
     spyOn(routerQuery, 'selectQueryParams').and.returnValue(queryParams$);
 
-    queryParams$.next('')
+    queryParams$.next('');
 
     const modes = query.selectIsFavouriteMode().pipe(take(2), toArray()).toPromise();
 
@@ -168,20 +183,26 @@ describe('ProductQuery', () => {
     });
 
     it('should handle unexpected value', async () => {
-      queryParams$.next(undefined)
-      const resolutions = query.selectTimelineResolution().pipe(take(3), toArray()).toPromise()
-      queryParams$.next('<bad_value>')
-      queryParams$.next('55')
+      queryParams$.next(undefined);
+      const resolutions = query
+        .selectTimelineResolution()
+        .pipe(take(3), toArray())
+        .toPromise();
+      queryParams$.next('<bad_value>');
+      queryParams$.next('55');
       expect(await resolutions).toEqual([24, 24, 24]);
     });
 
     it('should pass valid value', async () => {
-      queryParams$.next('1')
-      const resolutions = query.selectTimelineResolution().pipe(take(5), toArray()).toPromise()
-      queryParams$.next('3')
-      queryParams$.next('6')
-      queryParams$.next('12')
-      queryParams$.next('24')
+      queryParams$.next('1');
+      const resolutions = query
+        .selectTimelineResolution()
+        .pipe(take(5), toArray())
+        .toPromise();
+      queryParams$.next('3');
+      queryParams$.next('6');
+      queryParams$.next('12');
+      queryParams$.next('24');
       expect(await resolutions).toEqual([1, 3, 6, 12, 24]);
     });
   });

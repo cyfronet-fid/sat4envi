@@ -15,13 +15,22 @@
   ~
   -->
 
-<ul class="legend__left" *ngIf="isOpen && (activeLegend.leftDescription | keyvalue).length > 0">
-  <li *ngFor="let item of (activeLegend.leftDescription | keyvalue)"
-      class="chart__label" [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}">
-    <span>{{item.value}}</span>
+<ul
+  class="legend__left"
+  *ngIf="isOpen && (activeLegend.leftDescription | keyvalue).length > 0"
+>
+  <li
+    *ngFor="let item of activeLegend.leftDescription | keyvalue"
+    class="chart__label"
+    [ngStyle]="{bottom: 'calc(' + (item.key * 100 + '% - 20px)')}"
+  >
+    <span>{{ item.value }}</span>
   </li>
 </ul>
-<div class="legend__chart" data-e2e="legend__chart" [style.background-image]="url" (click)="opened.emit()"></div>
-<div class="legend__metric">{{activeLegend.bottomMetric.unit}}</div>
-
-
+<div
+  class="legend__chart"
+  data-e2e="legend__chart"
+  [style.background-image]="url"
+  (click)="opened.emit()"
+></div>
+<div class="legend__metric">{{ activeLegend.bottomMetric.unit }}</div>

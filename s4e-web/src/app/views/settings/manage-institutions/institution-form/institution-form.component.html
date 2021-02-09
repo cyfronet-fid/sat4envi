@@ -20,18 +20,32 @@
 </header>
 
 <section class="content__details">
-  <form class="content__form informational-form" [formGroup]="form" (ngSubmit)="updateInstitution()">
-    <section class="alert alert-danger" *ngIf="error$ | async" data-e2e="alert-message">
+  <form
+    class="content__form informational-form"
+    [formGroup]="form"
+    (ngSubmit)="updateInstitution()"
+  >
+    <section
+      class="alert alert-danger"
+      *ngIf="error$ | async"
+      data-e2e="alert-message"
+    >
       <ng-container [ngSwitch]="(error$ | async).status">
-        <ng-container *ngSwitchCase="400" i18n>Niepoprawnie wypełniony formularz</ng-container>
+        <ng-container *ngSwitchCase="400" i18n
+          >Niepoprawnie wypełniony formularz</ng-container
+        >
         <ng-container *ngSwitchCase="500" i18n>Wystąpił błąd serwera</ng-container>
         <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
       </ng-container>
     </section>
 
-    <section class="alert alert-danger" *ngIf="form.errors" data-e2e="alert-message-details">
+    <section
+      class="alert alert-danger"
+      *ngIf="form.errors"
+      data-e2e="alert-message-details"
+    >
       <ul>
-        <li *ngFor="let error of (form.errors | errorKeys)" [ngSwitch]="error">
+        <li *ngFor="let error of form.errors | errorKeys" [ngSwitch]="error">
           <ng-container *ngSwitchDefault i18n>Nieoczekiwany błąd</ng-container>
         </li>
       </ul>
@@ -114,26 +128,23 @@
         </li>
       </ul>
     </section>
-  <!-- isSavedLogo ? 'data:application/xml;base64,' + form.controls.emblem.value :  -->
+    <!-- isSavedLogo ? 'data:application/xml;base64,' + form.controls.emblem.value :  -->
     <section>
-      <h2 i18n>
-        Logo / Herb instytucji
-      </h2>
-      <p>
-        Plik jpg/png powinien mieć minimalną rozdzielczość 130x130px.
-      </p>
+      <h2 i18n>Logo / Herb instytucji</h2>
+      <p>Plik jpg/png powinien mieć minimalną rozdzielczość 130x130px.</p>
       <div class="institution__logo" *ngIf="emblemImgSrc">
         <img
           alt="Logo instytucji"
           *ngIf="!!emblemImgSrc"
           [src]="emblemImgSrc"
           height="200"
-
           data-e2e="emblem-image"
         />
       </div>
 
-      <label for="emblem" i18n class="button button--default button--small">Dodaj logo/herb</label>
+      <label for="emblem" i18n class="button button--default button--small"
+        >Dodaj logo/herb</label
+      >
       <input
         hidden="true"
         type="file"
@@ -143,14 +154,14 @@
         data-e2e="emblem-input"
         (change)="loadLogo($event)"
       />
-       <ul s4e-form-error [control]="form.controls.emblem"></ul>
+      <ul s4e-form-error [control]="form.controls.emblem"></ul>
     </section>
     <section>
       <h2 i18n>Administratorzy instytucji</h2>
       <p i18n>
-        W tym miejscu możesz dodać osoby, które będą zarządzać instytucją.
-        Wpisz e-maile oddzielone przecinkami. Uprawnienia Administratora
-        możesz nadać później w zakładce ludzie po uprzednim wybraniu instytucji.
+        W tym miejscu możesz dodać osoby, które będą zarządzać instytucją. Wpisz
+        e-maile oddzielone przecinkami. Uprawnienia Administratora możesz nadać
+        później w zakładce ludzie po uprzednim wybraniu instytucji.
       </p>
       <label for="emails" i18n>E-maile administratorów</label>
       <input
@@ -159,7 +170,7 @@
         id="emails"
         data-e2e="emails"
       />
-      <ng-container *ngIf="hasErrors('adminsEmails')" >
+      <ng-container *ngIf="hasErrors('adminsEmails')">
         <span
           class="error"
           *ngFor="let error of form.controls.adminsEmails.errors | keyvalue"
@@ -174,10 +185,23 @@
     </section>
 
     <footer class="form-submit">
-      <button type="submit" data-e2e="submit-btn" class="button button--secondary button--small" i18n>
+      <button
+        type="submit"
+        data-e2e="submit-btn"
+        class="button button--secondary button--small"
+        i18n
+      >
         Zapisz instytucję
       </button>
-      <button type="button" data-e2e="cancel-btn" (click)="resetForm()" class="button button--small button--borderBlack" i18n>Anuluj</button>
+      <button
+        type="button"
+        data-e2e="cancel-btn"
+        (click)="resetForm()"
+        class="button button--small button--borderBlack"
+        i18n
+      >
+        Anuluj
+      </button>
     </footer>
   </form>
 </section>

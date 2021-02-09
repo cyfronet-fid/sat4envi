@@ -15,18 +15,23 @@
  *
  */
 
-import { Component, DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { EventsModule } from "./events.module";
-import { HttpClientTestingModule } from "@angular/common/http/testing";
-import { RouterTestingModule } from "@angular/router/testing";
+import {Component, DebugElement} from '@angular/core';
+import {ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {EventsModule} from './events.module';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 
 @Component({
   template: `
     <body>
       <div class="outside"></div>
-      <div class="inside" s4eEvents (outsideClick)="toggle()" (routerChange)="toggle()">
+      <div
+        class="inside"
+        s4eEvents
+        (outsideClick)="toggle()"
+        (routerChange)="toggle()"
+      >
         <p>Test content</p>
       </div>
     </body>
@@ -46,13 +51,8 @@ describe('DropdownComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [DropdownMockComponent],
-      imports: [
-        EventsModule,
-        HttpClientTestingModule,
-        RouterTestingModule
-      ]
-    })
-    .compileComponents();
+      imports: [EventsModule, HttpClientTestingModule, RouterTestingModule]
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe('DropdownComponent', () => {
     component = fixture.componentInstance;
     de = fixture.debugElement;
     spyToggle = spyOn(component, 'toggle');
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 

@@ -15,12 +15,15 @@
   ~
   -->
 
-<fa-icon [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+<fa-icon
+  [hidden]="!(loading$ | async)"
+  [icon]="['fas', 'circle-notch']"
+  [spin]="true"
+></fa-icon>
 
 <!--Error message-->
 
 <ng-container *ngIf="error$ | async as error; else no_errors">
-
   <div *ngIf="(state$ | async) === 'activating'">
     <div class="alert alert-danger" [ngSwitch]="error.status">
       <div *ngSwitchCase="404">
@@ -38,15 +41,24 @@
       <div *ngSwitchCase="404">
         <ng-container i18n>Nie znaleziono tokenu do ponownego wysłania</ng-container>
       </div>
-      <div *ngSwitchDefault i18n>Wystąpił nieoczekiwany błąd z ponownym wysyłaniem tokena</div>
+      <div *ngSwitchDefault i18n>
+        Wystąpił nieoczekiwany błąd z ponownym wysyłaniem tokena
+      </div>
     </div>
   </div>
 
-  <div *ngIf="(state$ | async) === 'activating' && error.status === 401; else register_button" >
-      <button class="btn btn-primary" (click)="resendToken()" i18n>Wyślij ponownie</button>
+  <div
+    *ngIf="
+      (state$ | async) === 'activating' && error.status === 401;
+      else register_button
+    "
+  >
+    <button class="btn btn-primary" (click)="resendToken()" i18n>
+      Wyślij ponownie
+    </button>
   </div>
   <ng-template #register_button>
-      <button class="btn btn-primary" routerLink="/register" i18n>Zarejestruj</button>
+    <button class="btn btn-primary" routerLink="/register" i18n>Zarejestruj</button>
   </ng-template>
 </ng-container>
 
@@ -58,5 +70,3 @@
     </div>
   </div>
 </ng-template>
-
-

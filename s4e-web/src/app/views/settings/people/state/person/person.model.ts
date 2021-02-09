@@ -37,7 +37,5 @@ export interface Person {
  * A factory function that creates Person
  */
 export function createPerson(params: Partial<Person>) {
-  return {
-
-  } as Person;
+  return {} as Person;
 }

@@ -25,10 +25,12 @@ export interface SaveConfigForm {
 }
 
 export interface SaveConfigModal extends Modal {
-  viewConfiguration : ViewConfigurationEx
+  viewConfiguration: ViewConfigurationEx;
 }
 
 export function isSaveConfigModal(modal: Modal): modal is SaveConfigModal {
-  return modal.id == SAVE_CONFIG_MODAL_ID
-    && (modal as SaveConfigModal).viewConfiguration != null;
+  return (
+    modal.id == SAVE_CONFIG_MODAL_ID &&
+    (modal as SaveConfigModal).viewConfiguration != null
+  );
 }

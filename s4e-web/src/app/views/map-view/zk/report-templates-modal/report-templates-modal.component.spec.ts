@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MODAL_DEF} from '../../../../modal/modal.providers';
 import {MapModule} from '../../map.module';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
@@ -28,21 +28,23 @@ describe('ReportModalComponent', () => {
   let component: ReportTemplatesModalComponent;
   let fixture: ComponentFixture<ReportTemplatesModalComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        {
-          provide: MODAL_DEF, useValue: {
-            id: REPORT_TEMPLATES_MODAL_ID,
-            size: 'lg'
-          }
-        },
-        makeLocalStorageTestingProvider({})
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, HttpClientTestingModule, RouterTestingModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: REPORT_TEMPLATES_MODAL_ID,
+              size: 'lg'
+            }
+          },
+          makeLocalStorageTestingProvider({})
+        ]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReportTemplatesModalComponent);

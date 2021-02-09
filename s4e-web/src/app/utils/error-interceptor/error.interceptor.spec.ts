@@ -18,7 +18,11 @@
 import {RouterTestingModule} from '@angular/router/testing';
 import {ErrorInterceptor} from './error.interceptor';
 import {TestBed} from '@angular/core/testing';
-import {HttpClientTestingModule, HttpTestingController, TestRequest} from '@angular/common/http/testing';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+  TestRequest
+} from '@angular/common/http/testing';
 import {HTTP_INTERCEPTORS, HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {catchError} from 'rxjs/operators';
@@ -40,21 +44,26 @@ describe('ErrorInterceptor', () => {
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}
       ]
     });
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     spyOn(router, 'navigate').and.stub();
 
-    errorInterceptor = TestBed.get(ErrorInterceptor);
-    httpController = TestBed.get(HttpTestingController);
-    http = TestBed.get(HttpClient);
+    errorInterceptor = TestBed.inject(ErrorInterceptor);
+    httpController = TestBed.inject(HttpTestingController);
+    http = TestBed.inject(HttpClient);
   });
 
   it('Should handle client/server error', async () => {
-    const r = http.get(url).pipe(catchError(error => of(error))).toPromise();
+    const r = http
+      .get(url)
+      .pipe(catchError(error => of(error)))
+      .toPromise();
     const request: TestRequest = httpController.expectOne(url);
     request.flush({}, {status: 500, statusText: 'Server Error'});
 
     expect((await r).status).toBe(500);
-    expect((await r).message).toBe(`Http failure response for ${url}: 500 Server Error`);
+    expect((await r).message).toBe(
+      `Http failure response for ${url}: 500 Server Error`
+    );
 
     httpController.verify();
     expect(router.navigate).toHaveBeenCalled();

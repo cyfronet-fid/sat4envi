@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {LoginComponent} from './login.component';
 import {ShareModule} from '../../common/share.module';
@@ -29,19 +29,20 @@ describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
   let sessionService: SessionService;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ShareModule, RouterTestingModule, FormErrorModule],
-      declarations: [LoginComponent]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [ShareModule, RouterTestingModule, FormErrorModule],
+        declarations: [LoginComponent]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    sessionService = TestBed.get(SessionService);
+    sessionService = TestBed.inject(SessionService);
   });
 
   it('should create', () => {

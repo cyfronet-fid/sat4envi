@@ -15,9 +15,15 @@
  *
  */
 
-import { environment } from 'src/environments/environment';
+import {environment} from 'src/environments/environment';
 import {HttpClientTestingModule} from '@angular/common/http/testing';
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick,
+  waitForAsync
+} from '@angular/core/testing';
 import {MapViewComponent} from './map-view.component';
 import {MapModule} from './map.module';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -29,7 +35,10 @@ import {MapStore} from './state/map/map.store';
 import {SceneStore} from './state/scene/scene.store.service';
 import {SceneFactory} from './state/scene/scene.factory.spec';
 import {SessionStore} from '../../state/session/session.store';
-import {LocalStorageTestingProvider, RemoteConfigurationTestingProvider} from '../../app.configuration.spec';
+import {
+  LocalStorageTestingProvider,
+  RemoteConfigurationTestingProvider
+} from '../../app.configuration.spec';
 import waitForExpect from 'wait-for-expect';
 
 describe('MapViewComponent', () => {
@@ -44,29 +53,28 @@ describe('MapViewComponent', () => {
     route.snapshot = {
       children: [
         {
-          url: [
-            new UrlSegment(path, {})
-          ]
+          url: [new UrlSegment(path, {})]
         }
       ]
     } as ActivatedRouteSnapshot;
   }
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      providers: [LocalStorageTestingProvider, RemoteConfigurationTestingProvider],
-      imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        providers: [LocalStorageTestingProvider, RemoteConfigurationTestingProvider],
+        imports: [MapModule, RouterTestingModule, HttpClientTestingModule]
+      }).compileComponents();
+      sessionStore = TestBed.inject(SessionStore);
+      mapStore = TestBed.inject(MapStore);
+      sceneStore = TestBed.inject(SceneStore);
     })
-      .compileComponents();
-    sessionStore = TestBed.get(SessionStore);
-    mapStore = TestBed.get(MapStore);
-    sceneStore = TestBed.get(SceneStore);
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MapViewComponent);
     component = fixture.componentInstance;
-    route = TestBed.get(ActivatedRoute);
+    route = TestBed.inject(ActivatedRoute);
     setActivatedChildPath('products');
     fixture.detectChanges();
   });
@@ -83,11 +91,19 @@ describe('MapViewComponent', () => {
 
   it('activated route should relate to isLinkActive', () => {
     setActivatedChildPath('sentinel-search');
-    fixture.debugElement.queryAll(By.css('.section.sidebar > ul.switch:nth-child(1):not(.active)'));
-    fixture.debugElement.queryAll(By.css('.section.sidebar > ul.switch:nth-child(2).active'));
+    fixture.debugElement.queryAll(
+      By.css('.section.sidebar > ul.switch:nth-child(1):not(.active)')
+    );
+    fixture.debugElement.queryAll(
+      By.css('.section.sidebar > ul.switch:nth-child(2).active')
+    );
     setActivatedChildPath('products');
-    fixture.debugElement.queryAll(By.css('.section.sidebar > ul.switch:nth-child(1).active'));
-    fixture.debugElement.queryAll(By.css('.section.sidebar > ul.switch:nth-child(2):not(.active)'));
+    fixture.debugElement.queryAll(
+      By.css('.section.sidebar > ul.switch:nth-child(1).active')
+    );
+    fixture.debugElement.queryAll(
+      By.css('.section.sidebar > ul.switch:nth-child(2):not(.active)')
+    );
   });
 
   describe('ZK Options', () => {
@@ -98,7 +114,7 @@ describe('MapViewComponent', () => {
     });
 
     it('toggleZKOptions should call mapService.toggleZKOptions ', () => {
-      const service: MapService = TestBed.get(MapService);
+      const service: MapService = TestBed.inject(MapService);
       const spy = spyOn(service, 'toggleZKOptions');
       component.toggleZKOptions();
       expect(spy).toHaveBeenCalledWith(true);
@@ -108,6 +124,8 @@ describe('MapViewComponent', () => {
   it('sidebarOpen$ should trigger map update size', async () => {
     const spy = spyOn(component.mapComponent, 'updateSize');
     mapStore.update({sidebarOpen: true});
-    await waitForExpect(() => { expect(spy).toHaveBeenCalled(); });
+    await waitForExpect(() => {
+      expect(spy).toHaveBeenCalled();
+    });
   });
 });

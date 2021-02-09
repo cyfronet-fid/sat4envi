@@ -15,7 +15,7 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
 import {CheckBoxListComponent} from './check-box-list.component';
 import {ReactiveFormsModule} from '@angular/forms';
@@ -26,17 +26,14 @@ describe('CheckBoxListComponent', () => {
   let component: CheckBoxListComponent<any>;
   let fixture: ComponentFixture<CheckBoxListComponent<any>>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [CheckBoxListComponent],
-      imports: [
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientTestingModule
-      ]
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        declarations: [CheckBoxListComponent],
+        imports: [ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule]
+      }).compileComponents();
     })
-      .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CheckBoxListComponent);

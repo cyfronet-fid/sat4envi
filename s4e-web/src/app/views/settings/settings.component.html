@@ -19,44 +19,54 @@
   <button
     id="settings-menu-button"
     class="navigation__open--mobile"
-    [ngClass]="{'open': isMobileSidebarOpen}"
+    [ngClass]="{open: isMobileSidebarOpen}"
     (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
   ></button>
 
-  <nav
-    class="navigation"
-  >
+  <nav class="navigation">
     <a [routerLink]="dashboardUrl$ | async">
       <div class="logo"></div>
     </a>
     <header *ngIf="hasAnyAdminInstitution$ | async" class="navigation__institution">
       <span>Wybrana instytucja</span>
-      <p *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)" data-e2e="selectedInstitution">
-        <a routerLink="/settings/institution" queryParamsHandling="merge">{{ (activeInstitution$ | async)?.name }}</a>
+      <p
+        *ngIf="(isInstitutionActive$ | async) && (showInstitutions$ | async)"
+        data-e2e="selectedInstitution"
+      >
+        <a routerLink="/settings/institution" queryParamsHandling="merge">{{
+          (activeInstitution$ | async)?.name
+        }}</a>
       </p>
-      <a *ngIf="!(isAdminOfOneInstitution$ | async)"
+      <a
+        *ngIf="!(isAdminOfOneInstitution$ | async)"
         routerLink="/settings/institutions"
         data-e2e="changeInstitution"
-         i18n
+        i18n
       >
-        {{
-          !!(activeInstitution$ | async)
-            ? 'Zmień'
-            : 'Wybierz'
-        }}
+        {{ !!(activeInstitution$ | async) ? 'Zmień' : 'Wybierz' }}
       </a>
     </header>
     <ul class="navigation__list">
-      <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async) && canGrantInstitutionDeleteAuthority" routerLinkActive="active"
-          data-e2e="managePrivilege">
+      <li
+        *ngIf="
+          (showInstitutions$ | async) &&
+          !(isAdminOfOneInstitution$ | async) &&
+          canGrantInstitutionDeleteAuthority
+        "
+        routerLinkActive="active"
+        data-e2e="managePrivilege"
+      >
         <a routerLink="/settings/manage-authorities" i18n>Zarządzaj uprawnieniami</a>
       </li>
-<!--      <li *ngIf="isSuperAdmin$ | async" routerLinkActive="active"-->
-<!--          data-e2e="institutions">-->
-<!--        <a routerLink="/settings/global-wms-overlays" i18n>Globalne WMS</a>-->
-<!--      </li>-->
-      <li *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)" routerLinkActive="active"
-          data-e2e="institutionsList">
+      <!--      <li *ngIf="isSuperAdmin$ | async" routerLinkActive="active"-->
+      <!--          data-e2e="institutions">-->
+      <!--        <a routerLink="/settings/global-wms-overlays" i18n>Globalne WMS</a>-->
+      <!--      </li>-->
+      <li
+        *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)"
+        routerLinkActive="active"
+        data-e2e="institutionsList"
+      >
         <a routerLink="/settings/institutions" i18n>Lista instytucji</a>
       </li>
       <li routerLinkActive="active" data-e2e="profile">
@@ -70,23 +80,37 @@
         </a>
       </li>
       <li>
-        <button [routerLink]="['/map/products']" data-e2e="returnToMap" i18n class="button button--borderPrimary button--small">Wróć do mapy</button>
+        <button
+          [routerLink]="['/map/products']"
+          data-e2e="returnToMap"
+          i18n
+          class="button button--borderPrimary button--small"
+        >
+          Wróć do mapy
+        </button>
       </li>
       <li>
-        <a href="javascript:void(0)" data-e2e="logOut" routerLink="/logout" i18n>Wyloguj</a>
+        <a href="javascript:void(0)" data-e2e="logOut" routerLink="/logout" i18n
+          >Wyloguj</a
+        >
       </li>
     </ul>
   </nav>
 
-  <nav class="navigation--mobile" [ngClass]="{'open': isMobileSidebarOpen}">
+  <nav class="navigation--mobile" [ngClass]="{open: isMobileSidebarOpen}">
     <ul class="navigation__list">
-      <li *ngIf="showInstitutions$ | async" routerLinkActive="active"
-          data-e2e="institutions">
-        <a *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)"
+      <li
+        *ngIf="showInstitutions$ | async"
+        routerLinkActive="active"
+        data-e2e="institutions"
+      >
+        <a
+          *ngIf="(showInstitutions$ | async) && !(isAdminOfOneInstitution$ | async)"
           routerLink="/settings/institutions"
-           i18n
-           (click)="isMobileSidebarOpen = false"
-        >Lista instytucji</a>
+          i18n
+          (click)="isMobileSidebarOpen = false"
+          >Lista instytucji</a
+        >
       </li>
       <li routerLinkActive="active" data-e2e="profile">
         <a

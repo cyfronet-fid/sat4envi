@@ -15,7 +15,7 @@
  *
  */
 
-import { InstitutionStore } from './institution.store';
+import {InstitutionStore} from './institution.store';
 
 describe('InstitutionStore', () => {
   let store: InstitutionStore;
@@ -27,5 +27,4 @@ describe('InstitutionStore', () => {
   it('should create an instance', () => {
     expect(store).toBeTruthy();
   });
-
 });

@@ -15,7 +15,7 @@
  *
  */
 
-import { RegisterConfirmationComponent } from './views/register/register-confirmation/register-confirmation.component';
+import {RegisterConfirmationComponent} from './views/register/register-confirmation/register-confirmation.component';
 import {LogoutComponent} from './views/logout/logout.component';
 import {Routes} from '@angular/router';
 import {LoginComponent} from './views/login/login.component';
@@ -32,29 +32,36 @@ export const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent,
     canActivate: [IsNotLoggedIn]
-  }, {
+  },
+  {
     path: 'logout',
     component: LogoutComponent,
     canActivate: [IsLoggedIn]
-  }, {
+  },
+  {
     path: 'password-reset',
     component: ResetPasswordComponent
-  }, {
+  },
+  {
     path: 'password-reset/:token',
     component: ResetPasswordComponent
-  }, {
+  },
+  {
     path: 'register',
     component: RegisterComponent,
     canActivate: [IsNotLoggedIn]
-  }, {
+  },
+  {
     path: 'register-confirmation',
     component: RegisterConfirmationComponent,
     canActivate: [IsNotLoggedIn]
-  }, {
+  },
+  {
     path: 'reset-password',
     component: ResetPasswordComponent,
     canActivate: [IsNotLoggedIn]
-  }, {
+  },
+  {
     path: 'howto',
     component: ApihowtoComponent
   },
@@ -62,13 +69,15 @@ export const appRoutes: Routes = [
   {
     matcher: activateMatcher,
     component: ActivateComponent
-  }, {
+  },
+  {
     path: '',
     redirectTo: '/map/products',
     pathMatch: 'full'
-  }, {
+  },
+  {
     path: '**',
     redirectTo: `errors/${HTTP_404_NOT_FOUND}`,
-    pathMatch: 'full',
+    pathMatch: 'full'
   }
 ];

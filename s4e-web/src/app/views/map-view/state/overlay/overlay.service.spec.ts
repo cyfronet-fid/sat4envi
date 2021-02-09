@@ -30,12 +30,11 @@ describe('OverlayService', () => {
       imports: [HttpClientTestingModule]
     });
 
-    overlayService = TestBed.get(OverlayService);
-    overlayStore = TestBed.get(OverlayStore);
+    overlayService = TestBed.inject(OverlayService);
+    overlayStore = TestBed.inject(OverlayStore);
   });
 
   it('should be created', () => {
     expect(overlayService).toBeDefined();
   });
-
 });

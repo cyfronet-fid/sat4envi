@@ -26,7 +26,7 @@ export interface ViewRouterConfig {
   productId: number;
   date: string;
   sceneId: number;
-  manualDate: string|null;
+  manualDate: string | null;
 }
 
 export interface ViewConfiguration {

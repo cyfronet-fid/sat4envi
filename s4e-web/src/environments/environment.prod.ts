@@ -1,5 +1,5 @@
 import sharedEnvironment from './base';
-import { commonEnvironmentVariables } from './environment.common';
+import {commonEnvironmentVariables} from './environment.common';
 
 export const environment = {
   ...commonEnvironmentVariables,

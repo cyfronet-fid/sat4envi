@@ -15,13 +15,24 @@
  *
  */
 
-import { ActivatedQueue } from './../../utils/search/activated-queue.utils';
+import {ActivatedQueue} from '../../utils/search/activated-queue.utils';
 import {FormControl} from '@ng-stack/forms';
-import {Component, Input, Output, EventEmitter, ContentChild, TemplateRef, OnInit, OnDestroy, NgZone} from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ContentChild,
+  TemplateRef,
+  OnInit,
+  OnDestroy,
+  NgZone
+} from '@angular/core';
 import {debounceTime, distinctUntilChanged} from 'rxjs/operators';
-import { untilDestroyed } from 'ngx-take-until-destroy';
 import {LocationSearchResult} from '../../views/map-view/state/location-search-results/location-search-result.model';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-search',
   templateUrl: './search.component.html',
@@ -45,7 +56,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   set hasBeenSelected(hasBeenSelected: boolean) {
     this._hasBeenSelected = hasBeenSelected;
   }
-  @Output() hasBeenSelectedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output()
+  hasBeenSelectedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
   @Output() selectResult: EventEmitter<any> = new EventEmitter<any>();
 
@@ -77,13 +89,12 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.query
       .selectLoading()
       .pipe(untilDestroyed(this))
-      .subscribe(isLoading => this.isLoading = isLoading);
+      .subscribe(isLoading => (this.isLoading = isLoading));
     this.activatedQueue = new ActivatedQueue(this.query, this.store);
   }
 
   get hasSearchValue(): boolean {
-    return !!this.searchFormControl.value
-      && this.searchFormControl.value !== '';
+    return !!this.searchFormControl.value && this.searchFormControl.value !== '';
   }
 
   get hasResults(): boolean {
@@ -91,13 +102,14 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   get canSelectActiveResult(): boolean {
-    return this.areResultsOpen
-      && this.hasResults;
+    return this.areResultsOpen && this.hasResults;
   }
 
   isActive(result: any) {
-    const activeId = !!this.query.getActive()
-      && (this.query.getActive() as LocationSearchResult).id || null;
+    const activeId =
+      (!!this.query.getActive() &&
+        (this.query.getActive() as LocationSearchResult).id) ||
+      null;
     return result.id === activeId;
   }
 
@@ -125,13 +137,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   selectActive() {
     if (
-      !!this.searchFormControl.value
-      && !(this.query.getActive() as LocationSearchResult).name
+      !!this.searchFormControl.value &&
+      !(this.query.getActive() as LocationSearchResult).name
         .toLowerCase()
-        .startsWith(
-          this.searchFormControl.value
-            .toLowerCase()
-        )
+        .startsWith(this.searchFormControl.value.toLowerCase())
     ) {
       return;
     }
@@ -140,7 +149,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.hasBeenSelected = true;
     this.hasBeenSelectedChange.emit(true);
     this.selectResult.emit(this.query.getActive());
-    this.searchFormControl.setValue((this.query.getActive() as LocationSearchResult).name);
+    this.searchFormControl.setValue(
+      (this.query.getActive() as LocationSearchResult).name
+    );
   }
 
   resetSearchValue(): void {
@@ -153,19 +164,17 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  protected _handleSearchValueChange = () => this.searchFormControl.valueChanges
-    .pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      untilDestroyed(this),
-    ).subscribe((text: string) => {
-      if (!this._hasBeenSelected) {
-        this.areResultsOpen = true;
-        this.valueChange.emit(text);
-        this.store.setActive(null);
-      }
+  protected _handleSearchValueChange = () =>
+    this.searchFormControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), untilDestroyed(this))
+      .subscribe((text: string) => {
+        if (!this._hasBeenSelected) {
+          this.areResultsOpen = true;
+          this.valueChange.emit(text);
+          this.store.setActive(null);
+        }
 
-      this.hasBeenSelected = false;
-      this.hasBeenSelectedChange.emit(false);
-    })
+        this.hasBeenSelected = false;
+        this.hasBeenSelectedChange.emit(false);
+      });
 }

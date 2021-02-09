@@ -15,24 +15,28 @@
  *
  */
 
-import {NotificationService} from 'notifications';
 import {Component} from '@angular/core';
 import {GenericFormComponent} from 'src/app/utils/miscellaneous/generic-form.component';
 import {AkitaNgFormsManager} from '@datorama/akita-ng-forms-manager';
 import {FormState} from 'src/app/state/form/form.model';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@ng-stack/forms';
-import {untilDestroyed} from 'ngx-take-until-destroy';
 import {SessionQuery} from '../../../../state/session/session.query';
 import {PasswordChangeFormState} from '../../../../state/session/session.model';
 import {SessionService} from '../../../../state/session/session.service';
+import {NotificationService} from '../../../../notifications/state/notification.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 's4e-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
-export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, PasswordChangeFormState> {
+export class ChangePasswordComponent extends GenericFormComponent<
+  SessionQuery,
+  PasswordChangeFormState
+> {
   constructor(
     fm: AkitaNgFormsManager<FormState>,
     router: Router,
@@ -46,8 +50,14 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
 
   ngOnInit(): void {
     this.form = new FormGroup<PasswordChangeFormState>({
-      oldPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(8)]),
-      newPassword: new FormControl<string>(null, [Validators.required, Validators.minLength(8)])
+      oldPassword: new FormControl<string>(null, [
+        Validators.required,
+        Validators.minLength(8)
+      ]),
+      newPassword: new FormControl<string>(null, [
+        Validators.required,
+        Validators.minLength(8)
+      ])
     });
     super.ngOnInit();
   }
@@ -67,11 +77,8 @@ export class ChangePasswordComponent extends GenericFormComponent<SessionQuery, 
   async reset() {
     this.form.reset();
     this._sessionService.clearError();
-    await this._router.navigate(
-      ['/settings/profile'],
-      {
-        queryParamsHandling: 'merge'
-      }
-    );
+    await this._router.navigate(['/settings/profile'], {
+      queryParamsHandling: 'merge'
+    });
   }
 }

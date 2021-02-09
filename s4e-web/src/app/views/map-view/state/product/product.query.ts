@@ -19,13 +19,15 @@ import {Injectable} from '@angular/core';
 import {EntityUIQuery, QueryEntity} from '@datorama/akita';
 import {ProductStore} from './product.store';
 import {
-  AVAILABLE_TIMELINE_RESOLUTIONS, DEFAULT_TIMELINE_RESOLUTION,
+  AVAILABLE_TIMELINE_RESOLUTIONS,
+  DEFAULT_TIMELINE_RESOLUTION,
   Product,
   PRODUCT_MODE_FAVOURITE,
   PRODUCT_MODE_QUERY_KEY,
   ProductState,
   ProductUIState,
-  TIMELINE_RESOLUTION_QUERY_KEY, UIProductCategory
+  TIMELINE_RESOLUTION_QUERY_KEY,
+  UIProductCategory
 } from './product.model';
 import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
@@ -39,10 +41,7 @@ import {logIt} from '../../../../utils/rxjs/observable';
 export class ProductQuery extends QueryEntity<ProductState, Product> {
   public readonly ui: EntityUIQuery<ProductUIState>;
 
-  constructor(
-    protected _store: ProductStore,
-    private _routerQuery: RouterQuery
-  ) {
+  constructor(protected _store: ProductStore, private _routerQuery: RouterQuery) {
     super(_store);
     this.createUIQuery();
   }
@@ -56,30 +55,43 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   public selectGroupedProducts(): Observable<IUILayer[][]> {
-    const rankSort = (a: any, b: any) => a.rank < b.rank ? -1 : 1;
+    const rankSort = (a: any, b: any) => (a.rank < b.rank ? -1 : 1);
     const orderCategories = (products: IUILayer[]) => {
-      const nonUniqueCategories = products
-        .reduce((acc, product) => acc = [...acc, product.category], []);
-      const uniqueCategories = Array.from(new Set(nonUniqueCategories.map(category => category.id)))
-        .map(uniqueId => nonUniqueCategories.find(category => category.id === uniqueId));
+      const nonUniqueCategories = products.reduce(
+        (acc, product) => (acc = [...acc, product.category]),
+        []
+      );
+      const uniqueCategories = Array.from(
+        new Set(nonUniqueCategories.map(category => category.id))
+      ).map(uniqueId =>
+        nonUniqueCategories.find(category => category.id === uniqueId)
+      );
 
-      return uniqueCategories.sort(rankSort)
+      return uniqueCategories
+        .sort(rankSort)
         .map(category => `${category.label}-${category.id}`);
-    }
+    };
     const orderProducts = (products: IUILayer[]) => {
       const orderedCategories = orderCategories(products);
       let orderedProducts = orderedCategories.map(() => []);
-      products
-        .forEach(product => orderedProducts[orderedCategories.indexOf(`${product.category.label}-${product.category.id}`)].push(product));
-      orderedProducts =  orderedProducts
-        .map(products => products.sort(rankSort))
+      products.forEach(product =>
+        orderedProducts[
+          orderedCategories.indexOf(
+            `${product.category.label}-${product.category.id}`
+          )
+        ].push(product)
+      );
+      orderedProducts = orderedProducts.map(products => products.sort(rankSort));
       return orderedProducts;
-    }
+    };
 
-    return this.selectAllFilteredAsUILayer()
-      .pipe(map(products => orderProducts(products)
-        .filter(categoryProducts => !!categoryProducts && categoryProducts.length > 0)
-      ));
+    return this.selectAllFilteredAsUILayer().pipe(
+      map(products =>
+        orderProducts(products).filter(
+          categoryProducts => !!categoryProducts && categoryProducts.length > 0
+        )
+      )
+    );
   }
 
   public selectAllFilteredAsUILayer(): Observable<IUILayer[]> {
@@ -88,7 +100,7 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
       this.selectAllAsUILayer()
     ).pipe(
       map(([mode, layers]) => {
-        switch(mode) {
+        switch (mode) {
           case PRODUCT_MODE_FAVOURITE: {
             return layers.filter(layer => layer.favourite);
           }
@@ -101,20 +113,27 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   public selectAllAsUILayer(): Observable<IUILayer[]> {
-    return combineLatest(this.selectAll(), this.ui.selectAll(), this.ui.select('collapsedCategories'), this.selectActiveId())
-      .pipe(
-        map(([products, productsUi, collapsedCategories, activeId]) => products
-          .map((pt, i) => ({
-            cid: pt.id,
-            label: pt.displayName,
-            active: pt.id === activeId,
-            category: {...pt.productCategory, collapsed: collapsedCategories.indexOf(pt.productCategory.id) !== -1},
-            favourite: pt.favourite,
-            isLoading: productsUi[i].isLoading,
-            isFavouriteLoading: productsUi[i].isFavouriteLoading
-          }))
-        )
-      );
+    return combineLatest(
+      this.selectAll(),
+      this.ui.selectAll(),
+      this.ui.select('collapsedCategories'),
+      this.selectActiveId()
+    ).pipe(
+      map(([products, productsUi, collapsedCategories, activeId]) =>
+        products.map((pt, i) => ({
+          cid: pt.id,
+          label: pt.displayName,
+          active: pt.id === activeId,
+          category: {
+            ...pt.productCategory,
+            collapsed: collapsedCategories.indexOf(pt.productCategory.id) !== -1
+          },
+          favourite: pt.favourite,
+          isLoading: productsUi[i].isLoading,
+          isFavouriteLoading: productsUi[i].isFavouriteLoading
+        }))
+      )
+    );
   }
 
   selectSelectedDate() {
@@ -122,19 +141,25 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
   }
 
   selectAvailableDates() {
-    return this.select(state => state.ui.availableDays);
+    return this.select(state => state.ui.availableDays).pipe(
+      map(dates => dates.map(date => new Date(date)))
+    );
   }
 
   selectIsFavouriteMode(): Observable<boolean> {
-    return this._routerQuery.selectQueryParams(PRODUCT_MODE_QUERY_KEY)
+    return this._routerQuery
+      .selectQueryParams(PRODUCT_MODE_QUERY_KEY)
       .pipe(map(param => param === PRODUCT_MODE_FAVOURITE));
   }
 
   selectTimelineResolution() {
-    return this._routerQuery.selectQueryParams(TIMELINE_RESOLUTION_QUERY_KEY)
-      .pipe(
-        map(resolution => Number(resolution)),
-        map(resolution => AVAILABLE_TIMELINE_RESOLUTIONS.includes(resolution) ? resolution : DEFAULT_TIMELINE_RESOLUTION)
+    return this._routerQuery.selectQueryParams(TIMELINE_RESOLUTION_QUERY_KEY).pipe(
+      map(resolution => Number(resolution)),
+      map(resolution =>
+        AVAILABLE_TIMELINE_RESOLUTIONS.includes(resolution)
+          ? resolution
+          : DEFAULT_TIMELINE_RESOLUTION
       )
+    );
   }
 }

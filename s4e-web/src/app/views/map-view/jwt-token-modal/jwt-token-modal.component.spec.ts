@@ -15,38 +15,36 @@
  *
  */
 
-import { JWT_TOKEN_MODAL_ID } from './jwt-token-modal.model';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MapModule } from './../map.module';
-import { By } from '@angular/platform-browser';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {JWT_TOKEN_MODAL_ID} from './jwt-token-modal.model';
+import {RouterTestingModule} from '@angular/router/testing';
+import {MapModule} from './../map.module';
+import {By} from '@angular/platform-browser';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 
-import { JwtTokenModalComponent } from './jwt-token-modal.component';
-import { of } from 'rxjs';
-import { MODAL_DEF } from 'src/app/modal/modal.providers';
+import {JwtTokenModalComponent} from './jwt-token-modal.component';
+import {of} from 'rxjs';
+import {MODAL_DEF} from 'src/app/modal/modal.providers';
 
 describe('JwtTokenModalComponent', () => {
   let component: JwtTokenModalComponent;
   let fixture: ComponentFixture<JwtTokenModalComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        MapModule,
-        RouterTestingModule
-      ],
-      providers: [
-        {
-          provide: MODAL_DEF,
-          useValue: {
-            id: JWT_TOKEN_MODAL_ID,
-            size: 'lg'
+  beforeEach(
+    waitForAsync(() => {
+      TestBed.configureTestingModule({
+        imports: [MapModule, RouterTestingModule],
+        providers: [
+          {
+            provide: MODAL_DEF,
+            useValue: {
+              id: JWT_TOKEN_MODAL_ID,
+              size: 'lg'
+            }
           }
-        }
-      ]
+        ]
+      }).compileComponents();
     })
-    .compileComponents();
-  }));
+  );
 
   beforeEach(() => {
     fixture = TestBed.createComponent(JwtTokenModalComponent);
@@ -62,16 +60,19 @@ describe('JwtTokenModalComponent', () => {
     component.token = null;
     fixture.detectChanges();
 
-    const passwordInput = fixture.debugElement
-      .query(By.css('[data-ut="jwt-token-password-input"]'));
+    const passwordInput = fixture.debugElement.query(
+      By.css('[data-ut="jwt-token-password-input"]')
+    );
     expect(passwordInput).toBeTruthy();
 
-    const getTokenBtn = fixture.debugElement
-      .query(By.css('[data-ut="get-jwt-token-btn"]'));
+    const getTokenBtn = fixture.debugElement.query(
+      By.css('[data-ut="get-jwt-token-btn"]')
+    );
     expect(getTokenBtn).toBeTruthy();
 
-    const tokenTextarea = fixture.debugElement
-      .query(By.css('[data-ut="jwt-token-txt"]'));
+    const tokenTextarea = fixture.debugElement.query(
+      By.css('[data-ut="jwt-token-txt"]')
+    );
     expect(tokenTextarea).toBeFalsy();
   });
   it('should show jwt token', () => {
@@ -79,16 +80,19 @@ describe('JwtTokenModalComponent', () => {
     component.token = token;
     fixture.detectChanges();
 
-    const passwordInput = fixture.debugElement
-      .query(By.css('[data-ut="jwt-token-password-input"]'));
+    const passwordInput = fixture.debugElement.query(
+      By.css('[data-ut="jwt-token-password-input"]')
+    );
     expect(passwordInput).toBeFalsy();
 
-    const getTokenBtn = fixture.debugElement
-      .query(By.css('[data-ut="get-jwt-token-btn"]'));
+    const getTokenBtn = fixture.debugElement.query(
+      By.css('[data-ut="get-jwt-token-btn"]')
+    );
     expect(getTokenBtn).toBeFalsy();
 
-    const tokenTextarea = fixture.debugElement
-      .query(By.css('[data-ut="jwt-token-txt"]'));
+    const tokenTextarea = fixture.debugElement.query(
+      By.css('[data-ut="jwt-token-txt"]')
+    );
     expect(tokenTextarea).toBeTruthy();
   });
 });

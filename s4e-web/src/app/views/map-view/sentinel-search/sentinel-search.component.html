@@ -18,19 +18,35 @@
 <div *ngIf="!(loadingMetadata$ | async); else metadataLoadingRef">
   <form [formGroup]="form" class="form form--sentinel">
     <div class="infobox infobox--poligon" i18>
-      Możesz zawęzić obszar w którym chcesz szukać danych Sentinel. Wyznacz punkty klikając dowolnym przyciskiem myszy.
+      Możesz zawęzić obszar w którym chcesz szukać danych Sentinel. Wyznacz punkty
+      klikając dowolnym przyciskiem myszy.
     </div>
     <ul>
       <li>
-        <s4e-sentinel-form [paramsDef]="(sentinels$ | async)?.common.params"
-                           [formControl]="form.get('common')"></s4e-sentinel-form>
+        <s4e-sentinel-form
+          [paramsDef]="(sentinels$ | async)?.common.params"
+          [formControl]="form.get('common')"
+        ></s4e-sentinel-form>
       </li>
       <li *ngFor="let sentinel of (sentinels$ | async)?.sections">
-        <s4e-sentinel-section [sentinel]="sentinel" [formControlName]="sentinel.name"></s4e-sentinel-section>
+        <s4e-sentinel-section
+          [sentinel]="sentinel"
+          [formControlName]="sentinel.name"
+        ></s4e-sentinel-section>
       </li>
     </ul>
-    <button class="button button--primary" data-e2e='btn-search' (click)="search()" [disabled]="(disableSearchBtn$ | async) || form.invalid">
-      <fa-icon class="spinner" [hidden]="!(loading$ | async)" [icon]="['fas', 'circle-notch']" [spin]="true"></fa-icon>
+    <button
+      class="button button--primary"
+      data-e2e="btn-search"
+      (click)="search()"
+      [disabled]="(disableSearchBtn$ | async) || form.invalid"
+    >
+      <fa-icon
+        class="spinner"
+        [hidden]="!(loading$ | async)"
+        [icon]="['fas', 'circle-notch']"
+        [spin]="true"
+      ></fa-icon>
       <ng-container i18n>Szukaj</ng-container>
     </button>
   </form>
@@ -42,20 +58,21 @@
   <div class="loading loading--results"></div>
 </ng-template>
 
-<s4e-search-results class="search-results"
-                    *ngIf="showSearchResults$ | async"
-                    [isUserLoggedIn]="isLoggedIn$ | async"
-                    [isLoading]="loading$ | async"
-                    [error]="error$ | async"
-                    (reload)="search()"
-                    (close)="clearResults()"
-                    (forbiddenAction)="redirectToLoginPage()"
-                    (showDetails)="openSearchResultModal($event)"
-                    [searchResults]="searchResults$ | async"
-                    [resultPagesCount]="resultPagesCount$ | async"
-                    [totalCount]="resultTotalCount$ | async"
-                    [currentPage]="currentPage$ | async"
-                    (changePage)="changePage($event)"
-                    (mouseenter)="setHovered($event)"
-                    (mouseleave)="setHovered(null)"
+<s4e-search-results
+  class="search-results"
+  *ngIf="showSearchResults$ | async"
+  [isUserLoggedIn]="isLoggedIn$ | async"
+  [isLoading]="loading$ | async"
+  [error]="error$ | async"
+  (reload)="search()"
+  (close)="clearResults()"
+  (forbiddenAction)="redirectToLoginPage()"
+  (showDetails)="openSearchResultModal($event)"
+  [searchResults]="searchResults$ | async"
+  [resultPagesCount]="resultPagesCount$ | async"
+  [totalCount]="resultTotalCount$ | async"
+  [currentPage]="currentPage$ | async"
+  (changePage)="changePage($event)"
+  (mouseenter)="setHovered($event)"
+  (mouseleave)="setHovered(null)"
 ></s4e-search-results>
