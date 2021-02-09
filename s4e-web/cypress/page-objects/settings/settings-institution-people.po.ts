@@ -8,6 +8,7 @@ export class SettingsInstitutionPeople extends Core {
       cy.get('[data-e2e="invitation-email-input"]').find('input'),
     getSubmitFormBtn: () => cy.get('[data-e2e="send-invitation-btn"]'),
     getPeopleAndInvitations: () => cy.get('[data-e2e="entity-row"]'),
+    getSendInvitationModal: () => cy.get('[data-e2e="modal-container"]'),
     getDeleteBtnClass: '[data-e2e="delete-invitation-btn"]',
     getResendBtnClass: '[data-e2e="resend-invitation-btn"]',
     getAdminInvitationBtn: () => cy.get('[data-e2e="adminInvitation"]'),
@@ -32,12 +33,21 @@ export class SettingsInstitutionPeople extends Core {
     return SettingsInstitutionPeople;
   }
 
-  static addInvitation(email: string) {
+  static addInvitation(email: string, administrator: boolean) {
+    cy.server();
     cy.route('POST', '/api/v1/institutions/*/invitations').as('sendInvitation');
 
     SettingsInstitutionPeople.pageObject.getOpenSendInvitationBtn().click();
 
+    SettingsInstitutionPeople.pageObject
+      .getSendInvitationModal()
+      .should('be.visible');
+
     SettingsInstitutionPeople.fillEmail(email);
+
+    if (administrator) {
+      SettingsInstitutionPeople.pageObject.getAdminInvitationBtn().click();
+    }
 
     SettingsInstitutionPeople.pageObject.getSubmitFormBtn().click();
 
@@ -75,7 +85,8 @@ export class SettingsInstitutionPeople extends Core {
     return SettingsInstitutionPeople;
   }
 
-  static resendToNewEmail(email: string) {
+  static resendInvitationToEmail(email: string) {
+    cy.server();
     cy.route('PUT', '/api/v1/institutions/*/invitations').as('sendInvitation');
 
     SettingsInstitutionPeople.pageObject
@@ -95,6 +106,7 @@ export class SettingsInstitutionPeople extends Core {
   }
 
   static addAdministratorPrivileges(email: string) {
+    cy.server();
     cy.route('POST', '/api/v1/institutions/*/admins/*').as(
       'addAdministratorPrivileges'
     );
@@ -115,6 +127,7 @@ export class SettingsInstitutionPeople extends Core {
     return SettingsInstitutionPeople;
   }
   static deleteAdministratorPrivileges(email: string) {
+    cy.server();
     cy.route('DELETE', '/api/v1/institutions/*/admins/*').as(
       'deleteAdministratorPrivileges'
     );
@@ -144,5 +157,39 @@ export class SettingsInstitutionPeople extends Core {
       .should(value);
 
     return SettingsInstitutionPeople;
+  }
+
+  static clickAcceptJoinToInstitutionLink() {
+    cy.getAllMails()
+      .filterBySubject('Zaproszenie')
+      .firstMail()
+      .getMailDocumentContent()
+      .then(($document: Document) => {
+        const joinUrl = Array.from($document.getElementsByTagName('a'))
+          .map(el => el.href)
+          .filter(href => href.includes('login?token='))
+          .toString()
+          .replace(/=/g, '')
+          .replace('/login?token', '/login?token=');
+
+        cy.visit(joinUrl);
+      });
+  }
+
+  static clickRejectJoinToInstitutionLink() {
+    cy.getAllMails()
+      .filterBySubject('Zaproszenie')
+      .firstMail()
+      .getMailDocumentContent()
+      .then(($document: Document) => {
+        const joinUrl = Array.from($document.getElementsByTagName('a'))
+          .map(el => el.href)
+          .filter(href => href.includes('login?reject'))
+          .toString()
+          .replace(/=/g, '')
+          .replace('/login?rejecttrue&token', '/login?reject=true&token=');
+
+        cy.visit(joinUrl);
+      });
   }
 }

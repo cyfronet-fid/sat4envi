@@ -77,9 +77,31 @@ export class Registration {
     return Registration;
   }
 
+  static registerAs(user: User) {
+    Registration.fillForm(user).clickReCaptcha().sendForm().beOnConfirmationPage();
+
+    return Registration;
+  }
+
   static beOnConfirmationPage() {
     cy.location('pathname').should('eq', '/register-confirmation');
 
     return Registration;
+  }
+
+  static clickActivateLink() {
+    cy.getAllMails()
+      .filterBySubject('Potwierdzenie adresu email')
+      .firstMail()
+      .getMailDocumentContent()
+      .then(($document: Document) => {
+        const activateUrl = Array.from($document.getElementsByTagName('a'))
+          .map(el => el.href)
+          .filter(href => href.includes('/activate'))
+          .toString()
+          .replace('=', '');
+
+        cy.visit(activateUrl);
+      });
   }
 }

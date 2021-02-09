@@ -27,16 +27,31 @@ describe('Map Products', () => {
       .turnOffOnLiveView();
   });
 
-  it('should load the selected date of the product', function () {
+  it('should load the selected date and hour of the product', function () {
     const year = 2020;
     const month = 2;
-    const day = 6;
+    const day = 1;
 
     MapProducts.selectProductByName(this.products[0].name);
-    MapDateSelect.openDateChange().selectDate(year, month, day);
+    MapDateSelect.openDateChange()
+      .selectDate(year, month, day)
+      .selectHourNumberFromStackedPoint(1, 1)
+      .increaseResolution()
+      .decreaseResolution();
   });
 
   it('should display legend', function () {
     MapProducts.selectProductByName(this.products[4].name).legendShouldBeVisible();
+  });
+
+  it("shouldn't display timeline for change hour", function () {
+    const year = 2025;
+    const month = 2;
+    const day = 1;
+
+    MapProducts.selectProductByName(this.products[0].name);
+    MapDateSelect.openDateChange()
+      .selectDate(year, month, day)
+      .hoursSelectionLineShouldNotDisplayed();
   });
 });

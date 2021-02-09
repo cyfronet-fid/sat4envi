@@ -1,4 +1,5 @@
 import {Core} from '../core.po';
+import {MapProducts} from './map-products.po';
 
 export class MapDateSelect extends Core {
   static readonly pageObject = {
@@ -10,27 +11,46 @@ export class MapDateSelect extends Core {
     getDayBtn: (day: number) =>
       cy.get('[role="gridcell"] span:not(.is-other-month)').contains(day),
 
-    getHourBtn: (hour: number) =>
-      cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {
-        timeout: 5000
-      }),
-    getHourBtnInPopup: (hour: number) =>
-      cy.get(`li[data-hour="${hour < 10 ? '0' + hour : hour}:00:00"]`, {
-        timeout: 5000
-      }),
-    getHourBtnInPopupNumber: () => cy.get('.multiple__popup ul li'),
-    getStackedHourNumberBtn: () => cy.get('.timeline__item'),
-    getStackedHourBtn: (hourStart: number, hourEnd: number) =>
+    getTimeLineNoScenes: () => cy.get('.timeline__item--noproduct'),
+    getTimeLineHoursPointsBtn: () =>
+      cy.get('.timeline__item div:not(.timeline__item--noproduct)'),
+
+    getMultipleHourPointBtn: (hourStart: number, hourEnd: number) =>
       cy.get(
         `.timeline__item--multiple[title="${
           hourStart < 10 ? '0' + hourStart : hourStart
         }:00 - ${hourEnd < 10 ? '0' + hourEnd : hourEnd}:00"]`,
         {timeout: 5000}
       ),
+
+    getSingleHourPointBtn: (hour: number) =>
+      cy.get(`.timeline__item[title="${hour < 10 ? '0' + hour : hour}:00"]`, {
+        timeout: 5000
+      }),
+
+    getNumberHoursBtnInOpenListFromMultipleDot: () =>
+      cy.get('.multiple__popup ul li'),
+
+    getHourBtnInOpenListFromMultipleDot: (hour: number) =>
+      cy.get(`li[data-hour="${hour < 10 ? '0' + hour : hour}:00:00"]`, {
+        timeout: 5000
+      }),
+
     getIncreaseResolutionBtn: () =>
       cy.get('.timecontrol__button--plus', {timeout: 5000}),
     getDecreaseResolutionBtn: () =>
-      cy.get('.timecontrol__button--minus', {timeout: 5000})
+      cy.get('.timecontrol__button--minus', {timeout: 5000}),
+
+    getHourBtnMobile: () => cy.get('.timecontrol--scenemobile'),
+
+    getTimeLineHourModalMobile: () => cy.get('[data-e2e="mobile-scene-modal"]'),
+
+    getHourInTimeLineHourModalMobile: (hour: number) =>
+      cy.get(
+        `[data-e2e="mobile-scene-timestamp"][title="${
+          hour < 10 ? '0' + hour : hour
+        }:00"]`
+      )
   };
 
   static openDateChange() {
@@ -57,23 +77,36 @@ export class MapDateSelect extends Core {
     return MapDateSelect;
   }
 
-  static selectDataPoint(hour: number) {
-    MapDateSelect.pageObject.getHourBtn(hour).should('be.visible').click();
-    return MapDateSelect;
-  }
-
-  static selectStackedDataPoint(hourStart: number, hourEnd: number) {
+  static selectHour(hour: number) {
     MapDateSelect.pageObject
-      .getStackedHourBtn(hourStart, hourEnd)
+      .getSingleHourPointBtn(hour)
       .should('be.visible')
       .click();
-    MapDateSelect.pageObject.getHourBtnInPopup(hourStart).click();
     return MapDateSelect;
   }
 
-  static selectStackedDataPointNumber(stackedHourNumber: number, hour: number) {
-    MapDateSelect.pageObject.getStackedHourNumberBtn().eq(stackedHourNumber).click();
-    MapDateSelect.pageObject.getHourBtnInPopupNumber().eq(hour).click();
+  static selectHourFromStackedPoint(hourStart: number, hourEnd: number) {
+    MapDateSelect.pageObject
+      .getMultipleHourPointBtn(hourStart, hourEnd)
+      .should('be.visible')
+      .click();
+    MapDateSelect.pageObject.getHourBtnInOpenListFromMultipleDot(hourStart).click();
+
+    return MapDateSelect;
+  }
+
+  static selectHourNumberFromStackedPoint(stackedHourNumber: number, hour: number) {
+    MapDateSelect.pageObject.getTimeLineHoursPointsBtn().should('be.visible');
+    MapDateSelect.pageObject
+      .getTimeLineHoursPointsBtn()
+      .eq(stackedHourNumber)
+      .click();
+    MapDateSelect.pageObject
+      .getNumberHoursBtnInOpenListFromMultipleDot()
+      .eq(hour)
+      .click();
+
+    return MapDateSelect;
   }
 
   static increaseResolution() {
@@ -83,6 +116,29 @@ export class MapDateSelect extends Core {
 
   static decreaseResolution() {
     MapDateSelect.pageObject.getDecreaseResolutionBtn().click();
+    return MapDateSelect;
+  }
+
+  static hoursSelectionLineShouldNotDisplayed() {
+    MapDateSelect.pageObject.getTimeLineNoScenes().should('be.visible');
+
+    return MapDateSelect;
+  }
+
+  static selectHourForMobile(hour: number) {
+    MapDateSelect.pageObject.getHourBtnMobile().click();
+    MapDateSelect.pageObject
+      .getHourInTimeLineHourModalMobile(hour)
+      .should('be.visible')
+      .click({force: true});
+    MapDateSelect.pageObject.getTimeLineHourModalMobile().should('not.exist');
+
+    return MapDateSelect;
+  }
+
+  static hourSelectionShouldBeDisabledMobile() {
+    MapDateSelect.pageObject.getHourBtnMobile().should('be.disabled');
+
     return MapDateSelect;
   }
 }

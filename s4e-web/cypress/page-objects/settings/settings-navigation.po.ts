@@ -3,7 +3,7 @@ import {Core} from '../core.po';
 export class SettingsNav extends Core {
   static readonly pageObject = {
     getInstitutionsListBtn: () => cy.get('[data-e2e="institutionsList"]'),
-    getUserProfileBtn: () => cy.get('data-e2e="userProfile"'),
+    getUserProfileBtn: () => cy.get('[data-e2e="userProfile"]'),
     getReturnToMapBtn: () => cy.get('[data-e2e="returnToMap"]'),
     getLogOutBtn: () => cy.get('[data-e2e="logOut"]'),
     getChangeInstitutionBtn: () => cy.get('[data-e2e="changeInstitution"]'),

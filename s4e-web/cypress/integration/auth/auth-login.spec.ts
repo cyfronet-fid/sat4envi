@@ -2,6 +2,8 @@
 
 import {Login} from '../../page-objects/auth/auth-login.po';
 import {UserOptionsAuthentication} from '../../page-objects/user-options/user-option-authentication.po';
+import {UserOptionsGoToSettings} from '../../page-objects/user-options/user-options-go-to-settings-profile.po';
+import {SettingsUserPasswordChange} from '../../page-objects/settings/settings-change-password.po';
 
 before(() => {
   cy.fixture('users/zkMember.json').as('zkMember');
@@ -25,9 +27,30 @@ describe('Auth', () => {
       Login.loginAs(this.zkMember);
       UserOptionsAuthentication.logout();
     });
+
     it('should login as zkAdmin', function () {
       Login.loginAs(this.zkAdmin);
       UserOptionsAuthentication.logout();
+    });
+
+    it('should reset password and log in', function () {
+      cy.deleteAllMails();
+
+      Login.goToPasswordResetPage().enterEmailForResetPasswordLink(
+        this.zkMember.email
+      );
+
+      Login.clickResetPasswordLink();
+
+      Login.setNewPassword('12341234').loginAs({
+        ...this.zkMember,
+        password: '12341234'
+      });
+      UserOptionsGoToSettings.gotoUserProfile();
+      SettingsUserPasswordChange.goToChangePasswordPage().changePassword(
+        '12341234',
+        this.zkMember.password
+      );
     });
   });
 

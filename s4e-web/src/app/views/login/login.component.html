@@ -36,7 +36,12 @@
     <div class="logo logo--color"></div>
     <section class="content__switch content__switch--right">
       <p>Nie masz jeszcze konta?</p>
-      <a class="button" routerLink="/register" queryParamsHandling="merge">
+      <a
+        class="button"
+        routerLink="/register"
+        queryParamsHandling="merge"
+        data-e2e="register-btn"
+      >
         Zarejestruj się
       </a>
     </section>
@@ -78,7 +83,9 @@
             <ul s4e-form-error [control]="form.controls.password"></ul>
           </li>
           <li class="form__element">
-            <a routerLink="/password-reset">Zapomniałeś/aś hasła?</a>
+            <a routerLink="/password-reset" data-e2e="password-reset"
+              >Zapomniałeś/aś hasła?</a
+            >
           </li>
           <li class="form__element">
             <button
@@ -86,7 +93,7 @@
               type="submit"
               [disabled]="form.invalid"
               data-test="login-submit-btn"
-              data-e2e="login-submit-btn"
+              data-e2e="submit-btn"
             >
               <fa-icon
                 [hidden]="!(loading$ | async)"

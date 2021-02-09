@@ -1,6 +1,10 @@
 /// <reference types = "Cypress" />
 
+import {Login} from '../../page-objects/auth/auth-login.po';
 import {Registration} from '../../page-objects/auth/auth-register.po';
+import {SettingsUserDeleteAccount} from '../../page-objects/settings/settings-delete-account.po';
+import {UserOptionsGoToSettings} from '../../page-objects/user-options/user-options-go-to-settings-profile.po';
+import {ConfirmModal} from '../../page-objects/modal/confirm-modal.po';
 
 before(() => {
   cy.fixture('users/userToRegister.json').as('userToRegister');
@@ -32,30 +36,19 @@ describe('Register', () => {
     });
   });
 
-  context('Register user', () => {
+  context('Register user and delete account', () => {
     it('should register new user', function () {
       cy.deleteAllMails();
 
-      Registration.fillForm(this.userToRegister)
-        .clickReCaptcha()
-        .sendForm()
-        .beOnConfirmationPage();
+      Registration.registerAs(this.userToRegister);
 
-      cy.getAllMails()
-        .filterBySubject('Potwierdzenie adresu email')
-        .should('have.length', 1)
-        .firstMail()
-        .getMailDocumentContent()
-        .then(($document: Document) =>
-          // TODO: Go to activation URL
-          {
-            expect(
-              Array.from($document.getElementsByTagName('a'))
-                .map(el => el.href)
-                .filter((href: string) => href.includes('/activate')).length
-            ).eq(1);
-          }
-        );
+      Registration.clickActivateLink();
+
+      Login.loginAs(this.userToRegister);
+      UserOptionsGoToSettings.gotoUserProfile();
+      SettingsUserDeleteAccount.deleteAccount(this.userToRegister.password);
+      ConfirmModal.accept();
+      Login.fillForm(this.userToRegister).sendForm().hasErrorLogin();
     });
   });
 });

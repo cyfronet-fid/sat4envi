@@ -7,12 +7,19 @@ export class MapProducts extends Core {
     getProductNavbar: () => cy.get('[data-e2e="product-list"]'),
     getProductsNameBtn: () =>
       cy.get('[data-e2e="product-list"] [data-e2e="picker-item-label"]'),
+    getProductsNameClass: '[data-e2e="picker-item-label"]',
     getLegend: () => cy.get('[data-e2e="legend__chart"]'),
     getOnLiveBtn: () => cy.get('[data-e2e="btn-live"]'),
-    getSpinnerIcon: () => cy.get('.products__visibility__spinner')
+    getSpinnerIcon: () => cy.get('.products__visibility__spinner'),
+    getSelectedProductIcon: () => cy.get('button[data-e2e="selected-icon"]'),
+    getOpenProductDescriptionBtn: () =>
+      cy.get('[data-e2e="product-description-button"]'),
+    getCloseProductDescriptionBtn: () =>
+      cy.get('[data-e2e="close-product-description-btn"]')
   };
 
   static selectProductByName(partialName: string) {
+    cy.server();
     cy.route('GET', '/api/v1/products/*').as('turnOnProduct');
 
     MapProducts.pageObject
@@ -58,6 +65,7 @@ export class MapProducts extends Core {
   }
 
   static turnOnOnLiveView() {
+    cy.server();
     cy.route('GET', '/api/v1/products/*/scenes/most-recent?{*,*/*}').as(
       'loadResentScene'
     );
@@ -89,5 +97,37 @@ export class MapProducts extends Core {
       .should('not.exist');
 
     return MapProducts;
+  }
+
+  static selectedProductShouldHaveNameAndDate(
+    name: string,
+    year: number,
+    month: number,
+    day: number
+  ) {
+    cy.location('href')
+      .should('include', '/map/products?')
+      .should(
+        'include',
+        `date=${year}-${month < 10 ? '0' + month : month}-${
+          day < 10 ? '0' + day : day
+        }`
+      );
+
+    MapProducts.pageObject.getAllProductsInAllCategories().should('be.visible');
+    MapProducts.pageObject.getSpinnerIcon().should('not.exist');
+
+    MapProducts.pageObject
+      .getProductsNameBtn()
+      .contains(name)
+      .should('have.class', 'active');
+  }
+
+  static openDisplayProductDescription() {
+    MapProducts.pageObject.getOpenProductDescriptionBtn().click();
+  }
+
+  static closeDisplayProductDescription() {
+    MapProducts.pageObject.getCloseProductDescriptionBtn().click();
   }
 }

@@ -7,6 +7,7 @@ import {MapLayers} from '../../page-objects/map/map-layers.po';
 import {ConfirmModal} from '../../page-objects/modal/confirm-modal.po';
 import {MapDateSelect} from '../../page-objects/map/map-date-select.po';
 import {MapProducts} from '../../page-objects/map/map-products.po';
+import {UserOptionsSendView} from '../../page-objects/user-options/user-options-send-view-to-mail.po';
 
 before(() => {
   cy.fixture('users/zkMember.json').as('zkMember');
@@ -32,7 +33,7 @@ describe('Map Views', () => {
     MapLayers.unselectNthSidebarLayer(1);
     UserOptionsSaveMapViews.openViewsModal()
       .viewsCountShouldBe(1)
-      .loadViewWithRecentScene();
+      .loadNthViewWithRecentScene(0);
     MapLayers.activeLayersCountShouldBe(1);
     UserOptionsSaveMapViews.openViewsModal().deleteNth(0);
     ConfirmModal.accept();
@@ -40,6 +41,8 @@ describe('Map Views', () => {
   });
 
   it('should save, display and remove configuration for the current scene', function () {
+    cy.deleteAllMails();
+
     const year = 2020;
     const month = 2;
     const day = 6;
@@ -54,10 +57,18 @@ describe('Map Views', () => {
     MapLayers.unselectNthSidebarLayer(1);
     UserOptionsSaveMapViews.openViewsModal()
       .viewsCountShouldBe(1)
-      .loadViewWithCurrentScene(year, month, day);
+      .loadNthViewWithCurrentScene(0, year, month, day);
     MapLayers.activeLayersCountShouldBe(1);
+    UserOptionsSaveMapViews.openViewsModal().sendNthSavedView(0);
+    UserOptionsSendView.fillFields(
+      'test@mail.pl',
+      'caption-test',
+      'description-test'
+    ).sendView();
     UserOptionsSaveMapViews.openViewsModal().deleteNth(0);
     ConfirmModal.accept();
     GeneralModal.closeModal();
+
+    UserOptionsSendView.clickShareView();
   });
 });
