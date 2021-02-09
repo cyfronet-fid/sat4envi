@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,8 +75,10 @@ public class SearchConverter {
     private void parseOrderBy(Map<String, Object> result, String orderBy) {
         if (orderBy != null) {
             String[] split = orderBy.split("\\s+");
-            result.put(SORT_BY, parseSortBy(split[0]));
-            result.put(ORDER, split[1]);
+            if (split.length == 2) {
+                result.put(SORT_BY, parseSortBy(split[0]));
+                result.put(ORDER, split[1]);
+            }
         }
     }
 
