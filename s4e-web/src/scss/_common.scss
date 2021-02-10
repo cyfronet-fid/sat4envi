@@ -511,11 +511,32 @@ input.checkbox-slide:checked + .slider:after {
   p {
     margin: 0;
     font-size: 0.9375rem;
+    line-height: 1.1rem;
 
     a {
       color: $color-secondary;
       opacity: 0.9;
       font-weight: 500;
+    }
+  }
+
+  &--moreproducts {
+    margin-top: 20px;
+    background: $color-white;
+    p {
+      padding-left: 55px;
+      font-size: 0.85rem;
+    }
+    &:before {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      display: block;
+      content: " ";
+      background: url(/../assets/images/s4e_signet.png) no-repeat;
+      background-size: contain;
+      padding: 10px;
+      left: 20px;
     }
   }
 
@@ -537,7 +558,6 @@ input.checkbox-slide:checked + .slider:after {
   &--poligon {
     font-size: 0.82rem;
     position: relative;
-    padding-left: 70px;
     background: $color-white;
     font-weight: 500;
     line-height: 1rem;
