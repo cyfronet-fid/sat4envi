@@ -42,7 +42,40 @@
   }
 }
 
-@media screen and (max-resolution: 90dpi) {
-  body {transform: scale(0.8);transform-origin:top left;width: 125%;height: 125%;}
+@media (max-width: 700px) {
+  .cdk-overlay-pane {
+    left: calc(50% - 155px) !important;
+    bottom: 90px !important;
+    right: auto !important;
+  }
 }
+
+@media (max-width: 550px) {
+  .modal-footer {
+    button {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 467px) {
+  .search-result {
+    &__quicklook {
+      margin-bottom: 10px;
+    }
+
+    &__content {
+      flex-wrap: wrap;
+
+    &__details {
+      margin-right: 5px !important;
+    }
+    }
+  }
+}
+
+//
+//@media screen and (max-resolution: 90dpi) {
+//  body {transform: scale(0.8);transform-origin:top left;width: 125%;height: 125%;}
+//}
 

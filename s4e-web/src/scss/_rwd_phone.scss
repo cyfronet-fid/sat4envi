@@ -16,6 +16,7 @@
  */
 
 @media only screen and (max-width: 700px) {
+
   .testinfo {
     left: 32% !important;
     max-width: 150px;
@@ -35,8 +36,9 @@
       bottom: 0;
       right: 0;
       background: $color-black;
-      opacity: 0.3;
-      content: ' ';
+      opacity: .3;
+      content: " ";
+
     }
 
     &.open {
@@ -48,7 +50,12 @@
     top: 100px;
     left: 0;
     right: 0;
+
+    .search-results {
+      width: 100% !important;
+    }
   }
+
 
   .collapse {
     display: none;
@@ -70,9 +77,10 @@
   .dropdown {
     &__button {
       &--login,
-      &--loginactive {
+      &--loginactive{
         right: 20px !important;
       }
+
 
       &--products {
         display: block;
@@ -86,6 +94,7 @@
       &--product {
         left: 80px !important;
       }
+
     }
 
     &__content {
@@ -105,11 +114,14 @@
     }
   }
 
+
+
+
   /* TIMELINE */
   .timeline {
-    width: 100%;
-    left: 0;
-    margin: 0;
+      width: 100%;
+      left: 0;
+      margin: 0;
 
     &__manager {
       flex-wrap: wrap;
@@ -123,6 +135,7 @@
   /* SETTINGS */
 
   s4e-settings .settings {
+
     .navigation {
       margin-bottom: 15px;
       padding: 10px 15px;
@@ -201,6 +214,7 @@
           width: 100%;
         }
       }
+
     }
     .dashboard {
       display: block;
@@ -208,13 +222,14 @@
       height: auto;
 
       .content__header {
-        margin-bottom: 30px;
+          margin-bottom: 30px;
       }
     }
     .panel {
       flex-direction: column;
 
       &__item {
+
         aside {
         }
         img {
@@ -224,6 +239,7 @@
 
       &__content {
         font-size: 0.9rem;
+
       }
 
       footer {
@@ -245,46 +261,54 @@
     margin: 5px;
   }
 
-  /* AUTH */
-  .container {
-    .content {
-      button.button {
-        margin-top: 10px;
-      }
+
+
+/* AUTH */
+.container {
+  .content {
+    button.button {
+      margin-top: 10px;
     }
+  }
 
-    .form__list {
-      margin-bottom: 90px;
-    }
+  .form__list {
+    margin-bottom: 90px;
+  }
 
-    .logo__partners {
-      margin: 0 auto 50px auto !important;
-      width: 100%;
-    }
+  .logo__partners {
+    margin: 0 auto 50px auto !important;
+    width: 100%;
+  }
 
-    .content__switch {
-      &--left {
-        bottom: 20px;
-        left: 0;
-        a {
-          width: 100%;
-          padding: 15px 20px;
-          display: inline-block;
-          text-align: center;
-          position: fixed;
-          color: $color-white;
-          background: $color-secondary;
-          bottom: 0;
+  .content__switch {
+    &--left {
+      bottom: 20px;
+      left: 0;
+      a {
+        width: 100%;
+        padding: 15px 20px;
+        display: inline-block;
+        text-align: center;
+        position: fixed;
+        color: $color-white;
+        background: $color-secondary;
+        bottom: 0;
 
-          &:before {
-            display: none;
-          }
+        &:before {
+          display: none;
         }
       }
     }
   }
+}
 
-  /* MODALS */
+/* MODALS */
+
+  .modal-footer {
+    button {
+      margin-bottom: 10px;
+    }
+  }
 
   .s4e-modal-body.report {
     flex-direction: column-reverse;
@@ -312,14 +336,6 @@
     }
   }
 
-  .cookies {
-    section {
-      flex-direction: column;
-      align-items: flex-start;
 
-      button {
-        margin-left: 80px;
-      }
-    }
-  }
+
 }
