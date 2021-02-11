@@ -284,6 +284,7 @@ export class MapComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.activeScene$.complete();
     this.map.un('moveend', this.onMoveEnd);
+    this._loaderService.stopBackground();
   }
 
   onMoveEnd = (event: any) => {
@@ -401,6 +402,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   private _getTileWmsFrom(scene: Scene) {
+    this._loaderService.stopBackground();
+
     const utcTime = moment(scene.timestamp).utc();
 
     // IMPORTANT!!!

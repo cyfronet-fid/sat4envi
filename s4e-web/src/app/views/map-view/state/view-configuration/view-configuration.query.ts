@@ -65,14 +65,14 @@ export class ViewConfigurationQuery extends QueryEntity<
   }
 
   mapToExtended(viewConfiguration: ViewConfiguration): ViewConfigurationEx {
+    const hasProductId = viewConfiguration.configuration.productId != null;
+    const product = hasProductId
+      ? this.productQuery.getEntity(viewConfiguration.configuration.productId)
+      : null;
     return {
       ...viewConfiguration,
       configurationNames: {
-        product:
-          viewConfiguration.configuration.productId == null
-            ? null
-            : this.productQuery.getEntity(viewConfiguration.configuration.productId)
-                .name,
+        product: !!product ? product.displayName : null,
         selectedDate: viewConfiguration.configuration.date,
         overlays: viewConfiguration.configuration.overlays.map(
           id => this.overlayQuery.getEntity(id).label
@@ -83,7 +83,7 @@ export class ViewConfigurationQuery extends QueryEntity<
 
   selectAllAsEx(): Observable<ViewConfigurationEx[]> {
     return this.selectAll().pipe(
-      map(configs => configs.map(c => this.mapToExtended(c)))
+      map(configs => configs.map(configuration => this.mapToExtended(configuration)))
     );
   }
 }
