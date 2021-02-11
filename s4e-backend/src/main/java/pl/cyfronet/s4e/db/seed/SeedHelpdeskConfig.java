@@ -28,28 +28,28 @@ import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.Property;
 import pl.cyfronet.s4e.data.repository.PropertyRepository;
 
-@Profile({"development", "run-seed-expert-email"})
+@Profile({"development", "run-seed-helpdesk-config"})
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SeedExpertEmail implements ApplicationRunner {
-    private static final String DEVELOPMENT_EXPERT_HELP_EMAIL = "expert-help@mail.pl";
+public class SeedHelpdeskConfig implements ApplicationRunner {
+    private static final String DEVELOPMENT_HELPDESK_CONFIG = "type=jira,href=xyz";
 
     private final PropertyRepository propertyRepository;
 
     @Async
     @Override
     public void run(ApplicationArguments args) {
-        if (propertyRepository.findByName(Constants.PROPERTY_EXPERT_HELP_EMAIL).isPresent()) {
-            log.info("Expert email already set, skipping");
+        if (propertyRepository.findByName(Constants.PROPERTY_HELPDESK_CONFIG).isPresent()) {
+            log.info("Helpdesk config already set, skipping");
             return;
         }
 
         propertyRepository.save(Property.builder()
-                .name(Constants.PROPERTY_EXPERT_HELP_EMAIL)
-                .value(DEVELOPMENT_EXPERT_HELP_EMAIL)
+                .name(Constants.PROPERTY_HELPDESK_CONFIG)
+                .value(DEVELOPMENT_HELPDESK_CONFIG)
                 .build());
 
-        log.info("Expert email set to " + DEVELOPMENT_EXPERT_HELP_EMAIL);
+        log.info("Helpdesk config set to " + DEVELOPMENT_HELPDESK_CONFIG);
     }
 }
