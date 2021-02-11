@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Value;
 
+import java.util.Map;
+
 @Value
 @Builder
 public class ConfigResponse {
@@ -32,4 +34,5 @@ public class ConfigResponse {
     String geoserverWorkspace;
     @Schema(example = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI")
     String recaptchaSiteKey;
+    Map<String, String> helpdesk;
 }

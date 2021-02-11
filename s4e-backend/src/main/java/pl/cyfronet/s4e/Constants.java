@@ -26,4 +26,5 @@ public final class Constants {
 
     public static final String PROPERTY_EXPERT_HELP_EMAIL = "expert_help_email";
     public static final String PROPERTY_EUMETSAT_AUTHORITY_WHITELIST = "eumetsat_authority_whitelist";
+    public static final String PROPERTY_HELPDESK_CONFIG = "helpdesk_config";
 }
