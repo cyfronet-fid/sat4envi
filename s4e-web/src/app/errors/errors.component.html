@@ -21,7 +21,9 @@
 
   <p>
     <span>
-      <a routerLink="/" class="button button--secondary button--small">Wróć do strony głównej</a>
+      <a routerLink="/" class="button button--secondary button--small"
+        >Wróć do strony głównej</a
+      >
     </span>
     <span *ngIf="!!backLink && backLink !== ''">
       lub <a routerLink="{{ backLink }}"> lub wróć do poprzedniej strony</a>
