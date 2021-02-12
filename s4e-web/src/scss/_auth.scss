@@ -19,10 +19,9 @@
 Styles for "static" pages before authorization
  */
 
-@import 'variables';
+@import "variables";
 
-body,
-html {
+body, html {
   height: 100vh;
 }
 
@@ -30,15 +29,16 @@ html {
   display: flex;
   flex-direction: row;
   height: 100vh;
-  width: 100%;
+  width:100%;
   overflow-x: hidden;
   background: $color-white;
+
 
   .intro {
     display: flex;
     width: 40%;
     flex-direction: column;
-    background: url('/../assets/images/bg_auth.png') no-repeat;
+    background: url("/../assets/images/bg_auth.png") no-repeat;
     background-size: cover;
     text-align: center;
     justify-content: space-between;
@@ -103,7 +103,8 @@ html {
       }
     }
 
-    &__formContainer {
+    &__formContainer
+      {
       display: table-cell;
       vertical-align: middle;
       position: relative;
@@ -126,7 +127,7 @@ html {
           line-height: 1.4rem;
         }
 
-        p + p {
+        p+p {
           margin-bottom: $space-xlarge * 2;
         }
 
@@ -137,6 +138,7 @@ html {
             width: 47%;
             float: left;
             margin-right: $space-default;
+
           }
 
           &--clear {
@@ -161,7 +163,9 @@ html {
         li {
           display: block;
         }
+
       }
+
 
       label {
         font-size: 1rem;
@@ -171,8 +175,8 @@ html {
         margin-bottom: $space-small;
       }
 
-      input[type='text'],
-      input[type='password'] {
+      input[type=text],
+      input[type=password]{
         box-shadow: none;
         border: 1px solid $color-grey-secondary;
         padding: $space-default;
@@ -185,6 +189,8 @@ html {
         border-bottom: 2px solid $color-error;
         margin-bottom: 3px;
       }
+
+
     }
 
     &__header {
@@ -228,7 +234,7 @@ html {
           position: relative;
 
           &:before {
-            content: ' ';
+            content: " ";
             position: absolute;
             left: 0;
             top: -2px;
@@ -275,7 +281,7 @@ html {
       margin: $space-default 0;
       background-color: lighten($color-error, 40%);
       padding: $space-default;
-      position: relative;
+      position:relative;
       border-radius: $border-radius-default;
       animation: fadein 2s;
 
@@ -286,12 +292,8 @@ html {
     }
 
     @keyframes fadein {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
   }
 
@@ -299,3 +301,20 @@ html {
     display: none;
   }
 }
+
+.errors {
+  span {
+    display: inline-block;
+    margin: 10px 5px;
+  }
+
+  & > * {
+    margin: 15px !important;
+  }
+}
+
+
+
+
+
+

@@ -15,17 +15,16 @@
   ~
   -->
 
-<div class="container">
+<div class="container errors">
   <h2 class="description">{{ actualError.description }}</h2>
   <h3 class="title">{{ actualError.title }}</h3>
 
   <p>
-    <a routerLink="/" class="button button--secondary button--small"
-      >Wróć do strony głównej</a
-    >
+    <span>
+      <a routerLink="/" class="button button--secondary button--small">Wróć do strony głównej</a>
+    </span>
     <span *ngIf="!!backLink && backLink !== ''">
-      <span>&nbsp; | &nbsp;</span>
-      <a routerLink="{{ backLink }}">Wróć do poprzedniej strony</a>
+      lub <a routerLink="{{ backLink }}"> lub wróć do poprzedniej strony</a>
     </span>
   </p>
 </div>

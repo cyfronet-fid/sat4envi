@@ -18,6 +18,7 @@
 body,
 html {
   height: auto;
+  overflow: hidden !important;
 }
 
 .container {
@@ -27,6 +28,7 @@ html {
   flex-direction: column;
   text-align: center;
 }
+
 
 h2 {
   padding-top: 120px;

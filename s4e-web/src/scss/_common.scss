@@ -652,8 +652,15 @@ input.checkbox-slide:checked + .slider:after
   }
 }
 
-ngx-ui-loader .ngx-background-spinner {
-  z-index: 5 !important;
+/* jira collector */
+.atlwdg-popup {
+  max-width: calc(100% - 100px);
+}
+
+/*loader*/
+
+ngx-ui-loader .ngx-background-spinner[_ngcontent-c3]{
+  z-index: 1 !important;
 }
 
 .ol-attribution.ol-uncollapsible {
