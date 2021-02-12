@@ -443,7 +443,7 @@ export class ReportGenerator {
     composer.setFlow('bottom-top');
 
     composer.insertTextBox('© 2020 sat4envi', {fontSize: detailsFontSize, align: 'center'});
-    composer.insertTextBox('Mapa została wygenerowana w aplikacji www.sat4envi.pl', {
+    composer.insertTextBox('Mapa została wygenerowana w aplikacji dane.sat4envi.imgw.pl', {
       fontSize: detailsFontSize,
       align: 'center',
       margin: 2
