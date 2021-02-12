@@ -55,6 +55,13 @@
     button {
       width: 100%;
     }
+
+    a.button {
+      width: auto;
+      display: block;
+      margin-left: 0;
+      text-align: center;
+    }
   }
 }
 

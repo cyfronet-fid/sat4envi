@@ -248,6 +248,11 @@
   .modal-dialog.modal-lg[_ngcontent-c1] {
     width: 97% !important;
     margin: 5px;
+
+    .modal__prev,
+    .modal__next {
+      display: none;
+    }
   }
 
   /* AUTH */
