@@ -31,32 +31,32 @@ public class SearchPanelConfig {
     public List<SectionPrototype> searchPanelSectionPrototypes() {
         return List.of(
                 new SectionPrototype(
-                        "sentinel-1",
+                        "Sentinel-1",
                         "Sentinel-1.metadata.v1.json",
                         List.of(
-                                new DatetimeParam(INGESTION_FROM),
-                                new DatetimeParam(INGESTION_TO)
+                                new DatetimeParamPrototype(INGESTION_FROM),
+                                new DatetimeParamPrototype(INGESTION_TO)
                         ),
                         List.of(
-                                new SelectParam(SATELLITE_PLATFORM, List.of("", "Sentinel-1A", "Sentinel-1B")),
-                                new SelectParam(PROCESSING_LEVEL, List.of("", "1", "2")),
-                                new SelectParam(POLARISATION, List.of("", "HH", "VV", "HV", "VH", "HH+HV", "VV+VH")),
-                                new SelectParam(SENSOR_MODE, List.of("", "SM", "IW", "EW", "WV")),
-                                new TextParam(RELATIVE_ORBIT_NUMBER)
+                                new SelectParamPrototype(SATELLITE_PLATFORM, List.of("", "Sentinel-1A", "Sentinel-1B")),
+                                new SelectParamPrototype(PROCESSING_LEVEL, List.of("", "1", "2")),
+                                new SelectParamPrototype(POLARISATION, List.of("", "HH", "VV", "HV", "VH", "HH+HV", "VV+VH")),
+                                new SelectParamPrototype(SENSOR_MODE, List.of("", "SM", "IW", "EW", "WV")),
+                                new TextParamPrototype(RELATIVE_ORBIT_NUMBER)
                         )
                 ),
                 new SectionPrototype(
-                        "sentinel-2",
+                        "Sentinel-2",
                         "Sentinel-2.metadata.v1.json",
                         List.of(
-                                new DatetimeParam(INGESTION_FROM),
-                                new DatetimeParam(INGESTION_TO)
+                                new DatetimeParamPrototype(INGESTION_FROM),
+                                new DatetimeParamPrototype(INGESTION_TO)
                         ),
                         List.of(
-                                new SelectParam(SATELLITE_PLATFORM, List.of("", "Sentinel-2A", "Sentinel-2B")),
-                                new SelectParam(PROCESSING_LEVEL, List.of("", "Level-1C", "Level-2A")),
-                                new TextParam(RELATIVE_ORBIT_NUMBER),
-                                new FloatParam(CLOUD_COVER, 0., 100.)
+                                new SelectParamPrototype(SATELLITE_PLATFORM, List.of("", "Sentinel-2A", "Sentinel-2B")),
+                                new SelectParamPrototype(PROCESSING_LEVEL, List.of("", "Level-1C", "Level-2A")),
+                                new TextParamPrototype(RELATIVE_ORBIT_NUMBER),
+                                new FloatParamPrototype(CLOUD_COVER, 0., 100.)
                         )
                 ),
                 new SectionPrototype(
