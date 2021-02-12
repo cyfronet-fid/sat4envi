@@ -38,16 +38,59 @@ public class SearchPanelConfigResponse {
 
     @Value
     public static class SectionPrototype {
-        String name;
+        String label;
         String metadataSchemaName;
-        List<Param> prefixParams;
-        List<Param> suffixParams;
+        List<ParamPrototype> prefixParams;
+        List<ParamPrototype> suffixParams;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public abstract static class ParamPrototype {
+        private final String queryParam;
+    }
+
+    @Getter
+    public static class SelectParamPrototype extends ParamPrototype {
+        public SelectParamPrototype(String queryParam, List<String> values) {
+            super(queryParam);
+            this.values = values;
+        }
+
+        private final List<String> values;
+    }
+
+    @Getter
+    public static class FloatParamPrototype extends ParamPrototype {
+        public FloatParamPrototype(String queryParam, Double min, Double max) {
+            super(queryParam);
+            this.min = min;
+            this.max = max;
+        }
+
+        private final Double min;
+        private final Double max;
+    }
+
+    @Getter
+    public static class TextParamPrototype extends ParamPrototype {
+        public TextParamPrototype(String queryParam) {
+            super(queryParam);
+        }
+    }
+
+    @Getter
+    public static class DatetimeParamPrototype extends ParamPrototype {
+        public DatetimeParamPrototype(String queryParam) {
+            super(queryParam);
+        }
     }
 
     @Getter
     @RequiredArgsConstructor
     public static class Section {
         private final String name;
+        private final String label;
         private final List<Param> params;
     }
 
@@ -56,23 +99,31 @@ public class SearchPanelConfigResponse {
     @Schema(anyOf = { SelectParam.class, FloatParam.class, TextParam.class, DatetimeParam.class })
     public abstract static class Param {
         private final String queryParam;
+        private final String label;
         private final String type;
     }
 
     @Getter
+    @RequiredArgsConstructor
+    public static class SelectValue {
+        private final String value;
+        private final String label;
+    }
+
+    @Getter
     public static class SelectParam extends Param {
-        public SelectParam(String queryParam, List<String> values) {
-            super(queryParam, "select");
+        public SelectParam(String queryParam, String label, List<SelectValue> values) {
+            super(queryParam, label, "select");
             this.values = values;
         }
 
-        private final List<String> values;
+        private final List<SelectValue> values;
     }
 
     @Getter
     public static class FloatParam extends Param {
-        public FloatParam(String queryParam, Double min, Double max) {
-            super(queryParam, "float");
+        public FloatParam(String queryParam, String label, Double min, Double max) {
+            super(queryParam, label, "float");
             this.min = min;
             this.max = max;
         }
@@ -83,15 +134,15 @@ public class SearchPanelConfigResponse {
 
     @Getter
     public static class TextParam extends Param {
-        public TextParam(String queryParam) {
-            super(queryParam, "text");
+        public TextParam(String queryParam, String label) {
+            super(queryParam, label, "text");
         }
     }
 
     @Getter
     public static class DatetimeParam extends Param {
-        public DatetimeParam(String queryParam) {
-            super(queryParam, "datetime");
+        public DatetimeParam(String queryParam, String label) {
+            super(queryParam, label, "datetime");
         }
     }
 }

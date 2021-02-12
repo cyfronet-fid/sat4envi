@@ -148,8 +148,13 @@ public class ConfigControllerTest {
             testDbHelper.clean();
 
             String content = new String(testResourceHelper.getAsBytes(SCENE_SCHEMA_PATH));
-            Schema testSchema = schemaRepository.save(Schema.builder()
-                    .name("test.metadata.v1.json")
+            Schema testSchema1 = schemaRepository.save(Schema.builder()
+                    .name("test-1.metadata.v1.json")
+                    .type(Schema.Type.METADATA)
+                    .content(content)
+                    .build());
+            Schema testSchema2 = schemaRepository.save(Schema.builder()
+                    .name("test-2.metadata.v1.json")
                     .type(Schema.Type.METADATA)
                     .content(content)
                     .build());
@@ -158,9 +163,33 @@ public class ConfigControllerTest {
                     .type(Schema.Type.METADATA)
                     .content(content)
                     .build());
+            Schema sentinel2Schema = schemaRepository.save(Schema.builder()
+                    .name("Sentinel-2.metadata.v1.json")
+                    .type(Schema.Type.METADATA)
+                    .content(content)
+                    .build());
+            Schema msgSchema = schemaRepository.save(Schema.builder()
+                    .name("MSG.metadata.v1.json")
+                    .type(Schema.Type.METADATA)
+                    .content(content)
+                    .build());
 
+            // The products are deliberately created in this order, to verify extra schemas are sorted by name.
             productRepository.save(productBuilder()
-                    .metadataSchema(testSchema)
+                    .name("test-2")
+                    .displayName("test 2")
+                    .metadataSchema(testSchema2)
+                    .build());
+            productRepository.save(productBuilder()
+                    .name("test-1")
+                    .displayName("test 1")
+                    .metadataSchema(testSchema1)
+                    .build());
+            productRepository.save(productBuilder()
+                    .metadataSchema(msgSchema)
+                    .build());
+            productRepository.save(productBuilder()
+                    .metadataSchema(sentinel2Schema)
                     .build());
             productRepository.save(productBuilder()
                     .metadataSchema(sentinel1Schema)
@@ -171,8 +200,28 @@ public class ConfigControllerTest {
         public void shouldReturn() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/config/search"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.sections[0].name", is(equalTo("sentinel-1"))))
-                    .andExpect(jsonPath("$.sections[1].name", is(equalTo("test.metadata.v1.json"))));
+                    .andExpect(jsonPath("$.common.params", hasSize(4)))
+                    .andExpect(jsonPath("$.common.params[0].queryParam", is(equalTo("sortBy"))))
+                    .andExpect(jsonPath("$.common.params[0].label", is(equalTo("Sortuj po"))))
+                    .andExpect(jsonPath("$.common.params[0].values", hasSize(3)))
+                    .andExpect(jsonPath("$.common.params[0].values[0].value", is(equalTo("sensingTime"))))
+                    .andExpect(jsonPath("$.common.params[0].values[0].label", is(equalTo("Czas detekcji"))))
+                    .andExpect(jsonPath("$.common.params[1].queryParam", is(equalTo("order"))))
+                    .andExpect(jsonPath("$.common.params[1].label", is(equalTo("Kolejność"))))
+                    .andExpect(jsonPath("$.sections", hasSize(5)))
+                    .andExpect(jsonPath("$.sections[0].label", is(equalTo("Sentinel-1"))))
+                    .andExpect(jsonPath("$.sections[0].name", is(equalTo("Sentinel-1.metadata.v1.json"))))
+                    .andExpect(jsonPath("$.sections[1].label", is(equalTo("Sentinel-2"))))
+                    .andExpect(jsonPath("$.sections[2].label", is(equalTo("MSG"))))
+                    .andExpect(jsonPath("$.sections[3].label", is(equalTo("test-1 v1"))))
+                    .andExpect(jsonPath("$.sections[3].name", is(equalTo("test-1.metadata.v1.json"))))
+                    .andExpect(jsonPath("$.sections[4].label", is(equalTo("test-2 v1"))))
+                    .andExpect(jsonPath("$.sections[3].params[0].queryParam", is(equalTo("productType"))))
+                    .andExpect(jsonPath("$.sections[3].params[0].label", is(equalTo("Produkt"))))
+                    .andExpect(jsonPath("$.sections[3].params[0].values", hasSize(1)))
+                    .andExpect(jsonPath("$.sections[3].params[0].values[0].value", is(equalTo("test-1"))))
+                    .andExpect(jsonPath("$.sections[3].params[0].values[0].label", is(equalTo("test 1"))));
+
         }
     }
 
