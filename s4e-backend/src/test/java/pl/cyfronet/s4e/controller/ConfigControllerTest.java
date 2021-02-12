@@ -25,10 +25,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
+import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
+import pl.cyfronet.s4e.bean.Property;
 import pl.cyfronet.s4e.bean.Schema;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
+import pl.cyfronet.s4e.data.repository.PropertyRepository;
 import pl.cyfronet.s4e.data.repository.SchemaRepository;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.OsmProperties;
@@ -43,6 +46,8 @@ import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
 @AutoConfigureMockMvc
 @BasicTest
 public class ConfigControllerTest {
+    private static final String CONFIG_URL = API_PREFIX_V1 + "/config";
+
     @Autowired
     private GeoServerProperties geoServerProperties;
 
@@ -53,15 +58,73 @@ public class ConfigControllerTest {
     private String recaptchaSiteKey;
 
     @Autowired
+    private TestDbHelper testDbHelper;
+
+    @Autowired
     private MockMvc mockMvc;
+
+    @BeforeEach
+    public void beforeEach() {
+        testDbHelper.clean();
+    }
 
     @Test
     public void shouldReturnConfiguration() throws Exception {
-        mockMvc.perform(get(API_PREFIX_V1 + "/config"))
+        mockMvc.perform(get(CONFIG_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.osmUrl").value(osmProperties.getUrl()))
                 .andExpect(jsonPath("$.geoserverUrl").value(geoServerProperties.getOutsideBaseUrl()))
                 .andExpect(jsonPath("$.recaptchaSiteKey").value(recaptchaSiteKey));
+    }
+
+    @Nested
+    class Helpdesk {
+        @Autowired
+        private PropertyRepository propertyRepository;
+
+        @Test
+        public void shouldWork() throws Exception {
+            setHelpdeskProperty("foo=bar,baz=foo=bar,bar=,foobar,");
+
+            mockMvc.perform(get(CONFIG_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.helpdesk.foo").value("bar"))
+                    .andExpect(jsonPath("$.helpdesk.baz").value("foo=bar"))
+                    .andExpect(jsonPath("$.helpdesk.bar").value(""))
+                    .andExpect(jsonPath("$.helpdesk.foobar").doesNotExist());
+        }
+
+        @Test
+        public void shouldTakeFirstKeyIfThereAreDuplicates() throws Exception {
+            setHelpdeskProperty("foo=bar,foo=baz");
+
+            mockMvc.perform(get(CONFIG_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.helpdesk.foo").value("bar"));
+        }
+
+        @Test
+        public void shouldBeEmptyIfEmptyProperty() throws Exception {
+            setHelpdeskProperty("");
+
+            mockMvc.perform(get(CONFIG_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.helpdesk").isEmpty());
+        }
+
+        @Test
+        public void shouldBeEmptyIfPropertyUnset() throws Exception {
+            mockMvc.perform(get(CONFIG_URL))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.helpdesk").isEmpty());
+        }
+
+        private void setHelpdeskProperty(String value) {
+            propertyRepository.save(Property.builder()
+                    .name(Constants.PROPERTY_HELPDESK_CONFIG)
+                    .value(value)
+                    .build());
+        }
     }
 
     @Nested
