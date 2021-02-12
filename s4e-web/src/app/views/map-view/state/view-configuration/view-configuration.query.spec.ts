@@ -87,7 +87,7 @@ describe('ViewConfigurationQuery', () => {
       },
       thumbnail: 'base64thumbnail',
       uuid: 'dummyUuid'
-    };
+    } as any;
 
     let productSpy = jest.spyOn(productQuery, 'getEntity');
     productSpy.mockReturnValueOnce({
@@ -96,7 +96,7 @@ describe('ViewConfigurationQuery', () => {
       legend: undefined,
       id: 1,
       name: 'product 1 name',
-      displayName: '',
+      displayName: 'product 1 name',
       favourite: false,
       layerName: '',
       productCategory: {label: '', iconPath: '', id: 1, rank: 1},
@@ -133,7 +133,7 @@ describe('ViewConfigurationQuery', () => {
       },
       thumbnail: 'base64thumbnail',
       uuid: 'dummyUuid'
-    };
+    } as any;
 
     expect(query.mapToExtended(viewConfig)).toEqual(viewConfigEx);
     expect(productSpy).toHaveBeenCalledWith(1);
@@ -193,7 +193,7 @@ describe('ViewConfigurationQuery', () => {
         selectedDate: '11-11-2020'
       },
       thumbnail: null
-    };
+    } as any;
 
     expect(query.getCurrent()).toEqual(viewConfigEx);
   });
