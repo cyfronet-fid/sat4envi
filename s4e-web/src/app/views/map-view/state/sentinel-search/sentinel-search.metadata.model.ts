@@ -20,6 +20,7 @@ import {FormControl, Validators} from '@angular/forms';
 export interface SentinelParam {
   queryParam: string;
   type: string;
+  label: string;
   [property: string]: any;
 }
 
@@ -57,7 +58,7 @@ export function isSentinelTextParam(
 
 export interface SentinelSelectParam extends SentinelParam {
   type: 'select';
-  values: string | null[];
+  values: {value: string; label: string}[];
 }
 
 export function isSentinelSelectParam(
@@ -68,6 +69,7 @@ export function isSentinelSelectParam(
 
 export interface SentinelSection {
   name: string;
+  label: string;
   params: SentinelParam[];
 }
 
@@ -85,7 +87,7 @@ export function convertSentinelParam2FormControl(
 
   if (isSentinelSelectParam(formControlDef)) {
     // set value to the first option from the available select options
-    fc.setValue(formControlDef.values[0]);
+    fc.setValue(formControlDef.values[0].value);
   } else if (isSentinelFloatParam(formControlDef)) {
     const validators = [];
     if (formControlDef.min != null) {

@@ -86,7 +86,7 @@ export class SentinelFormComponent implements ControlValueAccessor, Validator {
 
   constructor() {}
 
-  selectOptions(def: SentinelParam): string | null[] {
+  selectOptions(def: SentinelParam): {label: string; value: string | number}[] {
     return (def as SentinelSelectParam).values;
   }
 

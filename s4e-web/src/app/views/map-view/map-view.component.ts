@@ -27,10 +27,9 @@ import {MapService} from './state/map/map.service';
 import {OverlayQuery} from './state/overlay/overlay.query';
 import {OverlayService} from './state/overlay/overlay.service';
 import {ViewPosition} from './state/map/map.model';
-import {Legend, LegendState} from './state/legend/legend.model';
+import {LegendState} from './state/legend/legend.model';
 import {LegendQuery} from './state/legend/legend.query';
 import {LegendService} from './state/legend/legend.service';
-import {LocationSearchResult} from './state/location-search-results/location-search-result.model';
 import {SessionService} from '../../state/session/session.service';
 import {SessionQuery} from '../../state/session/session.query';
 import {Scene} from './state/scene/scene.model';
@@ -71,6 +70,7 @@ import {SentinelSearchQuery} from './state/sentinel-search/sentinel-search.query
 import {InstitutionService} from '../settings/state/institution/institution.service';
 import {InstitutionQuery} from '../settings/state/institution/institution.query';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {SentinelSearchService} from './state/sentinel-search/sentinel-search.service';
 
 @UntilDestroy()
 @Component({
@@ -157,7 +157,8 @@ export class MapViewComponent implements OnInit, OnDestroy {
     private viewConfigurationService: ViewConfigurationService,
     private sentinelSearchQuery: SentinelSearchQuery,
     private institutionQuery: InstitutionQuery,
-    private institutionService: InstitutionService
+    private institutionService: InstitutionService,
+    private sentinelSearchService: SentinelSearchService
   ) {}
 
   ngOnInit(): void {
@@ -328,7 +329,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
     this.toggleZKOptions(false);
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.sentinelSearchService.clearMetadata();
+  }
 
   openJwtTokenModal() {
     this.modalService.show<Modal>({

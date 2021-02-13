@@ -17,7 +17,7 @@
 
 <div *ngIf="!(loadingMetadata$ | async); else metadataLoadingRef">
   <form [formGroup]="form" class="form form--sentinel">
-    <div class="infobox infobox--poligon" i18>
+    <div class="infobox infobox--poligon" i18n>
       Możesz zawęzić obszar w którym chcesz szukać danych Sentinel. Wyznacz punkty
       klikając dowolnym przyciskiem myszy.
     </div>
@@ -25,13 +25,13 @@
       <li>
         <s4e-sentinel-form
           [paramsDef]="(sentinels$ | async)?.common.params"
-          [formControl]="form.get('common')"
+          [formControl]="form.get(['common'])"
         ></s4e-sentinel-form>
       </li>
       <li *ngFor="let sentinel of (sentinels$ | async)?.sections">
         <s4e-sentinel-section
           [sentinel]="sentinel"
-          [formControlName]="sentinel.name"
+          [formControl]="form.get([sentinel.name])"
         ></s4e-sentinel-section>
       </li>
     </ul>

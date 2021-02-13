@@ -23,13 +23,13 @@
           <ng-container [ngSwitch]="def.type">
             <ext-input
               *ngSwitchCase="'text'"
-              [label]="def.queryParam"
+              [label]="def.label"
               [required]="false"
               [formControlName]="def.queryParam"
             ></ext-input>
             <ext-input
               *ngSwitchCase="'float'"
-              [label]="def.queryParam"
+              [label]="def.label"
               [formControlName]="def.queryParam"
               type="number"
               [required]="false"
@@ -37,18 +37,21 @@
             ></ext-input>
             <ext-datepicker
               *ngSwitchCase="'datetime'"
-              [label]="def.queryParam"
+              [label]="def.label"
               [required]="false"
               [formControlName]="def.queryParam"
             ></ext-datepicker>
             <ext-select
               *ngSwitchCase="'select'"
-              [label]="def.queryParam"
+              [label]="def.label"
               [required]="false"
               [formControlName]="def.queryParam"
             >
-              <option *ngFor="let option of selectOptions(def)" [value]="option">
-                {{ option }}
+              <option
+                *ngFor="let option of selectOptions(def)"
+                [value]="option.value"
+              >
+                {{ option.label }}
               </option>
             </ext-select>
           </ng-container>
