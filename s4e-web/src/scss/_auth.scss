@@ -299,3 +299,14 @@ html {
     display: none;
   }
 }
+
+.errors {
+  span {
+    display: inline-block;
+    margin: 10px 5px;
+  }
+
+  & > * {
+    margin: 15px !important;
+  }
+}

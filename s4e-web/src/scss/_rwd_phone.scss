@@ -48,6 +48,11 @@
     top: 100px;
     left: 0;
     right: 0;
+
+    .search-results {
+      width: 100% !important;
+      top: 100px !important;
+    }
   }
 
   .collapse {
@@ -243,6 +248,11 @@
   .modal-dialog.modal-lg[_ngcontent-c1] {
     width: 97% !important;
     margin: 5px;
+
+    .modal__prev,
+    .modal__next {
+      display: none;
+    }
   }
 
   /* AUTH */
@@ -286,6 +296,12 @@
 
   /* MODALS */
 
+  .modal-footer {
+    button {
+      margin-bottom: 10px;
+    }
+  }
+
   .s4e-modal-body.report {
     flex-direction: column-reverse;
 
@@ -308,17 +324,6 @@
         display: block;
         width: 100%;
         margin-left: 0;
-      }
-    }
-  }
-
-  .cookies {
-    section {
-      flex-direction: column;
-      align-items: flex-start;
-
-      button {
-        margin-left: 80px;
       }
     }
   }

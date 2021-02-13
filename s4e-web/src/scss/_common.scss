@@ -511,11 +511,32 @@ input.checkbox-slide:checked + .slider:after {
   p {
     margin: 0;
     font-size: 0.9375rem;
+    line-height: 1.1rem;
 
     a {
       color: $color-secondary;
       opacity: 0.9;
       font-weight: 500;
+    }
+  }
+
+  &--moreproducts {
+    margin-top: 20px;
+    background: $color-white;
+    p {
+      padding-left: 55px;
+      font-size: 0.85rem;
+    }
+    &:before {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      display: block;
+      content: ' ';
+      background: url(/../assets/images/s4e_signet.png) no-repeat;
+      background-size: contain;
+      padding: 10px;
+      left: 20px;
     }
   }
 
@@ -537,10 +558,10 @@ input.checkbox-slide:checked + .slider:after {
   &--poligon {
     font-size: 0.82rem;
     position: relative;
-    padding-left: 70px;
     background: $color-white;
     font-weight: 500;
     line-height: 1rem;
+    padding-left: 75px;
 
     &:before {
       position: absolute;
@@ -636,38 +657,19 @@ input.checkbox-slide:checked + .slider:after {
   }
 }
 
-ngx-ui-loader .ngx-background-spinner {
-  z-index: 5 !important;
+/* jira collector */
+.atlwdg-popup {
+  max-width: calc(100% - 100px);
 }
 
-.cookies {
-  background: $color-white;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  z-index: 10;
-  box-shadow: 0 -2px 15px 0 rgba(0, 0, 0, 0.24);
+/*loader*/
 
-  section {
-    max-width: 1020px;
-    display: flex;
-    margin: 0 auto;
-    align-items: center;
-    padding: 15px;
-  }
+ngx-ui-loader .ngx-background-spinner[_ngcontent-c3] {
+  z-index: 1 !important;
+}
 
-  p {
-    padding: 15px 15px 15px 70px;
-    margin: 0 10px;
-    background: url(../assets/images/ico_cookie.svg) no-repeat left center;
-    line-height: 1.3;
-    max-width: 750px;
-    font-size: 0.9rem;
-  }
-
-  button {
-    line-height: 1;
-  }
+.ol-attribution.ol-uncollapsible {
+  right: 111px;
 }
 
 @media (max-height: 700px) {

@@ -315,6 +315,11 @@
             margin: 2px 0 8px 0;
           }
 
+          ul {
+            overflow-x: auto;
+            max-height: 50vh;
+          }
+
           li {
             padding: 5px;
             background-color: $color-white;
@@ -327,6 +332,10 @@
             &:hover {
               border: 1px solid $color-grey-quaternary;
               padding: 4px;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
             }
           }
 
