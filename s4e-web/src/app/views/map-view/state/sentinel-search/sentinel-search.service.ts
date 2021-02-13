@@ -47,10 +47,7 @@ import {SentinelSearchMetadata} from './sentinel-search.metadata.model';
 import {Router} from '@angular/router';
 import {applyTransaction, HashMap} from '@datorama/akita';
 import {ModalService} from '../../../../modal/state/modal.service';
-import {
-  makeDetailsModal,
-  SENTINEL_SEARCH_RESULT_MODAL_ID
-} from '../../sentinel-search/search-result-modal/search-result-modal.model';
+import {makeDetailsModal} from '../../sentinel-search/search-result-modal/search-result-modal.model';
 import {ActivatedQueue} from 'src/app/utils/search/activated-queue.utils';
 import {Observable, of, throwError} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
@@ -266,7 +263,7 @@ export class SentinelSearchService {
         }),
         tap(([params, page]) =>
           Object.keys(form.controls).forEach(key =>
-            form.get(key).patchValue(params[key] || {})
+            form.get([key]).patchValue(params[key] || {})
           )
         ),
         switchMap(([params, page]) =>
@@ -304,5 +301,17 @@ export class SentinelSearchService {
 
   setFootprint(footprint: string | null) {
     this.store.update({footprint});
+  }
+
+  clearMetadata() {
+    this.store.update({
+      metadataLoaded: false,
+      metadata: {
+        common: {
+          params: []
+        },
+        sections: []
+      }
+    });
   }
 }

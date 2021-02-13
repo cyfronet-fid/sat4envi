@@ -15,15 +15,22 @@
  *
  */
 
-import {convertSentinelParam2FormControl} from './sentinel-search.metadata.model';
+import {
+  convertSentinelParam2FormControl,
+  SentinelParam
+} from './sentinel-search.metadata.model';
 import {FormControl} from '@angular/forms';
 
 describe('convertSentinelParam2FormControl', () => {
   it('should work form select', () => {
-    const formControlDef = {
+    const formControlDef: SentinelParam = {
       queryParam: 'satellitePlatform',
+      label: 'Satellite Platform',
       type: 'select',
-      values: ['Sentinel-1A', 'Sentinel-1B']
+      values: [
+        {value: 'Sentinel-1A', label: 'Sentinel 1A'},
+        {value: 'Sentinel-1B', label: 'Sentinel1B'}
+      ]
     };
 
     const fc = convertSentinelParam2FormControl(formControlDef);
@@ -38,6 +45,7 @@ describe('convertSentinelParam2FormControl', () => {
   it('should work form float', () => {
     const formControlDef = {
       queryParam: 'cloudCover',
+      label: 'Cloud Cover',
       type: 'float',
       min: 0,
       max: 100
@@ -55,7 +63,11 @@ describe('convertSentinelParam2FormControl', () => {
   });
 
   it('should work form datetime', () => {
-    const formControlDef = {queryParam: 'sensingFrom', type: 'datetime'};
+    const formControlDef = {
+      queryParam: 'sensingFrom',
+      type: 'datetime',
+      label: 'Sensing From'
+    };
     expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(
       FormControl
     );
@@ -64,7 +76,8 @@ describe('convertSentinelParam2FormControl', () => {
   it('should work form text', () => {
     const formControlDef = {
       queryParam: 'relativeOrbitNumber',
-      type: 'text'
+      type: 'text',
+      label: 'Relative Orbit Number'
     };
 
     expect(convertSentinelParam2FormControl(formControlDef)).toBeInstanceOf(

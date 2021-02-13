@@ -29,6 +29,7 @@ import {
 
 export const SentinelFloatParamFactory = Factory.makeFactory<SentinelFloatParam>({
   queryParam: Factory.each(i => `floatParam${i}`),
+  label: Factory.each(i => `floatParam Name #${i}`),
   type: 'float',
   min: 0,
   max: 100
@@ -36,6 +37,7 @@ export const SentinelFloatParamFactory = Factory.makeFactory<SentinelFloatParam>
 
 export const SentinelSectionFactory = Factory.makeFactory<SentinelSection>({
   name: Factory.each(i => `sentinel-${i}`),
+  label: Factory.each(i => `sentinel ${i}`),
   params: []
 });
 
@@ -44,28 +46,34 @@ export const SentinelSearchMetadataFactory = Factory.makeFactory<SentinelSearchM
     common: {
       params: [
         {
+          label: 'Sortuj po',
           queryParam: 'sortBy',
           type: 'select',
           values: ['sensingTime', 'ingestionTime', 'id']
         },
         {
+          label: 'Kolejnosć',
           queryParam: 'order',
           type: 'select',
           values: ['DESC', 'ASC']
         },
         {
+          label: 'Od',
           queryParam: 'sensingFrom',
           type: 'datetime'
         },
         {
+          label: 'Do',
           queryParam: 'sensingTo',
           type: 'datetime'
         },
         {
+          label: 'Pobranie Od',
           queryParam: 'ingestionFrom',
           type: 'datetime'
         },
         {
+          label: 'Pobranie Do',
           queryParam: 'ingestionTo',
           type: 'datetime'
         }
@@ -73,25 +81,37 @@ export const SentinelSearchMetadataFactory = Factory.makeFactory<SentinelSearchM
     },
     sections: [
       {
+        label: 'Sentinel 1',
         name: 'sentinel-1',
         params: [
           {
+            label: 'Platforma',
             queryParam: 'satellitePlatform',
             type: 'select',
-            values: ['Sentinel-1A', 'Sentinel-1B']
+            values: [
+              {value: 'Sentinel-1A', label: 'Sentinel-1A'},
+              {value: 'Sentinel-1B', label: 'Sentinel-1B'}
+            ]
           },
           {
+            label: 'Typ',
             queryParam: 'productType',
             type: 'select',
-            values: ['GRDM', 'GRDH', 'SLC_']
+            values: [
+              {value: 'GRDM', label: 'GRDM'},
+              {value: 'GRDH', label: 'GRDH'},
+              {value: 'SLC_', label: 'SLC_'}
+            ]
           },
           {
+            label: 'Pokrycie Chmur',
             queryParam: 'cloudCover',
             type: 'float',
             min: 0,
             max: 100
           },
           {
+            label: 'Numer Orbity',
             queryParam: 'relativeOrbitNumber',
             type: 'text'
           }
