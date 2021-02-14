@@ -38,6 +38,7 @@ import pl.cyfronet.s4e.controller.response.SceneResponse;
 import pl.cyfronet.s4e.data.repository.projection.ProjectionWithId;
 import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.security.AppUserDetails;
+import pl.cyfronet.s4e.service.MetricService;
 import pl.cyfronet.s4e.service.SceneService;
 import pl.cyfronet.s4e.service.SceneStorage;
 import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
@@ -61,6 +62,7 @@ public class SceneController {
     private final SceneStorage sceneStorage;
     private final TimeHelper timeHelper;
     private final SceneMapper sceneMapper;
+    private final MetricService metricService;
 
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
@@ -134,6 +136,7 @@ public class SceneController {
                 artifactName,
                 sceneStorage.getPresignedGetTimeout()
         );
+        metricService.incrementCounter(id);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadUrl.toURI()).build();
     }
 }

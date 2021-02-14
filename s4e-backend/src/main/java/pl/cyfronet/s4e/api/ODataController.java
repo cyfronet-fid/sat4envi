@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.service.MetricService;
 import pl.cyfronet.s4e.service.SceneFileStorageService;
 import pl.cyfronet.s4e.service.SceneStorage;
 
@@ -50,6 +51,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class ODataController {
     private final SceneStorage sceneStorage;
     private final SceneFileStorageService sceneFileStorageService;
+    private final MetricService metricService;
 
     @Operation(summary = "Redirect to a presigned download url for a zip archive")
     @ApiResponses({
@@ -73,6 +75,7 @@ public class ODataController {
                         )),
                 sceneStorage.getPresignedGetTimeout()
         );
+        metricService.incrementCounter(sceneId);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadLink.toURI()).build();
     }
 
@@ -91,6 +94,7 @@ public class ODataController {
                 artifactName,
                 sceneStorage.getPresignedGetTimeout()
         );
+        metricService.incrementCounter(sceneId);
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(downloadLink.toURI()).build();
     }
 }
