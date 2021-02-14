@@ -17,7 +17,6 @@
 
 package pl.cyfronet.gsg.counter;
 
-import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -40,13 +39,14 @@ public class GetMapRequestCounterFilterTest {
     private GatewayFilterChain filterChain;
 
     @Mock
-    private Counter mapRequestCounter;
+    private MetricService metricService;
 
     @Test
     public void shouldCountGetMap() {
-        GlobalFilter filter = new GetMapRequestCounterFilter(mapRequestCounter);
+        GlobalFilter filter = new GetMapRequestCounterFilter(metricService);
         MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost")
                 .queryParam("REQUEST", "GetMap")
+                .queryParam("LAYERS", "msg")
                 .build();
         ServerWebExchange exchange = MockServerWebExchange.from(request);
         when(filterChain.filter(exchange)).thenReturn(Mono.empty());
@@ -54,14 +54,14 @@ public class GetMapRequestCounterFilterTest {
 
         assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
         verify(filterChain).filter(exchange);
-        verify(mapRequestCounter).increment();
+        verify(metricService).incrementCounter(anyString());
         verifyNoMoreInteractions(filterChain);
-        verifyNoMoreInteractions(mapRequestCounter);
+        verifyNoMoreInteractions(metricService);
     }
 
     @Test
     public void shouldntCountGetCapabilities() {
-        GlobalFilter filter = new GetMapRequestCounterFilter(mapRequestCounter);
+        GlobalFilter filter = new GetMapRequestCounterFilter(metricService);
         MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost")
                 .queryParam("REQUEST", "GetCapabilities")
                 .build();
@@ -71,7 +71,7 @@ public class GetMapRequestCounterFilterTest {
 
         assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
         verify(filterChain).filter(exchange);
-        verifyNoInteractions(mapRequestCounter);
+        verifyNoInteractions(metricService);
         verifyNoMoreInteractions(filterChain);
     }
 }

@@ -34,6 +34,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import pl.cyfronet.gsg.counter.GetMapRequestCounterFilter;
+import pl.cyfronet.gsg.counter.MetricService;
 import pl.cyfronet.gsg.jwt.JwtGlobalFilter;
 import pl.cyfronet.gsg.security.AccessType;
 import pl.cyfronet.gsg.security.LayerSecurityGatewayFilter;
@@ -110,8 +111,41 @@ public class GsGatewayApplication {
     }
 
     @Bean
-    public GlobalFilter getMapRequestCounterFilter(Counter mapRequestCounter){
-        return new GetMapRequestCounterFilter(mapRequestCounter);
+    public Counter sentinel1RequestCounter(MeterRegistry registry) {
+        return Counter.builder("sentinel1RequestCounter").register(registry);
+    }
+
+    @Bean
+    public Counter sentinel2RequestCounter(MeterRegistry registry) {
+        return Counter.builder("sentinel2RequestCounter").register(registry);
+    }
+
+    @Bean
+    public Counter sentinel3RequestCounter(MeterRegistry registry) {
+        return Counter.builder("sentinel3RequestCounter").register(registry);
+    }
+
+    @Bean
+    public Counter sentinel5PRequestCounter(MeterRegistry registry) {
+        return Counter.builder("sentinel5PRequestCounter").register(registry);
+    }
+
+    @Bean
+    public MetricService metricService(Counter mapRequestCounter,
+                                       Counter sentinel1RequestCounter,
+                                       Counter sentinel2RequestCounter,
+                                       Counter sentinel3RequestCounter,
+                                       Counter sentinel5PRequestCounter) {
+        return new MetricService(mapRequestCounter,
+                sentinel1RequestCounter,
+                sentinel2RequestCounter,
+                sentinel3RequestCounter,
+                sentinel5PRequestCounter);
+    }
+
+    @Bean
+    public GetMapRequestCounterFilter getMapRequestCounterFilter(MetricService metricService) {
+        return new GetMapRequestCounterFilter(metricService);
     }
 
     @Bean
