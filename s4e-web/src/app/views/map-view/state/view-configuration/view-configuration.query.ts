@@ -59,7 +59,8 @@ export class ViewConfigurationQuery extends QueryEntity<
         productId: this.productQuery.getActiveId(),
         overlays: this.overlayQuery.getActiveId(),
         date: this.productQuery.getValue().ui.selectedDate,
-        viewPosition: this.mapQuery.getValue().view
+        viewPosition: this.mapQuery.getValue().view,
+        manualDate: this.productQuery.getValue().ui.manuallySelectedDate
       } as ViewRouterConfig
     });
   }
@@ -73,7 +74,7 @@ export class ViewConfigurationQuery extends QueryEntity<
       ...viewConfiguration,
       configurationNames: {
         product: !!product ? product.displayName : null,
-        selectedDate: viewConfiguration.configuration.date,
+        selectedDate: viewConfiguration.configuration.manualDate,
         overlays: viewConfiguration.configuration.overlays.map(
           id => this.overlayQuery.getEntity(id).label
         )

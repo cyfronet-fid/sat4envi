@@ -47,7 +47,7 @@ import {yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 import {AkitaGuidService} from '../state/search-results/guid.service';
 import {DEFAULT_TIMELINE_RESOLUTION} from '../state/product/product.model';
 import moment from 'moment';
-import {distinctUntilChangedDE, logIt} from '../../../utils/rxjs/observable';
+import {distinctUntilChangedDE} from '../../../utils/rxjs/observable';
 import {TimelineService} from '../state/scene/timeline.service';
 import {SceneQuery} from '../state/scene/scene.query';
 import {
@@ -228,7 +228,6 @@ export class TimelineComponent
                 .pipe(tap(yearMonth => this.loadAvailableDates.emit(yearMonth)))
             : of(null)
         ),
-        logIt(),
         untilDestroyed(this)
       )
       .subscribe();

@@ -86,9 +86,15 @@
                   (click)="showDetails.emit(result)"
                 ></button>
                 <a
-                  [attr.href]="result.url"
+                  [attr.href]="
+                    result.hasZipArtifact ? result.url : 'javascript:undefined'
+                  "
                   (click)="isUserLoggedIn || interceptDownload($event)"
-                  target="_blank"
+                  [attr.target]="result.hasZipArtifact ? '_blank' : ''"
+                  [attr.title]="
+                    result.hasZipArtifact ? '' : 'Ta scena nie posiada artefaktu zip'
+                  "
+                  [ngClass]="{disabled: !result.hasZipArtifact}"
                   class="download-link download"
                   data-e2e="download-link"
                 ></a>

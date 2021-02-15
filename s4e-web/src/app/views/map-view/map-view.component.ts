@@ -174,13 +174,10 @@ export class MapViewComponent implements OnInit, OnDestroy {
       zoomLevel: 6
     });
 
-    this.mapService
-      .loadMapQueryParams()
+    forkJoin([this.productService.get(), this.overlayService.get()])
       .pipe(
+        switchMap(() => this.mapService.loadMapQueryParams()),
         untilDestroyed(this),
-        switchMap(() =>
-          forkJoin([this.productService.get(), this.overlayService.get()])
-        ),
         switchMap(() =>
           this.mapService
             .connectStoreToRouter()
@@ -222,6 +219,9 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   setDate($event: string) {
+    if (this.mapQuery.isLoading()) {
+      return;
+    }
     this.sceneService
       .get(this.productQuery.getActive(), $event, 'first')
       .subscribe();
@@ -358,19 +358,31 @@ export class MapViewComponent implements OnInit, OnDestroy {
   }
 
   nextScene() {
-    this.productService.nextScene();
+    this.mapService.setLoading(true);
+    this.productService
+      .nextScene()
+      .subscribe(() => this.mapService.setLoading(false));
   }
 
   previousScene() {
-    this.productService.previousScene();
+    this.mapService.setLoading(true);
+    this.productService
+      .previousScene()
+      .subscribe(() => this.mapService.setLoading(false));
   }
 
   nextDay() {
-    this.productService.nextDay();
+    this.mapService.setLoading(true);
+    this.productService
+      .nextDay$()
+      .subscribe(() => this.mapService.setLoading(false));
   }
 
   previousDay() {
-    this.productService.previousDay();
+    this.mapService.setLoading(true);
+    this.productService
+      .previousDay$()
+      .subscribe(() => this.mapService.setLoading(false));
   }
 
   increaseResolution() {

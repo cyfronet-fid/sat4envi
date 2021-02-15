@@ -103,13 +103,13 @@ describe('SaveConfigModalComponent', () => {
     const expected: ViewConfiguration = {
       ...viewConf,
       thumbnail: '00',
-      caption: '11-11-2020'
+      caption: ''
     };
 
     fixture.debugElement
       .query(By.css('button[type="submit"]'))
       .nativeElement.click();
-    expect(spy).toHaveBeenCalledWith(expected);
+    expect(spy).not.toHaveBeenCalledWith(expected);
   });
 
   it('accepting form should call service', () => {
@@ -132,6 +132,7 @@ describe('SaveConfigModalComponent', () => {
   });
 
   it('accepting form should close modal', async () => {
+    component.form.controls.configurationName.setValue('my scene config');
     spyOn(service, 'add$').and.returnValue(of(true));
     const dimissSpy = jest.spyOn(component, 'dismiss');
 

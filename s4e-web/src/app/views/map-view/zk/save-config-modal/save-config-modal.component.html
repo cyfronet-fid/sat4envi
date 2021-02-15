@@ -27,28 +27,50 @@
       </aside>
       <div class="form">
         <label i18n>Szczegóły konfiguracji widoku</label>
+
+        <label>
+          <input
+            id="include-scene-control"
+            data-e2e="include-scene-control"
+            style="
+              float: left;
+              display: inline-block;
+              width: 20px;
+              margin-right: 10px;
+            "
+            type="checkbox"
+            [formControl]="includeSceneFc"
+          />
+          <ng-container i18n>Zapisz aktualną scenę w konfiguracji</ng-container>
+        </label>
+
         <table class="modal__table modal__table--saveconfig">
           <tr>
-            <td>Produkt</td>
-            <td i18n>
+            <td i18n>Produkt</td>
+            <td>
               {{ viewConfig.configurationNames.product || 'Nie wybrano' }}
             </td>
           </tr>
           <tr>
-            <td>Data</td>
-            <td i18n>
-              {{ viewConfig.configurationNames.selectedDate || 'Nie wybrano' }}
+            <td i18n>Data</td>
+            <td>
+              {{
+                includeSceneFc.value
+                  ? (viewConfig.configuration.manualDate | S4EDate: 'short')
+                  : ''
+              }}
             </td>
           </tr>
           <tr>
-            <td>Nakładki</td>
-            <td i18n>
+            <td i18n>Nakładki</td>
+            <td>
               {{
                 viewConfig.configurationNames.overlays.toString() || 'Nie wybrano'
               }}
             </td>
           </tr>
         </table>
+
         <ext-input
           label="Nazwa własna konfiguracji"
           i18n-label

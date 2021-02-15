@@ -81,7 +81,7 @@
       Zamknij
     </button>
     <a
-      *ngIf="modal.mode === 'sentinel'"
+      *ngIf="modal.mode === 'sentinel' && (searchResult$ | async)?.hasZipArtifact"
       [attr.href]="(searchResult$ | async)?.url"
       target="_blank"
       (click)="interceptDownload($event)"

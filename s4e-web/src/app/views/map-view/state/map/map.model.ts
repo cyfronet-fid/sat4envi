@@ -39,10 +39,12 @@ export interface MapState {
   productDescriptionOpened: boolean;
   sidebarOpen: boolean;
   view: ViewPosition;
+  loading: boolean;
 }
 
 export function createInitialState(storage: Storage): MapState {
   return {
+    loading: false,
     zkOptionsOpened: false,
     loginOptionsOpened: false,
     productDescriptionOpened:

@@ -54,6 +54,7 @@ import {InstitutionQuery} from '../../../settings/state/institution/institution.
 import {SessionQuery} from '../../../../state/session/session.query';
 import {SessionStore} from '../../../../state/session/session.store';
 import {NotificationService} from '../../../../notifications/state/notification.service';
+import {MapService} from '../map/map.service';
 
 @Injectable({providedIn: 'root'})
 export class ProductService {
@@ -378,36 +379,42 @@ export class ProductService {
 
   nextScene() {
     if (!this.sceneService.next()) {
-      this.nextDay();
+      return this.nextDay$();
     } else {
       this.setSelectedDate(this._sceneQuery.getActive().timestamp, true);
+      return of(null);
     }
   }
 
   previousScene() {
     if (!this.sceneService.previous()) {
-      this.previousDay();
+      return this.previousDay$();
     } else {
       this.setSelectedDate(this._sceneQuery.getActive().timestamp, true);
+      return of(null);
     }
   }
 
-  previousDay() {
+  previousDay$() {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.subtract(1, 'day');
     this.setSelectedDate(yyyymmdd(newDate.toDate()), true);
-    this.sceneService
-      .get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'last')
-      .subscribe();
+    return this.sceneService.get(
+      this.query.getActive(),
+      yyyymmdd(newDate.toDate()),
+      'last'
+    );
   }
 
-  nextDay() {
+  nextDay$() {
     let newDate = moment(this.query.getValue().ui.selectedDate);
     newDate.add(1, 'day');
     this.setSelectedDate(yyyymmdd(newDate.toDate()), true);
-    this.sceneService
-      .get(this.query.getActive(), yyyymmdd(newDate.toDate()), 'first')
-      .subscribe();
+    return this.sceneService.get(
+      this.query.getActive(),
+      yyyymmdd(newDate.toDate()),
+      'first'
+    );
   }
 
   moveResolution(direction: -1 | 1) {

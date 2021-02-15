@@ -30,7 +30,7 @@ import {Router} from '@angular/router';
 import {FormState} from '../../../state/form/form.model';
 import {SentinelSearchMetadata} from '../state/sentinel-search/sentinel-search.metadata.model';
 import {debounceTime, delay, map, shareReplay, switchMap} from 'rxjs/operators';
-import {logIt, mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
+import {mapAllTrue, mapAnyTrue} from '../../../utils/rxjs/observable';
 import {ModalService} from '../../../modal/state/modal.service';
 import {SessionQuery} from '../../../state/session/session.query';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
@@ -116,6 +116,7 @@ export class SentinelSearchComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.service.setLoaded(false);
     this.service.setHovered(null);
+    this.service.clearQueryParams();
   }
 
   setHovered(hovered: string | number | null) {
