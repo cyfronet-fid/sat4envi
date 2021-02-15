@@ -33,7 +33,6 @@ import {combineLatest, Observable} from 'rxjs';
 import {IUILayer} from '../common.model';
 import {map} from 'rxjs/operators';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {logIt} from '../../../../utils/rxjs/observable';
 
 @Injectable({
   providedIn: 'root'
@@ -161,5 +160,9 @@ export class ProductQuery extends QueryEntity<ProductState, Product> {
           : DEFAULT_TIMELINE_RESOLUTION
       )
     );
+  }
+
+  isLoading() {
+    return this.getValue().loading;
   }
 }

@@ -139,6 +139,7 @@
                 <li
                   *ngFor="let scene of scenePoint.points"
                   title=""
+                  [ngClass]="{active: scene.id === activeScene?.id}"
                   [attr.data-scene-id]="scene.id"
                   [attr.data-hour]="scene.timestamp | hour: true"
                   (click)="selectScene(scene)"

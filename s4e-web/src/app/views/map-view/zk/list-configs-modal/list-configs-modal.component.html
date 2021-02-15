@@ -42,15 +42,18 @@
               />
             </figure>
             <ul>
-              <li>
+              <li i18n>
                 <strong>Produkt:</strong>
                 {{ config.configurationNames.product || 'Nie wybrano' }},
               </li>
-              <li>
+              <li i18n>
                 <strong>Data:</strong>
-                {{ config.configurationNames.selectedDate || 'Nie wybrano' }},
+                {{
+                  (config.configurationNames.selectedDate | S4EDate: 'short') ||
+                    'Nie wybrano'
+                }},
               </li>
-              <li>
+              <li i18n>
                 <strong>Nakładki:</strong>
                 {{ config.configurationNames.overlays.toString() || 'Nie wybrano' }}
               </li>

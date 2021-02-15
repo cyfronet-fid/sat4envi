@@ -7,7 +7,7 @@ export class MapLayers extends Core {
       cy.get('button[data-e2e="sidebar-management-btn"]'),
     getSidebarLayers: () =>
       cy.get('[data-e2e="layers-list"] [data-e2e="picker-item-label"]'),
-    getSelectedLayersIcons: () => cy.get('button[data-e2e="selected-icon"]'),
+    getSelectedLayersIcons: () => cy.get('.layers button[data-e2e="selected-icon"]'),
 
     getManagementLayers: () => cy.get('tr[data-e2e="management-overlay"]'),
     getRemoveBtns: () => cy.get('button[data-e2e="delete-layer-btn"]'),

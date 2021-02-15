@@ -129,7 +129,7 @@ describe('ViewConfigurationQuery', () => {
       configurationNames: {
         overlays: ['overlay 1 caption'],
         product: 'product 1 name',
-        selectedDate: '01-01-2020'
+        selectedDate: null
       },
       thumbnail: 'base64thumbnail',
       uuid: 'dummyUuid'
@@ -185,12 +185,12 @@ describe('ViewConfigurationQuery', () => {
           zoomLevel: 9,
           centerCoordinates: [56, 67]
         },
-        manualDate: undefined
+        manualDate: null
       },
       configurationNames: {
         overlays: overlays.map(ol => ol.label),
         product: product.displayName,
-        selectedDate: '11-11-2020'
+        selectedDate: null
       },
       thumbnail: null
     } as any;

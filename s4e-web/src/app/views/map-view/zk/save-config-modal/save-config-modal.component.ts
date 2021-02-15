@@ -65,6 +65,7 @@ export class SaveConfigModalComponent
   @ViewChild('configurationNameRef', {read: InputComponent, static: true})
   configurationNameRef: InputComponent;
   readonly viewConfig: ViewConfigurationEx;
+  includeSceneFc = new FormControl<boolean>(true);
 
   constructor(
     modalService: ModalService,
@@ -83,10 +84,7 @@ export class SaveConfigModalComponent
 
   ngOnInit(): void {
     this.form = new FormGroup<SaveConfigForm>({
-      configurationName: new FormControl<string>(
-        this.viewConfig.configuration.date,
-        Validators.required
-      )
+      configurationName: new FormControl<string>('', Validators.required)
     });
 
     setTimeout(() => this.configurationNameRef.focus(), 500);
@@ -123,7 +121,19 @@ export class SaveConfigModalComponent
           caption: this.form.controls.configurationName.value,
           thumbnail: this.viewConfig.thumbnail.substr(
             'data:image/png;base64,'.length
-          )
+          ),
+          configuration: {
+            ...this.viewConfig.configuration,
+            manualDate: this.includeSceneFc.value
+              ? this.viewConfig.configuration.manualDate
+              : undefined,
+            date: this.includeSceneFc.value
+              ? this.viewConfig.configuration.date
+              : undefined,
+            sceneId: this.includeSceneFc.value
+              ? this.viewConfig.configuration.sceneId
+              : undefined
+          }
         })
         .toPromise()
     ) {

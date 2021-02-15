@@ -115,7 +115,7 @@ describe('ListConfigsModalComponent', () => {
   });
 
   it('load config should redirect to url', () => {
-    let mapSpy = spyOn(mapService, 'updateStoreByView').and.returnValue(of(null));
+    let mapSpy = spyOn(mapService, 'updateStoreByView$').and.returnValue(of(null));
     const config: ViewRouterConfig = {
       overlays: [1, 2],
       productId: 13,

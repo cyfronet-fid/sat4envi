@@ -155,7 +155,8 @@ class _SentinelSearchFactory extends Factory.Factory<SentinelSearchResultRespons
           sensing_time: '2020-02-28T04:53:47.147051+00:00',
           sensor_mode: 'IW',
           spacecraft: 'Sentinel-1A'
-        }
+        },
+        hasZipArtifact: true
       },
       undefined
     );
