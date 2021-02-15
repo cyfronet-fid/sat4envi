@@ -337,6 +337,11 @@
             &:last-child {
               margin-bottom: 0;
             }
+
+            &.active {
+              border: 1px solid $color-secondary;
+              padding: 4px;
+            }
           }
 
           &:after {

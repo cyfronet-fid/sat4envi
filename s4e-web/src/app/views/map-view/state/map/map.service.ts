@@ -36,8 +36,7 @@ import {ProductService} from '../product/product.service';
 import {ViewRouterConfig} from '../view-configuration/view-configuration.model';
 import {LocalStorage} from '../../../../app.providers';
 import {RouterQuery} from '@datorama/akita-ng-router-store';
-import {HashMap} from '@datorama/akita';
-import {logIt} from '../../../../utils/rxjs/observable';
+import {applyTransaction, HashMap} from '@datorama/akita';
 import {olx} from 'openlayers';
 import view = olx.view;
 
@@ -96,12 +95,13 @@ export class MapService {
         const centerY = params['centery'];
         const zoom = params['zoom'];
 
-        // validate data, if there is something missing throw error, which will prevent setting store from those query params
+        // validate data, if there is something missing throw error, which will prevent settings store from setting those query params
         if (
           zoom == null ||
           centerX == null ||
           centerY == null ||
-          (date != null && !date.match(/^[0-9]+-[0-1][0-9]-[0-9][0-9]$/g))
+          (date != null &&
+            !date.match(/^[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]$/g))
         ) {
           throw new Error('queryParams do not have all required params');
         }
@@ -121,20 +121,25 @@ export class MapService {
         } as ViewRouterConfig;
       }),
       take(1),
-      switchMap(viewConfig => this.updateStoreByView(viewConfig)),
+      switchMap(viewConfig => this.updateStoreByView$(viewConfig)),
       map(() => true),
       catchError(err => of(false))
     );
   }
 
-  public updateStoreByView(viewConfig: ViewRouterConfig) {
-    this.productService.setSelectedDate(viewConfig.date);
-    this.productService.setManualDate(viewConfig.manualDate);
-    this.setView(viewConfig.viewPosition);
-    this.overlayService.setAllActive(viewConfig.overlays);
-    return this.productService
-      .setActive$(viewConfig.productId)
-      .pipe(tap(() => this.sceneService.setActive(viewConfig.sceneId)));
+  public updateStoreByView$(viewConfig: ViewRouterConfig) {
+    applyTransaction(() => {
+      this.store.setLoading(true);
+      this.productService.setSelectedDate(viewConfig.date);
+      this.productService.setManualDate(viewConfig.manualDate);
+      this.setView(viewConfig.viewPosition);
+      this.overlayService.setAllActive(viewConfig.overlays);
+    });
+
+    return this.productService.setActive$(viewConfig.productId).pipe(
+      tap(() => this.sceneService.setActive(viewConfig.sceneId)),
+      tap(() => this.store.setLoading(false))
+    );
   }
 
   public connectStoreToRouter() {
@@ -156,5 +161,9 @@ export class MapService {
 
   toggleSidebar() {
     this.showSidebar(!this.mapQuery.getValue().sidebarOpen);
+  }
+
+  setLoading(loading: boolean): void {
+    this.store.setLoading(loading);
   }
 }

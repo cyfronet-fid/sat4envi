@@ -26,7 +26,6 @@ import {action} from '@datorama/akita';
 import environment from 'src/environments/environment';
 import {OverlayForm} from '../../view-manager/overlay-list-modal/overlay-list-modal.component';
 import {NEVER, Observable, throwError} from 'rxjs';
-import {logIt} from '../../../../utils/rxjs/observable';
 
 /**
  * This is stub service which will be responsible for getting overlay data
@@ -59,9 +58,7 @@ export class OverlayService {
   setVisible$(id: any, visible: boolean): Observable<unknown> {
     this._store.ui.update(id, {loadingVisible: true});
     const url = `${environment.apiPrefixV1}/overlays/${id}/visible`;
-    console.log('setVisible$ # 1', id, visible, url);
     return (visible ? this._http.put(url, {}) : this._http.delete(url)).pipe(
-      logIt('setVisible$'),
       tap(() => {
         if (!visible) {
           this._store.removeActive(id);
