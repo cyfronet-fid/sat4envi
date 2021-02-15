@@ -28,9 +28,12 @@ export class S4EDatePipe extends DatePipe {
     super(locale);
   }
 
-  transform(value: any, args?: any): any {
+  transform(value: any, format: string): any {
     return value == null
       ? ''
-      : super.transform(moment.utc(value, environment.backendDateFormat).toDate());
+      : super.transform(
+          moment(value, environment.backendDateFormat).toDate(),
+          format
+        );
   }
 }

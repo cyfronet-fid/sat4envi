@@ -54,7 +54,6 @@ import {
 } from './image-wms.utils';
 import {NotificationService} from '../../notifications/state/notification.service';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {logIt} from '../../utils/rxjs/observable';
 import {FormArray} from '@angular/forms';
 
 export interface OverlayForm {

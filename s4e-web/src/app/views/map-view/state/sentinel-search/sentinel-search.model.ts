@@ -61,6 +61,7 @@ export interface SentinelSearchResultResponse {
   artifacts: string[];
   footprint: string;
   sceneKey: string;
+  hasZipArtifact: boolean;
   metadataContent: SentinelSearchResultMetadata;
 }
 
@@ -80,6 +81,10 @@ export function artifactDownloadLink(id: number, artifact: string): string {
   return `${environment.apiPrefixV1}/scenes/${id}/download/${artifact}`;
 }
 
+export function downloadFileUrl(params: BaseSceneResponse): string {
+  return `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.id}')/$value`;
+}
+
 /**
  * A factory function that creates SentinelSearchResult
  */
@@ -91,7 +96,7 @@ export function createSentinelSearchResult(params: BaseSceneResponse) {
   return {
     image: image,
     sceneKeyShort: params.sceneKey.match(/([^/]+)\.scene$/)[1],
-    url: `${environment.apiPrefixV1}/dhus/odata/v1/Products('${params.id}')/$value`,
+    url: downloadFileUrl(params),
     metadataContent: {},
     artifacts: [],
     footprint: '',

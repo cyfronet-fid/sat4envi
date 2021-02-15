@@ -314,4 +314,17 @@ export class SentinelSearchService {
       }
     });
   }
+
+  clearQueryParams() {
+    this.router.navigate([], {
+      replaceUrl: true,
+      queryParams: {
+        ...this.routerQuery.getQueryParams(),
+        [SENTINEL_SEARCH_ACTIVE_ID]: undefined,
+        [SENTINEL_SEARCH_PARAMS_QUERY_KEY]: undefined,
+        [SENTINEL_SELECTED_QUERY_KEY]: undefined,
+        [SENTINEL_VISIBLE_QUERY_KEY]: undefined
+      }
+    });
+  }
 }

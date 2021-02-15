@@ -78,4 +78,8 @@ export class SceneQuery extends QueryEntity<SceneState, Scene> {
       })
     );
   }
+
+  isLoading() {
+    return this.getValue().loading;
+  }
 }

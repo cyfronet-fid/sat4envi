@@ -79,13 +79,13 @@ export class ListConfigsModalComponent extends ModalComponent implements OnInit 
   }
 
   loadConfig(configuration: ViewConfiguration) {
-    this.mapService.updateStoreByView(configuration.configuration).subscribe();
+    this.mapService.updateStoreByView$(configuration.configuration).subscribe();
     this.dismiss();
   }
 
   sendTo(configuration: ViewConfiguration) {
     this.mapService
-      .updateStoreByView(configuration.configuration)
+      .updateStoreByView$(configuration.configuration)
       .subscribe(() => this.configurationService.setActive(configuration.uuid));
     this.dismiss();
   }
