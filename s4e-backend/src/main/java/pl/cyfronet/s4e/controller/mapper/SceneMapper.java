@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import org.mapstruct.Named;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.operation.TransformException;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.cyfronet.s4e.util.ZipArtifact;
 import pl.cyfronet.s4e.config.MapStructCentralConfig;
 import pl.cyfronet.s4e.controller.response.SceneResponse;
 import pl.cyfronet.s4e.util.GeometryUtil;
@@ -54,6 +55,7 @@ public abstract class SceneMapper {
 
     @Mapping(source = "scene", target = "productId", qualifiedByName = "productId")
     @Mapping(source = "sceneContent", target = "artifacts")
+    @Mapping(source = "sceneContent", target = "hasZipArtifact")
     public abstract SceneResponse toResponse(SceneResponse.Projection scene, @Context ZoneId zoneId);
 
     @Named("productId")
@@ -82,5 +84,14 @@ public abstract class SceneMapper {
                 .takeWhile(ignored -> artifactNamesIterator.hasNext())
                 .map(ignored -> artifactNamesIterator.next())
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    protected boolean mapToHasZipArtifact(JsonNode sceneContent) {
+        if (sceneContent == null) {
+            return false;
+        }
+
+        JsonNode artifactsNode = sceneContent.get(SCENE_SCHEMA_ARTIFACTS_KEY);
+        return ZipArtifact.getName(artifactsNode).isPresent();
     }
 }
