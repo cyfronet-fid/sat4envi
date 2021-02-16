@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,10 +36,10 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.MetricService;
 import pl.cyfronet.s4e.service.SceneFileStorageService;
 import pl.cyfronet.s4e.service.SceneStorage;
+import pl.cyfronet.s4e.util.ZipArtifact;
 
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
@@ -62,17 +63,14 @@ public class ODataController {
     @GetMapping(value = "/dhus/odata/v1/Products('{sceneId}')/$value")
     public ResponseEntity<Void> generateDownloadLinkArchive(@PathVariable Long sceneId)
             throws NotFoundException, URISyntaxException {
+        val artifacts = sceneFileStorageService.getSceneArtifacts(sceneId);
+        String zipArtifactName = ZipArtifact.getName(artifacts)
+                .orElseThrow(() -> new NotFoundException(
+                        "Artifact with '.zip' suffix for scene with id '" + sceneId + "' not found"
+                ));
         URL downloadLink = sceneStorage.generatePresignedGetLinkWithFileType(
                 sceneId,
-                sceneFileStorageService.getSceneArtifacts(sceneId)
-                        .entrySet().stream()
-                        .filter(entry -> entry.getValue().endsWith(".zip"))
-                        .map(Map.Entry::getKey)
-                        .sorted()
-                        .findFirst()
-                        .orElseThrow(() -> new NotFoundException(
-                                "Artifact with '.zip' suffix for scene with id '" + sceneId + "' not found"
-                        )),
+                zipArtifactName,
                 sceneStorage.getPresignedGetTimeout()
         );
         metricService.incrementCounter(sceneId);
