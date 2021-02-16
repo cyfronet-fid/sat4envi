@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.cyfronet.s4e.config.MapStructCentralConfig;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
+import pl.cyfronet.s4e.util.ZipArtifact;
 import pl.cyfronet.s4e.util.TimeHelper;
 
 import java.time.LocalDateTime;
@@ -47,6 +48,7 @@ public abstract class ResponseExtender {
     private ObjectMapper objectMapper;
 
     @Mapping(target = "artifacts", source = "sceneContent")
+    @Mapping(target = "hasZipArtifact", source = "sceneContent")
     public abstract SearchResponse toResponse(MappedScene scene, @Context ZoneId zoneId);
 
     protected ZonedDateTime getTimestamp(LocalDateTime localDateTime, @Context ZoneId zoneId) {
@@ -71,6 +73,20 @@ public abstract class ResponseExtender {
         HashSet<String> keys = new HashSet<>();
         node.fieldNames().forEachRemaining(keys::add);
         return keys;
+    }
+
+    protected boolean getHasZipArtifact(String sceneContent) {
+        if (sceneContent == null) {
+            return false;
+        }
+
+        try {
+            JsonNode artifactsNode = objectMapper.readTree(sceneContent).get(SCENE_SCHEMA_ARTIFACTS_KEY);
+            return ZipArtifact.getName(artifactsNode).isPresent();
+        } catch (JsonProcessingException e) {
+            log.warn("Cannot parse scene content", e);
+            return false;
+        }
     }
 
     protected JsonNode getMetadata(String metadataContent) {
