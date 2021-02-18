@@ -24,8 +24,8 @@
     "test": "ng test",
     "lint": "prettier -c src cypress",
     "lint:fix": "prettier -w src cypress",
-    "e2e": "CYPRESS_NO_COMMAND_LOG=1 cypress run --browser chrome --headless --quiet",
-    "e2e-browser": "CYPRESS_NO_COMMAND_LOG=1 cypress run --browser chrome --quiet",
+    "e2e": "CYPRESS_NO_COMMAND_LOG=1 TZ=Europe/Warsaw cypress run --browser chrome --headless --quiet",
+    "e2e-browser": "CYPRESS_NO_COMMAND_LOG=1 TZ=Europe/Warsaw cypress run --browser chrome --quiet",
     "extract-i18n": "ng xi18n s4e-angular --i18n-format xlf --output-path i18n --i18n-locale pl && ng run s4e-angular:xliffmerge",
     "start-en": "ng serve --proxy-config proxy.conf.json --configuration=en"
   },

@@ -92,7 +92,7 @@
       <span class="timecontrol__button timecontrol__button--clock"></span>
     </button>
   </section>
-  <div class="timeline__grid">
+  <div class="timeline__grid" data-e2e="timeline__grid">
     <div
       class="timeline__item timeline__item--noproduct"
       *ngIf="!(scenes$ | async)?.length && !loading"

@@ -44,6 +44,7 @@ export class SettingsInstitutionLayer extends Core {
   }
 
   static addNew() {
+    cy.server();
     cy.route('POST', '/api/v1/institutions/*/overlays').as('addedInstitutionLayer');
 
     SettingsInstitutionLayer.pageObject.getSubmitFormBtn().click();

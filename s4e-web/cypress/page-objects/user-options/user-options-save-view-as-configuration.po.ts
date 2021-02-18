@@ -10,7 +10,8 @@ export class UserOptionsSaveMapViews extends Core {
     getViewLabelInput: () => cy.get('[data-e2e="view-label"]').find('input'),
     getAddBtn: () => cy.get('[data-e2e="add-view-btn"]'),
     getViewLoadBtns: () => cy.get('[data-e2e="view-load-btn"]'),
-    getCurrentSceneCheckBox: () => cy.get('[data-e2e="include-scene-control"]')
+    getCurrentSceneCheckBox: () => cy.get('[data-e2e="include-scene-control"]'),
+    getSendViewBtn: () => cy.get('[data-e2e="send-view-btn"]')
   };
 
   static openSaveViewsModal() {
@@ -71,13 +72,14 @@ export class UserOptionsSaveMapViews extends Core {
     return UserOptionsSaveMapViews;
   }
 
-  static loadViewWithRecentScene() {
+  static loadNthViewWithRecentScene(nth: number) {
+    cy.server();
     cy.route('GET', '/api/v1/products/*/scenes/most-recent?{*,*/*}').as(
       'loadRecentScene'
     );
     cy.route('/api/v1/products/*/scenes/available?{*,*/*}').as('availableScene');
 
-    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(0).click();
+    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(nth).click();
 
     cy.wait('@loadRecentScene');
     cy.wait('@availableScene');
@@ -85,7 +87,13 @@ export class UserOptionsSaveMapViews extends Core {
     return UserOptionsSaveMapViews;
   }
 
-  static loadViewWithCurrentScene(year: number, month: number, day: number) {
+  static loadNthViewWithCurrentScene(
+    nth: number,
+    year: number,
+    month: number,
+    day: number
+  ) {
+    cy.server();
     cy.route(
       'GET',
       `/api/v1/products/*/scenes?date=${year}-${month < 10 ? '0' + month : month}-${
@@ -94,10 +102,18 @@ export class UserOptionsSaveMapViews extends Core {
     ).as('loadCurrentScene');
     cy.route('/api/v1/products/*/scenes/available?{*,*/*}').as('availableScene');
 
-    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(0).click();
+    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(nth).click();
 
     cy.wait('@loadCurrentScene');
     cy.wait('@availableScene');
+  }
+
+  static sendNthSavedView(nth: number) {
+    UserOptionsSaveMapViews.pageObject.getSendViewBtn().eq(nth).click();
+  }
+
+  static selectNth(nth: number) {
+    UserOptionsSaveMapViews.pageObject.getViewLoadBtns().eq(nth).click();
 
     return UserOptionsSaveMapViews;
   }

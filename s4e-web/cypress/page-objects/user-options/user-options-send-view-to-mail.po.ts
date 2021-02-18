@@ -37,4 +37,22 @@ export class UserOptionsSendView extends Core {
 
     return UserOptionsSendView;
   }
+
+  static clickShareView() {
+    cy.getAllMails()
+      .filterBySubject('Udostępnienie linku')
+      .should('have.length', 1)
+      .firstMail()
+      .getMailDocumentContent()
+      .then(($document: Document) => {
+        const viewUrl = Array.from($document.getElementsByTagName('a'))
+          .map(el => el.href)
+          .filter(href => href.includes('/map/products?product'))
+          .toString()
+          .replace('scen=e', 'scene')
+          .replace('=amp;', '');
+
+        cy.visit(viewUrl);
+      });
+  }
 }

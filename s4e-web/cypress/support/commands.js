@@ -136,3 +136,7 @@ Cypress.Commands.add('hasMailWithSubject', {prevSubject: true}, (mails$, subject
 Cypress.Commands.add('hasMailTo', {prevSubject: true}, (mails$, recipient) =>
   cy.wrap(mails$).filterByRecipient(recipient).should('not.have.length', 0)
 );
+
+Cypress.Commands.add('getMailBySubject', subject => {
+  cy.getAllMails().filterBySubject(subject).should('have.length', 1);
+});

@@ -147,12 +147,14 @@
 <button
   (click)="isMobileSidebarOpen = !isMobileSidebarOpen"
   class="dropdown__button dropdown__button--products"
+  data-e2e="mobile-dropdown-products-button"
 ></button>
 
 <button
   *ngIf="activeProducts$ | async"
   (click)="toggleProductDescription()"
   id="product-description-button"
+  data-e2e="product-description-button"
   class="dropdown__button dropdown__button--product"
   [ngClass]="(sidebarOpen$ | async) ? 'open' : 'closed'"
 ></button>
@@ -164,6 +166,7 @@
     <span class="dropdown__header" i18n>Opis produktu</span>
     <div
       class="dropdown__close dropdown"
+      data-e2e="close-product-description-btn"
       (click)="toggleProductDescription(false)"
     ></div>
     <h2>{{ (activeProducts$ | async).displayName }}</h2>
