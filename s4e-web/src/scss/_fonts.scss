@@ -199,6 +199,18 @@ TITILLIUM
 
 @font-face {
   font-family: 'Titillium Web';
+  src: url('../assets/fonts/TitilliumWeb-Bold.eot');
+  src: url('../assets/fonts/TitilliumWeb-Bold.eot');
+  src: url('../assets/fonts/TitilliumWeb-Bold.eot?#iefix')
+      format('embedded-opentype'),
+    url('../assets/fonts/TitilliumWeb-Bold.woff') format('woff'),
+    url('../assets/fonts/TitilliumWeb-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Titillium Web';
   src: url('../assets/fonts/TitilliumWeb-LightItalic.eot');
   src: url('../assets/fonts/TitilliumWeb-LightItalic.eot?#iefix')
       format('embedded-opentype'),
@@ -330,6 +342,16 @@ UBUNTU
     url('../assets/fonts/Ubuntu-Bold.woff') format('woff'),
     url('../assets/fonts/Ubuntu-Bold.ttf') format('truetype');
   font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('../assets/fonts/Ubuntu-Bold.eot');
+  src: url('../assets/fonts/Ubuntu-Bold.eot?#iefix') format('embedded-opentype'),
+    url('../assets/fonts/Ubuntu-Bold.woff') format('woff'),
+    url('../assets/fonts/Ubuntu-Bold.ttf') format('truetype');
+  font-weight: 700;
   font-style: normal;
 }
 
