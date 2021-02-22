@@ -81,7 +81,13 @@
   }
 }
 
-//
-//@media screen and (max-resolution: 90dpi) {
-//  body {transform: scale(0.8);transform-origin:top left;width: 125%;height: 125%;}
-//}
+@media (max-width: 380px) {
+  bs-datepicker-container {
+    position: fixed !important;
+    transform: none !important;
+    bottom: 100px;
+    left: calc(50% - 150px) !important;
+    top: unset !important;
+    height: auto !important;
+  }
+}
