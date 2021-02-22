@@ -63,6 +63,28 @@
       text-align: center;
     }
   }
+
+  /* jira collector */
+  .atlwdg-popup {
+    max-width: calc(100% - 100px);
+
+    .content-body {
+      .field-group {
+        padding: 4px 0;
+      }
+
+      label {
+        float: none !important;
+        margin-left: 0 !important;
+        text-align: left !important;
+        display: block;
+      }
+
+      .text {
+        max-width: auto !important;
+      }
+    }
+  }
 }
 
 @media (max-width: 467px) {
@@ -81,7 +103,13 @@
   }
 }
 
-//
-//@media screen and (max-resolution: 90dpi) {
-//  body {transform: scale(0.8);transform-origin:top left;width: 125%;height: 125%;}
-//}
+@media (max-width: 380px) {
+  bs-datepicker-container {
+    position: fixed !important;
+    transform: none !important;
+    bottom: 100px;
+    left: calc(50% - 150px) !important;
+    top: unset !important;
+    height: auto !important;
+  }
+}
