@@ -63,6 +63,28 @@
       text-align: center;
     }
   }
+
+  /* jira collector */
+  .atlwdg-popup {
+    max-width: calc(100% - 100px);
+
+    .content-body {
+      .field-group {
+        padding: 4px 0;
+      }
+
+      label {
+        float: none !important;
+        margin-left: 0 !important;
+        text-align: left !important;
+        display: block;
+      }
+
+      .text {
+        max-width: auto !important;
+      }
+    }
+  }
 }
 
 @media (max-width: 467px) {
