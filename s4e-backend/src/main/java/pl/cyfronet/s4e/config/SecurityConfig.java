@@ -180,18 +180,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers(GET, prefix("/places")).permitAll()
 
-                .mvcMatchers(GET, prefix(
-                        "/docs",
-                        "/docs.yaml",
-                        "/docs.html",
-                        "/docs/swagger-config",
-                        "/swagger-ui/**"
-                )).permitAll()
-
                 .mvcMatchers(GET, prefix("/sync-records"))
                     .access("hasRole('ADMIN') || hasAuthority('OP_SYNC_RECORD_READ')")
                 .mvcMatchers(DELETE, prefix("/sync-records"))
                     .access("hasRole('ADMIN')")
+
+                .mvcMatchers(GET, prefix(
+                        "/docs/swagger-config",
+                        "/swagger-ui/**",
+                        "/docs/public"
+                )).permitAll()
+
+                .mvcMatchers(GET, prefix(
+                        "/docs/provider"
+                )).access("hasRole('ADMIN') || hasAuthority('OP_SYNC_RECORD_READ')")
+
+                .mvcMatchers(GET, prefix(
+                        "/docs/private",
+                        "/docs.html"
+                )).access("hasRole('ADMIN')")
 
                 .mvcMatchers(ADMIN_PREFIX + "/**").hasRole("ADMIN")
 

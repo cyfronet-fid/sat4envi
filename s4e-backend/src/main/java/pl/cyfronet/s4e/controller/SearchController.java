@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 package pl.cyfronet.s4e.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.api.ResponseExtender;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
 import pl.cyfronet.s4e.ex.QueryException;
+import pl.cyfronet.s4e.search.SearchQueryParams;
 import pl.cyfronet.s4e.service.SearchService;
 
 import java.sql.SQLException;
@@ -49,13 +51,15 @@ public class SearchController {
     private final SearchService searchService;
     private final ResponseExtender responseExtender;
 
-    @Operation(summary = "View a list of scenes")
+    @Operation(summary = "Search for scenes")
+    @SearchQueryParams.QueryParameters
+    @SearchQueryParams.PagingParameters
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
     })
     @GetMapping("/search")
-    public List<SearchResponse> getScenes(@RequestParam Map<String, Object> params)
+    public List<SearchResponse> getScenes(@Parameter(hidden = true) @RequestParam Map<String, Object> params)
             throws SQLException, QueryException {
         ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
         return searchService.getScenesBy(params).stream()
@@ -63,13 +67,14 @@ public class SearchController {
                 .collect(Collectors.toList());
     }
 
-    @Operation(summary = "View a list of scenes")
+    @Operation(summary = "Get count of total scene results")
+    @SearchQueryParams.QueryParameters
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved count"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
     })
     @GetMapping("/search/count")
-    public Long getCount(@RequestParam Map<String, Object> params)
+    public Long getCount(@Parameter(hidden = true) @RequestParam Map<String, Object> params)
             throws SQLException, QueryException {
         return searchService.getCountBy(params);
     }

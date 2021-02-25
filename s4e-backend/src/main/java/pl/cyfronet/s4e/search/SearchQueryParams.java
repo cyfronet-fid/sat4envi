@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,15 @@
  */
 
 package pl.cyfronet.s4e.search;
+
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
 
 public class SearchQueryParams {
     public static final String SORT_BY = "sortBy";
@@ -44,5 +53,32 @@ public class SearchQueryParams {
 
     public static final String CLOUD_COVER = "cloudCover";
 
+    @Target({METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Parameter(name = SENSING_FROM, in = ParameterIn.QUERY)
+    @Parameter(name = SENSING_TO, in = ParameterIn.QUERY)
+    @Parameter(name = INGESTION_FROM, in = ParameterIn.QUERY)
+    @Parameter(name = INGESTION_TO, in = ParameterIn.QUERY)
+    @Parameter(name = SATELLITE_PLATFORM, in = ParameterIn.QUERY)
+    @Parameter(name = PRODUCT_TYPE, in = ParameterIn.QUERY)
+    @Parameter(name = PROCESSING_LEVEL, in = ParameterIn.QUERY)
+    @Parameter(name = POLARISATION, in = ParameterIn.QUERY)
+    @Parameter(name = SENSOR_MODE, in = ParameterIn.QUERY)
+    @Parameter(name = RELATIVE_ORBIT_NUMBER, in = ParameterIn.QUERY)
+    @Parameter(name = ABSOLUTE_ORBIT_NUMBER, in = ParameterIn.QUERY)
+    @Parameter(name = COLLECTION, in = ParameterIn.QUERY)
+    @Parameter(name = TIMELINESS, in = ParameterIn.QUERY)
+    @Parameter(name = INSTRUMENT, in = ParameterIn.QUERY)
+    @Parameter(name = FOOTPRINT, in = ParameterIn.QUERY)
+    @Parameter(name = PRODUCT_LEVEL, in = ParameterIn.QUERY)
+    @Parameter(name = CLOUD_COVER, in = ParameterIn.QUERY)
+    public @interface QueryParameters {}
 
+    @Target({METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Parameter(name = SORT_BY, in = ParameterIn.QUERY)
+    @Parameter(name = ORDER, in = ParameterIn.QUERY)
+    @Parameter(name = LIMIT, in = ParameterIn.QUERY)
+    @Parameter(name = OFFSET, in = ParameterIn.QUERY)
+    public @interface PagingParameters {}
 }
