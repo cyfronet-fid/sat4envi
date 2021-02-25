@@ -24,7 +24,7 @@
     BŁĄD:<br />
     curl: (60) SSL certificate problem: unable to get local issuer certificate More
     details here: https://curl.haxx.se/docs/sslcerts.html<br />
-    Aby połączyć się z HOST w sposób niebezpieczny, można użyć `-k'.
+    Aby połączyć się z HOST w sposób niebezpieczny, można użyć `--insecure'.
   </p>
   <p>
     Składnia wget:<br />
@@ -37,7 +37,9 @@
   </p>
   <p>HOST: {{ API_BASE }}</p>
 
-  <h2>Pobranie klucza API (tzw. token)</h2>
+  <h2>Autoryzacja</h2>
+
+  <h3>Pobranie klucza API (tzw. token)</h3>
 
   <p>Endpoint [POST]: /token</p>
 
@@ -49,8 +51,8 @@
 
   <label>Przykład:</label>
   <code>
-    curl -LX POST '{{ API_BASE }}/token' -H 'Content-Type: application/json'
-    --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
+    curl --location --request POST '{{ API_BASE }}/token' --header 'Content-Type:
+    application/json' --data-raw '&#123;"email":"EMAIL","password":"HASŁO"&#125;'
   </code>
   <code>
     wget --method POST "{{ API_BASE }}/token" --header 'Content-Type:
@@ -58,7 +60,27 @@
   </code>
 
   <label>Response:</label>
-  <code> &#123; "email": "EMAIL", "token": "..." &#125; </code>
+  <code> &#123; "email": "EMAIL", "token": "ey..." &#125; </code>
+
+  <h3>Przekazanie klucza API</h3>
+
+  <p>
+    Aby uzyskać dostęp do chronionych zasobów konieczne jest przekazanie klucza API,
+    pozyskanego w poprzednim kroku.
+  </p>
+
+  <p>
+    Klucz API przekazywany jest przez nagłówek Authorization, np.
+    <span style="font-family: monospace">Authorization: Bearer ey...</span>
+  </p>
+
+  <p>
+    Zarówno curl jak i wget pozwalają na ustawienie nagłówka poprzez dodanie
+    argumentu
+    <span style="font-family: monospace">--header 'Authorization: Bearer ey...'</span
+    >.
+  </p>
+
   <h2>Search</h2>
   Endpoint [GET]:
   /dhus/search?rows=&#123;rozmiar&#125;&start=&#123;liczba&#125;&orderby=&#123;pole&#125;
@@ -137,17 +159,17 @@
   </ul>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{
+    curl --location --request GET "{{
       API_BASE
     }}/dhus/search?rows=10&start=0&orderby=beginposition%20DESC&q=relativeorbitnumber:22%20AND%20sensoroperationalmode:IW"
-    -H 'Cookie: token=TOKEN'
+    --header 'Authorization: Bearer TOKEN'
   </code>
   <code>
     wget --method GET "{{
       API_BASE
     }}/dhus/search?rows=10&start=0&orderby=beginposition
-    DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW" --header 'Cookie:
-    token=TOKEN'
+    DESC&q=relativeorbitnumber:22 AND sensoroperationalmode:IW" --header
+    'Authorization: Bearer TOKEN'
   </code>
 
   <p><i>wymaga dodania tokenu autoryzacyjnego</i></p>
@@ -159,12 +181,14 @@
   <p>&#123;id&#125; → id sceny</p>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{ API_BASE }}/dhus/odata/v1/Products('550')/\$value" -H 'Cookie:
-    token=TOKEN' -o FILE_OUTPUT
+    curl --location --request GET "{{
+      API_BASE
+    }}/dhus/odata/v1/Products('550')/\$value" --header 'Authorization: Bearer TOKEN'
+    --output FILE_OUTPUT
   </code>
   <code>
     wget --method GET "{{ API_BASE }}/dhus/odata/v1/Products('172210')/\$value"
-    --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
+    --header 'Authorization: Bearer TOKEN' --output-document=FILE_OUTPUT
   </code>
 
   <h3>Pobranie dowolnego artefaktu</h3>
@@ -179,16 +203,16 @@
   </ul>
   <label>przykład:</label>
   <code>
-    curl -LX GET "{{
+    curl --location --request GET "{{
       API_BASE
     }}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value"
-    -H 'Cookie: token=TOKEN' -o FILE_OUTPUT
+    --header 'Authorization: Bearer TOKEN' --output FILE_OUTPUT
   </code>
   <code>
     wget --method GET "{{
       API_BASE
     }}/dhus/odata/v1/Products('172210')/Nodes('filename')/Nodes('product_file')/\$value"
-    --header 'Cookie: token=TOKEN' -O FILE_OUTPUT
+    --header 'Authorization: Bearer TOKEN' --output-document=FILE_OUTPUT
   </code>
   <p>
     <i>wymaga dodania tokenu autoryzacyjnego</i>
@@ -197,16 +221,23 @@
   <h2>API SOK</h2>
   <p>
     API systemu SOK Sat4Envi udostępnione jest pod prefixem:
-    <code>{{ API_BASE }}</code> Dokumentacja API została dostosowana do standardu
-    <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a> i
-    jest dostępna w formacie
-    <a href="{{ API_BASE }}/docs" target="_blank">JSON</a> oraz
-    <a href="{{ API_BASE }}/docs.yaml" target="_blank">YAML</a>.
+    <span style="font-family: monospace">{{ API_BASE }}</span
+    >.
   </p>
   <p>
-    Udostępniona jest również
-    <a href="{{ API_BASE }}/docs.html" target="_blank"
-      >graficzna przeglądarka Swagger-UI</a
+    Dokumentacja API jest dostępna w standardzie
+    <a href="http://spec.openapis.org/oas/v3.0.1" target="_blank">OpenAPIv3</a> i
+    formacie JSON <a href="{{ API_BASE }}/docs/public" target="_blank">tutaj</a>.
+  </p>
+  <p>
+    Udostępniona jest również jej graficzna przeglądarka
+    <a
+      href="{{
+        API_BASE
+      }}/swagger-ui/index.html?configUrl=%2Fapi%2Fv1%2Fdocs%2Fswagger-config&urls.primaryName=public"
+      target="_blank"
+    >
+      Swagger-UI </a
     >.
   </p>
 
@@ -222,9 +253,14 @@
       >https://www.ogc.org/standards/wms</a
     >
   </p>
-  <p>API WMS jest dostępne pod adresem {{ API_WMS }}.</p>
+  <p>
+    API WMS jest dostępne pod adresem
+    <span style="font-family: monospace">{{ API_WMS }}</span
+    >.
+  </p>
   <p>
     Każdy produkt udostępniony jest jako warstwa WMS z możliwością czasowego
-    zawężenia wyników przez użycie parametru TIME.
+    zawężenia wyników przez użycie parametru
+    <span style="font-family: monospace">TIME</span> w formacie ISO8601.
   </p>
 </main>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,8 @@ public class SceneController {
     @Operation(summary = "View a list of scenes")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
     })
     @GetMapping("/products/{id}/scenes")
@@ -88,7 +90,9 @@ public class SceneController {
 
     @Operation(summary = "Return days on which Product is available")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
     })
     @GetMapping("/products/{id}/scenes/available")
     public List<LocalDate> getAvailabilityDates(
@@ -106,6 +110,8 @@ public class SceneController {
     @Operation(summary = "Return the most recent available Scene for a Product")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved most recent scene or Product has no Scenes"),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Product not found", content = @Content)
     })
     @GetMapping("/products/{productId}/scenes/most-recent")
@@ -126,6 +132,8 @@ public class SceneController {
     @ApiResponses({
             @ApiResponse(responseCode = "303", description = "Redirect to the presigned download url", content = @Content,
                     headers = @Header(name = "Location", description = "The presigned download url")),
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
             @ApiResponse(responseCode = "404", description = "Scene or artifact not found", content = @Content)
     })
     @GetMapping(value = "/scenes/{id}/download/{artifactName}")
