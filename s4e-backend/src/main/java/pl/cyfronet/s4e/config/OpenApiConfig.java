@@ -22,12 +22,22 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.data.rest.customisers.QuerydslPredicateOperationCustomizer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Arrays;
+
+import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 
 @Configuration
 public class OpenApiConfig {
     public static final String SECURITY_SCHEME_NAME = "bearer-token";
+
+    @Autowired
+    private QuerydslPredicateOperationCustomizer querydslPredicateOperationCustomizer;
 
     @Bean
     public OpenAPI openAPI() {
@@ -51,5 +61,53 @@ public class OpenApiConfig {
                         )
                 )
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME));
+    }
+
+    @Bean
+    public GroupedOpenApi publicOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("public")
+                .pathsToMatch(prefix(
+                        "/token",
+                        "/products",
+                        "/scenes/**",
+                        "/search",
+                        "/search/count"
+                ))
+                .addOperationCustomizer(querydslPredicateOperationCustomizer)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi providerOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("provider")
+                .pathsToMatch(prefix(
+                        "/token",
+                        "/products",
+                        "/scenes/**",
+                        "/search",
+                        "/search/count",
+                        "/schemas/",
+                        "/schemas/**",
+                        "/sync-records"
+                ))
+                .addOperationCustomizer(querydslPredicateOperationCustomizer)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi privateOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("private")
+                .packagesToScan("pl.cyfronet.s4e")
+                .addOperationCustomizer(querydslPredicateOperationCustomizer)
+                .build();
+    }
+
+    private static String[] prefix(String... paths) {
+        return Arrays.stream(paths)
+                .map(path -> API_PREFIX_V1 + path)
+                .toArray(String[]::new);
     }
 }
