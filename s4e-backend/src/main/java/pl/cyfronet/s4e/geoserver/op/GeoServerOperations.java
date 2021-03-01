@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,7 +155,6 @@ public class GeoServerOperations {
                 .routeParam("cs", coverageStore)
                 .basicAuth(geoServerProperties.getUsername(), geoServerProperties.getPassword())
                 .connectTimeout(geoServerProperties.getTimeoutConnect().intValue() * 1000)
-                .socketTimeout(geoServerProperties.getTimeoutRead().intValue() * 1000)
                 .field("file", file)
                 .asString()
                 .ifFailure(String.class, r -> {
