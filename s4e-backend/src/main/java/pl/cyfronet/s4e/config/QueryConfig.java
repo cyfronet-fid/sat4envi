@@ -23,15 +23,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.data.repository.query.*;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.function.Function;
 
 @Configuration
 public class QueryConfig {
-    final SpringDataWebProperties springDataWebProperties;
+    private final SpringDataWebProperties springDataWebProperties;
+    private final Clock clock;
 
-    public QueryConfig(SpringDataWebProperties springDataWebProperties) {
+    public QueryConfig(SpringDataWebProperties springDataWebProperties, Clock clock) {
         this.springDataWebProperties = springDataWebProperties;
+        this.clock = clock;
     }
 
     @Bean
@@ -44,7 +47,7 @@ public class QueryConfig {
         QueryBuilder queryBuilder = new QueryBuilderImpl();
         List<Function<QueryBuilder, QueryBuilder>> constructors = List.of(
                 QueryProductType::new,
-                QueryTime::new,
+                qb -> new QueryTime(qb, clock),
                 QueryGeometry::new,
                 QueryText::new,
                 QueryNumber::new

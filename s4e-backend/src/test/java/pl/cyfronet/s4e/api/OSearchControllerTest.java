@@ -20,6 +20,7 @@ package pl.cyfronet.s4e.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -40,17 +41,22 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.reset;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
+import static pl.cyfronet.s4e.SceneTestHelper.toScene;
 import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 
 @AutoConfigureMockMvc
@@ -58,7 +64,8 @@ import static pl.cyfronet.s4e.TestJwtUtil.jwtBearerToken;
 @Slf4j
 public class OSearchControllerTest {
     public static final String PROFILE_EMAIL = "get@profile.com";
-
+    @Autowired
+    Clock clock;
     @Autowired
     private AppUserRepository appUserRepository;
     @Autowired
@@ -113,8 +120,38 @@ public class OSearchControllerTest {
     @Nested
     class Search {
         @Test
-        public void shouldReturnScenesDhus() throws Exception {
+        public void shouldReturnScenesByEumetsatLicense() throws Exception {
+            val product = productRepository.save(productBuilder().accessType(Product.AccessType.EUMETSAT).build());
+
+            val now = ZonedDateTime.now(clock).withZoneSameInstant(ZoneId.of("UTC"));
+            val scenes = Stream.of(
+                    now.withMinute(10).withSecond(0).withNano(0).toLocalDateTime(),
+                    now.withMinute(10).withSecond(0).withNano(0).minusHours(1).toLocalDateTime(),
+                    now.withMinute(0).withSecond(0).withNano(0).minusHours(2).toLocalDateTime(),
+                    now.withMinute(0).withSecond(0).withNano(0).minusHours(3).toLocalDateTime(),
+                    now.withMinute(10).withSecond(0).withNano(0).minusHours(4).toLocalDateTime()
+            )
+                    .map(toScene(product))
+                    .map(sceneRepository::save)
+                    .collect(Collectors.toList());
+
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
+                    .param("rows", "5")
+                    .param("orderby", "beginposition asc")
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.length()", is(equalTo(3))))
+                    .andExpect(jsonPath("$..id", contains(
+                            equalTo(scenes.get(2).getId().intValue()),
+                            equalTo(scenes.get(3).getId().intValue()),
+                            equalTo(scenes.get(4).getId().intValue()))));
+        }
+        @Test
+        public void shouldReturnScenesDhus() throws Exception {
+            String productType = product.getName();
+            mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
                     .param("rows", "5")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -122,6 +159,7 @@ public class OSearchControllerTest {
                     .andExpect(jsonPath("$.length()", is(equalTo(5))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
                     .param("rows", "10")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -129,12 +167,14 @@ public class OSearchControllerTest {
                     .andExpect(jsonPath("$.length()", is(equalTo(10))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
                     .param("start", "20")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -158,6 +198,7 @@ public class OSearchControllerTest {
         })
         public void shouldApplyOrderBy(String orderBy, String sceneKey1, String sceneKey2) throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
+                    .param("q", "producttype:" + product.getName())
                     .param("rows", "2")
                     .param("orderby", orderBy)
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -170,18 +211,21 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusForMultipleQueryParams() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "platformname:Sentinel-1A AND sensoroperationalmode:IW")
+                    .param("q", "platformname:Sentinel-1A AND sensoroperationalmode:IW " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
                     //yyyy-MM-ddThh:mm:ss.SSSZ
-                    .param("q", "sensoroperationalmode:IW AND beginposition:[2019-11-01T00:00:00.000Z TO 2019-11-12T00:00:00.000Z]")
+                    .param("q", "sensoroperationalmode:IW AND beginposition:[2019-11-01T00:00:00.000Z TO 2019-11-12T00:00:00.000Z] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "sensoroperationalmode:IW AND beginposition:[NOW-24MONTHS TO NOW]")
+                    .param("q", "sensoroperationalmode:IW AND beginposition:[NOW-24MONTHS TO NOW] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
@@ -191,13 +235,15 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryPlatforname() throws Exception {
             //TODO: specific Sentinel not 1 or 2
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "platformname:Sentinel-1A")
+                    .param("q", "platformname:Sentinel-1A " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "platformname:Sentinel-1")
+                    .param("q", "platformname:Sentinel-1 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -206,37 +252,43 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryByTime() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00]")
+                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "endposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00]")
+                    .param("q", "endposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "ingestiondate:[2019-11-09T00:00:00.000Z TO 2019-11-12T00:00:00.000Z]")
+                    .param("q", "ingestiondate:[2019-11-09T00:00:00.000Z TO 2019-11-12T00:00:00.000Z] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "endposition:[NOW-24MONTHS TO NOW]")
+                    .param("q", "endposition:[NOW-24MONTHS TO NOW] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "endposition:[NOW-1DAY TO NOW-1HOUR]")
+                    .param("q", "endposition:[NOW-1DAY TO NOW-1HOUR] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "endposition:[NOW-5HOURS TO NOW-20MINUTES]")
+                    .param("q", "endposition:[NOW-5HOURS TO NOW-20MINUTES] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -245,17 +297,20 @@ public class OSearchControllerTest {
         @Test
         public void shouldntReturnScenesDhusQueryByTime() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00]")
+                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isBadRequest());
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO]")
+                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isBadRequest());
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "beginposition:[ TO 2019-11-12T00:00:00.000000+00:00]")
+                    .param("q", "beginposition:[ TO 2019-11-12T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isBadRequest());
         }
@@ -263,13 +318,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryCollection() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "collection:S1B_24AU")
+                    .param("q", "collection:S1B_24AU " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "collection:not-exist")
+                    .param("q", "collection:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -278,13 +335,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryFootprintPolygon() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "footprint:Intersects(POLYGON((155.90 19.60,156.60 15.70,157.40 16.10,157.34 20.05,155.90 19.60)))")
+                    .param("q", "footprint:Intersects(POLYGON((155.90 19.60,156.60 15.70,157.40 16.10,157.34 20.05,155.90 19.60))) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "footprint:Intersects(POLYGON((12.6 55,19 55.25,26 55,24.93 47.55,19 47.67,14 47.5,12.6 55)))")
+                    .param("q", "footprint:Intersects(POLYGON((12.6 55,19 55.25,26 55,24.93 47.55,19 47.67,14 47.5,12.6 55))) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
@@ -293,13 +352,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryFootprintPoint() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "footprint:Intersects(15 51)")
+                    .param("q", "footprint:Intersects(15 51) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "footprint:Intersects(12 55)")
+                    .param("q", "footprint:Intersects(12 55) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -309,19 +370,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "orbitnumber:05")
+                    .param("q", "orbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "orbitnumber:5")
+                    .param("q", "orbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "orbitnumber:not-exist")
+                    .param("q", "orbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -337,19 +401,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryLastOrbitNumber() throws Exception {
             // TODO key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastorbitnumber:05")
+                    .param("q", "lastorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastorbitnumber:5")
+                    .param("q", "lastorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastorbitnumber:not-exist")
+                    .param("q", "lastorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -364,19 +431,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryRelativeOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "relativeorbitnumber:5")
+                    .param("q", "relativeorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "relativeorbitnumber:05")
+                    .param("q", "relativeorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "relativeorbitnumber:not-exist")
+                    .param("q", "relativeorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -391,19 +461,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryLastRelativeOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastrelativeorbitnumber:05")
+                    .param("q", "lastrelativeorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastrelativeorbitnumber:5")
+                    .param("q", "lastrelativeorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "lastrelativeorbitnumber:not-exist")
+                    .param("q", "lastrelativeorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -417,25 +490,29 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryPolarisation() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "polarisationmode:VV  VH")
+                    .param("q", "polarisationmode:VV  VH " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "polarisationmode:VV +  +  VH")
+                    .param("q", "polarisationmode:VV +  +  VH " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "polarisationmode:VV")
+                    .param("q", "polarisationmode:VV " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "polarisationmode:not-exist")
+                    .param("q", "polarisationmode:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -452,20 +529,21 @@ public class OSearchControllerTest {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
                     .param("q", "producttype:not-exist")
                     .with(jwtBearerToken(appUser, objectMapper)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.length()", is(equalTo(0))));
+                    .andExpect(status().isNotFound());
         }
 
         @Test
         public void shouldReturnScenesDhusQuerySensorOperationalMode() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "sensoroperationalmode:IW")
+                    .param("q", "sensoroperationalmode:IW " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "sensoroperationalmode:not-exist")
+                    .param("q", "sensoroperationalmode:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -475,13 +553,15 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryCloudCoverage() throws Exception {
             // TODO: key:[80 TO 90]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "cloudcoveragepercentage:15")
+                    .param("q", "cloudcoveragepercentage:15 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(16))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "cloudcoveragepercentage:0")
+                    .param("q", "cloudcoveragepercentage:0 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(1))));
@@ -495,13 +575,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryTimeliness() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "timeliness:Near Real Time")
+                    .param("q", "timeliness:Near Real Time " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(20))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search")
-                    .param("q", "timeliness:Near Real Time2")
+                    .param("q", "timeliness:Near Real Time2 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.length()", is(equalTo(0))));
@@ -511,8 +593,34 @@ public class OSearchControllerTest {
     @Nested
     class Count {
         @Test
+        public void shouldReturnCountByEumetsatLicenseScenes() throws Exception {
+            val product = productRepository.save(productBuilder().accessType(Product.AccessType.EUMETSAT).build());
+
+            val now = ZonedDateTime.now(clock).withZoneSameInstant(ZoneId.of("UTC"));
+            val scenes = Stream.of(
+                    now.withMinute(10).withSecond(0).withNano(0).toLocalDateTime(),
+                    now.withMinute(10).withSecond(0).withNano(0).minusHours(1).toLocalDateTime(),
+                    now.withMinute(0).withSecond(0).withNano(0).minusHours(2).toLocalDateTime(),
+                    now.withMinute(0).withSecond(0).withNano(0).minusHours(3).toLocalDateTime(),
+                    now.withMinute(10).withSecond(0).withNano(0).minusHours(4).toLocalDateTime()
+            )
+                    .map(toScene(product))
+                    .map(sceneRepository::save)
+                    .collect(Collectors.toList());
+
+            mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
+                    .param("q", "producttype:" + product.getName())
+                    .param("rows", "5")
+                    .param("orderby", "beginposition asc")
+                    .with(jwtBearerToken(appUser, objectMapper)))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$", is(equalTo(3))));
+        }
+
+        @Test
         public void shouldReturnCountDhus() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
+                    .param("q", "producttype:" + product.getName())
                     .param("rows", "5")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -520,6 +628,7 @@ public class OSearchControllerTest {
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
+                    .param("q", "producttype:" + product.getName())
                     .param("rows", "10")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -527,12 +636,14 @@ public class OSearchControllerTest {
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
+                    .param("q", "producttype:" + product.getName())
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
+                    .param("q", "producttype:" + product.getName())
                     .param("start", "20")
                     .param("orderby", "beginposition asc")
                     .with(jwtBearerToken(appUser, objectMapper)))
@@ -543,18 +654,21 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusForMultipleQueryParams() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "platformname:Sentinel-1A AND sensoroperationalmode:IW")
+                    .param("q", "platformname:Sentinel-1A AND sensoroperationalmode:IW " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
                     //yyyy-MM-ddThh:mm:ss.SSSZ
-                    .param("q", "sensoroperationalmode:IW AND beginposition:[2019-11-01T00:00:00.000Z TO 2019-11-12T00:00:00.000Z]")
+                    .param("q", "sensoroperationalmode:IW AND beginposition:[2019-11-01T00:00:00.000Z TO 2019-11-12T00:00:00.000Z] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "sensoroperationalmode:IW AND beginposition:[NOW-24MONTHS TO NOW]")
+                    .param("q", "sensoroperationalmode:IW AND beginposition:[NOW-24MONTHS TO NOW] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
@@ -564,13 +678,15 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryPlatforname() throws Exception {
             //TODO: specific Sentinel not 1 or 2
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "platformname:Sentinel-1A")
+                    .param("q", "platformname:Sentinel-1A " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "platformname:Sentinel-1")
+                    .param("q", "platformname:Sentinel-1 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -579,37 +695,43 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryByTime() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00]")
+                    .param("q", "beginposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "endposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00]")
+                    .param("q", "endposition:[2019-11-09T00:00:00.000000+00:00 TO 2019-11-12T00:00:00.000000+00:00] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "ingestiondate:[2019-11-09T00:00:00.000Z TO 2019-11-12T00:00:00.000Z]")
+                    .param("q", "ingestiondate:[2019-11-09T00:00:00.000Z TO 2019-11-12T00:00:00.000Z] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(3))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "endposition:[NOW-24MONTHS TO NOW]")
+                    .param("q", "endposition:[NOW-24MONTHS TO NOW] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "endposition:[NOW-1DAY TO NOW-1HOUR]")
+                    .param("q", "endposition:[NOW-1DAY TO NOW-1HOUR] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "endposition:[NOW-5HOURS TO NOW-20MINUTES]")
+                    .param("q", "endposition:[NOW-5HOURS TO NOW-20MINUTES] " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -618,13 +740,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryCollection() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "collection:S1B_24AU")
+                    .param("q", "collection:S1B_24AU " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "collection:not-exist")
+                    .param("q", "collection:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -633,13 +757,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryFootprintPolygon() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "footprint:Intersects(POLYGON((155.90 19.60,156.60 15.70,157.40 16.10,157.34 20.05,155.90 19.60)))")
+                    .param("q", "footprint:Intersects(POLYGON((155.90 19.60,156.60 15.70,157.40 16.10,157.34 20.05,155.90 19.60))) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "footprint:Intersects(POLYGON((12.6 55,19 55.25,26 55,24.93 47.55,19 47.67,14 47.5,12.6 55)))")
+                    .param("q", "footprint:Intersects(POLYGON((12.6 55,19 55.25,26 55,24.93 47.55,19 47.67,14 47.5,12.6 55))) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
@@ -648,13 +774,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryFootprintPoint() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "footprint:Intersects(15 51)")
+                    .param("q", "footprint:Intersects(15 51) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "footprint:Intersects(12 55)")
+                    .param("q", "footprint:Intersects(12 55) " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -664,19 +792,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "orbitnumber:05")
+                    .param("q", "orbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "orbitnumber:5")
+                    .param("q", "orbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "orbitnumber:not-exist")
+                    .param("q", "orbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -687,19 +818,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryLastOrbitNumber() throws Exception {
             // TODO key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastorbitnumber:05")
+                    .param("q", "lastorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastorbitnumber:5")
+                    .param("q", "lastorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastorbitnumber:not-exist")
+                    .param("q", "lastorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -709,19 +843,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryRelativeOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "relativeorbitnumber:5")
+                    .param("q", "relativeorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "relativeorbitnumber:05")
+                    .param("q", "relativeorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "relativeorbitnumber:not-exist")
+                    .param("q", "relativeorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -731,19 +868,22 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryLastRelativeOrbitNumber() throws Exception {
             // TODO: key:[from TO to] e.g. key:[0 TO 50]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastrelativeorbitnumber:05")
+                    .param("q", "lastrelativeorbitnumber:05 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastrelativeorbitnumber:5")
+                    .param("q", "lastrelativeorbitnumber:5 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(1))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "lastrelativeorbitnumber:not-exist")
+                    .param("q", "lastrelativeorbitnumber:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -752,25 +892,29 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryPolarisation() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "polarisationmode:VV  VH")
+                    .param("q", "polarisationmode:VV  VH " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "polarisationmode:VV +  +  VH")
+                    .param("q", "polarisationmode:VV +  +  VH " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "polarisationmode:VV")
+                    .param("q", "polarisationmode:VV " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "polarisationmode:not-exist")
+                    .param("q", "polarisationmode:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -787,20 +931,21 @@ public class OSearchControllerTest {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
                     .param("q", "producttype:not-exist")
                     .with(jwtBearerToken(appUser, objectMapper)))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$", is(equalTo(0))));
+                    .andExpect(status().isNotFound());
         }
 
         @Test
         public void shouldReturnScenesDhusQuerySensorOperationalMode() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "sensoroperationalmode:IW")
+                    .param("q", "sensoroperationalmode:IW " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "sensoroperationalmode:not-exist")
+                    .param("q", "sensoroperationalmode:not-exist " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));
@@ -810,13 +955,15 @@ public class OSearchControllerTest {
         public void shouldReturnScenesDhusQueryCloudCoverage() throws Exception {
             // TODO: key:[80 TO 90]
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "cloudcoveragepercentage:15")
+                    .param("q", "cloudcoveragepercentage:15 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(16))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "cloudcoveragepercentage:0")
+                    .param("q", "cloudcoveragepercentage:0 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(1))));
@@ -825,13 +972,15 @@ public class OSearchControllerTest {
         @Test
         public void shouldReturnScenesDhusQueryTimeliness() throws Exception {
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "timeliness:Near Real Time")
+                    .param("q", "timeliness:Near Real Time " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(30))));
 
             mockMvc.perform(get(API_PREFIX_V1 + "/dhus/search/count")
-                    .param("q", "timeliness:Near Real Time2")
+                    .param("q", "timeliness:Near Real Time2 " +
+                            "AND producttype:" + product.getName())
                     .with(jwtBearerToken(appUser, objectMapper)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$", is(equalTo(0))));

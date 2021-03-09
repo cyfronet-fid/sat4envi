@@ -33,7 +33,7 @@ public class TimeConfig {
     }
 
     @Bean
-    @Profile({ "!test", "integration" })
+    @Profile({"!test", "integration"})
     public Clock clock() {
         return Clock.systemUTC();
     }

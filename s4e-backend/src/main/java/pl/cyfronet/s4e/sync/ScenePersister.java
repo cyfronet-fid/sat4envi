@@ -31,6 +31,8 @@ import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
 import pl.cyfronet.s4e.ex.NotFoundException;
 
+import java.util.Locale;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -51,7 +53,7 @@ public class ScenePersister {
         if (scene.getProduct() != null && !product.equals(scene.getProduct())) {
             Long existingProductId = scene.getProduct().getId();
             Long prototypeProductId = prototype.getProductId();
-            throw new IllegalArgumentException(String.format("Existing Scene's Product %d is not equal to the prototype Product %d", existingProductId, prototypeProductId));
+            throw new IllegalArgumentException(String.format(Locale.ENGLISH, "Existing Scene's Product %d is not equal to the prototype Product %d", existingProductId, prototypeProductId));
         } else {
             scene.setProduct(product);
         }

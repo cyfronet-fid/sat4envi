@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *
  */
 
-package pl.cyfronet.s4e.license;
+package pl.cyfronet.s4e.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.license.LicensePermissionEvaluator;
 import pl.cyfronet.s4e.license.types.EumetsatLicense;
 import pl.cyfronet.s4e.license.types.OpenLicense;
 import pl.cyfronet.s4e.license.types.PrivateLicense;

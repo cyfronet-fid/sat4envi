@@ -19,10 +19,12 @@ package pl.cyfronet.s4e.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import pl.cyfronet.s4e.BasicTest;
 import pl.cyfronet.s4e.SceneTestHelper;
 import pl.cyfronet.s4e.TestDbHelper;
@@ -31,14 +33,18 @@ import pl.cyfronet.s4e.bean.Product;
 import pl.cyfronet.s4e.bean.Scene;
 import pl.cyfronet.s4e.data.repository.ProductRepository;
 import pl.cyfronet.s4e.data.repository.SceneRepository;
+import pl.cyfronet.s4e.ex.NotFoundException;
+import pl.cyfronet.s4e.search.SearchQueryParams;
+import pl.cyfronet.s4e.security.AppUserDetails;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static pl.cyfronet.s4e.SceneTestHelper.productBuilder;
 
 @BasicTest
@@ -62,7 +68,7 @@ public class SearchServiceTest {
     public void setUp() {
         testDbHelper.clean();
         //add product
-        product = productRepository.save(productBuilder().build());
+        product = productRepository.save(productBuilder().accessType(Product.AccessType.EUMETSAT).build());
         //addscenewithmetadata
         List<Scene> scenes = new ArrayList<>();
         for (long j = 0; j < 10; j++) {
@@ -244,5 +250,36 @@ public class SearchServiceTest {
         params.put("offset", 1);
         List<MappedScene> scenes = searchService.getScenesBy(params);
         assertThat(scenes, hasSize(0));
+    }
+
+    @Test
+    public void applyLicenseByProductTypeReturnForbidden() {
+        val product = productRepository.save(productBuilder().accessType(Product.AccessType.PRIVATE).build());
+        val userDetails = mock(AppUserDetails.class);
+        when(userDetails.getAuthorities()).thenReturn(Set.of());
+        Map<String, Object> params = new HashMap<>();
+        params.put("productType", product.getName());
+        assertThrows(AccessDeniedException.class, () -> searchService.applyLicenseByProductType(params, userDetails));
+    }
+
+    @Test
+    public void applyLicenseByProductTypeReturnNotFound() {
+        val userDetails = mock(AppUserDetails.class);
+        Map<String, Object> params = new HashMap<>();
+        params.put("productType", "name");
+
+        assertThrows(NotFoundException.class, () -> searchService.applyLicenseByProductType(params, userDetails));
+    }
+
+    @Test
+    public void applyLicenseByProductTypeAddAccessType() throws NotFoundException {
+        val userDetails = mock(AppUserDetails.class);
+        when(userDetails.getAuthorities()).thenReturn(Set.of());
+        Map<String, Object> params = new HashMap<>();
+        params.put("productType", product.getName());
+        searchService.applyLicenseByProductType(params, userDetails);
+        assertThat(params.entrySet(), hasSize(2));
+        assertThat(params, hasEntry(SearchQueryParams.ACCESS_TYPE, Product.AccessType.EUMETSAT));
+        assertThat(params, hasEntry("productType", product.getName()));
     }
 }

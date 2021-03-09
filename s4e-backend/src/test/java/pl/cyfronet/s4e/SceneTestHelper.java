@@ -29,6 +29,7 @@ import pl.cyfronet.s4e.bean.Scene;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -48,12 +49,12 @@ public class SceneTestHelper {
     private static final ZoneId BASE_ZONE = ZoneId.of("UTC");
 
     public static String nextUnique(String format) {
-        return String.format(format, COUNT.getAndIncrement());
+        return String.format(Locale.ENGLISH, format, COUNT.getAndIncrement());
     }
 
     public static Product.ProductBuilder productBuilder() {
         val current = COUNT.getAndIncrement();
-        String displayName = String.format(PRODUCT_NAME_PATTERN, current);
+        String displayName = String.format(Locale.ENGLISH, PRODUCT_NAME_PATTERN, current);
         String name = displayName.replace(" ", "_");
         return Product.builder()
                 .name(name)

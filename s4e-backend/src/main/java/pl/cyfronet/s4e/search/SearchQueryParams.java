@@ -53,6 +53,9 @@ public class SearchQueryParams {
 
     public static final String CLOUD_COVER = "cloudCover";
 
+
+    public static final String ACCESS_TYPE = "accessType";
+
     @Target({METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Parameter(name = SENSING_FROM, in = ParameterIn.QUERY)
@@ -60,7 +63,7 @@ public class SearchQueryParams {
     @Parameter(name = INGESTION_FROM, in = ParameterIn.QUERY)
     @Parameter(name = INGESTION_TO, in = ParameterIn.QUERY)
     @Parameter(name = SATELLITE_PLATFORM, in = ParameterIn.QUERY)
-    @Parameter(name = PRODUCT_TYPE, in = ParameterIn.QUERY)
+    @Parameter(name = PRODUCT_TYPE, in = ParameterIn.QUERY, required = true)
     @Parameter(name = PROCESSING_LEVEL, in = ParameterIn.QUERY)
     @Parameter(name = POLARISATION, in = ParameterIn.QUERY)
     @Parameter(name = SENSOR_MODE, in = ParameterIn.QUERY)

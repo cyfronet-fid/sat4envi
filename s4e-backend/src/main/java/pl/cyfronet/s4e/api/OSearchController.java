@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,8 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.controller.request.ZoneParameter;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
 import pl.cyfronet.s4e.ex.BadRequestException;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.QueryException;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.SearchService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import java.sql.SQLException;
 import java.time.format.DateTimeParseException;
@@ -55,7 +59,9 @@ public class OSearchController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     @GetMapping("/dhus/search")
     public List<SearchResponse> getScenesDHusStyle(
@@ -65,10 +71,14 @@ public class OSearchController {
             @RequestParam(value = "format", defaultValue = "") String format,//json/xml?
             @RequestParam(value = "orderby", required = false) String orderby,//beginposition/ingestiondate asc/desc q=?
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
-    ) throws BadRequestException, SQLException, QueryException {
+    ) throws BadRequestException, SQLException, QueryException, NotFoundException {
         // TODO: format
         try {
-            return searchService.getScenesBy(searchService.parseToParamMap(rowsSize, rowStart, orderby, query)).stream()
+            AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+            val params= searchService.parseToParamMap(rowsSize, rowStart, orderby, query);
+            searchService.checkProductTypePresent(params);
+            searchService.applyLicenseByProductType(params, appUserDetails);
+            return searchService.getScenesBy(params).stream()
                     .map(scene -> responseExtender.toResponse(scene, timeZone.getZoneId()))
                     .collect(Collectors.toList());
         } catch (DateTimeParseException e) {
@@ -82,16 +92,22 @@ public class OSearchController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved count"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
-            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Unauthenticated", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     @GetMapping("/dhus/search/count")
     public Long getCountDHusStyle(
             @RequestParam(value = "q", required = false) String query,
             @RequestParam(defaultValue = "UTC") ZoneParameter timeZone
-    ) throws BadRequestException, SQLException, QueryException {
+    ) throws BadRequestException, SQLException, QueryException, NotFoundException {
         // TODO: format
         try {
-            return searchService.getCountBy(searchService.countParseToParamMap(query));
+            AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+            val params = searchService.countParseToParamMap(query);
+            searchService.checkProductTypePresent(params);
+            searchService.applyLicenseByProductType(params, appUserDetails);
+            return searchService.getCountBy(params);
         } catch (DateTimeParseException e) {
             throw new BadRequestException("Cannot parse date: " + e.getParsedString());
         } catch (IllegalArgumentException iae) {

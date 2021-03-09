@@ -30,9 +30,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pl.cyfronet.s4e.api.ResponseExtender;
 import pl.cyfronet.s4e.controller.response.SearchResponse;
+import pl.cyfronet.s4e.ex.BadRequestException;
+import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.ex.QueryException;
 import pl.cyfronet.s4e.search.SearchQueryParams;
+import pl.cyfronet.s4e.security.AppUserDetails;
 import pl.cyfronet.s4e.service.SearchService;
+import pl.cyfronet.s4e.util.AppUserDetailsSupplier;
 
 import java.sql.SQLException;
 import java.time.ZoneId;
@@ -57,10 +61,15 @@ public class SearchController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     @GetMapping("/search")
     public List<SearchResponse> getScenes(@Parameter(hidden = true) @RequestParam Map<String, Object> params)
-            throws SQLException, QueryException {
+            throws SQLException, QueryException, BadRequestException, NotFoundException {
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+        searchService.checkProductTypePresent(params);
+        searchService.applyLicenseByProductType(params, appUserDetails);
         ZoneId zoneId = ZoneId.of(String.valueOf(params.getOrDefault("timeZone", "UTC")));
         return searchService.getScenesBy(params).stream()
                 .map(scene -> responseExtender.toResponse(scene, zoneId))
@@ -72,10 +81,15 @@ public class SearchController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully retrieved count"),
             @ApiResponse(responseCode = "400", description = "Incorrect request", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content)
     })
     @GetMapping("/search/count")
     public Long getCount(@Parameter(hidden = true) @RequestParam Map<String, Object> params)
-            throws SQLException, QueryException {
+            throws SQLException, QueryException, BadRequestException, NotFoundException {
+        AppUserDetails appUserDetails = AppUserDetailsSupplier.get();
+        searchService.checkProductTypePresent(params);
+        searchService.applyLicenseByProductType(params, appUserDetails);
         return searchService.getCountBy(params);
     }
 }
