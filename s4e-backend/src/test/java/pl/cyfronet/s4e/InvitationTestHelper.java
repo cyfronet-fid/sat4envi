@@ -19,10 +19,14 @@ package pl.cyfronet.s4e;
 
 import com.github.slugify.Slugify;
 import lombok.val;
-import pl.cyfronet.s4e.bean.*;
+import pl.cyfronet.s4e.bean.AppUser;
+import pl.cyfronet.s4e.bean.Institution;
+import pl.cyfronet.s4e.bean.Invitation;
+import pl.cyfronet.s4e.bean.InvitationStatus;
 import pl.cyfronet.s4e.controller.request.InvitationRequest;
 import pl.cyfronet.s4e.controller.request.InvitationResendInvitation;
 
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -45,8 +49,8 @@ public class InvitationTestHelper {
     }
 
     public static AppUser.AppUserBuilder userBuilder() {
-        val name = String.format(profileName, COUNT.getAndIncrement());
-        val profileEmail = String.format(email, COUNT.getAndIncrement());
+        val name = String.format(Locale.ENGLISH, profileName, COUNT.getAndIncrement());
+        val profileEmail = String.format(Locale.ENGLISH, email, COUNT.getAndIncrement());
         return AppUser.builder()
                 .email(profileEmail)
                 .name(name)
@@ -56,7 +60,7 @@ public class InvitationTestHelper {
     }
 
     public static Invitation.InvitationBuilder invitationBuilder(Institution institution) {
-        val invitationEmail = String.format(email, COUNT.getAndIncrement());
+        val invitationEmail = String.format(Locale.ENGLISH, email, COUNT.getAndIncrement());
         return Invitation.builder()
                 .email(invitationEmail)
                 .institution(institution)
@@ -65,7 +69,7 @@ public class InvitationTestHelper {
     }
 
     public static InvitationRequest.InvitationRequestBuilder invitationRequestBuilder() {
-        val invitationEmail = String.format(email, COUNT.getAndIncrement());
+        val invitationEmail = String.format(Locale.ENGLISH, email, COUNT.getAndIncrement());
         return InvitationRequest
                 .builder()
                 .email(invitationEmail);
@@ -73,7 +77,7 @@ public class InvitationTestHelper {
     }
 
     public static InvitationResendInvitation.InvitationResendInvitationBuilder invitationResendInvitationBuilder(String oldEmail) {
-        val newEmail = String.format(email, COUNT.getAndIncrement());
+        val newEmail = String.format(Locale.ENGLISH, email, COUNT.getAndIncrement());
         return InvitationResendInvitation
                 .builder()
                 .oldEmail(oldEmail)
@@ -81,6 +85,6 @@ public class InvitationTestHelper {
     }
 
     private static String nextUnique(String format) {
-        return String.format(format, COUNT.getAndIncrement());
+        return String.format(Locale.ENGLISH, format, COUNT.getAndIncrement());
     }
 }

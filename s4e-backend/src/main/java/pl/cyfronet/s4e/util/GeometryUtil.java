@@ -30,6 +30,7 @@ import org.opengis.referencing.operation.TransformException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 @Service
 @Slf4j
@@ -94,9 +95,9 @@ public class GeometryUtil {
             }
             // Append exactly: "<lat> <long>", as WKT assumes long/lat axis ordering (contrary to JTS).
             sb
-                    .append(String.format(COORDINATE_FORMAT, shell.getY(i)))
+                    .append(String.format(Locale.ENGLISH, COORDINATE_FORMAT, shell.getY(i)))
                     .append(' ')
-                    .append(String.format(COORDINATE_FORMAT, shell.getX(i)));
+                    .append(String.format(Locale.ENGLISH, COORDINATE_FORMAT, shell.getX(i)));
         }
         sb.append("))");
         return sb.toString();

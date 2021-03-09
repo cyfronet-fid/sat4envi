@@ -20,6 +20,7 @@ package pl.cyfronet.s4e;
 import lombok.val;
 import pl.cyfronet.s4e.bean.ProductCategory;
 
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ProductCategoryTestHelper {
@@ -30,8 +31,8 @@ public class ProductCategoryTestHelper {
 
     public static ProductCategory.ProductCategoryBuilder productCategoryBuilder() {
         val current = COUNT.getAndIncrement();
-        val label = String.format(LABEL, current);
-        val iconName = String.format(ICON_NAME, current);
+        val label = String.format(Locale.ENGLISH, LABEL, current);
+        val iconName = String.format(Locale.ENGLISH, ICON_NAME, current);
         return ProductCategory
                 .builder()
                 .label(label)

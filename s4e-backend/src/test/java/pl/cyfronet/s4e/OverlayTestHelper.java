@@ -23,6 +23,7 @@ import pl.cyfronet.s4e.bean.SldStyle;
 import pl.cyfronet.s4e.bean.WMSOverlay;
 import pl.cyfronet.s4e.controller.request.OverlayRequest;
 
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class OverlayTestHelper {
@@ -64,6 +65,6 @@ public class OverlayTestHelper {
     }
 
     private static String nextUnique(String format) {
-        return String.format(format, COUNT.getAndIncrement());
+        return String.format(Locale.ENGLISH, format, COUNT.getAndIncrement());
     }
 }
