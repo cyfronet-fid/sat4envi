@@ -38,8 +38,7 @@ import {
   merge,
   Observable,
   of,
-  ReplaySubject,
-  Subject
+  ReplaySubject
 } from 'rxjs';
 import {map, switchMap, tap} from 'rxjs/operators';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
@@ -68,21 +67,6 @@ export interface DataPoint {
   position: number;
   selected: boolean;
 }
-
-export const DATEPICKER_FORMAT_CUSTOMIZATION = {
-  fullPickerInput: {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
-  },
-  datePickerInput: {year: 'numeric', month: 'numeric', day: 'numeric'},
-  timePickerInput: {hour: 'numeric', minute: 'numeric'},
-  monthYearLabel: {year: 'numeric', month: 'short'},
-  dateA11yLabel: {year: 'numeric', month: '2-digit', day: '2-digit'},
-  monthYearA11yLabel: {year: 'numeric', month: 'long'}
-};
 
 export class PointStacker {
   constructor(
@@ -171,7 +155,6 @@ export class TimelineComponent
     1
   );
   // }
-  private updateStream = new Subject<void>();
 
   private isDatepickerOpen$ = new BehaviorSubject(false);
 
@@ -245,8 +228,6 @@ export class TimelineComponent
 
     this.dateSelected.emit(yyyymmdd(date));
   }
-
-  monthSelected($event: any) {}
 
   async goToPreviousDay() {
     const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
@@ -340,7 +321,7 @@ export class TimelineComponent
   }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event?) {
+  onResize() {
     this._timelineWidth$.next(
       (this.element.nativeElement as HTMLElement).clientWidth
     );
@@ -356,9 +337,42 @@ export class TimelineComponent
       ])
     ).pipe(
       distinctUntilChangedDE(),
-      map(([scenes, width, activeScene]) =>
-        this.pointStacker.stack(scenes, width, activeScene)
-      )
+      map(([scenes, width, activeScene]) => {
+        return this.pointStacker
+          .stack(scenes, width, activeScene)
+          .map(
+            stack => ({...stack, points: this._getSortedPoints(stack.points)} as any)
+          );
+      })
     );
+  }
+
+  private _getSortedPoints(points: SceneWithUI[]) {
+    const timestampBuckets = {};
+    points.forEach(point =>
+      !!timestampBuckets[point.timestamp]
+        ? timestampBuckets[point.timestamp].push(point)
+        : (timestampBuckets[point.timestamp] = [point])
+    );
+    return Object.values(timestampBuckets)
+      .map((bucket: SceneWithUI[]) => bucket.sort(this._sortByDistance))
+      .reduce((acc, sortedBucket) => (acc = [...acc, ...sortedBucket]));
+  }
+
+  private _sortByDistance(a, b) {
+    function getMinXY(footprint: string) {
+      const pointsXY = footprint
+        .split('((')[1]
+        .replace('))', '')
+        .split(',')
+        .map(point => point.split(' '));
+      const minX = Math.min(...pointsXY.map(point => parseFloat(point[0])));
+      const minY = Math.min(...pointsXY.map(point => parseFloat(point[1])));
+      return [minX, minY];
+    }
+
+    const [ax, ay] = getMinXY(a.footprint);
+    const [bx, by] = getMinXY(b.footprint);
+    return Math.hypot(ax, ay) - Math.hypot(bx, by);
   }
 }
