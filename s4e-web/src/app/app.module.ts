@@ -17,9 +17,9 @@
 
 import {ConfigurationLoader} from './utils/initializer/config.service';
 import {LogoutModule} from './views/logout/logout.module';
-import {APP_INITIALIZER, InjectionToken, LOCALE_ID, NgModule} from '@angular/core';
+import {APP_INITIALIZER, LOCALE_ID, NgModule} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
-import {RouterModule} from '@angular/router';
+import {NavigationEnd, Router, RouterModule} from '@angular/router';
 import {ShareModule} from './common/share.module';
 import {MapModule} from './views/map-view/map.module';
 import {ProfileModule} from './views/settings/profile/profile.module';
@@ -50,13 +50,19 @@ import {
   POSITION,
   SPINNER
 } from 'ngx-ui-loader';
-import {AkitaNgRouterStoreModule} from '@datorama/akita-ng-router-store';
-import {LocalStorage, LOCATION} from './app.providers';
+import {
+  AkitaNgRouterStoreModule,
+  RouterQuery
+} from '@datorama/akita-ng-router-store';
+import {LocalStorage, LOCATION, WINDOW} from './app.providers';
 import {ProfileLoaderService} from './state/session/session.service';
 import {NotificationsModule} from './notifications/notifications.module';
 import {BsDatepickerModule, BsLocaleService} from 'ngx-bootstrap/datepicker';
 import {defineLocale} from 'ngx-bootstrap/chronos';
 import {plLocale} from 'ngx-bootstrap/locale';
+import {AuxiliaryServicesLoader} from './utils/auxiliary/auxiliary-services-loader.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {filter} from 'rxjs/operators';
 
 defineLocale('pl', plLocale);
 registerLocaleData(localePl, 'pl');
@@ -64,6 +70,12 @@ registerLocaleData(localePl, 'pl');
 export function initializeConfiguration(
   loader: ConfigurationLoader
 ): () => Promise<any> {
+  return () => loader.load$();
+}
+
+export function initializeHelpDesk(
+  loader: AuxiliaryServicesLoader
+): () => Promise<boolean> {
   return () => loader.load$();
 }
 
@@ -86,6 +98,7 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
   fgsSize: 80
 };
 
+@UntilDestroy()
 @NgModule({
   declarations: [RootComponent],
   imports: [
@@ -124,6 +137,12 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     },
     {
       provide: APP_INITIALIZER,
+      useFactory: initializeHelpDesk,
+      deps: [AuxiliaryServicesLoader],
+      multi: true
+    },
+    {
+      provide: APP_INITIALIZER,
       useFactory: initializeProfile,
       deps: [ProfileLoaderService],
       multi: true
@@ -131,14 +150,26 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: LOCALE_ID, useValue: 'pl-PL'},
     {provide: LocalStorage, useValue: window.localStorage},
-    {provide: LOCATION, useValue: window.location}
+    {provide: LOCATION, useValue: window.location},
+    {provide: WINDOW, useValue: window}
   ],
   bootstrap: [RootComponent],
   exports: [LoginComponent]
 })
 export class AppModule {
-  constructor(locale: BsLocaleService) {
+  constructor(
+    locale: BsLocaleService,
+    router: Router,
+    auxiliaryServices: AuxiliaryServicesLoader
+  ) {
     locale.use('pl');
     akitaConfig({resettable: true});
+
+    router.events
+      .pipe(
+        untilDestroyed(this),
+        filter(event => event instanceof NavigationEnd)
+      )
+      .subscribe(() => auxiliaryServices.updateAnalytics());
   }
 }

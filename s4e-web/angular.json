@@ -237,6 +237,7 @@
   },
   "defaultProject": "s4e-angular",
   "cli": {
+    "analytics": "11e1f07c-f853-4713-a0d0-b7b2b33ec32e",
     "defaultCollection": "akita-schematics"
   }
 }
