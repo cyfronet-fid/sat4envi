@@ -18,6 +18,14 @@
 export interface IRemoteConfiguration {
   osmUrl: string;
   geoserverUrl: string;
+  helpdesk?: {
+    type: string;
+    href: string;
+  };
+  analytics?: {
+    type: string;
+    href: string;
+  };
   geoserverWorkspace: string;
   recaptchaSiteKey: string;
 }

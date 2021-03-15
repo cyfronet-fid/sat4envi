@@ -115,21 +115,39 @@ By default doesn't force re-seed, but it can be told to do so by setting `seed.u
 Apart from the runtime properties, there are several properties in DB table `property`.
 These can be modified with admin API, see `AdminPropertyController`.
 
+
+
 `scene_granule_path_prefix`: the prefix necessary to build URLs of granules for GeoServer (it is set by `seed.sh`).
 Its format is: `mailto://<bucket>/`.
 Example: `mailto://s4e-sync-1/`.
 
+
+
 `expert_help_email`: the mail to which all the expert help requests go.
 Example: `expert@mail.pl`.
+
+
 
 `eumetsat_authority_whitelist`: having a role from this list grants LICENSE_EUMETSAT as well when generating user
 authorities.
 Authorities are comma-separated.
 Default and example: `ROLE_MEMBER_ZK,ROLE_MEMBER_PAK`.
 
-`helpdesk_config`: a set of helpdesk configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`.
 
-`analytics_config`: a set of analytics configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`.
+
+`helpdesk_config`: a set of helpdesk configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`. If you're using JIRA the value should be `type=jira,href=<URI_to_jira_collector>` - for example: 
+
+```
+type=jira,href=https://jira.mydomain.com/<jira_collector_path>
+```
+
+
+
+`analytics_config`: a set of analytics configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`. If you're using matomo the value should be: `type=matomo,href=<matomo_url>` - for example (**the trailing slash is important**):
+
+```
+type=matomo,href=https://matomo.mydomain.com/
+```
 
 
 #### Seeding Products
