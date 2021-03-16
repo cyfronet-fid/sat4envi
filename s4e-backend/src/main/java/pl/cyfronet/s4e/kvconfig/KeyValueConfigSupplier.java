@@ -15,11 +15,10 @@
  *
  */
 
-package pl.cyfronet.s4e.helpdesk;
+package pl.cyfronet.s4e.kvconfig;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.bean.Property;
 import pl.cyfronet.s4e.data.repository.PropertyRepository;
 
@@ -31,11 +30,11 @@ import static java.util.function.Predicate.not;
 
 @Service
 @RequiredArgsConstructor
-public class HelpdeskConfigSupplier {
+public class KeyValueConfigSupplier {
     private final PropertyRepository propertyRepository;
 
-    public Map<String, String> getConfig() {
-        return propertyRepository.findByName(Constants.PROPERTY_HELPDESK_CONFIG)
+    public Map<String, String> getConfig(String propertyName) {
+        return propertyRepository.findByName(propertyName)
             .map(Property::getValue)
             .filter(not(String::isBlank))
             .stream()
