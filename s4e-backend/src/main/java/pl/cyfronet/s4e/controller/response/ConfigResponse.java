@@ -35,4 +35,5 @@ public class ConfigResponse {
     @Schema(example = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI")
     String recaptchaSiteKey;
     Map<String, String> helpdesk;
+    Map<String, String> analytics;
 }

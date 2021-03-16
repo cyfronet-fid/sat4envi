@@ -107,6 +107,8 @@ By default doesn't force re-seed, but it can be told to do so by setting `seed.u
 
 `run-seed-helpdesk-config`: Runs `SeedHelpdeskConfig`.
 
+`run-seed-analytics-config`: Runs `SeedAnalyticsConfig`.
+
 
 #### DB properties
 
@@ -126,6 +128,8 @@ Authorities are comma-separated.
 Default and example: `ROLE_MEMBER_ZK,ROLE_MEMBER_PAK`.
 
 `helpdesk_config`: a set of helpdesk configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`.
+
+`analytics_config`: a set of analytics configuration variables in the following format: `<key>=<value>(,<key>=<value>)+`.
 
 
 #### Seeding Products

@@ -20,12 +20,13 @@ package pl.cyfronet.s4e.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.cyfronet.s4e.BasicTest;
-import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.TestDbHelper;
 import pl.cyfronet.s4e.TestResourceHelper;
 import pl.cyfronet.s4e.bean.Property;
@@ -78,50 +79,54 @@ public class ConfigControllerTest {
     }
 
     @Nested
-    class Helpdesk {
+    class ConfigurableFields {
         @Autowired
         private PropertyRepository propertyRepository;
 
-        @Test
-        public void shouldWork() throws Exception {
-            setHelpdeskProperty("foo=bar,baz=foo=bar,bar=,foobar,");
+        @ParameterizedTest
+        @ValueSource(strings = { "helpdesk", "analytics" })
+        public void shouldWork(String field) throws Exception {
+            setDbProperty(field, "foo=bar,baz=foo=bar,bar=,foobar,");
 
             mockMvc.perform(get(CONFIG_URL))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.helpdesk.foo").value("bar"))
-                    .andExpect(jsonPath("$.helpdesk.baz").value("foo=bar"))
-                    .andExpect(jsonPath("$.helpdesk.bar").value(""))
-                    .andExpect(jsonPath("$.helpdesk.foobar").doesNotExist());
+                    .andExpect(jsonPath("$." + field + ".foo").value("bar"))
+                    .andExpect(jsonPath("$." + field + ".baz").value("foo=bar"))
+                    .andExpect(jsonPath("$." + field + ".bar").value(""))
+                    .andExpect(jsonPath("$." + field + ".foobar").doesNotExist());
         }
 
-        @Test
-        public void shouldTakeFirstKeyIfThereAreDuplicates() throws Exception {
-            setHelpdeskProperty("foo=bar,foo=baz");
+        @ParameterizedTest
+        @ValueSource(strings = { "helpdesk", "analytics" })
+        public void shouldTakeFirstKeyIfThereAreDuplicates(String field) throws Exception {
+            setDbProperty(field, "foo=bar,foo=baz");
 
             mockMvc.perform(get(CONFIG_URL))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.helpdesk.foo").value("bar"));
+                    .andExpect(jsonPath("$." + field + ".foo").value("bar"));
         }
 
-        @Test
-        public void shouldBeEmptyIfEmptyProperty() throws Exception {
-            setHelpdeskProperty("");
+        @ParameterizedTest
+        @ValueSource(strings = { "helpdesk", "analytics" })
+        public void shouldBeEmptyIfEmptyProperty(String field) throws Exception {
+            setDbProperty(field, "");
 
             mockMvc.perform(get(CONFIG_URL))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.helpdesk").isEmpty());
+                    .andExpect(jsonPath("$." + field).isEmpty());
         }
 
-        @Test
-        public void shouldBeEmptyIfPropertyUnset() throws Exception {
+        @ParameterizedTest
+        @ValueSource(strings = { "helpdesk", "analytics" })
+        public void shouldBeEmptyIfPropertyUnset(String field) throws Exception {
             mockMvc.perform(get(CONFIG_URL))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.helpdesk").isEmpty());
+                    .andExpect(jsonPath("$." + field).isEmpty());
         }
 
-        private void setHelpdeskProperty(String value) {
+        private void setDbProperty(String field, String value) {
             propertyRepository.save(Property.builder()
-                    .name(Constants.PROPERTY_HELPDESK_CONFIG)
+                    .name(field + "_config")
                     .value(value)
                     .build());
         }

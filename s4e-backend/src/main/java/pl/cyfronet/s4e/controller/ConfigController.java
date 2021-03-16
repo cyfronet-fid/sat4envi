@@ -26,8 +26,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.cyfronet.s4e.Constants;
 import pl.cyfronet.s4e.controller.response.ConfigResponse;
-import pl.cyfronet.s4e.helpdesk.HelpdeskConfigSupplier;
+import pl.cyfronet.s4e.kvconfig.KeyValueConfigSupplier;
 import pl.cyfronet.s4e.properties.GeoServerProperties;
 import pl.cyfronet.s4e.properties.OsmProperties;
 import pl.cyfronet.s4e.search.SearchPanelConfigResponse;
@@ -45,7 +46,7 @@ import static pl.cyfronet.s4e.Constants.API_PREFIX_V1;
 public class ConfigController {
     private final GeoServerProperties geoServerProperties;
     private final OsmProperties osmProperties;
-    private final HelpdeskConfigSupplier helpdeskConfigSupplier;
+    private final KeyValueConfigSupplier keyValueConfigSupplier;
     private final SearchPanelConfigResponseSupplier searchPanelConfigResponseSupplier;
 
     @Value("${recaptcha.validation.siteKey}")
@@ -62,7 +63,8 @@ public class ConfigController {
                 .geoserverUrl(geoServerProperties.getOutsideBaseUrl())
                 .geoserverWorkspace(geoServerProperties.getWorkspace())
                 .recaptchaSiteKey(recaptchaSiteKey)
-                .helpdesk(helpdeskConfigSupplier.getConfig())
+                .helpdesk(keyValueConfigSupplier.getConfig(Constants.PROPERTY_HELPDESK_CONFIG))
+                .analytics(keyValueConfigSupplier.getConfig(Constants.PROPERTY_ANALYTICS_CONFIG))
                 .build();
     }
 
