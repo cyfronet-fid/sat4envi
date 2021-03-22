@@ -1,0 +1,10 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_pozar.svg",
+  "leftDescription": {
+    "0.51": "Pożar"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}
