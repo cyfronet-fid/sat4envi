@@ -1,0 +1,10 @@
+{
+  "type": "gradient",
+  "url": "/assets/images/legend_woda.svg",
+  "leftDescription": {
+    "0.51": "Woda"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "bottomMetric": {}
+}
