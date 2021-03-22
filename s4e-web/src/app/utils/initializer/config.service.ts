@@ -15,23 +15,25 @@
  *
  */
 
-import {IRemoteConfiguration} from './../../app.configuration';
+import {IRemoteConfiguration} from '../../app.configuration';
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import environment from 'src/environments/environment';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {switchMap, tap} from 'rxjs/operators';
-import {SessionService} from '../../state/session/session.service';
+import {Observable, ReplaySubject} from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class RemoteConfiguration {
-  public readonly isInitialized$: Observable<boolean>;
-  private _isInitialized$ = new BehaviorSubject<boolean>(false);
+  private _isInitialized$ = new ReplaySubject<boolean>(1);
 
   private _configuration: IRemoteConfiguration;
 
   constructor() {
-    this.isInitialized$ = this._isInitialized$.asObservable();
+    this._isInitialized$.next(false);
+  }
+
+  getIsInitialized$(): Observable<boolean> {
+    return this._isInitialized$.asObservable();
   }
 
   get(): IRemoteConfiguration {

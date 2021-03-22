@@ -662,6 +662,10 @@ input.checkbox-slide:checked + .slider:after {
   max-width: calc(100% - 100px);
 }
 
+.atlwdg-trigger {
+  z-index: 99 !important;
+}
+
 /*loader*/
 
 ngx-ui-loader .ngx-background-spinner[_ngcontent-c3] {
