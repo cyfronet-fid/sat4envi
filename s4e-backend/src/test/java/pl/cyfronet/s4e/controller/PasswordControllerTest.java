@@ -110,7 +110,7 @@ public class PasswordControllerTest {
                 .name("Get")
                 .surname("Profile")
                 .password(passwordEncoder.encode("password"))
-                .enabled(true)
+                .enabled(false)
                 .build());
     }
 
@@ -202,6 +202,7 @@ public class PasswordControllerTest {
                 .build();
         passwordResetRepository.save(token);
         assertThat(passwordService.findByEmail(PROFILE_EMAIL), isPresent());
+        assertThat(appUserRepository.findByEmail(PROFILE_EMAIL).get().isEnabled(), is(false));
 
         String newPassword = "password2";
         String oldPassword = "password";
@@ -217,6 +218,7 @@ public class PasswordControllerTest {
 
         assertThat(passwordEncoder.matches(newPassword, appUserRepository.findByEmail(PROFILE_EMAIL).get().getPassword()), is(true));
         assertThat(passwordEncoder.matches(oldPassword, appUserRepository.findByEmail(PROFILE_EMAIL).get().getPassword()), is(false));
+        assertThat(appUserRepository.findByEmail(PROFILE_EMAIL).get().isEnabled(), is(true));
     }
 
     @Test
