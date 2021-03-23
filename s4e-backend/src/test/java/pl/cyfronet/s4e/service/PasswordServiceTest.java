@@ -81,7 +81,7 @@ public class PasswordServiceTest {
                 .name("Get")
                 .surname("Profile")
                 .password(passwordEncoder.encode("password"))
-                .enabled(true)
+                .enabled(false)
                 .build());
     }
 
@@ -144,6 +144,7 @@ public class PasswordServiceTest {
 
     @Test
     public void shouldResetPassword() throws Exception {
+        assertThat(appUserService.findByEmail(PROFILE_EMAIL).get().isEnabled(), is(false));
         PasswordReset token = PasswordReset.builder()
                 .token(UUID.randomUUID().toString())
                 .appUser(appUserService.findByEmail(PROFILE_EMAIL).get())
@@ -157,6 +158,7 @@ public class PasswordServiceTest {
                 .build();
         passwordService.resetPassword(passwordReset);
 
+        assertThat(appUserService.findByEmail(PROFILE_EMAIL).get().isEnabled(), is(true));
         assertThat(passwordService.findByEmail(PROFILE_EMAIL), isEmpty());
         assertThat(passwordEncoder.matches(password, appUserRepository.findByEmail(PROFILE_EMAIL).get().getPassword()), is(true));
     }

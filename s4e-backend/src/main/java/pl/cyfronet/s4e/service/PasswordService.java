@@ -90,6 +90,7 @@ public class PasswordService {
         }
         AppUser appUser = resetPasswordToken.getAppUser();
         appUser.setPassword(passwordEncoder.encode(passwordReset.getPassword()));
+        appUser.setEnabled(true);
         passwordResetRepository.deleteById(resetPasswordToken.getId());
     }
 
