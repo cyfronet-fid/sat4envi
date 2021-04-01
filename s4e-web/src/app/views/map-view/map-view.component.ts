@@ -222,6 +222,12 @@ export class MapViewComponent implements OnInit, OnDestroy {
     if (this.mapQuery.isLoading()) {
       return;
     }
+
+    // IMPORTANT!!! Prevent loading random date (1970-01-01) on first product visit
+    if ($event === '1970-01-01') {
+      return;
+    }
+
     this.sceneService
       .get(this.productQuery.getActive(), $event, 'first')
       .subscribe();
