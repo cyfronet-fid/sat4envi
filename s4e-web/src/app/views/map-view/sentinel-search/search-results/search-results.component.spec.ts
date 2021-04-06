@@ -77,7 +77,7 @@ describe('SearchResultsComponent', () => {
         de
           .query(By.css('.search-result__quicklook'))
           .nativeElement.getAttribute('style')
-      ).toBe(`background: url(api/v1/scenes/${result.id}/download/thumbnail);`);
+      ).toContain(`background: url(api/v1/scenes/${result.id}/download/thumbnail);`);
     });
 
     it('should have empty thumbnail', () => {

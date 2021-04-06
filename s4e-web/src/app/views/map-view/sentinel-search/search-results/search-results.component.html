@@ -59,7 +59,10 @@
               <div
                 class="search-result__quicklook"
                 [ngStyle]="{
-                  background: result.image ? 'url(' + result.image + ')' : ''
+                  'background': result.image ? 'url(' + result.image + ')' : '',
+                  'background-position': 'center center',
+                  'background-repeat': 'no-repeat',
+                  'background-size': 'cover'
                 }"
                 (click)="showDetails.emit(result)"
               >
