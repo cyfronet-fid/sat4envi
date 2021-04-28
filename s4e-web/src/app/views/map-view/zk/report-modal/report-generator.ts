@@ -14,8 +14,6 @@
  * limitations under the License.
  *
  */
-
-import Canvg from 'canvg';
 import {jsPDF} from 'jspdf';
 import {forkJoin, fromEvent, Observable, of, ReplaySubject} from 'rxjs';
 import {delay, filter, switchMap, take, tap} from 'rxjs/operators';
@@ -276,28 +274,57 @@ class LegendComposer {
     }
   }
 
-  insertLegend(legend: Legend, svgData: string) {
+  async insertLegend(legend: Legend, svg: string) {
     const height = 50;
     const width = 3;
     const margin = 5;
-    const fontSize = 4;
+    const fontSize = 6;
     const yStart = this.currentY + margin;
 
-    this.doc.addSvgAsImage(svgData, this.xStart, yStart, width, height);
-    this.doc.setFont(this.FONT_NAME, 'normal');
-    this.doc.setFontSize(fontSize);
+    await this._svgToImgBase64$(svg, width, height).then(imgBase64 => {
+      this.doc.addImage(imgBase64, this.xStart, yStart, width, height);
+      this.doc.setFont(this.FONT_NAME, 'normal');
+      this.doc.setFontSize(fontSize);
 
-    Object.entries(legend.leftDescription).forEach(([position, value]) => {
-      const positionN = Number(position);
-      this.doc.text(
-        value,
-        this.xStart + width + 1,
-        yStart + height - height * positionN,
-        {maxWidth: this.width, align: 'left', baseline: 'top'}
-      );
+      Object.entries(legend.leftDescription).forEach(([position, value]) => {
+        const positionN = Number(position);
+        this.doc.text(
+          value,
+          this.xStart + width + 1,
+          yStart + height - height * positionN,
+          {maxWidth: this.width, align: 'left', baseline: 'top'}
+        );
+      });
+
+      this.advanceY(height + margin);
     });
+  }
 
-    this.advanceY(height + margin);
+  private _svgToImgBase64$(
+    svg: string,
+    width: number,
+    height: number
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let container = document.createElement('div');
+      container.style.display = 'none';
+      container.innerHTML = svg;
+
+      let canvas = document.createElement('canvas');
+      let context = canvas.getContext('2d');
+
+      const image = new Image();
+      image.onload = () => {
+        canvas.width = (image.width / image.height) * height;
+        canvas.height = (image.height / image.width) * width;
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/png', 0.92));
+      };
+
+      image.src =
+        'data:image/svg+xml;base64,' +
+        btoa(new XMLSerializer().serializeToString(container.firstElementChild));
+    });
   }
 }
 
@@ -336,18 +363,19 @@ export class ReportGenerator {
       filter(w => !w),
       tap(() => this.working$.next(true)),
       delay(0),
-      tap(() =>
-        this.combineDocument(
-          imageData,
-          imageWidth,
-          imageHeight,
-          caption,
-          notes,
-          productName,
-          sceneDate,
-          pointResolution,
-          legend
-        )
+      tap(
+        async () =>
+          await this.combineDocument(
+            imageData,
+            imageWidth,
+            imageHeight,
+            caption,
+            notes,
+            productName,
+            sceneDate,
+            pointResolution,
+            legend
+          )
       ),
       delay(0),
       tap(() => this.working$.next(false))
@@ -418,7 +446,7 @@ export class ReportGenerator {
    * @return height of the added text box
    */
 
-  private combineDocument(
+  private async combineDocument(
     imageData: string,
     imageWidth: number,
     imageHeight: number,
@@ -498,7 +526,8 @@ export class ReportGenerator {
     composer.insertScale(pxPerMM * pointResolution);
 
     if (legend) {
-      composer.insertLegend(legend, this.svg.legend);
+      console.log(this.svg);
+      await composer.insertLegend(legend, this.svg.legend);
     }
 
     composer.insertTextBox('Szczegóły', {

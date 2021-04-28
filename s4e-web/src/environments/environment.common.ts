@@ -3,7 +3,7 @@ export const commonEnvironmentVariables = {
   generalErrorKey: '__general__',
   apiPrefixV1: 'api/v1',
   projection: {toProjection: 'EPSG:3857', coordinates: [19, 52] as [number, number]},
-  maxZoom: 12,
+  maxZoom: 19,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
   /*
