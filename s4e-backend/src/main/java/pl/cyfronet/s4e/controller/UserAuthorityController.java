@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ import pl.cyfronet.s4e.ex.NotFoundException;
 import pl.cyfronet.s4e.service.UserAuthorityService;
 
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -64,8 +63,7 @@ public class UserAuthorityController {
             @ApiResponse(responseCode = "404", description = "User doesn't exist")
     })
     @Transactional(rollbackFor = NotFoundException.class)
-    @PutMapping("/users/authority/{authority}")
-    @Consumes(APPLICATION_JSON_VALUE)
+    @PutMapping(path = "/users/authority/{authority}", consumes = APPLICATION_JSON_VALUE)
     public void addAuthority(
             @PathVariable String authority,
             @RequestBody @Valid UserAuthorityRequest request
@@ -82,8 +80,7 @@ public class UserAuthorityController {
             @ApiResponse(responseCode = "404", description = "User doesn't exist")
     })
     @Transactional(rollbackFor = NotFoundException.class)
-    @DeleteMapping("/users/authority/{authority}")
-    @Consumes(APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/users/authority/{authority}", consumes = APPLICATION_JSON_VALUE)
     public void removeAuthority(
             @PathVariable String authority,
             @RequestBody @Valid UserAuthorityRequest request
