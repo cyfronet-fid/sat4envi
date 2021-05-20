@@ -64,6 +64,12 @@ public class SearchPanelConfig {
                         "MSG.metadata.v1.json",
                         List.of(),
                         List.of()
+                ),
+                new SectionPrototype(
+                        "Satelity polarne",
+                        "noaa.metadata.v1.json",
+                        List.of(),
+                        List.of()
                 )
         );
     }
