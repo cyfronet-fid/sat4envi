@@ -35,7 +35,11 @@ import java.util.Set;
 public class NotificationDispatcher {
     // These events correspond to event types listed for example here:
     // https://docs.ceph.com/en/latest/radosgw/s3-notification-compatibility/.
-    private static final Set<String> ACCEPT_EVENTS = Set.of("s3:ObjectCreated:Put", "s3:ObjectCreated:Post");
+    private static final Set<String> ACCEPT_EVENTS = Set.of(
+            "s3:ObjectCreated:Put",
+            "s3:ObjectCreated:Post",
+            "s3:ObjectCreated:Copy"
+    );
     private static final Set<String> DELETE_EVENTS = Set.of("s3:ObjectRemoved:Delete");
 
     private final SceneAcceptor sceneAcceptor;
