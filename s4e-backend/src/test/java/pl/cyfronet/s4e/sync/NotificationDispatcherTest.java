@@ -63,7 +63,7 @@ class NotificationDispatcherTest {
             "eventNameValue,",
             ",objectKeyValue",
             ",objectKeyValue",
-            "s3:ObjectCreated:Copy,objectKeyValue"
+            "s3:ObjectCreated:CompleteMultipartUpload,objectKeyValue"
     })
     public void shouldRejectIfAnyNotificationFieldNullOrEventUnsupported(String eventName, String objectKey) {
         Notification notification = mockNotification(eventName, objectKey);

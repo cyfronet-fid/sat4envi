@@ -83,8 +83,8 @@ public class QueueReceiverIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post" })
-    public void shouldHandlePutAndPost(String eventName) {
+    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post", "s3:ObjectCreated:Copy" })
+    public void shouldHandleObjectCreatedEvents(String eventName) {
         assertThat(sceneRepository.count(), is(equalTo(0L)));
 
         sendMessage(incomingQueueName, SCENE_KEY, eventName);
@@ -94,7 +94,7 @@ public class QueueReceiverIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post" })
+    @ValueSource(strings = { "s3:ObjectCreated:Put", "s3:ObjectCreated:Post", "s3:ObjectCreated:Copy" })
     public void shouldHandleNonExistentScene(String eventName) {
         assertThat(sceneRepository.count(), is(equalTo(0L)));
 
