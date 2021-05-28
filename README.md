@@ -557,6 +557,17 @@ GRANT readaccess TO eva;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
 ```
 
+__Q: How to disable metrics for selected requests?__
+
+It's not possible for now to do that for all metered endpoints, but the gs-gateway can be instructed not to meter
+certain requests.
+
+The control is on the sender side: if a request has `DISABLE_METRICS` query param, then it won't be counted.
+For example, a request for `https://localhost:4200/wms?REQUEST=GetMap&<other_params>&DISABLE_METRICS` won't be counted.
+
+This feature is suited for monitoring, where a bunch of requests is issued periodically, but we don't want to report
+them.
+
 
 ## License
 

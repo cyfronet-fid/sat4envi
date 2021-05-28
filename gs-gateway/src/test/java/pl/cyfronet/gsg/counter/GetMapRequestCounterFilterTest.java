@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ public class GetMapRequestCounterFilterTest {
                 .build();
         ServerWebExchange exchange = MockServerWebExchange.from(request);
         when(filterChain.filter(exchange)).thenReturn(Mono.empty());
+
         filter.filter(exchange, filterChain).block();
 
         assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
@@ -66,8 +67,28 @@ public class GetMapRequestCounterFilterTest {
                 .queryParam("REQUEST", "GetCapabilities")
                 .build();
         ServerWebExchange exchange = MockServerWebExchange.from(request);
+        when(filterChain.filter(exchange)).thenReturn(Mono.empty());
 
-        filter.filter(exchange, filterChain);
+        filter.filter(exchange, filterChain).block();
+
+        assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
+        verify(filterChain).filter(exchange);
+        verifyNoInteractions(metricService);
+        verifyNoMoreInteractions(filterChain);
+    }
+
+    @Test
+    public void shouldntCountWithDisableMetrics() {
+        GlobalFilter filter = new GetMapRequestCounterFilter(metricService);
+        MockServerHttpRequest request = MockServerHttpRequest.get("http://localhost")
+                .queryParam("REQUEST", "GetMap")
+                .queryParam("LAYERS", "msg")
+                .queryParam("DISABLE_METRICS")
+                .build();
+        ServerWebExchange exchange = MockServerWebExchange.from(request);
+        when(filterChain.filter(exchange)).thenReturn(Mono.empty());
+
+        filter.filter(exchange, filterChain).block();
 
         assertThat(exchange.getResponse().isCommitted(), is(equalTo(false)));
         verify(filterChain).filter(exchange);

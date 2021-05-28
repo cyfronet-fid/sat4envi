@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,16 @@ public class GetMapRequestCounterFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        if ("GetMap".equals(request.getQueryParams().getFirst("REQUEST"))) {
 
+        if (request.getQueryParams().containsKey("DISABLE_METRICS")) {
+            return chain.filter(exchange);
+        }
+
+        if ("GetMap".equals(request.getQueryParams().getFirst("REQUEST"))) {
             return chain.filter(exchange).doOnSuccess(
                     (aVoid) -> metricService.incrementCounter(request.getQueryParams().getFirst("LAYERS")));
         }
+
         return chain.filter(exchange);
     }
 
