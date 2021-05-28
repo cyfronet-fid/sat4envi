@@ -53,7 +53,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_TEST_SECRET_KEY:-miniotest123}
     command: server /data
   geoserver-test:
-    image: fiddev/geoserver:1.6.0-GS2.18.0
+    image: fiddev/geoserver:1.6.1-GS2.19.1
     ports:
       - ${GEOSERVER_TEST_PORT:-8081}:8080
     networks:

@@ -49,7 +49,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minio123}
     command: server /data
   geoserver:
-    image: fiddev/geoserver:1.6.0-GS2.18.0
+    image: fiddev/geoserver:1.6.1-GS2.19.1
     ports:
       - ${GEOSERVER_PORT:-8080}:8080
     networks:
