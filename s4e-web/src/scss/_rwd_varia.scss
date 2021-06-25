@@ -48,6 +48,10 @@
     bottom: 90px !important;
     right: auto !important;
   }
+
+  .product-loader {
+    left: 50%;
+  }
 }
 
 @media (max-width: 550px) {
@@ -113,3 +117,11 @@
     height: auto !important;
   }
 }
+
+@media (max-width: 425px) {
+  .product-loader {
+    top: 80px;
+    left: calc(50% - 60px);
+  }
+}
+
