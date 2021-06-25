@@ -126,6 +126,9 @@
   .modal-dialog {
     width: calc(100% - 175px) !important;
   }
+  .product-loader {
+    left: calc(50% + 80px);
+  }
 }
 
 @media only all and (max-width: 800px) {
