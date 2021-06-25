@@ -94,7 +94,7 @@
     "ng-recaptcha": "^7.0.1",
     "ngx-bootstrap": "^6.2.0",
     "ngx-cookie-service": "^11.0.2",
-    "ngx-ui-loader": "^7.2.2",
+    "ngx-ui-loader": "^10.0.0",
     "ol": "^5.3.3",
     "proj4": "^2.7.0",
     "rxjs": "^6.6.3",

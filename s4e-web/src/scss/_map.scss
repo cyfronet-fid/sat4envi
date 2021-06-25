@@ -169,6 +169,7 @@
       dd {
         padding: ($space-xsmall - 2px) $space-default;
         line-height: 1.12rem;
+
         a:not(.button) {
           cursor: pointer;
           color: $color-secondary;
@@ -273,4 +274,41 @@
   z-index: 1;
   background-color: white;
   opacity: 0.4;
+}
+
+.product-loader {
+  width: max-content;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: $color-white;
+  font-weight: 500;
+  padding: 5px 12px 5px 8px;
+  border-radius: $border-radius-circle;
+  position: absolute;
+  top: 23px;
+  font-size: 0.875rem;
+  text-shadow: 2px 2px 2px $color-grey;
+  display: flex;
+
+  &__img {
+    display: block;
+    background: $color-white;
+    padding: 3px 3px 2px 5px;
+    border-radius: $border-radius-circle;
+    margin-right: 8px;
+    animation: rotation 2s infinite linear;
+
+    & + span {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  @keyframes rotation {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(359deg);
+    }
+  }
 }
