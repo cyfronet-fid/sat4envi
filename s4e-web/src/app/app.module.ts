@@ -43,13 +43,7 @@ import {SettingsModule} from './views/settings/settings.module';
 import {ModalModule} from './modal/modal.module';
 import {S4EFormsModule} from './form/form.module';
 import {ErrorsModule} from './errors/errors.module';
-import {
-  NgxUiLoaderConfig,
-  NgxUiLoaderModule,
-  PB_DIRECTION,
-  POSITION,
-  SPINNER
-} from 'ngx-ui-loader';
+
 import {
   AkitaNgRouterStoreModule,
   RouterQuery
@@ -63,6 +57,7 @@ import {plLocale} from 'ngx-bootstrap/locale';
 import {AuxiliaryServicesLoader} from './utils/auxiliary/auxiliary-services-loader.service';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {filter} from 'rxjs/operators';
+import {NgxUiLoaderModule, PB_DIRECTION, POSITION, SPINNER} from 'ngx-ui-loader';
 
 defineLocale('pl', plLocale);
 registerLocaleData(localePl, 'pl');
@@ -84,19 +79,6 @@ export function initializeProfile(
 ): () => Promise<any> {
   return () => profileLoaderService.loadProfile$().toPromise();
 }
-
-const ngxUiLoaderConfig: NgxUiLoaderConfig = {
-  bgsColor: 'white',
-  pbColor: 'white',
-  bgsOpacity: 1,
-  bgsPosition: POSITION.centerCenter,
-  bgsSize: 120,
-  bgsType: SPINNER.threeBounce,
-  pbDirection: PB_DIRECTION.leftToRight,
-  pbThickness: 5,
-  hasProgressBar: true,
-  fgsSize: 80
-};
 
 @UntilDestroy()
 @NgModule({
@@ -125,7 +107,10 @@ const ngxUiLoaderConfig: NgxUiLoaderConfig = {
     S4EFormsModule,
     NotificationsModule.forRoot(environment.production),
     ErrorsModule,
-    NgxUiLoaderModule.forRoot(ngxUiLoaderConfig)
+    NgxUiLoaderModule.forRoot({
+      bgsOpacity: 1,
+      bgsPosition: POSITION.topCenter
+    })
   ],
   providers: [
     ConfigurationLoader,

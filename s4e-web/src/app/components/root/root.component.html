@@ -29,4 +29,12 @@
   <span class="fas fa-xs fa-redo-alt"></span>
 </button>
 
-<ngx-ui-loader></ngx-ui-loader>
+<ngx-ui-loader [bgsTemplate]="ngxUiLoader" [loaderId]="'master'"></ngx-ui-loader>
+<ng-template #ngxUiLoader>
+  <div class="product-loader">
+    <span class="product-loader__img">
+      <img src="assets/images/s4e_signet.png" width="15" alt="Sygnet Sat4Envi" />
+    </span>
+    <span i18n>Ładuję dane</span>
+  </div>
+</ng-template>
