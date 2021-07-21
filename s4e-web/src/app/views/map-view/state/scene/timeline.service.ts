@@ -24,6 +24,7 @@ import {SceneStore} from './scene.store.service';
 import {SceneQuery} from './scene.query';
 import environment from '../../../../../environments/environment';
 import {interval, Subscription} from 'rxjs';
+import {compareSegments} from '@angular/compiler-cli/src/ngtsc/sourcemaps/src/segment_marker';
 
 @Injectable({providedIn: 'root'})
 export class TimelineService {
@@ -53,9 +54,8 @@ export class TimelineService {
     this._sceneStore.setLoading(false);
   }
 
-  async confirmTurningOfLiveMode(): Promise<boolean> {
+  async confirmTurningOffLiveMode(): Promise<boolean> {
     this._sceneStore.setLoading(true);
-
     const isLiveMode = this._sceneQuery.getValue().isLiveMode;
     if (!isLiveMode) {
       this._sceneStore.setLoading(false);

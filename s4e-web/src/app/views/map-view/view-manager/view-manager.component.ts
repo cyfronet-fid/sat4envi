@@ -118,7 +118,7 @@ export class ViewManagerComponent implements OnInit, OnDestroy {
   }
 
   async selectProduct(productId: number) {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
