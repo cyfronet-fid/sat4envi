@@ -1,0 +1,18 @@
+{
+  "name": "e2e-user-responsiveness",
+  "version": "1.0.0",
+  "description": "E2e tests for user expirience on site",
+  "main": "index.js",
+  "scripts": {
+    "test": "CYPRESS_NO_COMMAND_LOG=1 TZ=Europe/Warsaw cypress run --browser chrome --headless --quiet",
+    "test:bulk:100": "",
+    "test:bulk:1000": "",
+    "test:bulk:2000": "",
+    "test:preview": "CYPRESS_NO_COMMAND_LOG=1 TZ=Europe/Warsaw cypress run --browser chrome --quiet"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^8.0.0"
+  }
+}
