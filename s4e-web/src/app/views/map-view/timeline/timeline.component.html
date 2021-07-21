@@ -144,7 +144,7 @@
                   [attr.data-hour]="scene.timestamp | hour: true"
                   (click)="selectScene(scene)"
                 >
-                  {{ scene.timestamp | hour: true }}
+                  {{ scene.timestamp | hour: true }} #{{ scene.id }}
                 </li>
               </ul>
             </div>
