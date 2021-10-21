@@ -1,4 +1,4 @@
-FROM openjdk:11.0.10-jdk-slim
+FROM openjdk:11.0.12-jdk-slim
 
 RUN mkdir /app
 WORKDIR /app

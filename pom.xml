@@ -26,31 +26,31 @@
         <java.version>11</java.version>
         <maven.compiler.release>11</maven.compiler.release>
 
-        <spring-boot.version>2.5.0</spring-boot.version>
+        <spring-boot.version>2.5.5</spring-boot.version>
 
-        <awssdk.version>2.16.66</awssdk.version>
-        <commonmark.version>0.17.2</commonmark.version>
+        <awssdk.version>2.17.64</awssdk.version>
+        <commonmark.version>0.18.0</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
-        <geotools.version>25.0</geotools.version>
-        <greenmail.version>1.6.4</greenmail.version>
+        <geotools.version>26.0</geotools.version>
+        <greenmail.version>1.6.5</greenmail.version>
         <guava.version>30.1.1-jre</guava.version>
-        <hibernate-types.version>2.11.1</hibernate-types.version>
-        <jakarta.json-api.version>2.0.0</jakarta.json-api.version>
+        <hibernate-types.version>2.13.0</hibernate-types.version>
+        <jakarta.json-api.version>2.0.1</jakarta.json-api.version>
         <jjwt.version>0.11.2</jjwt.version>
         <joy.version>2.1.0</joy.version>
         <justify.version>3.1.0</justify.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <poiooxml.version>4.1.2</poiooxml.version>
+        <poiooxml.version>5.0.0</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.5</slugify.version>
-        <springdoc-openapi.version>1.5.9</springdoc-openapi.version>
+        <springdoc-openapi.version>1.5.12</springdoc-openapi.version>
         <unirest.version>4.0.0-RC1</unirest.version>
         <bucket4j-starter.version>0.4.0</bucket4j-starter.version>
         <!--
         update sentry version only when fid instance is updated
         -->
-        <sentry.version>4.3.0</sentry.version>
+        <sentry.version>5.2.4</sentry.version>
     </properties>
 
     <build>
@@ -68,7 +68,7 @@
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.8.1</version>
+                                    <version>3.8.3</version>
                                 </requireMavenVersion>
                             </rules>
                         </configuration>
