@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- java `^11`
+- java `^17`
 - docker `^18.09.3`
 - docker-compose `^1.18.0`
 - node `^11`,  npm `^6`
