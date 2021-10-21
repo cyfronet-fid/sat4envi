@@ -9,7 +9,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.10
+          java-version: 11.0.12
       - name: Cache backend
         uses: actions/cache@v2
         with:
@@ -39,7 +39,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.10
+          java-version: 11.0.12
       - name: Cache gs-gateway
         uses: actions/cache@v2
         with:
@@ -62,7 +62,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 11.0.10
+          java-version: 11.0.12
       - name: Cache web
         uses: actions/cache@v2
         with:
