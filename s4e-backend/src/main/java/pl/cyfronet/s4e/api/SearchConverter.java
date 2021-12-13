@@ -18,10 +18,11 @@
 package pl.cyfronet.s4e.api;
 
 import com.google.common.base.Splitter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneId;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -31,8 +32,11 @@ import java.util.Map;
 import static pl.cyfronet.s4e.api.SearchApiParams.*;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class SearchConverter {
+    private final Clock clock;
+
     public Map<String, Object> convertParams(String rowsSize, String rowStart, String orderby) {
         Map<String, Object> result = new HashMap<>();
         parseStringToInt(result, LIMIT, rowsSize);
@@ -121,7 +125,7 @@ public class SearchConverter {
         DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         if (time.contains("NOW-")) {
             // NOW-NDAY(S)
-            ZonedDateTime localTime = ZonedDateTime.now(ZoneId.of("UTC"));
+            ZonedDateTime localTime = ZonedDateTime.now(clock);
             String[] times = time.split("-");
             switch (times[1].replaceAll("[0-9]", "")) {
                 case "MINUTE":
@@ -144,7 +148,7 @@ public class SearchConverter {
             return localTime.format(dateTimeFormat);
         }
         if (time.equals("NOW")) {
-            ZonedDateTime localTime = ZonedDateTime.now(ZoneId.of("UTC"));
+            ZonedDateTime localTime = ZonedDateTime.now(clock);
             return localTime.format(dateTimeFormat);
         }
         return time;
