@@ -25,6 +25,8 @@ in GS-Gateway or s4e-backend:
 dsn = <https://url with token to your sentry>
 ```
 
+Alternatively, set envvar `SENTRY_DSN=<dsn>` for backend and gsg-gateway.
+
 ### s4e-backend
 
 #### Prerequisites

@@ -344,6 +344,23 @@
             <artifactId>sentry-logback</artifactId>
             <version>${sentry.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry-jdbc</artifactId>
+            <version>${sentry.version}</version>
+        </dependency>
+
+        <!-- Override until the version bump is integrated with spring boot dependencies -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4shell.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>${log4shell.version}</version>
+        </dependency>
     </dependencies>
 
     <repositories>

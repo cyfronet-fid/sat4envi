@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 ACC Cyfronet AGH
+ * Copyright 2021 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.sentry.Sentry;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -57,6 +58,12 @@ import java.util.Map;
 @EnableConfigurationProperties({JwtProperties.class, GatewayProperties.class})
 public class GsGatewayApplication {
     public static void main(String[] args) {
+        Sentry.init(options -> {
+            options.setDsn("");
+            options.setTracesSampleRate(0.5);
+            options.setEnableExternalConfiguration(true);
+        });
+
         SpringApplication.run(GsGatewayApplication.class, args);
     }
 
