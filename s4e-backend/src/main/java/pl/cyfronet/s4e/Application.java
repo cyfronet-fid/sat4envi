@@ -17,6 +17,7 @@
 
 package pl.cyfronet.s4e;
 
+import io.sentry.Sentry;
 import org.springdoc.core.SpringDocUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,6 +30,12 @@ import org.springframework.cache.annotation.EnableCaching;
 public class Application {
 
     public static void main(String[] args) {
+        Sentry.init(options -> {
+            options.setDsn("");
+            options.setTracesSampleRate(0.5);
+            options.setEnableExternalConfiguration(true);
+        });
+
         SpringDocUtils.getConfig().replaceWithClass(
                 org.springframework.data.domain.Pageable.class,
                 org.springdoc.core.converters.models.Pageable.class
