@@ -386,7 +386,13 @@ Set its policy to download: `mc policy set download local-docker/static`.
 
 #### Miscellaneous
 
-To check for dependency updates run `../mvnw versions:display-dependency-updates` in directory `s4e-backend`.
+To check for dependency updates run `../mvnw versions:display-dependency-updates versions:display-plugin-updates -U` in
+directory `s4e-backend`.
+
+It also works in the root directory:
+```
+./mvnw versions:display-dependency-updates versions:display-plugin-updates -U
+```
 
 
 ### s4e-web

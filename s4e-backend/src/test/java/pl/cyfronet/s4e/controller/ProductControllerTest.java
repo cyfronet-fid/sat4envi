@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 ACC Cyfronet AGH
+ * Copyright 2022 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,7 @@ public class ProductControllerTest {
                         .build()))
                 .forEach(products::add);
 
-        productId = repository.findByNameContainingIgnoreCase("108m").get().getId();
+        productId = repository.findByName("108m").get().getId();
     }
 
     @AfterEach
@@ -159,7 +159,7 @@ public class ProductControllerTest {
 
     @Test
     public void shouldReturnProductWithInfo() throws Exception {
-        Product product = repository.findByNameContainingIgnoreCase("WV_IR").orElseThrow();
+        Product product = repository.findByName("WV_IR").orElseThrow();
         val url = API_PREFIX_V1 + "/products/{id}";
         mockMvc.perform(get(url, product.getId()))
                 .andExpect(status().isOk())
@@ -272,7 +272,7 @@ public class ProductControllerTest {
 
     @Test
     public void shouldReturnProductWithoutInfoForAuthorizedUserWithFavourite() throws Exception {
-        Product product = repository.findByNameContainingIgnoreCase("108m").get();
+        Product product = repository.findByName("108m").get();
         product.setFavourites(Set.of(appUser));
         repository.save(product);
 
@@ -287,7 +287,7 @@ public class ProductControllerTest {
 
     @Test
     public void shouldAddFavouriteProductForAuthorizedUser() throws Exception {
-        Product product = repository.findByNameContainingIgnoreCase("108m").get();
+        Product product = repository.findByName("108m").get();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/products/{id}/favourite", product.getId())
                 .with(jwtBearerToken(appUser, objectMapper)))
@@ -317,7 +317,7 @@ public class ProductControllerTest {
 
     @Test
     public void shouldRemoveFavouriteProductForAuthorizedUser() throws Exception {
-        Product product = repository.findByNameContainingIgnoreCase("108m").get();
+        Product product = repository.findByName("108m").get();
 
         mockMvc.perform(put(API_PREFIX_V1 + "/products/{id}/favourite", product.getId())
                 .with(jwtBearerToken(appUser, objectMapper)))

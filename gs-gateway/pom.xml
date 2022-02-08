@@ -17,7 +17,7 @@
     <description>GeoServer Gateway</description>
 
     <properties>
-        <spring-cloud.version>2021.0.0</spring-cloud.version>
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -83,18 +83,6 @@
             <groupId>io.sentry</groupId>
             <artifactId>sentry-logback</artifactId>
             <version>${sentry.version}</version>
-        </dependency>
-
-        <!-- Override until the version bump is integrated with spring boot dependencies -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4shell.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-to-slf4j</artifactId>
-            <version>${log4shell.version}</version>
         </dependency>
 
         <dependency>
@@ -173,8 +161,8 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
