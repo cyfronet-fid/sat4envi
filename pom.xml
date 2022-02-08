@@ -26,15 +26,15 @@
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
 
-        <spring-boot.version>2.6.1</spring-boot.version>
+        <spring-boot.version>2.6.5</spring-boot.version>
 
-        <awssdk.version>2.17.99</awssdk.version>
-        <commonmark.version>0.18.1</commonmark.version>
+        <awssdk.version>2.17.156</awssdk.version>
+        <commonmark.version>0.18.2</commonmark.version>
         <commons-email.version>1.5</commons-email.version>
-        <geotools.version>26.1</geotools.version>
+        <geotools.version>26.3</geotools.version>
         <greenmail.version>1.6.5</greenmail.version>
-        <guava.version>31.0.1-jre</guava.version>
-        <hibernate-types.version>2.14.0</hibernate-types.version>
+        <guava.version>31.1-jre</guava.version>
+        <hibernate-types.version>2.14.1</hibernate-types.version>
         <jakarta.json-api.version>2.0.1</jakarta.json-api.version>
         <jjwt.version>0.11.2</jjwt.version>
         <joy.version>2.1.0</joy.version>
@@ -44,14 +44,13 @@
         <poiooxml.version>5.1.0</poiooxml.version>
         <recaptcha-starter.version>2.3.1</recaptcha-starter.version>
         <slugify.version>2.5</slugify.version>
-        <springdoc-openapi.version>1.6.0</springdoc-openapi.version>
-        <unirest.version>4.0.0-RC1</unirest.version>
-        <bucket4j-starter.version>0.4.0</bucket4j-starter.version>
-        <log4shell.version>2.16.0</log4shell.version>
+        <springdoc-openapi.version>1.6.6</springdoc-openapi.version>
+        <unirest.version>4.0.0-RC2</unirest.version>
+        <bucket4j-starter.version>0.5.2</bucket4j-starter.version>
         <!--
         update sentry version only when fid instance is updated
         -->
-        <sentry.version>5.4.3</sentry.version>
+        <sentry.version>5.7.0</sentry.version>
     </properties>
 
     <build>
@@ -59,7 +58,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -103,7 +102,7 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                     <configuration>
                         <compilerArgument>-parameters</compilerArgument>
                     </configuration>
@@ -126,7 +125,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.0-M2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-install-plugin</artifactId>
@@ -134,11 +133,11 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>3.9.1</version>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -152,7 +151,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.8.1</version>
+                    <version>2.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -162,18 +161,16 @@
                 <plugin>
                     <groupId>com.github.eirslett</groupId>
                     <artifactId>frontend-maven-plugin</artifactId>
-                    <version>1.12.0</version>
+                    <version>1.12.1</version>
                 </plugin>
                 <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>4.0.4</version>
+                    <groupId>io.github.git-commit-id</groupId>
+                    <artifactId>git-commit-id-maven-plugin</artifactId>
+                    <version>5.0.0</version>
                     <configuration>
                         <verbose>true</verbose>
                         <!-- Don't fail for example when building based on a zip from a release. -->
                         <failOnNoGitDirectory>false</failOnNoGitDirectory>
-                        <!-- Work only on the git information already in the .git directory. Don't fetch. -->
-                        <offline>true</offline>
                         <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
                         <generateGitPropertiesFile>true</generateGitPropertiesFile>
                         <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>

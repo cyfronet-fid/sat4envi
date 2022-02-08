@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 ACC Cyfronet AGH
+ * Copyright 2022 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
     <T> Optional<T> findByIdFetchSchemasAndCategory(Long id, Class<T> projection);
 
-    Optional<Product> findByNameContainingIgnoreCase(String name);
+    Optional<Product> findByName(String name);
 
     @EntityGraph(attributePaths = {"sceneSchema", "metadataSchema", "productCategory"})
     <T> Optional<T> findByName(String name, Class<T> projection);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 ACC Cyfronet AGH
+ * Copyright 2022 ACC Cyfronet AGH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -120,7 +120,7 @@ public class GeoServerServiceIntegrationTest {
     @Test
     public void shouldAddStoreAndLayer() {
         seedProductsTest.prepareDb();
-        Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
+        Product product = productRepository.findByName("108m").get();
 
         assertThat(geoServerOperations.layerExists("test", "108m"), is(false));
         assertThat(geoServerOperations.tileLayerExists("test", "108m"), is(false));
@@ -148,7 +148,7 @@ public class GeoServerServiceIntegrationTest {
     @Test
     public void shouldCheckIfLayerExists() {
         seedProductsTest.prepareDb();
-        Product product = productRepository.findByNameContainingIgnoreCase("108m").get();
+        Product product = productRepository.findByName("108m").get();
         geoServerService.addStoreAndLayer(product);
 
         assertThat(geoServerOperations.layerExists("test", "108m"), is(true));

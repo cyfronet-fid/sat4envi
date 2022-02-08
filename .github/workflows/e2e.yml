@@ -9,7 +9,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 17.0.1
+          java-version: 17.0.2
       - name: Cache web-e2e
         uses: actions/cache@v2
         with:
