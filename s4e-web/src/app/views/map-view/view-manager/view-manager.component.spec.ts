@@ -59,7 +59,7 @@ describe('ViewManagerComponent', () => {
     const product = ProductFactory.build();
     productStore.set([product]);
     const spy = spyOn(productService, 'setActive$').and.returnValue(of());
-    spyOn(timelineService, 'confirmTurningOfLiveMode').and.returnValue(
+    spyOn(timelineService, 'confirmTurningOffLiveMode').and.returnValue(
       of(true).toPromise()
     );
     await component.selectProduct(product.id);
@@ -71,7 +71,7 @@ describe('ViewManagerComponent', () => {
     productStore.set([product]);
     productStore.setActive(product.id);
     const spy = spyOn(productService, 'setActive$').and.returnValue(of());
-    spyOn(timelineService, 'confirmTurningOfLiveMode').and.returnValue(
+    spyOn(timelineService, 'confirmTurningOffLiveMode').and.returnValue(
       of(true).toPromise()
     );
     await component.selectProduct(product.id);

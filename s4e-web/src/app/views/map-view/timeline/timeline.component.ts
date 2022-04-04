@@ -40,7 +40,7 @@ import {
   of,
   ReplaySubject
 } from 'rxjs';
-import {map, switchMap, tap} from 'rxjs/operators';
+import {map, skip, switchMap, tap} from 'rxjs/operators';
 import {Scene, SceneWithUI} from '../state/scene/scene.model';
 import {yyyymmdd} from '../../../utils/miscellaneous/date-utils';
 import {AkitaGuidService} from '../state/search-results/guid.service';
@@ -191,10 +191,9 @@ export class TimelineComponent
   }
 
   datepickerFc = new FormControl<Date>();
-
   @Input('currentDate') set _currentDate(v: string) {
     this.currentDate = v;
-    this.datepickerFc.setValue(new Date(v), {emitEvent: false});
+    this.datepickerFc.setValue(new Date(v), {emitEvent: false, onlySelf: true});
   }
 
   bsDatePickerUtils!: BsDatePickerUtils;
@@ -221,8 +220,7 @@ export class TimelineComponent
   }
 
   async selectDate(date: Date) {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
-    if (!turnOfLiveMode || date == null) {
+    if (date == null) {
       return;
     }
 
@@ -230,7 +228,7 @@ export class TimelineComponent
   }
 
   async goToPreviousDay() {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -239,7 +237,7 @@ export class TimelineComponent
   }
 
   async goToNextDay() {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -248,7 +246,7 @@ export class TimelineComponent
   }
 
   async goToPreviousScene() {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -257,7 +255,7 @@ export class TimelineComponent
   }
 
   async goToNextScene() {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -267,7 +265,7 @@ export class TimelineComponent
 
   async setPickerOpenState(open: boolean) {
     if (open) {
-      const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+      const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
       if (!turnOfLiveMode) {
         return;
       }
@@ -278,7 +276,7 @@ export class TimelineComponent
   }
 
   async selectScene(scene: Scene) {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -288,7 +286,7 @@ export class TimelineComponent
   }
 
   async goToLastAvailableScene() {
-    const turnOfLiveMode = await this.timelineService.confirmTurningOfLiveMode();
+    const turnOfLiveMode = await this.timelineService.confirmTurningOffLiveMode();
     if (!turnOfLiveMode) {
       return;
     }
@@ -313,7 +311,7 @@ export class TimelineComponent
         this.hourmarks.length < TimelineComponent.HOURMARKS_COUNT;
         i += this.resolution / TimelineComponent.HOURMARKS_COUNT
       ) {
-        let date = moment(this.startTime);
+        const date = moment(this.startTime);
         date.add(i, 'hours');
         this.hourmarks.push(date.format('HH:mm'));
       }
