@@ -1,0 +1,19 @@
+{
+  "bottomMetric": {
+    "unit": ""
+  },
+  "leftDescription": {
+    "0.087": "Średnia woda",
+    "0.197": "Ustąpienie zalania dane starsze niż 48h",
+    "0.313": "Ustąpienie zalania dane starsze niż 24h",
+    "0.451": "Ustąpienie zalania dane aktualne",
+    "0.584": "Woda stojąca",
+    "0.683": "Wystąpienie zalania dane starsze niż 48h",
+    "0.806": "Wystąpienie zalania dane starsze niż 24h",
+    "0.944": "Wystąpienie zalania dane aktualne"
+  },
+  "rightDescription": {},
+  "topMetric": {},
+  "type": "gradient",
+  "url": "/assets/images/legend_cbk_floods.svg"
+}
