@@ -1,4 +1,4 @@
-FROM openjdk:17.0.2-jdk
+FROM eclipse-temurin:17.0.3_7-jdk
 VOLUME /tmp
 ARG DEPENDENCY=target/dependency
 COPY ${DEPENDENCY}/BOOT-INF/lib /app/BOOT-INF/lib
