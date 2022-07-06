@@ -25,6 +25,6 @@ import org.springframework.context.annotation.Configuration;
 public class SlugifyConfig {
     @Bean
     public Slugify slugify(){
-        return new Slugify();
+        return Slugify.builder().build();
     }
 }
