@@ -89,10 +89,12 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>jcache</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
 
         <dependency>
@@ -121,7 +123,7 @@
             <artifactId>s3</artifactId>
             <version>${awssdk.version}</version>
         </dependency>
-
+        <!--        Spring dependency-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -291,6 +293,7 @@
             <artifactId>hibernate-types-52</artifactId>
             <version>${hibernate-types.version}</version>
         </dependency>
+        <!--        Spring dependency-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-spatial</artifactId>

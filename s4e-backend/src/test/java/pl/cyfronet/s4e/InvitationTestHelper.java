@@ -39,7 +39,7 @@ public class InvitationTestHelper {
     private static final String profileName = "Test user %d";
     private static final String password = "password";
 
-    private static final Slugify slugify = new Slugify();
+    private static final Slugify slugify = Slugify.builder().build();
 
     public static Institution.InstitutionBuilder institutionBuilder() {
         val name = nextUnique(InvitationTestHelper.institutionName);
